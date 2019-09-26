@@ -34,7 +34,7 @@ public interface IServerMessenger extends IMessenger {
    * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.
    */
   @Nullable
-  String getPlayerMac(String name);
+  String getPlayerMac(PlayerName name);
 
   boolean isPlayerBanned(String ip, String mac);
 

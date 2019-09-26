@@ -1,6 +1,7 @@
 package org.triplea.lobby.server;
 
 import games.strategy.engine.lobby.PlayerEmailValidation;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -24,9 +25,9 @@ final class UserManager implements IUserManager {
 
   @Override
   public String updateUser(
-      final String username, final String emailAddress, final String hashedPassword) {
+      final PlayerName username, final String emailAddress, final String hashedPassword) {
     final INode remote = MessageContext.getSender();
-    if (!username.equals(remote.getName())) {
+    if (!username.equals(remote.getPlayerName())) {
       log.severe(
           "Tried to update user permission, but not correct user, username:"
               + username
@@ -36,7 +37,7 @@ final class UserManager implements IUserManager {
     }
 
     final String validationError =
-        Optional.ofNullable(PlayerNameValidation.validate(username))
+        Optional.ofNullable(PlayerNameValidation.validate(username.getValue()))
             .orElseGet(
                 () -> emailAddress == null ? null : PlayerEmailValidation.validate(emailAddress));
 
@@ -49,7 +50,7 @@ final class UserManager implements IUserManager {
       database
           .getUserDao()
           .updateUser(
-              username,
+              username.getValue(),
               emailAddress,
               password.isHashedWithSalt()
                   ? password
@@ -61,13 +62,13 @@ final class UserManager implements IUserManager {
   }
 
   @Override
-  public String getUserEmail(final String username) {
+  public String getUserEmail(final PlayerName username) {
     final INode remote = MessageContext.getSender();
-    if (!username.equals(remote.getName())) {
+    if (!username.equals(remote.getPlayerName())) {
       log.severe(
           "Tried to get user info, but not correct user, username:" + username + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
-    return database.getUserDao().getUserEmailByName(username);
+    return database.getUserDao().getUserEmailByName(username.getValue());
   }
 }

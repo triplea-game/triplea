@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
@@ -80,14 +81,16 @@ public final class LobbyMenu extends JMenuBar {
 
   private void updateAccountDetails() {
     final IUserManager manager = lobbyFrame.getLobbyClient().getUserManager();
-    final String username = lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName();
+    final PlayerName username =
+        lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getPlayerName();
     final String email = manager.getUserEmail(username);
     if (email == null) {
       showErrorDialog("No user info found");
       return;
     }
 
-    final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(username, email);
+    final CreateUpdateAccountPanel panel =
+        CreateUpdateAccountPanel.newUpdatePanel(username.getValue(), email);
     final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;

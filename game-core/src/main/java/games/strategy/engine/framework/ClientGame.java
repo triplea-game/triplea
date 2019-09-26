@@ -184,7 +184,7 @@ public class ClientGame extends AbstractGame {
 
   public static RemoteName getRemoteStepAdvancerName(final INode node) {
     return new RemoteName(
-        ClientGame.class.getName() + ".REMOTE_STEP_ADVANCER:" + node.getName(),
+        ClientGame.class.getName() + ".REMOTE_STEP_ADVANCER:" + node.getPlayerName(),
         IGameStepAdvancer.class);
   }
 

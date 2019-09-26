@@ -99,9 +99,9 @@ public class LobbyFrame extends JFrame {
     final List<Action> actions = new ArrayList<>();
     actions.add(
         SwingAction.of(
-            "Boot " + clickedOn.getName(),
+            "Boot " + clickedOn.getPlayerName(),
             e -> {
-              if (!confirm("Boot " + clickedOn.getName())) {
+              if (!confirm("Boot " + clickedOn.getPlayerName())) {
                 return;
               }
               controller.boot(clickedOn);

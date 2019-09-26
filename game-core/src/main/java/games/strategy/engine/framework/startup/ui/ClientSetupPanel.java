@@ -5,6 +5,7 @@ import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
+import games.strategy.engine.lobby.PlayerName;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -67,7 +68,7 @@ public class ClientSetupPanel extends SetupPanel {
               name, playerNamesAndAlliancesInTurnOrder.get(name), enabledPlayers.get(name));
       playerRows.add(playerRow);
       SwingUtilities.invokeLater(
-          () -> playerRow.update(players.get(name), disableable.contains(name)));
+          () -> playerRow.update(PlayerName.of(players.get(name)), disableable.contains(name)));
     }
     SwingUtilities.invokeLater(this::layoutComponents);
   }
@@ -203,15 +204,15 @@ public class ClientSetupPanel extends SetupPanel {
       return enabledCheckBox;
     }
 
-    public void update(final String playerName, final boolean disableable) {
+    public void update(final PlayerName playerName, final boolean disableable) {
       if (playerName == null) {
         playerLabel.setText("-");
         final JButton button = new JButton(takeAction);
         button.setMargin(buttonInsets);
         playerComponent = button;
       } else {
-        playerLabel.setText(playerName);
-        if (playerName.equals(clientModel.getClientMessenger().getLocalNode().getName())) {
+        playerLabel.setText(playerName.getValue());
+        if (playerName.equals(clientModel.getClientMessenger().getLocalNode().getPlayerName())) {
           final JButton button = new JButton(dontTakeAction);
           button.setMargin(buttonInsets);
           playerComponent = button;

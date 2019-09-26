@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -182,13 +183,14 @@ final class ChatIntegrationTest {
     }
 
     @Override
-    public void addMessageWithSound(final String message, final String from, final String sound) {
+    public void addMessageWithSound(
+        final String message, final PlayerName from, final String sound) {
       lastMessageReceived.set(message);
       messageCount.incrementAndGet();
     }
 
     @Override
-    public void addMessage(final String message, final String from) {
+    public void addMessage(final String message, final PlayerName from) {
       addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
     }
 

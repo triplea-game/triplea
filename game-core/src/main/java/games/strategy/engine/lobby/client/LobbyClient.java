@@ -39,7 +39,8 @@ public class LobbyClient {
 
   @Nullable
   public String updatePassword(final String newPassword) {
-    return getUserManager().updateUser(messengers.getLocalNode().getName(), null, newPassword);
+    return getUserManager()
+        .updateUser(messengers.getLocalNode().getPlayerName(), null, newPassword);
   }
 
   public IUserManager getUserManager() {

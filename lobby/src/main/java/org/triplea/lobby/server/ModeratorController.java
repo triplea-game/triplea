@@ -1,5 +1,6 @@
 package org.triplea.lobby.server;
 
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
@@ -46,19 +47,19 @@ final class ModeratorController implements IModeratorController {
     return User.builder()
         .username(IServerMessenger.getRealName(node.getName()))
         .inetAddress(node.getAddress())
-        .hashedMacAddress(getNodeMacAddress(node))
+        .hashedMacAddress(getNodeMacAddress(node.getPlayerName()))
         .build();
   }
 
   /**
    * Gets the hashed MAC address of the specified node.
    *
-   * @param node The node whose hashed MAC address is desired.
+   * @param playerName The playerName whose hashed MAC address is desired.
    * @return The hashed MAC address of the specified node. If the MAC address of the node cannot be
    *     determined, this method returns {@link #UNKNOWN_HASHED_MAC_ADDRESS}.
    */
-  private String getNodeMacAddress(final INode node) {
-    final @Nullable String hashedMacAddress = serverMessenger.getPlayerMac(node.getName());
+  private String getNodeMacAddress(final PlayerName playerName) {
+    final @Nullable String hashedMacAddress = serverMessenger.getPlayerMac(playerName);
     return hashedMacAddress != null ? hashedMacAddress : UNKNOWN_HASHED_MAC_ADDRESS;
   }
 
@@ -68,7 +69,7 @@ final class ModeratorController implements IModeratorController {
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
-    final String hashedMac = getNodeMacAddress(node);
+    final String hashedMac = getNodeMacAddress(node.getPlayerName());
 
     final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
     final User moderator = getUserForNode(MessageContext.getSender());
@@ -145,7 +146,6 @@ final class ModeratorController implements IModeratorController {
     final IRemoteHostUtils remoteHostUtils = getRemoteHostUtilsForNode(node);
     final String response =
         remoteHostUtils.bootPlayerHeadlessHostBot(playerNameToBeBooted, hashedPassword, salt);
-
     database
         .getModeratorAuditHistoryDao()
         .addAuditRecord(
@@ -222,7 +222,7 @@ final class ModeratorController implements IModeratorController {
   @Override
   public String getInformationOn(final INode node) {
     assertUserIsAdmin();
-    final String mac = getNodeMacAddress(node);
+    final String mac = getNodeMacAddress(node.getPlayerName());
     final StringBuilder builder = new StringBuilder();
     builder.append("Name: ").append(node.getName());
     builder.append("\r\nHost Name: ").append(node.getAddress().getHostName());
@@ -243,18 +243,18 @@ final class ModeratorController implements IModeratorController {
 
   private String getAliasesFor(final INode node) {
     final StringBuilder builder = new StringBuilder();
-    final String nodeMac = getNodeMacAddress(node);
-    for (final INode cur : serverMessenger.getNodes()) {
-      if (cur.equals(node) || cur.getName().equals("Admin")) {
+    final String nodeMac = getNodeMacAddress(node.getPlayerName());
+    for (final INode currentNode : serverMessenger.getNodes()) {
+      if (currentNode.equals(node) || currentNode.getName().equals("Admin")) {
         continue;
       }
-      if (cur.getAddress().equals(node.getAddress())
+      if (currentNode.getAddress().equals(node.getAddress())
           || (!UNKNOWN_HASHED_MAC_ADDRESS.equals(nodeMac)
-              && getNodeMacAddress(cur).equals(nodeMac))) {
+              && getNodeMacAddress(currentNode.getPlayerName()).equals(nodeMac))) {
         if (builder.length() > 0) {
           builder.append(", ");
         }
-        builder.append(cur.getName());
+        builder.append(currentNode.getName());
       }
     }
     if (builder.length() > 100) {

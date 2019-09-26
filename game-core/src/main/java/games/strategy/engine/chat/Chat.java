@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.IChatController.Tag;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
@@ -8,6 +9,7 @@ import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -16,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.Tuple;
 
@@ -62,14 +65,14 @@ public class Chat {
 
         @Override
         public void chatOccurred(final String message) {
-          final INode from = MessageContext.getSender();
+          final PlayerName from = MessageContext.getSender().getPlayerName();
           if (isIgnored(from)) {
             return;
           }
           synchronized (mutexNodes) {
-            chatHistory.add(new ChatMessage(message, from.getName()));
+            chatHistory.add(new ChatMessage(message, from));
             for (final IChatListener listener : listeners) {
-              listener.addMessage(message, from.getName());
+              listener.addMessage(message, from);
             }
             // limit the number of messages in our history.
             while (chatHistory.size() > 1000) {
@@ -93,7 +96,7 @@ public class Chat {
               updateConnections();
             }
             for (final IChatListener listener : listeners) {
-              listener.addStatusMessage(node.getName() + " has joined");
+              listener.addStatusMessage(node.getPlayerName() + " has joined");
               if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
                 ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
               }
@@ -112,30 +115,30 @@ public class Chat {
               updateConnections();
             }
             for (final IChatListener listener : listeners) {
-              listener.addStatusMessage(node.getName() + " has left");
+              listener.addStatusMessage(node.getPlayerName() + " has left");
             }
           }
         }
 
         @Override
-        public void slapOccurred(final String to) {
-          final INode from = MessageContext.getSender();
+        public void slapOccurred(final PlayerName to) {
+          final PlayerName from = MessageContext.getSender().getPlayerName();
           if (isIgnored(from)) {
             return;
           }
           synchronized (mutexNodes) {
-            if (to.equals(messengers.getLocalNode().getName())) {
-              handleSlap("You were slapped by " + from.getName(), from);
-            } else if (from.equals(messengers.getLocalNode())) {
+            if (to.equals(messengers.getLocalNode().getPlayerName())) {
+              handleSlap("You were slapped by " + from, from);
+            } else if (from.equals(messengers.getLocalNode().getPlayerName())) {
               handleSlap("You just slapped " + to, from);
             }
           }
         }
 
-        private void handleSlap(final String message, final INode from) {
+        private void handleSlap(final String message, final PlayerName from) {
           for (final IChatListener listener : listeners) {
-            chatHistory.add(new ChatMessage(message, from.getName()));
-            listener.addMessageWithSound(message, from.getName(), SoundPath.CLIP_CHAT_SLAP);
+            chatHistory.add(new ChatMessage(message, from));
+            listener.addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
           }
         }
 
@@ -273,7 +276,7 @@ public class Chat {
     }
   }
 
-  void sendSlap(final String playerName) {
+  void sendSlap(final PlayerName playerName) {
     final IChatChannel remote =
         (IChatChannel)
             messengers.getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
@@ -288,16 +291,16 @@ public class Chat {
     sentMessages.append(message);
   }
 
-  void setIgnored(final INode node, final boolean isIgnored) {
+  void setIgnored(final PlayerName playerName, final boolean isIgnored) {
     if (isIgnored) {
-      ignoreList.add(node.getName());
+      ignoreList.add(playerName);
     } else {
-      ignoreList.remove(node.getName());
+      ignoreList.remove(playerName);
     }
   }
 
-  boolean isIgnored(final INode node) {
-    return ignoreList.shouldIgnore(node.getName());
+  boolean isIgnored(final PlayerName playerName) {
+    return ignoreList.shouldIgnore(playerName);
   }
 
   public INode getLocalNode() {
@@ -308,8 +311,8 @@ public class Chat {
     return messengers.getServerNode();
   }
 
-  public List<INode> getOnlinePlayers() {
-    return new ArrayList<>(nodes);
+  Collection<PlayerName> getOnlinePlayers() {
+    return nodes.stream().map(INode::getPlayerName).collect(Collectors.toSet());
   }
 
   /**
