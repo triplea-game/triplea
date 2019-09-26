@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -226,13 +227,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final String from) {
+  public void addMessage(final String message, final PlayerName from) {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   /** thread safe. */
   @Override
-  public void addMessageWithSound(final String message, final String from, final String sound) {
+  public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
     SwingAction.invokeNowOrLater(
         () -> {
           if (from == null
@@ -243,8 +244,9 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
             return;
           }
           if (!floodControl.allow(from, System.currentTimeMillis())) {
-            if (from.equals(chat.getLocalNode().getName())) {
-              addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL");
+            if (from.equals(chat.getLocalNode().getPlayerName())) {
+              addChatMessage(
+                  "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", PlayerName.of("ADMIN_FLOOD_CONTROL"));
             }
             return;
           }
@@ -258,11 +260,11 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         });
   }
 
-  private void addChatMessage(final String originalMessage, final String from) {
+  private void addChatMessage(final String originalMessage, final PlayerName from) {
     // we don't want to truncate messages from the server as those may be logs with accompanying
     // stack traces
     final String message =
-        from.equals(chat.getServerNode().getName())
+        from.equals(chat.getServerNode().getPlayerName())
             ? originalMessage
             : Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";

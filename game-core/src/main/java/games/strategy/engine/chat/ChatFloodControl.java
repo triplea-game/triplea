@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.PlayerName;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ class ChatFloodControl {
   static final int WINDOW = ONE_MINUTE;
 
   private final Object lock = new Object();
-  private final Map<String, Integer> messageCount = new HashMap<>();
+  private final Map<PlayerName, Integer> messageCount = new HashMap<>();
   private long clearTime;
 
   ChatFloodControl() {
@@ -25,7 +26,7 @@ class ChatFloodControl {
     clearTime = initialClearTime;
   }
 
-  boolean allow(final String from, final long now) {
+  boolean allow(final PlayerName from, final long now) {
     synchronized (lock) {
       // reset the window
       if (now > clearTime) {

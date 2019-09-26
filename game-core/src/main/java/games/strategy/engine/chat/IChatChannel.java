@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.IChatController.Tag;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.net.INode;
 
@@ -14,7 +15,7 @@ public interface IChatChannel extends IChannelSubscriber {
   // we get the sender from MessageContext
   void chatOccurred(String message);
 
-  void slapOccurred(String playerName);
+  void slapOccurred(PlayerName playerName);
 
   void speakerAdded(INode node, Tag tag, long version);
 

@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;
@@ -56,7 +57,7 @@ public class HeadlessChat implements IChatListener, ChatModel {
       synchronized (this.chat.getMutex()) {
         allText = new StringBuilder();
         for (final ChatMessage message : this.chat.getChatHistory()) {
-          addChatMessage(message.getMessage(), message.getFrom());
+          addChatMessage(message.getMessage(), message.getFrom().getValue());
         }
       }
     } else {
@@ -66,23 +67,23 @@ public class HeadlessChat implements IChatListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final String from) {
+  public void addMessage(final String message, final PlayerName from) {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   /** thread safe. */
   @Override
-  public void addMessageWithSound(final String message, final String from, final String sound) {
+  public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
     // TODO: I don't really think we need a new thread for this...
     new Thread(
             () -> {
               if (!floodControl.allow(from, System.currentTimeMillis())) {
-                if (from.equals(chat.getLocalNode().getName())) {
+                if (from.equals(chat.getLocalNode().getPlayerName())) {
                   addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL");
                 }
                 return;
               }
-              addChatMessage(message, from);
+              addChatMessage(message, from.getValue());
               ClipPlayer.play(sound);
             })
         .start();

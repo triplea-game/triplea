@@ -79,7 +79,7 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public void banPlayer(final String ip, final String mac) {}
 
   @Override
-  public @Nullable String getPlayerMac(final String name) {
+  public @Nullable String getPlayerMac(final PlayerName name) {
     return null;
   }
 

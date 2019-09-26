@@ -3,6 +3,7 @@ package games.strategy.engine.chat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import games.strategy.engine.lobby.PlayerName;
 import org.junit.jupiter.api.Test;
 
 class ChatFloodControlTest {
@@ -11,24 +12,24 @@ class ChatFloodControlTest {
 
   @Test
   void testSimple() {
-    assertTrue(testObj.allow("", System.currentTimeMillis()));
+    assertTrue(testObj.allow(PlayerName.of("a"), System.currentTimeMillis()));
   }
 
   @Test
   void testDeny() {
     final long now = 123;
     for (int i = 0; i < ChatFloodControl.EVENTS_PER_WINDOW; i++) {
-      assertTrue(testObj.allow("", now));
+      assertTrue(testObj.allow(PlayerName.of("a"), now));
     }
-    assertFalse(testObj.allow("", now));
+    assertFalse(testObj.allow(PlayerName.of("a"), now));
   }
 
   @Test
   void throttlingReleasedAfterTimePeriod() {
     final long now = 100;
     for (int i = 0; i < 100; i++) {
-      testObj.allow("", now);
+      testObj.allow(PlayerName.of("a"), now);
     }
-    assertTrue(testObj.allow("", INITIAL_CLEAR_TIME + ChatFloodControl.WINDOW + 1));
+    assertTrue(testObj.allow(PlayerName.of("a"), INITIAL_CLEAR_TIME + ChatFloodControl.WINDOW + 1));
   }
 }

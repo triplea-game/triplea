@@ -1,13 +1,17 @@
 package games.strategy.engine.lobby;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /** Simple value object to encapsulate a player name and provide strong typing. */
 @AllArgsConstructor(staticName = "of")
+@EqualsAndHashCode
 public class PlayerName {
-  private final String name;
+  @Getter private final String value;
 
-  public String getValue() {
-    return name;
+  @Override
+  public String toString() {
+    return getValue();
   }
 }

@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
@@ -93,11 +95,10 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
    * set minimum size based on players (number and max name length) and distribution to playerIDs.
    */
   private void setDynamicPreferredSize() {
-    final List<INode> onlinePlayers = chat.getOnlinePlayers();
     int maxNameLength = 0;
     final FontMetrics fontMetrics = this.getFontMetrics(UIManager.getFont("TextField.font"));
-    for (final INode onlinePlayer : onlinePlayers) {
-      maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(onlinePlayer.getName()));
+    for (final PlayerName onlinePlayer : chat.getOnlinePlayers()) {
+      maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(onlinePlayer.getValue()));
     }
     int iconCounter = 0;
     if (setCellRenderer instanceof PlayerChatRenderer) {
@@ -127,7 +128,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
                     setCellRenderer.getListCellRendererComponent(
                         list, getDisplayString(node), index, isSelected, cellHasFocus);
           }
-          if (chat.isIgnored(node)) {
+          if (chat.isIgnored(node.getPlayerName())) {
             renderer.setIcon(ignoreIcon);
           }
           return renderer;
@@ -163,17 +164,17 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
           if (clickedOn.equals(chat.getLocalNode())) {
             return Collections.emptyList();
           }
-          final boolean isIgnored = chat.isIgnored(clickedOn);
+          final boolean isIgnored = chat.isIgnored(clickedOn.getPlayerName());
           final Action ignore =
               SwingAction.of(
                   isIgnored ? "Stop Ignoring" : "Ignore",
                   e -> {
-                    chat.setIgnored(clickedOn, !isIgnored);
+                    chat.setIgnored(clickedOn.getPlayerName(), !isIgnored);
                     repaint();
                   });
           final Action slap =
               SwingAction.of(
-                  "Slap " + clickedOn.getName(), e -> chat.sendSlap(clickedOn.getName()));
+                  "Slap " + clickedOn.getName(), e -> chat.sendSlap(clickedOn.getPlayerName()));
           return Arrays.asList(slap, ignore);
         });
   }
@@ -226,20 +227,17 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   @Override
-  public void addMessageWithSound(final String message, final String from, final String sound) {}
+  public void addMessageWithSound(
+      final String message, final PlayerName from, final String sound) {}
 
   @Override
-  public void addMessage(final String message, final String from) {}
+  public void addMessage(final String message, final PlayerName from) {}
 
   private String getDisplayString(final INode node) {
     if (chat == null) {
       return "";
     }
-    String extra = "";
-    final String notes = chat.getNotesForNode(node);
-    if (notes != null && notes.length() > 0) {
-      extra = extra + notes;
-    }
+    String extra = Optional.ofNullable(chat.getNotesForNode(node)).orElse("");
     String status = chat.getStatusManager().getStatus(node);
     final StringBuilder sb = new StringBuilder();
     if (status != null && status.length() > 0) {
@@ -254,9 +252,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
         sb.append(c);
       }
       extra = extra + " (" + sb + ")";
-    }
-    if (extra.length() == 0) {
-      return node.getName();
     }
     return node.getName() + extra;
   }

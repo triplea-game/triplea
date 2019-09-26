@@ -1,5 +1,6 @@
 package games.strategy.net;
 
+import games.strategy.engine.lobby.PlayerName;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -16,6 +17,10 @@ import java.net.InetSocketAddress;
 public interface INode extends Serializable, Comparable<INode> {
   /** Returns the display/user name for the node. */
   String getName();
+
+  default PlayerName getPlayerName() {
+    return PlayerName.of(getName());
+  }
 
   /** Returns the address for the node as seen by the server. */
   InetAddress getAddress();

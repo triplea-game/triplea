@@ -56,7 +56,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
-  private final Map<String, String> cachedMacAddresses = new ConcurrentHashMap<>();
+  private final Map<PlayerName, String> cachedMacAddresses = new ConcurrentHashMap<>();
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
   private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
 
@@ -122,7 +122,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   @Override
-  public @Nullable String getPlayerMac(final String name) {
+  public @Nullable String getPlayerMac(final PlayerName name) {
     return cachedMacAddresses.get(name);
   }
 
@@ -131,12 +131,12 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
    * {@code uniquePlayerName} is the node name and may not be identical to the name of the player
    * associated with the node
    */
-  public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
+  public void notifyPlayerLogin(final PlayerName uniquePlayerName, final String mac) {
     cachedMacAddresses.put(uniquePlayerName, mac);
   }
 
   private void notifyPlayerRemoval(final INode node) {
-    cachedMacAddresses.remove(node.getName());
+    cachedMacAddresses.remove(node.getPlayerName());
   }
 
   @Override

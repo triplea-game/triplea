@@ -140,9 +140,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
             // aggregate all player names by mac address (there can be multiple names per mac
             // address)
             serverMessenger.getNodes().stream()
-                .filter(n -> serverMessenger.getPlayerMac(n.getName()) != null)
+                .filter(n -> serverMessenger.getPlayerMac(n.getPlayerName()) != null)
                 .forEach(
-                    n -> macToName.put(serverMessenger.getPlayerMac(n.getName()), n.getName()));
+                    n ->
+                        macToName.put(
+                            serverMessenger.getPlayerMac(n.getPlayerName()), n.getName()));
             remoteName = PlayerNameAssigner.assignName(remoteName, remoteMac, macToName);
           }
 
@@ -159,7 +161,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
               });
 
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          serverMessenger.notifyPlayerLogin(remoteName, remoteMac);
+          serverMessenger.notifyPlayerLogin(PlayerName.of(remoteName), remoteMac);
           // We are good
           return Action.UNQUARANTINE;
         case ACK_ERROR:

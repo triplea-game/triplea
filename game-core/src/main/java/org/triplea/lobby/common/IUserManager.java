@@ -1,5 +1,6 @@
 package org.triplea.lobby.common;
 
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 
@@ -12,7 +13,7 @@ public interface IUserManager extends IRemote {
       new RemoteName("games.strategy.engine.lobby.server.USER_MANAGER", IUserManager.class);
 
   /** Update the user info, returning an error string if an error occurs. */
-  String updateUser(String username, String emailAddress, String hashedPassword);
+  String updateUser(PlayerName username, String emailAddress, String hashedPassword);
 
-  String getUserEmail(String username);
+  String getUserEmail(PlayerName username);
 }

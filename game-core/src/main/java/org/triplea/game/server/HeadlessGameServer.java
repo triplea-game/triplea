@@ -404,7 +404,7 @@ public class HeadlessGameServer {
                   for (final INode node : nodes) {
                     final String realName = IServerMessenger.getRealName(node.getName());
                     final String ip = node.getAddress().getHostAddress();
-                    final String mac = messenger.getPlayerMac(node.getName());
+                    final String mac = messenger.getPlayerMac(node.getPlayerName());
                     if (realName.equals(playerName)) {
                       log.info("Remote Ban of Player: " + playerName);
                       try {

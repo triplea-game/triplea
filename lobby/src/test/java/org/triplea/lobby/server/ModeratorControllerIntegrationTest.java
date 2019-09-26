@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
@@ -52,7 +53,7 @@ class ModeratorControllerIntegrationTest {
     UserDaoTestSupport.makeAdmin(adminName);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
-    when(serverMessenger.getPlayerMac(adminName)).thenReturn(newHashedMacAddress());
+    when(serverMessenger.getPlayerMac(PlayerName.of(adminName))).thenReturn(newHashedMacAddress());
   }
 
   @Test

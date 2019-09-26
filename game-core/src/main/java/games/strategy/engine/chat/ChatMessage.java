@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.PlayerName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,5 +8,5 @@ import lombok.Getter;
 @Getter
 class ChatMessage {
   private final String message;
-  private final String from;
+  private final PlayerName from;
 }
