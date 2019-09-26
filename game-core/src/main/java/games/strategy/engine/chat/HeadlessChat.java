@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import org.triplea.game.chat.ChatModel;
+import org.triplea.java.TimeManager;
 
 /** Headless version of ChatPanel. */
 public class HeadlessChat implements IChatListener, ChatModel {
@@ -88,12 +89,14 @@ public class HeadlessChat implements IChatListener, ChatModel {
   }
 
   private void addChatMessage(final String originalMessage, final String from) {
-    final String message = Ascii.truncate(originalMessage, 200, "...");
-    final String fullMessage = from + ": " + " " + message + "\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
       allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
     }
+
+    final String message = Ascii.truncate(originalMessage, 200, "...");
+    final String fullMessage =
+        String.format("(%s) %s: %s\n", TimeManager.getLocalizedTime(), from, message);
     allText.append(fullMessage);
   }
 
