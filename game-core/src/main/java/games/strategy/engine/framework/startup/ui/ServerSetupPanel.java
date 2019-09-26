@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
+import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
@@ -27,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -40,7 +43,6 @@ import javax.swing.SwingUtilities;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
-import org.triplea.util.ExitStatus;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -61,44 +63,49 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     this.model = model;
     this.gameSelectorModel = gameSelectorModel;
     this.model.setRemoteModelListener(this);
-    createLobbyWatcher();
+
+    if (System.getProperty(LOBBY_HOST) != null) {
+      createLobbyWatcher();
+    }
+
     createComponents();
     layoutComponents();
     internalPlayerListChanged();
   }
 
   private void createLobbyWatcher() {
-    final InGameLobbyWatcher.LobbyWatcherHandler handler =
-        new InGameLobbyWatcher.LobbyWatcherHandler() {
-          @Override
-          public void reportError(final String message) {
-            SwingUtilities.invokeLater(
-                () -> {
-                  final Frame parentComponent =
-                      JOptionPane.getFrameForComponent(ServerSetupPanel.this);
-                  if (JOptionPane.showConfirmDialog(
-                          parentComponent,
-                          message
-                              + "\nDo you want to view the tutorial on how to host? "
-                              + "This will open in your internet browser.",
-                          "View Help Website?",
-                          JOptionPane.YES_NO_OPTION)
-                      == JOptionPane.YES_OPTION) {
-                    OpenFileUtility.openUrl(UrlConstants.USER_GUIDE);
-                  }
-                  ExitStatus.FAILURE.exit();
-                });
-          }
+    InGameLobbyWatcher.newInGameLobbyWatcher(
+            model.getMessenger(), lobbyWatcher.getInGameLobbyWatcher())
+        .ifPresent(
+            watcher -> {
+              watcher.setGameSelectorModel(gameSelectorModel);
+              lobbyWatcher.setInGameLobbyWatcher(watcher);
 
-          @Override
-          public boolean isPlayer() {
-            return true;
-          }
-        };
-    lobbyWatcher.setInGameLobbyWatcher(
-        InGameLobbyWatcher.newInGameLobbyWatcher(
-            model.getMessenger(), handler, lobbyWatcher.getInGameLobbyWatcher()));
-    lobbyWatcher.setGameSelectorModel(gameSelectorModel);
+              final Consumer<String> errorHandler =
+                  message ->
+                      SwingUtilities.invokeLater(
+                          () -> {
+                            final Frame parentComponent =
+                                JOptionPane.getFrameForComponent(ServerSetupPanel.this);
+                            if (JOptionPane.showConfirmDialog(
+                                    parentComponent,
+                                    message
+                                        + "\nDo you want to view the tutorial on how to host? "
+                                        + "This will open in your internet browser.",
+                                    "View Help Website?",
+                                    JOptionPane.YES_NO_OPTION)
+                                == JOptionPane.YES_OPTION) {
+                              OpenFileUtility.openUrl(UrlConstants.USER_GUIDE);
+                            }
+                          });
+
+              LocalServerAvailabilityCheck.builder()
+                  .controller(watcher.getRemoteMessenger().getLobbyGameController())
+                  .errorHandler(errorHandler)
+                  .localNode(model.getMessenger().getLocalNode())
+                  .build()
+                  .run();
+            });
   }
 
   private void createComponents() {

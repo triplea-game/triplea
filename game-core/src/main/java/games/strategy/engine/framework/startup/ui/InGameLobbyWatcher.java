@@ -6,10 +6,10 @@ import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -31,7 +31,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IRemoteHostUtils;
@@ -53,37 +55,56 @@ public class InGameLobbyWatcher {
   private IGame game;
   // we create this messenger, and use it to connect to the game lobby
   private final IMessenger lobbyMessenger;
-  private final IRemoteMessenger remoteMessenger;
+  @Getter private final IRemoteMessenger remoteMessenger;
   private final Object postMutex = new Object();
   private GameDescription gameDescription;
   private final IConnectionChangeListener connectionChangeListener;
   private final IMessengerErrorListener messengerErrorListener = e -> shutDown();
-  private final boolean isHandlerPlayer;
+  private final boolean humanPlayer;
 
   private InGameLobbyWatcher(
       final IMessenger lobbyMessenger,
       final IRemoteMessenger remoteMessenger,
       final IServerMessenger serverMessenger,
-      final LobbyWatcherHandler handler,
-      final InGameLobbyWatcher oldWatcher) {
+      @Nullable final InGameLobbyWatcher oldWatcher) {
+    this(
+        lobbyMessenger,
+        remoteMessenger,
+        serverMessenger,
+        Optional.ofNullable(oldWatcher).map(old -> old.gameDescription).orElse(null),
+        Optional.ofNullable(oldWatcher).map(old -> old.game).orElse(null));
+  }
+
+  private InGameLobbyWatcher(
+      final IMessenger lobbyMessenger,
+      final IRemoteMessenger remoteMessenger,
+      final IServerMessenger serverMessenger,
+      @Nullable final GameDescription oldGameDescription,
+      @Nullable final IGame oldGame) {
     this.lobbyMessenger = lobbyMessenger;
     this.remoteMessenger = remoteMessenger;
     this.serverMessenger = serverMessenger;
-    this.isHandlerPlayer = handler.isPlayer();
-    final String password = System.getProperty(SERVER_PASSWORD);
-    final boolean passworded = password != null && password.length() > 0;
-    final boolean oldWatcherMissing = oldWatcher == null || oldWatcher.gameDescription == null;
+    humanPlayer = !HeadlessGameServer.headless();
+
+    final boolean passworded = !Strings.nullToEmpty(System.getProperty(SERVER_PASSWORD)).isEmpty();
+
     final Instant startDateTime =
-        (oldWatcherMissing || oldWatcher.gameDescription.getStartDateTime() == null)
-            ? Instant.now()
-            : oldWatcher.gameDescription.getStartDateTime();
+        Optional.ofNullable(oldGameDescription)
+            .map(GameDescription::getStartDateTime)
+            .orElseGet(Instant::now);
+
     final int playerCount =
-        oldWatcherMissing ? (isHandlerPlayer ? 1 : 0) : oldWatcher.gameDescription.getPlayerCount();
+        Optional.ofNullable(oldGameDescription)
+            .map(GameDescription::getPlayerCount)
+            .orElseGet(() -> humanPlayer ? 1 : 0);
+
     final GameDescription.GameStatus gameStatus =
-        (oldWatcherMissing || oldWatcher.gameDescription.getStatus() == null)
-            ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
-            : oldWatcher.gameDescription.getStatus();
-    final int gameRound = oldWatcherMissing ? 0 : oldWatcher.gameDescription.getRound();
+        Optional.ofNullable(oldGameDescription)
+            .map(GameDescription::getStatus)
+            .orElse(GameDescription.GameStatus.WAITING_FOR_PLAYERS);
+
+    final int gameRound =
+        Optional.ofNullable(oldGameDescription).map(GameDescription::getRound).orElse(0);
 
     final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView =
@@ -129,49 +150,9 @@ public class InGameLobbyWatcher {
         };
     // when players join or leave the game update the connection count
     this.serverMessenger.addConnectionChangeListener(connectionChangeListener);
-    if (oldWatcher != null && oldWatcher.gameDescription != null) {
-      this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);
+    if (oldGameDescription != null && oldGame != null) {
+      this.setGameStatus(oldGameDescription.getStatus(), oldGame);
     }
-    // if we loose our connection, then shutdown
-    new Thread(
-            () -> {
-              final String addressUsed = controller.testGame(gameId);
-              // if the server cannot connect to us, then quit
-              if (addressUsed != null) {
-                if (isActive()) {
-                  shutDown();
-                  String portString = System.getProperty(TRIPLEA_PORT);
-                  if (portString == null || portString.trim().length() <= 0) {
-                    portString = "3300";
-                  }
-                  final String message =
-                      "Your computer is not reachable from the internet.\n"
-                          + "Please make sure your Firewall allows incoming connections (hosting) "
-                          + "for TripleA.\n"
-                          + "(The firewall exception must be updated every time a new version of "
-                          + "TripleA comes out.)\n"
-                          + "And that your Router is configured to send TCP traffic on port "
-                          + portString
-                          + " to your local ip address.\n"
-                          + "See 'How To Host...' in the help menu, at the top of the lobby "
-                          + "screen.\n"
-                          + "The server tried to connect to your external ip: "
-                          + addressUsed;
-                  handler.reportError(message);
-                }
-              }
-            })
-        .start();
-  }
-
-  /**
-   * Helper interface to keep the logging logic outside of this class to ensure headless clients
-   * don't need to depend on UI classes.
-   */
-  public interface LobbyWatcherHandler {
-    void reportError(String message);
-
-    boolean isPlayer();
   }
 
   /**
@@ -179,23 +160,16 @@ public class InGameLobbyWatcher {
    *
    * <p>After creation, those properties are cleared, since we should watch the first start game.
    *
-   * @param handler The interface that provides the necessary information to decouple this class
-   *     from the UI.
-   * @return null if no watcher should be created
+   * @return Empty if no watcher should be created
    */
-  public static InGameLobbyWatcher newInGameLobbyWatcher(
-      final IServerMessenger gameMessenger,
-      final LobbyWatcherHandler handler,
-      final InGameLobbyWatcher oldWatcher) {
-    Preconditions.checkNotNull(handler);
-    final @Nullable String host = getLobbySystemProperty(LOBBY_HOST);
-    final @Nullable String port = getLobbySystemProperty(LOBBY_PORT);
-    final @Nullable String httpsPort = getLobbySystemProperty(LOBBY_HTTPS_PORT);
+  public static Optional<InGameLobbyWatcher> newInGameLobbyWatcher(
+      final IServerMessenger gameMessenger, final InGameLobbyWatcher oldWatcher) {
+    final String host = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_HOST));
+    final String port = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_PORT));
     // TODO: Project#12 use https port
-    final @Nullable String hostedBy = getLobbySystemProperty(TRIPLEA_NAME);
-    if (host == null || port == null || httpsPort == null) {
-      return null;
-    }
+    @SuppressWarnings("unused")
+    final String httpsPort = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_HTTPS_PORT));
+    final String hostedBy = Preconditions.checkNotNull(getLobbySystemProperty(TRIPLEA_NAME));
 
     try {
       final IClientMessenger messenger =
@@ -206,15 +180,16 @@ public class InGameLobbyWatcher {
       remoteMessenger.registerRemote(
           remoteHostUtils,
           IRemoteHostUtils.Companion.newRemoteNameForNode(unifiedMessenger.getLocalNode()));
-      return new InGameLobbyWatcher(messenger, remoteMessenger, gameMessenger, handler, oldWatcher);
+      return Optional.of(
+          new InGameLobbyWatcher(messenger, remoteMessenger, gameMessenger, oldWatcher));
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
-      return null;
+      return Optional.empty();
     }
   }
 
   @VisibleForTesting
-  static @Nullable String getLobbySystemProperty(final String key) {
+  static String getLobbySystemProperty(final String key) {
     final String backupKey = key + ".backup";
     final @Nullable String value = System.getProperty(key);
     if (value != null) {
@@ -226,7 +201,7 @@ public class InGameLobbyWatcher {
     return System.getProperty(backupKey);
   }
 
-  private void setGame(final IGame game) {
+  private void setGame(@Nullable final IGame game) {
     this.game = game;
     if (game != null) {
       game.getData()
@@ -251,7 +226,7 @@ public class InGameLobbyWatcher {
     }
   }
 
-  void setGameSelectorModel(final GameSelectorModel model) {
+  void setGameSelectorModel(@Nullable final GameSelectorModel model) {
     cleanUpGameModelListener();
     if (model != null) {
       gameSelectorModel = model;
@@ -270,7 +245,7 @@ public class InGameLobbyWatcher {
     synchronized (postMutex) {
       postUpdate(
           gameDescription.withPlayerCount(
-              serverMessenger.getNodes().size() - (isHandlerPlayer ? 0 : 1)));
+              serverMessenger.getNodes().size() - (humanPlayer ? 0 : 1)));
     }
   }
 

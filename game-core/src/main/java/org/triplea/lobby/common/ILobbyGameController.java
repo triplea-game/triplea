@@ -2,6 +2,7 @@ package org.triplea.lobby.common;
 
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
+import games.strategy.net.INode;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,5 +26,5 @@ public interface ILobbyGameController extends IRemote {
    *
    * <p>This method may only be called by the node that is hosting this game.
    */
-  String testGame(UUID gameId);
+  boolean testGame(INode node);
 }
