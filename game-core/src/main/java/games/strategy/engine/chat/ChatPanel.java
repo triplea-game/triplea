@@ -23,8 +23,8 @@ import org.triplea.swing.SwingAction;
 public class ChatPanel extends JPanel implements ChatModel {
   private static final long serialVersionUID = -6177517517279779486L;
   private static final int DIVIDER_SIZE = 5;
-  private ChatPlayerPanel chatPlayerPanel;
-  private ChatMessagePanel chatMessagePanel;
+  private final ChatPlayerPanel chatPlayerPanel;
+  private final ChatMessagePanel chatMessagePanel;
 
   public ChatPanel(final Chat chat) {
     setSize(300, 200);
