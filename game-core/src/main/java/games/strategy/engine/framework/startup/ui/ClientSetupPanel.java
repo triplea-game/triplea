@@ -68,7 +68,10 @@ public class ClientSetupPanel extends SetupPanel {
               name, playerNamesAndAlliancesInTurnOrder.get(name), enabledPlayers.get(name));
       playerRows.add(playerRow);
       SwingUtilities.invokeLater(
-          () -> playerRow.update(PlayerName.of(players.get(name)), disableable.contains(name)));
+          () ->
+              playerRow.update(
+                  Optional.ofNullable(players.get(name)).map(PlayerName::of).orElse(null),
+                  disableable.contains(name)));
     }
     SwingUtilities.invokeLater(this::layoutComponents);
   }
