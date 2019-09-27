@@ -19,12 +19,10 @@
 
 
 ## Testing
-<!-- Place an X next to any that apply -->
+<!-- Place an X next to one of the below -->
 
-[ ] Covered by existing automated tests
-[ ] Covered by newly added automated tests
+[ ] No manual testing done
 [ ] Manually tested
-[ ] No testing done
 <!-- If manually tested, summarize the testing done below this line. -->
 
 
