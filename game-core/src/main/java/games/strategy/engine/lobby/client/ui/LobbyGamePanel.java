@@ -248,8 +248,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = lobbyClient.getModeratorController();
-    controller.boot(lobbyWatcherNode);
+    lobbyClient.getModeratorController().boot(lobbyWatcherNode.getPlayerName());
     JOptionPane.showMessageDialog(
         null, "The game you selected has been disconnected from the lobby.");
   }

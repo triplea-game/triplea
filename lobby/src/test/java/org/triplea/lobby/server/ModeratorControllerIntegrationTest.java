@@ -14,6 +14,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +74,8 @@ class ModeratorControllerIntegrationTest {
 
     final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
-    moderatorController.boot(booted);
+    when(serverMessenger.getNodes()).thenReturn(Collections.singleton(booted));
+    moderatorController.boot(booted.getPlayerName());
     assertTrue(connectionChangeListener.removed.contains(booted));
   }
 

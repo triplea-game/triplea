@@ -1,5 +1,7 @@
 package games.strategy.engine.chat;
 
+import com.google.common.base.Strings;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
@@ -12,21 +14,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
-import org.triplea.util.Tuple;
 
 /** Default implementation of {@link IChatController}. */
 @Log
 public class ChatController implements IChatController {
-  private static final String CHAT_REMOTE = "_ChatRmt";
-  private static final String CHAT_CHANNEL = "_ChatCtrl";
+  private static final String CHAT_REMOTE = "_ChatRemote_";
+  private static final String CHAT_CHANNEL = "_ChatControl_";
   private final Messengers messengers;
   private final Predicate<INode> isModerator;
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
+  private final Map<PlayerName, String> chatterStatus = new HashMap<>();
+
   private final Object mutex = new Object();
   private final String chatChannel;
-  private long version;
   private final ScheduledExecutorService pingThread = Executors.newScheduledThreadPool(1);
   private final IConnectionChangeListener connectionChangeListener =
       new IConnectionChangeListener() {
@@ -84,8 +87,7 @@ public class ChatController implements IChatController {
     synchronized (mutex) {
       final IChatChannel chatter = getChatBroadcaster();
       for (final INode node : chatters.keySet()) {
-        version++;
-        chatter.speakerRemoved(node, version);
+        chatter.speakerRemoved(node.getPlayerName());
       }
       messengers.unregisterRemote(getChatControllerRemoteName(chatName));
     }
@@ -99,17 +101,41 @@ public class ChatController implements IChatController {
 
   // a player has joined
   @Override
-  public Tuple<Map<INode, Tag>, Long> joinChat() {
+  public Map<ChatParticipant, String> joinChat() {
     final INode node = MessageContext.getSender();
     log.info("Chatter:" + node + " is joining chat:" + chatName);
     final Tag tag = isModerator.test(node) ? Tag.MODERATOR : Tag.NONE;
     synchronized (mutex) {
       chatters.put(node, tag);
-      version++;
-      getChatBroadcaster().speakerAdded(node, tag, version);
-      final Map<INode, Tag> copy = new HashMap<>(chatters);
-      return Tuple.of(copy, version);
+      getChatBroadcaster()
+          .speakerAdded(
+              ChatParticipant.builder()
+                  .playerName(node.getPlayerName())
+                  .isModerator(tag == Tag.MODERATOR)
+                  .build());
+
+      return chatters.entrySet().stream()
+          .map(
+              entry ->
+                  ChatParticipant.builder()
+                      .isModerator(entry.getValue() == Tag.MODERATOR)
+                      .playerName(entry.getKey().getPlayerName())
+                      .build())
+          .collect(
+              Collectors.toMap(
+                  p -> p, p -> Strings.nullToEmpty(chatterStatus.get(p.getPlayerName()))));
     }
+  }
+
+  @Override
+  public void setStatus(final String status) {
+    final INode node = MessageContext.getSender();
+    if (Strings.nullToEmpty(status).isEmpty()) {
+      chatterStatus.remove(node.getPlayerName());
+    } else {
+      chatterStatus.put(node.getPlayerName(), status);
+    }
+    getChatBroadcaster().statusChanged(node.getPlayerName(), status);
   }
 
   // a player has left
@@ -119,13 +145,10 @@ public class ChatController implements IChatController {
   }
 
   private void leaveChatInternal(final INode node) {
-    final long version;
     synchronized (mutex) {
       chatters.remove(node);
-      this.version++;
-      version = this.version;
     }
-    getChatBroadcaster().speakerRemoved(node, version);
+    getChatBroadcaster().speakerRemoved(node.getPlayerName());
     log.info("Chatter:" + node + " has left chat:" + chatName);
   }
 }

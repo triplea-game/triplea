@@ -1,9 +1,7 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.chat.IChatController.Tag;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.net.INode;
 
 /**
  * Chat messages occur on this channel.
@@ -17,12 +15,14 @@ public interface IChatChannel extends IChannelSubscriber {
 
   void slapOccurred(PlayerName playerName);
 
-  void speakerAdded(INode node, Tag tag, long version);
+  void speakerAdded(ChatParticipant chatParticipant);
 
-  void speakerRemoved(INode node, long version);
+  void speakerRemoved(PlayerName playerName);
 
   // purely here to keep connections open and stop NATs and crap from thinking that our connection
   // is closed when it is
   // not.
   void ping();
+
+  void statusChanged(PlayerName playerName, String status);
 }

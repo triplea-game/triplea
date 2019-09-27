@@ -3,11 +3,11 @@ package games.strategy.engine.lobby.client.ui;
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
+import games.strategy.engine.chat.ChatParticipant;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
-import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -31,7 +31,6 @@ public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
 
   private final LobbyClient client;
-  private final ChatMessagePanel chatMessagePanel;
 
   public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
@@ -44,7 +43,7 @@ public class LobbyFrame extends JFrame {
             client.getMessengers(),
             LobbyConstants.LOBBY_CHAT,
             Chat.ChatSoundProfile.LOBBY_CHATROOM);
-    chatMessagePanel = new ChatMessagePanel(chat);
+    final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
@@ -82,15 +81,11 @@ public class LobbyFrame extends JFrame {
         });
   }
 
-  public ChatMessagePanel getChatMessagePanel() {
-    return chatMessagePanel;
-  }
-
-  private List<Action> newAdminActions(final INode clickedOn) {
+  private List<Action> newAdminActions(final ChatParticipant clickedOn) {
     if (!client.isAdmin()) {
       return Collections.emptyList();
     }
-    if (clickedOn.equals(client.getMessengers().getLocalNode())) {
+    if (clickedOn.getPlayerName().equals(client.getMessengers().getLocalNode().getPlayerName())) {
       return Collections.emptyList();
     }
     final IModeratorController controller =
@@ -103,7 +98,7 @@ public class LobbyFrame extends JFrame {
               if (!confirm("Boot " + clickedOn.getPlayerName())) {
                 return;
               }
-              controller.boot(clickedOn);
+              controller.boot(clickedOn.getPlayerName());
             }));
     actions.add(
         SwingAction.of(
@@ -115,8 +110,8 @@ public class LobbyFrame extends JFrame {
                     "Please consult other admins before banning longer than 1 day. \n"
                         + "And please remember to report this ban.",
                     date -> {
-                      controller.banUser(clickedOn, date.toInstant());
-                      controller.boot(clickedOn);
+                      controller.banUser(clickedOn.getPlayerName(), date.toInstant());
+                      controller.boot(clickedOn.getPlayerName());
                     })));
     return ImmutableList.copyOf(actions);
   }

@@ -33,8 +33,7 @@ final class ModeratorController implements IModeratorController {
 
   @Override
   public boolean isAdmin() {
-    final INode node = MessageContext.getSender();
-    return isPlayerAdmin(node);
+    return isPlayerAdmin(MessageContext.getSender());
   }
 
   @Override
@@ -64,12 +63,19 @@ final class ModeratorController implements IModeratorController {
   }
 
   @Override
-  public void banUser(final INode node, final @Nullable Instant banExpires) {
+  public void banUser(final PlayerName playerName, final @Nullable Instant banExpires) {
     assertUserIsAdmin();
+
+    final INode node =
+        serverMessenger.getNodes().stream()
+            .filter(n -> n.getPlayerName().equals(playerName))
+            .findAny()
+            .orElseThrow(() -> new IllegalStateException("Could not find player: " + playerName));
+
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
-    final String hashedMac = getNodeMacAddress(node.getPlayerName());
+    final String hashedMac = getNodeMacAddress(playerName);
 
     final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
     final User moderator = getUserForNode(MessageContext.getSender());
@@ -83,29 +89,36 @@ final class ModeratorController implements IModeratorController {
   }
 
   @Override
-  public void boot(final INode node) {
+  public void boot(final PlayerName playerName) {
     assertUserIsAdmin();
     // You can't boot the server node
-    if (serverMessenger.getServerNode().equals(node)) {
+    if (serverMessenger.getServerNode().getPlayerName().equals(playerName)) {
       throw new IllegalStateException("Cannot boot server node");
     }
     final INode modNode = MessageContext.getSender();
-    serverMessenger.removeConnection(node);
-    database
-        .getModeratorAuditHistoryDao()
-        .addAuditRecord(
-            ModeratorAuditHistoryDao.AuditArgs.builder()
-                .moderatorUserId(
-                    database
-                        .getUserJdbiDao()
-                        .lookupUserIdByName(modNode.getName())
-                        .orElseThrow(
-                            () ->
-                                new IllegalStateException(
-                                    "Failed to find user: " + modNode.getName())))
-                .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_USER_FROM_LOBBY)
-                .actionTarget(node.getName())
-                .build());
+
+    serverMessenger.getNodes().stream()
+        .filter(n -> n.getPlayerName().equals(playerName))
+        .findAny()
+        .ifPresent(
+            node -> {
+              serverMessenger.removeConnection(node);
+              database
+                  .getModeratorAuditHistoryDao()
+                  .addAuditRecord(
+                      ModeratorAuditHistoryDao.AuditArgs.builder()
+                          .moderatorUserId(
+                              database
+                                  .getUserJdbiDao()
+                                  .lookupUserIdByName(modNode.getName())
+                                  .orElseThrow(
+                                      () ->
+                                          new IllegalStateException(
+                                              "Failed to find user: " + modNode.getName())))
+                          .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_USER_FROM_LOBBY)
+                          .actionTarget(node.getPlayerName().getValue())
+                          .build());
+            });
   }
 
   @Override

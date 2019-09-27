@@ -3,13 +3,11 @@ package games.strategy.engine.chat;
 import com.google.common.base.Ascii;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.lobby.PlayerName;
-import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import java.awt.Component;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.TimeManager;
@@ -24,8 +22,8 @@ public class HeadlessChat implements IChatListener, ChatModel {
 
   public HeadlessChat(
       final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(messengers, chatName, chatSoundProfile);
-    setChat(chat);
+    this.chat = new Chat(messengers, chatName, chatSoundProfile);
+    chat.addChatListener(this);
   }
 
   @Override
@@ -44,25 +42,11 @@ public class HeadlessChat implements IChatListener, ChatModel {
   }
 
   @Override
-  public void updatePlayerList(final Collection<INode> players) {}
+  public void updatePlayerList(final Collection<ChatParticipant> players) {}
 
   @Override
   public void setChat(final Chat chat) {
-    if (this.chat != null) {
-      this.chat.removeChatListener(this);
-    }
-    this.chat = chat;
-    if (this.chat != null) {
-      this.chat.addChatListener(this);
-      synchronized (this.chat.getMutex()) {
-        allText = new StringBuilder();
-        for (final ChatMessage message : this.chat.getChatHistory()) {
-          addChatMessage(message.getMessage(), message.getFrom().getValue());
-        }
-      }
-    } else {
-      updatePlayerList(Collections.emptyList());
-    }
+    throw new UnsupportedOperationException("Headless bots do not support resetting of chat");
   }
 
   /** thread safe. */
@@ -78,7 +62,7 @@ public class HeadlessChat implements IChatListener, ChatModel {
     new Thread(
             () -> {
               if (!floodControl.allow(from, System.currentTimeMillis())) {
-                if (from.equals(chat.getLocalNode().getPlayerName())) {
+                if (from.equals(chat.getLocalPlayerName())) {
                   addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL");
                 }
                 return;

@@ -3,6 +3,7 @@ package games.strategy.engine.chat;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
@@ -46,22 +47,28 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final int index,
       final boolean isSelected,
       final boolean cellHasFocus) {
-    final INode node = (INode) value;
-    final List<Icon> icons = iconMap.get(node.toString());
+    final ChatParticipant chatParticipant = (ChatParticipant) value;
+    final List<Icon> icons = iconMap.get(chatParticipant.getPlayerName().getValue());
     if (icons != null) {
-      super.getListCellRendererComponent(list, node.getName(), index, isSelected, cellHasFocus);
+      super.getListCellRendererComponent(
+          list, chatParticipant.getPlayerName().getValue(), index, isSelected, cellHasFocus);
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     } else {
       super.getListCellRendererComponent(
-          list, getNodeLabelWithPlayers(node), index, isSelected, cellHasFocus);
+          list,
+          getNodeLabelWithPlayers(chatParticipant.getPlayerName()),
+          index,
+          isSelected,
+          cellHasFocus);
     }
     return this;
   }
 
-  private String getNodeLabelWithPlayers(final INode node) {
-    final Set<String> playerNames = playerMap.getOrDefault(node.toString(), Collections.emptySet());
-    return node.getName()
+  private String getNodeLabelWithPlayers(final PlayerName playerName) {
+    final Set<String> playerNames =
+        playerMap.getOrDefault(playerName.getValue(), Collections.emptySet());
+    return playerName
         + (playerNames.isEmpty()
             ? ""
             : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
@@ -91,11 +98,11 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
                                 .getSmallFlag(playerList.getPlayerId(player))))
                 .collect(Collectors.toList());
         maxIconCounter = Math.max(maxIconCounter, icons.size());
-        playerMap.put(playerNode.toString(), players);
+        playerMap.put(playerNode.getPlayerName().getValue(), players);
         if (uiContext == null) {
-          iconMap.put(playerNode.toString(), null);
+          iconMap.put(playerNode.getPlayerName().getValue(), null);
         } else {
-          iconMap.put(playerNode.toString(), icons);
+          iconMap.put(playerNode.getPlayerName().getValue(), icons);
         }
       }
     }
