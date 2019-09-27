@@ -56,7 +56,7 @@ public class Chat implements ChatClient {
     chatTransmitter = new JavaSocketChatTransmitter(this, chatName, messengers);
     this.chatSoundProfile = chatSoundProfile;
     sentMessagesHistory = new SentMessagesHistory();
-    chatters = Optional.ofNullable(chatTransmitter.connect()).orElse(new HashMap<>());
+    chatters = Optional.ofNullable(chatTransmitter.connect()).orElseGet(HashMap::new);
     updateConnections();
   }
 
