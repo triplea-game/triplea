@@ -1,7 +1,11 @@
 package games.strategy.triplea.odds.calculator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -12,6 +16,7 @@ import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import java.util.Collections;
@@ -205,5 +210,57 @@ class DummyPlayerTest {
             false);
     assertCommonCasualtyDetails(details);
     assertThat(details.getKilled(), is(List.of(unitPool.get(0), unitPool.get(1))));
+  }
+
+  @Nested
+  class GetUnitsTest {
+
+    private final DummyDelegateBridge bridge = mock(DummyDelegateBridge.class);
+    private final MustFightBattle battle = mock(MustFightBattle.class);
+
+    private DummyPlayer attacker;
+    private DummyPlayer defender;
+
+    private List<Unit> attackers = List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class));
+    private List<Unit> defenders = List.of(mock(Unit.class), mock(Unit.class), mock(Unit.class));
+
+    @BeforeEach
+    void setUp() {
+      attacker = new DummyPlayer(bridge, true, "", null, false, 0, 0, false);
+      defender = new DummyPlayer(bridge, false, "", null, false, 0, 0, false);
+
+      when(battle.getAttackingUnits()).thenReturn(attackers);
+      when(battle.getDefendingUnits()).thenReturn(defenders);
+    }
+
+    @Test
+    void testGetOurUnits() {
+      assertThat(attacker.getOurUnits(), is(nullValue()));
+      assertThat(defender.getOurUnits(), is(nullValue()));
+
+      when(bridge.getBattle()).thenReturn(battle);
+
+      assertThat(attacker.getOurUnits(), is(equalTo(attackers)));
+      assertThat(defender.getOurUnits(), is(equalTo(defenders)));
+
+      // Test if we get a copy
+      assertThat(attacker.getOurUnits(), is(not(sameInstance(attackers))));
+      assertThat(defender.getOurUnits(), is(not(sameInstance(defenders))));
+    }
+
+    @Test
+    void testGetEnemyUnits() {
+      assertThat(attacker.getEnemyUnits(), is(nullValue()));
+      assertThat(defender.getEnemyUnits(), is(nullValue()));
+
+      when(bridge.getBattle()).thenReturn(battle);
+
+      assertThat(attacker.getEnemyUnits(), is(equalTo(defenders)));
+      assertThat(defender.getEnemyUnits(), is(equalTo(attackers)));
+
+      // Test if we get a copy
+      assertThat(attacker.getEnemyUnits(), is(not(sameInstance(defenders))));
+      assertThat(defender.getEnemyUnits(), is(not(sameInstance(attackers))));
+    }
   }
 }

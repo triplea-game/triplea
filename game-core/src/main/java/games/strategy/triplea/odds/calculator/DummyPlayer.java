@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -63,7 +64,8 @@ class DummyPlayer extends AbstractAi {
     return bridge.getBattle();
   }
 
-  private List<Unit> getOurUnits() {
+  @VisibleForTesting
+  List<Unit> getOurUnits() {
     final MustFightBattle battle = getBattle();
     if (battle == null) {
       return null;
@@ -71,7 +73,8 @@ class DummyPlayer extends AbstractAi {
     return new ArrayList<>(isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits());
   }
 
-  private List<Unit> getEnemyUnits() {
+  @VisibleForTesting
+  List<Unit> getEnemyUnits() {
     final MustFightBattle battle = getBattle();
     if (battle == null) {
       return null;
