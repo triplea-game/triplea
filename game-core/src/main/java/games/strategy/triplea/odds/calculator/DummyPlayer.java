@@ -68,7 +68,7 @@ class DummyPlayer extends AbstractAi {
     if (battle == null) {
       return null;
     }
-    return new ArrayList<>((isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits()));
+    return new ArrayList<>(isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits());
   }
 
   private List<Unit> getEnemyUnits() {
@@ -76,7 +76,7 @@ class DummyPlayer extends AbstractAi {
     if (battle == null) {
       return null;
     }
-    return new ArrayList<>((isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits()));
+    return new ArrayList<>(isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits());
   }
 
   @Override
