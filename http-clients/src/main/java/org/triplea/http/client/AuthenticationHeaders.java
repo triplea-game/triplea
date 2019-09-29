@@ -10,7 +10,7 @@ public class AuthenticationHeaders {
   public static final String API_KEY_HEADER = "Authorization";
   public static final String KEY_BEARER_PREFIX = "Bearer";
 
-  private final String apiKey;
+  private final ApiKey apiKey;
 
   public Map<String, Object> createHeaders() {
     final Map<String, Object> headerMap = new HashMap<>();

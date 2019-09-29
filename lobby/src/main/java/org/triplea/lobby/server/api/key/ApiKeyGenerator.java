@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.api.key;
 
 import com.google.common.hash.Hashing;
-import games.strategy.engine.lobby.ApiKey;
 import games.strategy.engine.lobby.PlayerName;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -9,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.triplea.http.client.ApiKey;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 

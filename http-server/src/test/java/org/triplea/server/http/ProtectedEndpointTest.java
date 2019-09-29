@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.triplea.http.client.ApiKey;
 import org.triplea.http.client.HttpInteractionException;
 
 /**
@@ -19,12 +20,12 @@ import org.triplea.http.client.HttpInteractionException;
  * endpoint is not accessible when using an invalid API key.
  */
 public abstract class ProtectedEndpointTest<T> extends DropwizardTest {
-  private static final String VALID_API_TOKEN = "test";
-  private static final String INVALID_API_TOKEN = "not-correct";
+  private static final ApiKey VALID_API_TOKEN = ApiKey.of("test");
+  private static final ApiKey INVALID_API_TOKEN = ApiKey.of("not-correct");
 
-  private final BiFunction<URI, String, T> clientBuilder;
+  private final BiFunction<URI, ApiKey, T> clientBuilder;
 
-  protected ProtectedEndpointTest(final BiFunction<URI, String, T> clientBuilder) {
+  protected ProtectedEndpointTest(final BiFunction<URI, ApiKey, T> clientBuilder) {
     this.clientBuilder = clientBuilder;
   }
 

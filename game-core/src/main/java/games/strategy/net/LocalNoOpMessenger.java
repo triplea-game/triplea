@@ -1,12 +1,12 @@
 package games.strategy.net;
 
-import games.strategy.engine.lobby.ApiKey;
 import games.strategy.engine.lobby.PlayerName;
 import java.io.Serializable;
 import java.net.UnknownHostException;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import org.triplea.http.client.ApiKey;
 
 /** Implementation of {@link IServerMessenger} for a local game server. */
 public class LocalNoOpMessenger implements IServerMessenger {

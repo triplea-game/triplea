@@ -4,25 +4,21 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.http.client.HttpClientTesting.API_KEY;
 import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import java.net.URI;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
-import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
-class ToolboxAccessLogClientTest {
+class ToolboxAccessLogClientTest extends WireMockTest {
   private static final AccessLogData ACCESS_LOG_DATA =
       AccessLogData.builder()
           .accessDate(Instant.now())
@@ -33,8 +29,7 @@ class ToolboxAccessLogClientTest {
           .build();
 
   private static ToolboxAccessLogClient newClient(final WireMockServer wireMockServer) {
-    final URI hostUri = URI.create(wireMockServer.url(""));
-    return ToolboxAccessLogClient.newClient(hostUri, API_KEY);
+    return newClient(wireMockServer, ToolboxAccessLogClient::newClient);
   }
 
   @Test

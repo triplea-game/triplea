@@ -3,15 +3,13 @@ package org.triplea.http.client.github.issues;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.WireMockTest;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 import ru.lanwen.wiremock.ext.WiremockResolver;
-import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
-class GithubIssueClientTest {
+class GithubIssueClientTest extends WireMockTest {
 
   private static final String AUTH_TOKEN = "Where is the coal-black ship?";
   private static final String GITHUB_ORG = "Yo-ho-ho, yer not leading me without a malaria!";

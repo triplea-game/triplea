@@ -7,7 +7,6 @@ import static org.hamcrest.core.IsNot.not;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.lobby.ApiKey;
 import games.strategy.engine.lobby.PlayerName;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.ApiKey;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 

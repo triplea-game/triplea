@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.ApiKey;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 
@@ -26,7 +27,7 @@ public class ToolboxModeratorManagementClient {
   private final ToolboxModeratorManagementFeignClient client;
 
   public static ToolboxModeratorManagementClient newClient(
-      final URI serverUri, final String apiKey) {
+      final URI serverUri, final ApiKey apiKey) {
     return new ToolboxModeratorManagementClient(
         new AuthenticationHeaders(apiKey),
         new HttpClient<>(ToolboxModeratorManagementFeignClient.class, serverUri).get());

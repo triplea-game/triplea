@@ -38,9 +38,8 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpClientTesting {
 
-  public static final String API_KEY = "api-key";
   public static final String EXPECTED_API_KEY =
-      AuthenticationHeaders.KEY_BEARER_PREFIX + " " + API_KEY;
+      AuthenticationHeaders.KEY_BEARER_PREFIX + " " + WireMockTest.API_KEY;
   public static final PagingParams PAGING_PARAMS = PagingParams.builder().pageSize(10).build();
 
   private static final String CONTENT_TYPE_JSON = "application/json";

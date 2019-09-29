@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.lobby.ApiKey;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -30,6 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.http.client.ApiKey;
 import org.triplea.java.Interruptibles;
 
 /** Default implementation of {@link IClientMessenger}. */
