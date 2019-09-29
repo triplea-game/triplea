@@ -120,10 +120,9 @@ public class SetupPanelModel implements ServerSetupModel {
               GameRunner.hideMainFrame();
               lobbyFrame.setVisible(true);
 
-              boolean passwordChanged;
               if (lobbyClient.isPasswordChangeRequired()) {
                 try {
-                  passwordChanged =
+                  final boolean passwordChanged =
                       ChangePasswordPanel.doPasswordChange(
                           lobbyFrame,
                           lobbyClient.getHttpLobbyClient(),
