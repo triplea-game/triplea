@@ -6,6 +6,7 @@ import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
+import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
 import java.util.Collection;
@@ -42,17 +43,14 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     final PlayerList playerList = getPlayerList(game);
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
+      final FlagIconImageFactory factory = uiContext.getFlagImageFactory();
       final List<Icon> icons =
           players.stream()
-              .map(
-                  player ->
-                      new ImageIcon(
-                          uiContext
-                              .getFlagImageFactory()
-                              .getSmallFlag(playerList.getPlayerId(player))))
+              .map(player -> new ImageIcon(factory.getSmallFlag(playerList.getPlayerId(player))))
               .collect(Collectors.toList());
-      playerMap.put(playerNode.getPlayerName().getValue(), players);
-      iconMap.put(playerNode.getPlayerName().getValue(), icons);
+      final String name = playerNode.getPlayerName().getValue();
+      playerMap.put(name, players);
+      iconMap.put(name, icons);
     }
   }
 
