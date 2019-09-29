@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
+import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
@@ -94,11 +95,8 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
             .build());
     setLayout(new BorderLayout());
 
-    final Optional<Component> chatComponent =
-        Optional.ofNullable(chatModel).flatMap(ChatModel::getViewComponent);
-
-    if (chatComponent.isPresent()) {
-      addChat(chatComponent.get());
+    if (chatModel instanceof ChatPanel) {
+      addChat((ChatPanel) chatModel);
     } else {
       add(mainPanel, BorderLayout.CENTER);
     }
@@ -148,7 +146,8 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     }
 
     Optional.ofNullable(panel.getChatModel())
-        .flatMap(ChatModel::getViewComponent)
+        .filter(ChatPanel.class::isInstance)
+        .map(ChatPanel.class::cast)
         .ifPresentOrElse(
             this::addChat,
             () -> {

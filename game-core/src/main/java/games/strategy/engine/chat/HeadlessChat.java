@@ -4,9 +4,7 @@ import com.google.common.base.Ascii;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.Messengers;
-import java.awt.Component;
 import java.util.Collection;
-import java.util.Optional;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.TimeManager;
 
@@ -68,10 +66,5 @@ public class HeadlessChat implements IChatListener, ChatModel {
     if (allText.length() > MAX_LENGTH) {
       allText.delete(0, MAX_LENGTH / 2);
     }
-  }
-
-  @Override
-  public Optional<Component> getViewComponent() {
-    return Optional.empty();
   }
 }
