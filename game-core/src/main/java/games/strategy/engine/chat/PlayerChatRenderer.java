@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
@@ -35,8 +36,9 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   private final Map<String, Set<String>> playerMap = new HashMap<>();
 
   public PlayerChatRenderer(final IGame game, final UiContext uiContext) {
-    this.game = game;
-    this.uiContext = uiContext;
+    this.game = Preconditions.checkNotNull(game);
+    this.uiContext = Preconditions.checkNotNull(uiContext);
+    Preconditions.checkNotNull(uiContext.getFlagImageFactory());
     setIconMap();
   }
 
@@ -84,14 +86,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     } finally {
       game.getData().releaseReadLock();
     }
-    final Set<INode> playerNodes = new HashSet<>(playerManager.getPlayerMapping().values());
-    if (uiContext == null || uiContext.getFlagImageFactory() == null) {
-      for (final INode playerNode : playerNodes) {
-        playerMap.put(playerNode.getPlayerName().getValue(), playerManager.getPlayedBy(playerNode));
-      }
-      return;
-    }
-    for (final INode playerNode : playerNodes) {
+    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       final List<Icon> icons =
           players.stream()
