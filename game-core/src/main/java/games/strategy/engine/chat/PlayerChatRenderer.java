@@ -29,7 +29,7 @@ import javax.swing.SwingConstants;
  */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
-  private int maxIconCounter = 0;
+  private final int maxIconCounter;
   private final Map<String, List<Icon>> iconMap = new HashMap<>();
   private final Map<String, Set<String>> playerMap = new HashMap<>();
 
@@ -40,6 +40,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
 
     final PlayerManager playerManager = game.getPlayerManager();
     final PlayerList playerList = getPlayerList(game);
+    int maxIconCounter = 0;
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       final List<Icon> icons =
@@ -55,6 +56,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       playerMap.put(playerNode.getPlayerName().getValue(), players);
       iconMap.put(playerNode.getPlayerName().getValue(), icons);
     }
+    this.maxIconCounter = maxIconCounter;
   }
 
   @Override
