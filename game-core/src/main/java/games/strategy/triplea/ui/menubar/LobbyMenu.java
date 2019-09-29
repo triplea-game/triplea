@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.lobby.PlayerName;
-import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
+import games.strategy.engine.lobby.client.login.ChangeEmailPanel;
+import games.strategy.engine.lobby.client.login.ChangePasswordPanel;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
 import games.strategy.sound.SoundOptions;
@@ -10,9 +10,6 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import org.triplea.lobby.common.IUserManager;
-import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
@@ -35,7 +32,20 @@ public final class LobbyMenu extends JMenuBar {
     if (!lobbyFrame.getLobbyClient().isAnonymousLogin()) {
       add(
           new JMenuBuilder("Account", 'A')
-              .addMenuItem("Update Account...", 'U', this::updateAccountDetails)
+              .addMenuItem(
+                  "Update Email",
+                  'E',
+                  () ->
+                      ChangeEmailPanel.promptUserForNewEmail(
+                          frame, frame.getLobbyClient().getHttpLobbyClient()))
+              .addMenuItem(
+                  "Update Password",
+                  'P',
+                  () ->
+                      ChangePasswordPanel.doPasswordChange(
+                          frame,
+                          frame.getLobbyClient().getHttpLobbyClient(),
+                          ChangePasswordPanel.AllowCancelMode.SHOW_CANCEL_BUTTON))
               .build());
     }
 
@@ -76,34 +86,5 @@ public final class LobbyMenu extends JMenuBar {
                 'F',
                 () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM))
             .build());
-  }
-
-  private void updateAccountDetails() {
-    final IUserManager manager = lobbyFrame.getLobbyClient().getUserManager();
-    final PlayerName username =
-        lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getPlayerName();
-    final String email = manager.getUserEmail(username);
-    if (email == null) {
-      showErrorDialog("No user info found");
-      return;
-    }
-
-    final CreateUpdateAccountPanel panel =
-        CreateUpdateAccountPanel.newUpdatePanel(username.getValue(), email);
-    final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
-    if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
-      return;
-    }
-    final String error =
-        manager.updateUser(
-            username, email, RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
-    if (error != null) {
-      showErrorDialog(error);
-      return;
-    }
-  }
-
-  private void showErrorDialog(final String message) {
-    JOptionPane.showMessageDialog(lobbyFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
   }
 }

@@ -45,8 +45,6 @@ final class LobbyServer {
     server.setApiKeyGenerator(
         ApiKeyGeneratorFactory.newApiKeyGenerator(JdbiDatabase.newConnection()));
 
-    new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers);
-
     final ModeratorController moderatorController =
         new ModeratorController(server, messengers, lobbyConfiguration.getDatabaseDao());
     moderatorController.register(messengers);

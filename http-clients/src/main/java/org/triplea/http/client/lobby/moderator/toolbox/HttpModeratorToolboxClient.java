@@ -19,12 +19,16 @@ public class HttpModeratorToolboxClient {
   private final ToolboxBadWordsClient toolboxBadWordsClient;
   private final ToolboxEventLogClient toolboxEventLogClient;
 
-  public HttpModeratorToolboxClient(final URI lobbyUri, final String apiKey) {
+  private HttpModeratorToolboxClient(final URI lobbyUri, final String apiKey) {
     toolboxAccessLogClient = ToolboxAccessLogClient.newClient(lobbyUri, apiKey);
     toolboxUserBanClient = ToolboxUserBanClient.newClient(lobbyUri, apiKey);
     toolboxUsernameBanClient = ToolboxUsernameBanClient.newClient(lobbyUri, apiKey);
     toolboxModeratorManagementClient = ToolboxModeratorManagementClient.newClient(lobbyUri, apiKey);
     toolboxBadWordsClient = ToolboxBadWordsClient.newClient(lobbyUri, apiKey);
     toolboxEventLogClient = ToolboxEventLogClient.newClient(lobbyUri, apiKey);
+  }
+
+  public static HttpModeratorToolboxClient newClient(final URI lobbyUri, final String apiKey) {
+    return new HttpModeratorToolboxClient(lobbyUri, apiKey);
   }
 }

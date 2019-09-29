@@ -3,10 +3,7 @@ package games.strategy.engine.lobby.client.login;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Window;
 import java.util.Arrays;
 import java.util.Optional;
@@ -20,14 +17,23 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.FlowLayoutBuilder;
+import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
+import org.triplea.swing.jpanel.GridBagConstraintsFill;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** Panel dedicated to changing password after user has logged in with a temporary password. */
 public final class ChangePasswordPanel extends JPanel {
 
-  private final String title = "Change Password";
+  private static final String TITLE = "Change Password";
   private @Nullable JDialog dialog;
   private final JPasswordField passwordField = new JPasswordField();
   private final JPasswordField passwordConfirmField = new JPasswordField();
@@ -35,24 +41,14 @@ public final class ChangePasswordPanel extends JPanel {
   private final JCheckBox rememberPassword =
       new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
 
-  private ChangePasswordPanel() {
-    layoutComponents();
-    setupListeners();
+  public enum AllowCancelMode {
+    SHOW_CANCEL_BUTTON,
+    DO_NOT_SHOW_CANCEL_BUTTON
   }
 
-  /**
-   * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to update the
-   * specified lobby account.
-   *
-   * @return A new {@code CreateUpdateAccountPanel}.
-   */
-  public static ChangePasswordPanel newChangePasswordPanel() {
-    return new ChangePasswordPanel();
-  }
-
-  private void layoutComponents() {
+  public ChangePasswordPanel(final AllowCancelMode allowCancelMode) {
     setLayout(new BorderLayout());
-    final JLabel label = new JLabel(new ImageIcon(Util.getBanner(title)));
+    final JLabel label = new JLabel(new ImageIcon(Util.getBanner(TITLE)));
     add(label, BorderLayout.NORTH);
 
     final JPanel main = new JPanel();
@@ -61,84 +57,63 @@ public final class ChangePasswordPanel extends JPanel {
     main.setLayout(new GridBagLayout());
     main.add(
         new JLabel("Password:"),
-        new GridBagConstraints(
-            0,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 0, 0, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(0, 0)
+            .anchor(GridBagConstraintsAnchor.WEST)
+            .fill(GridBagConstraintsFill.NONE)
+            .insets(5, 0, 0, 0)
+            .build());
     main.add(
         passwordField,
-        new GridBagConstraints(
-            1,
-            0,
-            1,
-            1,
-            1.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(5, 5, 0, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(1, 0)
+            .weightX(1.0)
+            .anchor(GridBagConstraintsAnchor.WEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(5, 5, 0, 0)
+            .build());
     main.add(
         new JLabel("Confirm Password:"),
-        new GridBagConstraints(
-            0,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 0, 0, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(0, 1)
+            .anchor(GridBagConstraintsAnchor.WEST)
+            .fill(GridBagConstraintsFill.NONE)
+            .insets(5, 0, 0, 0)
+            .build());
     main.add(
         passwordConfirmField,
-        new GridBagConstraints(
-            1,
-            1,
-            1,
-            1,
-            1.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(5, 5, 0, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(1, 1)
+            .weightX(1.0)
+            .anchor(GridBagConstraintsAnchor.WEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(5, 5, 0, 0)
+            .build());
     main.add(
         rememberPassword,
-        new GridBagConstraints(
-            0,
-            2,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(5, 5, 0, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(0, 2)
+            .anchor(GridBagConstraintsAnchor.WEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(5, 5, 0, 0)
+            .build());
 
-    final JPanel buttons = new JPanel();
+    final JPanel buttons =
+        new JPanelBuilder()
+            .border(BorderFactory.createEmptyBorder(10, 5, 10, 5))
+            .flowLayout()
+            .flowDirection(FlowLayoutBuilder.Direction.RIGHT)
+            .hgap(5)
+            .vgap(0)
+            .add(okButton)
+            .build();
+
+    if (allowCancelMode == AllowCancelMode.SHOW_CANCEL_BUTTON) {
+      buttons.add(
+          new JButtonBuilder()
+              .title("Cancel")
+              .actionListener(() -> Optional.ofNullable(dialog).ifPresent(Window::dispose))
+              .build());
+    }
+
     add(buttons, BorderLayout.SOUTH);
-    buttons.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
-    buttons.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-    buttons.add(okButton);
-    okButton.setEnabled(false);
-  }
 
-  private void setupListeners() {
+    okButton.setEnabled(false);
     okButton.addActionListener(e -> close());
 
     SwingComponents.addEnterKeyListener(this, this::close);
@@ -166,8 +141,8 @@ public final class ChangePasswordPanel extends JPanel {
    * @param parent The dialog parent window.
    * @return New password entered by user, otherwise null if the window is closed.
    */
-  public Optional<String> show(final Window parent) {
-    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), title, true);
+  private Optional<String> show(final Window parent) {
+    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "", true);
     dialog.getContentPane().add(this);
     SwingComponents.addEscapeKeyListener(dialog, this::close);
     dialog.pack();
@@ -186,5 +161,21 @@ public final class ChangePasswordPanel extends JPanel {
       ClientSetting.lobbySavedPassword.resetValue();
     }
     return Optional.of(String.valueOf(password));
+  }
+
+  public static boolean doPasswordChange(
+      final Window lobbyFrame,
+      final HttpLobbyClient lobbyClient,
+      final AllowCancelMode allowCancelMode) {
+    return new ChangePasswordPanel(allowCancelMode)
+        .show(lobbyFrame)
+        .map(RsaAuthenticator::hashPasswordWithSalt)
+        .map(
+            pass -> {
+              lobbyClient.getUserAccountClient().changePassword(pass);
+
+              return true;
+            })
+        .orElse(false);
   }
 }
