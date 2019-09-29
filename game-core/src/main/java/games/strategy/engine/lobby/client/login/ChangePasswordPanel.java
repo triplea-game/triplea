@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.lobby.common.login.RsaAuthenticator;
-import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
