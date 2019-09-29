@@ -241,9 +241,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
 
     final String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
     final String status = Ascii.truncate(chat.getStatus(chatParticipant.getPlayerName()), 25, "");
+    final String suffix = status.isEmpty() ? "" : " (" + status + ")";
 
-    final String suffix =
-        status.isEmpty() ? "" : " (" + status.replaceAll("[\\u0300-\\u036F]", "") + ")";
     return chatParticipant.getPlayerName() + extra + suffix;
   }
 
