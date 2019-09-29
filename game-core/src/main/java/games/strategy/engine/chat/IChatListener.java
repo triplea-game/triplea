@@ -1,12 +1,11 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.lobby.PlayerName;
-import games.strategy.net.INode;
 import java.util.Collection;
 
 /** An interface to allow for testing. */
 public interface IChatListener {
-  void updatePlayerList(Collection<INode> players);
+  void updatePlayerList(Collection<ChatParticipant> players);
 
   void addMessage(String message, PlayerName from);
 

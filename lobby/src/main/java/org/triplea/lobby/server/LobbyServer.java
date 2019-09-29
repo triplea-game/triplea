@@ -1,7 +1,6 @@
 package org.triplea.lobby.server;
 
 import games.strategy.engine.chat.ChatController;
-import games.strategy.engine.chat.StatusManager;
 import games.strategy.net.DefaultObjectStreamFactory;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
@@ -51,9 +50,6 @@ final class LobbyServer {
         new ModeratorController(server, messengers, lobbyConfiguration.getDatabaseDao());
     moderatorController.register(messengers);
     new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
-
-    // register the status controller
-    new StatusManager(messengers).shutDown();
 
     final LobbyGameController controller =
         new LobbyGameController(

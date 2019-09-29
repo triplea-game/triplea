@@ -10,7 +10,6 @@ import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
-import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
@@ -178,7 +177,7 @@ final class ChatIntegrationTest {
     final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
-    public void updatePlayerList(final Collection<INode> players) {
+    public void updatePlayerList(final Collection<ChatParticipant> players) {
       playerCount.set(players.size());
     }
 

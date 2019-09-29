@@ -2,7 +2,6 @@ package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
 import games.strategy.engine.lobby.PlayerName;
-import games.strategy.net.INode;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.settings.ClientSetting;
@@ -62,16 +61,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       SwingAction.of(
           "Status...",
           e -> {
-            String status =
+            final String status =
                 JOptionPane.showInputDialog(
                     JOptionPane.getFrameForComponent(ChatMessagePanel.this),
                     "Enter Status Text (leave blank for no status)",
                     "");
             if (status != null) {
-              if (status.trim().length() == 0) {
-                status = null;
-              }
-              chat.getStatusManager().setStatus(status);
+              chat.updateStatus(status.trim());
             }
           });
 
@@ -107,11 +103,9 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
                     chat.addChatListener(this);
                     send.setEnabled(true);
                     text.setEnabled(true);
-                    synchronized (chat.getMutex()) {
-                      text.setText("");
-                      for (final ChatMessage message : chat.getChatHistory()) {
-                        addChatMessage(message.getMessage(), message.getFrom());
-                      }
+                    text.setText("");
+                    for (final ChatMessage message : chat.getChatHistory()) {
+                      addChatMessage(message.getMessage(), message.getFrom());
                     }
                   } else {
                     send.setEnabled(false);
@@ -236,15 +230,12 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
     SwingAction.invokeNowOrLater(
         () -> {
-          if (from == null
-              || chat == null
-              || chat.getServerNode() == null
-              || chat.getServerNode().getName() == null) {
+          if (from == null || chat == null) {
             // someone likely disconnected from the game.
             return;
           }
           if (!floodControl.allow(from, System.currentTimeMillis())) {
-            if (from.equals(chat.getLocalNode().getPlayerName())) {
+            if (from.equals(chat.getLocalPlayerName())) {
               addChatMessage(
                   "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", PlayerName.of("ADMIN_FLOOD_CONTROL"));
             }
@@ -264,7 +255,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     // we don't want to truncate messages from the server as those may be logs with accompanying
     // stack traces
     final String message =
-        from.equals(chat.getServerNode().getPlayerName())
+        from.equals(chat.getServerPlayerName())
             ? originalMessage
             : Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
@@ -351,5 +342,5 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   @Override
-  public void updatePlayerList(final Collection<INode> players) {}
+  public void updatePlayerList(final Collection<ChatParticipant> players) {}
 }

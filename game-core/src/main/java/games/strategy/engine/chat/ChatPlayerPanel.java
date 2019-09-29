@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.lobby.PlayerName;
-import games.strategy.net.INode;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -16,8 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
@@ -35,6 +34,7 @@ import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
 public class ChatPlayerPanel extends JPanel implements IChatListener {
+  private static final String TAG_MODERATOR = "[Mod]";
   private static final long serialVersionUID = -3153022965393962945L;
   private static final Icon ignoreIcon;
 
@@ -52,21 +52,20 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     ignoreIcon = new ImageIcon(img);
   }
 
-  private JList<INode> players;
-  private DefaultListModel<INode> listModel;
+  private JList<ChatParticipant> players;
+  private DefaultListModel<ChatParticipant> listModel;
   private Chat chat;
   private final Set<String> hiddenPlayers = new HashSet<>();
-  private final IStatusListener statusListener;
   // if our renderer is overridden we do not set this directly on the JList,
   // instead we feed it the node name and status as a string
   private ListCellRenderer<Object> setCellRenderer = new DefaultListCellRenderer();
   private final List<IPlayerActionFactory> actionFactories = new ArrayList<>();
+  private final BiConsumer<PlayerName, String> statusUpdateListener = (name, status) -> repaint();
 
   public ChatPlayerPanel(final Chat chat) {
     createComponents();
     layoutComponents();
     setupListeners();
-    statusListener = (node, newStatus) -> repaint();
     setChat(chat);
   }
 
@@ -78,12 +77,12 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   public void setChat(final Chat chat) {
     if (this.chat != null) {
       this.chat.removeChatListener(this);
-      this.chat.getStatusManager().removeStatusListener(statusListener);
+      this.chat.removeStatusUpdateListener(statusUpdateListener);
     }
     this.chat = chat;
     if (chat != null) {
       chat.addChatListener(this);
-      this.chat.getStatusManager().addStatusListener(statusListener);
+      chat.addStatusUpdateListener(statusUpdateListener);
     } else {
       // empty our player list
       updatePlayerList(Collections.emptyList());
@@ -161,7 +160,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     actionFactories.add(
         clickedOn -> {
           // you can't slap or ignore yourself
-          if (clickedOn.equals(chat.getLocalNode())) {
+          if (clickedOn.getPlayerName().equals(chat.getLocalPlayerName())) {
             return Collections.emptyList();
           }
           final boolean isIgnored = chat.isIgnored(clickedOn.getPlayerName());
@@ -174,7 +173,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
                   });
           final Action slap =
               SwingAction.of(
-                  "Slap " + clickedOn.getName(), e -> chat.sendSlap(clickedOn.getPlayerName()));
+                  "Slap " + clickedOn.getPlayerName(),
+                  e -> chat.sendSlap(clickedOn.getPlayerName()));
           return Arrays.asList(slap, ignore);
         });
   }
@@ -193,7 +193,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     if (index == -1) {
       return;
     }
-    final INode player = listModel.get(index);
+    final ChatParticipant player = listModel.get(index);
     final JPopupMenu menu = new JPopupMenu();
     boolean hasActions = false;
     for (final IPlayerActionFactory factory : actionFactories) {
@@ -214,13 +214,13 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   @Override
-  public synchronized void updatePlayerList(final Collection<INode> players) {
+  public synchronized void updatePlayerList(final Collection<ChatParticipant> updatedPlayers) {
     SwingAction.invokeNowOrLater(
         () -> {
           listModel.clear();
-          for (final INode name : players) {
-            if (!hiddenPlayers.contains(name.getName())) {
-              listModel.addElement(name);
+          for (final ChatParticipant chatParticipant : updatedPlayers) {
+            if (!hiddenPlayers.contains(chatParticipant.getPlayerName().getValue())) {
+              listModel.addElement(chatParticipant);
             }
           }
         });
@@ -233,14 +233,16 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   @Override
   public void addMessage(final String message, final PlayerName from) {}
 
-  private String getDisplayString(final INode node) {
+  private String getDisplayString(final ChatParticipant chatParticipant) {
     if (chat == null) {
       return "";
     }
-    String extra = Optional.ofNullable(chat.getNotesForNode(node)).orElse("");
-    String status = chat.getStatusManager().getStatus(node);
+
+    String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
+    String status = chat.getStatus(chatParticipant.getPlayerName());
+
     final StringBuilder sb = new StringBuilder();
-    if (status != null && status.length() > 0) {
+    if (status.length() > 0) {
       if (status.length() > 25) {
         status = status.substring(0, 25);
       }
@@ -253,7 +255,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       }
       extra = extra + " (" + sb + ")";
     }
-    return node.getName() + extra;
+    return chatParticipant.getPlayerName() + extra;
   }
 
   @Override

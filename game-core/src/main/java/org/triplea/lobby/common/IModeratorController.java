@@ -1,10 +1,10 @@
 package org.triplea.lobby.common;
 
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import java.time.Instant;
-import java.util.Date;
 import javax.annotation.Nullable;
 
 /**
@@ -24,25 +24,14 @@ public interface IModeratorController extends IRemote {
    *
    * <p>This method can only be called by admin users.
    */
-  void boot(INode node);
-
-  /**
-   * Ban the IP address of the given INode.
-   *
-   * @param node The node to ban.
-   * @param banExpires {@code null} for a permanent ban.
-   * @deprecated Kept to maintain backwards compatibility. Remove with next lobby-incompatible
-   *     release.
-   */
-  @Deprecated
-  default void banIp(final INode node, final @Nullable Date banExpires) {}
+  void boot(PlayerName playerName);
 
   /**
    * Ban the mac of the given INode.
    *
    * @param banExpires {@code null} for a permanent ban.
    */
-  void banUser(INode node, @Nullable Instant banExpires);
+  void banUser(PlayerName node, @Nullable Instant banExpires);
 
   /** Get list of people in the game. */
   String getHostConnections(INode node);

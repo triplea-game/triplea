@@ -1,6 +1,5 @@
 package games.strategy.engine.chat;
 
-import games.strategy.net.INode;
 import java.util.List;
 import javax.swing.Action;
 
@@ -9,5 +8,5 @@ import javax.swing.Action;
 public interface IPlayerActionFactory {
 
   /** The mouse has been clicked on a player, create a list of actions to be displayed. */
-  List<Action> mouseOnPlayer(INode clickedOn);
+  List<Action> mouseOnPlayer(ChatParticipant clickedOn);
 }
