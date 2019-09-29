@@ -73,12 +73,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
         .start();
   }
 
-  private void trimLengthIfNecessary() {
-    if (allText.length() > MAX_LENGTH) {
-      allText.delete(0, MAX_LENGTH / 2);
-    }
-  }
-
   private void addChatMessage(final String originalMessage, final String from) {
     trimLengthIfNecessary();
 
@@ -92,6 +86,12 @@ public class HeadlessChat implements IChatListener, ChatModel {
   public void addStatusMessage(final String message) {
     trimLengthIfNecessary();
     allText.append("--- ").append(message).append(" ---\n");
+  }
+
+  private void trimLengthIfNecessary() {
+    if (allText.length() > MAX_LENGTH) {
+      allText.delete(0, MAX_LENGTH / 2);
+    }
   }
 
   @Override
