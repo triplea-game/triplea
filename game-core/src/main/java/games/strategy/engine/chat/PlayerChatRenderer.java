@@ -84,10 +84,14 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     } finally {
       game.getData().releaseReadLock();
     }
+    final Set<INode> playerNodes = new HashSet<>(playerManager.getPlayerMapping().values());
     if (uiContext == null || uiContext.getFlagImageFactory() == null) {
+      for (final INode playerNode : playerNodes) {
+        playerMap.put(playerNode.getPlayerName().getValue(), playerManager.getPlayedBy(playerNode));
+      }
       return;
     }
-    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
+    for (final INode playerNode : playerNodes) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       final List<Icon> icons =
           players.stream()
