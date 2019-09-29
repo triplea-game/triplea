@@ -37,13 +37,13 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   public PlayerChatRenderer(final IGame game, final UiContext uiContext) {
     Preconditions.checkNotNull(game);
     Preconditions.checkNotNull(uiContext);
-    Preconditions.checkNotNull(uiContext.getFlagImageFactory());
+    final FlagIconImageFactory factory =
+        Preconditions.checkNotNull(uiContext.getFlagImageFactory());
 
     final PlayerManager playerManager = game.getPlayerManager();
     final PlayerList playerList = getPlayerList(game);
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
-      final FlagIconImageFactory factory = uiContext.getFlagImageFactory();
       final List<Icon> icons =
           players.stream()
               .map(player -> new ImageIcon(factory.getSmallFlag(playerList.getPlayerId(player))))
