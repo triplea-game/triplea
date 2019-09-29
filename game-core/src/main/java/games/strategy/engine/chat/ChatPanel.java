@@ -60,7 +60,6 @@ public class ChatPanel extends JPanel implements ChatModel {
     return chatMessagePanel.getAllText();
   }
 
-  @Override
   public void setChat(final Chat chat) {
     chatMessagePanel.setChat(chat);
     chatPlayerPanel.setChat(chat);

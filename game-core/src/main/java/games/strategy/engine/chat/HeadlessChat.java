@@ -41,11 +41,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
   @Override
   public void updatePlayerList(final Collection<ChatParticipant> players) {}
 
-  @Override
-  public void setChat(final Chat chat) {
-    throw new UnsupportedOperationException("Headless bots do not support resetting of chat");
-  }
-
   /** thread safe. */
   @Override
   public void addMessage(final String originalMessage, final PlayerName from) {

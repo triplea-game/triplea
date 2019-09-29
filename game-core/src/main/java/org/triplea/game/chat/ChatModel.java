@@ -10,8 +10,6 @@ import java.util.Optional;
  */
 public interface ChatModel {
 
-  void setChat(Chat chat);
-
   Chat getChat();
 
   String getAllText();

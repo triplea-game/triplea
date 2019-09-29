@@ -272,7 +272,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     if (messengers != null) {
       chatController.deactivate();
       messengers.shutDown();
-      chatModel.setChat(null);
+      if (ui != null) {
+        ((ChatPanel) chatModel).setChat(null);
+      }
     }
   }
 
