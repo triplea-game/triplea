@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -49,19 +48,20 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final boolean isSelected,
       final boolean cellHasFocus) {
     final ChatParticipant chatParticipant = (ChatParticipant) value;
-    final List<Icon> icons = iconMap.get(chatParticipant.getPlayerName().getValue());
-    if (icons != null) {
-      super.getListCellRendererComponent(
-          list, chatParticipant.getPlayerName().getValue(), index, isSelected, cellHasFocus);
-      setHorizontalTextPosition(SwingConstants.LEFT);
-      setIcon(new CompositeIcon(icons));
-    } else {
+    final List<Icon> icons =
+        iconMap.getOrDefault(chatParticipant.getPlayerName().getValue(), Collections.emptyList());
+    if (icons.isEmpty()) {
       super.getListCellRendererComponent(
           list,
           getNodeLabelWithPlayers(chatParticipant.getPlayerName()),
           index,
           isSelected,
           cellHasFocus);
+    } else {
+      super.getListCellRendererComponent(
+          list, chatParticipant.getPlayerName().getValue(), index, isSelected, cellHasFocus);
+      setHorizontalTextPosition(SwingConstants.LEFT);
+      setIcon(new CompositeIcon(icons));
     }
     return this;
   }
@@ -84,26 +84,23 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     } finally {
       game.getData().releaseReadLock();
     }
-    final boolean iconsPresent = uiContext != null && uiContext.getFlagImageFactory() != null;
+    if (uiContext == null || uiContext.getFlagImageFactory() == null) {
+      return;
+    }
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
-      if (players.size() > 0) {
-        @Nullable
-        final List<Icon> icons =
-            iconsPresent
-                ? players.stream()
-                    .map(
-                        player ->
-                            new ImageIcon(
-                                uiContext
-                                    .getFlagImageFactory()
-                                    .getSmallFlag(playerList.getPlayerId(player))))
-                    .collect(Collectors.toList())
-                : null;
-        maxIconCounter = Math.max(maxIconCounter, iconsPresent ? icons.size() : 0);
-        playerMap.put(playerNode.getPlayerName().getValue(), players);
-        iconMap.put(playerNode.getPlayerName().getValue(), icons);
-      }
+      final List<Icon> icons =
+          players.stream()
+              .map(
+                  player ->
+                      new ImageIcon(
+                          uiContext
+                              .getFlagImageFactory()
+                              .getSmallFlag(playerList.getPlayerId(player))))
+              .collect(Collectors.toList());
+      maxIconCounter = Math.max(maxIconCounter, icons.size());
+      playerMap.put(playerNode.getPlayerName().getValue(), players);
+      iconMap.put(playerNode.getPlayerName().getValue(), icons);
     }
   }
 
