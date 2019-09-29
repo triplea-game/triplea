@@ -238,24 +238,18 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       return "";
     }
 
-    String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
-    String status = chat.getStatus(chatParticipant.getPlayerName());
+    final String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
+    final String status = chat.getStatus(chatParticipant.getPlayerName());
 
-    final StringBuilder sb = new StringBuilder();
-    if (status.length() > 0) {
-      if (status.length() > 25) {
-        status = status.substring(0, 25);
-      }
-      for (int i = 0; i < status.length(); i++) {
-        final char c = status.charAt(i);
-        if (c >= '\u0300' && c <= '\u036F') { // skip combining characters
-          continue;
-        }
-        sb.append(c);
-      }
-      extra = extra + " (" + sb + ")";
-    }
-    return chatParticipant.getPlayerName() + extra;
+    final String suffix =
+        status.isEmpty()
+            ? ""
+            : " ("
+                + status
+                    .substring(0, Math.min(status.length(), 25))
+                    .replaceAll("[\\u0300-\\u036F]", "")
+                + ")";
+    return chatParticipant.getPlayerName() + extra + suffix;
   }
 
   @Override
