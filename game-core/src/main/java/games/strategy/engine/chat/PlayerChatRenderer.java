@@ -29,17 +29,32 @@ import javax.swing.SwingConstants;
  */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
-  private final IGame game;
-  private final UiContext uiContext;
   private int maxIconCounter = 0;
   private final Map<String, List<Icon>> iconMap = new HashMap<>();
   private final Map<String, Set<String>> playerMap = new HashMap<>();
 
   public PlayerChatRenderer(final IGame game, final UiContext uiContext) {
-    this.game = Preconditions.checkNotNull(game);
-    this.uiContext = Preconditions.checkNotNull(uiContext);
+    Preconditions.checkNotNull(game);
+    Preconditions.checkNotNull(uiContext);
     Preconditions.checkNotNull(uiContext.getFlagImageFactory());
-    setIconMap();
+
+    final PlayerManager playerManager = game.getPlayerManager();
+    final PlayerList playerList = getPlayerList(game);
+    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
+      final Set<String> players = playerManager.getPlayedBy(playerNode);
+      final List<Icon> icons =
+          players.stream()
+              .map(
+                  player ->
+                      new ImageIcon(
+                          uiContext
+                              .getFlagImageFactory()
+                              .getSmallFlag(playerList.getPlayerId(player))))
+              .collect(Collectors.toList());
+      maxIconCounter = Math.max(maxIconCounter, icons.size());
+      playerMap.put(playerNode.getPlayerName().getValue(), players);
+      iconMap.put(playerNode.getPlayerName().getValue(), icons);
+    }
   }
 
   @Override
@@ -77,29 +92,12 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
             : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
   }
 
-  private void setIconMap() {
-    final PlayerManager playerManager = game.getPlayerManager();
-    final PlayerList playerList;
+  private static PlayerList getPlayerList(final IGame game) {
     game.getData().acquireReadLock();
     try {
-      playerList = game.getData().getPlayerList();
+      return game.getData().getPlayerList();
     } finally {
       game.getData().releaseReadLock();
-    }
-    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
-      final Set<String> players = playerManager.getPlayedBy(playerNode);
-      final List<Icon> icons =
-          players.stream()
-              .map(
-                  player ->
-                      new ImageIcon(
-                          uiContext
-                              .getFlagImageFactory()
-                              .getSmallFlag(playerList.getPlayerId(player))))
-              .collect(Collectors.toList());
-      maxIconCounter = Math.max(maxIconCounter, icons.size());
-      playerMap.put(playerNode.getPlayerName().getValue(), players);
-      iconMap.put(playerNode.getPlayerName().getValue(), icons);
     }
   }
 
