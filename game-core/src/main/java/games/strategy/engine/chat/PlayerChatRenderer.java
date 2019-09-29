@@ -99,16 +99,12 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
                 .collect(Collectors.toList());
         maxIconCounter = Math.max(maxIconCounter, icons.size());
         playerMap.put(playerNode.getPlayerName().getValue(), players);
-        if (uiContext == null) {
-          iconMap.put(playerNode.getPlayerName().getValue(), null);
-        } else {
-          iconMap.put(playerNode.getPlayerName().getValue(), icons);
-        }
+        iconMap.put(playerNode.getPlayerName().getValue(), uiContext == null ? null : icons);
       }
     }
   }
 
-  public int getMaxIconCounter() {
+  int getMaxIconCounter() {
     return maxIconCounter;
   }
 }
