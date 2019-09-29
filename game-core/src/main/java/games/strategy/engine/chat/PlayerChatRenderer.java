@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -83,23 +84,25 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     } finally {
       game.getData().releaseReadLock();
     }
-    // new HashSet removes duplicates
+    final boolean iconsPresent = uiContext != null && uiContext.getFlagImageFactory() != null;
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       if (players.size() > 0) {
+        @Nullable
         final List<Icon> icons =
-            players.stream()
-                .filter(player -> uiContext != null && uiContext.getFlagImageFactory() != null)
-                .map(
-                    player ->
-                        new ImageIcon(
-                            uiContext
-                                .getFlagImageFactory()
-                                .getSmallFlag(playerList.getPlayerId(player))))
-                .collect(Collectors.toList());
-        maxIconCounter = Math.max(maxIconCounter, icons.size());
+            iconsPresent
+                ? players.stream()
+                    .map(
+                        player ->
+                            new ImageIcon(
+                                uiContext
+                                    .getFlagImageFactory()
+                                    .getSmallFlag(playerList.getPlayerId(player))))
+                    .collect(Collectors.toList())
+                : null;
+        maxIconCounter = Math.max(maxIconCounter, iconsPresent ? icons.size() : 0);
         playerMap.put(playerNode.getPlayerName().getValue(), players);
-        iconMap.put(playerNode.getPlayerName().getValue(), uiContext == null ? null : icons);
+        iconMap.put(playerNode.getPlayerName().getValue(), icons);
       }
     }
   }
