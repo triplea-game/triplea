@@ -8,6 +8,7 @@ import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,6 @@ import javax.swing.SwingConstants;
  */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
-  private final int maxIconCounter;
   private final Map<String, List<Icon>> iconMap = new HashMap<>();
   private final Map<String, Set<String>> playerMap = new HashMap<>();
 
@@ -40,7 +40,6 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
 
     final PlayerManager playerManager = game.getPlayerManager();
     final PlayerList playerList = getPlayerList(game);
-    int maxIconCounter = 0;
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       final List<Icon> icons =
@@ -52,11 +51,9 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
                               .getFlagImageFactory()
                               .getSmallFlag(playerList.getPlayerId(player))))
               .collect(Collectors.toList());
-      maxIconCounter = Math.max(maxIconCounter, icons.size());
       playerMap.put(playerNode.getPlayerName().getValue(), players);
       iconMap.put(playerNode.getPlayerName().getValue(), icons);
     }
-    this.maxIconCounter = maxIconCounter;
   }
 
   @Override
@@ -104,6 +101,6 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   int getMaxIconCounter() {
-    return maxIconCounter;
+    return iconMap.values().stream().mapToInt(Collection::size).max().orElse(0);
   }
 }
