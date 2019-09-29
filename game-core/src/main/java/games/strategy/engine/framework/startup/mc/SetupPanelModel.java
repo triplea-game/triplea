@@ -120,7 +120,7 @@ public class SetupPanelModel implements ServerSetupModel {
               GameRunner.hideMainFrame();
               lobbyFrame.setVisible(true);
 
-              boolean passwordChanged = false;
+              boolean passwordChanged;
               if (lobbyClient.isPasswordChangeRequired()) {
                 try {
                   passwordChanged =
@@ -130,7 +130,6 @@ public class SetupPanelModel implements ServerSetupModel {
                           ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
 
                   if (passwordChanged) {
-
                     DialogBuilder.builder()
                         .parent(lobbyFrame)
                         .title("Success")
@@ -152,8 +151,8 @@ public class SetupPanelModel implements ServerSetupModel {
         .parent(lobbyFrame)
         .title("Password Not Updated")
         .errorMessage(
-            "Password not updated, you will need to request a new "
-                + "temporary password to log in again."
+            "Password not updated, your temporary password is expired.\n"
+                + "Use the account menu to reset your password."
                 + Optional.ofNullable(exception).map(e -> "\nError: " + e.getMessage()).orElse(""))
         .showDialog();
   }
