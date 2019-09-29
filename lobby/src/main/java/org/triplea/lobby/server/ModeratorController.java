@@ -9,6 +9,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import java.time.Instant;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -67,9 +68,7 @@ final class ModeratorController implements IModeratorController {
     assertUserIsAdmin();
 
     final INode node =
-        serverMessenger.getNodes().stream()
-            .filter(n -> n.getPlayerName().equals(playerName))
-            .findAny()
+        findNodeByPlayerName(playerName)
             .orElseThrow(() -> new IllegalStateException("Could not find player: " + playerName));
 
     if (isPlayerAdmin(node)) {
@@ -80,6 +79,12 @@ final class ModeratorController implements IModeratorController {
     final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
     final User moderator = getUserForNode(MessageContext.getSender());
     database.getBannedMacDao().banUser(bannedUser, banExpires, moderator);
+  }
+
+  private Optional<INode> findNodeByPlayerName(final PlayerName playerName) {
+    return serverMessenger.getNodes().stream()
+        .filter(n -> n.getPlayerName().equals(playerName))
+        .findAny();
   }
 
   private void assertUserIsAdmin() {
@@ -97,9 +102,7 @@ final class ModeratorController implements IModeratorController {
     }
     final INode modNode = MessageContext.getSender();
 
-    serverMessenger.getNodes().stream()
-        .filter(n -> n.getPlayerName().equals(playerName))
-        .findAny()
+    findNodeByPlayerName(playerName)
         .ifPresent(
             node -> {
               serverMessenger.removeConnection(node);
