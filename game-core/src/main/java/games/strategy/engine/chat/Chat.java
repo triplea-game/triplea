@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import com.google.common.collect.EvictingQueue;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.Messengers;
@@ -7,6 +8,7 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +36,10 @@ public class Chat implements ChatClient {
 
   private final Map<ChatParticipant, String> chatters;
 
-  @Getter private final List<ChatMessage> chatHistory = new CopyOnWriteArrayList<>();
+  @Getter
+  private final Collection<ChatMessage> chatHistory =
+      Collections.synchronizedCollection(EvictingQueue.create(1000));
+
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   private final ChatSoundProfile chatSoundProfile;
   @Getter private final PlayerName localPlayerName;
@@ -80,10 +85,6 @@ public class Chat implements ChatClient {
     chatHistory.add(new ChatMessage(message, from));
     for (final IChatListener listener : listeners) {
       listener.addMessage(message, from);
-    }
-    // limit the number of messages in our history.
-    while (chatHistory.size() > 1000) {
-      chatHistory.remove(0);
     }
   }
 
