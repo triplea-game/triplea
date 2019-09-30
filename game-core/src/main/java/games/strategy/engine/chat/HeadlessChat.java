@@ -57,13 +57,8 @@ public class HeadlessChat implements IChatListener, ChatModel {
   /** thread safe. */
   @Override
   public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
-    // TODO: I don't really think we need a new thread for this...
-    new Thread(
-            () -> {
-              addChatMessage(message, from.getValue());
-              ClipPlayer.play(sound);
-            })
-        .start();
+    addChatMessage(message, from.getValue());
+    ClipPlayer.play(sound);
   }
 
   private void addChatMessage(final String originalMessage, final String from) {
