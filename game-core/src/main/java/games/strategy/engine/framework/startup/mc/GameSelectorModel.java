@@ -82,10 +82,8 @@ public class GameSelectorModel extends Observable {
         // try to load it as a saved game whatever the extension
         newData = GameDataManager.loadGame(file);
       }
-      if (newData != null) {
-        load(newData, file.getName());
-      }
-      return (newData != null);
+      load(newData, file.getName());
+      return true;
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error loading game file: " + file.getAbsolutePath(), e);
       return false;
