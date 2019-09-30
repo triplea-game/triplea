@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
-import org.triplea.http.client.error.report.ErrorUploadResponse;
+import org.triplea.http.client.error.report.ErrorReportRequest;
+import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 import org.triplea.lobby.server.db.dao.ErrorReportingDao;
@@ -22,17 +22,15 @@ import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 class CreateIssueStrategyTest {
 
   private static final ErrorReportRequest ERROR_REPORT_REQUEST =
-      ErrorReportRequest.builder()
-          .errorReport(ErrorUploadRequest.builder().body("body").title("title").build())
-          .clientIp("ip")
-          .build();
+      ErrorReportRequest.builder().body("body").title("title").build();
+  private static final String IP = "127.0.1.10";
 
   private CreateIssueStrategy createIssueStrategy;
 
   @Mock private GithubIssueClient githubIssueClient;
-  @Mock private ErrorUploadResponse errorUploadResponse;
+  @Mock private ErrorReportResponse errorReportResponse;
   @Mock private CreateIssueResponse createIssueResponse;
-  @Mock private Function<CreateIssueResponse, ErrorUploadResponse> responseAdapter;
+  @Mock private Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Mock private ErrorReportingDao errorReportingDao;
 
   @Test
@@ -46,11 +44,11 @@ class CreateIssueStrategyTest {
             .build();
     when(githubIssueClient.isTest()).thenReturn(true);
 
-    final ErrorUploadResponse response = createIssueStrategy.apply(ERROR_REPORT_REQUEST);
+    final ErrorReportResponse response = createIssueStrategy.apply(IP, ERROR_REPORT_REQUEST);
 
     assertThat(response.getGithubIssueLink(), is(CreateIssueStrategy.STUBBED_RETURN_VALUE));
 
-    verify(errorReportingDao).insertHistoryRecord(ERROR_REPORT_REQUEST.getClientIp());
+    verify(errorReportingDao).insertHistoryRecord(IP);
     verify(errorReportingDao).purgeOld(any());
   }
 
@@ -65,14 +63,13 @@ class CreateIssueStrategyTest {
             .build();
 
     when(githubIssueClient.isTest()).thenReturn(false);
-    when(githubIssueClient.newIssue(ERROR_REPORT_REQUEST.getErrorReport()))
-        .thenReturn(createIssueResponse);
-    when(responseAdapter.apply(createIssueResponse)).thenReturn(errorUploadResponse);
+    when(githubIssueClient.newIssue(ERROR_REPORT_REQUEST)).thenReturn(createIssueResponse);
+    when(responseAdapter.apply(createIssueResponse)).thenReturn(errorReportResponse);
 
-    final ErrorUploadResponse response = createIssueStrategy.apply(ERROR_REPORT_REQUEST);
-    assertThat(response, sameInstance(errorUploadResponse));
+    final ErrorReportResponse response = createIssueStrategy.apply(IP, ERROR_REPORT_REQUEST);
+    assertThat(response, sameInstance(errorReportResponse));
 
-    verify(errorReportingDao).insertHistoryRecord(ERROR_REPORT_REQUEST.getClientIp());
+    verify(errorReportingDao).insertHistoryRecord(IP);
     verify(errorReportingDao).purgeOld(any());
   }
 }

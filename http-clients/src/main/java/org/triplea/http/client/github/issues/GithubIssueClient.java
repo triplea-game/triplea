@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 /**
@@ -45,7 +45,7 @@ public class GithubIssueClient {
    * @return Response from server containing link to the newly created issue.
    * @throws feign.FeignException thrown on error or if non-2xx response is received
    */
-  public CreateIssueResponse newIssue(final ErrorUploadRequest uploadRequest) {
+  public CreateIssueResponse newIssue(final ErrorReportRequest uploadRequest) {
     final Map<String, Object> tokens = new HashMap<>();
     tokens.put("Authorization", "token " + authToken);
     return githubClient.newIssue(tokens, githubOrg, githubRepo, uploadRequest);

@@ -11,8 +11,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,16 +21,15 @@ import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.http.client.lobby.game.listing.UpdateGameRequest;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.http.HttpController;
 
 /** Controller with endpoints for posting, getting and removing games. */
 @Builder
-@Produces(MediaType.APPLICATION_JSON)
-@Path("/")
 @AllArgsConstructor(
     access = AccessLevel.PACKAGE,
     onConstructor_ = {@VisibleForTesting})
 @RolesAllowed(UserRole.ANONYMOUS)
-public class GameListingController {
+public class GameListingController extends HttpController {
 
   private final GameListing gameListing;
 

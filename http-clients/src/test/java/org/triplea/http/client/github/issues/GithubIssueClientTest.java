@@ -5,7 +5,7 @@ import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -25,7 +25,7 @@ class GithubIssueClientTest extends WireMockTest {
         .githubRepo(GITHUB_REPO)
         .uri(hostUri)
         .build()
-        .newIssue(ErrorUploadRequest.builder().title(ISSUE_TITLE).body(ISSUE_BODY).build());
+        .newIssue(ErrorReportRequest.builder().title(ISSUE_TITLE).body(ISSUE_BODY).build());
   }
 
   @Test

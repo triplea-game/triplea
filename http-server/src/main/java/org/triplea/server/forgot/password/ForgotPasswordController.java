@@ -6,24 +6,21 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.forgot.password.ForgotPasswordResponse;
+import org.triplea.server.http.HttpController;
 
 /** Http controller that binds the error upload endpoint with the error report upload handler. */
 @Builder
-@Produces(MediaType.APPLICATION_JSON)
-@Path("/")
 @AllArgsConstructor(
     access = AccessLevel.PACKAGE,
     onConstructor_ = {@VisibleForTesting})
-public class ForgotPasswordController {
+public class ForgotPasswordController extends HttpController {
   @Nonnull private final BiFunction<String, ForgotPasswordRequest, String> forgotPasswordModule;
 
   @POST

@@ -9,17 +9,17 @@ import java.util.function.BiFunction;
 import java.util.logging.LogRecord;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 
 /**
  * Combines user description input with data from a {@code LogRecord} to create an {@code
  * ErrorReport} object that we can send to the HTTP server.
  */
-class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, ErrorUploadRequest> {
+class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, ErrorReportRequest> {
 
   @Override
-  public ErrorUploadRequest apply(final String userDescription, final LogRecord logRecord) {
-    return ErrorUploadRequest.builder()
+  public ErrorReportRequest apply(final String userDescription, final LogRecord logRecord) {
+    return ErrorReportRequest.builder()
         .title(createTitle(logRecord))
         .body(buildBody(userDescription, logRecord))
         .build();

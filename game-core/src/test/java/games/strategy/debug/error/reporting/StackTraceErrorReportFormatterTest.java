@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 
 @ExtendWith(MockitoExtension.class)
 class StackTraceErrorReportFormatterTest {
@@ -46,7 +46,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(null);
 
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
@@ -59,7 +59,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
@@ -78,7 +78,7 @@ class StackTraceErrorReportFormatterTest {
     void handleNullLogMessageAndNullExceptionMessage() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
@@ -96,7 +96,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
       when(logRecord.getSourceClassName()).thenReturn("ClassInDefaultPackage");
 
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertDoesNotThrow(errorReportResult::getTitle);
@@ -113,7 +113,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsUseSuppliedData() {
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(errorReportResult.getBody(), containsString(SAMPLE_USER_DESCRIPTION));
@@ -121,7 +121,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsSystemData() {
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(errorReportResult.getBody(), containsString(SAMPLE_USER_DESCRIPTION));
@@ -135,7 +135,7 @@ class StackTraceErrorReportFormatterTest {
     @Test
     void containsStackTraceData() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       Arrays.stream(EXCEPTION_WITH_NO_MESSAGE.getStackTrace())
@@ -152,7 +152,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
@@ -173,7 +173,7 @@ class StackTraceErrorReportFormatterTest {
     void nullLogMessage() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
-      final ErrorUploadRequest errorReportResult =
+      final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(

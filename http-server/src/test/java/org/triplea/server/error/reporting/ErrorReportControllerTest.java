@@ -5,15 +5,15 @@ import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.server.http.BasicEndpointTest;
 
-class ErrorReportControllerIntegrationTest extends BasicEndpointTest<ErrorReportClient> {
+class ErrorReportControllerTest extends BasicEndpointTest<ErrorReportClient> {
 
-  ErrorReportControllerIntegrationTest() {
+  ErrorReportControllerTest() {
     super(ErrorReportClient::newClient);
   }
 
   @Test
   void uploadErrorReport() {
-    verifyEndpointReturningObject(
+    super.verifyEndpointReturningObject(
         client ->
             client.uploadErrorReport(
                 ErrorReportRequest.builder().body("body").title("title").build()));

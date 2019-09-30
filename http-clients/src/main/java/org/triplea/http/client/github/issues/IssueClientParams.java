@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 
 /** Parameter/Data object used to construct a {@code GithubIssueClient}. */
 @Getter(AccessLevel.PACKAGE)
@@ -21,5 +21,5 @@ public class IssueClientParams {
    * Error report sent from the TripleA client, we will forward this to github create issue web
    * service.
    */
-  @Nonnull private final ErrorUploadRequest errorUploadRequest;
+  @Nonnull private final ErrorReportRequest errorReportRequest;
 }

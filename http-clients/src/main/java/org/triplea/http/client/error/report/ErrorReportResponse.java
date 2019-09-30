@@ -11,7 +11,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @EqualsAndHashCode
-public class ErrorUploadResponse {
+public class ErrorReportResponse {
   /**
    * A link to the github issue created (empty if there were problems creating the link). Server
    * should return a 500 in case there are any problems creating the error report.

@@ -2,13 +2,13 @@ package games.strategy.debug.error.reporting;
 
 import java.util.function.Consumer;
 import javax.swing.JOptionPane;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingComponents;
 
-class ReportPreviewSwingView implements Consumer<ErrorUploadRequest> {
+class ReportPreviewSwingView implements Consumer<ErrorReportRequest> {
   @Override
-  public void accept(final ErrorUploadRequest errorReport) {
+  public void accept(final ErrorReportRequest errorReport) {
     JOptionPane.showMessageDialog(
         null,
         SwingComponents.newJScrollPane(

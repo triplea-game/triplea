@@ -9,13 +9,12 @@ import lombok.Builder;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.server.http.HttpController;
 
 /** Controller to query the access log table, for us by moderators. */
 @Builder
-@Path("")
 @RolesAllowed(UserRole.MODERATOR)
-public class AccessLogController {
-
+public class AccessLogController extends HttpController {
   @Nonnull private final AccessLogService accessLogService;
 
   @POST

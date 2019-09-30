@@ -2,7 +2,7 @@ package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
 import java.util.logging.LogRecord;
-import org.triplea.http.client.error.report.ErrorUploadClient;
+import org.triplea.http.client.error.report.ErrorReportClient;
 
 /** Interface for interactions with the stack trace user-reporting window UI. */
 public interface StackTraceReportView {
@@ -27,7 +27,7 @@ public interface StackTraceReportView {
    * information around the circumstances of an error.
    */
   static void showWindow(
-      final Component parentWindow, final ErrorUploadClient uploader, final LogRecord logRecord) {
+      final Component parentWindow, final ErrorReportClient uploader, final LogRecord logRecord) {
 
     final StackTraceReportView window = new StackTraceReportSwingView(parentWindow);
 
