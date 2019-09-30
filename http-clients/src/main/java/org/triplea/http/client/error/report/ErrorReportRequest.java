@@ -13,7 +13,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorUploadRequest {
+public class ErrorReportRequest {
   private String title;
   private String body;
 

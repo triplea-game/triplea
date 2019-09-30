@@ -2,7 +2,7 @@ package org.triplea.server.error.reporting;
 
 import com.google.common.base.Strings;
 import java.util.function.Function;
-import org.triplea.http.client.error.report.ErrorUploadResponse;
+import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 /**
@@ -10,11 +10,11 @@ import org.triplea.http.client.github.issues.create.CreateIssueResponse;
  * the TripleA game-client.
  */
 public class ErrorReportResponseConverter
-    implements Function<CreateIssueResponse, ErrorUploadResponse> {
+    implements Function<CreateIssueResponse, ErrorReportResponse> {
 
   @Override
-  public ErrorUploadResponse apply(final CreateIssueResponse response) {
-    return ErrorUploadResponse.builder().githubIssueLink(extractLink(response)).build();
+  public ErrorReportResponse apply(final CreateIssueResponse response) {
+    return ErrorReportResponse.builder().githubIssueLink(extractLink(response)).build();
   }
 
   private static String extractLink(final CreateIssueResponse response) {

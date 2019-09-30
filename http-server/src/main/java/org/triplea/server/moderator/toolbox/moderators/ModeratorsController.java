@@ -3,28 +3,23 @@ package org.triplea.server.moderator.toolbox.moderators;
 import io.dropwizard.auth.Auth;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.http.HttpController;
 
 /**
  * Provides endpoint for moderator maintenance actions and to support the moderators toolbox
  * 'moderators' tab. Actions include: adding moderators, removing moderators, and promoting
  * moderators to 'super-mod'. Some actions are only allowed for super-mods.
  */
-@Path("")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 @Builder
-public class ModeratorsController {
+public class ModeratorsController extends HttpController {
   @Nonnull private final ModeratorsService moderatorsService;
 
   @POST

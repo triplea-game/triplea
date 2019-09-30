@@ -18,16 +18,16 @@ class ErrorReportClientTest {
   private static final String MESSAGE_FROM_USER = "msg";
   private static final String LINK = "http://localhost";
 
-  private static final ErrorUploadResponse SUCCESS_RESPONSE =
-      ErrorUploadResponse.builder().githubIssueLink(LINK).build();
+  private static final ErrorReportResponse SUCCESS_RESPONSE =
+      ErrorReportResponse.builder().githubIssueLink(LINK).build();
 
   @Test
   void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
-    final ErrorUploadResponse response =
+    final ErrorReportResponse response =
         HttpClientTesting.sendServiceCallToWireMock(
-            HttpClientTesting.ServiceCallArgs.<ErrorUploadResponse>builder()
+            HttpClientTesting.ServiceCallArgs.<ErrorReportResponse>builder()
                 .wireMockServer(server)
-                .expectedRequestPath(ErrorUploadClient.ERROR_REPORT_PATH)
+                .expectedRequestPath(ErrorReportClient.ERROR_REPORT_PATH)
                 .expectedBodyContents(singletonList(MESSAGE_FROM_USER))
                 .serverReturnValue(new Gson().toJson(SUCCESS_RESPONSE))
                 .serviceCall(ErrorReportClientTest::doServiceCall)
@@ -36,10 +36,10 @@ class ErrorReportClientTest {
     assertThat(response, is(SUCCESS_RESPONSE));
   }
 
-  private static ErrorUploadResponse doServiceCall(final URI hostUri) {
-    return ErrorUploadClient.newClient(hostUri)
+  private static ErrorReportResponse doServiceCall(final URI hostUri) {
+    return ErrorReportClient.newClient(hostUri)
         .uploadErrorReport(
-            ErrorUploadRequest.builder()
+            ErrorReportRequest.builder()
                 .title("Guttuss cadunt in germanus oenipons!")
                 .body(MESSAGE_FROM_USER)
                 .build());
@@ -49,7 +49,7 @@ class ErrorReportClientTest {
   void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     HttpClientTesting.verifyErrorHandling(
         wireMockServer,
-        ErrorUploadClient.ERROR_REPORT_PATH,
+        ErrorReportClient.ERROR_REPORT_PATH,
         HttpClientTesting.RequestType.POST,
         ErrorReportClientTest::doServiceCall);
   }

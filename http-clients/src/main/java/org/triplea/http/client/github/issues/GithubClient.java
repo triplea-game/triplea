@@ -10,7 +10,7 @@ import java.net.URI;
 import java.util.Map;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpConstants;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 @SuppressWarnings("InterfaceNeverImplemented")
@@ -29,7 +29,7 @@ interface GithubClient {
       @HeaderMap Map<String, Object> headerMap,
       @Param("org") String org,
       @Param("repo") String repo,
-      ErrorUploadRequest errorReport);
+      ErrorReportRequest errorReport);
 
   /** Creates an http client that can post a new github issue. */
   static GithubClient newClient(final URI githubApiHostUri) {

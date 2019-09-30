@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
-import org.triplea.http.client.error.report.ErrorUploadClient;
+import org.triplea.http.client.error.report.ErrorReportClient;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
@@ -72,7 +72,7 @@ class LobbyLoginClientTest {
     void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
       HttpClientTesting.verifyErrorHandling(
           wireMockServer,
-          ErrorUploadClient.ERROR_REPORT_PATH,
+          ErrorReportClient.ERROR_REPORT_PATH,
           HttpClientTesting.RequestType.POST,
           this::doServiceCall);
     }
@@ -118,7 +118,7 @@ class LobbyLoginClientTest {
     void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
       HttpClientTesting.verifyErrorHandling(
           wireMockServer,
-          ErrorUploadClient.ERROR_REPORT_PATH,
+          ErrorReportClient.ERROR_REPORT_PATH,
           HttpClientTesting.RequestType.POST,
           this::doServiceCall);
     }

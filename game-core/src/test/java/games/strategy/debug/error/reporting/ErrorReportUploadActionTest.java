@@ -15,23 +15,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.error.report.ErrorUploadClient;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
-import org.triplea.http.client.error.report.ErrorUploadResponse;
+import org.triplea.http.client.error.report.ErrorReportClient;
+import org.triplea.http.client.error.report.ErrorReportRequest;
+import org.triplea.http.client.error.report.ErrorReportResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportUploadActionTest {
 
-  private static final ErrorUploadRequest ERROR_REPORT =
-      ErrorUploadRequest.builder()
+  private static final ErrorReportRequest ERROR_REPORT =
+      ErrorReportRequest.builder()
           .title("Extums prarere in audax tornacum!")
           .body("Rector de barbatus gemna, desiderium candidatus!")
           .build();
 
-  private static final ErrorUploadResponse SUCCESS_RESPONSE =
-      ErrorUploadResponse.builder().githubIssueLink("http://successful.send").build();
+  private static final ErrorReportResponse SUCCESS_RESPONSE =
+      ErrorReportResponse.builder().githubIssueLink("http://successful.send").build();
 
-  @Mock private ErrorUploadClient errorUploadClient;
+  @Mock private ErrorReportClient errorReportClient;
   @Mock private Consumer<URI> successConfirmation;
   @Mock private Consumer<FeignException> failureConfirmation;
 
@@ -43,7 +43,7 @@ class ErrorReportUploadActionTest {
   void setup() {
     errorReportUploadAction =
         ErrorReportUploadAction.builder()
-            .serviceClient(errorUploadClient)
+            .serviceClient(errorReportClient)
             .failureConfirmation(failureConfirmation)
             .successConfirmation(successConfirmation)
             .build();
@@ -51,7 +51,7 @@ class ErrorReportUploadActionTest {
 
   @Test
   void failureResponse() {
-    when(errorUploadClient.uploadErrorReport(ERROR_REPORT)).thenThrow(feignException);
+    when(errorReportClient.uploadErrorReport(ERROR_REPORT)).thenThrow(feignException);
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
 
@@ -63,7 +63,7 @@ class ErrorReportUploadActionTest {
 
   @Test
   void successCase() {
-    when(errorUploadClient.uploadErrorReport(ERROR_REPORT)).thenReturn(SUCCESS_RESPONSE);
+    when(errorReportClient.uploadErrorReport(ERROR_REPORT)).thenReturn(SUCCESS_RESPONSE);
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
 
