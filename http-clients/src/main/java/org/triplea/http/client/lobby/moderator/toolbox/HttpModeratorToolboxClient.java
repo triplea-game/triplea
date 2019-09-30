@@ -29,7 +29,7 @@ public class HttpModeratorToolboxClient {
     toolboxEventLogClient = ToolboxEventLogClient.newClient(lobbyUri, apiKey);
   }
 
-  public static HttpModeratorToolboxClient newClient(final URI lobbyUri, final String apiKey) {
+  public static HttpModeratorToolboxClient newClient(final URI lobbyUri, final ApiKey apiKey) {
     return new HttpModeratorToolboxClient(lobbyUri, apiKey);
   }
 }
