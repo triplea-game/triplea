@@ -7,6 +7,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.Runnables;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -91,6 +92,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   @Nullable private final JFrame ui;
   private final LaunchAction launchAction;
   private ChatModel chatModel;
+  private Runnable chatModelCancel = Runnables.doNothing();
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
@@ -272,7 +274,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     if (messengers != null) {
       chatController.deactivate();
       messengers.shutDown();
-      chatModel.setChat(null);
+      chatModelCancel.run();
     }
   }
 
@@ -395,9 +397,12 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       if (ui == null) {
         chatModel = new HeadlessChat(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+        chatModelCancel = Runnables.doNothing();
       } else {
-        chatModel =
+        final var chatPanel =
             ChatPanel.newChatPanel(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+        chatModelCancel = () -> chatPanel.setChat(null);
+        chatModel = chatPanel;
       }
 
       serverMessenger.setAcceptNewConnections(true);

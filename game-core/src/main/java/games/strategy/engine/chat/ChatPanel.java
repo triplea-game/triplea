@@ -3,9 +3,7 @@ package games.strategy.engine.chat;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.net.Messengers;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.util.Optional;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -60,7 +58,6 @@ public class ChatPanel extends JPanel implements ChatModel {
     return chatMessagePanel.getAllText();
   }
 
-  @Override
   public void setChat(final Chat chat) {
     chatMessagePanel.setChat(chat);
     chatPlayerPanel.setChat(chat);
@@ -80,10 +77,5 @@ public class ChatPanel extends JPanel implements ChatModel {
 
   public ChatMessagePanel getChatMessagePanel() {
     return chatMessagePanel;
-  }
-
-  @Override
-  public Optional<Component> getViewComponent() {
-    return Optional.of(this);
   }
 }
