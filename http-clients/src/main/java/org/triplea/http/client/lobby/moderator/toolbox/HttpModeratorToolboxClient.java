@@ -2,6 +2,7 @@ package org.triplea.http.client.lobby.moderator.toolbox;
 
 import java.net.URI;
 import lombok.Getter;
+import org.triplea.http.client.ApiKey;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
@@ -19,7 +20,7 @@ public class HttpModeratorToolboxClient {
   private final ToolboxBadWordsClient toolboxBadWordsClient;
   private final ToolboxEventLogClient toolboxEventLogClient;
 
-  private HttpModeratorToolboxClient(final URI lobbyUri, final String apiKey) {
+  private HttpModeratorToolboxClient(final URI lobbyUri, final ApiKey apiKey) {
     toolboxAccessLogClient = ToolboxAccessLogClient.newClient(lobbyUri, apiKey);
     toolboxUserBanClient = ToolboxUserBanClient.newClient(lobbyUri, apiKey);
     toolboxUsernameBanClient = ToolboxUsernameBanClient.newClient(lobbyUri, apiKey);
@@ -28,7 +29,7 @@ public class HttpModeratorToolboxClient {
     toolboxEventLogClient = ToolboxEventLogClient.newClient(lobbyUri, apiKey);
   }
 
-  public static HttpModeratorToolboxClient newClient(final URI lobbyUri, final String apiKey) {
+  public static HttpModeratorToolboxClient newClient(final URI lobbyUri, final ApiKey apiKey) {
     return new HttpModeratorToolboxClient(lobbyUri, apiKey);
   }
 }

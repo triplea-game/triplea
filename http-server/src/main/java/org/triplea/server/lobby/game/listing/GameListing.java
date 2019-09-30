@@ -13,10 +13,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.http.client.ApiKey;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.server.access.ApiKey;
 
 /**
  * Class that stores the set of games in the lobby. Games are identified by a combination of two

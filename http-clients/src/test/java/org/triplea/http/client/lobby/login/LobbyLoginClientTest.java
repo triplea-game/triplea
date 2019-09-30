@@ -10,14 +10,11 @@ import java.net.URI;
 import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import ru.lanwen.wiremock.ext.WiremockResolver;
-import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
-class LobbyLoginClientTest {
+class LobbyLoginClientTest extends WireMockTest {
   private static final LobbyLoginResponse SUCCESS_LOGIN =
       LobbyLoginResponse.newSuccessResponse("success");
   private static final LobbyLoginResponse FAILED_LOGIN =
