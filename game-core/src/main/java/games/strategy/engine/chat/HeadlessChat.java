@@ -18,7 +18,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
   private static final int MAX_LENGTH = 1000 * 200;
   private Chat chat;
   private final StringBuilder allText = new StringBuilder();
-  private final ChatFloodControl floodControl = new ChatFloodControl();
 
   public HeadlessChat(
       final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
@@ -61,12 +60,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
     // TODO: I don't really think we need a new thread for this...
     new Thread(
             () -> {
-              if (!floodControl.allow(from, System.currentTimeMillis())) {
-                if (from.equals(chat.getLocalPlayerName())) {
-                  addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL");
-                }
-                return;
-              }
               addChatMessage(message, from.getValue());
               ClipPlayer.play(sound);
             })
