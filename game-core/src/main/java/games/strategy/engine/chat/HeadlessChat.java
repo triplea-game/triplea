@@ -49,23 +49,19 @@ public class HeadlessChat implements IChatListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final PlayerName from) {
-    addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
-  }
-
-  /** thread safe. */
-  @Override
-  public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
-    addChatMessage(message, from.getValue());
-  }
-
-  private void addChatMessage(final String originalMessage, final String from) {
+  public void addMessage(final String originalMessage, final PlayerName from) {
     trimLengthIfNecessary();
 
     final String message = Ascii.truncate(originalMessage, 200, "...");
     final String fullMessage =
         String.format("(%s) %s: %s\n", TimeManager.getLocalizedTime(), from, message);
     allText.append(fullMessage);
+  }
+
+  /** thread safe. */
+  @Override
+  public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
+    addMessage(message, from);
   }
 
   @Override
