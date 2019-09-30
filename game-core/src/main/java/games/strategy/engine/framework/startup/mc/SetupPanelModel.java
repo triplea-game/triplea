@@ -17,13 +17,14 @@ import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
-import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.http.client.HttpInteractionException;
 import org.triplea.swing.DialogBuilder;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
@@ -120,36 +121,39 @@ public class SetupPanelModel implements ServerSetupModel {
               lobbyFrame.setVisible(true);
 
               if (lobbyClient.isPasswordChangeRequired()) {
-                ChangePasswordPanel.newChangePasswordPanel()
-                    .show(lobbyFrame)
-                    .map(RsaAuthenticator::hashPasswordWithSalt)
-                    .ifPresentOrElse(
-                        pass -> {
-                          final String error = lobbyClient.updatePassword(pass);
-                          if (error == null) {
-                            DialogBuilder.builder()
-                                .parent(lobbyFrame)
-                                .title("Success")
-                                .infoMessage("Password successfully updated!")
-                                .showDialog();
-                          } else {
-                            DialogBuilder.builder()
-                                .parent(lobbyFrame)
-                                .title("Error")
-                                .errorMessage("Error updating password.\nError:" + error)
-                                .showDialog();
-                          }
-                        },
-                        () ->
-                            DialogBuilder.builder()
-                                .parent(lobbyFrame)
-                                .title("Password Not Updated")
-                                .errorMessage(
-                                    "Password not updated, you will need to request a new "
-                                        + "temporary password to log in again.")
-                                .showDialog());
+                try {
+                  final boolean passwordChanged =
+                      ChangePasswordPanel.doPasswordChange(
+                          lobbyFrame,
+                          lobbyClient.getHttpLobbyClient(),
+                          ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
+
+                  if (passwordChanged) {
+                    DialogBuilder.builder()
+                        .parent(lobbyFrame)
+                        .title("Success")
+                        .infoMessage("Password successfully updated!")
+                        .showDialog();
+                  } else {
+                    notifyTempPasswordInvalid(lobbyFrame, null);
+                  }
+                } catch (final HttpInteractionException e) {
+                  notifyTempPasswordInvalid(lobbyFrame, e);
+                }
               }
             });
+  }
+
+  private static void notifyTempPasswordInvalid(
+      final LobbyFrame lobbyFrame, final @Nullable Exception exception) {
+    DialogBuilder.builder()
+        .parent(lobbyFrame)
+        .title("Password Not Updated")
+        .errorMessage(
+            "Password not updated, your temporary password is expired.\n"
+                + "Use the account menu to reset your password."
+                + Optional.ofNullable(exception).map(e -> "\nError: " + e.getMessage()).orElse(""))
+        .showDialog();
   }
 
   private static final class LobbyAddressFetchException extends RuntimeException {

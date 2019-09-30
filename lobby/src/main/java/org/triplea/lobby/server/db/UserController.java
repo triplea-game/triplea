@@ -50,43 +50,6 @@ final class UserController implements UserDao {
   }
 
   @Override
-  public void updateUser(
-      final String name, final String email, final HashedPassword hashedPassword) {
-    try (Connection con = connection.get();
-        PreparedStatement ps =
-            con.prepareStatement(
-                String.format(
-                    "update lobby_user set %s=?%s where username=?",
-                    getPasswordColumn(hashedPassword), email == null ? "" : ", email=?"))) {
-      ps.setString(1, hashedPassword.value);
-      if (email != null) {
-        ps.setString(2, email);
-      }
-      ps.setString(email != null ? 3 : 2, name);
-      ps.execute();
-      if (!hashedPassword.isBcrypted()) {
-        try (PreparedStatement ps2 =
-            con.prepareStatement("update lobby_user set bcrypt_password = null where username=?")) {
-          ps2.setString(1, name);
-          ps2.execute();
-        }
-      }
-      con.commit();
-    } catch (final SQLException e) {
-      throw new DatabaseException(
-          String.format(
-              "Error updating name: %s, email: %s, (masked) pwd: %s",
-              name, email, hashedPassword.mask()),
-          e);
-    }
-  }
-
-  /** Workaround utility method. Should be removed in the next lobby-incompatible release. */
-  private static String getPasswordColumn(final HashedPassword hashedPassword) {
-    return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
-  }
-
-  @Override
   public void createUser(
       final String name, final String email, final HashedPassword hashedPassword) {
     try (Connection con = connection.get();
@@ -120,23 +83,6 @@ final class UserController implements UserDao {
     }
     userJdbiDao.updateLastLoginTime(username);
     return true;
-  }
-
-  @Override
-  public String getUserEmailByName(final String username) {
-    final String sql = "select email from lobby_user where username = ?";
-    try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, username);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (!rs.next()) {
-          return null;
-        }
-        return rs.getString("email");
-      }
-    } catch (final SQLException e) {
-      throw new DatabaseException("Error getting user email for user: " + username, e);
-    }
   }
 
   @Override

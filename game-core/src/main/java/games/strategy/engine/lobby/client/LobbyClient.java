@@ -4,14 +4,12 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IModeratorController;
-import org.triplea.lobby.common.IUserManager;
 
 /** Provides information about a client connection to a lobby server. */
 @Getter
@@ -35,16 +33,6 @@ public class LobbyClient {
     final var moderatorController =
         (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
     admin = moderatorController.isAdmin();
-  }
-
-  @Nullable
-  public String updatePassword(final String newPassword) {
-    return getUserManager()
-        .updateUser(messengers.getLocalNode().getPlayerName(), null, newPassword);
-  }
-
-  public IUserManager getUserManager() {
-    return (IUserManager) messengers.getRemote(IUserManager.REMOTE_NAME);
   }
 
   public boolean isPasswordChangeRequired() {
