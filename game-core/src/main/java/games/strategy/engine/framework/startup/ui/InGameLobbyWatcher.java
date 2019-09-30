@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
@@ -19,7 +18,6 @@ import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -54,7 +52,7 @@ public class InGameLobbyWatcher {
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame game;
   // we create this messenger, and use it to connect to the game lobby
-  private final IMessenger lobbyMessenger;
+  @Getter private final IClientMessenger lobbyMessenger;
   @Getter private final IRemoteMessenger remoteMessenger;
   private final Object postMutex = new Object();
   private GameDescription gameDescription;
@@ -63,7 +61,7 @@ public class InGameLobbyWatcher {
   private final boolean humanPlayer;
 
   private InGameLobbyWatcher(
-      final IMessenger lobbyMessenger,
+      final IClientMessenger lobbyMessenger,
       final IRemoteMessenger remoteMessenger,
       final IServerMessenger serverMessenger,
       @Nullable final InGameLobbyWatcher oldWatcher) {
@@ -76,7 +74,7 @@ public class InGameLobbyWatcher {
   }
 
   private InGameLobbyWatcher(
-      final IMessenger lobbyMessenger,
+      final IClientMessenger lobbyMessenger,
       final IRemoteMessenger remoteMessenger,
       final IServerMessenger serverMessenger,
       @Nullable final GameDescription oldGameDescription,
@@ -133,9 +131,7 @@ public class InGameLobbyWatcher {
     synchronized (postMutex) {
       controller.postGame(gameId, gameDescription);
     }
-    if (this.lobbyMessenger instanceof IClientMessenger) {
-      ((IClientMessenger) this.lobbyMessenger).addErrorListener(messengerErrorListener);
-    }
+    lobbyMessenger.addErrorListener(messengerErrorListener);
     connectionChangeListener =
         new IConnectionChangeListener() {
           @Override
@@ -166,9 +162,6 @@ public class InGameLobbyWatcher {
       final IServerMessenger gameMessenger, final InGameLobbyWatcher oldWatcher) {
     final String host = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_HOST));
     final String port = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_PORT));
-    // TODO: Project#12 use https port
-    @SuppressWarnings("unused")
-    final String httpsPort = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_HTTPS_PORT));
     final String hostedBy = Preconditions.checkNotNull(getLobbySystemProperty(TRIPLEA_NAME));
 
     try {
@@ -193,7 +186,6 @@ public class InGameLobbyWatcher {
     final String backupKey = key + ".backup";
     final @Nullable String value = System.getProperty(key);
     if (value != null) {
-      System.clearProperty(key);
       System.setProperty(backupKey, value);
       return value;
     }

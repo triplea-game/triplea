@@ -1,9 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.net.INode;
 import java.util.function.Consumer;
 import lombok.Builder;
-import org.triplea.lobby.common.ILobbyGameController;
+import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
 import org.triplea.util.ExitStatus;
 
 /**
@@ -12,15 +11,20 @@ import org.triplea.util.ExitStatus;
  */
 @Builder
 public class LocalServerAvailabilityCheck {
-  private final ILobbyGameController controller;
-  private final INode localNode;
+  private final ConnectivityCheckClient connectivityCheckClient;
+  private final int localPort;
   private final Consumer<String> errorHandler;
 
+  /**
+   * Starts a thread that requests the server to do a 'reverse' connection back to the local client.
+   * This is to ensure that our local IP address is public facing and that other computers on the
+   * internet can establish connections to this (the local) host.
+   */
   public void run() {
     // if we lose our connection, then shutdown
     new Thread(
             () -> {
-              if (!controller.testGame(localNode)) {
+              if (!connectivityCheckClient.checkConnectivity(localPort)) {
                 // if the server cannot connect to us, then quit
                 errorHandler.accept(
                     "Your computer is not reachable from the internet.\n"
@@ -29,7 +33,7 @@ public class LocalServerAvailabilityCheck {
                         + "(The firewall exception must be updated every time a new version of "
                         + "TripleA comes out.)\n"
                         + "And that your Router is configured to send TCP traffic on port "
-                        + localNode.getPort()
+                        + localPort
                         + " to your local ip address.\n"
                         + "See 'How To Host...' in the help menu, at the top of the lobby "
                         + "screen.");

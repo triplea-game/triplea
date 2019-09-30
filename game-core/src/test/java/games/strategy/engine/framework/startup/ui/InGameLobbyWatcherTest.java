@@ -47,15 +47,6 @@ final class InGameLobbyWatcherTest {
     }
 
     @Test
-    void shouldClearPrimaryValueWhenPrimaryValueSet() {
-      givenPrimaryValueSet();
-
-      getLobbySystemProperty(KEY);
-
-      assertThat(System.getProperty(KEY), is(nullValue()));
-    }
-
-    @Test
     void shouldCopyPrimaryValueToBackupValueWhenPrimaryValueSet() {
       givenPrimaryValueSet();
 

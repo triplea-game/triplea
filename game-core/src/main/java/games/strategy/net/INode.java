@@ -22,7 +22,11 @@ public interface INode extends Serializable, Comparable<INode> {
     return PlayerName.of(getName());
   }
 
-  /** Returns the address for the node as seen by the server. */
+  /**
+   * Returns the address for the node as seen by the server. <br>
+   * WARNING! 'getAddress().getHostAddress(); can return IP address *and* network interface, eg:
+   * 2603:603:f00:ed0:5d12:e3b4:a4d3:c2ea%enp0s10, notice the trailing "enp0s10"
+   */
   InetAddress getAddress();
 
   /** Returns the port for the node as seen by the server. */

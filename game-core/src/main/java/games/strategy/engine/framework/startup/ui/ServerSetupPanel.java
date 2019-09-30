@@ -1,6 +1,9 @@
 package games.strategy.engine.framework.startup.ui;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
+import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
@@ -23,6 +26,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,6 +47,7 @@ import javax.swing.SwingUtilities;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.http.client.lobby.HttpLobbyClient;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -100,11 +105,24 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
                           });
 
               LocalServerAvailabilityCheck.builder()
-                  .controller(watcher.getRemoteMessenger().getLobbyGameController())
+                  .connectivityCheckClient(
+                      HttpLobbyClient.newClient(
+                              URI.create(
+                                  HttpLobbyClient.PROTOCOL
+                                      + System.getProperty(LOBBY_HOST)
+                                      + ":"
+                                      + System.getProperty(LOBBY_HTTPS_PORT)),
+                              watcher.getLobbyMessenger().getApiKey())
+                          .getConnectivityCheckClient())
+                  .localPort(model.getMessenger().getLocalNode().getPort())
                   .errorHandler(errorHandler)
-                  .localNode(model.getMessenger().getLocalNode())
                   .build()
                   .run();
+
+              System.clearProperty(LOBBY_HOST);
+              System.clearProperty(LOBBY_PORT);
+              System.clearProperty(LOBBY_HTTPS_PORT);
+              System.clearProperty(TRIPLEA_NAME);
             });
   }
 
