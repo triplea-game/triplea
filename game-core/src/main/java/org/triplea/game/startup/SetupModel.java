@@ -5,7 +5,6 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
-import java.util.Observer;
 import java.util.Optional;
 import org.triplea.game.chat.ChatModel;
 
@@ -14,10 +13,6 @@ import org.triplea.game.chat.ChatModel;
  * mechanisms.
  */
 public interface SetupModel {
-
-  void addObserver(Observer observer);
-
-  void notifyObservers();
 
   ChatModel getChatModel();
 
