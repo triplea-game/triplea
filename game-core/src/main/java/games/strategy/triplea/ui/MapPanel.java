@@ -265,8 +265,8 @@ public class MapPanel extends ImageScrollerLargeView {
           }
         });
     // When map is scrolled, update information about what we're hovering over.
-    model.addObserver(
-        (object, arg) ->
+    model.addListener(
+        () ->
             SwingUtilities.invokeLater(
                 () -> {
                   if (highlightedTerritory != null) {

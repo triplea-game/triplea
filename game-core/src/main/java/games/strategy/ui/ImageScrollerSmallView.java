@@ -76,7 +76,7 @@ public class ImageScrollerSmallView extends JComponent {
           }
         };
     this.addMouseMotionListener(mouseMotionListener);
-    model.addObserver((o, arg) -> repaint());
+    model.addListener(this::repaint);
   }
 
   /** Changes the image displayed in this view to {@code image}. */

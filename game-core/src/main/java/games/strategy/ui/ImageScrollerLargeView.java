@@ -209,8 +209,8 @@ public class ImageScrollerLargeView extends JComponent {
         };
     addComponentListener(componentListener);
     timer.start();
-    this.model.addObserver(
-        (o, arg) -> {
+    this.model.addListener(
+        () -> {
           repaint();
           notifyScollListeners();
         });
