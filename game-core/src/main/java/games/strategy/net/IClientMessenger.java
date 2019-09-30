@@ -1,8 +1,8 @@
 package games.strategy.net;
 
 import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.engine.lobby.ApiKey;
 import java.io.File;
+import org.triplea.http.client.ApiKey;
 
 /** A client messenger. Additional methods for selecting the game on the server. */
 public interface IClientMessenger extends IMessenger {

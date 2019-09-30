@@ -3,6 +3,7 @@ package org.triplea.http.client.lobby.game.listing;
 import java.net.URI;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.ApiKey;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 
@@ -23,7 +24,7 @@ public class GameListingClient {
   private final AuthenticationHeaders authenticationHeaders;
   private final GameListingFeignClient gameListingFeignClient;
 
-  public static GameListingClient newClient(final URI serverUri, final String apiKey) {
+  public static GameListingClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new GameListingClient(
         new AuthenticationHeaders(apiKey),
         new HttpClient<>(GameListingFeignClient.class, serverUri).get());

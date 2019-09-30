@@ -1,6 +1,5 @@
 package games.strategy.net.nio;
 
-import games.strategy.engine.lobby.ApiKey;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
@@ -14,6 +13,7 @@ import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.http.client.ApiKey;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.DialogBuilder;
 

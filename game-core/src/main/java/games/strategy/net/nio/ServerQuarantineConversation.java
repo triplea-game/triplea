@@ -2,7 +2,6 @@ package games.strategy.net.nio;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import games.strategy.engine.lobby.ApiKey;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
@@ -20,6 +19,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
+import org.triplea.http.client.ApiKey;
 
 /** Server-side implementation of {@link QuarantineConversation}. */
 @Log

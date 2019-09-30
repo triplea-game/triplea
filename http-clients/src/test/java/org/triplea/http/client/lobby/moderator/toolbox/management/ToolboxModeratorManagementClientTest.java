@@ -4,34 +4,29 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.http.client.HttpClientTesting.API_KEY;
 import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBody;
 import static org.triplea.http.client.HttpClientTesting.toJson;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import java.net.URI;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.AuthenticationHeaders;
+import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
-import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
-class ToolboxModeratorManagementClientTest {
+class ToolboxModeratorManagementClientTest extends WireMockTest {
 
   private static final String MODERATOR_NAME = "Ooh! Pieces o' urchin are forever coal-black.";
   private static final ModeratorInfo MODERATOR_INFO =
       ModeratorInfo.builder().name("Oh, power!").lastLogin(Instant.now()).build();
 
   private static ToolboxModeratorManagementClient newClient(final WireMockServer wireMockServer) {
-    final URI hostUri = URI.create(wireMockServer.url(""));
-    return ToolboxModeratorManagementClient.newClient(hostUri, API_KEY);
+    return newClient(wireMockServer, ToolboxModeratorManagementClient::newClient);
   }
 
   @Test

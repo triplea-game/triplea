@@ -8,13 +8,11 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.gson.Gson;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
-import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
-class ForgotPasswordClientTest {
+class ForgotPasswordClientTest extends WireMockTest {
   private static final ForgotPasswordRequest REQUEST =
       ForgotPasswordRequest.builder().username("user").email("email").build();
 

@@ -4,25 +4,21 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.http.client.HttpClientTesting.API_KEY;
 import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBody;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import java.net.URI;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
-import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
-class ToolboxUsernameBanClientTest {
+class ToolboxUsernameBanClientTest extends WireMockTest {
   private static final String USERNAME = "Faith ho! pull to be robed.";
 
   private static final UsernameBanData BANNED_USERNAME_DATA =
@@ -32,8 +28,7 @@ class ToolboxUsernameBanClientTest {
           .build();
 
   private static ToolboxUsernameBanClient newClient(final WireMockServer wireMockServer) {
-    final URI hostUri = URI.create(wireMockServer.url(""));
-    return ToolboxUsernameBanClient.newClient(hostUri, API_KEY);
+    return newClient(wireMockServer, ToolboxUsernameBanClient::newClient);
   }
 
   @Test
