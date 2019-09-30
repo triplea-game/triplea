@@ -17,7 +17,7 @@ public class HeadlessChat implements IChatListener, ChatModel {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
   private Chat chat;
-  private StringBuilder allText = new StringBuilder();
+  private final StringBuilder allText = new StringBuilder();
   private final ChatFloodControl floodControl = new ChatFloodControl();
 
   public HeadlessChat(
@@ -74,10 +74,7 @@ public class HeadlessChat implements IChatListener, ChatModel {
   }
 
   private void addChatMessage(final String originalMessage, final String from) {
-    final String currentAllText = allText.toString();
-    if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
-    }
+    trimLengthIfNecessary();
 
     final String message = Ascii.truncate(originalMessage, 200, "...");
     final String fullMessage =
@@ -87,12 +84,14 @@ public class HeadlessChat implements IChatListener, ChatModel {
 
   @Override
   public void addStatusMessage(final String message) {
-    final String fullMessage = "--- " + message + " ---\n";
-    final String currentAllText = allText.toString();
-    if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
+    trimLengthIfNecessary();
+    allText.append("--- ").append(message).append(" ---\n");
+  }
+
+  private void trimLengthIfNecessary() {
+    if (allText.length() > MAX_LENGTH) {
+      allText.delete(0, MAX_LENGTH / 2);
     }
-    allText.append(fullMessage);
   }
 
   @Override
