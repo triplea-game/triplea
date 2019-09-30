@@ -8,21 +8,21 @@
 
 ## Functional Changes
 <!-- Put an X next any that apply -->
-[ ] New map or map update
-[ ] New Feature
-[ ] Feature update or enhancement
-[ ] Feature Removal
-[ ] Code Cleanup or refactor
-[ ] Configuration Change
-[ ] Bug fix:  <!-- Link to bug issue or forum post here -->
-[ ] Other:   <!-- Please specify -->
+[] New map or map update
+[] New Feature
+[] Feature update or enhancement
+[] Feature Removal
+[] Code Cleanup or refactor
+[] Configuration Change
+[] Bug fix:  <!-- Link to bug issue or forum post here -->
+[] Other:   <!-- Please specify -->
 
 
 ## Testing
 <!-- Place an X next to one of the below -->
 
-[ ] No manual testing done
-[ ] Manually tested
+[] No manual testing done
+[] Manually tested
 <!-- If manually tested, summarize the testing done below this line. -->
 
 
