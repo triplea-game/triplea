@@ -21,11 +21,9 @@ import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 @ExtendWith(MockitoExtension.class)
 class CreateIssueStrategyTest {
 
-  private static final org.triplea.server.error.reporting.ErrorReportRequest ERROR_REPORT_REQUEST =
-      org.triplea.server.error.reporting.ErrorReportRequest.builder()
-          .errorReport(ErrorReportRequest.builder().body("body").title("title").build())
-          .clientIp("ip")
-          .build();
+  private static final ErrorReportRequest ERROR_REPORT_REQUEST =
+      ErrorReportRequest.builder().body("body").title("title").build();
+  private static final String IP = "127.0.1.10";
 
   private CreateIssueStrategy createIssueStrategy;
 
@@ -46,11 +44,11 @@ class CreateIssueStrategyTest {
             .build();
     when(githubIssueClient.isTest()).thenReturn(true);
 
-    final ErrorReportResponse response = createIssueStrategy.apply(ERROR_REPORT_REQUEST);
+    final ErrorReportResponse response = createIssueStrategy.apply(IP, ERROR_REPORT_REQUEST);
 
     assertThat(response.getGithubIssueLink(), is(CreateIssueStrategy.STUBBED_RETURN_VALUE));
 
-    verify(errorReportingDao).insertHistoryRecord(ERROR_REPORT_REQUEST.getClientIp());
+    verify(errorReportingDao).insertHistoryRecord(IP);
     verify(errorReportingDao).purgeOld(any());
   }
 
@@ -65,14 +63,13 @@ class CreateIssueStrategyTest {
             .build();
 
     when(githubIssueClient.isTest()).thenReturn(false);
-    when(githubIssueClient.newIssue(ERROR_REPORT_REQUEST.getErrorReport()))
-        .thenReturn(createIssueResponse);
+    when(githubIssueClient.newIssue(ERROR_REPORT_REQUEST)).thenReturn(createIssueResponse);
     when(responseAdapter.apply(createIssueResponse)).thenReturn(errorReportResponse);
 
-    final ErrorReportResponse response = createIssueStrategy.apply(ERROR_REPORT_REQUEST);
+    final ErrorReportResponse response = createIssueStrategy.apply(IP, ERROR_REPORT_REQUEST);
     assertThat(response, sameInstance(errorReportResponse));
 
-    verify(errorReportingDao).insertHistoryRecord(ERROR_REPORT_REQUEST.getClientIp());
+    verify(errorReportingDao).insertHistoryRecord(IP);
     verify(errorReportingDao).purgeOld(any());
   }
 }

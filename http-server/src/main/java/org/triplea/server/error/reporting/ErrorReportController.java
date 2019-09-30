@@ -4,7 +4,7 @@ import es.moki.ratelimij.dropwizard.annotation.Rate;
 import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -21,8 +21,7 @@ import org.triplea.server.http.IpAddressExtractor;
 @Builder
 public class ErrorReportController extends HttpController {
   @Nonnull
-  private final Function<org.triplea.server.error.reporting.ErrorReportRequest, ErrorReportResponse>
-      errorReportIngestion;
+  private final BiFunction<String, ErrorReportRequest, ErrorReportResponse> errorReportIngestion;
 
   @POST
   @Path(ErrorReportClient.ERROR_REPORT_PATH)
@@ -38,10 +37,6 @@ public class ErrorReportController extends HttpController {
       throw new IllegalArgumentException("Missing error report body and/or title");
     }
 
-    return errorReportIngestion.apply(
-        org.triplea.server.error.reporting.ErrorReportRequest.builder()
-            .clientIp(IpAddressExtractor.extractClientIp(request))
-            .errorReport(errorReport)
-            .build());
+    return errorReportIngestion.apply(IpAddressExtractor.extractClientIp(request), errorReport);
   }
 }

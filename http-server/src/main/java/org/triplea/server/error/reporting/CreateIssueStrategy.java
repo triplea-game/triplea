@@ -3,10 +3,12 @@ package org.triplea.server.error.reporting;
 import com.google.common.annotations.VisibleForTesting;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.NonNull;
+import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
@@ -14,7 +16,8 @@ import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 
 /** Performs the steps for uploading an error report from the point of view of the server. */
 @Builder
-public class CreateIssueStrategy implements Function<ErrorReportRequest, ErrorReportResponse> {
+public class CreateIssueStrategy
+    implements BiFunction<String, ErrorReportRequest, ErrorReportResponse> {
 
   @VisibleForTesting
   static final String STUBBED_RETURN_VALUE =
@@ -31,10 +34,11 @@ public class CreateIssueStrategy implements Function<ErrorReportRequest, ErrorRe
   @Nonnull private final ErrorReportingDao errorReportingDao;
 
   @Override
-  public ErrorReportResponse apply(final ErrorReportRequest errorReportRequest) {
+  public ErrorReportResponse apply(
+      final String ipAddress, final ErrorReportRequest errorReportRequest) {
     final ErrorReportResponse errorReportResponse = sendRequest(errorReportRequest);
 
-    errorReportingDao.insertHistoryRecord(errorReportRequest.getClientIp());
+    errorReportingDao.insertHistoryRecord(ipAddress);
     errorReportingDao.purgeOld(Instant.now().minus(365, ChronoUnit.DAYS));
 
     return errorReportResponse;
@@ -44,8 +48,7 @@ public class CreateIssueStrategy implements Function<ErrorReportRequest, ErrorRe
     if (githubIssueClient.isTest()) {
       return ErrorReportResponse.builder().githubIssueLink(STUBBED_RETURN_VALUE).build();
     }
-    final CreateIssueResponse response =
-        githubIssueClient.newIssue(errorReportRequest.getErrorReport());
+    final CreateIssueResponse response = githubIssueClient.newIssue(errorReportRequest);
     return responseAdapter.apply(response);
   }
 }
