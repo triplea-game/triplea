@@ -1,12 +1,15 @@
 package games.strategy.engine.chat;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
+import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,16 +31,27 @@ import javax.swing.SwingConstants;
  */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
-  private final IGame game;
-  private final UiContext uiContext;
-  private int maxIconCounter = 0;
   private final Map<String, List<Icon>> iconMap = new HashMap<>();
   private final Map<String, Set<String>> playerMap = new HashMap<>();
 
   public PlayerChatRenderer(final IGame game, final UiContext uiContext) {
-    this.game = game;
-    this.uiContext = uiContext;
-    setIconMap();
+    Preconditions.checkNotNull(game);
+    Preconditions.checkNotNull(uiContext);
+    final FlagIconImageFactory factory =
+        Preconditions.checkNotNull(uiContext.getFlagImageFactory());
+
+    final PlayerManager playerManager = game.getPlayerManager();
+    final PlayerList playerList = getPlayerList(game);
+    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
+      final Set<String> players = playerManager.getPlayedBy(playerNode);
+      final List<Icon> icons =
+          players.stream()
+              .map(player -> new ImageIcon(factory.getSmallFlag(playerList.getPlayerId(player))))
+              .collect(Collectors.toList());
+      final String name = playerNode.getPlayerName().getValue();
+      playerMap.put(name, players);
+      iconMap.put(name, icons);
+    }
   }
 
   @Override
@@ -48,19 +62,20 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final boolean isSelected,
       final boolean cellHasFocus) {
     final ChatParticipant chatParticipant = (ChatParticipant) value;
-    final List<Icon> icons = iconMap.get(chatParticipant.getPlayerName().getValue());
-    if (icons != null) {
-      super.getListCellRendererComponent(
-          list, chatParticipant.getPlayerName().getValue(), index, isSelected, cellHasFocus);
-      setHorizontalTextPosition(SwingConstants.LEFT);
-      setIcon(new CompositeIcon(icons));
-    } else {
+    final List<Icon> icons =
+        iconMap.getOrDefault(chatParticipant.getPlayerName().getValue(), Collections.emptyList());
+    if (icons.isEmpty()) {
       super.getListCellRendererComponent(
           list,
           getNodeLabelWithPlayers(chatParticipant.getPlayerName()),
           index,
           isSelected,
           cellHasFocus);
+    } else {
+      super.getListCellRendererComponent(
+          list, chatParticipant.getPlayerName().getValue(), index, isSelected, cellHasFocus);
+      setHorizontalTextPosition(SwingConstants.LEFT);
+      setIcon(new CompositeIcon(icons));
     }
     return this;
   }
@@ -74,41 +89,16 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
             : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
   }
 
-  private void setIconMap() {
-    final PlayerManager playerManager = game.getPlayerManager();
-    final PlayerList playerList;
+  private static PlayerList getPlayerList(final IGame game) {
     game.getData().acquireReadLock();
     try {
-      playerList = game.getData().getPlayerList();
+      return game.getData().getPlayerList();
     } finally {
       game.getData().releaseReadLock();
     }
-    // new HashSet removes duplicates
-    for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
-      final Set<String> players = playerManager.getPlayedBy(playerNode);
-      if (players.size() > 0) {
-        final List<Icon> icons =
-            players.stream()
-                .filter(player -> uiContext != null && uiContext.getFlagImageFactory() != null)
-                .map(
-                    player ->
-                        new ImageIcon(
-                            uiContext
-                                .getFlagImageFactory()
-                                .getSmallFlag(playerList.getPlayerId(player))))
-                .collect(Collectors.toList());
-        maxIconCounter = Math.max(maxIconCounter, icons.size());
-        playerMap.put(playerNode.getPlayerName().getValue(), players);
-        if (uiContext == null) {
-          iconMap.put(playerNode.getPlayerName().getValue(), null);
-        } else {
-          iconMap.put(playerNode.getPlayerName().getValue(), icons);
-        }
-      }
-    }
   }
 
-  public int getMaxIconCounter() {
-    return maxIconCounter;
+  int getMaxIconCounter() {
+    return iconMap.values().stream().mapToInt(Collection::size).max().orElse(0);
   }
 }
