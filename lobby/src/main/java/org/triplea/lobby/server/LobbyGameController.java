@@ -6,9 +6,6 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,18 +81,6 @@ final class LobbyGameController implements ILobbyGameController {
 
   void register(final IRemoteMessenger remote) {
     remote.registerRemote(this, REMOTE_NAME);
-  }
-
-  @Override
-  public boolean testGame(final INode node) {
-    // make sure we are being tested from the right node
-    final InetSocketAddress address = node.getSocketAddress();
-    try (Socket s = new Socket()) {
-      s.connect(address, 10 * 1000);
-      return true;
-    } catch (final IOException e) {
-      return false;
-    }
   }
 
   private void assertCorrectGameOwner(final UUID gameId) {

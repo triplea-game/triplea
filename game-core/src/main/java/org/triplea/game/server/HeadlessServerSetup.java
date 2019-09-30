@@ -1,7 +1,9 @@
 package org.triplea.game.server;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -10,11 +12,13 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.java.Log;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.java.Interruptibles;
 
 /** Server setup model. */
@@ -39,12 +43,26 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
 
     lobbyWatcher.setInGameLobbyWatcher(watcher);
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
+
     LocalServerAvailabilityCheck.builder()
-        .localNode(model.getMessenger().getLocalNode())
-        .controller(watcher.getRemoteMessenger().getLobbyGameController())
+        .connectivityCheckClient(
+            HttpLobbyClient.newClient(
+                    URI.create(
+                        HttpLobbyClient.PROTOCOL
+                            + System.getProperty(LOBBY_HOST)
+                            + ":"
+                            + System.getProperty(LOBBY_HTTPS_PORT)),
+                    watcher.getLobbyMessenger().getApiKey())
+                .getConnectivityCheckClient())
+        .localPort(model.getMessenger().getLocalNode().getPort())
         .errorHandler(log::severe)
         .build()
         .run();
+
+    System.clearProperty(LOBBY_HOST);
+    System.clearProperty(LOBBY_PORT);
+    System.clearProperty(LOBBY_HTTPS_PORT);
+    System.clearProperty(TRIPLEA_NAME);
   }
 
   private static class CouldNotConnectToLobby extends RuntimeException {
