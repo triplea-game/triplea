@@ -170,10 +170,6 @@ final class LobbyLoginValidatorTest {
     final void thenUserShouldNotBeCreated() {
       verify(userDao, never()).createUser(any(), any(), any());
     }
-
-    final void thenUserShouldNotBeUpdated() {
-      verify(userDao, never()).updateUser(any(), any(), any());
-    }
   }
 
   abstract class AbstractNoBansTestCase extends AbstractTestCase {
@@ -209,7 +205,6 @@ final class LobbyLoginValidatorTest {
 
         thenAuthenticationShouldSucceed();
         thenUserShouldNotBeCreated();
-        thenUserShouldNotBeUpdated();
       }
 
       @Test
@@ -221,7 +216,6 @@ final class LobbyLoginValidatorTest {
         thenAuthenticationShouldFailWithMessage(
             LobbyLoginValidator.ErrorMessages.ANONYMOUS_AUTHENTICATION_FAILED);
         thenUserShouldNotBeCreated();
-        thenUserShouldNotBeUpdated();
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
@@ -248,7 +242,6 @@ final class LobbyLoginValidatorTest {
 
           thenAuthenticationShouldSucceed();
           thenUserShouldNotBeCreated();
-          thenUserShouldNotBeUpdated();
         }
 
         private ResponseGenerator givenAuthenticationResponse() {

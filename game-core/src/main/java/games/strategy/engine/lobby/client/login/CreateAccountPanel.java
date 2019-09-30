@@ -1,7 +1,5 @@
 package games.strategy.engine.lobby.client.login;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.triplea.settings.ClientSetting;
@@ -28,7 +26,7 @@ import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** The panel used to create a new lobby account or update an existing lobby account. */
-public final class CreateUpdateAccountPanel extends JPanel {
+public final class CreateAccountPanel extends JPanel {
   private static final long serialVersionUID = 2285956517232671122L;
 
   /** Indicates how the user dismissed the dialog displaying the panel. */
@@ -37,57 +35,17 @@ public final class CreateUpdateAccountPanel extends JPanel {
     OK
   }
 
-  private final String title;
+  private static final String TITLE = "Create Account";
   private @Nullable JDialog dialog;
   private final JTextField usernameField = new JTextField();
   private final JTextField emailField = new JTextField();
   private final JPasswordField passwordField = new JPasswordField();
   private final JPasswordField passwordConfirmField = new JPasswordField();
-  private final JCheckBox rememberPasswordCheckbox =
-      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
-  private final JButton okButton = new JButton("OK");
-  private final JButton cancelButton = new JButton("Cancel");
   private ReturnValue returnValue = ReturnValue.CANCEL;
 
-  private CreateUpdateAccountPanel(final boolean create) {
-    title = create ? "Create Account" : "Update Account";
-
-    layoutComponents();
-    setupListeners();
-  }
-
-  /**
-   * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to update the
-   * specified lobby account.
-   *
-   * @param username The lobby account username to update.
-   * @param email The lobby account email to update.
-   * @return A new {@code CreateUpdateAccountPanel}.
-   */
-  public static CreateUpdateAccountPanel newUpdatePanel(final String username, final String email) {
-    checkNotNull(username);
-    checkNotNull(email);
-
-    final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
-    panel.usernameField.setText(username);
-    panel.usernameField.setEnabled(false);
-    panel.emailField.setText(email);
-    return panel;
-  }
-
-  /**
-   * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to create a
-   * new lobby account.
-   *
-   * @return A new {@code CreateUpdateAccountPanel}.
-   */
-  static CreateUpdateAccountPanel newCreatePanel() {
-    return new CreateUpdateAccountPanel(true);
-  }
-
-  private void layoutComponents() {
+  CreateAccountPanel() {
     setLayout(new BorderLayout());
-    final JLabel label = new JLabel(new ImageIcon(Util.getBanner(title)));
+    final JLabel label = new JLabel(new ImageIcon(Util.getBanner(TITLE)));
     add(label, BorderLayout.NORTH);
 
     final JPanel main = new JPanel();
@@ -220,6 +178,8 @@ public final class CreateUpdateAccountPanel extends JPanel {
             new Insets(5, 0, 0, 0),
             0,
             0));
+    final JCheckBox rememberPasswordCheckbox =
+        new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
     main.add(
         rememberPasswordCheckbox,
         new GridBagConstraints(
@@ -239,11 +199,11 @@ public final class CreateUpdateAccountPanel extends JPanel {
     add(buttons, BorderLayout.SOUTH);
     buttons.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+    final JButton okButton = new JButton("OK");
     buttons.add(okButton);
+    final JButton cancelButton = new JButton("Cancel");
     buttons.add(cancelButton);
-  }
 
-  private void setupListeners() {
     cancelButton.addActionListener(e -> close());
     okButton.addActionListener(e -> okPressed());
 
@@ -303,7 +263,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
    *     created/updated; otherwise {@link ReturnValue#CANCEL}.
    */
   public ReturnValue show(final Window parent) {
-    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), title, true);
+    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "", true);
     dialog.getContentPane().add(this);
     SwingComponents.addEscapeKeyListener(dialog, this::close);
     dialog.pack();
@@ -322,7 +282,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
     return emailField.getText();
   }
 
-  public String getUserName() {
+  String getUserName() {
     return usernameField.getText();
   }
 }

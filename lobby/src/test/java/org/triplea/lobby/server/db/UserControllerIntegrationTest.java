@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,7 +11,6 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
-import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
@@ -35,12 +33,6 @@ final class UserControllerIntegrationTest {
   }
 
   @Test
-  void testGet() {
-    final String user = newUserWithBCryptHash();
-    assertEquals(generateEmailAddress(user), controller.getUserEmailByName(user));
-  }
-
-  @Test
   void testDoesUserExist() {
     assertTrue(controller.doesUserExist(newUserWithBCryptHash()));
   }
@@ -56,34 +48,6 @@ final class UserControllerIntegrationTest {
                 generateEmailAddress(user),
                 new HashedPassword(md5Crypt(TestUserUtils.newUniqueTimestamp()))),
         "Should not be allowed to create a dupe user");
-  }
-
-  @Test
-  void testLogin() {
-    final String password = bcrypt(TestUserUtils.newUniqueTimestamp());
-    final String user = newUserWithHash(password, Function.identity());
-    controller.updateUser(
-        user, generateEmailAddress(user), new HashedPassword(bcrypt(obfuscate(password))));
-    assertTrue(controller.login(user, obfuscate(password)));
-  }
-
-  @Test
-  void testUpdate() throws Exception {
-    final String user = newUserWithBCryptHash();
-    assertTrue(controller.doesUserExist(user));
-    final String password2 = md5Crypt("foo");
-    final String email2 = "foo@foo.foo";
-    controller.updateUser(
-        user, email2, new HashedPassword(bcrypt(obfuscate(TestUserUtils.newUniqueTimestamp()))));
-    controller.updateUser(user, email2, new HashedPassword(password2));
-    try (Connection con = TestDatabase.newConnection()) {
-      final String sql = " select * from lobby_user where username = '" + user + "'";
-      final ResultSet rs = con.createStatement().executeQuery(sql);
-      assertTrue(rs.next());
-      assertEquals(email2, rs.getString("email"));
-      assertEquals(password2, rs.getString("password"));
-      assertNull(rs.getString("bcrypt_password"));
-    }
   }
 
   private String newUserWithBCryptHash() {
@@ -120,9 +84,5 @@ final class UserControllerIntegrationTest {
       "deprecation") // required for testing; remove upon next lobby-incompatible release
   private static String md5Crypt(final String value) {
     return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
-  }
-
-  private static String obfuscate(final String string) {
-    return RsaAuthenticator.hashPasswordWithSalt(string);
   }
 }

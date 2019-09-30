@@ -102,8 +102,8 @@ public class LobbyLogin {
   }
 
   private @Nullable LobbyClient createAccount() {
-    final CreateUpdateAccountPanel createAccountPanel = CreateUpdateAccountPanel.newCreatePanel();
-    final CreateUpdateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
+    final CreateAccountPanel createAccountPanel = new CreateAccountPanel();
+    final CreateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
     switch (returnValue) {
       case OK:
         return createAccount(createAccountPanel);
@@ -114,7 +114,7 @@ public class LobbyLogin {
     }
   }
 
-  private @Nullable LobbyClient createAccount(final CreateUpdateAccountPanel panel) {
+  private @Nullable LobbyClient createAccount(final CreateAccountPanel panel) {
     try {
       final IClientMessenger messenger =
           GameRunner.newBackgroundTaskRunner()
