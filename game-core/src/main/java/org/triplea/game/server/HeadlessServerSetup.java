@@ -10,11 +10,8 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
-import java.util.List;
 import java.util.Map;
-import java.util.Observer;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.java.Log;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
@@ -23,7 +20,6 @@ import org.triplea.java.Interruptibles;
 /** Server setup model. */
 @Log
 class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
-  private final List<Observer> listeners = new CopyOnWriteArrayList<>();
   private final ServerModel model;
   private final GameSelectorModel gameSelectorModel;
   private final InGameLobbyWatcherWrapper lobbyWatcher = new InGameLobbyWatcherWrapper();
@@ -33,7 +29,6 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
     this.gameSelectorModel = gameSelectorModel;
     this.model.setRemoteModelListener(this);
     createLobbyWatcher();
-    internalPlayerListChanged();
   }
 
   private void createLobbyWatcher() {
@@ -90,22 +85,10 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   }
 
   @Override
-  public void playerListChanged() {
-    internalPlayerListChanged();
-  }
+  public void playerListChanged() {}
 
   @Override
-  public void playersTakenChanged() {
-    internalPlayersTakenChanged();
-  }
-
-  private void internalPlayersTakenChanged() {
-    notifyObservers();
-  }
-
-  private void internalPlayerListChanged() {
-    internalPlayersTakenChanged();
-  }
+  public void playersTakenChanged() {}
 
   @Override
   public ChatModel getChatModel() {
@@ -125,18 +108,6 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
               launcher.setInGameLobbyWatcher(lobbyWatcher);
               return launcher;
             });
-  }
-
-  @Override
-  public void addObserver(final Observer observer) {
-    listeners.add(observer);
-  }
-
-  @Override
-  public void notifyObservers() {
-    for (final Observer observer : listeners) {
-      observer.update(null, null);
-    }
   }
 
   @Override

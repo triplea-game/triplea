@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Observer;
+import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,20 +28,17 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
   private static final long serialVersionUID = 4001323470187210773L;
   private static final String SET_ALL_DEFAULT_LABEL = "Default";
 
-  private final List<Observer> listeners = new ArrayList<>();
+  private final List<Consumer<SetupPanel>> listeners = new ArrayList<>();
 
-  @Override
-  public void addObserver(final Observer observer) {
+  public void addObserver(final Consumer<SetupPanel> observer) {
     listeners.add(observer);
   }
 
-  @Override
-  public void notifyObservers() {
-    for (final Observer observer : listeners) {
-      observer.update(null, null);
-    }
+  void notifyObservers() {
+    listeners.forEach(consumer -> consumer.accept(this));
   }
 
+  @Nullable
   @Override
   public ChatModel getChatModel() {
     return null;
