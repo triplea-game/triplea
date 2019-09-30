@@ -2,7 +2,6 @@ package org.triplea.lobby.common;
 
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.net.INode;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,13 +17,4 @@ public interface ILobbyGameController extends IRemote {
   void updateGame(UUID gameId, GameDescription description);
 
   Map<UUID, GameDescription> listGames();
-
-  /**
-   * Test if the server can connect to the game at this address. This is used to see if the client
-   * address is network accessible (this will not be true if the client is behind a nat or firewall
-   * that is not properly configured).
-   *
-   * <p>This method may only be called by the node that is hosting this game.
-   */
-  boolean testGame(INode node);
 }
