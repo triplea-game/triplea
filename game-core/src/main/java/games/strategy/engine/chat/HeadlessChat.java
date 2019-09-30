@@ -4,7 +4,6 @@ import com.google.common.base.Ascii;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.Messengers;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import java.awt.Component;
 import java.util.Collection;
@@ -58,7 +57,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
   @Override
   public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
     addChatMessage(message, from.getValue());
-    ClipPlayer.play(sound);
   }
 
   private void addChatMessage(final String originalMessage, final String from) {
