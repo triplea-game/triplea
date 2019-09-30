@@ -11,6 +11,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.WireMockTest;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
