@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import com.google.common.base.Ascii;
 import games.strategy.engine.lobby.PlayerName;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -238,24 +239,11 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       return "";
     }
 
-    String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
-    String status = chat.getStatus(chatParticipant.getPlayerName());
+    final String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
+    final String status = Ascii.truncate(chat.getStatus(chatParticipant.getPlayerName()), 25, "");
+    final String suffix = status.isEmpty() ? "" : " (" + status + ")";
 
-    final StringBuilder sb = new StringBuilder();
-    if (status.length() > 0) {
-      if (status.length() > 25) {
-        status = status.substring(0, 25);
-      }
-      for (int i = 0; i < status.length(); i++) {
-        final char c = status.charAt(i);
-        if (c >= '\u0300' && c <= '\u036F') { // skip combining characters
-          continue;
-        }
-        sb.append(c);
-      }
-      extra = extra + " (" + sb + ")";
-    }
-    return chatParticipant.getPlayerName() + extra;
+    return chatParticipant.getPlayerName() + extra + suffix;
   }
 
   @Override
