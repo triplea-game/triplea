@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.triplea.util.Tuple;
 
 /**
  * An attachment for instances of {@link UnitType} that defines properties for unit types that
@@ -37,7 +38,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private int number = 0;
   private boolean allied = false;
   private boolean enemy = false;
-  private String bonusType = null;
+  private Tuple<Integer, String> bonusType = null;
   private List<PlayerId> players = new ArrayList<>();
   private boolean impArtTech = false;
   // strings
@@ -214,7 +215,19 @@ public class UnitSupportAttachment extends DefaultAttachment {
     number = 0;
   }
 
-  private void setBonusType(final String type) {
+  private void setBonusType(final String type) throws GameParseException {
+    final String[] s = splitOnColon(type);
+    if (s.length > 2) {
+      throw new GameParseException("bonusType can only have value and count" + thisErrorMsg());
+    }
+    if (s.length == 1) {
+      bonusType = Tuple.of(1, s[0]);
+    } else {
+      bonusType = Tuple.of(getInt(s[0]), s[1]);
+    }
+  }
+
+  private void setBonusType(final Tuple<Integer, String> type) {
     bonusType = type;
   }
 
@@ -301,7 +314,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return offence;
   }
 
-  public String getBonusType() {
+  public Tuple<Integer, String> getBonusType() {
     return bonusType;
   }
 
@@ -337,7 +350,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private static Set<UnitType> getTargets(final GameData data) {
     Set<UnitType> types = null;
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME)) {
+      if (rule.getBonusType().getSecond().equals(Constants.OLD_ART_RULE_NAME)) {
         types = rule.getUnitType();
         if (rule.getName().startsWith(Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST)) {
           // remove it because it is a "first", which is just a temporary one made to hold target
@@ -363,7 +376,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttachedTo() == type) {
+      if (rule.getBonusType().getSecond().equals(Constants.OLD_ART_RULE_NAME)
+          && rule.getAttachedTo() == type) {
         rule.setNumber(count);
       }
     }
@@ -372,7 +386,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   static void addTarget(final UnitType type, final GameData data) throws GameParseException {
     boolean first = true;
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME)) {
+      if (rule.getBonusType().getSecond().equals(Constants.OLD_ART_RULE_NAME)) {
         rule.addUnitTypes(Collections.singleton(type));
         first = false;
       }
@@ -412,7 +426,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
         .put("enemy", MutableProperty.ofReadOnly(this::getEnemy))
         .put(
             "bonusType",
-            MutableProperty.ofString(this::setBonusType, this::getBonusType, this::resetBonusType))
+            MutableProperty.of(
+                this::setBonusType, this::setBonusType, this::getBonusType, this::resetBonusType))
         .put(
             "players",
             MutableProperty.of(

@@ -3262,7 +3262,7 @@ public class UnitAttachment extends DefaultAttachment {
                     : (support.getOffence() ? "Attack" : "Defense"));
         final String text =
             support.getBonus()
-                + (moreThanOneSupportType ? " " + support.getBonusType() : "")
+                + (moreThanOneSupportType ? " " + support.getBonusType().getSecond() : "")
                 + " "
                 + (support.getDice() == null
                     ? ""
