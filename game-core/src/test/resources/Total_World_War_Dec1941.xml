@@ -16755,7 +16755,7 @@
       <option name="dice" value="strength"/>
       <option name="bonus" value="1"/>
       <option name="number" value="1"/>
-      <option name="bonusType" value="ArtilleryBonus"/>
+      <option name="bonusType" value="ArtilleryBonus" count="2"/>
       <option name="impArtTech" value="false"/>
       <option name="players" value="Germany"/>
     </attachment>
