@@ -2,13 +2,8 @@ package games.strategy.engine.lobby.client;
 
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
-import java.util.Map;
-import java.util.UUID;
 import lombok.Getter;
 import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.lobby.common.GameDescription;
-import org.triplea.lobby.common.ILobbyGameBroadcaster;
-import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IModeratorController;
 
 /** Provides information about a client connection to a lobby server. */
@@ -37,15 +32,6 @@ public class LobbyClient {
 
   public boolean isPasswordChangeRequired() {
     return messengers.isPasswordChangeRequired();
-  }
-
-  public Map<UUID, GameDescription> listGames() {
-    return ((ILobbyGameController) messengers.getRemote(ILobbyGameController.REMOTE_NAME))
-        .listGames();
-  }
-
-  public void addGameChangeListener(final ILobbyGameBroadcaster lobbyGameBroadcaster) {
-    messengers.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
   }
 
   /** Returns the assigned name of the current player connected to the lobby. */

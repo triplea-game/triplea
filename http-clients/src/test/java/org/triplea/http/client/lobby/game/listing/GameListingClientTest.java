@@ -26,7 +26,7 @@ class GameListingClientTest extends WireMockTest {
 
   private static final LobbyGame LOBBY_GAME =
       LobbyGame.builder()
-          .hostIpAddress("127.0.0.1")
+          .hostAddress("127.0.0.1")
           .hostPort(12)
           .hostName("name")
           .mapName("map")

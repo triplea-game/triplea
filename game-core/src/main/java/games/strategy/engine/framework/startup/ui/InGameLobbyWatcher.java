@@ -1,40 +1,28 @@
 package games.strategy.engine.framework.startup.ui;
 
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
-import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.startup.SystemPropertyReader;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-import games.strategy.net.ClientMessengerFactory;
-import games.strategy.net.IClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
-import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.Observer;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
-import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.java.Timers;
 import org.triplea.lobby.common.GameDescription;
-import org.triplea.lobby.common.ILobbyGameController;
-import org.triplea.lobby.common.IRemoteHostUtils;
 
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
@@ -43,48 +31,51 @@ import org.triplea.lobby.common.IRemoteHostUtils;
  */
 @Log
 public class InGameLobbyWatcher {
-  // this is the messenger used by the game
-  // it is different than the messenger we use to connect to the game lobby
-  private final IServerMessenger serverMessenger;
   private boolean isShutdown = false;
-  private final UUID gameId = UUID.randomUUID();
+  private String gameId;
   private GameSelectorModel gameSelectorModel;
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame game;
-  // we create this messenger, and use it to connect to the game lobby
-  @Getter private final IClientMessenger lobbyMessenger;
-  @Getter private final IRemoteMessenger remoteMessenger;
-  private final Object postMutex = new Object();
   private GameDescription gameDescription;
   private final IConnectionChangeListener connectionChangeListener;
-  private final IMessengerErrorListener messengerErrorListener = e -> shutDown();
   private final boolean humanPlayer;
 
+  private final GameListingClient gameListingClient;
+
+  private final IServerMessenger serverMessenger;
+
+  private final Timer keepAliveTimer;
+
   private InGameLobbyWatcher(
-      final IClientMessenger lobbyMessenger,
-      final IRemoteMessenger remoteMessenger,
       final IServerMessenger serverMessenger,
+      final GameHostingResponse gameHostingResponse,
+      final GameListingClient gameListingClient,
+      final Consumer<String> errorReporter,
+      final Consumer<String> reconnectionReporter,
       @Nullable final InGameLobbyWatcher oldWatcher) {
     this(
-        lobbyMessenger,
-        remoteMessenger,
         serverMessenger,
+        gameHostingResponse,
+        gameListingClient,
+        errorReporter,
+        reconnectionReporter,
         Optional.ofNullable(oldWatcher).map(old -> old.gameDescription).orElse(null),
         Optional.ofNullable(oldWatcher).map(old -> old.game).orElse(null));
   }
 
   private InGameLobbyWatcher(
-      final IClientMessenger lobbyMessenger,
-      final IRemoteMessenger remoteMessenger,
       final IServerMessenger serverMessenger,
+      final GameHostingResponse gameHostingResponse,
+      final GameListingClient gameListingClient,
+      final Consumer<String> errorReporter,
+      final Consumer<String> reconnectionReporter,
       @Nullable final GameDescription oldGameDescription,
       @Nullable final IGame oldGame) {
-    this.lobbyMessenger = lobbyMessenger;
-    this.remoteMessenger = remoteMessenger;
     this.serverMessenger = serverMessenger;
+    this.gameListingClient = gameListingClient;
     humanPlayer = !HeadlessGameServer.headless();
 
-    final boolean passworded = !Strings.nullToEmpty(System.getProperty(SERVER_PASSWORD)).isEmpty();
+    final boolean passworded = SystemPropertyReader.serverIsPassworded();
 
     final Instant startDateTime =
         Optional.ofNullable(oldGameDescription)
@@ -104,15 +95,13 @@ public class InGameLobbyWatcher {
     final int gameRound =
         Optional.ofNullable(oldGameDescription).map(GameDescription::getRound).orElse(0);
 
-    final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
-    final InetSocketAddress publicView =
-        Optional.ofNullable(System.getProperty("customHost"))
-            .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
-            .orElse(
-                new InetSocketAddress(
-                    lobbyMessenger.getLocalNode().getSocketAddress().getHostName(),
-                    serverMessenger.getLocalNode().getPort()));
-    final INode publicNode = new Node(lobbyMessenger.getLocalNode().getName(), publicView);
+    final INode publicNode =
+        new Node(
+            serverMessenger.getLocalNode().getName(),
+            SystemPropertyReader.customHost().orElseGet(gameHostingResponse::getPublicVisibleIp),
+            SystemPropertyReader.customPort()
+                .orElseGet(() -> serverMessenger.getLocalNode().getPort()));
+
     gameDescription =
         GameDescription.builder()
             .hostedBy(publicNode)
@@ -121,17 +110,28 @@ public class InGameLobbyWatcher {
             .playerCount(playerCount)
             .status(gameStatus)
             .round(gameRound)
-            .hostName(serverMessenger.getLocalNode().getName())
-            .comment(System.getProperty(LOBBY_GAME_COMMENTS))
+            .comment(SystemPropertyReader.gameComments())
             .passworded(passworded)
             .gameVersion("0")
             .build();
-    final ILobbyGameController controller =
-        (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
-    synchronized (postMutex) {
-      controller.postGame(gameId, gameDescription);
-    }
-    lobbyMessenger.addErrorListener(messengerErrorListener);
+
+    gameId = gameListingClient.postGame(gameDescription.toLobbyGame());
+
+    // Period time is chosen to less than half the keep-alive cut-off time. In case a keep-alive
+    // message is lost or missed, we have time to send another one before reaching the cut-off time.
+    keepAliveTimer =
+        Timers.fixedRateTimer()
+            .period((GameListingClient.KEEP_ALIVE_SECONDS / 2) - 1, TimeUnit.SECONDS)
+            .task(
+                LobbyWatcherKeepAliveTask.builder()
+                    .gameId(gameId)
+                    .gameIdSetter(id -> gameId = id)
+                    .connectionLostReporter(errorReporter)
+                    .connectionReEstablishedReporter(reconnectionReporter)
+                    .keepAliveSender(gameListingClient::sendKeepAlive)
+                    .gamePoster(() -> gameListingClient.postGame(gameDescription.toLobbyGame()))
+                    .build());
+
     connectionChangeListener =
         new IConnectionChangeListener() {
           @Override
@@ -159,22 +159,21 @@ public class InGameLobbyWatcher {
    * @return Empty if no watcher should be created
    */
   public static Optional<InGameLobbyWatcher> newInGameLobbyWatcher(
-      final IServerMessenger gameMessenger, final InGameLobbyWatcher oldWatcher) {
-    final String host = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_HOST));
-    final String port = Preconditions.checkNotNull(getLobbySystemProperty(LOBBY_PORT));
-    final String hostedBy = Preconditions.checkNotNull(getLobbySystemProperty(TRIPLEA_NAME));
-
+      final IServerMessenger serverMessenger,
+      final GameHostingResponse gameHostingResponse,
+      final GameListingClient gameListingClient,
+      final Consumer<String> errorReporter,
+      final Consumer<String> reconnectionReporter,
+      final InGameLobbyWatcher oldWatcher) {
     try {
-      final IClientMessenger messenger =
-          ClientMessengerFactory.newLobbyWatcherMessenger(host, Integer.parseInt(port), hostedBy);
-      final var unifiedMessenger = new UnifiedMessenger(messenger);
-      final var remoteMessenger = new RemoteMessenger(unifiedMessenger);
-      final var remoteHostUtils = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
-      remoteMessenger.registerRemote(
-          remoteHostUtils,
-          IRemoteHostUtils.Companion.newRemoteNameForNode(unifiedMessenger.getLocalNode()));
       return Optional.of(
-          new InGameLobbyWatcher(messenger, remoteMessenger, gameMessenger, oldWatcher));
+          new InGameLobbyWatcher(
+              serverMessenger,
+              gameHostingResponse,
+              gameListingClient,
+              errorReporter,
+              reconnectionReporter,
+              oldWatcher));
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return Optional.empty();
@@ -204,18 +203,14 @@ public class InGameLobbyWatcher {
   }
 
   private void gameStepChanged(final int round) {
-    synchronized (postMutex) {
-      postUpdate(gameDescription.withRound(round));
-    }
+    postUpdate(gameDescription.withRound(round));
   }
 
   private void gameSelectorModelUpdated() {
-    synchronized (postMutex) {
-      postUpdate(
-          gameDescription
-              .withGameName(gameSelectorModel.getGameName())
-              .withGameVersion(gameSelectorModel.getGameVersion()));
-    }
+    postUpdate(
+        gameDescription
+            .withGameName(gameSelectorModel.getGameName())
+            .withGameVersion(gameSelectorModel.getGameVersion()));
   }
 
   void setGameSelectorModel(@Nullable final GameSelectorModel model) {
@@ -234,11 +229,8 @@ public class InGameLobbyWatcher {
   }
 
   private void updatePlayerCount() {
-    synchronized (postMutex) {
-      postUpdate(
-          gameDescription.withPlayerCount(
-              serverMessenger.getNodes().size() - (humanPlayer ? 0 : 1)));
-    }
+    postUpdate(
+        gameDescription.withPlayerCount(serverMessenger.getNodes().size() - (humanPlayer ? 0 : 1)));
   }
 
   private void postUpdate(final GameDescription newDescription) {
@@ -246,18 +238,14 @@ public class InGameLobbyWatcher {
       return;
     }
     gameDescription = newDescription;
-    final ILobbyGameController controller =
-        (ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
-    controller.updateGame(gameId, newDescription);
+    gameListingClient.updateGame(gameId, gameDescription.toLobbyGame());
   }
 
   void shutDown() {
     isShutdown = true;
-    if (lobbyMessenger instanceof IClientMessenger) {
-      ((IClientMessenger) this.lobbyMessenger).removeErrorListener(messengerErrorListener);
-    }
-    lobbyMessenger.shutDown();
+    gameListingClient.removeGame(gameId);
     serverMessenger.removeConnectionChangeListener(connectionChangeListener);
+    keepAliveTimer.cancel();
     cleanUpGameModelListener();
   }
 
@@ -267,12 +255,10 @@ public class InGameLobbyWatcher {
 
   void setGameStatus(final GameDescription.GameStatus status, final IGame game) {
     setGame(game);
-    synchronized (postMutex) {
-      postUpdate(
-          gameDescription
-              .withStatus(status)
-              .withRound(game == null ? 0 : game.getData().getSequence().getRound()));
-    }
+    postUpdate(
+        gameDescription
+            .withStatus(status)
+            .withRound(game == null ? 0 : game.getData().getSequence().getRound()));
   }
 
   public String getComments() {
@@ -280,14 +266,10 @@ public class InGameLobbyWatcher {
   }
 
   void setGameComments(final String comments) {
-    synchronized (postMutex) {
-      postUpdate(gameDescription.withComment(comments));
-    }
+    postUpdate(gameDescription.withComment(comments));
   }
 
   void setPassworded(final boolean passworded) {
-    synchronized (postMutex) {
-      postUpdate(gameDescription.withPassworded(passworded));
-    }
+    postUpdate(gameDescription.withPassworded(passworded));
   }
 }

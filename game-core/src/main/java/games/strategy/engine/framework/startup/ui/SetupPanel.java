@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.swing.Action;
@@ -28,7 +29,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
   private static final long serialVersionUID = 4001323470187210773L;
   private static final String SET_ALL_DEFAULT_LABEL = "Default";
 
-  private final List<Consumer<SetupPanel>> listeners = new ArrayList<>();
+  private final List<Consumer<SetupPanel>> listeners = new CopyOnWriteArrayList<>();
 
   public void addObserver(final Consumer<SetupPanel> observer) {
     listeners.add(observer);

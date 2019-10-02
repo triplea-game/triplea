@@ -5,12 +5,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.triplea.http.client.ApiKey;
 
 /** Represents data that would be uploaded to a server. */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
-// TODO: Project#12 - move to package org.triplea.http.client.account.login
 public class LobbyLoginResponse {
   private final String loginToken;
   private final String failReason;
@@ -34,8 +34,8 @@ public class LobbyLoginResponse {
   }
 
   /** If present, indicates login was success. */
-  public Optional<String> getLoginToken() {
-    return Optional.ofNullable(loginToken);
+  public Optional<ApiKey> getLoginToken() {
+    return Optional.ofNullable(loginToken).map(ApiKey::of);
   }
 
   /**

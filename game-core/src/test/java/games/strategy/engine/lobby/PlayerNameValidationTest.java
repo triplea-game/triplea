@@ -1,17 +1,13 @@
 package games.strategy.engine.lobby;
 
-import static java.util.Collections.singleton;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.IsNull.notNullValue;
 
 import com.google.common.base.Strings;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.common.LobbyConstants;
 
@@ -90,34 +86,5 @@ class PlayerNameValidationTest {
                   PlayerNameValidation.validate(validName),
                   nullValue());
             });
-  }
-
-  @Test
-  void verifyNameIsNotLoggedInAlready() {
-    final String name = "name";
-
-    final Collection<Collection<String>> validInputs =
-        Arrays.asList(
-            Arrays.asList("okay", "other"),
-            Arrays.asList("name1", "nam", "name_"),
-            Collections.emptySet());
-
-    validInputs.forEach(
-        valid ->
-            assertThat(
-                PlayerNameValidation.verifyNameIsNotLoggedInAlready(name, valid), nullValue()));
-  }
-
-  @Test
-  void verifyNameIsNotLoggedInAlreadyNegativeCases() {
-    final String name = "name";
-
-    final Collection<Collection<String>> validInputs =
-        Arrays.asList(singleton("NAME"), singleton("name"), Arrays.asList("abc", "Name"));
-
-    validInputs.forEach(
-        valid ->
-            assertThat(
-                PlayerNameValidation.verifyNameIsNotLoggedInAlready(name, valid), notNullValue()));
   }
 }
