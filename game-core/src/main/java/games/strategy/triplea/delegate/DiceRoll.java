@@ -1039,10 +1039,10 @@ public class DiceRoll implements Externalizable {
       final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
       List<UnitSupportAttachment> ruleType = null;
       boolean found = false;
-      final String bonusType = rule.getBonusType().getSecond();
+      final String bonusType = rule.getBonusType().getName();
       while (iter2.hasNext()) {
         ruleType = iter2.next();
-        if (ruleType.get(0).getBonusType().getSecond().equals(bonusType)) {
+        if (ruleType.get(0).getBonusType().getName().equals(bonusType)) {
           found = true;
           break;
         }
@@ -1069,7 +1069,7 @@ public class DiceRoll implements Externalizable {
       final Predicate<UnitSupportAttachment> ruleFilter) {
     int givenSupport = 0;
     for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
-      final int bonusTypeCount = bonusType.get(0).getBonusType().getFirst();
+      final int bonusTypeCount = bonusType.get(0).getBonusType().getCount();
       int maxPerBonusType = bonusTypeCount >= 1 ? bonusTypeCount : Integer.MAX_VALUE;
       for (final UnitSupportAttachment rule : bonusType) {
         if (!ruleFilter.test(rule)) {

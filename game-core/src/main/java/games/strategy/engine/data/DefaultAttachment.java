@@ -129,7 +129,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
    */
   @Override
   public String toString() {
-    return getClass().getSimpleName() + " attached to:" + attachedTo + " with name:" + name;
+    return getClass().getSimpleName() + " attached to: " + attachedTo + " with name: " + name;
   }
 
   @Override
