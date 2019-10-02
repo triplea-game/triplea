@@ -24,8 +24,8 @@ public class ApiKeyGenerator implements Supplier<ApiKey> {
    * <br>
    * To generate:<br>
    * (1) We generate a UUID.<br>
-   * (2) The UUID is hashed to prevent guessing the next value. This makes it
-   * difficult to crack the seed value being used.<br>
+   * (2) The UUID is hashed to prevent guessing the next value. This makes it difficult to crack the
+   * seed value being used.<br>
    * (3) Finally, we attach nano epoch to make the API key even more difficult to guess. <br>
    */
   public static Supplier<ApiKey> createKeyMaker() {
