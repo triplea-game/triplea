@@ -23,8 +23,8 @@ public class ApiKeyGenerator implements Supplier<ApiKey> {
    * This key generator is intended to have a pretty fast runtime. <br>
    * <br>
    * To generate:<br>
-   * (1) We concatenate a UUID and random number together to get a lot of randomness.<br>
-   * (2) The concatenated random value is hashed to prevent guessing the next value. This makes it
+   * (1) We generate a UUID.<br>
+   * (2) The UUID is hashed to prevent guessing the next value. This makes it
    * difficult to crack the seed value being used.<br>
    * (3) Finally, we attach nano epoch to make the API key even more difficult to guess. <br>
    */
@@ -34,7 +34,7 @@ public class ApiKeyGenerator implements Supplier<ApiKey> {
 
   private static String randomHash() {
     return Hashing.sha512()
-        .hashString(UUID.randomUUID() + String.valueOf(Math.random()), StandardCharsets.UTF_8)
+        .hashString(UUID.randomUUID().toString(), StandardCharsets.UTF_8)
         .toString();
   }
 
