@@ -93,7 +93,12 @@ final class LobbyGameTableModelTest {
 
       testObj
           .getLobbyGameBroadcaster()
-          .gameUpdated(fakeGame.getFirst(), gameDescription1.toLobbyGame());
+          .gameUpdated(
+              LobbyGameListing.builder()
+                  .gameId(fakeGame.getFirst())
+                  .lobbyGame(gameDescription1.toLobbyGame())
+                  .build());
+
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(1));
       assertThat(testObj.getValueAt(0, commentColumnIndex), is(gameDescription1.getComment()));
@@ -101,17 +106,15 @@ final class LobbyGameTableModelTest {
 
     @Test
     void updateGameAddsIfDoesNotExist() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(id1, gameDescription1.toLobbyGame());
+      testObj
+          .getLobbyGameBroadcaster()
+          .gameUpdated(
+              LobbyGameListing.builder()
+                  .gameId(id1)
+                  .lobbyGame(gameDescription1.toLobbyGame())
+                  .build());
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(2));
-    }
-
-    @Test
-    void updateGameWithNullIdIsIgnored() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(null, gameDescription1.toLobbyGame());
-      waitForSwingThreads();
-      assertThat(
-          "expect row count to remain 1, null UUID is bogus data", testObj.getRowCount(), is(1));
     }
 
     @Test

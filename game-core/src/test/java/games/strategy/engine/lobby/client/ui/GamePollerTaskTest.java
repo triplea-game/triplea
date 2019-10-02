@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.client.ui;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,12 +28,12 @@ import org.triplea.lobby.common.LobbyGameUpdateListener;
 @ExtendWith(MockitoExtension.class)
 class GamePollerTaskTest {
 
-  private static final String id0 = "id0";
-  private static final String id1 = "id1";
-  private static final String id2 = "id2";
-  private static final String id3 = "id3";
+  private static final String ID_0 = "id0";
+  private static final String ID_1 = "id1";
+  private static final String ID_2 = "id2";
+  private static final String ID_3 = "id3";
 
-  private LobbyGame game0 =
+  private static final LobbyGame GAME_0 =
       LobbyGame.builder()
           .hostAddress("127.0.0.1")
           .hostPort(12)
@@ -49,9 +48,18 @@ class GamePollerTaskTest {
           .comments("comments")
           .build();
 
-  private LobbyGame game1 = game0.withComments("comments1");
-  private LobbyGame game2 = game0.withComments("");
-  private LobbyGame game3 = game0.withComments("comments3");
+  private static final LobbyGame GAME_1 = GAME_0.withComments("comments1");
+  private static final LobbyGame GAME_2 = GAME_0.withComments("");
+  private static final LobbyGame GAME_3 = GAME_0.withComments("comments3");
+
+  private static final LobbyGameListing LISTING_0 =
+      LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_0).build();
+
+  private static final LobbyGameListing LISTING_1 =
+      LobbyGameListing.builder().gameId(ID_1).lobbyGame(GAME_1).build();
+
+  private static final LobbyGameListing LISTING_3 =
+      LobbyGameListing.builder().gameId(ID_3).lobbyGame(GAME_3).build();
 
   @Mock private LobbyGameUpdateListener lobbyGameBroadcaster;
   @Mock private Supplier<Map<String, LobbyGame>> localGameListingFetcher;
@@ -76,74 +84,77 @@ class GamePollerTaskTest {
     when(lobbyGameListingFetcher.get())
         .thenReturn(
             asList(
-                LobbyGameListing.builder().gameId(id0).lobbyGame(game0).build(),
-                LobbyGameListing.builder().gameId(id1).lobbyGame(game1).build()));
+                LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_0).build(),
+                LobbyGameListing.builder().gameId(ID_1).lobbyGame(GAME_1).build()));
 
     gamePollerTask.run();
 
-    verify(lobbyGameBroadcaster).gameUpdated(id0, game0);
-    verify(lobbyGameBroadcaster).gameUpdated(id1, game1);
+    verify(lobbyGameBroadcaster).gameUpdated(LISTING_0);
+    verify(lobbyGameBroadcaster).gameUpdated(LISTING_1);
   }
 
   /** One game in model, listing returns zero games, game in model should be removed. */
   @Test
   void removedGame() {
-    when(localGameListingFetcher.get()).thenReturn(Map.of(id0, game0, id1, game1));
+    when(localGameListingFetcher.get()).thenReturn(Map.of(ID_0, GAME_0, ID_1, GAME_1));
     when(lobbyGameListingFetcher.get()).thenReturn(Collections.emptyList());
 
     gamePollerTask.run();
 
-    verify(lobbyGameBroadcaster).gameRemoved(id0);
-    verify(lobbyGameBroadcaster).gameRemoved(id1);
+    verify(lobbyGameBroadcaster).gameRemoved(ID_0);
+    verify(lobbyGameBroadcaster).gameRemoved(ID_1);
   }
 
   /** One game in model, listing returns different game with same ID, should be updated. */
   @Test
   void gameUpdated() {
-    when(localGameListingFetcher.get()).thenReturn(Map.of(id0, game0));
+    when(localGameListingFetcher.get()).thenReturn(Map.of(ID_0, GAME_0));
     when(lobbyGameListingFetcher.get())
-        .thenReturn(singletonList(LobbyGameListing.builder().gameId(id0).lobbyGame(game1).build()));
+        .thenReturn(
+            singletonList(LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_1).build()));
 
     gamePollerTask.run();
 
-    verify(lobbyGameBroadcaster).gameUpdated(id0, game1);
+    verify(lobbyGameBroadcaster)
+        .gameUpdated(LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_1).build());
   }
 
   /** One game in model, listing returns equal game object with same ID, should not be updated. */
   @Test
   void noGameUpdates() {
-    when(localGameListingFetcher.get()).thenReturn(Map.of(id0, game0));
-    final LobbyGame gameEqualToGame0 = game0.withComments(game0.getComments());
+    when(localGameListingFetcher.get()).thenReturn(Map.of(ID_0, GAME_0));
+    final LobbyGame gameEqualToGame0 = GAME_0.withComments(GAME_0.getComments());
     when(lobbyGameListingFetcher.get())
         .thenReturn(
             singletonList(
-                LobbyGameListing.builder().gameId(id0).lobbyGame(gameEqualToGame0).build()));
+                LobbyGameListing.builder().gameId(ID_0).lobbyGame(gameEqualToGame0).build()));
 
     gamePollerTask.run();
 
-    verify(lobbyGameBroadcaster, never()).gameUpdated(any(), any());
+    verify(lobbyGameBroadcaster, never()).gameUpdated(any());
   }
 
   @Test
   void mixtureOfUpdatesAndNewGamesAndRemoved() {
-    when(localGameListingFetcher.get()).thenReturn(Map.of(id0, game0, id1, game1, id2, game2));
+    when(localGameListingFetcher.get())
+        .thenReturn(Map.of(ID_0, GAME_0, ID_1, GAME_1, ID_2, GAME_2));
     when(lobbyGameListingFetcher.get())
         .thenReturn(
             asList(
                 // id0 is not updated
-                LobbyGameListing.builder().gameId(id0).lobbyGame(game0).build(),
+                LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_0).build(),
                 // id1 is updated
-                LobbyGameListing.builder().gameId(id1).lobbyGame(game2).build(),
+                LobbyGameListing.builder().gameId(ID_1).lobbyGame(GAME_2).build(),
                 // id2 is removed
                 // id3 is new
-                LobbyGameListing.builder().gameId(id3).lobbyGame(game3).build()));
+                LobbyGameListing.builder().gameId(ID_3).lobbyGame(GAME_3).build()));
 
     gamePollerTask.run();
 
-    verify(lobbyGameBroadcaster, never()).gameUpdated(eq(id0), any());
-    verify(lobbyGameBroadcaster).gameUpdated(id1, game2);
-    verify(lobbyGameBroadcaster).gameRemoved(id2);
-    verify(lobbyGameBroadcaster).gameUpdated(id3, game3);
+    verify(lobbyGameBroadcaster)
+        .gameUpdated(LobbyGameListing.builder().gameId(ID_1).lobbyGame(GAME_2).build());
+    verify(lobbyGameBroadcaster).gameRemoved(ID_2);
+    verify(lobbyGameBroadcaster).gameUpdated(LISTING_3);
   }
 
   @Nested

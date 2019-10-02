@@ -9,7 +9,6 @@ import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -49,9 +48,10 @@ class LobbyGameTableModel extends AbstractTableModel {
   private final LobbyGameUpdateListener lobbyGameBroadcaster =
       new LobbyGameUpdateListener() {
         @Override
-        public void gameUpdated(final String gameId, final LobbyGame lobbyGame) {
-          Optional.ofNullable(gameId)
-              .ifPresent(id -> updateGame(id, GameDescription.fromLobbyGame(lobbyGame)));
+        public void gameUpdated(final LobbyGameListing lobbyGameListing) {
+          updateGame(
+              lobbyGameListing.getGameId(),
+              GameDescription.fromLobbyGame(lobbyGameListing.getLobbyGame()));
         }
 
         @Override

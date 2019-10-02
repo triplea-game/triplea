@@ -33,17 +33,12 @@ class GamePollerTask implements Runnable {
         .ifPresent(
             lobbyGames -> {
               final Map<String, LobbyGame> knownGames = localGamesFetcher.get();
-              findNewGames(knownGames.keySet(), lobbyGames)
-                  .forEach(
-                      gameListing ->
-                          lobbyGameBroadcaster.gameUpdated(
-                              gameListing.getGameId(), gameListing.getLobbyGame()));
 
-              findUpdatedGames(knownGames, lobbyGames)
-                  .forEach(
-                      gameListing ->
-                          lobbyGameBroadcaster.gameUpdated(
-                              gameListing.getGameId(), gameListing.getLobbyGame()));
+              findNewGames(knownGames.keySet(), lobbyGames)
+                  .forEach(lobbyGameBroadcaster::gameUpdated);
+
+              findUpdatedGames(knownGames, lobbyGames) //
+                  .forEach(lobbyGameBroadcaster::gameUpdated);
 
               findRemovedGames(knownGames.keySet(), lobbyGames)
                   .forEach(lobbyGameBroadcaster::gameRemoved);
