@@ -9,6 +9,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +31,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   /** Type to represent name and count */
   @Value
-  public static class BonusType {
+  public static class BonusType implements Serializable {
+    private static final long serialVersionUID = -7445551357956238314L;
+
     @Nonnull String name;
     @Nonnull Integer count;
 
