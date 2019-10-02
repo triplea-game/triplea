@@ -9,11 +9,16 @@ import lombok.Builder;
 
 /**
  * Logic of this class:<br>
- * - send a keep alive, if we get a 'false', it means the server is alive but does not have our
- * game, we need to re-post.<br>
+ * - send a keep alive:<br>
+ * -- if we get a 'true', server has our game id, our game is still posted, all is good.<br>
+ * -- if we get a 'false', it means the server is alive but does not have our game, we need to
+ * re-post.<br>
  * - After re-post, attempt a keep-alive again, if it succeeds, we are reconnected.<br>
- * - If we get an exception after sending keep alive, then report an error to user (just once) until
- * we later re-establish a connection.<br>
+ * - If we get an exception after sending keep alive, report a lobby disconnect to user (just once)
+ * and keep attempting 'keep-alive' requests until the server responds.
+ *
+ * <p>In other words, sending a keep alive (which takes a game ID parameter) is similar to asking
+ * the server "do you have this game?"
  */
 @Builder
 class LobbyWatcherKeepAliveTask implements Runnable {
