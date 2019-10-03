@@ -37,6 +37,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     @Nonnull String name;
     @Nonnull Integer count;
 
+    public int getCount() {
+      return count < 0 ? Integer.MAX_VALUE : count;
+    }
+
     boolean isOldArtilleryRule() {
       return name.equals(Constants.OLD_ART_RULE_NAME);
     }

@@ -1069,8 +1069,7 @@ public class DiceRoll implements Externalizable {
       final Predicate<UnitSupportAttachment> ruleFilter) {
     int givenSupport = 0;
     for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
-      final int bonusTypeCount = bonusType.get(0).getBonusType().getCount();
-      int maxPerBonusType = bonusTypeCount >= 1 ? bonusTypeCount : Integer.MAX_VALUE;
+      int maxPerBonusType = bonusType.get(0).getBonusType().getCount();
       for (final UnitSupportAttachment rule : bonusType) {
         if (!ruleFilter.test(rule)) {
           continue;
