@@ -8,6 +8,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -748,6 +749,68 @@ class DiceRollTest {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
     assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(2));
     assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(2));
+  }
+
+  @Test
+  void testGetTotalPowerForSupportBonusTypeCount() throws Exception {
+    final GameData twwGameData = TestMapGameData.TWW.getGameData();
+
+    // Move regular units
+    final PlayerId germans = GameDataTestUtil.germany(twwGameData);
+    final Territory berlin = territory("Berlin", twwGameData);
+    final List<Unit> attackers = new ArrayList<>();
+
+    attackers.addAll(GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
+    attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
+    int attackPower =
+        DiceRoll.getTotalPower(
+            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                attackers,
+                new ArrayList<>(),
+                false,
+                twwGameData,
+                berlin,
+                new ArrayList<>(),
+                false,
+                null),
+            twwGameData);
+    assertEquals(attackPower, 6, "1 artillery should provide +1 support to the infantry");
+
+    attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
+    attackPower =
+        DiceRoll.getTotalPower(
+            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                attackers,
+                new ArrayList<>(),
+                false,
+                twwGameData,
+                berlin,
+                new ArrayList<>(),
+                false,
+                null),
+            twwGameData);
+    assertEquals(
+        attackPower,
+        10,
+        "2 artillery should provide +2 support to the infantry as stack count is 2");
+
+    attackers.addAll(GameDataTestUtil.germanArtillery(twwGameData).create(1, germans));
+    attackPower =
+        DiceRoll.getTotalPower(
+            DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                attackers,
+                new ArrayList<>(),
+                false,
+                twwGameData,
+                berlin,
+                new ArrayList<>(),
+                false,
+                null),
+            twwGameData);
+    assertEquals(
+        attackPower,
+        13,
+        "3 artillery should provide +2 support to the infantry as can't provide more than 2");
   }
 
   @Nested

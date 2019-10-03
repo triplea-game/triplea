@@ -9,6 +9,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.annotation.Nonnull;
+import lombok.Value;
 
 /**
  * An attachment for instances of {@link UnitType} that defines properties for unit types that
@@ -25,6 +28,23 @@ import java.util.stream.StreamSupport;
  */
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
+
+  /** Type to represent name and count */
+  @Value
+  public static class BonusType implements Serializable {
+    private static final long serialVersionUID = -7445551357956238314L;
+
+    @Nonnull String name;
+    @Nonnull Integer count;
+
+    public int getCount() {
+      return count < 0 ? Integer.MAX_VALUE : count;
+    }
+
+    boolean isOldArtilleryRule() {
+      return name.equals(Constants.OLD_ART_RULE_NAME);
+    }
+  }
 
   private Set<UnitType> unitType = null;
   private boolean offence = false;
@@ -37,7 +57,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private int number = 0;
   private boolean allied = false;
   private boolean enemy = false;
-  private String bonusType = null;
+  private BonusType bonusType = null;
   private List<PlayerId> players = new ArrayList<>();
   private boolean impArtTech = false;
   // strings
@@ -214,7 +234,20 @@ public class UnitSupportAttachment extends DefaultAttachment {
     number = 0;
   }
 
-  private void setBonusType(final String type) {
+  private void setBonusType(final String type) throws GameParseException {
+    final String[] s = splitOnColon(type);
+    if (s.length > 2) {
+      throw new GameParseException(
+          "bonusType can only have value and count: " + type + thisErrorMsg());
+    }
+    if (s.length == 1) {
+      bonusType = new BonusType(s[0], 1);
+    } else {
+      bonusType = new BonusType(s[1], getInt(s[0]));
+    }
+  }
+
+  private void setBonusType(final BonusType type) {
     bonusType = type;
   }
 
@@ -301,7 +334,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return offence;
   }
 
-  public String getBonusType() {
+  public BonusType getBonusType() {
     return bonusType;
   }
 
@@ -337,7 +370,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private static Set<UnitType> getTargets(final GameData data) {
     Set<UnitType> types = null;
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME)) {
+      if (rule.getBonusType().isOldArtilleryRule()) {
         types = rule.getUnitType();
         if (rule.getName().startsWith(Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST)) {
           // remove it because it is a "first", which is just a temporary one made to hold target
@@ -363,7 +396,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttachedTo() == type) {
+      if (rule.getBonusType().isOldArtilleryRule() && rule.getAttachedTo() == type) {
         rule.setNumber(count);
       }
     }
@@ -372,7 +405,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   static void addTarget(final UnitType type, final GameData data) throws GameParseException {
     boolean first = true;
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME)) {
+      if (rule.getBonusType().isOldArtilleryRule()) {
         rule.addUnitTypes(Collections.singleton(type));
         first = false;
       }
@@ -412,7 +445,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
         .put("enemy", MutableProperty.ofReadOnly(this::getEnemy))
         .put(
             "bonusType",
-            MutableProperty.ofString(this::setBonusType, this::getBonusType, this::resetBonusType))
+            MutableProperty.of(
+                this::setBonusType, this::setBonusType, this::getBonusType, this::resetBonusType))
         .put(
             "players",
             MutableProperty.of(

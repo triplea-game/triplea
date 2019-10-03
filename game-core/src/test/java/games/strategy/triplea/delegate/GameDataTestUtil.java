@@ -257,6 +257,11 @@ public final class GameDataTestUtil {
     return unitType("germanMine", data);
   }
 
+  /** Returns a germanArtillery UnitType object for the specified GameData object. */
+  public static UnitType germanArtillery(final GameData data) {
+    return unitType("germanArtillery", data);
+  }
+
   /** Returns a germanAntiTankGun UnitType object for the specified GameData object. */
   public static UnitType germanAntiTankGun(final GameData data) {
     return unitType("germanAntiTankGun", data);

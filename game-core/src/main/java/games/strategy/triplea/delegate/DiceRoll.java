@@ -1039,10 +1039,10 @@ public class DiceRoll implements Externalizable {
       final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
       List<UnitSupportAttachment> ruleType = null;
       boolean found = false;
-      final String bonusType = rule.getBonusType();
+      final String bonusType = rule.getBonusType().getName();
       while (iter2.hasNext()) {
         ruleType = iter2.next();
-        if (ruleType.get(0).getBonusType().equals(bonusType)) {
+        if (ruleType.get(0).getBonusType().getName().equals(bonusType)) {
           found = true;
           break;
         }
@@ -1069,27 +1069,32 @@ public class DiceRoll implements Externalizable {
       final Predicate<UnitSupportAttachment> ruleFilter) {
     int givenSupport = 0;
     for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
+      int maxPerBonusType = bonusType.get(0).getBonusType().getCount();
       for (final UnitSupportAttachment rule : bonusType) {
         if (!ruleFilter.test(rule)) {
           continue;
         }
         final Set<UnitType> types = rule.getUnitType();
         if (types != null && types.contains(unit.getType()) && supportLeft.getInt(rule) > 0) {
-          givenSupport += rule.getBonus();
-          supportLeft.add(rule, -1);
-          final IntegerMap<Unit> supportersLeft = supportUnitsLeft.get(rule);
-          if (supportersLeft != null) {
-            final Set<Unit> supporters = supportersLeft.keySet();
-            if (!supporters.isEmpty()) {
-              final Unit u = supporters.iterator().next();
-              supportUnitsLeft.get(rule).add(u, -1);
-              if (supportUnitsLeft.get(rule).getInt(u) <= 0) {
-                supportUnitsLeft.get(rule).removeKey(u);
-              }
-              unitSupportMap.computeIfAbsent(u, i -> new IntegerMap<>()).add(unit, rule.getBonus());
+          final int numSupportToApply =
+              Math.min(
+                  maxPerBonusType,
+                  Math.min(supportLeft.getInt(rule), supportUnitsLeft.get(rule).size()));
+          for (int i = 0; i < numSupportToApply; i++) {
+            givenSupport += rule.getBonus();
+            supportLeft.add(rule, -1);
+            final Set<Unit> supporters = supportUnitsLeft.get(rule).keySet();
+            final Unit u = supporters.iterator().next();
+            supportUnitsLeft.get(rule).add(u, -1);
+            if (supportUnitsLeft.get(rule).getInt(u) <= 0) {
+              supportUnitsLeft.get(rule).removeKey(u);
             }
+            unitSupportMap.computeIfAbsent(u, j -> new IntegerMap<>()).add(unit, rule.getBonus());
           }
-          break;
+          maxPerBonusType -= numSupportToApply;
+          if (maxPerBonusType <= 0) {
+            break;
+          }
         }
       }
     }
