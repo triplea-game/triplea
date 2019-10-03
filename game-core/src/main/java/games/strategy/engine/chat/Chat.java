@@ -43,7 +43,6 @@ public class Chat implements ChatClient {
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   private final ChatSoundProfile chatSoundProfile;
   @Getter private final PlayerName localPlayerName;
-  @Getter private final PlayerName serverPlayerName;
   private final Collection<BiConsumer<PlayerName, String>> statusUpdateListeners =
       new ArrayList<>();
 
@@ -57,7 +56,6 @@ public class Chat implements ChatClient {
   public Chat(
       final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
     this.localPlayerName = messengers.getLocalNode().getPlayerName();
-    this.serverPlayerName = messengers.getServerNode().getPlayerName();
     chatTransmitter = new JavaSocketChatTransmitter(this, chatName, messengers);
     this.chatSoundProfile = chatSoundProfile;
     sentMessagesHistory = new SentMessagesHistory();
