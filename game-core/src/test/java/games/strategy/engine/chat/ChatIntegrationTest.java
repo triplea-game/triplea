@@ -40,9 +40,15 @@ final class ChatIntegrationTest {
   private ChannelMessenger client1ChannelMessenger;
   private RemoteMessenger client2RemoteMessenger;
   private ChannelMessenger client2ChannelMessenger;
-  private final TestChatListener serverChatListener = new TestChatListener();
-  private final TestChatListener client1ChatListener = new TestChatListener();
-  private final TestChatListener client2ChatListener = new TestChatListener();
+
+  private final TestChatMessageListener serverChatMessageListener = new TestChatMessageListener();
+  private final TestChatPlayerListener serverChatPlayerListener = new TestChatPlayerListener();
+
+  private final TestChatMessageListener client1ChatMessageListener = new TestChatMessageListener();
+  private final TestChatPlayerListener client1ChatPlayerListener = new TestChatPlayerListener();
+
+  private final TestChatMessageListener client2ChatMessageListener = new TestChatMessageListener();
+  private final TestChatPlayerListener client2ChatPlayerListener = new TestChatPlayerListener();
 
   @BeforeEach
   void setUp() throws Exception {
@@ -93,17 +99,21 @@ final class ChatIntegrationTest {
         () -> {
           final ChatController controller = newChatController();
           final Chat server = newChat(new Messengers(messenger, remoteMessenger, channelMessenger));
-          server.addChatListener(serverChatListener);
+          server.addChatListener(serverChatMessageListener);
+          server.addChatListener(serverChatPlayerListener);
           final Chat client1 =
               newChat(
                   new Messengers(
                       client1Messenger, client1RemoteMessenger, client1ChannelMessenger));
-          client1.addChatListener(client1ChatListener);
+
+          client1.addChatListener(client1ChatMessageListener);
+          client1.addChatListener(client1ChatPlayerListener);
           final Chat client2 =
               newChat(
                   new Messengers(
                       client2Messenger, client2RemoteMessenger, client2ChannelMessenger));
-          client2.addChatListener(client2ChatListener);
+          client2.addChatListener(client2ChatMessageListener);
+          client2.addChatListener(client2ChatPlayerListener);
           waitFor(this::allNodesToConnect);
 
           chatTest.run(server, client1, client2);
@@ -142,23 +152,23 @@ final class ChatIntegrationTest {
   }
 
   private void allNodesToConnect() {
-    assertThat(serverChatListener.playerCount.get(), is(NODE_COUNT));
-    assertThat(client1ChatListener.playerCount.get(), is(NODE_COUNT));
-    assertThat(client2ChatListener.playerCount.get(), is(NODE_COUNT));
+    assertThat(serverChatPlayerListener.playerCount.get(), is(NODE_COUNT));
+    assertThat(client1ChatPlayerListener.playerCount.get(), is(NODE_COUNT));
+    assertThat(client2ChatPlayerListener.playerCount.get(), is(NODE_COUNT));
   }
 
   private void allMessagesToArrive() {
-    assertThat(serverChatListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
-    assertThat(client1ChatListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
-    assertThat(client2ChatListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
+    assertThat(serverChatMessageListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
+    assertThat(client1ChatMessageListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
+    assertThat(client2ChatMessageListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
   }
 
   private void clientNodesToDisconnect() {
-    assertThat(serverChatListener.playerCount.get(), is(1));
+    assertThat(serverChatPlayerListener.playerCount.get(), is(1));
   }
 
   private void serverNodeToDisconnect() {
-    assertThat(serverChatListener.playerCount.get(), is(0));
+    assertThat(serverChatPlayerListener.playerCount.get(), is(0));
   }
 
   private static void sendMessagesFrom(final Chat node) {
@@ -171,15 +181,18 @@ final class ChatIntegrationTest {
     void run(Chat server, Chat client1, Chat client2) throws Exception;
   }
 
-  private static final class TestChatListener implements IChatListener {
+  private static final class TestChatPlayerListener implements ChatPlayerListener {
     final AtomicInteger playerCount = new AtomicInteger();
-    final AtomicInteger messageCount = new AtomicInteger();
-    final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
     public void updatePlayerList(final Collection<ChatParticipant> players) {
       playerCount.set(players.size());
     }
+  }
+
+  private static final class TestChatMessageListener implements ChatMessageListener {
+    final AtomicInteger messageCount = new AtomicInteger();
+    final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
     public void addMessageWithSound(

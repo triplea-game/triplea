@@ -396,7 +396,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
       if (ui == null) {
-        chatModel = new HeadlessChat(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+        chatModel =
+            new HeadlessChat(new Chat(messengers, CHAT_NAME, Chat.ChatSoundProfile.NO_SOUND));
         chatModelCancel = Runnables.doNothing();
       } else {
         final var chatPanel =
