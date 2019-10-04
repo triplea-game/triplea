@@ -1,0 +1,12 @@
+archivesBaseName = "$group-$name"
+description = 'TripleA Lobby DB data access layer, Java code to query database'
+
+dependencies {
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+    implementation 'org.jdbi:jdbi3-core:3.8.2'
+    implementation 'org.jdbi:jdbi3-sqlobject:3.8.2'
+
+    testImplementation project(':test-common')
+    testImplementation 'com.github.database-rider:rider-junit5:1.5.2'
+    testImplementation 'uk.co.datumedge:hamcrest-json:0.2'
+}

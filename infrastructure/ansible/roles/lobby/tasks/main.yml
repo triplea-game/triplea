@@ -1,0 +1,42 @@
+- name: create service user to run the app
+  become: true
+  user:
+    name: "{{ lobby_user }}"
+    create_home: yes
+    system: yes
+
+- name: deploy jar file
+  become: true
+  copy:
+    src: "{{ lobby_jar }}"
+    dest: "{{ lobby_folder }}/{{ lobby_jar }}"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
+
+- name: install systemd service script
+  become: true
+  template:
+    src: lobby.service.j2
+    dest: /lib/systemd/system/lobby.service
+    mode: "644"
+
+- name: deploy run_server script
+  become: true
+  template:
+    src: run_server.j2
+    dest: "{{ lobby_folder }}/run_server"
+    mode: "755"
+    owner: "{{ lobby_user }}"
+    group: "{{ lobby_user }}"
+
+- name: reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: enable and start service
+  become: true
+  service:
+    name: lobby
+    state: started
+    enabled: yes

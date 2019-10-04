@@ -1,0 +1,22 @@
+[Unit]
+Description=TripleA Http Server
+Documentation=
+
+[Service]
+WorkingDirectory={{ http_server_folder }}
+User={{ http_server_user }}
+Group={{ http_server_user }}
+ExecStart={{ http_server_folder }}/run_server
+Restart=always
+Environment="PORT={{ http_server_port }}"
+Environment="POSTGRES_USER={{ http_server_db_user }}"
+Environment="POSTGRES_PASSWORD={{ http_server_db_password }}"
+Environment="POSTGRES_HOST={{ http_server_postgres_host }}"
+Environment="POSTGRES_PORT={{ http_server_postgres_port }}"
+Environment="POSTGRES_DATABASE={{ lobby_db_name }}"
+Environment="ERROR_REPORTING_GITHUB_ORG={{ http_server_error_report_github_org }}"
+Environment="ERROR_REPORTING_GITHUB_REPO={{ http_server_error_report_github_repo }}"
+Environment="GITHUB_API_AUTH_TOKEN={{ http_server_error_report_github_token }}"
+
+[Install]
+WantedBy=multi-user.target

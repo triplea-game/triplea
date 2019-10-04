@@ -1,0 +1,12 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Smoke Testing Application'
+mainClassName = 'org.triplea.test.smoke.ClientConnect'
+
+dependencies {
+    implementation project(':game-core')
+}

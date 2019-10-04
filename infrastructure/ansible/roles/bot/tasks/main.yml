@@ -1,0 +1,49 @@
+- name: create service user to run the app
+  become: true
+  user:
+    name: "{{ bot_user }}"
+    create_home: yes
+    system: yes
+
+- name: deploy jar file
+  become: true
+  copy:
+    src: "{{ bot_jar }}"
+    dest: "{{ bot_folder }}/{{ bot_jar }}"
+    owner: "{{ bot_user }}"
+    group: "{{ bot_user }}"
+
+- name: install systemd service script
+  become: true
+  template:
+    src: bot.service.j2
+    dest: /lib/systemd/system/bot@.service
+    mode: "644"
+
+- name: deploy run_server script
+  become: true
+  template:
+    src: run_server.j2
+    dest: "{{ bot_folder }}/run_server"
+    mode: "755"
+    owner: "{{ bot_user }}"
+    group: "{{ bot_user }}"
+
+- name: reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: enable and start bot01
+  become: true
+  service:
+    name: "bot@01"
+    state: started
+    enabled: yes
+
+- name: enable and start bot02
+  become: true
+  service:
+    name: "bot@02"
+    state: started
+    enabled: yes

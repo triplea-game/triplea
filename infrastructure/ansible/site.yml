@@ -1,0 +1,43 @@
+#
+# This is the main ansible playbook to deploy TripleA server software.
+# See the README.md files for details on running and testing.
+#
+
+- hosts:
+    - lobbyDatabaseHosts
+    - lobbyHosts
+    - botHosts
+  gather_facts: no
+  serial: 100%
+  strategy: free
+  roles:
+    - apt_update
+    - admin_user
+    - firewall
+    - security
+
+- hosts: lobbyDatabaseHosts
+  gather_facts: no
+  serial: 100%
+  strategy: free
+  tags: lobbyDb
+  roles:
+    - lobby_database
+    - flyway
+
+- hosts: lobbyHosts
+  gather_facts: no
+  serial: 100%
+  strategy: free
+  roles:
+    - java
+    - lobby
+    - nginx
+    - http_server
+
+- hosts: botHosts
+  gather_facts: no
+  serial: 100%
+  roles:
+    - java
+    - bot

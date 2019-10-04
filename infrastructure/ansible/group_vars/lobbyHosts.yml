@@ -1,0 +1,5 @@
+ufw_allowed_ports:
+  - "{{ lobby_port }}"
+  - 80
+  - 443
+  - 8080

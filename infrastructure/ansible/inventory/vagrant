@@ -1,0 +1,13 @@
+[lobbyDatabaseHosts]
+lobby ansible_hostname=lobbyHost ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/lobby/virtualbox/private_key
+
+[lobbyHosts]
+lobby ansible_hostname=lobbyHost ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/lobby/virtualbox/private_key
+
+[botHosts]
+lobby ansible_hostname=lobbyHost ansible_port=2010 ansible_ssh_private_key_file=./.vagrant/machines/lobby/virtualbox/private_key
+
+[vagrant:children]
+lobbyDatabaseHosts
+lobbyHosts
+botHosts
