@@ -1,10 +1,8 @@
-package org.triplea.lobby.server.api.key;
+package org.triplea.server.access;
 
 import com.google.common.hash.Hashing;
-import games.strategy.engine.lobby.PlayerName;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -12,8 +10,9 @@ import org.triplea.http.client.ApiKey;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
+// TODO: Project#12 This is copy/pasted from lobby sub-project
 @Builder
-public class ApiKeyGenerator implements Function<PlayerName, ApiKey> {
+public class ApiKeyGenerator implements Supplier<ApiKey> {
 
   @Nonnull private final ApiKeyDao apiKeyDao;
   @Nonnull private final UserJdbiDao userDao;
@@ -40,11 +39,9 @@ public class ApiKeyGenerator implements Function<PlayerName, ApiKey> {
   }
 
   @Override
-  public ApiKey apply(final PlayerName playerName) {
+  public ApiKey get() {
     final ApiKey key = keyMaker.get();
-
-    final Integer userId = userDao.lookupUserIdByName(playerName.getValue()).orElse(null);
-    apiKeyDao.storeKey(userId, key.getValue());
+    apiKeyDao.storeKey(null, key.getValue());
     apiKeyDao.deleteOldKeys();
     return key;
   }

@@ -2,9 +2,9 @@ package org.triplea.game.server;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
-import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
+import feign.FeignException;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
@@ -18,8 +18,11 @@ import java.util.Optional;
 import lombok.extern.java.Log;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.http.client.ApiKey;
 import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.java.Interruptibles;
+import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
+import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
 
 /** Server setup model. */
 @Log
@@ -32,37 +35,56 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
     this.model = model;
     this.gameSelectorModel = gameSelectorModel;
     this.model.setRemoteModelListener(this);
-    createLobbyWatcher();
+
+    try {
+      createLobbyWatcher();
+    } catch (final FeignException e) {
+      throw new CouldNotConnectToLobby(e);
+    }
   }
 
   private void createLobbyWatcher() {
+    final URI lobbyUri = lobbyUriFromSystemProps();
+
+    final GameHostingResponse gameHostingResponse =
+        GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
+
+    final GameListingClient gameListingClient =
+        GameListingClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
+
     final InGameLobbyWatcher watcher =
         InGameLobbyWatcher.newInGameLobbyWatcher(
-                model.getMessenger(), lobbyWatcher.getInGameLobbyWatcher())
+                model.getMessenger(),
+                gameHostingResponse,
+                gameListingClient,
+                log::warning,
+                log::info,
+                lobbyWatcher.getInGameLobbyWatcher())
             .orElseThrow(CouldNotConnectToLobby::new);
 
     lobbyWatcher.setInGameLobbyWatcher(watcher);
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
 
+    final HttpLobbyClient httpLobbyClient =
+        HttpLobbyClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
     LocalServerAvailabilityCheck.builder()
-        .connectivityCheckClient(
-            HttpLobbyClient.newClient(
-                    URI.create(
-                        HttpLobbyClient.PROTOCOL
-                            + System.getProperty(LOBBY_HOST)
-                            + ":"
-                            + System.getProperty(LOBBY_HTTPS_PORT)),
-                    watcher.getLobbyMessenger().getApiKey())
-                .getConnectivityCheckClient())
+        .connectivityCheckClient(httpLobbyClient.getConnectivityCheckClient())
         .localPort(model.getMessenger().getLocalNode().getPort())
         .errorHandler(log::severe)
         .build()
         .run();
 
     System.clearProperty(LOBBY_HOST);
-    System.clearProperty(LOBBY_PORT);
     System.clearProperty(LOBBY_HTTPS_PORT);
     System.clearProperty(TRIPLEA_NAME);
+  }
+
+  private URI lobbyUriFromSystemProps() {
+    return URI.create(
+        HttpLobbyClient.PROTOCOL
+            + System.getProperty(LOBBY_HOST)
+            + ":"
+            + System.getProperty(LOBBY_HTTPS_PORT));
   }
 
   private static class CouldNotConnectToLobby extends RuntimeException {
@@ -72,14 +94,16 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
       super(
           String.format(
               "Unable to connect to lobby at: %s, port: %s",
-              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_PORT)));
+              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_HTTPS_PORT)));
     }
-  }
 
-  synchronized void repostLobbyWatcher() {
-    lobbyWatcher.shutDown();
-    Interruptibles.sleep(3000);
-    createLobbyWatcher();
+    CouldNotConnectToLobby(final FeignException e) {
+      super(
+          String.format(
+              "Unable to connect to lobby at: %s, port: %s, communication error: %s",
+              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_HTTPS_PORT), e.getMessage()),
+          e);
+    }
   }
 
   @Override

@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
@@ -52,7 +53,10 @@ public class LobbyFrame extends JFrame {
     chatPlayers.addActionFactory(this::newAdminActions);
 
     final LobbyGameTableModel tableModel =
-        new LobbyGameTableModel(client.isAdmin(), client.getMessengers());
+        new LobbyGameTableModel(
+            client.isAdmin(),
+            client.getHttpLobbyClient().getGameListingClient(),
+            this::reportErrorMessage);
     final LobbyGamePanel gamePanel = new LobbyGamePanel(client, lobbyServerProperties, tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
@@ -76,9 +80,21 @@ public class LobbyFrame extends JFrame {
         new WindowAdapter() {
           @Override
           public void windowClosing(final WindowEvent e) {
+            tableModel.shutdown();
             shutdown();
           }
         });
+  }
+
+  private void reportErrorMessage(final String errorMessage) {
+    DialogBuilder.builder()
+        .parent(this)
+        .title("Lobby not available")
+        .errorMessage(
+            "Failed to connect to lobby, game listing will not be updated.\n"
+                + "Error: "
+                + errorMessage)
+        .showDialog();
   }
 
   private List<Action> newAdminActions(final ChatParticipant clickedOn) {

@@ -13,6 +13,7 @@ import org.triplea.http.client.HttpClient;
  */
 @AllArgsConstructor
 public class GameListingClient {
+  public static final int KEEP_ALIVE_SECONDS = 10;
 
   public static final String BOOT_GAME_PATH = "/lobby/games/boot-game";
   public static final String FETCH_GAMES_PATH = "/lobby/games/fetch-games";

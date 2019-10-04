@@ -6,7 +6,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import java.io.IOException;
-import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.server.api.key.ApiKeyGeneratorFactory;
 import org.triplea.lobby.server.config.LobbyConfiguration;
@@ -48,13 +47,6 @@ final class LobbyServer {
         new ModeratorController(server, messengers, lobbyConfiguration.getDatabaseDao());
     moderatorController.register(messengers);
     new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
-
-    final LobbyGameController controller =
-        new LobbyGameController(
-            (ILobbyGameBroadcaster)
-                messengers.getChannelBroadcaster(ILobbyGameBroadcaster.REMOTE_NAME),
-            server);
-    controller.register(messengers);
 
     // now we are open for business
     server.setAcceptNewConnections(true);

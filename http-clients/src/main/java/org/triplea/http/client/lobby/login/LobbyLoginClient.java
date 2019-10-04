@@ -14,8 +14,9 @@ import org.triplea.http.client.HttpConstants;
 @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
 public interface LobbyLoginClient {
 
-  String LOGIN_PATH = "/login";
-  String ANONYMOUS_LOGIN_PATH = "/anonymous-login";
+  String LOGIN_PATH = "/login/registered-user";
+  String ANONYMOUS_LOGIN_PATH = "/login/anonymous-user";
+  String HOST_GAME_PATH = "/login/host-game";
 
   static LobbyLoginClient newClient(final URI uri) {
     return new HttpClient<>(LobbyLoginClient.class, uri).get();
@@ -57,4 +58,7 @@ public interface LobbyLoginClient {
    */
   @RequestLine("POST " + ANONYMOUS_LOGIN_PATH)
   LobbyLoginResponse anonymousLogin(String name);
+
+  @RequestLine("POST " + HOST_GAME_PATH)
+  LobbyLoginResponse hostGame();
 }

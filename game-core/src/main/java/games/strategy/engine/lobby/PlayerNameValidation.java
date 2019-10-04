@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Collection;
 import lombok.NoArgsConstructor;
 import org.triplea.lobby.common.LobbyConstants;
 
@@ -13,13 +12,6 @@ public final class PlayerNameValidation {
 
   public static boolean isValid(final String username) {
     return validate(username) == null;
-  }
-
-  /** Performs username validations intended to be done on client side. */
-  public static String clientSideValidate(final String username) {
-    return username.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())
-        ? LobbyConstants.LOBBY_WATCHER_NAME + " cannot be part of a name"
-        : validate(username);
   }
 
   /**
@@ -46,15 +38,5 @@ public final class PlayerNameValidation {
       return "Name can't contain the word " + LobbyConstants.ADMIN_USERNAME;
     }
     return null;
-  }
-
-  public static String verifyNameIsNotLoggedInAlready(
-      final String remoteName, final Collection<String> alreadyLoggedInNames) {
-
-    return alreadyLoggedInNames.stream()
-            .map(String::toLowerCase)
-            .anyMatch(remoteName::equalsIgnoreCase)
-        ? "Name is already logged in, please choose another"
-        : null;
   }
 }

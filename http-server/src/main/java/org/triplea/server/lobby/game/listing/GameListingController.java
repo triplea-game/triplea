@@ -44,6 +44,7 @@ public class GameListingController extends HttpController {
   @Path(GameListingClient.POST_GAME_PATH)
   public String postGame(
       @Auth final AuthenticatedUser authenticatedUser, final LobbyGame lobbyGame) {
+    // TODO: Project#12 Combine availability check with gameListing.postGame
     return gameListing.postGame(authenticatedUser.getApiKey(), lobbyGame);
   }
 

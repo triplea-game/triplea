@@ -1,7 +1,5 @@
 package games.strategy.engine.message;
 
-import org.triplea.lobby.common.ILobbyGameController;
-
 /**
  * Very similar to RMI.
  *
@@ -82,8 +80,4 @@ public interface IRemoteMessenger {
   boolean hasLocalImplementor(RemoteName name);
 
   boolean isServer();
-
-  default ILobbyGameController getLobbyGameController() {
-    return (ILobbyGameController) getRemote(ILobbyGameController.REMOTE_NAME);
-  }
 }

@@ -1,18 +1,24 @@
 package org.triplea.lobby.common;
 
 import games.strategy.net.INode;
+import games.strategy.net.Node;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
+import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Wither;
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 
 /**
  * Immutable Data class being used to send information about the current game state to the lobby.
@@ -49,14 +55,17 @@ public class GameDescription implements Serializable {
   @Wither private final int playerCount;
   @Wither private final int round;
   @Wither private final GameStatus status;
-  private final String hostName;
   @Wither private final String comment;
   @Wither private final boolean passworded;
   @Wither private final String gameVersion;
 
   public boolean isBot() {
-    return hostName.startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
+    return hostedBy.getName().startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
         && HeadlessGameServer.BOT_GAME_HOST_COMMENT.equals(comment);
+  }
+
+  public String getHostName() {
+    return hostedBy.getName();
   }
 
   public String getFormattedBotStartTime() {
@@ -66,5 +75,58 @@ public class GameDescription implements Serializable {
             .appendLocalized(null, FormatStyle.SHORT)
             .toFormatter()
             .format(LocalDateTime.ofInstant(startDateTime, ZoneOffset.systemDefault()));
+  }
+
+  public static GameDescription fromLobbyGame(final LobbyGameListing lobbyGameListing) {
+    return fromLobbyGame(lobbyGameListing.getLobbyGame());
+  }
+
+  /**
+   * Parsing method to convert a given {@code LobbyGame} into an equivalent {@code GameDescription}.
+   */
+  public static GameDescription fromLobbyGame(final LobbyGame lobbyGame) {
+    try {
+      return GameDescription.builder()
+          .comment(lobbyGame.getComments())
+          .hostedBy(
+              new Node(
+                  lobbyGame.getHostName(),
+                  InetAddress.getByName(lobbyGame.getHostAddress()),
+                  lobbyGame.getHostPort()))
+          .startDateTime(Instant.ofEpochMilli(lobbyGame.getEpochMilliTimeStarted()))
+          .gameName(lobbyGame.getMapName())
+          .gameVersion(lobbyGame.getMapVersion())
+          .status(
+              Arrays.stream(GameStatus.values())
+                  .filter(s -> s.toString().equals(lobbyGame.getStatus()))
+                  .findFirst()
+                  .orElseThrow(
+                      () ->
+                          new IllegalArgumentException(
+                              "Unknown game status: " + lobbyGame.getStatus())))
+          .passworded(lobbyGame.getPassworded())
+          .playerCount(lobbyGame.getPlayerCount())
+          .round(lobbyGame.getGameRound())
+          .build();
+    } catch (final UnknownHostException e) {
+      throw new IllegalArgumentException("Error parsing hostname: " + lobbyGame.getHostAddress());
+    }
+  }
+
+  /** Conversion method to convert the current object into an equivalent {@code LobbyGame}. */
+  public LobbyGame toLobbyGame() {
+    return LobbyGame.builder()
+        .comments(comment)
+        .hostName(hostedBy.getName())
+        .hostAddress(hostedBy.getAddress().getHostAddress())
+        .hostPort(hostedBy.getPort())
+        .epochMilliTimeStarted(startDateTime.toEpochMilli())
+        .mapName(gameName)
+        .mapVersion(gameVersion)
+        .status(status.toString())
+        .passworded(passworded)
+        .playerCount(playerCount)
+        .gameRound(round)
+        .build();
   }
 }

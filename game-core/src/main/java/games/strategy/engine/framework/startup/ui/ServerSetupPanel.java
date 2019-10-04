@@ -47,7 +47,12 @@ import javax.swing.SwingUtilities;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.http.client.ApiKey;
 import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
+import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.swing.DialogBuilder;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -79,8 +84,26 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   private void createLobbyWatcher() {
+    final URI lobbyUri =
+        URI.create(
+            HttpLobbyClient.PROTOCOL
+                + System.getProperty(LOBBY_HOST)
+                + ":"
+                + System.getProperty(LOBBY_HTTPS_PORT));
+
+    final GameHostingResponse gameHostingResponse =
+        GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
+
+    final HttpLobbyClient lobbyClient =
+        HttpLobbyClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
+
     InGameLobbyWatcher.newInGameLobbyWatcher(
-            model.getMessenger(), lobbyWatcher.getInGameLobbyWatcher())
+            model.getMessenger(),
+            gameHostingResponse,
+            GameListingClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey())),
+            this::connectionLostReporter,
+            this::connectionReEstablishedReporter,
+            lobbyWatcher.getInGameLobbyWatcher())
         .ifPresent(
             watcher -> {
               watcher.setGameSelectorModel(gameSelectorModel);
@@ -105,15 +128,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
                           });
 
               LocalServerAvailabilityCheck.builder()
-                  .connectivityCheckClient(
-                      HttpLobbyClient.newClient(
-                              URI.create(
-                                  HttpLobbyClient.PROTOCOL
-                                      + System.getProperty(LOBBY_HOST)
-                                      + ":"
-                                      + System.getProperty(LOBBY_HTTPS_PORT)),
-                              watcher.getLobbyMessenger().getApiKey())
-                          .getConnectivityCheckClient())
+                  .connectivityCheckClient(lobbyClient.getConnectivityCheckClient())
                   .localPort(model.getMessenger().getLocalNode().getPort())
                   .errorHandler(errorHandler)
                   .build()
@@ -124,6 +139,22 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
               System.clearProperty(LOBBY_HTTPS_PORT);
               System.clearProperty(TRIPLEA_NAME);
             });
+  }
+
+  private void connectionLostReporter(final String message) {
+    DialogBuilder.builder()
+        .parent(this)
+        .title("Connection to Lobby Lost")
+        .errorMessage(message)
+        .showDialog();
+  }
+
+  private void connectionReEstablishedReporter(final String message) {
+    DialogBuilder.builder()
+        .parent(this)
+        .title("Re-Connected to Lobby")
+        .infoMessage(message)
+        .showDialog();
   }
 
   private void createComponents() {

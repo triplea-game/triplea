@@ -1,12 +1,8 @@
 package games.strategy.net;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Multimap;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.triplea.lobby.common.LobbyConstants;
@@ -25,12 +21,10 @@ public final class PlayerNameAssigner {
    *     already connected under a different name.
    */
   public static String assignName(
-      final String desiredName,
-      final String mac,
-      final Multimap<String, String> loggedInMacsToNames) {
+      final String desiredName, final String mac, final Collection<String> loggedInNames) {
     Preconditions.checkArgument(PlayerNameValidation.serverSideValidate(desiredName) == null);
     Preconditions.checkNotNull(mac);
-    Preconditions.checkNotNull(loggedInMacsToNames);
+    Preconditions.checkNotNull(loggedInNames);
 
     String currentName = desiredName;
 
@@ -38,27 +32,13 @@ public final class PlayerNameAssigner {
       if (currentName.length() > 50) {
         currentName = currentName.substring(0, 50);
       }
-      currentName =
-          findExistingLoggedInNameFromSameMac(mac, loggedInMacsToNames).orElse(currentName);
     }
 
-    final Collection<String> playerNames = loggedInMacsToNames.values();
-
     final String originalName = currentName;
-    for (int i = 1; playerNames.contains(currentName); i++) {
+    for (int i = 1; loggedInNames.contains(currentName); i++) {
       currentName = originalName + " (" + i + ")";
     }
     return currentName;
-  }
-
-  private static Optional<String> findExistingLoggedInNameFromSameMac(
-      final String mac, final Multimap<String, String> loggedInMacsToNames) {
-
-    return loggedInMacsToNames.entries().stream()
-        .filter(entry -> mac.equals(entry.getKey()))
-        .filter(entry -> !isBotName(entry.getValue()))
-        .map(Map.Entry::getValue)
-        .min(Comparator.naturalOrder());
   }
 
   private static boolean isBotName(final String desiredName) {

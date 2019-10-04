@@ -1,7 +1,5 @@
 package games.strategy.net.nio;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
@@ -13,6 +11,7 @@ import games.strategy.net.ServerMessenger;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -106,18 +105,6 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                             remoteMac,
                             channel.socket().getRemoteSocketAddress()))
                     .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
-            if (error == null) {
-              error =
-                  PlayerNameValidation.verifyNameIsNotLoggedInAlready(
-                      remoteName,
-                      // filter out nodes that are connected from the same computer.
-                      // This way we match against nodes from other computers only.
-                      serverMessenger.getNodes().stream()
-                          .filter(n -> !n.getAddress().equals(channel.socket().getInetAddress()))
-                          .map(INode::getName)
-                          .collect(Collectors.toSet()));
-            }
-
             if (error != null && !error.equals(CHANGE_PASSWORD)) {
               step = Step.ACK_ERROR;
               send(error);
@@ -135,17 +122,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           }
 
           synchronized (serverMessenger.newNodeLock) {
-            final Multimap<String, String> macToName = HashMultimap.create();
-
             // aggregate all player names by mac address (there can be multiple names per mac
             // address)
-            serverMessenger.getNodes().stream()
-                .filter(n -> serverMessenger.getPlayerMac(n.getPlayerName()) != null)
-                .forEach(
-                    n ->
-                        macToName.put(
-                            serverMessenger.getPlayerMac(n.getPlayerName()), n.getName()));
-            remoteName = PlayerNameAssigner.assignName(remoteName, remoteMac, macToName);
+            final Collection<String> names =
+                serverMessenger.getNodes().stream().map(INode::getName).collect(Collectors.toSet());
+            remoteName = PlayerNameAssigner.assignName(remoteName, remoteMac, names);
           }
 
           // send the node its assigned name, our name, an error message that could contain a magic

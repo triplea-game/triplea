@@ -4,7 +4,6 @@ import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
-import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
@@ -33,7 +32,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.mindrot.jbcrypt.BCrypt;
@@ -47,8 +45,6 @@ import org.triplea.util.ExitStatus;
 public class HeadlessGameServer {
   public static final String BOT_GAME_HOST_COMMENT = "automated_host";
   public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
-  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT =
-      (int) TimeUnit.DAYS.toSeconds(2);
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
   private static HeadlessGameServer instance = null;
 
@@ -102,25 +98,7 @@ public class HeadlessGameServer {
             "Initialize Headless Server Setup Model")
         .start();
 
-    startLobbyWatcher();
-
     log.info("Game Server initialized");
-  }
-
-  @SuppressWarnings("FutureReturnValueIgnored") // false positive; see
-  // https://github.com/google/error-prone/issues/883
-  private void startLobbyWatcher() {
-    lobbyWatcherResetupThread.scheduleAtFixedRate(
-        () -> {
-          try {
-            restartLobbyWatcher();
-          } catch (final Exception e) {
-            log.log(Level.WARNING, "Failed to restart Lobby watcher", e);
-          }
-        },
-        LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT,
-        LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT,
-        TimeUnit.SECONDS);
   }
 
   public static synchronized HeadlessGameServer getInstance() {
@@ -426,18 +404,6 @@ public class HeadlessGameServer {
     return "Invalid password!";
   }
 
-  private synchronized void restartLobbyWatcher() {
-    try {
-      final HeadlessServerSetup setup = setupPanelModel.getPanel();
-      if (setup == null || game != null || setup.canGameStart()) {
-        return;
-      }
-      setup.repostLobbyWatcher();
-    } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to restart lobby watcher", e);
-    }
-  }
-
   private void waitForUsersHeadless() {
     setServerGame(null);
 
@@ -564,9 +530,6 @@ public class HeadlessGameServer {
             + LOBBY_HOST
             + "=<LOBBY_HOST>\n"
             + "   "
-            + LOBBY_PORT
-            + "=<LOBBY_PORT>\n"
-            + "   "
             + LOBBY_HTTPS_PORT
             + "=<LOBBY_HTTPS_PORT>\n"
             + "   "
@@ -588,7 +551,7 @@ public class HeadlessGameServer {
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
     if ((playerName.length() < 7) || !playerName.startsWith(BOT_GAME_HOST_NAME_PREFIX)) {
       log.warning(
-          "Invalid argument: "
+          "Invalid or missing argument: "
               + TRIPLEA_NAME
               + " must at least 7 characters long "
               + "and start with "
@@ -597,12 +560,18 @@ public class HeadlessGameServer {
     }
 
     if (isInvalidPortNumber(System.getProperty(TRIPLEA_PORT, "0"))) {
-      log.warning("Invalid argument: " + TRIPLEA_PORT + " must be greater than zero");
+      log.warning("Invalid or missing argument: " + TRIPLEA_PORT + " must be greater than zero");
       printUsage = true;
     }
 
     if (System.getProperty(LOBBY_HOST, "").isEmpty()) {
-      log.warning("Invalid argument: " + LOBBY_HOST + " must be set");
+      log.warning("Invalid or missing argument: " + LOBBY_HOST + " must be set");
+      printUsage = true;
+    }
+
+    if (isInvalidPortNumber(System.getProperty(LOBBY_HTTPS_PORT, "0"))) {
+      log.warning(
+          "Invalid or missing argument: " + LOBBY_HTTPS_PORT + " must be greater than zero");
       printUsage = true;
     }
 

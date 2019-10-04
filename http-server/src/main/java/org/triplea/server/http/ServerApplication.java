@@ -31,6 +31,7 @@ import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
 import org.triplea.server.lobby.game.ConnectivityControllerFactory;
+import org.triplea.server.lobby.game.hosting.GameHostingControllerFactory;
 import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
 import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
@@ -138,6 +139,7 @@ public class ServerApplication extends Application<AppConfig> {
         BadWordControllerFactory.buildController(jdbi),
         ConnectivityControllerFactory.buildController(),
         ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
+        GameHostingControllerFactory.buildController(jdbi),
         GameListingControllerFactory.buildController(jdbi),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
         UserBanControllerFactory.buildController(appConfig, jdbi),
