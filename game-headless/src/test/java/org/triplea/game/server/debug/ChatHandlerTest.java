@@ -28,6 +28,10 @@ final class ChatHandlerTest {
       return new LogRecord(Level.WARNING, "message");
     }
 
+    private LogRecord newLoggableLogRecordWithMultipleLines() {
+      return new LogRecord(Level.WARNING, "message\nmessage2\n");
+    }
+
     private LogRecord newUnloggableLogRecord() {
       return new LogRecord(Level.FINEST, "message");
     }
@@ -42,7 +46,15 @@ final class ChatHandlerTest {
     void shouldSendChatMessageWhenRecordIsLoggable() {
       publish(newLoggableLogRecord());
 
-      verify(sendChatMessage).accept(anyString());
+      // first line is logged date, second line is the message
+      verify(sendChatMessage, times(2)).accept(anyString());
+    }
+
+    @Test
+    void shouldSplitMessagesOnNewLines() {
+      publish(newLoggableLogRecordWithMultipleLines());
+
+      verify(sendChatMessage, times(3)).accept(anyString());
     }
 
     @Test
@@ -56,7 +68,8 @@ final class ChatHandlerTest {
     void shouldNotIncludeTrailingNewlineInChatMessage() {
       publish(newLoggableLogRecord());
 
-      verify(sendChatMessage).accept(not(endsWith("\n")));
+      // first line is logged date, second line is the message
+      verify(sendChatMessage, times(2)).accept(not(endsWith("\n")));
     }
 
     @Test
@@ -71,7 +84,8 @@ final class ChatHandlerTest {
 
       publish(newLoggableLogRecord());
 
-      verify(sendChatMessage, times(1)).accept(anyString());
+      // first line is logged date, second line is the message
+      verify(sendChatMessage, times(2)).accept(anyString());
     }
   }
 }

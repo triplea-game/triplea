@@ -1,6 +1,8 @@
 package org.triplea.game.server.debug;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Handler;
@@ -56,7 +58,7 @@ public final class ChatHandler extends Handler {
     if (isLoggable(record) && enabled) {
       enabled = false;
       try {
-        sendChatMessage.accept(formatChatMessage(record));
+        formatChatMessage(record).forEach(sendChatMessage);
       } finally {
         enabled = true;
       }
@@ -69,7 +71,7 @@ public final class ChatHandler extends Handler {
         .ifPresent(chat -> chat.sendMessage(message));
   }
 
-  private String formatChatMessage(final LogRecord record) {
-    return getFormatter().format(record).trim();
+  private List<String> formatChatMessage(final LogRecord record) {
+    return Arrays.asList(getFormatter().format(record).trim().split("\\n"));
   }
 }
