@@ -28,6 +28,10 @@ final class ChatHandlerTest {
       return new LogRecord(Level.WARNING, "message");
     }
 
+    private LogRecord newLoggableLogRecordWithMultipleLines() {
+      return new LogRecord(Level.WARNING, "message\nmessage2\n");
+    }
+
     private LogRecord newUnloggableLogRecord() {
       return new LogRecord(Level.FINEST, "message");
     }
@@ -45,6 +49,14 @@ final class ChatHandlerTest {
       // first line is logged date, second line is the message
       verify(sendChatMessage, times(2)).accept(anyString());
     }
+
+    @Test
+    void shouldSplitMessagesOnNewLines() {
+      publish(newLoggableLogRecordWithMultipleLines());
+
+      verify(sendChatMessage, times(3)).accept(anyString());
+    }
+
 
     @Test
     void shouldNotSendChatMessageWhenRecordIsNotLoggable() {

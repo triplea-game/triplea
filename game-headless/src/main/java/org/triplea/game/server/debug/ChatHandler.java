@@ -72,6 +72,6 @@ public final class ChatHandler extends Handler {
   }
 
   private List<String> formatChatMessage(final LogRecord record) {
-    return Arrays.asList(getFormatter().format(record).trim().split("\n"));
+    return Arrays.asList(getFormatter().format(record).trim().split("\\n"));
   }
 }
