@@ -57,7 +57,6 @@ final class ChatHandlerTest {
       verify(sendChatMessage, times(3)).accept(anyString());
     }
 
-
     @Test
     void shouldNotSendChatMessageWhenRecordIsNotLoggable() {
       publish(newUnloggableLogRecord());
