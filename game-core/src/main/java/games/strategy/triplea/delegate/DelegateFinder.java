@@ -3,9 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 
-/**
- * A collection of methods for obtaining various types of delegate instances from the game data.
- */
+/** A collection of methods for obtaining various types of delegate instances from the game data. */
 public final class DelegateFinder {
   private DelegateFinder() {}
 

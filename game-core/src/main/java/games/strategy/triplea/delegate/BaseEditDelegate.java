@@ -7,15 +7,13 @@ import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.Constants;
 
 /**
  * Superclass for all logic that runs in edit mode.
  *
- * <p>
- * TODO: Merge this class with EditDelegate, as it has no other subclasses.
- * </p>
+ * <p>TODO: Merge this class with EditDelegate, as it has no other subclasses.
  */
 public abstract class BaseEditDelegate extends BasePersistentDelegate {
   private static final String EDITMODE_ON = "Turning on Edit Mode";
@@ -41,7 +39,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   }
 
   private String checkPlayerId() {
-    final IRemotePlayer remotePlayer = getRemotePlayer();
+    final Player remotePlayer = bridge.getRemotePlayer();
     if (!bridge.getPlayerId().equals(remotePlayer.getPlayerId())) {
       return "Edit actions can only be performed during players turn";
     }
@@ -60,7 +58,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   }
 
   public void setEditMode(final boolean editMode) {
-    final IRemotePlayer remotePlayer = getRemotePlayer();
+    final Player remotePlayer = bridge.getRemotePlayer();
     if (!bridge.getPlayerId().equals(remotePlayer.getPlayerId())) {
       return;
     }

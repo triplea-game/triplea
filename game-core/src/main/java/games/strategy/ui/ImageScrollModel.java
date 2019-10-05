@@ -1,25 +1,29 @@
 package games.strategy.ui;
 
-import java.util.Observable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * Model for an ImageScroller. Generally one large view and one small view will be connected to the same model.
+ * Model for an ImageScroller. Generally one large view and one small view will be connected to the
+ * same model.
  *
- * <p>
- * notifies its observers when changes occur.
- * </p>
+ * <p>notifies its observers when changes occur.
  */
-public class ImageScrollModel extends Observable {
+public class ImageScrollModel {
   @SuppressWarnings("checkstyle:MemberName")
   private int x;
+
   @SuppressWarnings("checkstyle:MemberName")
   private int y;
+
   private int boxWidth = 5;
   private int boxHeight = 5;
   private int maxWidth;
   private int maxHeight;
   private boolean scrollX;
   private boolean scrollY;
+
+  private final Collection<Runnable> listeners = new ArrayList<>();
 
   public void setMaxBounds(final int maxWidth, final int maxHeight) {
     this.maxWidth = maxWidth;
@@ -35,9 +39,12 @@ public class ImageScrollModel extends Observable {
     updateListeners();
   }
 
+  public void addListener(final Runnable runnable) {
+    listeners.add(runnable);
+  }
+
   private void updateListeners() {
-    super.setChanged();
-    super.notifyObservers();
+    listeners.forEach(Runnable::run);
   }
 
   public void setScrollX(final boolean scrollX) {

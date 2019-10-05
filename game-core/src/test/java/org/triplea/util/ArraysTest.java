@@ -9,7 +9,6 @@ import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +30,7 @@ final class ArraysTest {
 
     @Test
     void shouldScrubArray() {
-      withSensitiveArray(() -> array, it -> {
-      });
+      withSensitiveArray(() -> array, it -> {});
 
       assertThat(array, is(new char[] {'\0', '\0', '\0'}));
     }

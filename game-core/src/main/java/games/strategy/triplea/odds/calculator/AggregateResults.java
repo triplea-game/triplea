@@ -1,31 +1,25 @@
 package games.strategy.triplea.odds.calculator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Tuple;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.util.TuvUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
 
-/**
- * A container for the results of multiple battle simulation runs.
- */
+/** A container for the results of multiple battle simulation runs. */
 public class AggregateResults {
   private final List<BattleResults> results;
-  @Getter
-  @Setter
-  private long time;
+  @Getter @Setter private long time;
 
   public AggregateResults(final int expectedCount) {
     results = new ArrayList<>(expectedCount);
@@ -45,9 +39,15 @@ public class AggregateResults {
 
   private Optional<BattleResults> getBattleResultsClosestToAverage() {
     return results.stream()
-        .min(Comparator.comparingDouble(
-            result -> Math.abs(result.getRemainingAttackingUnits().size() - getAverageAttackingUnitsLeft())
-                + Math.abs(result.getRemainingDefendingUnits().size() - getAverageDefendingUnitsLeft())));
+        .min(
+            Comparator.comparingDouble(
+                result ->
+                    Math.abs(
+                            result.getRemainingAttackingUnits().size()
+                                - getAverageAttackingUnitsLeft())
+                        + Math.abs(
+                            result.getRemainingDefendingUnits().size()
+                                - getAverageDefendingUnitsLeft())));
   }
 
   public List<Unit> getAverageAttackingUnitsRemaining() {
@@ -67,15 +67,15 @@ public class AggregateResults {
       return 0.0;
     }
     return results.stream()
-        .map(BattleResults::getRemainingAttackingUnits)
-        .mapToDouble(Collection::size)
-        .sum() / results.size();
+            .map(BattleResults::getRemainingAttackingUnits)
+            .mapToDouble(Collection::size)
+            .sum()
+        / results.size();
   }
 
-  /**
-   * First is Attacker, Second is Defender.
-   */
-  public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTuv,
+  /** First is Attacker, Second is Defender. */
+  public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(
+      final IntegerMap<UnitType> attackerCostsForTuv,
       final IntegerMap<UnitType> defenderCostsForTuv) {
     if (results.isEmpty()) {
       return Tuple.of(0.0, 0.0);
@@ -92,13 +92,17 @@ public class AggregateResults {
   /**
    * Returns the average TUV swing across all simulations of the battle.
    *
-   * @return A positive value indicates the defender lost more unit value, on average, than the attacker (i.e. the
-   *         attacker "won"). A negative value indicates the attacker lost more unit value, on average, than the
-   *         defender (i.e. the defender "won"). Zero indicates the attacker and defender lost, on average, equal unit
-   *         value (i.e. a tie).
+   * @return A positive value indicates the defender lost more unit value, on average, than the
+   *     attacker (i.e. the attacker "won"). A negative value indicates the attacker lost more unit
+   *     value, on average, than the defender (i.e. the defender "won"). Zero indicates the attacker
+   *     and defender lost, on average, equal unit value (i.e. a tie).
    */
-  public double getAverageTuvSwing(final PlayerId attacker, final Collection<Unit> attackers, final PlayerId defender,
-      final Collection<Unit> defenders, final GameData data) {
+  public double getAverageTuvSwing(
+      final PlayerId attacker,
+      final Collection<Unit> attackers,
+      final PlayerId defender,
+      final Collection<Unit> defenders,
+      final GameData data) {
     if (results.isEmpty()) {
       return 0.0;
     }
@@ -106,8 +110,10 @@ public class AggregateResults {
     final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTuv(defender, data);
     final int attackerTuv = TuvUtils.getTuv(attackers, attackerCostsForTuv);
     final int defenderTuv = TuvUtils.getTuv(defenders, defenderCostsForTuv);
-    // could we possibly cause a bug by comparing UnitType's from one game data, to a different game data's UnitTypes?
-    final Tuple<Double, Double> average = getAverageTuvOfUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
+    // could we possibly cause a bug by comparing UnitType's from one game data, to a different game
+    // data's UnitTypes?
+    final Tuple<Double, Double> average =
+        getAverageTuvOfUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
     final double attackerLost = attackerTuv - average.getFirst();
     final double defenderLost = defenderTuv - average.getSecond();
     return defenderLost - attackerLost;
@@ -136,9 +142,10 @@ public class AggregateResults {
       return 0.0;
     }
     return results.stream()
-        .map(BattleResults::getRemainingDefendingUnits)
-        .mapToDouble(Collection::size)
-        .sum() / results.size();
+            .map(BattleResults::getRemainingDefendingUnits)
+            .mapToDouble(Collection::size)
+            .sum()
+        / results.size();
   }
 
   double getAverageDefendingUnitsLeftWhenDefenderWon() {
@@ -163,30 +170,22 @@ public class AggregateResults {
     if (results.isEmpty()) {
       return 0.0;
     }
-    return results.stream()
-        .filter(BattleResults::attackerWon)
-        .count() / (double) results.size();
+    return results.stream().filter(BattleResults::attackerWon).count() / (double) results.size();
   }
 
   double getDefenderWinPercent() {
     if (results.isEmpty()) {
       return 0.0;
     }
-    return results.stream()
-        .filter(BattleResults::defenderWon)
-        .count() / (double) results.size();
+    return results.stream().filter(BattleResults::defenderWon).count() / (double) results.size();
   }
 
-  /**
-   * Returns the average number of rounds fought across all simulations of the battle.
-   */
+  /** Returns the average number of rounds fought across all simulations of the battle. */
   public double getAverageBattleRoundsFought() {
     if (results.isEmpty()) {
       return 0.0;
     }
-    final long count = results.stream()
-        .mapToInt(BattleResults::getBattleRoundsFought)
-        .sum();
+    final long count = results.stream().mapToInt(BattleResults::getBattleRoundsFought).sum();
     if (count == 0) {
       // If this is a 'fake' aggregate result, return 1.0
       return 1.0;
@@ -198,9 +197,7 @@ public class AggregateResults {
     if (results.isEmpty()) {
       return 0.0;
     }
-    return results.stream()
-        .filter(BattleResults::draw)
-        .count() / (double) results.size();
+    return results.stream().filter(BattleResults::draw).count() / (double) results.size();
   }
 
   public int getRollCount() {

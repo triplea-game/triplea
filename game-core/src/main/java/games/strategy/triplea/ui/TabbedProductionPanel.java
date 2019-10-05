@@ -1,5 +1,12 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.UnitAttachment;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,25 +15,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 
 class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;
@@ -37,8 +34,13 @@ class TabbedProductionPanel extends ProductionPanel {
     super(uiContext);
   }
 
-  static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
-      final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
+  static IntegerMap<ProductionRule> getProduction(
+      final PlayerId id,
+      final JFrame parent,
+      final GameData data,
+      final boolean bid,
+      final IntegerMap<ProductionRule> initialPurchase,
+      final UiContext uiContext) {
     return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }
 
@@ -46,12 +48,35 @@ class TabbedProductionPanel extends ProductionPanel {
   protected void initLayout() {
     this.removeAll();
     this.setLayout(new GridBagLayout());
-    add(new JLabel("Attack | Defense | Movement"),
-        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-            new Insets(8, 8, 8, 0), 0, 0));
+    add(
+        new JLabel("Attack | Defense | Movement"),
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(8, 8, 8, 0),
+            0,
+            0));
     final JTabbedPane tabs = new JTabbedPane();
-    add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-        new Insets(8, 8, 8, 8), 0, 0));
+    add(
+        tabs,
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            100,
+            100,
+            GridBagConstraints.EAST,
+            GridBagConstraints.BOTH,
+            new Insets(8, 8, 8, 8),
+            0,
+            0));
     final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(id, rules);
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
     calculateRowsAndColumns(properties, largestList(ruleLists));
@@ -63,33 +88,84 @@ class TabbedProductionPanel extends ProductionPanel {
     final JPanel totals = new JPanel();
     totals.add(left);
     totals.add(remainingResources);
-    add(totals, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(8, 8, 0, 12), 0, 0));
+    add(
+        totals,
+        new GridBagConstraints(
+            0,
+            2,
+            1,
+            1,
+            1,
+            1,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(8, 8, 0, 12),
+            0,
+            0));
     done = new JButton(doneAction);
-    add(done, new GridBagConstraints(0, 3, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-        new Insets(0, 0, 8, 0), 0, 0));
+    add(
+        done,
+        new GridBagConstraints(
+            0,
+            3,
+            2,
+            1,
+            1,
+            1,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 8, 0),
+            0,
+            0));
     tabs.validate();
     this.validate();
   }
 
-  private void calculateRowsAndColumns(final ProductionTabsProperties properties, final int largestList) {
-    if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0
+  private void calculateRowsAndColumns(
+      final ProductionTabsProperties properties, final int largestList) {
+    if (properties == null
+        || properties.getRows() == 0
+        || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
       final int maxColumns;
       if (largestList <= 36) {
-        maxColumns = Math.max(8,
-            Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), RoundingMode.UP).intValue()));
+        maxColumns =
+            Math.max(
+                8,
+                Math.min(
+                    12,
+                    new BigDecimal(largestList)
+                        .divide(new BigDecimal(3), RoundingMode.UP)
+                        .intValue()));
       } else if (largestList <= 64) {
-        maxColumns = Math.max(8,
-            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4), RoundingMode.UP).intValue()));
+        maxColumns =
+            Math.max(
+                8,
+                Math.min(
+                    16,
+                    new BigDecimal(largestList)
+                        .divide(new BigDecimal(4), RoundingMode.UP)
+                        .intValue()));
       } else {
-        maxColumns = Math.max(8,
-            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), RoundingMode.UP).intValue()));
+        maxColumns =
+            Math.max(
+                8,
+                Math.min(
+                    16,
+                    new BigDecimal(largestList)
+                        .divide(new BigDecimal(5), RoundingMode.UP)
+                        .intValue()));
       }
       rows =
-          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(maxColumns), RoundingMode.UP).intValue());
+          Math.max(
+              2,
+              new BigDecimal(largestList)
+                  .divide(new BigDecimal(maxColumns), RoundingMode.UP)
+                  .intValue());
       columns =
-          Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(rows), RoundingMode.UP).intValue());
+          Math.max(
+              3,
+              new BigDecimal(largestList).divide(new BigDecimal(rows), RoundingMode.UP).intValue());
     } else {
       rows = Math.max(2, properties.getRows());
       // There are small display problems if the size is less than 2x3 cells.
@@ -115,7 +191,8 @@ class TabbedProductionPanel extends ProductionPanel {
       }
     }
     if (rulesCopy.size() > 0) {
-      throw new IllegalStateException("production_tabs: must include all player production rules/units");
+      throw new IllegalStateException(
+          "production_tabs: must include all player production rules/units");
     }
   }
 
@@ -139,14 +216,16 @@ class TabbedProductionPanel extends ProductionPanel {
     final List<Rule> resourceRules = new ArrayList<>();
     for (final Rule rule : rules) {
       allRules.add(rule);
-      final NamedAttachable resourceOrUnit = rule.getProductionRule().getResults().keySet().iterator().next();
+      final NamedAttachable resourceOrUnit =
+          rule.getProductionRule().getResults().keySet().iterator().next();
       if (resourceOrUnit instanceof UnitType) {
         final UnitType type = (UnitType) resourceOrUnit;
         final UnitAttachment attach = UnitAttachment.get(type);
         if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1) {
           upgradeConsumesRules.add(rule);
         }
-        // canproduceUnits isn't checked on purpose, since this category is for units that can be placed
+        // canProduceUnits isn't checked on purpose, since this category is for units that can be
+        // placed
         // anywhere (placed without needing a factory).
         if (attach.getIsConstruction()) {
           constructRules.add(rule);
@@ -172,9 +251,7 @@ class TabbedProductionPanel extends ProductionPanel {
   }
 
   private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = JPanelBuilder.builder()
-        .gridLayout(rows, columns)
-        .build();
+    final JPanel panel = new JPanelBuilder().gridLayout(rows, columns).build();
 
     final JPanel[][] panelHolder = new JPanel[rows][columns];
     for (int m = 0; m < rows; m++) {

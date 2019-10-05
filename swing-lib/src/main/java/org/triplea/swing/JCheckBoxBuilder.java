@@ -1,26 +1,46 @@
 package org.triplea.swing;
 
+import com.google.common.base.Strings;
+import java.util.Optional;
+import java.util.function.Consumer;
 import javax.swing.JCheckBox;
 
-/**
- * Relatively simple builder for a swing JCheckBox.
- * By default check boxes are 'selected'.
- */
+/** Relatively simple builder for a swing JCheckBox. By default check boxes are 'selected'. */
 public class JCheckBoxBuilder {
 
   private boolean isSelected = true;
+  private SettingPersistence settingPersistence;
+  private Consumer<Boolean> actionListener;
+  private final String label;
 
-  private JCheckBoxBuilder() {
-
+  public JCheckBoxBuilder() {
+    this("");
   }
 
-  /**
-   * Builds the swing component.
-   */
+  public JCheckBoxBuilder(final String label) {
+    this.label = label;
+  }
+
+  /** Builds the swing component. */
   public JCheckBox build() {
-    final JCheckBox checkBox = new JCheckBox();
-    checkBox.setSelected(isSelected);
+
+    final JCheckBox checkBox = new JCheckBox(Strings.nullToEmpty(label));
+    checkBox.setSelected(
+        Optional.ofNullable(settingPersistence)
+            .map(SettingPersistence::getSetting)
+            .orElse(isSelected));
+    checkBox.addActionListener(
+        e -> {
+          Optional.ofNullable(settingPersistence)
+              .ifPresent(s -> s.saveSetting(checkBox.isSelected()));
+          Optional.ofNullable(actionListener).ifPresent(l -> l.accept(checkBox.isSelected()));
+        });
     return checkBox;
+  }
+
+  public JCheckBoxBuilder actionListener(final Consumer<Boolean> actionListener) {
+    this.actionListener = actionListener;
+    return this;
   }
 
   public JCheckBoxBuilder selected(final boolean isSelected) {
@@ -28,8 +48,8 @@ public class JCheckBoxBuilder {
     return this;
   }
 
-  public static JCheckBoxBuilder builder() {
-    return new JCheckBoxBuilder();
+  public JCheckBoxBuilder bind(final SettingPersistence settingPersistence) {
+    this.settingPersistence = settingPersistence;
+    return this;
   }
-
 }

@@ -36,7 +36,8 @@ final class IntegerClientSettingTest {
 
     @Test
     void shouldThrowExceptionWhenEncodedValueIsIllegal() {
-      assertThrows(ClientSetting.ValueEncodingException.class, () -> clientSetting.decodeValue("a123"));
+      assertThrows(
+          ClientSetting.ValueEncodingException.class, () -> clientSetting.decodeValue("a123"));
     }
 
     @Test

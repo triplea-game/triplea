@@ -1,11 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.annotation.Nullable;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -16,16 +10,21 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import javax.annotation.Nullable;
 
 /**
- * Tracks the original owner of things.
- * Needed since territories and factories must revert to their original owner when captured from the enemy.
+ * Tracks the original owner of things. Needed since territories and factories must revert to their
+ * original owner when captured from the enemy.
  */
 public class OriginalOwnerTracker implements Serializable {
   private static final long serialVersionUID = 8462432412106180906L;
 
   public static Change addOriginalOwnerChange(final Territory t, final PlayerId player) {
-    return ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t), player, Constants.ORIGINAL_OWNER);
+    return ChangeFactory.attachmentPropertyChange(
+        TerritoryAttachment.get(t), player, Constants.ORIGINAL_OWNER);
   }
 
   public static Change addOriginalOwnerChange(final Unit unit, final PlayerId player) {
@@ -52,10 +51,9 @@ public class OriginalOwnerTracker implements Serializable {
     return ta.getOriginalOwner();
   }
 
-  /**
-   * Returns the territories originally owned by the specified player.
-   */
-  public static Collection<Territory> getOriginallyOwned(final GameData data, final PlayerId player) {
+  /** Returns the territories originally owned by the specified player. */
+  public static Collection<Territory> getOriginallyOwned(
+      final GameData data, final PlayerId player) {
     final Collection<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {
       PlayerId originalOwner = getOriginalOwner(t);

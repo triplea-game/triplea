@@ -4,70 +4,76 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.when;
 
+import com.google.common.util.concurrent.Runnables;
+import games.strategy.net.Node;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
-import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
-import com.google.common.util.concurrent.Runnables;
-
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.MessageContext;
-import games.strategy.net.GUID;
-import games.strategy.net.IMessenger;
-import games.strategy.net.INode;
-import games.strategy.net.Messengers;
-
 final class LobbyGameTableModelTest {
+
+  private static final String id0 = "id0";
+  private static final String id1 = "id1";
+  private static final GameDescription gameDescription0;
+  private static final GameDescription gameDescription1;
+
+  static {
+    try {
+      gameDescription0 =
+          GameDescription.builder()
+              .hostedBy(new Node("node", InetAddress.getLocalHost(), 10))
+              .startDateTime(Instant.now())
+              .status(GameDescription.GameStatus.LAUNCHING)
+              .build();
+
+      gameDescription1 =
+          GameDescription.builder()
+              .hostedBy(new Node("another node", InetAddress.getLocalHost(), 10))
+              .startDateTime(Instant.now())
+              .status(GameDescription.GameStatus.IN_PROGRESS)
+              .build();
+    } catch (final UnknownHostException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class RemoveAndUpdateGameTest {
     private LobbyGameTableModel testObj;
-    @Mock
-    private IMessenger mockMessenger;
-    @Mock
-    private IChannelMessenger mockChannelMessenger;
-    @Mock
-    private IRemoteMessenger mockRemoteMessenger;
-    @Mock
-    private ILobbyGameController mockLobbyController;
-    private Map<GUID, GameDescription> fakeGameMap;
-    private Tuple<GUID, GameDescription> fakeGame;
-    private GameDescription mockGameDescription = GameDescription.builder().build();
-    @Mock
-    private INode serverNode;
+    @Mock private GameListingClient gameListingClient;
+
+    private List<LobbyGameListing> fakeGameListing = new ArrayList<>();
+    private Tuple<String, GameDescription> fakeGame;
 
     @BeforeEach
     void setUp() {
-      fakeGameMap = new HashMap<>();
-      fakeGame = Tuple.of(new GUID(), mockGameDescription);
-      fakeGameMap.put(fakeGame.getFirst(), fakeGame.getSecond());
+      fakeGame = Tuple.of(id0, gameDescription0);
+      fakeGameListing.add(
+          LobbyGameListing.builder()
+              .gameId(fakeGame.getFirst())
+              .lobbyGame(gameDescription0.toLobbyGame())
+              .build());
 
-      Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME))
-          .thenReturn(mockLobbyController);
-      Mockito.when(mockLobbyController.listGames()).thenReturn(fakeGameMap);
-      testObj = new LobbyGameTableModel(
-          true, new Messengers(mockMessenger, mockRemoteMessenger, mockChannelMessenger));
-      Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
-
-      MessageContext.setSenderNodeForThread(serverNode);
-      Mockito.when(mockMessenger.getServerNode()).thenReturn(serverNode);
+      when(gameListingClient.fetchGameListing()).thenReturn(fakeGameListing);
+      testObj = new LobbyGameTableModel(true, gameListingClient, errMsg -> {});
       waitForSwingThreads();
-      assertThat("games are loaded on init", testObj.getRowCount(), is(1));
     }
 
     private void waitForSwingThreads() {
@@ -76,32 +82,39 @@ final class LobbyGameTableModelTest {
     }
 
     @Test
+    void singleGameInModelAfterSetup() {
+      assertThat("games are loaded on init", testObj.getRowCount(), is(1));
+    }
+
+    @Test
     void updateGame() {
       final int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
       assertThat(testObj.getValueAt(0, commentColumnIndex), nullValue());
 
-      final String newComment = "comment";
-      final GameDescription newDescription = GameDescription.builder().comment(newComment).build();
+      testObj
+          .getLobbyGameBroadcaster()
+          .gameUpdated(
+              LobbyGameListing.builder()
+                  .gameId(fakeGame.getFirst())
+                  .lobbyGame(gameDescription1.toLobbyGame())
+                  .build());
 
-      testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(1));
-      assertThat(testObj.getValueAt(0, commentColumnIndex), is(newComment));
+      assertThat(testObj.getValueAt(0, commentColumnIndex), is(gameDescription1.getComment()));
     }
 
     @Test
     void updateGameAddsIfDoesNotExist() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(new GUID(), GameDescription.builder().build());
+      testObj
+          .getLobbyGameBroadcaster()
+          .gameUpdated(
+              LobbyGameListing.builder()
+                  .gameId(id1)
+                  .lobbyGame(gameDescription1.toLobbyGame())
+                  .build());
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(2));
-    }
-
-    @Test
-    void updateGameWithNullGuidIsIgnored() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(null, GameDescription.builder().build());
-      waitForSwingThreads();
-      assertThat("expect row count to remain 1, null guid is bogus data",
-          testObj.getRowCount(), is(1));
     }
 
     @Test
@@ -113,7 +126,7 @@ final class LobbyGameTableModelTest {
 
     @Test
     void removeGameThatDoesNotExistIsIgnored() {
-      testObj.getLobbyGameBroadcaster().gameRemoved(new GUID());
+      testObj.getLobbyGameBroadcaster().gameRemoved(id1);
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(1));
     }

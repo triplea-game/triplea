@@ -1,17 +1,14 @@
 package games.strategy.triplea.util;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
+import java.io.Serializable;
+import java.util.Comparator;
 
-/**
- * A comparator for {@link PlayerId} that sorts instances in game play order.
- */
+/** A comparator for {@link PlayerId} that sorts instances in game play order. */
 public class PlayerOrderComparator implements Comparator<PlayerId>, Serializable {
   private static final long serialVersionUID = -6271054939349383653L;
   private final GameData gameData;
@@ -20,9 +17,7 @@ public class PlayerOrderComparator implements Comparator<PlayerId>, Serializable
     gameData = data;
   }
 
-  /**
-   * sort based on first step that isn't a bid related step.
-   */
+  /** sort based on first step that isn't a bid related step. */
   @Override
   public int compare(final PlayerId p1, final PlayerId p2) {
     if (p1.equals(p2)) {
@@ -54,7 +49,8 @@ public class PlayerOrderComparator implements Comparator<PlayerId>, Serializable
             || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate")) {
           continue;
         }
-      } else if (s.getName() != null && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace"))) {
+      } else if (s.getName() != null
+          && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace"))) {
         continue;
       }
       if (s.getPlayerId().equals(p1)) {

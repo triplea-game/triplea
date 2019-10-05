@@ -23,7 +23,8 @@ final class ServicesTest {
 
     @Test
     void shouldThrowExceptionWhenServiceNotAvailable() {
-      final Exception e = assertThrows(ServiceNotAvailableException.class, () -> loadAny(UnknownService.class));
+      final Exception e =
+          assertThrows(ServiceNotAvailableException.class, () -> loadAny(UnknownService.class));
       assertThat(e.getMessage(), containsString(UnknownService.class.getName()));
     }
   }
@@ -32,7 +33,8 @@ final class ServicesTest {
   final class TryLoadAnyTest {
     @Test
     void shouldReturnServiceWhenServiceIsAvailable() {
-      assertThat(tryLoadAny(KnownService.class), isPresentAnd(is(instanceOf(KnownServiceImpl.class))));
+      assertThat(
+          tryLoadAny(KnownService.class), isPresentAnd(is(instanceOf(KnownServiceImpl.class))));
     }
 
     @Test
@@ -41,12 +43,9 @@ final class ServicesTest {
     }
   }
 
-  interface KnownService {
-  }
+  interface KnownService {}
 
-  public static final class KnownServiceImpl implements KnownService {
-  }
+  public static final class KnownServiceImpl implements KnownService {}
 
-  interface UnknownService {
-  }
+  interface UnknownService {}
 }

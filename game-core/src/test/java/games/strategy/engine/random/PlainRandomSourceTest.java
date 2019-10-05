@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
-
 import org.junit.jupiter.api.Test;
 
 final class PlainRandomSourceTest {
@@ -26,12 +25,17 @@ final class PlainRandomSourceTest {
   @Test
   void getRandomSingle_ShouldReturnValueBetweenZeroInclusiveAndMaxExclusive() {
     IntStream.range(0, 5_000)
-        .forEach(i -> assertValueBetweenZeroInclusiveAndMaxExclusive(plainRandomSource.getRandom(MAX, ANNOTATION)));
+        .forEach(
+            i ->
+                assertValueBetweenZeroInclusiveAndMaxExclusive(
+                    plainRandomSource.getRandom(MAX, ANNOTATION)));
   }
 
   @Test
   void getRandomSingle_ShouldThrowExceptionWhenMaxIsNotPositive() {
-    final Exception e = assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, ANNOTATION));
+    final Exception e =
+        assertThrows(
+            IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, ANNOTATION));
     assertThat(e.getMessage(), containsString("max"));
   }
 
@@ -51,16 +55,17 @@ final class PlainRandomSourceTest {
   void getRandomMany_ShouldThrowExceptionWhenMaxIsNotPositive() {
 
     final Exception e =
-        assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, 1, ANNOTATION));
+        assertThrows(
+            IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, 1, ANNOTATION));
 
-    assertThat(e.getMessage(),
-        containsString("max"));
+    assertThat(e.getMessage(), containsString("max"));
   }
 
   @Test
   void getRandomMany_ShouldThrowExceptionWhenCountIsNotPositive() {
     final Exception e =
-        assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
+        assertThrows(
+            IllegalArgumentException.class, () -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
     assertThat(e.getMessage(), containsString("count"));
   }
 }

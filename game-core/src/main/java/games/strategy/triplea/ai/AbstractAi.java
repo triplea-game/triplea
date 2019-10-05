@@ -1,29 +1,10 @@
 package games.strategy.triplea.ai;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import org.triplea.java.Interruptibles;
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Tuple;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -45,41 +26,53 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.AbstractBasePlayer;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
 import lombok.extern.java.Log;
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
 
 /**
  * Base class for AIs.
  *
- * <p>
- * Control pausing with the AI pause menu option.
- * AIs should note that any data that is stored in the AI instance, will be lost when the game is restarted.
- * We cannot save data with an AI, since the player may choose to restart the game with a different AI,
- * or with a human player.
- * </p>
+ * <p>Control pausing with the AI pause menu option. AIs should note that any data that is stored in
+ * the AI instance, will be lost when the game is restarted. We cannot save data with an AI, since
+ * the player may choose to restart the game with a different AI, or with a human player.
  *
- * <p>
- * If an AI finds itself starting in the middle of a move phase, or the middle of a purchase phase,
- * (as would happen if a player saved the game during the middle of an AI's move phase) it is acceptable
- * for the AI to play badly for a turn, but the AI should recover, and play correctly when the next phase
- * of the game starts.
- * </p>
+ * <p>If an AI finds itself starting in the middle of a move phase, or the middle of a purchase
+ * phase, (as would happen if a player saved the game during the middle of an AI's move phase) it is
+ * acceptable for the AI to play badly for a turn, but the AI should recover, and play correctly
+ * when the next phase of the game starts.
  *
- * <p>
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done
- * through an IDelegate using a change).
- * </p>
+ * <p>As a rule, nothing that changes GameData should be in here (it should be in a delegate, and
+ * done through an IDelegate using a change).
  */
 @Log
-public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAPlayer {
+public abstract class AbstractAi extends AbstractBasePlayer {
   public AbstractAi(final String name) {
     super(name);
   }
 
   @Override
-  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory,
-      final Collection<Territory> territories, final boolean noneAvailable) {
+  public Territory selectBombardingTerritory(
+      final Unit unit,
+      final Territory unitTerritory,
+      final Collection<Territory> territories,
+      final boolean noneAvailable) {
     return territories.iterator().next();
   }
 
@@ -109,25 +102,34 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public boolean confirmMoveHariKari() {
-    return false;
-  }
+  public void confirmMoveHariKari() {}
 
   @Override
-  public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from) {
+  public Territory whereShouldRocketsAttack(
+      final Collection<Territory> candidates, final Territory from) {
     return candidates.iterator().next();
   }
 
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerId hit, final Collection<Unit> friendlyUnits,
-      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
+  public CasualtyDetails selectCasualties(
+      final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents,
+      final int count,
+      final String message,
+      final DiceRoll dice,
+      final PlayerId hit,
+      final Collection<Unit> friendlyUnits,
+      final Collection<Unit> enemyUnits,
+      final boolean amphibious,
+      final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties,
+      final UUID battleId,
+      final Territory battleSite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
-      throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total "
-          + "size of default casualty selections");
+      throw new IllegalStateException(
+          "Select Casualties showing different numbers for number of hits to take vs total "
+              + "size of default casualty selections");
     }
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
@@ -146,7 +148,9 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+  public Unit whatShouldBomberBomb(
+      final Territory territory,
+      final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     final Collection<Unit> factories =
         CollectionUtils.getMatches(potentialTargets, Matches.unitCanProduceUnitsAndCanBeDamaged());
@@ -157,8 +161,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
-      final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
+      final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
     final List<Unit> fighters = new ArrayList<>();
     for (final Unit fighter : fightersThatCanBeMoved) {
       if (Math.random() < 0.8) {
@@ -169,7 +173,9 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
+  public Territory selectTerritoryForAirToLand(
+      final Collection<Territory> candidates,
+      final Territory currentTerritory,
       final String unitMessage) {
     return candidates.iterator().next();
   }
@@ -180,20 +186,25 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleTerritory,
-      final Collection<Territory> possibleTerritories, final String message) {
+  public Territory retreatQuery(
+      final UUID battleId,
+      final boolean submerge,
+      final Territory battleTerritory,
+      final Collection<Territory> possibleTerritories,
+      final String message) {
     return null;
   }
 
   @Override
-  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(
+      final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     return null;
   }
 
   @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
-      final String message) {
+  public Collection<Unit> selectUnitsQuery(
+      final Territory current, final Collection<Unit> possible, final String message) {
     return null;
   }
 
@@ -204,7 +215,9 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
 
   // TODO: This really needs to be rewritten with some basic logic
   @Override
-  public boolean acceptAction(final PlayerId playerSendingProposal, final String acceptanceQuestion,
+  public boolean acceptAction(
+      final PlayerId playerSendingProposal,
+      final String acceptanceQuestion,
       final boolean politics) {
     // we are dead, just accept
     if (!getPlayerId().amNotDeadYet(getGameData())) {
@@ -219,20 +232,32 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       return true;
     }
     // would we normally be allies?
-    final List<String> allies = Arrays.asList(Constants.PLAYER_NAME_AMERICANS,
-        Constants.PLAYER_NAME_AUSTRALIANS, Constants.PLAYER_NAME_BRITISH, Constants.PLAYER_NAME_CANADIANS,
-        Constants.PLAYER_NAME_CHINESE, Constants.PLAYER_NAME_FRENCH, Constants.PLAYER_NAME_RUSSIANS);
-    if (allies.contains(getPlayerId().getName()) && allies.contains(playerSendingProposal.getName())) {
+    final List<String> allies =
+        Arrays.asList(
+            Constants.PLAYER_NAME_AMERICANS,
+            Constants.PLAYER_NAME_AUSTRALIANS,
+            Constants.PLAYER_NAME_BRITISH,
+            Constants.PLAYER_NAME_CANADIANS,
+            Constants.PLAYER_NAME_CHINESE,
+            Constants.PLAYER_NAME_FRENCH,
+            Constants.PLAYER_NAME_RUSSIANS);
+    if (allies.contains(getPlayerId().getName())
+        && allies.contains(playerSendingProposal.getName())) {
       return true;
     }
-    final List<String> axis = Arrays.asList(Constants.PLAYER_NAME_GERMANS, Constants.PLAYER_NAME_ITALIANS,
-        Constants.PLAYER_NAME_JAPANESE, Constants.PLAYER_NAME_PUPPET_STATES);
+    final List<String> axis =
+        Arrays.asList(
+            Constants.PLAYER_NAME_GERMANS,
+            Constants.PLAYER_NAME_ITALIANS,
+            Constants.PLAYER_NAME_JAPANESE,
+            Constants.PLAYER_NAME_PUPPET_STATES);
     if (axis.contains(getPlayerId().getName()) && axis.contains(playerSendingProposal.getName())) {
       return true;
     }
     final Collection<String> myAlliances =
         new HashSet<>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerId()));
-    myAlliances.retainAll(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
+    myAlliances.retainAll(
+        getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
     return !myAlliances.isEmpty() || Math.random() < .5;
   }
 
@@ -240,7 +265,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
     final PlayerId id = getPlayerId();
-    // we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
+    // we are going to just assign random attacks to each unit randomly, til we run out of tokens to
+    // attack with.
     final PlayerAttachment pa = PlayerAttachment.get(id);
     if (pa == null) {
       return null;
@@ -274,10 +300,14 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
         }
         final IntegerMap<Resource> resourceMap = new IntegerMap<>();
         final Resource resource = attackTokens.keySet().iterator().next();
-        final int num = Math.min(attackTokens.getInt(resource),
-            (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
+        final int num =
+            Math.min(
+                attackTokens.getInt(resource),
+                (UnitAttachment.get(u.getType()).getHitPoints()
+                    * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         resourceMap.put(resource, num);
-        final Map<Unit, IntegerMap<Resource>> attMap = kamikazeSuicideAttacks.getOrDefault(t, new HashMap<>());
+        final Map<Unit, IntegerMap<Resource>> attMap =
+            kamikazeSuicideAttacks.getOrDefault(t, new HashMap<>());
         attMap.put(u, resourceMap);
         kamikazeSuicideAttacks.put(t, attMap);
         attackTokens.add(resource, -num);
@@ -290,8 +320,10 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
-      final List<Unit> unitChoices, final int unitsPerPick) {
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
+      final List<Territory> territoryChoices,
+      final List<Unit> unitChoices,
+      final int unitsPerPick) {
     final GameData data = getGameData();
     final PlayerId me = getPlayerId();
     final Territory picked;
@@ -305,37 +337,49 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
           CollectionUtils.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).negate());
       if (notOwned.isEmpty()) {
         // only owned territories left
-        final boolean nonFactoryUnitsLeft = unitChoices.stream().anyMatch(Matches.unitCanProduceUnits().negate());
-        final Predicate<Unit> ownedFactories = Matches.unitCanProduceUnits().and(Matches.unitIsOwnedBy(me));
+        final boolean nonFactoryUnitsLeft =
+            unitChoices.stream().anyMatch(Matches.unitCanProduceUnits().negate());
+        final Predicate<Unit> ownedFactories =
+            Matches.unitCanProduceUnits().and(Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
         final List<Territory> territoriesWithFactories =
-            CollectionUtils.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories));
+            CollectionUtils.getMatches(
+                territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories));
         if (!nonFactoryUnitsLeft) {
-          test.retainAll(CollectionUtils.getMatches(test, Matches.territoryHasUnitsThatMatch(ownedFactories).negate()));
+          test.retainAll(
+              CollectionUtils.getMatches(
+                  test, Matches.territoryHasUnitsThatMatch(ownedFactories).negate()));
           if (!test.isEmpty()) {
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(CollectionUtils.getMatches(data.getMap().getTerritories(),
-                  Matches.isTerritoryOwnedBy(me)
-                      .and(Matches.territoryHasUnitsOwnedBy(me))
-                      .and(Matches.territoryIsLand())));
+              capitals.addAll(
+                  CollectionUtils.getMatches(
+                      data.getMap().getTerritories(),
+                      Matches.isTerritoryOwnedBy(me)
+                          .and(Matches.territoryHasUnitsOwnedBy(me))
+                          .and(Matches.territoryIsLand())));
             }
-            final List<Territory> doesNotHaveFactoryYet = CollectionUtils.getMatches(territoryChoices,
-                Matches.territoryHasUnitsThatMatch(ownedFactories).negate());
+            final List<Territory> doesNotHaveFactoryYet =
+                CollectionUtils.getMatches(
+                    territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories).negate());
             if (capitals.isEmpty() || doesNotHaveFactoryYet.isEmpty()) {
               picked = territoryChoices.get(0);
             } else {
               final IntegerMap<Territory> distanceMap =
-                  data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, Matches.always());
+                  data.getMap()
+                      .getDistance(capitals.get(0), doesNotHaveFactoryYet, Matches.always());
               picked = distanceMap.lowestKey();
             }
           }
         } else {
-          final int maxTerritoriesToPopulate = Math.min(territoryChoices.size(),
-              Math.max(4, CollectionUtils.countMatches(unitChoices, Matches.unitCanProduceUnits())));
+          final int maxTerritoriesToPopulate =
+              Math.min(
+                  territoryChoices.size(),
+                  Math.max(
+                      4, CollectionUtils.countMatches(unitChoices, Matches.unitCanProduceUnits())));
           test.addAll(territoriesWithFactories);
           if (!test.isEmpty()) {
             if (test.size() < maxTerritoriesToPopulate) {
@@ -351,10 +395,12 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(CollectionUtils.getMatches(data.getMap().getTerritories(),
-                  Matches.isTerritoryOwnedBy(me)
-                      .and(Matches.territoryHasUnitsOwnedBy(me))
-                      .and(Matches.territoryIsLand())));
+              capitals.addAll(
+                  CollectionUtils.getMatches(
+                      data.getMap().getTerritories(),
+                      Matches.isTerritoryOwnedBy(me)
+                          .and(Matches.territoryHasUnitsOwnedBy(me))
+                          .and(Matches.territoryIsLand())));
             }
             if (capitals.isEmpty()) {
               picked = territoryChoices.get(0);
@@ -384,10 +430,12 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
           picked = test.get(0);
         } else {
           if (capitals.isEmpty()) {
-            capitals.addAll(CollectionUtils.getMatches(data.getMap().getTerritories(),
-                Matches.isTerritoryOwnedBy(me)
-                    .and(Matches.territoryHasUnitsOwnedBy(me))
-                    .and(Matches.territoryIsLand())));
+            capitals.addAll(
+                CollectionUtils.getMatches(
+                    data.getMap().getTerritories(),
+                    Matches.isTerritoryOwnedBy(me)
+                        .and(Matches.territoryHasUnitsOwnedBy(me))
+                        .and(Matches.territoryIsLand())));
           }
           if (capitals.isEmpty()) {
             picked = territoryChoices.get(0);
@@ -402,7 +450,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     final Set<Unit> unitsToPlace = new HashSet<>();
     if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0) {
       Collections.shuffle(unitChoices);
-      final List<Unit> nonFactory = CollectionUtils.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
+      final List<Unit> nonFactory =
+          CollectionUtils.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
       if (nonFactory.isEmpty()) {
         for (int i = 0; i < unitsPerPick && !unitChoices.isEmpty(); i++) {
           unitsToPlace.add(unitChoices.get(0));
@@ -417,7 +466,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerId hitPlayer) {}
+  public void confirmEnemyCasualties(
+      final UUID battleId, final String message, final PlayerId hitPlayer) {}
 
   @Override
   public void reportError(final String error) {}
@@ -426,12 +476,13 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   public void reportMessage(final String message, final String title) {}
 
   @Override
-  public void confirmOwnCasualties(final GUID battleId, final String message) {
+  public void confirmOwnCasualties(final UUID battleId, final String message) {
     pause();
   }
 
   @Override
-  public int[] selectFixedDice(final int numRolls, final int hitAt, final String message, final int diceSides) {
+  public int[] selectFixedDice(
+      final int numRolls, final int hitAt, final String message, final int diceSides) {
     final int[] dice = new int[numRolls];
     for (int i = 0; i < numRolls; i++) {
       dice[i] = (int) Math.ceil(Math.random() * diceSides);
@@ -444,12 +495,14 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     super.start(name);
     final PlayerId id = getPlayerId();
     if (name.endsWith("Bid")) {
-      final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
+      final IPurchaseDelegate purchaseDelegate =
+          (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final String propertyName = id.getName() + " bid";
       final int bidAmount = getGameData().getProperties().get(propertyName, 0);
       purchase(true, bidAmount, purchaseDelegate, getGameData(), id);
     } else if (name.endsWith("Purchase")) {
-      final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
+      final IPurchaseDelegate purchaseDelegate =
+          (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final Resource pus = getGameData().getResourceList().getResource(Constants.PUS);
       final int leftToSpend = id.getResources().getQuantity(pus);
       purchase(false, leftToSpend, purchaseDelegate, getGameData(), id);
@@ -466,7 +519,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     } else if (name.endsWith("Politics")) {
       politicalActions();
     } else if (name.endsWith("Place")) {
-      final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
+      final IAbstractPlaceDelegate placeDel =
+          (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
       place(name.contains("Bid"), placeDel, getGameData(), id);
     } else if (name.endsWith("EndTurn")) {
       endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), id);
@@ -483,8 +537,12 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param data The GameData.
    * @param player The player to buy for.
    */
-  protected abstract void purchase(boolean purchaseForBid, int pusToSpend, IPurchaseDelegate purchaseDelegate,
-      GameData data, PlayerId player);
+  protected abstract void purchase(
+      boolean purchaseForBid,
+      int pusToSpend,
+      IPurchaseDelegate purchaseDelegate,
+      GameData data,
+      PlayerId player);
 
   /**
    * It is the AI's turn to roll for technology.
@@ -503,18 +561,20 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param data - the current game data
    * @param player - the player to move with
    */
-  protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerId player);
+  protected abstract void move(
+      boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerId player);
 
   /**
-   * It is the AI's turn to place units. get the units available to place with player.getUnitCollection()
+   * It is the AI's turn to place units. get the units available to place with
+   * player.getUnitCollection()
    *
    * @param placeForBid - is this a placement for bid
    * @param placeDelegate - the place delegate to place with
    * @param data - the current Game Data
    * @param player - the player to place for
    */
-  protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data,
-      PlayerId player);
+  protected abstract void place(
+      boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerId player);
 
   /**
    * No need to override this.
@@ -522,14 +582,14 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param endTurnForumPosterDelegate The delegate to end the turn with.
    * @param player The player whose turn is ending.
    */
-  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate,
-      final PlayerId player) {
+  protected void endTurn(
+      final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final PlayerId player) {
     // we should not override this...
   }
 
   /**
-   * It is the AI's turn to fight. Subclasses may override this if they want, but
-   * generally the AI does not need to worry about the order of fighting battles.
+   * It is the AI's turn to fight. Subclasses may override this if they want, but generally the AI
+   * does not need to worry about the order of fighting battles.
    *
    * @param battleDelegate the battle delegate to query for battles not fought and the
    */
@@ -537,7 +597,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     // generally all AI's will follow the same logic.
     // loop until all battles are fought.
     // rather than try to analyze battles to figure out which must be fought before others
-    // as in the case of a naval battle preceding an amphibious attack, keep trying to fight every battle
+    // as in the case of a naval battle preceding an amphibious attack, keep trying to fight every
+    // battle
     while (true) {
       final BattleListing listing = battleDelegate.getBattles();
       if (listing.isEmpty()) {
@@ -545,7 +606,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       }
       for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet()) {
         for (final Territory current : entry.getValue()) {
-          final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
+          final String error =
+              battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
           if (error != null) {
             log.warning(error);
           }
@@ -555,7 +617,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   protected void politicalActions() {
-    final IPoliticsDelegate remotePoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
+    final IPoliticsDelegate remotePoliticsDelegate =
+        (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     final GameData data = getGameData();
     final PlayerId id = getPlayerId();
     final float numPlayers = data.getPlayerList().getPlayers().size();
@@ -563,26 +626,33 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     // We want to test the conditions each time to make sure they are still valid
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
-          AiPoliticalUtils.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
+          AiPoliticalUtils.getPoliticalActionsTowardsWar(
+              id, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
-        int maxWarActionsPerTurn = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
+        int maxWarActionsPerTurn =
+            (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((maxWarActionsPerTurn > 0)
-            && CollectionUtils.countMatches(data.getRelationshipTracker().getRelationships(id),
-                Matches.relationshipIsAtWar()) / numPlayers < 0.4) {
+            && CollectionUtils.countMatches(
+                        data.getRelationshipTracker().getRelationships(id),
+                        Matches.relationshipIsAtWar())
+                    / numPlayers
+                < 0.4) {
           if (Math.random() < .9) {
             maxWarActionsPerTurn = 0;
           } else {
             maxWarActionsPerTurn = 1;
           }
         }
-        final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
+        final Iterator<PoliticalActionAttachment> actionWarIter =
+            actionChoicesTowardsWar.iterator();
         while (actionWarIter.hasNext() && maxWarActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionWarIter.next();
-          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(
+                  politicsDelegate.getTestedConditions())
               .test(action)) {
             continue;
           }
@@ -595,18 +665,22 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       }
     } else {
       final List<PoliticalActionAttachment> actionChoicesOther =
-          AiPoliticalUtils.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
+          AiPoliticalUtils.getPoliticalActionsOther(
+              id, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
         final int maxOtherActionsPerTurn =
-            (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
+            (random < .3
+                ? 0
+                : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(
+                  politicsDelegate.getTestedConditions())
               .test(action)) {
             continue;
           }
@@ -623,9 +697,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     }
   }
 
-  /**
-   * Pause the game to allow the human player to see what is going on.
-   */
+  /** Pause the game to allow the human player to see what is going on. */
   protected static void pause() {
     Interruptibles.sleep(ClientSetting.aiPauseDuration.getValueOrThrow());
   }

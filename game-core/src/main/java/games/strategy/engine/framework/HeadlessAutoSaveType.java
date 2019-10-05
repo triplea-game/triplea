@@ -3,25 +3,23 @@ package games.strategy.engine.framework;
 import java.io.File;
 import java.nio.file.Path;
 
-/**
- * The types of auto-saves that can be loaded by a headless game server.
- */
+/** The types of auto-saves that can be loaded by a headless game server. */
 public enum HeadlessAutoSaveType {
-  DEFAULT(AutoSaveFileUtils.getHeadlessAutoSaveFile()),
+  DEFAULT(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile()),
 
-  ODD_ROUND(AutoSaveFileUtils.getOddRoundAutoSaveFile(true)),
+  ODD_ROUND(new HeadlessAutoSaveFileUtils().getOddRoundAutoSaveFile()),
 
-  EVEN_ROUND(AutoSaveFileUtils.getEvenRoundAutoSaveFile(true)),
+  EVEN_ROUND(new HeadlessAutoSaveFileUtils().getEvenRoundAutoSaveFile()),
 
-  END_TURN(AutoSaveFileUtils.getBeforeStepAutoSaveFile("EndTurn", true)),
+  END_TURN(new HeadlessAutoSaveFileUtils().getBeforeStepAutoSaveFile("EndTurn")),
 
-  BEFORE_BATTLE(AutoSaveFileUtils.getBeforeStepAutoSaveFile("Battle", true)),
+  BEFORE_BATTLE(new HeadlessAutoSaveFileUtils().getBeforeStepAutoSaveFile("Battle")),
 
-  AFTER_BATTLE(AutoSaveFileUtils.getAfterStepAutoSaveFile("Battle", true)),
+  AFTER_BATTLE(new HeadlessAutoSaveFileUtils().getAfterStepAutoSaveFile("Battle")),
 
-  AFTER_COMBAT_MOVE(AutoSaveFileUtils.getAfterStepAutoSaveFile("CombatMove", true)),
+  AFTER_COMBAT_MOVE(new HeadlessAutoSaveFileUtils().getAfterStepAutoSaveFile("CombatMove")),
 
-  AFTER_NON_COMBAT_MOVE(AutoSaveFileUtils.getAfterStepAutoSaveFile("NonCombatMove", true));
+  AFTER_NON_COMBAT_MOVE(new HeadlessAutoSaveFileUtils().getAfterStepAutoSaveFile("NonCombatMove"));
 
   private final Path path;
 

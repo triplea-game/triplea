@@ -1,26 +1,8 @@
 package games.strategy.triplea.attachments;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
@@ -36,10 +18,25 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /**
- * Attaches to technologies.
- * Also contains static methods of interpreting data from all technology attachments that a player has.
+ * Attaches to technologies. Also contains static methods of interpreting data from all technology
+ * attachments that a player has.
  */
 public class TechAbilityAttachment extends DefaultAttachment {
   // unitAbilitiesGained Static Strings
@@ -72,22 +69,27 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private Set<UnitType> airborneTypes = new HashSet<>();
   private int airborneDistance = 0;
   private Set<UnitType> airborneBases = new HashSet<>();
-  private Map<String, Set<UnitType>> airborneTargettedByAa = new HashMap<>();
+  private Map<String, Set<UnitType>> airborneTargetedByAa = new HashMap<>();
   private IntegerMap<UnitType> attackRollsBonus = new IntegerMap<>();
   private IntegerMap<UnitType> defenseRollsBonus = new IntegerMap<>();
   private IntegerMap<UnitType> bombingBonus = new IntegerMap<>();
 
-  public TechAbilityAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  public TechAbilityAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
+  /** Returns the corresponding tech ability attachment for a given tech advancement type. */
   public static TechAbilityAttachment get(final TechAdvance type) {
     if (type instanceof GenericTechAdvance) {
-      // generic techs can name a hardcoded tech, therefore if it exists we should use the hard coded tech's attachment.
-      // (if the map maker doesn't want to use the hardcoded tech's attachment, they should not name a hardcoded tech)
+      // generic techs can name a hardcoded tech, therefore if it exists we should use the hard
+      // coded tech's attachment.
+      // (if the map maker doesn't want to use the hardcoded tech's attachment, they should not name
+      // a hardcoded tech)
       final TechAdvance hardCodedAdvance = ((GenericTechAdvance) type).getAdvance();
       if (hardCodedAdvance != null) {
-        return (TechAbilityAttachment) hardCodedAdvance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
+        return (TechAbilityAttachment)
+            hardCodedAdvance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
       }
     }
     return (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
@@ -104,22 +106,23 @@ public class TechAbilityAttachment extends DefaultAttachment {
     final String[] stringArray = splitOnColon(value);
     if (value.isEmpty() || stringArray.length > 2) {
       throw new GameParseException(
-          String.format("%s cannot be empty or have more than two fields %s", name, thisErrorMsg()));
+          String.format(
+              "%s cannot be empty or have more than two fields %s", name, thisErrorMsg()));
     }
     return stringArray;
   }
 
   @VisibleForTesting
   void applyCheckedValue(
-      final String name,
-      final String value,
-      final BiConsumer<UnitType, Integer> putter) throws GameParseException {
+      final String name, final String value, final BiConsumer<UnitType, Integer> putter)
+      throws GameParseException {
     final String[] s = splitAndValidate(name, value);
     putter.accept(getUnitType(s[1]), getInt(s[0]));
   }
 
   @VisibleForTesting
-  static int sumIntegerMap(final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
+  static int sumIntegerMap(
+      final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
       final UnitType ut,
       final PlayerId player,
       final GameData data) {
@@ -147,17 +150,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @VisibleForTesting
-  int getIntInRange(final String name, final String value, final int max, final boolean allowUndefined)
+  int getIntInRange(
+      final String name, final String value, final int max, final boolean allowUndefined)
       throws GameParseException {
     final int intValue = getInt(value);
     if (intValue < (allowUndefined ? -1 : 0) || intValue > max) {
-      throw new GameParseException(String.format(
-          "%s must be%s between 0 and %s, was %s %s",
-          name,
-          allowUndefined ? " -1 (no effect), or be" : "",
-          max,
-          value,
-          thisErrorMsg()));
+      throw new GameParseException(
+          String.format(
+              "%s must be%s between 0 and %s, was %s %s",
+              name, allowUndefined ? " -1 (no effect), or be" : "", max, value, thisErrorMsg()));
     }
     return intValue;
   }
@@ -294,7 +295,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return productionBonus;
   }
 
-  public static int getProductionBonus(final UnitType ut, final PlayerId player, final GameData data) {
+  public static int getProductionBonus(
+      final UnitType ut, final PlayerId player, final GameData data) {
     return sumIntegerMap(TechAbilityAttachment::getProductionBonus, ut, player, data);
   }
 
@@ -302,7 +304,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     productionBonus = new IntegerMap<>();
   }
 
-  private void setMinimumTerritoryValueForProductionBonus(final String value) throws GameParseException {
+  private void setMinimumTerritoryValueForProductionBonus(final String value)
+      throws GameParseException {
     minimumTerritoryValueForProductionBonus =
         getIntInRange("minimumTerritoryValueForProductionBonus", value, 10000, true);
   }
@@ -315,14 +318,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return minimumTerritoryValueForProductionBonus;
   }
 
-  public static int getMinimumTerritoryValueForProductionBonus(final PlayerId player, final GameData data) {
-    return Math.max(0, TechTracker.getCurrentTechAdvances(player, data).stream()
-        .map(TechAbilityAttachment::get)
-        .filter(Objects::nonNull)
-        .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
-        .filter(i -> i != -1)
-        .min()
-        .orElse(-1));
+  public static int getMinimumTerritoryValueForProductionBonus(
+      final PlayerId player, final GameData data) {
+    return Math.max(
+        0,
+        TechTracker.getCurrentTechAdvances(player, data).stream()
+            .map(TechAbilityAttachment::get)
+            .filter(Objects::nonNull)
+            .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
+            .filter(i -> i != -1)
+            .min()
+            .orElse(-1));
   }
 
   private void resetMinimumTerritoryValueForProductionBonus() {
@@ -342,13 +348,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static double getRepairDiscount(final PlayerId player, final GameData data) {
-    return Math.max(0, 1.0 - TechTracker.getCurrentTechAdvances(player, data).stream()
-        .map(TechAbilityAttachment::get)
-        .filter(Objects::nonNull)
-        .mapToInt(TechAbilityAttachment::getRepairDiscount)
-        .filter(i -> i != -1)
-        .mapToDouble(d -> d / 100.0)
-        .sum());
+    return Math.max(
+        0,
+        1.0
+            - TechTracker.getCurrentTechAdvances(player, data).stream()
+                .map(TechAbilityAttachment::get)
+                .filter(Objects::nonNull)
+                .mapToInt(TechAbilityAttachment::getRepairDiscount)
+                .filter(i -> i != -1)
+                .mapToDouble(d -> d / 100.0)
+                .sum());
   }
 
   private void resetRepairDiscount() {
@@ -368,7 +377,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceSides(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getWarBondDiceSides, TechAdvance.TECH_NAME_WAR_BONDS, player, data);
+    return sumNumbers(
+        TechAbilityAttachment::getWarBondDiceSides, TechAdvance.TECH_NAME_WAR_BONDS, player, data);
   }
 
   private void resetWarBondDiceSides() {
@@ -388,7 +398,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceNumber(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getWarBondDiceNumber, TechAdvance.TECH_NAME_WAR_BONDS, player, data);
+    return sumNumbers(
+        TechAbilityAttachment::getWarBondDiceNumber, TechAdvance.TECH_NAME_WAR_BONDS, player, data);
   }
 
   private void resetWarBondDiceNumber() {
@@ -411,7 +422,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rocketDiceNumber;
   }
 
-  private static int getRocketDiceNumber(final UnitType ut, final PlayerId player, final GameData data) {
+  private static int getRocketDiceNumber(
+      final UnitType ut, final PlayerId player, final GameData data) {
     return sumIntegerMap(TechAbilityAttachment::getRocketDiceNumber, ut, player, data);
   }
 
@@ -440,7 +452,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getRocketDistance(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getRocketDistance, TechAdvance.TECH_NAME_ROCKETS, player, data);
+    return sumNumbers(
+        TechAbilityAttachment::getRocketDistance, TechAdvance.TECH_NAME_ROCKETS, player, data);
   }
 
   private void resetRocketDistance() {
@@ -460,7 +473,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getRocketNumberPerTerritory(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getRocketNumberPerTerritory, TechAdvance.TECH_NAME_ROCKETS, player, data);
+    return sumNumbers(
+        TechAbilityAttachment::getRocketNumberPerTerritory,
+        TechAdvance.TECH_NAME_ROCKETS,
+        player,
+        data);
   }
 
   private void resetRocketNumberPerTerritory() {
@@ -471,7 +488,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     final String[] s = splitOnColon(value);
     if (s.length < 2) {
       throw new GameParseException(
-          "unitAbilitiesGained must list the unit type, then all abilities gained" + thisErrorMsg());
+          "unitAbilitiesGained must list the unit type, then all abilities gained"
+              + thisErrorMsg());
     }
     final String unitType = s[0];
     // validate that this unit exists in the xml
@@ -481,8 +499,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (int i = 1; i < s.length; i++) {
       final String ability = s[i];
       if (!(ability.equals(ABILITY_CAN_BLITZ) || ability.equals(ABILITY_CAN_BOMBARD))) {
-        throw new GameParseException("unitAbilitiesGained so far only supports: " + ABILITY_CAN_BLITZ + " and "
-            + ABILITY_CAN_BOMBARD + thisErrorMsg());
+        throw new GameParseException(
+            "unitAbilitiesGained so far only supports: "
+                + ABILITY_CAN_BLITZ
+                + " and "
+                + ABILITY_CAN_BOMBARD
+                + thisErrorMsg());
       }
       abilities.add(ability);
     }
@@ -497,7 +519,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return unitAbilitiesGained;
   }
 
-  public static boolean getUnitAbilitiesGained(final String filterForAbility, final UnitType ut, final PlayerId player,
+  public static boolean getUnitAbilitiesGained(
+      final String filterForAbility,
+      final UnitType ut,
+      final PlayerId player,
       final GameData data) {
     Preconditions.checkNotNull(filterForAbility);
     return TechTracker.getCurrentTechAdvances(player, data).stream()
@@ -542,7 +567,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneCapacity;
   }
 
-  public static IntegerMap<UnitType> getAirborneCapacity(final PlayerId player, final GameData data) {
+  public static IntegerMap<UnitType> getAirborneCapacity(
+      final PlayerId player, final GameData data) {
     final IntegerMap<UnitType> capacityMap = new IntegerMap<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -553,11 +579,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return capacityMap;
   }
 
-  public static int getAirborneCapacity(final Collection<Unit> units, final PlayerId player, final GameData data) {
+  public static int getAirborneCapacity(
+      final Collection<Unit> units, final PlayerId player, final GameData data) {
     final IntegerMap<UnitType> capacityMap = getAirborneCapacity(player, data);
     int airborneCapacity = 0;
     for (final Unit u : units) {
-      airborneCapacity += Math.max(0, (capacityMap.getInt(u.getType()) - ((TripleAUnit) u).getLaunched()));
+      airborneCapacity +=
+          Math.max(0, (capacityMap.getInt(u.getType()) - ((TripleAUnit) u).getLaunched()));
     }
     return airborneCapacity;
   }
@@ -606,11 +634,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getAirborneDistance(final PlayerId player, final GameData data) {
-    return Math.max(0, TechTracker.getCurrentTechAdvances(player, data).stream()
-        .map(TechAbilityAttachment::get)
-        .filter(Objects::nonNull)
-        .mapToInt(TechAbilityAttachment::getAirborneDistance)
-        .sum());
+    return Math.max(
+        0,
+        TechTracker.getCurrentTechAdvances(player, data).stream()
+            .map(TechAbilityAttachment::get)
+            .filter(Objects::nonNull)
+            .mapToInt(TechAbilityAttachment::getAirborneDistance)
+            .sum());
   }
 
   private void resetAirborneDistance() {
@@ -647,29 +677,31 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private void setAirborneTargettedByAa(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length < 2) {
-      throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
+      throw new GameParseException(
+          "airborneTargettedByAA must have at least two fields" + thisErrorMsg());
     }
     final Set<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
       unitTypes.add(getUnitType(s[i]));
     }
-    airborneTargettedByAa.put(s[0], unitTypes);
+    airborneTargetedByAa.put(s[0], unitTypes);
   }
 
   private void setAirborneTargettedByAa(final Map<String, Set<UnitType>> value) {
-    airborneTargettedByAa = value;
+    airborneTargetedByAa = value;
   }
 
   private Map<String, Set<UnitType>> getAirborneTargettedByAa() {
-    return airborneTargettedByAa;
+    return airborneTargetedByAa;
   }
 
   /**
-   * Returns a map of the air unit types that can be targeted by each type of AA fire. The key is the type of AA fire.
-   * The value is the collection of air unit types that can be targeted by the key.
+   * Returns a map of the air unit types that can be targeted by each type of AA fire. The key is
+   * the type of AA fire. The value is the collection of air unit types that can be targeted by the
+   * key.
    */
-  public static Map<String, Set<UnitType>> getAirborneTargettedByAa(final PlayerId player,
-      final GameData data) {
+  public static Map<String, Set<UnitType>> getAirborneTargettedByAa(
+      final PlayerId player, final GameData data) {
     final Map<String, Set<UnitType>> airborneTargettedByAa = new HashMap<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -677,7 +709,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
         final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAa();
         if (mapAa != null && !mapAa.isEmpty()) {
           for (final Entry<String, Set<UnitType>> entry : mapAa.entrySet()) {
-            final Set<UnitType> current = airborneTargettedByAa.getOrDefault(entry.getKey(), new HashSet<>());
+            final Set<UnitType> current =
+                airborneTargettedByAa.getOrDefault(entry.getKey(), new HashSet<>());
             current.addAll(entry.getValue());
             airborneTargettedByAa.put(entry.getKey(), current);
           }
@@ -688,7 +721,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void resetAirborneTargettedByAa() {
-    airborneTargettedByAa = new HashMap<>();
+    airborneTargetedByAa = new HashMap<>();
   }
 
   private void setAttackRollsBonus(final String value) throws GameParseException {
@@ -759,11 +792,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   /**
-   * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game
-   * options/properties.
+   * Must be done only in GameParser, and only after we have already parsed ALL technologies,
+   * attachments, and game options/properties.
    */
-  public static void setDefaultTechnologyAttachments(final GameData data) throws GameParseException {
-    // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its
+  public static void setDefaultTechnologyAttachments(final GameData data)
+      throws GameParseException {
+    // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment,
+    // will get its
     // "default" attachment. any non-default tech are ignored.
     for (final TechAdvance techAdvance : TechAdvance.getTechAdvances(data)) {
       final TechAdvance ta;
@@ -780,7 +815,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final String propertyString = ta.getProperty();
       TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa == null) {
-        // debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic
+        // debating if we should have flags for things like "air", "land", "sea", "aaGun",
+        // "factory", "strategic
         // bomber", etc.
         // perhaps just the easy ones, of air, land, and sea?
         switch (propertyString) {
@@ -788,7 +824,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allAir =
-                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir());
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir());
             for (final UnitType air : allAir) {
               taa.setMovementBonus("2:" + air.getName());
             }
@@ -797,7 +834,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allAa =
-                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAaForAnything());
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAaForAnything());
             for (final UnitType aa : allAa) {
               taa.setRadarBonus("1:" + aa.getName());
             }
@@ -806,7 +844,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allSubs =
-                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsFirstStrike());
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsFirstStrike());
             for (final UnitType sub : allSubs) {
               taa.setAttackBonus("1:" + sub.getName());
             }
@@ -814,8 +853,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
           case TechAdvance.TECH_PROPERTY_JET_POWER:
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-            final List<UnitType> allJets = CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(),
-                Matches.unitTypeIsAir().and(Matches.unitTypeIsStrategicBomber().negate()));
+            final List<UnitType> allJets =
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(),
+                    Matches.unitTypeIsAir().and(Matches.unitTypeIsStrategicBomber().negate()));
             final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
             for (final UnitType jet : allJets) {
               if (ww2v3TechModel) {
@@ -831,7 +872,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allFactories =
-                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeCanProduceUnits());
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeCanProduceUnits());
             for (final UnitType factory : allFactories) {
               taa.setProductionBonus("2:" + factory.getName());
               taa.setMinimumTerritoryValueForProductionBonus("3");
@@ -849,7 +891,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allRockets =
-                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsRocket());
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsRocket());
             for (final UnitType rocket : allRockets) {
               taa.setRocketDiceNumber("1:" + rocket.getName());
             }
@@ -860,7 +903,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allDestroyers =
-                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(),
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(),
                     Matches.unitTypeIsDestroyer().and(Matches.unitTypeIsSea()));
             for (final UnitType destroyer : allDestroyers) {
               taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
@@ -870,19 +914,22 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allBombers =
-                CollectionUtils
-                    .getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
+                CollectionUtils.getMatches(
+                    data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
             final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
             final boolean heavyBombersLhtr = Properties.getLhtrHeavyBombers(data);
             for (final UnitType bomber : allBombers) {
               // TODO: The bomber dice rolls get set when the xml is parsed.
               // we subtract the base rolls to get the bonus
               final int heavyBomberDiceRollsBonus =
-                  heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerId.NULL_PLAYERID);
+                  heavyBomberDiceRollsTotal
+                      - UnitAttachment.get(bomber).getAttackRolls(PlayerId.NULL_PLAYERID);
               taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
               if (heavyBombersLhtr) {
-                // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
-                // does not get changed. (meaning, turning on LHTR bombers will not result in this bonus damage,
+                // TODO: this all happens WHEN the xml is parsed. Which means if the user changes
+                // the game options, this
+                // does not get changed. (meaning, turning on LHTR bombers will not result in this
+                // bonus damage,
                 // etc. It would have to start on, in the xml.)
                 taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
                 // LHTR adds 1 to base roll
@@ -894,15 +941,21 @@ public class TechAbilityAttachment extends DefaultAttachment {
             break;
         }
         // The following technologies should NOT have ability attachments for them:
-        // shipyards and industrialTechnology = because it is better to use a Trigger to change player's production
-        // improvedArtillerySupport = because it is already completely atomized and controlled through support
+        // shipyards and industrialTechnology = because it is better to use a Trigger to change
+        // player's production
+        // improvedArtillerySupport = because it is already completely atomized and controlled
+        // through support
         // attachments
-        // paratroopers = because it is already completely atomized and controlled through unit attachments + game
+        // paratroopers = because it is already completely atomized and controlled through unit
+        // attachments + game
         // options
-        // mechanizedInfantry = because it is already completely atomized and controlled through unit attachments
-        // IF one of the above named techs changes what it does in a future version of a&a, and the change is large
+        // mechanizedInfantry = because it is already completely atomized and controlled through
+        // unit attachments
+        // IF one of the above named techs changes what it does in a future version of a&a, and the
+        // change is large
         // enough or different enough that it cannot be done easily with a new game option,
-        // then it is better to create a new tech rather than change the old one, and give the new one a new name, like
+        // then it is better to create a new tech rather than change the old one, and give the new
+        // one a new name, like
         // paratroopers2 or paratroopersAttack or Airborne_Forces, or some crap.
       }
     }
@@ -916,7 +969,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final TechAdvance hardCodedAdvance = ((GenericTechAdvance) ta).getAdvance();
       if (hardCodedAdvance != null) {
         throw new GameParseException(
-            "A custom Generic Tech Advance naming a hardcoded tech, may not have a Tech Ability Attachment!"
+            "A custom Generic Tech Advance naming a hardcoded tech, may "
+                + "not have a Tech Ability Attachment!"
                 + this.thisErrorMsg());
       }
     }
@@ -925,145 +979,169 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("attackBonus",
+        .put(
+            "attackBonus",
             MutableProperty.of(
                 this::setAttackBonus,
                 this::setAttackBonus,
                 this::getAttackBonus,
                 this::resetAttackBonus))
-        .put("defenseBonus",
+        .put(
+            "defenseBonus",
             MutableProperty.of(
                 this::setDefenseBonus,
                 this::setDefenseBonus,
                 this::getDefenseBonus,
                 this::resetDefenseBonus))
-        .put("movementBonus",
+        .put(
+            "movementBonus",
             MutableProperty.of(
                 this::setMovementBonus,
                 this::setMovementBonus,
                 this::getMovementBonus,
                 this::resetMovementBonus))
-        .put("radarBonus",
+        .put(
+            "radarBonus",
             MutableProperty.of(
                 this::setRadarBonus,
                 this::setRadarBonus,
                 this::getRadarBonus,
                 this::resetRadarBonus))
-        .put("airAttackBonus",
+        .put(
+            "airAttackBonus",
             MutableProperty.of(
                 this::setAirAttackBonus,
                 this::setAirAttackBonus,
                 this::getAirAttackBonus,
                 this::resetAirAttackBonus))
-        .put("airDefenseBonus",
+        .put(
+            "airDefenseBonus",
             MutableProperty.of(
                 this::setAirDefenseBonus,
                 this::setAirDefenseBonus,
                 this::getAirDefenseBonus,
                 this::resetAirDefenseBonus))
-        .put("productionBonus",
+        .put(
+            "productionBonus",
             MutableProperty.of(
                 this::setProductionBonus,
                 this::setProductionBonus,
                 this::getProductionBonus,
                 this::resetProductionBonus))
-        .put("minimumTerritoryValueForProductionBonus",
+        .put(
+            "minimumTerritoryValueForProductionBonus",
             MutableProperty.of(
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::getMinimumTerritoryValueForProductionBonus,
                 this::resetMinimumTerritoryValueForProductionBonus))
-        .put("repairDiscount",
+        .put(
+            "repairDiscount",
             MutableProperty.of(
                 this::setRepairDiscount,
                 this::setRepairDiscount,
                 this::getRepairDiscount,
                 this::resetRepairDiscount))
-        .put("warBondDiceSides",
+        .put(
+            "warBondDiceSides",
             MutableProperty.of(
                 this::setWarBondDiceSides,
                 this::setWarBondDiceSides,
                 this::getWarBondDiceSides,
                 this::resetWarBondDiceSides))
-        .put("warBondDiceNumber",
+        .put(
+            "warBondDiceNumber",
             MutableProperty.of(
                 this::setWarBondDiceNumber,
                 this::setWarBondDiceNumber,
                 this::getWarBondDiceNumber,
                 this::resetWarBondDiceNumber))
-        .put("rocketDiceNumber",
+        .put(
+            "rocketDiceNumber",
             MutableProperty.of(
                 this::setRocketDiceNumber,
                 this::setRocketDiceNumber,
                 this::getRocketDiceNumber,
                 this::resetRocketDiceNumber))
-        .put("rocketDistance",
+        .put(
+            "rocketDistance",
             MutableProperty.of(
                 this::setRocketDistance,
                 this::setRocketDistance,
                 this::getRocketDistance,
                 this::resetRocketDistance))
-        .put("rocketNumberPerTerritory",
+        .put(
+            "rocketNumberPerTerritory",
             MutableProperty.of(
                 this::setRocketNumberPerTerritory,
                 this::setRocketNumberPerTerritory,
                 this::getRocketNumberPerTerritory,
                 this::resetRocketNumberPerTerritory))
-        .put("unitAbilitiesGained",
+        .put(
+            "unitAbilitiesGained",
             MutableProperty.of(
                 this::setUnitAbilitiesGained,
                 this::setUnitAbilitiesGained,
                 this::getUnitAbilitiesGained,
                 this::resetUnitAbilitiesGained))
-        .put("airborneForces",
+        .put(
+            "airborneForces",
             MutableProperty.of(
                 this::setAirborneForces,
                 this::setAirborneForces,
                 this::getAirborneForces,
                 this::resetAirborneForces))
-        .put("airborneCapacity",
+        .put(
+            "airborneCapacity",
             MutableProperty.of(
                 this::setAirborneCapacity,
                 this::setAirborneCapacity,
                 this::getAirborneCapacity,
                 this::resetAirborneCapacity))
-        .put("airborneTypes",
+        .put(
+            "airborneTypes",
             MutableProperty.of(
                 this::setAirborneTypes,
                 this::setAirborneTypes,
                 this::getAirborneTypes,
                 this::resetAirborneTypes))
-        .put("airborneDistance",
+        .put(
+            "airborneDistance",
             MutableProperty.of(
                 this::setAirborneDistance,
                 this::setAirborneDistance,
                 this::getAirborneDistance,
                 this::resetAirborneDistance))
-        .put("airborneBases",
+        .put(
+            "airborneBases",
             MutableProperty.of(
                 this::setAirborneBases,
                 this::setAirborneBases,
                 this::getAirborneBases,
                 this::resetAirborneBases))
-        .put("airborneTargettedByAA",
+        .put(
+            "airborneTargettedByAA",
             MutableProperty.of(
                 this::setAirborneTargettedByAa,
                 this::setAirborneTargettedByAa,
                 this::getAirborneTargettedByAa,
                 this::resetAirborneTargettedByAa))
-        .put("attackRollsBonus",
+        .put(
+            "attackRollsBonus",
             MutableProperty.of(
                 this::setAttackRollsBonus,
                 this::setAttackRollsBonus,
                 this::getAttackRollsBonus,
                 this::resetAttackRollsBonus))
-        .put("defenseRollsBonus",
+        .put(
+            "defenseRollsBonus",
             MutableProperty.of(
                 this::setDefenseRollsBonus,
                 this::setDefenseRollsBonus,
                 this::getDefenseRollsBonus,
                 this::resetDefenseRollsBonus))
-        .put("bombingBonus",
+        .put(
+            "bombingBonus",
             MutableProperty.of(
                 this::setBombingBonus,
                 this::setBombingBonus,

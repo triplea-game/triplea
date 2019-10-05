@@ -1,7 +1,5 @@
 package games.strategy.engine.delegate;
 
-import java.util.Properties;
-
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -13,15 +11,14 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.MessengerException;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
 import games.strategy.sound.ISound;
+import java.util.Properties;
 
-/**
- * Default implementation of DelegateBridge.
- */
+/** Default implementation of DelegateBridge. */
 public class DefaultDelegateBridge implements IDelegateBridge {
   private final GameData gameData;
   private final IGame game;
@@ -30,8 +27,12 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   private final DelegateExecutionManager delegateExecutionManager;
   private IRandomSource randomSource;
 
-  public DefaultDelegateBridge(final GameData data, final IGame game, final IDelegateHistoryWriter historyWriter,
-      final RandomStats randomStats, final DelegateExecutionManager delegateExecutionManager) {
+  public DefaultDelegateBridge(
+      final GameData data,
+      final IGame game,
+      final IDelegateHistoryWriter historyWriter,
+      final RandomStats randomStats,
+      final DelegateExecutionManager delegateExecutionManager) {
     gameData = data;
     this.game = game;
     this.historyWriter = historyWriter;
@@ -54,10 +55,12 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   /**
-   * All delegates should use random data that comes from both players so that neither player cheats.
+   * All delegates should use random data that comes from both players so that neither player
+   * cheats.
    */
   @Override
-  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation)
+  public int getRandom(
+      final int max, final PlayerId player, final DiceType diceType, final String annotation)
       throws IllegalArgumentException, IllegalStateException {
     final int random = randomSource.getRandom(max, annotation);
     randomStats.addRandom(random, player, diceType);
@@ -65,8 +68,13 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
-      final String annotation) throws IllegalArgumentException, IllegalStateException {
+  public int[] getRandom(
+      final int max,
+      final int count,
+      final PlayerId player,
+      final DiceType diceType,
+      final String annotation)
+      throws IllegalArgumentException, IllegalStateException {
     final int[] randomValues = randomSource.getRandom(max, count, annotation);
     randomStats.addRandom(randomValues, player, diceType);
     return randomValues;
@@ -102,30 +110,34 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer() {
+  public Player getRemotePlayer() {
     return getRemotePlayer(getPlayerId());
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerId id) {
+  public Player getRemotePlayer(final PlayerId id) {
     try {
-      final Object implementor = game.getMessengers().getRemote(ServerGame.getRemoteName(id, gameData));
-      return (IRemotePlayer) getOutbound(implementor);
-    } catch (final MessengerException me) {
-      throw new GameOverException("Game Over!");
+      final Object implementor = game.getMessengers().getRemote(ServerGame.getRemoteName(id));
+      return (Player) getOutbound(implementor);
+    } catch (final RuntimeException e) {
+      if (e.getCause() instanceof MessengerException) {
+        throw new GameOverException("Game Over!");
+      }
+      throw e;
     }
   }
 
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     final Object implementor =
-        game.getMessengers().getChannelBroadcaster(AbstractGame.getDisplayChannel(gameData));
+        game.getMessengers().getChannelBroadcaster(AbstractGame.getDisplayChannel());
     return (IDisplay) getOutbound(implementor);
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    final Object implementor = game.getMessengers().getChannelBroadcaster(AbstractGame.getSoundChannel(gameData));
+    final Object implementor =
+        game.getMessengers().getChannelBroadcaster(AbstractGame.getSoundChannel());
     return (ISound) getOutbound(implementor);
   }
 

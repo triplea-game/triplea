@@ -4,10 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
+import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.Resource;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.UserActionAttachment;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,17 +21,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.IntegerMap;
 
-import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.Resource;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attachments.UserActionAttachment;
-
 @ExtendWith(MockitoExtension.class)
 final class UserActionPanelTest {
-  @Mock
-  private GameData data;
+  @Mock private GameData data;
 
   private Resource pus;
 
@@ -37,7 +34,8 @@ final class UserActionPanelTest {
   }
 
   private UserActionAttachment newUserActionWithCost(final int costInPUs) {
-    final UserActionAttachment userAction = new UserActionAttachment("userAction", mock(Attachable.class), data);
+    final UserActionAttachment userAction =
+        new UserActionAttachment("userAction", mock(Attachable.class), data);
     if (costInPUs > 0) {
       final IntegerMap<Resource> cost = new IntegerMap<>();
       cost.put(pus, costInPUs);
@@ -56,9 +54,11 @@ final class UserActionPanelTest {
     @Test
     void shouldReturnFalseWhenUserActionCostGreaterThanPlayerPUs() {
       final PlayerId player = newPlayer();
-      final UserActionAttachment userAction = newUserActionWithCost(player.getResources().getQuantity(pus) + 1);
+      final UserActionAttachment userAction =
+          newUserActionWithCost(player.getResources().getQuantity(pus) + 1);
 
-      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+      final boolean canAffordUserAction =
+          UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
       assertThat(canAffordUserAction, is(false));
     }
@@ -66,9 +66,11 @@ final class UserActionPanelTest {
     @Test
     void shouldReturnTrueWhenUserActionCostEqualToPlayerPUs() {
       final PlayerId player = newPlayer();
-      final UserActionAttachment userAction = newUserActionWithCost(player.getResources().getQuantity(pus));
+      final UserActionAttachment userAction =
+          newUserActionWithCost(player.getResources().getQuantity(pus));
 
-      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+      final boolean canAffordUserAction =
+          UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
       assertThat(canAffordUserAction, is(true));
     }
@@ -76,9 +78,11 @@ final class UserActionPanelTest {
     @Test
     void shouldReturnTrueWhenUserActionCostLessThanPlayerPUs() {
       final PlayerId player = newPlayer();
-      final UserActionAttachment userAction = newUserActionWithCost(player.getResources().getQuantity(pus) - 1);
+      final UserActionAttachment userAction =
+          newUserActionWithCost(player.getResources().getQuantity(pus) - 1);
 
-      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+      final boolean canAffordUserAction =
+          UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
       assertThat(canAffordUserAction, is(true));
     }
@@ -88,7 +92,8 @@ final class UserActionPanelTest {
       final PlayerId player = newPlayer();
       final UserActionAttachment userAction = newUserActionWithCost(0);
 
-      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+      final boolean canAffordUserAction =
+          UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
       assertThat(canAffordUserAction, is(true));
     }

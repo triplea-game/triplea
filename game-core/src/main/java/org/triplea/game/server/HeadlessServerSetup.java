@@ -1,30 +1,32 @@
 package org.triplea.game.server;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Observer;
-import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
+import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
-import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.SetupModel;
-import org.triplea.java.Interruptibles;
-import org.triplea.util.ExitStatus;
-
+import feign.FeignException;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
+import java.net.URI;
+import java.util.Map;
+import java.util.Optional;
 import lombok.extern.java.Log;
+import org.triplea.game.chat.ChatModel;
+import org.triplea.game.startup.SetupModel;
+import org.triplea.http.client.ApiKey;
+import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
+import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
 
-/**
- * Server setup model.
- */
+/** Server setup model. */
 @Log
 class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
-  private final List<Observer> listeners = new CopyOnWriteArrayList<>();
   private final ServerModel model;
   private final GameSelectorModel gameSelectorModel;
   private final InGameLobbyWatcherWrapper lobbyWatcher = new InGameLobbyWatcherWrapper();
@@ -33,32 +35,75 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
     this.model = model;
     this.gameSelectorModel = gameSelectorModel;
     this.model.setRemoteModelListener(this);
-    createLobbyWatcher();
-    internalPlayerListChanged();
+
+    try {
+      createLobbyWatcher();
+    } catch (final FeignException e) {
+      throw new CouldNotConnectToLobby(e);
+    }
   }
 
   private void createLobbyWatcher() {
-    final InGameLobbyWatcher.LobbyWatcherHandler handler = new InGameLobbyWatcher.LobbyWatcherHandler() {
-      @Override
-      public void reportError(final String message) {
-        log.severe(message);
-        ExitStatus.FAILURE.exit();
-      }
+    final URI lobbyUri = lobbyUriFromSystemProps();
 
-      @Override
-      public boolean isPlayer() {
-        return false;
-      }
-    };
-    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), handler,
-        lobbyWatcher.getInGameLobbyWatcher()));
+    final GameHostingResponse gameHostingResponse =
+        GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
+
+    final GameListingClient gameListingClient =
+        GameListingClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
+
+    final InGameLobbyWatcher watcher =
+        InGameLobbyWatcher.newInGameLobbyWatcher(
+                model.getMessenger(),
+                gameHostingResponse,
+                gameListingClient,
+                log::warning,
+                log::info,
+                lobbyWatcher.getInGameLobbyWatcher())
+            .orElseThrow(CouldNotConnectToLobby::new);
+
+    lobbyWatcher.setInGameLobbyWatcher(watcher);
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
+
+    final HttpLobbyClient httpLobbyClient =
+        HttpLobbyClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
+    LocalServerAvailabilityCheck.builder()
+        .connectivityCheckClient(httpLobbyClient.getConnectivityCheckClient())
+        .localPort(model.getMessenger().getLocalNode().getPort())
+        .errorHandler(log::severe)
+        .build()
+        .run();
+
+    System.clearProperty(LOBBY_HOST);
+    System.clearProperty(LOBBY_HTTPS_PORT);
+    System.clearProperty(TRIPLEA_NAME);
   }
 
-  synchronized void repostLobbyWatcher() {
-    lobbyWatcher.shutDown();
-    Interruptibles.sleep(3000);
-    createLobbyWatcher();
+  private URI lobbyUriFromSystemProps() {
+    return URI.create(
+        HttpLobbyClient.PROTOCOL
+            + System.getProperty(LOBBY_HOST)
+            + ":"
+            + System.getProperty(LOBBY_HTTPS_PORT));
+  }
+
+  private static class CouldNotConnectToLobby extends RuntimeException {
+    private static final long serialVersionUID = -5946931858867131622L;
+
+    CouldNotConnectToLobby() {
+      super(
+          String.format(
+              "Unable to connect to lobby at: %s, port: %s",
+              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_HTTPS_PORT)));
+    }
+
+    CouldNotConnectToLobby(final FeignException e) {
+      super(
+          String.format(
+              "Unable to connect to lobby at: %s, port: %s, communication error: %s",
+              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_HTTPS_PORT), e.getMessage()),
+          e);
+    }
   }
 
   @Override
@@ -74,7 +119,7 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
       return false;
     }
     final Map<String, String> players = model.getPlayersToNodeListing();
-    if (players == null || players.isEmpty() || players.values().contains(null)) {
+    if (players == null || players.isEmpty() || players.containsValue(null)) {
       return false;
     }
     // make sure at least 1 player is enabled
@@ -82,22 +127,10 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   }
 
   @Override
-  public void playerListChanged() {
-    internalPlayerListChanged();
-  }
+  public void playerListChanged() {}
 
   @Override
-  public void playersTakenChanged() {
-    internalPlayersTakenChanged();
-  }
-
-  private void internalPlayersTakenChanged() {
-    notifyObservers();
-  }
-
-  private void internalPlayerListChanged() {
-    internalPlayersTakenChanged();
-  }
+  public void playersTakenChanged() {}
 
   @Override
   public ChatModel getChatModel() {
@@ -110,23 +143,13 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
 
   @Override
   public synchronized Optional<ILauncher> getLauncher() {
-    return model.getLauncher()
-        .map(launcher -> {
-          launcher.setInGameLobbyWatcher(lobbyWatcher);
-          return launcher;
-        });
-  }
-
-  @Override
-  public void addObserver(final Observer observer) {
-    listeners.add(observer);
-  }
-
-  @Override
-  public void notifyObservers() {
-    for (final Observer observer : listeners) {
-      observer.update(null, null);
-    }
+    return model
+        .getLauncher()
+        .map(
+            launcher -> {
+              launcher.setInGameLobbyWatcher(lobbyWatcher);
+              return launcher;
+            });
   }
 
   @Override

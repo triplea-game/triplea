@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.Collections;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +25,8 @@ final class FileNameUtilsTest {
   final class ReplaceIllegalCharactersTest {
     @Test
     void shouldReplaceIllegalCharacters() {
-      assertThat(FileNameUtils.replaceIllegalCharacters(FileNameUtils.ILLEGAL_CHARACTERS, '_'),
+      assertThat(
+          FileNameUtils.replaceIllegalCharacters(FileNameUtils.ILLEGAL_CHARACTERS, '_'),
           is(String.join("", Collections.nCopies(FileNameUtils.ILLEGAL_CHARACTERS.length(), "_"))));
     }
 

@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that improves the attack of all submarines.
- */
+/** A technology advance that improves the attack of all submarines. */
 public final class SuperSubsAdvance extends TechAdvance {
   private static final long serialVersionUID = -5469354766630425933L;
 

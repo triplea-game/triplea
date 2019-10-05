@@ -10,13 +10,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
-/**
- * A collection of units.
- */
+/** A collection of units. */
 public class UnitCollection extends GameDataComponent implements Collection<Unit> {
   private static final long serialVersionUID = -3534037864426122864L;
 
@@ -58,7 +55,8 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public int getUnitCount(final UnitType type, final PlayerId owner) {
-    return (int) units.stream().filter(u -> u.getType().equals(type) && u.getOwner().equals(owner)).count();
+    return (int)
+        units.stream().filter(u -> u.getType().equals(type) && u.getOwner().equals(owner)).count();
   }
 
   int getUnitCount(final PlayerId owner) {
@@ -85,7 +83,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
       return new ArrayList<>();
     }
     if (maxUnits < 0) {
-      throw new IllegalArgumentException("value must be positiive.  Instead its:" + maxUnits);
+      throw new IllegalArgumentException("value must be positive.  Instead its:" + maxUnits);
     }
     final Collection<Unit> units = new ArrayList<>();
     for (final Unit current : this.units) {
@@ -116,17 +114,18 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return new ArrayList<>(units);
   }
 
-  /**
-   * Returns integer map of UnitType.
-   */
+  /** Returns integer map of UnitType. */
   public IntegerMap<UnitType> getUnitsByType() {
     final IntegerMap<UnitType> units = new IntegerMap<>();
-    getData().getUnitTypeList().forEach(type -> {
-      final int count = getUnitCount(type);
-      if (count > 0) {
-        units.put(type, count);
-      }
-    });
+    getData()
+        .getUnitTypeList()
+        .forEach(
+            type -> {
+              final int count = getUnitCount(type);
+              if (count > 0) {
+                units.put(type, count);
+              }
+            });
     return units;
   }
 
@@ -137,7 +136,9 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    */
   public IntegerMap<UnitType> getUnitsByType(final PlayerId id) {
     final IntegerMap<UnitType> count = new IntegerMap<>();
-    units.stream().filter(unit -> unit.getOwner().equals(id)).forEach(unit -> count.add(unit.getType(), 1));
+    units.stream()
+        .filter(unit -> unit.getOwner().equals(id))
+        .forEach(unit -> count.add(unit.getType(), 1));
     return count;
   }
 
@@ -151,17 +152,13 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return units.isEmpty();
   }
 
-  /**
-   * Returns a Set of all players who have units in this collection.
-   */
+  /** Returns a Set of all players who have units in this collection. */
   public Set<PlayerId> getPlayersWithUnits() {
     // note nulls are handled by PlayerId.NULL_PLAYERID
     return units.stream().map(Unit::getOwner).collect(Collectors.toSet());
   }
 
-  /**
-   * Returns the count of units each player has in this collection.
-   */
+  /** Returns the count of units each player has in this collection. */
   public IntegerMap<PlayerId> getPlayerUnitCounts() {
     final IntegerMap<PlayerId> count = new IntegerMap<>();
     units.forEach(unit -> count.add(unit.getOwner(), 1));
@@ -202,7 +199,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   @Override
   public String toString() {
     final StringBuilder buf = new StringBuilder();
-    buf.append("Unit collecion held by ").append(holder.getName());
+    buf.append("Unit collection held by ").append(holder.getName());
     buf.append(" units:");
     final IntegerMap<UnitType> units = getUnitsByType();
     for (final UnitType unit : units.keySet()) {

@@ -21,15 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * A collection of methods useful for rendering the UI.
- */
+/** A collection of methods useful for rendering the UI. */
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
-  private static final Component component = new Component() {
-    private static final long serialVersionUID = 1800075529163275600L;
-  };
+  private static final Component component =
+      new Component() {
+        private static final long serialVersionUID = 1800075529163275600L;
+      };
 
   private Util() {}
 
@@ -53,16 +52,15 @@ public final class Util {
   }
 
   /**
-   * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
-   * problems. Fix is to use 3Byte rather than INT.
+   * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory problems. Fix is to use
+   * 3Byte rather than INT.
    */
   public static BufferedImage newImage(final int width, final int height, final boolean needAlpha) {
-    return new BufferedImage(width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
+    return new BufferedImage(
+        width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
   }
 
-  /**
-   * Centers the specified window on the screen.
-   */
+  /** Centers the specified window on the screen. */
   public static void center(final Window w) {
     final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
     final int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -80,13 +78,14 @@ public final class Util {
   }
 
   /**
-   * Creates an image that consists of {@code text} on a background containing a curved shape. The returned image is
-   * appropriate for display in the header of a dialog to give it a "wizard-like" look.
+   * Creates an image that consists of {@code text} on a background containing a curved shape. The
+   * returned image is appropriate for display in the header of a dialog to give it a "wizard-like"
+   * look.
    */
   public static Image getBanner(final String text) {
     // code stolen from swingx
     // swingx is lgpl, so no problems with copyright
-    final int w = 400;
+    final int w = 530;
     final int h = 60;
     final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     final Graphics2D g2 = img.createGraphics();
@@ -94,8 +93,10 @@ public final class Util {
     g2.setFont(font);
     g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    g2.setRenderingHint(
+        RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2.setRenderingHint(
+        RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     // draw a big square
     g2.setColor(Color.GRAY);
     g2.fillRect(0, 0, w, h);
@@ -120,27 +121,29 @@ public final class Util {
   }
 
   /**
-   * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
-   * -> polygons map.
+   * Finds a land territory name or some sea zone name where the point is contained in according to
+   * the territory name -> polygons map.
    *
    * @param p A point on the map.
    * @param terrPolygons a map territory name -> polygons
    */
-  public static Optional<String> findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons) {
+  public static Optional<String> findTerritoryName(
+      final Point p, final Map<String, List<Polygon>> terrPolygons) {
     return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
   }
 
   /**
-   * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
-   * -> polygons map. If no land or sea territory has been found a default name is returned.
+   * Finds a land territory name or some sea zone name where the point is contained in according to
+   * the territory name -> polygons map. If no land or sea territory has been found a default name
+   * is returned.
    *
    * @param p A point on the map.
    * @param terrPolygons a map territory name -> polygons
    * @param defaultTerrName Default territory name that gets returns if nothing was found.
    * @return found territory name of defaultTerrName
    */
-  public static String findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons,
-      final String defaultTerrName) {
+  public static String findTerritoryName(
+      final Point p, final Map<String, List<Polygon>> terrPolygons, final String defaultTerrName) {
     String lastWaterTerrName = defaultTerrName;
     // try to find a land territory.
     // sea zones often surround a land territory
@@ -166,17 +169,20 @@ public final class Util {
    * @return true if yes, false otherwise
    */
   public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
-    return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX) || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
+    return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX)
+        || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
   }
 
   /**
-   * Returns a new polygon that is a copy of {@code polygon} translated by {@code deltaX} along the x-axis and by
-   * {@code deltaY} along the y-axis.
+   * Returns a new polygon that is a copy of {@code polygon} translated by {@code deltaX} along the
+   * x-axis and by {@code deltaY} along the y-axis.
    */
-  public static Polygon translatePolygon(final Polygon polygon, final int deltaX, final int deltaY) {
+  public static Polygon translatePolygon(
+      final Polygon polygon, final int deltaX, final int deltaY) {
     checkNotNull(polygon);
 
-    final Polygon translatedPolygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+    final Polygon translatedPolygon =
+        new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
     translatedPolygon.translate(deltaX, deltaY);
     return translatedPolygon;
   }

@@ -3,19 +3,17 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs.banned.users;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanData;
-
-import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 
 @ExtendWith(MockitoExtension.class)
 class BannedUsersTabModelTest {
@@ -31,11 +29,9 @@ class BannedUsersTabModelTest {
           .username("The anchor fears with treasure, burn the bahamas until it whines.")
           .build();
 
-  @Mock
-  private ToolboxUserBanClient toolboxUserBanClient;
+  @Mock private ToolboxUserBanClient toolboxUserBanClient;
 
-  @InjectMocks
-  private BannedUsersTabModel bannedUsersTabModel;
+  @InjectMocks private BannedUsersTabModel bannedUsersTabModel;
 
   @Test
   void fetchTableData() {
@@ -44,9 +40,12 @@ class BannedUsersTabModelTest {
 
     final List<List<String>> tableData = bannedUsersTabModel.fetchTableData();
 
-    ToolboxTabModelTestUtil.verifyTableDimensions(tableData, BannedUsersTabModel.fetchTableHeaders());
+    ToolboxTabModelTestUtil.verifyTableDimensions(
+        tableData, BannedUsersTabModel.fetchTableHeaders());
 
-    ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 0,
+    ToolboxTabModelTestUtil.verifyTableDataAtRow(
+        tableData,
+        0,
         BANNED_USER_DATA.getBanId(),
         BANNED_USER_DATA.getUsername(),
         BANNED_USER_DATA.getBanDate().toString(),

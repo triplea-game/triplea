@@ -1,13 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Cursor;
-import java.awt.Window;
-import java.util.concurrent.CountDownLatch;
-
-import javax.swing.JLabel;
-
-import org.triplea.java.concurrency.CountDownLatchHandler;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
@@ -22,10 +14,15 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.awt.Cursor;
+import java.awt.Window;
+import java.util.concurrent.CountDownLatch;
+import javax.swing.JLabel;
+import org.triplea.java.concurrency.CountDownLatchHandler;
 
 /**
- * Provides a context for UI-dependent operations to execute without requiring specific knowledge of the underlying UI
- * implementation (e.g. headed vs. headless).
+ * Provides a context for UI-dependent operations to execute without requiring specific knowledge of
+ * the underlying UI implementation (e.g. headed vs. headless).
  */
 public interface UiContext {
   Cursor getCursor();
@@ -50,7 +47,8 @@ public interface UiContext {
    * @see UiContext#newUnitImageLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
    */
   enum UnitDamage {
-    DAMAGED, NOT_DAMAGED
+    DAMAGED,
+    NOT_DAMAGED
   }
 
   /**
@@ -59,7 +57,8 @@ public interface UiContext {
    * @see UiContext#newUnitImageLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
    */
   enum UnitEnable {
-    DISABLED, ENABLED
+    DISABLED,
+    ENABLED
   }
 
   default JLabel newUnitImageLabel(final UnitType type, final PlayerId player) {
@@ -111,10 +110,6 @@ public interface UiContext {
   boolean getShowMapOnly();
 
   void setShowMapOnly(boolean showMapOnly);
-
-  boolean getLockMap();
-
-  void setLockMap(boolean lockMap);
 
   boolean getShowEndOfTurnReport();
 

@@ -1,21 +1,20 @@
 package games.strategy.engine.framework;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameObjectInputStream;
+import games.strategy.engine.data.GameObjectOutputStream;
+import games.strategy.net.IObjectStreamFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameObjectInputStream;
-import games.strategy.engine.data.GameObjectOutputStream;
-import games.strategy.net.IObjectStreamFactory;
-
 /**
  * Implementation of {@link IObjectStreamFactory} that uses {@link GameObjectOutputStream} and
- * {@link GameObjectInputStream} for serialization and deserialization, respectively. These streams ensure referential
- * identity among various game data components to prevent unwanted copies from being made during the serialization and
- * deserialization process.
+ * {@link GameObjectInputStream} for serialization and deserialization, respectively. These streams
+ * ensure referential identity among various game data components to prevent unwanted copies from
+ * being made during the serialization and deserialization process.
  */
 public class GameObjectStreamFactory implements IObjectStreamFactory {
   private GameData gameData;

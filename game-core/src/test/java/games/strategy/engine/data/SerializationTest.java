@@ -5,17 +5,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.io.IoUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class SerializationTest {
   private GameData gameDataSource;
@@ -28,18 +26,23 @@ class SerializationTest {
   }
 
   private Object serialize(final Object anObject) throws Exception {
-    final byte[] bytes = IoUtils.writeToMemory(os -> {
-      try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
-        output.writeObject(anObject);
-      }
-    });
-    return IoUtils.readFromMemory(bytes, is -> {
-      try (ObjectInputStream input = new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), is)) {
-        return input.readObject();
-      } catch (final ClassNotFoundException e) {
-        throw new IOException(e);
-      }
-    });
+    final byte[] bytes =
+        IoUtils.writeToMemory(
+            os -> {
+              try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
+                output.writeObject(anObject);
+              }
+            });
+    return IoUtils.readFromMemory(
+        bytes,
+        is -> {
+          try (ObjectInputStream input =
+              new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), is)) {
+            return input.readObject();
+          } catch (final ClassNotFoundException e) {
+            throw new IOException(e);
+          }
+        });
   }
 
   @Test
@@ -67,7 +70,7 @@ class SerializationTest {
   }
 
   @Test
-  void testWriteProductionRulte() throws Exception {
+  void testWriteProductionRule() throws Exception {
     final Object orig = gameDataSource.getProductionRuleList().getProductionRule("infForSilver");
     final Object read = serialize(orig);
     final Object local = gameDataSink.getProductionRuleList().getProductionRule("infForSilver");

@@ -1,35 +1,49 @@
 package games.strategy.net.nio;
 
+import games.strategy.engine.lobby.PlayerName;
+import games.strategy.engine.lobby.PlayerNameValidation;
+import games.strategy.net.ILoginValidator;
+import games.strategy.net.INode;
+import games.strategy.net.MessageHeader;
+import games.strategy.net.Node;
+import games.strategy.net.PlayerNameAssigner;
+import games.strategy.net.ServerMessenger;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Level;
-
-import games.strategy.net.ILoginValidator;
-import games.strategy.net.MessageHeader;
-import games.strategy.net.Node;
-import games.strategy.net.ServerMessenger;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
+import org.triplea.http.client.ApiKey;
 
-/**
- * Server-side implementation of {@link QuarantineConversation}.
- */
+/** Server-side implementation of {@link QuarantineConversation}. */
 @Log
 public class ServerQuarantineConversation extends QuarantineConversation {
+  /**
+   * Magic authentication error string to indicate temporary password was used to authenticate and
+   * password should be reset.
+   */
+  public static final String CHANGE_PASSWORD = "change_password";
+
   /*
    * Communication sequence
    * 1) server reads client name
    * 2) server sends challenge (or null if no challenge is to be made)
    * 3) server reads response (or null if no challenge)
-   * 4) server send null then client name and node info on success, or an error message if there is an error
-   * 5) if the client reads an error message, the client sends an acknowledgment (we need to make sur the client gets
-   * the message before
-   * closing the socket).
+   * 4) server send null then client name and node info on success, or an error message
+   * if there is an error
+   * 5) if the client reads an error message, the client sends an acknowledgment (we need to
+   * make sur the client gets the message before closing the socket).
    */
-
   private enum Step {
-    READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR
+    READ_NAME,
+    READ_MAC,
+    CHALLENGE,
+    ACK_ERROR
   }
 
   private final ILoginValidator validator;
@@ -40,13 +54,19 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private String remoteMac;
   private Map<String, String> challenge;
   private final ServerMessenger serverMessenger;
+  private final Function<PlayerName, ApiKey> apiKeyGenerator;
 
-  public ServerQuarantineConversation(final ILoginValidator validator, final SocketChannel channel,
-      final NioSocket socket, final ServerMessenger serverMessenger) {
+  public ServerQuarantineConversation(
+      final ILoginValidator validator,
+      final SocketChannel channel,
+      final NioSocket socket,
+      final ServerMessenger serverMessenger,
+      final Function<PlayerName, ApiKey> apiKeyGenerator) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
     this.serverMessenger = serverMessenger;
+    this.apiKeyGenerator = apiKeyGenerator;
   }
 
   public String getRemoteName() {
@@ -58,12 +78,10 @@ public class ServerQuarantineConversation extends QuarantineConversation {
     try {
       switch (step) {
         case READ_NAME:
-          // read name, send challenge
-          remoteName = (String) serializable;
+          remoteName = ((String) serializable).trim();
           step = Step.READ_MAC;
           return Action.NONE;
         case READ_MAC:
-          // read name, send challenge
           remoteMac = (String) serializable;
           if (validator != null) {
             challenge = validator.getChallengeProperties(remoteName);
@@ -74,26 +92,57 @@ public class ServerQuarantineConversation extends QuarantineConversation {
         case CHALLENGE:
           @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) serializable;
+          String error = null;
+          String apiKey = null;
+
           if (validator != null) {
-            final String error = validator.verifyConnection(challenge, response, remoteName, remoteMac,
-                channel.socket().getRemoteSocketAddress());
-            send(error);
-            if (error != null) {
+            error =
+                Optional.ofNullable(
+                        validator.verifyConnection(
+                            challenge,
+                            response,
+                            remoteName,
+                            remoteMac,
+                            channel.socket().getRemoteSocketAddress()))
+                    .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
+            if (error != null && !error.equals(CHANGE_PASSWORD)) {
               step = Step.ACK_ERROR;
+              send(error);
               return Action.NONE;
+            } else {
+              send(null);
             }
+            apiKey =
+                Optional.ofNullable(apiKeyGenerator)
+                    .map(keyGenerator -> keyGenerator.apply(PlayerName.of(remoteName)))
+                    .map(ApiKey::getValue)
+                    .orElse(null);
           } else {
             send(null);
           }
-          // get a unique name
-          remoteName = serverMessenger.getUniqueName(remoteName);
-          // send the node its name and our name
-          send(new String[] {remoteName, serverMessenger.getLocalNode().getName()});
+
+          synchronized (serverMessenger.newNodeLock) {
+            // aggregate all player names by mac address (there can be multiple names per mac
+            // address)
+            final Collection<String> names =
+                serverMessenger.getNodes().stream().map(INode::getName).collect(Collectors.toSet());
+            remoteName = PlayerNameAssigner.assignName(remoteName, remoteMac, names);
+          }
+
+          // send the node its assigned name, our name, an error message that could contain a magic
+          // string informing client they should reset their password, and last an API key that can
+          // be used for further http server interaction.
+          send(new String[] {remoteName, serverMessenger.getLocalNode().getName(), error, apiKey});
+
           // send the node its and our address as we see it
-          send(new InetSocketAddress[] {(InetSocketAddress) channel.socket().getRemoteSocketAddress(),
-              serverMessenger.getLocalNode().getSocketAddress()});
+          send(
+              new InetSocketAddress[] {
+                (InetSocketAddress) channel.socket().getRemoteSocketAddress(),
+                serverMessenger.getLocalNode().getSocketAddress()
+              });
+
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          serverMessenger.notifyPlayerLogin(remoteName, remoteMac);
+          serverMessenger.notifyPlayerLogin(PlayerName.of(remoteName), remoteMac);
           // We are good
           return Action.UNQUARANTINE;
         case ACK_ERROR:

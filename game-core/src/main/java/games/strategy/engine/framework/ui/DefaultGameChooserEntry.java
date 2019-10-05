@@ -1,33 +1,33 @@
 package games.strategy.engine.framework.ui;
 
+import games.strategy.engine.data.EngineVersionException;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GameParser;
+import games.strategy.triplea.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
-
-import org.triplea.java.UrlStreams;
-
-import games.strategy.engine.data.EngineVersionException;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.GameParser;
-import games.strategy.triplea.Constants;
+import javax.annotation.Nonnull;
 import lombok.extern.java.Log;
+import org.triplea.java.UrlStreams;
 
 @Log
 final class DefaultGameChooserEntry implements GameChooserEntry {
   private final URI url;
-  private GameData gameData;
+  @Nonnull private GameData gameData;
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
 
-  DefaultGameChooserEntry(final URI uri) throws IOException, GameParseException, EngineVersionException {
+  DefaultGameChooserEntry(final URI uri)
+      throws IOException, GameParseException, EngineVersionException {
     url = uri;
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
-    if (!inputStream.isPresent()) {
+    if (inputStream.isEmpty()) {
       gameNameAndMapNameProperty = "";
       // this means the map was deleted out from under us.
       return;
@@ -41,12 +41,11 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
 
   @Override
   public void fullyParseGameData() throws GameParseException {
-    // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
+    // TODO: We should be setting this in the the constructor. At this point, you have to call
+    // methods in the
     // correct order for things to work, and that is bads.
-    gameData = null;
-
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if (!inputStream.isPresent()) {
+    if (inputStream.isEmpty()) {
       return;
     }
 
@@ -75,7 +74,8 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     return gameData.getGameName();
   }
 
-  // the user may have selected a map skin instead of this map folder, so don't use this for anything except our
+  // the user may have selected a map skin instead of this map folder, so don't use this for
+  // anything except our
   // equals/hashcode below
   private String getMapNameProperty() {
     final String mapName = (String) gameData.getProperties().get(Constants.MAP_NAME);
@@ -90,6 +90,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     return getGameName();
   }
 
+  @Nonnull
   @Override
   public GameData getGameData() {
     return gameData;
@@ -119,10 +120,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     }
 
     final DefaultGameChooserEntry other = (DefaultGameChooserEntry) obj;
-    if (gameData == null && other.gameData != null) {
-      return false;
-    }
-    return other.gameData != null && this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
+    return this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
   }
 
   @Override

@@ -1,5 +1,6 @@
 package org.triplea.swing;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -7,7 +8,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.Normalizer;
-
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -15,8 +15,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
-
-import com.google.common.annotations.VisibleForTesting;
 
 /**
  * From http://www.orbital-computer.de/JComboBox. Originally released into the Public Domain
@@ -33,7 +31,6 @@ final class AutoCompletion<E> extends PlainDocument {
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
-  private final boolean hidePopupOnFocusLoss;
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
   private final KeyListener editorKeyListener;
@@ -43,61 +40,56 @@ final class AutoCompletion<E> extends PlainDocument {
   private AutoCompletion(final JComboBox<E> comboBox) {
     this.comboBox = comboBox;
     model = comboBox.getModel();
-    comboBox.addActionListener(e -> {
-      if (!selecting) {
-        highlightCompletedText(0);
-      }
-    });
-    comboBox.addPropertyChangeListener(e -> {
-      if (e.getPropertyName().equals("editor")) {
-        configureEditor((ComboBoxEditor) e.getNewValue());
-      }
-      if (e.getPropertyName().equals("model")) {
-        model = (ComboBoxModel<E>) e.getNewValue();
-      }
-    });
-    editorKeyListener = new KeyAdapter() {
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        if ((e.getKeyCode() != KeyEvent.VK_ENTER)
-            && (e.getKeyCode() != KeyEvent.VK_ESCAPE)
-            && comboBox.isDisplayable()) {
-          comboBox.setPopupVisible(true);
-        }
-        hitBackspace = false;
-        switch (e.getKeyCode()) {
-          // determine if the pressed key is backspace (needed by the remove method)
-          case KeyEvent.VK_BACK_SPACE:
-            hitBackspace = true;
-            hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
-            break;
-          // ignore delete key
-          case KeyEvent.VK_DELETE:
-            e.consume();
-            comboBox.getToolkit().beep();
-            break;
-          default:
-            break;
-        }
-      }
-    };
-    // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
-    hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
+    comboBox.addActionListener(
+        e -> {
+          if (!selecting) {
+            highlightCompletedText(0);
+          }
+        });
+    comboBox.addPropertyChangeListener(
+        e -> {
+          if (e.getPropertyName().equals("editor")) {
+            configureEditor((ComboBoxEditor) e.getNewValue());
+          }
+          if (e.getPropertyName().equals("model")) {
+            model = (ComboBoxModel<E>) e.getNewValue();
+          }
+        });
+    editorKeyListener =
+        new KeyAdapter() {
+          @Override
+          public void keyPressed(final KeyEvent e) {
+            if ((e.getKeyCode() != KeyEvent.VK_ENTER)
+                && (e.getKeyCode() != KeyEvent.VK_ESCAPE)
+                && comboBox.isDisplayable()) {
+              comboBox.setPopupVisible(true);
+            }
+            hitBackspace = false;
+            switch (e.getKeyCode()) {
+              case KeyEvent.VK_BACK_SPACE:
+                hitBackspace = true;
+                hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
+                break;
+              case KeyEvent.VK_DELETE:
+                e.consume();
+                comboBox.getToolkit().beep();
+                break;
+              default:
+                break;
+            }
+          }
+        };
     // Highlight whole text when gaining focus
-    editorFocusListener = new FocusAdapter() {
-      @Override
-      public void focusGained(final FocusEvent e) {
-        highlightCompletedText(0);
-      }
+    editorFocusListener =
+        new FocusAdapter() {
+          @Override
+          public void focusGained(final FocusEvent e) {
+            highlightCompletedText(0);
+          }
 
-      @Override
-      public void focusLost(final FocusEvent e) {
-        // Workaround for Bug 5100422 - Hide Popup on focus loss
-        if (hidePopupOnFocusLoss) {
-          comboBox.setPopupVisible(false);
-        }
-      }
-    };
+          @Override
+          public void focusLost(final FocusEvent e) {}
+        };
     configureEditor(comboBox.getEditor());
     // Handle initially selected object
     final Object selected = comboBox.getSelectedItem();
@@ -145,7 +137,8 @@ final class AutoCompletion<E> extends PlainDocument {
         }
       } else {
         // User hit backspace with the cursor positioned on the start => beep
-        comboBox.getToolkit().beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+        comboBox.getToolkit().beep(); // when available use:
+        // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
       }
       highlightCompletedText(offs);
     } else {
@@ -154,7 +147,8 @@ final class AutoCompletion<E> extends PlainDocument {
   }
 
   @Override
-  public void insertString(final int initialOffs, final String str, final AttributeSet a) throws BadLocationException {
+  public void insertString(final int initialOffs, final String str, final AttributeSet a)
+      throws BadLocationException {
     int offs = initialOffs;
     // return immediately when selecting an item
     if (selecting) {
@@ -169,10 +163,13 @@ final class AutoCompletion<E> extends PlainDocument {
     } else {
       // keep old item selected if there is no match
       item = comboBox.getSelectedItem();
-      // imitate no insert (later on offs will be incremented by str.length(): selection won't move forward)
+      // imitate no insert (later on offs will be incremented by str.length(): selection won't move
+      // forward)
       offs = offs - str.length();
       // provide feedback to the user that his input has been received but can not be accepted
-      comboBox.getToolkit().beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+      comboBox
+          .getToolkit()
+          .beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
     }
     setText(item.toString());
     // select the completed part
@@ -224,8 +221,6 @@ final class AutoCompletion<E> extends PlainDocument {
   }
 
   private static String normalize(final String str) {
-    return Normalizer.normalize(str, Normalizer.Form.NFD)
-        .replaceAll("\\p{M}", "")
-        .toUpperCase();
+    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{M}", "").toUpperCase();
   }
 }

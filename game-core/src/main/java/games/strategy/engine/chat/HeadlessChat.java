@@ -1,35 +1,24 @@
 package games.strategy.engine.chat;
 
-import java.awt.Component;
+import com.google.common.base.Ascii;
+import games.strategy.engine.chat.Chat.ChatSoundProfile;
+import games.strategy.engine.lobby.PlayerName;
+import games.strategy.net.Messengers;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.TimeManager;
 
-import com.google.common.base.Ascii;
-
-import games.strategy.engine.chat.Chat.ChatSoundProfile;
-import games.strategy.net.INode;
-import games.strategy.net.Messengers;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.SoundPath;
-
-/**
- * Headless version of ChatPanel.
- */
+/** Headless version of ChatPanel. */
 public class HeadlessChat implements IChatListener, ChatModel {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
   private Chat chat;
-  private boolean showTime = true;
-  private StringBuilder allText = new StringBuilder();
-  private final ChatFloodControl floodControl = new ChatFloodControl();
+  private final StringBuilder allText = new StringBuilder();
 
-  public HeadlessChat(final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(messengers, chatName, chatSoundProfile);
-    setChat(chat);
+  public HeadlessChat(
+      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
+    this.chat = new Chat(messengers, chatName, chatSoundProfile);
+    chat.addChatListener(this);
   }
 
   @Override
@@ -48,80 +37,34 @@ public class HeadlessChat implements IChatListener, ChatModel {
   }
 
   @Override
-  public void setShowChatTime(final boolean showTime) {
-    this.showTime = showTime;
-  }
-
-  @Override
-  public void updatePlayerList(final Collection<INode> players) {}
-
-  @Override
-  public void setChat(final Chat chat) {
-    if (this.chat != null) {
-      this.chat.removeChatListener(this);
-    }
-    this.chat = chat;
-    if (this.chat != null) {
-      this.chat.addChatListener(this);
-      synchronized (this.chat.getMutex()) {
-        allText = new StringBuilder();
-        for (final ChatMessage message : this.chat.getChatHistory()) {
-          addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
-        }
-      }
-    } else {
-      updatePlayerList(Collections.emptyList());
-    }
-  }
+  public void updatePlayerList(final Collection<ChatParticipant> players) {}
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final String from, final boolean thirdperson) {
-    addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
-  }
+  public void addMessage(final String originalMessage, final PlayerName from) {
+    trimLengthIfNecessary();
 
-  /** thread safe. */
-  @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-      final String sound) {
-    // TODO: I don't really think we need a new thread for this...
-    new Thread(() -> {
-      if (!floodControl.allow(from, System.currentTimeMillis())) {
-        if (from.equals(chat.getLocalNode().getName())) {
-          addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
-        }
-        return;
-      }
-      addChatMessage(message, from, thirdperson);
-      ClipPlayer.play(sound);
-    }).start();
-  }
-
-  private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = Ascii.truncate(originalMessage, 200, "...");
-    final String time = "(" + TimeManager.getLocalizedTime() + ")";
-    final String prefix = thirdperson ? (showTime ? "* " + time + " " + from : "* " + from)
-        : (showTime ? time + " " + from + ": " : from + ": ");
-    final String fullMessage = prefix + " " + message + "\n";
-    final String currentAllText = allText.toString();
-    if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
-    }
+    final String fullMessage =
+        String.format("(%s) %s: %s\n", TimeManager.getLocalizedTime(), from, message);
     allText.append(fullMessage);
+  }
+
+  /** thread safe. */
+  @Override
+  public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
+    addMessage(message, from);
   }
 
   @Override
   public void addStatusMessage(final String message) {
-    final String fullMessage = "--- " + message + " ---\n";
-    final String currentAllText = allText.toString();
-    if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
-    }
-    allText.append(fullMessage);
+    trimLengthIfNecessary();
+    allText.append("--- ").append(message).append(" ---\n");
   }
 
-  @Override
-  public Optional<Component> getViewComponent() {
-    return Optional.empty();
+  private void trimLengthIfNecessary() {
+    if (allText.length() > MAX_LENGTH) {
+      allText.delete(0, MAX_LENGTH / 2);
+    }
   }
 }

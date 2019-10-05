@@ -2,6 +2,8 @@ package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import games.strategy.triplea.ui.screen.TileManager;
+import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
@@ -21,31 +23,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
-
-import org.triplea.util.PointFileReaderWriter;
-
-import games.strategy.triplea.ui.screen.TileManager;
-import games.strategy.ui.Util;
 import lombok.extern.java.Log;
+import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
 
-/**
- * For taking a folder of basetiles and putting them back together into an image.
- */
+/** For taking a folder of basetiles and putting them back together into an image. */
 @Log
 public final class TileImageReconstructor {
   private String baseTileLocation = null;
   private String imageSaveLocation = null;
   private File mapFolderLocation = null;
-  private final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
-      "TileImageReconstructor Log\r\n\r\n", "", "TileImageReconstructor Log", null, 500, 300, true, 1, null);
+  private final JTextAreaOptionPane textOptionPane =
+      new JTextAreaOptionPane(
+          null,
+          "TileImageReconstructor Log\r\n\r\n",
+          "",
+          "TileImageReconstructor Log",
+          null,
+          500,
+          300,
+          true,
+          1,
+          null);
   private int sizeX = -1;
   private int sizeY = -1;
   private Map<String, List<Polygon>> polygons = new HashMap<>();
@@ -65,14 +70,17 @@ public final class TileImageReconstructor {
 
   private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
-    JOptionPane.showMessageDialog(null,
-        new JLabel("<html>"
-            + "This is the TileImageReconstructor, it will reconstruct a single map image from a folder full of "
-            + "basetiles. "
-            + "<br>You must know the size of the map image before you begin, this is normally found in the "
-            + "map.properties file. "
-            + "</html>"));
-    final FileSave baseTileLocationSelection = new FileSave("Where are the Tile Images?", null, mapFolderLocation);
+    JOptionPane.showMessageDialog(
+        null,
+        new JLabel(
+            "<html>"
+                + "This is the TileImageReconstructor, it will reconstruct a single "
+                + "map image from a folder full of basetiles. "
+                + "<br>You must know the size of the map image before you begin, this is "
+                + "normally found in the map.properties file. "
+                + "</html>"));
+    final FileSave baseTileLocationSelection =
+        new FileSave("Where are the Tile Images?", null, mapFolderLocation);
     baseTileLocation = baseTileLocationSelection.getPathString();
     if (mapFolderLocation == null && baseTileLocationSelection.getFile() != null) {
       mapFolderLocation = baseTileLocationSelection.getFile().getParentFile();
@@ -82,25 +90,32 @@ public final class TileImageReconstructor {
       log.info("Shutting down");
       return;
     }
-    final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, mapFolderLocation,
-        JFileChooser.FILES_ONLY, new File(mapFolderLocation, "map.png"), new FileFilter() {
-          @Override
-          public boolean accept(final File f) {
-            return !f.isDirectory() && f.getName().endsWith(".png");
-          }
+    final FileSave imageSaveLocationSelection =
+        new FileSave(
+            "Save Map Image As?",
+            null,
+            mapFolderLocation,
+            JFileChooser.FILES_ONLY,
+            new File(mapFolderLocation, "map.png"),
+            new FileFilter() {
+              @Override
+              public boolean accept(final File f) {
+                return !f.isDirectory() && f.getName().endsWith(".png");
+              }
 
-          @Override
-          public String getDescription() {
-            return "*.png";
-          }
-        });
+              @Override
+              public String getDescription() {
+                return "*.png";
+              }
+            });
     imageSaveLocation = imageSaveLocationSelection.getPathString();
     if (imageSaveLocation == null) {
       log.info("You need to choose a name and location for your image file for this to work");
       log.info("Shutting down");
       return;
     }
-    final String width = JOptionPane.showInputDialog(null, "Enter the map image's full width in pixels:");
+    final String width =
+        JOptionPane.showInputDialog(null, "Enter the map image's full width in pixels:");
     if (width != null) {
       try {
         sizeX = Integer.parseInt(width);
@@ -108,7 +123,8 @@ public final class TileImageReconstructor {
         // ignore malformed input
       }
     }
-    final String height = JOptionPane.showInputDialog(null, "Enter the map image's full height in pixels:");
+    final String height =
+        JOptionPane.showInputDialog(null, "Enter the map image's full height in pixels:");
     if (height != null) {
       try {
         sizeY = Integer.parseInt(height);
@@ -121,12 +137,16 @@ public final class TileImageReconstructor {
       log.info("Shutting down");
       return;
     }
-    if (JOptionPane.showConfirmDialog(null,
-        "Do not draw polgyons.txt file onto your image?\r\n(Default = 'yes' = do not draw)",
-        "Do Not Also Draw Polygons?", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+    if (JOptionPane.showConfirmDialog(
+            null,
+            "Do not draw polygons.txt file onto your image?\r\n(Default = 'yes' = do not draw)",
+            "Do Not Also Draw Polygons?",
+            JOptionPane.YES_NO_OPTION)
+        == JOptionPane.NO_OPTION) {
       try {
         log.info("Load a polygon file");
-        final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
+        final String polyName =
+            new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyName != null) {
           try (InputStream in = new FileInputStream(polyName)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(in);
@@ -145,8 +165,11 @@ public final class TileImageReconstructor {
   private void createMap() {
     textOptionPane.show();
     final GraphicsConfiguration localGraphicSystem =
-        GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-    final BufferedImage mapImage = localGraphicSystem.createCompatibleImage(sizeX, sizeY, Transparency.TRANSLUCENT);
+        GraphicsEnvironment.getLocalGraphicsEnvironment()
+            .getDefaultScreenDevice()
+            .getDefaultConfiguration();
+    final BufferedImage mapImage =
+        localGraphicSystem.createCompatibleImage(sizeX, sizeY, Transparency.TRANSLUCENT);
     final Graphics graphics = mapImage.getGraphics();
     for (int x = 0; x * TileManager.TILE_SIZE < sizeX; x++) {
       for (int y = 0; y * TileManager.TILE_SIZE < sizeY; y++) {
@@ -157,11 +180,23 @@ public final class TileImageReconstructor {
         }
         final Image tile = Toolkit.getDefaultToolkit().createImage(tileFile.getPath());
         Util.ensureImageLoaded(tile);
-        final Rectangle tileBounds = new Rectangle(x * TileManager.TILE_SIZE, y * TileManager.TILE_SIZE,
-            Math.min((x * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeX),
-            Math.min((y * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeY));
-        graphics.drawImage(tile, tileBounds.x, tileBounds.y, tileBounds.x + tileBounds.width,
-            tileBounds.y + tileBounds.height, 0, 0, tileBounds.width, tileBounds.height, null);
+        final Rectangle tileBounds =
+            new Rectangle(
+                x * TileManager.TILE_SIZE,
+                y * TileManager.TILE_SIZE,
+                Math.min((x * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeX),
+                Math.min((y * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeY));
+        graphics.drawImage(
+            tile,
+            tileBounds.x,
+            tileBounds.y,
+            tileBounds.x + tileBounds.width,
+            tileBounds.y + tileBounds.height,
+            0,
+            0,
+            tileBounds.width,
+            tileBounds.height,
+            null);
         textOptionPane.appendNewLine("Drew " + tileName);
       }
     }

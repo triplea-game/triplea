@@ -1,12 +1,15 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.engine.lobby.PlayerNameValidation;
+import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,41 +21,48 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
-
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.ui.Util;
 
 final class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
 
   enum ReturnValue {
-    CANCEL, LOGON, CREATE_ACCOUNT
+    CANCEL,
+    LOGON,
+    CREATE_ACCOUNT,
+    FORGOT_PASSWORD
   }
 
   private @Nullable JDialog dialog;
   private final JPasswordField password = new JPasswordField();
-  private final JTextField userName = new JTextField();
-  private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
-  private final JCheckBox anonymousLogin = new JCheckBox("Login anonymously");
-  private final JButton createAccount = new JButton("Create Account...");
+  private final JTextField username = new JTextField();
+  private final JCheckBox rememberPassword =
+      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
+  private final JCheckBox anonymousLogin =
+      new JCheckBoxBuilder("Login Anonymously")
+          .bind(ClientSetting.loginAnonymously)
+          .actionListener(selected -> updateComponents())
+          .build();
+  private final JButton createAccount = new JButton("Create Account");
+  private final JButton forgotPassword = new JButton("Forgot Password");
   private ReturnValue returnValue = ReturnValue.CANCEL;
-  private final JButton logon = new JButton("Login");
+  private final JButton logon = new JButtonBuilder("Login").biggerFont().build();
   private final JButton cancel = new JButton("Cancel");
+  private final JLabel passwordLabel = new JLabel("Password:");
 
-  LoginPanel(final LobbyLoginPreferences lobbyLoginPreferences) {
+  LoginPanel() {
+    initializeComponents();
     layoutComponents();
     setupListeners();
-    initializeComponents(lobbyLoginPreferences);
     updateComponents();
   }
 
-  private void initializeComponents(final LobbyLoginPreferences lobbyLoginPreferences) {
-    userName.setText(lobbyLoginPreferences.userName);
-    password.setText(lobbyLoginPreferences.password);
-    credentialsSaved.setSelected(lobbyLoginPreferences.credentialsSaved);
-    anonymousLogin.setSelected(lobbyLoginPreferences.anonymousLogin);
+  private void initializeComponents() {
+    username.setText(String.valueOf(ClientSetting.lobbyLoginName.getValue().orElse(new char[0])));
+    password.setText(
+        String.valueOf(ClientSetting.lobbySavedPassword.getValue().orElse(new char[0])));
   }
 
   private void layoutComponents() {
@@ -65,22 +75,118 @@ final class LoginPanel extends JPanel {
     add(main, BorderLayout.CENTER);
     main.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     main.setLayout(new GridBagLayout());
-    main.add(new JLabel("Username:"), new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    main.add(userName, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 0), 0, 0));
-    main.add(new JLabel("Password:"), new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    main.add(password, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 0), 0, 0));
-    main.add(new JLabel(), new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    main.add(credentialsSaved, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 5, 0, 0), 0, 0));
-    main.add(new JLabel(), new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    main.add(anonymousLogin, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 5, 0, 0), 0, 0));
+    main.add(
+        new JLabel("Username:"),
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        username,
+        new GridBagConstraints(
+            1,
+            0,
+            1,
+            1,
+            1.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        passwordLabel,
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        password,
+        new GridBagConstraints(
+            1,
+            1,
+            1,
+            1,
+            1.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        new JLabel(),
+        new GridBagConstraints(
+            0,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        rememberPassword,
+        new GridBagConstraints(
+            1,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        new JLabel(),
+        new GridBagConstraints(
+            0,
+            3,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        anonymousLogin,
+        new GridBagConstraints(
+            1,
+            3,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
 
     final JPanel buttons = new JPanel();
     add(buttons, BorderLayout.SOUTH);
@@ -88,18 +194,24 @@ final class LoginPanel extends JPanel {
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
     buttons.add(logon);
     buttons.add(createAccount);
+    buttons.add(forgotPassword);
     buttons.add(cancel);
   }
 
   private void setupListeners() {
     logon.addActionListener(e -> logonPressed());
-    createAccount.addActionListener(e -> {
-      returnValue = ReturnValue.CREATE_ACCOUNT;
-      close();
-    });
+    createAccount.addActionListener(
+        e -> {
+          returnValue = ReturnValue.CREATE_ACCOUNT;
+          close();
+        });
     cancel.addActionListener(e -> close());
     anonymousLogin.addActionListener(e -> updateComponents());
-
+    forgotPassword.addActionListener(
+        e -> {
+          returnValue = ReturnValue.FORGOT_PASSWORD;
+          close();
+        });
     SwingComponents.addEnterKeyListener(this, this::logonPressed);
   }
 
@@ -110,25 +222,41 @@ final class LoginPanel extends JPanel {
   }
 
   private void logonPressed() {
-    if (!DBUser.isValidUserName(userName.getText())) {
-      JOptionPane.showMessageDialog(this, DBUser.getUserNameValidationErrorMessage(userName.getText()),
-          "Invalid Username", JOptionPane.ERROR_MESSAGE);
+    final String validationMessage = PlayerNameValidation.validate(username.getText());
+
+    if (validationMessage != null) {
+      JOptionPane.showMessageDialog(
+          this, validationMessage, "Invalid Username", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (password.getPassword().length == 0 && !anonymousLogin.isSelected()) {
-      JOptionPane.showMessageDialog(this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(
+          this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (password.getPassword().length < 3 && !anonymousLogin.isSelected()) {
-      JOptionPane.showMessageDialog(this, "Passwords must be at least three characters long", "Invalid Password",
+      JOptionPane.showMessageDialog(
+          this,
+          "Passwords must be at least three characters long",
+          "Invalid Password",
           JOptionPane.ERROR_MESSAGE);
       return;
     }
 
+    ClientSetting.lobbyLoginName.setValue(username.getText().toCharArray());
+    if (rememberPassword.isSelected()) {
+      ClientSetting.lobbySavedPassword.setValueAndFlush(password.getPassword());
+    } else {
+      ClientSetting.lobbySavedPassword.resetValue();
+    }
     returnValue = ReturnValue.LOGON;
     close();
   }
 
   private void updateComponents() {
-    password.setEnabled(!anonymousLogin.isSelected());
+    Arrays.asList(rememberPassword, passwordLabel, password)
+        .forEach(component -> component.setEnabled(!anonymousLogin.isSelected()));
+    if (anonymousLogin.isSelected()) {
+      password.setText("");
+    }
   }
 
   boolean isAnonymousLogin() {
@@ -136,19 +264,15 @@ final class LoginPanel extends JPanel {
   }
 
   String getUserName() {
-    return userName.getText();
+    return username.getText();
   }
 
   String getPassword() {
     return new String(password.getPassword());
   }
 
-  LobbyLoginPreferences getLobbyLoginPreferences() {
-    return new LobbyLoginPreferences(getUserName(), getPassword(), credentialsSaved.isSelected(), isAnonymousLogin());
-  }
-
   ReturnValue show(final Window parent) {
-    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
+    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "", true);
     dialog.getContentPane().add(this);
     SwingComponents.addEscapeKeyListener(dialog, this::close);
     dialog.pack();

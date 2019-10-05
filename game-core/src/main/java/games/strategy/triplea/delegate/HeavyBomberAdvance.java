@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that improves bombers to heavy bombers.
- */
+/** A technology advance that improves bombers to heavy bombers. */
 public final class HeavyBomberAdvance extends TechAdvance {
   private static final long serialVersionUID = -1743063539572684675L;
 

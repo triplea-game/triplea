@@ -7,12 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -27,8 +27,6 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-
 final class ContentReaderTest extends AbstractClientSettingTestCase {
   private static final String URI = "some://uri";
 
@@ -36,19 +34,15 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
   @ExtendWith(TempDirectory.class)
   @Nested
   final class DownloadToFileTest {
-    @Mock
-    private CloseableHttpClient client;
+    @Mock private CloseableHttpClient client;
 
-    @Mock
-    private HttpEntity entity;
+    @Mock private HttpEntity entity;
 
     private File file;
 
-    @Mock
-    private CloseableHttpResponse response;
+    @Mock private CloseableHttpResponse response;
 
-    @Mock
-    private StatusLine statusLine;
+    @Mock private StatusLine statusLine;
 
     @BeforeEach
     void setUp(@TempDir final Path tempDirPath) throws Exception {

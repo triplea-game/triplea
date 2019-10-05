@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.ResourceLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -7,15 +8,10 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
-
+import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
 
-import games.strategy.triplea.ResourceLoader;
-import lombok.extern.java.Log;
-
-/**
- * Same as PoliticsText but for user actions.
- */
+/** Same as PoliticsText but for user actions. */
 @Log
 public class UserActionText {
   // Filename
@@ -34,7 +30,7 @@ public class UserActionText {
 
   private final Properties properties = new Properties();
 
-  protected UserActionText() {
+  private UserActionText() {
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
@@ -70,7 +66,7 @@ public class UserActionText {
     return properties.containsKey(actionKey + "." + messageKey);
   }
 
-  public String getButtonText(final String actionKey) {
+  String getButtonText(final String actionKey) {
     return getMessage(actionKey, BUTTON);
   }
 
@@ -78,7 +74,7 @@ public class UserActionText {
     return getMessage(actionKey, DESCRIPTION);
   }
 
-  public String getNotificationSucccess(final String actionKey) {
+  public String getNotificationSuccess(final String actionKey) {
     return getMessage(actionKey, NOTIFICATION_SUCCESS);
   }
 

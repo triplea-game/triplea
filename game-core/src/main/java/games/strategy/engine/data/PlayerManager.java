@@ -1,16 +1,13 @@
 package games.strategy.engine.data;
 
+import games.strategy.net.INode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import games.strategy.net.INode;
-
-/**
- * Tracks what Node in the networks is playing which roles in the game.
- */
+/** Tracks what Node in the networks is playing which roles in the game. */
 public class PlayerManager {
   private final Map<String, INode> playerMapping;
 
@@ -34,7 +31,6 @@ public class PlayerManager {
     return playerMapping.entrySet().stream()
         .map(e -> String.format("%s=%s", e.getKey(), e.getValue().getName()))
         .collect(Collectors.joining(", "));
-
   }
 
   public INode getNode(final String playerName) {
@@ -62,17 +58,19 @@ public class PlayerManager {
   }
 
   /**
-   * Get a player from an opposing side, if possible, else get a player playing at a remote computer, if possible.
+   * Get a player from an opposing side, if possible, else get a player playing at a remote
+   * computer, if possible.
    */
   public PlayerId getRemoteOpponent(final INode localNode, final GameData data) {
     // find a local player
-    final PlayerId local = playerMapping.entrySet().stream()
-        .filter(e -> e.getValue().equals(localNode))
-        .map(Map.Entry::getKey)
-        .map(data.getPlayerList()::getPlayerId)
-        .findAny()
-        .orElse(null);
-    // we arent playing anyone, return any
+    final PlayerId local =
+        playerMapping.entrySet().stream()
+            .filter(e -> e.getValue().equals(localNode))
+            .map(Map.Entry::getKey)
+            .map(data.getPlayerList()::getPlayerId)
+            .findAny()
+            .orElse(null);
+    // we aren't playing anyone, return any
     if (local == null) {
       final String remote = playerMapping.keySet().iterator().next();
       return data.getPlayerList().getPlayerId(remote);

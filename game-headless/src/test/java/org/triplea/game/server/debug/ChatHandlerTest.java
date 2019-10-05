@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +22,14 @@ final class ChatHandlerTest {
   @Nested
   final class PublishTest {
     private final ChatHandler chatHandler = new ChatHandler();
-    @Mock
-    private Consumer<String> sendChatMessage;
+    @Mock private Consumer<String> sendChatMessage;
 
     private LogRecord newLoggableLogRecord() {
       return new LogRecord(Level.WARNING, "message");
+    }
+
+    private LogRecord newLoggableLogRecordWithMultipleLines() {
+      return new LogRecord(Level.WARNING, "message\nmessage2\n");
     }
 
     private LogRecord newUnloggableLogRecord() {
@@ -44,7 +46,15 @@ final class ChatHandlerTest {
     void shouldSendChatMessageWhenRecordIsLoggable() {
       publish(newLoggableLogRecord());
 
-      verify(sendChatMessage).accept(anyString());
+      // first line is logged date, second line is the message
+      verify(sendChatMessage, times(2)).accept(anyString());
+    }
+
+    @Test
+    void shouldSplitMessagesOnNewLines() {
+      publish(newLoggableLogRecordWithMultipleLines());
+
+      verify(sendChatMessage, times(3)).accept(anyString());
     }
 
     @Test
@@ -58,19 +68,24 @@ final class ChatHandlerTest {
     void shouldNotIncludeTrailingNewlineInChatMessage() {
       publish(newLoggableLogRecord());
 
-      verify(sendChatMessage).accept(not(endsWith("\n")));
+      // first line is logged date, second line is the message
+      verify(sendChatMessage, times(2)).accept(not(endsWith("\n")));
     }
 
     @Test
     void shouldNotSendChatMessageWhenRecordIsLoggableAndCallIsReentrant() {
-      doAnswer(invocation -> {
-        publish(newLoggableLogRecord());
-        return null;
-      }).when(sendChatMessage).accept(anyString());
+      doAnswer(
+              invocation -> {
+                publish(newLoggableLogRecord());
+                return null;
+              })
+          .when(sendChatMessage)
+          .accept(anyString());
 
       publish(newLoggableLogRecord());
 
-      verify(sendChatMessage, times(1)).accept(anyString());
+      // first line is logged date, second line is the message
+      verify(sendChatMessage, times(2)).accept(anyString());
     }
   }
 }

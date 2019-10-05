@@ -4,19 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.triplea.java.collections.CollectionUtils;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.ArrayList;
+import java.util.Collection;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.CollectionUtils;
 
 class PactOfSteel2Test {
   private GameData gameData;
@@ -108,8 +106,10 @@ class PactOfSteel2Test {
   // testIsCombatTransport
   //
   // testIsConstruction
-  // - isConstruction, constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr,
-  // - "More Constructions with Factory", "More Constructions with Factory", "Unlimited Constructions"
+  // - isConstruction, constructionType, constructionsPerTerrPerTypePerTurn,
+  // maxConstructionsPerTypePerTerr,
+  // - "More Constructions with Factory", "More Constructions with Factory", "Unlimited
+  // Constructions"
   //
   // testMaxPlacePerTerritory
   //

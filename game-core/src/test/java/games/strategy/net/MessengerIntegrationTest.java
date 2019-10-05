@@ -11,18 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.annotation.concurrent.GuardedBy;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.test.common.Integration;
 
 @Integration
 class MessengerIntegrationTest {
   private IServerMessenger serverMessenger;
-  private IMessenger client1Messenger;
+  private IClientMessenger client1Messenger;
   private IMessenger client2Messenger;
   private final MessageListener serverMessageListener = new MessageListener();
   private final MessageListener client1MessageListener = new MessageListener();
@@ -30,6 +29,7 @@ class MessengerIntegrationTest {
 
   @BeforeEach
   void setUp() throws Exception {
+    DialogBuilder.disableUi();
     serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
@@ -93,18 +93,13 @@ class MessengerIntegrationTest {
   @Test
   void testClientSendToClientLargeMessage() {
     final int count = 1_000_000;
-    final StringBuilder builder = new StringBuilder(count);
-    for (int i = 0; i < count; i++) {
-      builder.append('a');
-    }
-    final String message = builder.toString();
+    final String message = "a".repeat(count);
     client1Messenger.send(message, client2Messenger.getLocalNode());
     assertEquals(client2MessageListener.getLastMessage(), message);
     assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
     assertEquals(0, client1MessageListener.getMessageCount());
     assertEquals(0, serverMessageListener.getMessageCount());
   }
-
 
   @Test
   void testMultipleServer() {
@@ -128,20 +123,22 @@ class MessengerIntegrationTest {
 
   @Test
   void testCorrectNodeCountInRemove() {
-    // when we receive the notification that a connection has been lost, the node list should reflect that change
+    // when we receive the notification that a connection has been lost, the node list should
+    // reflect that change
     await().until(serverMessenger::getNodes, hasSize(3));
     final AtomicInteger serverCount = new AtomicInteger(3);
-    serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        serverCount.decrementAndGet();
-      }
+    serverMessenger.addConnectionChangeListener(
+        new IConnectionChangeListener() {
+          @Override
+          public void connectionRemoved(final INode to) {
+            serverCount.decrementAndGet();
+          }
 
-      @Override
-      public void connectionAdded(final INode to) {
-        fail("A connection should not be added.");
-      }
-    });
+          @Override
+          public void connectionAdded(final INode to) {
+            fail("A connection should not be added.");
+          }
+        });
     client1Messenger.shutDown();
     await().until(serverMessenger::getNodes, hasSize(2));
     assertEquals(2, serverCount.get());

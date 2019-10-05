@@ -1,14 +1,10 @@
 package games.strategy.engine.data;
 
+import games.strategy.triplea.Constants;
 import java.util.Map.Entry;
-
 import org.triplea.java.collections.IntegerMap;
 
-import games.strategy.triplea.Constants;
-
-/**
- * A production rule.
- */
+/** A production rule. */
 public class ProductionRule extends DefaultNamed {
   private static final long serialVersionUID = -6598296283127741307L;
 
@@ -19,7 +15,10 @@ public class ProductionRule extends DefaultNamed {
     super(name, data);
   }
 
-  public ProductionRule(final String name, final GameData data, final IntegerMap<NamedAttachable> results,
+  public ProductionRule(
+      final String name,
+      final GameData data,
+      final IntegerMap<NamedAttachable> results,
       final IntegerMap<Resource> costs) {
     super(name, data);
     this.results = results;
@@ -30,12 +29,11 @@ public class ProductionRule extends DefaultNamed {
     costs.put(resource, quantity);
   }
 
-  /**
-   * Benefits must be a resource or a unit.
-   */
+  /** Benefits must be a resource or a unit. */
   protected void addResult(final NamedAttachable obj, final int quantity) {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
-      throw new IllegalArgumentException("results must be units or resources, not:" + obj.getClass().getName());
+      throw new IllegalArgumentException(
+          "results must be units or resources, not:" + obj.getClass().getName());
     }
     results.put(obj, quantity);
   }
@@ -56,7 +54,8 @@ public class ProductionRule extends DefaultNamed {
   /**
    * Returns a string representing the total resource cost for this production rule.
    *
-   * @return A string with the format {@code <resource1Cost> <resource1Name>[; <resource2Cost> <resource2Name>[; ...]]}.
+   * @return A string with the format {@code <resource1Cost> <resource1Name>[; <resource2Cost>
+   *     <resource2Name>[; ...]]}.
    */
   public String toStringCosts() {
     final StringBuilder sb = new StringBuilder();

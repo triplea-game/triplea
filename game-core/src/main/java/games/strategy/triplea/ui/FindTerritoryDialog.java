@@ -1,21 +1,18 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Territory;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
-
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
-
-import games.strategy.engine.data.Territory;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 final class FindTerritoryDialog extends JDialog {
   private static final long serialVersionUID = -1601616824595826610L;
@@ -32,38 +29,40 @@ final class FindTerritoryDialog extends JDialog {
 
     final Collection<Territory> territories = owner.getGame().getData().getMap().getTerritories();
     final @Nullable Territory initialSelectedTerritory = mapPanel.getCurrentTerritory();
-    final JComboBox<Territory> territoryComboBox = JComboBoxBuilder.builder(Territory.class)
-        .items(territories.stream().sorted().collect(Collectors.toList()))
-        .nullableSelectedItem(initialSelectedTerritory)
-        .enableAutoComplete()
-        .itemSelectedAction(mapPanel::highlightTerritory)
-        .build();
+    final JComboBox<Territory> territoryComboBox =
+        JComboBoxBuilder.builder(Territory.class)
+            .items(territories.stream().sorted().collect(Collectors.toList()))
+            .nullableSelectedItem(initialSelectedTerritory)
+            .enableAutoComplete()
+            .itemSelectedAction(mapPanel::highlightTerritory)
+            .build();
     if (initialSelectedTerritory != null) {
       mapPanel.highlightTerritory(initialSelectedTerritory);
     }
 
-    final JButton okButton = JButtonBuilder.builder()
-        .okTitle()
-        .actionListener(() -> close(Result.OK))
-        .build();
+    final JButton okButton =
+        new JButtonBuilder().okTitle().actionListener(() -> close(Result.OK)).build();
     getRootPane().setDefaultButton(okButton);
 
-    add(JPanelBuilder.builder()
-        .border(10)
-        .verticalBoxLayout()
-        .add(territoryComboBox)
-        .addVerticalStrut(20)
-        .add(JPanelBuilder.builder()
-            .horizontalBoxLayout()
-            .addHorizontalGlue()
-            .add(okButton)
-            .addHorizontalStrut(5)
-            .add(JButtonBuilder.builder()
-                .cancelTitle()
-                .actionListener(() -> close(Result.CANCEL))
-                .build())
-            .build())
-        .build());
+    add(
+        new JPanelBuilder()
+            .border(10)
+            .boxLayoutVertical()
+            .add(territoryComboBox)
+            .addVerticalStrut(20)
+            .add(
+                new JPanelBuilder()
+                    .boxLayoutHorizontal()
+                    .addHorizontalGlue()
+                    .add(okButton)
+                    .addHorizontalStrut(5)
+                    .add(
+                        new JButtonBuilder()
+                            .cancelTitle()
+                            .actionListener(() -> close(Result.CANCEL))
+                            .build())
+                    .build())
+            .build());
     pack();
     setLocation(getInitialLocation());
 
@@ -93,6 +92,7 @@ final class FindTerritoryDialog extends JDialog {
   }
 
   private enum Result {
-    OK, CANCEL
+    OK,
+    CANCEL
   }
 }

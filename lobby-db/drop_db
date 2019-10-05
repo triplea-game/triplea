@@ -1,7 +1,11 @@
 #!/bin/bash
 
-DB=lobby
-PSQL="psql -h localhost -U postgres -w"
+# Deletes database and creates a fresh database with no tables.
+# Use this script to clear out DB data and start from fresh.
+# Typically flyway migration will be run after this script.
+
+DB=lobby_db
+PSQL="psql -h localhost -U lobby_user -w -d postgres"
 echo "drop database $DB" | $PSQL
 echo "create database $DB" | $PSQL
 

@@ -1,0 +1,5 @@
+moderator_action_history:
+  - id:  "regex:\\d+" #any number
+    lobby_user_id: 900000
+    action_name: "BAN_USERNAME"
+    action_target: "ACTION_TARGET"

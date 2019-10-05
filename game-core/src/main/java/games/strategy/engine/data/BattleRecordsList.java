@@ -1,18 +1,14 @@
 package games.strategy.engine.data;
 
+import com.google.common.base.Preconditions;
+import games.strategy.triplea.delegate.data.BattleRecords;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.base.Preconditions;
-
-import games.strategy.triplea.delegate.data.BattleRecords;
-
-/**
- * A holder for BattleRecords.
- */
+/** A holder for BattleRecords. */
 public class BattleRecordsList extends GameDataComponent {
   private static final long serialVersionUID = 7515693859612849475L;
   private final Map<Integer, BattleRecords> battleRecords = new HashMap<>();
@@ -21,7 +17,9 @@ public class BattleRecordsList extends GameDataComponent {
     super(data);
   }
 
-  public static void addRecords(final Map<Integer, BattleRecords> recordList, final int currentRound,
+  public static void addRecords(
+      final Map<Integer, BattleRecords> recordList,
+      final int currentRound,
       final BattleRecords other) {
     final BattleRecords current = recordList.get(currentRound);
     if (current == null) {
@@ -32,8 +30,8 @@ public class BattleRecordsList extends GameDataComponent {
     recordList.put(currentRound, current);
   }
 
-  public static void removeRecords(final Map<Integer, BattleRecords> recordList, final int round,
-      final BattleRecords other) {
+  public static void removeRecords(
+      final Map<Integer, BattleRecords> recordList, final int round, final BattleRecords other) {
     final BattleRecords current = recordList.get(round);
     if (current == null) {
       throw new IllegalStateException("Trying to remove records for round that does not exist");
@@ -77,10 +75,16 @@ public class BattleRecordsList extends GameDataComponent {
   // Interpretation stuff below
 
   /**
-   * Returns the TUV damage caused by {@code attacker} from the battle results in {@code battleRecordsList}.
+   * Returns the TUV damage caused by {@code attacker} from the battle results in {@code
+   * battleRecordsList}.
    */
-  public static int getTuvDamageCausedByPlayer(final PlayerId attacker, final BattleRecordsList battleRecordsList,
-      final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
+  public static int getTuvDamageCausedByPlayer(
+      final PlayerId attacker,
+      final BattleRecordsList battleRecordsList,
+      final int beginningRound,
+      final int endRound,
+      final boolean currentRoundOnly,
+      final boolean includeNullPlayer) {
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
       if (battleRecordsList != null) {
@@ -101,8 +105,9 @@ public class BattleRecordsList extends GameDataComponent {
     }
     int damageCausedByAttacker = 0;
     for (final BattleRecords br : brs) {
-      damageCausedByAttacker += BattleRecords
-          .getLostTuvForBattleRecords(BattleRecords.getRecordsForPlayerId(attacker, br), false, includeNullPlayer);
+      damageCausedByAttacker +=
+          BattleRecords.getLostTuvForBattleRecords(
+              BattleRecords.getRecordsForPlayerId(attacker, br), false, includeNullPlayer);
     }
     return damageCausedByAttacker;
   }
@@ -113,16 +118,22 @@ public class BattleRecordsList extends GameDataComponent {
    * @param attacker if null then any player
    * @param defender if null then any player
    */
-  public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerId attacker, final PlayerId defender,
-      final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,
-      final int beginningRound, final int endRound, final boolean currentRoundOnly) {
+  public static boolean getWereThereBattlesInTerritoriesMatching(
+      final PlayerId attacker,
+      final PlayerId defender,
+      final String battleType,
+      final Collection<Territory> anyOfTheseTerritories,
+      final BattleRecordsList brl,
+      final int beginningRound,
+      final int endRound,
+      final boolean currentRoundOnly) {
     Preconditions.checkNotNull(brl);
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
       brs.add(brl.getCurrentRoundCopy());
     } else {
       final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
-      for (int i = beginningRound; i > endRound; i++) {
+      for (int i = beginningRound; i <= endRound; i++) {
         final BattleRecords currentRecords = currentList.get(i);
         if (currentRecords != null) {
           brs.add(currentRecords);
@@ -132,8 +143,13 @@ public class BattleRecordsList extends GameDataComponent {
     // null for attacker means any attacker
     for (final BattleRecords br : brs) {
       if (BattleRecords.getWereThereBattlesInTerritoriesMatching(
-          (attacker == null ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerId(attacker, br)),
-          attacker, defender, battleType, anyOfTheseTerritories)) {
+          (attacker == null
+              ? BattleRecords.getAllRecords(br)
+              : BattleRecords.getRecordsForPlayerId(attacker, br)),
+          attacker,
+          defender,
+          battleType,
+          anyOfTheseTerritories)) {
         return true;
       }
     }

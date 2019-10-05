@@ -7,18 +7,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.lobby.server.db.data.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorsServiceTest {
@@ -27,26 +25,17 @@ class ModeratorsServiceTest {
   private static final int MODERATOR_ID = 555;
   private static final String USERNAME = "The reef grows amnesty like a golden lass.";
 
-  @Mock
-  private ModeratorsDao moderatorsDao;
-  @Mock
-  private UserLookupDao userLookupDao;
-  @Mock
-  private ModeratorApiKeyDao moderatorApiKeyDao;
-  @Mock
-  private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
-  @Mock
-  private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Mock private ModeratorsDao moderatorsDao;
+  @Mock private UserJdbiDao userJdbiDao;
+  @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  @InjectMocks
-  private ModeratorsService moderatorsService;
-
+  @InjectMocks private ModeratorsService moderatorsService;
 
   @Nested
   final class AddModeratorTest {
     @Test
     void throwsIfUserNotFound() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
       assertThrows(
           IllegalArgumentException.class,
           () -> moderatorsService.addModerator(MODERATOR_ID, USERNAME));
@@ -54,8 +43,8 @@ class ModeratorsServiceTest {
 
     @Test
     void throwsIfModeratorNotAdded() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addMod(USER_ID)).thenReturn(0);
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(moderatorsDao.setRole(USER_ID, UserRole.MODERATOR)).thenReturn(0);
       assertThrows(
           IllegalStateException.class,
           () -> moderatorsService.addModerator(MODERATOR_ID, USERNAME));
@@ -63,16 +52,18 @@ class ModeratorsServiceTest {
 
     @Test
     void verifySuccessCase() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addMod(USER_ID)).thenReturn(1);
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(moderatorsDao.setRole(USER_ID, UserRole.MODERATOR)).thenReturn(1);
 
       moderatorsService.addModerator(MODERATOR_ID, USERNAME);
 
-      verify(moderatorAuditHistoryDao).addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-          .moderatorUserId(MODERATOR_ID)
-          .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
-          .actionTarget(USERNAME)
-          .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
+                  .actionTarget(USERNAME)
+                  .build());
     }
   }
 
@@ -80,7 +71,7 @@ class ModeratorsServiceTest {
   final class RemoveModTest {
     @Test
     void throwsIfModNameIsNotFound() {
-      when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.empty());
       assertThrows(
           IllegalArgumentException.class,
           () -> moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME));
@@ -88,8 +79,9 @@ class ModeratorsServiceTest {
 
     @Test
     void throwsIfModIsNotRemoved() {
-      when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.removeMod(USER_ID)).thenReturn(0);
+      when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
+      when(moderatorsDao.setRole(USER_ID, UserRole.PLAYER)).thenReturn(0);
+
       assertThrows(
           IllegalStateException.class,
           () -> moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME));
@@ -97,17 +89,18 @@ class ModeratorsServiceTest {
 
     @Test
     void verifySuccessfulRemove() {
-      when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.removeMod(USER_ID)).thenReturn(1);
+      when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
+      when(moderatorsDao.setRole(USER_ID, UserRole.PLAYER)).thenReturn(1);
+
       moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME);
 
-      verify(moderatorApiKeyDao).deleteKeysByUserId(USER_ID);
-      verify(moderatorSingleUseKeyDao).deleteKeysByUserId(USER_ID);
-      verify(moderatorAuditHistoryDao).addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-          .moderatorUserId(MODERATOR_ID)
-          .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
-          .actionTarget(MODERATOR_NAME)
-          .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
+                  .actionTarget(MODERATOR_NAME)
+                  .build());
     }
   }
 
@@ -115,7 +108,7 @@ class ModeratorsServiceTest {
   final class AddSuperModTest {
     @Test
     void throwsIfUserNotFound() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
       assertThrows(
           IllegalArgumentException.class,
           () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
@@ -123,25 +116,27 @@ class ModeratorsServiceTest {
 
     @Test
     void throwsIfSuperModNotAdded() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(0);
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(moderatorsDao.setRole(USER_ID, UserRole.ADMIN)).thenReturn(0);
+
       assertThrows(
-          IllegalStateException.class,
-          () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
+          IllegalStateException.class, () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
     }
 
     @Test
     void verifySuccessfulAdd() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(1);
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(moderatorsDao.setRole(USER_ID, UserRole.ADMIN)).thenReturn(1);
+
       moderatorsService.addSuperMod(MODERATOR_ID, USERNAME);
 
-      verify(moderatorAuditHistoryDao).addAuditRecord(
-          ModeratorAuditHistoryDao.AuditArgs.builder()
-              .moderatorUserId(MODERATOR_ID)
-              .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_SUPER_MOD)
-              .actionTarget(USERNAME)
-              .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_SUPER_MOD)
+                  .actionTarget(USERNAME)
+                  .build());
     }
   }
 
@@ -149,13 +144,13 @@ class ModeratorsServiceTest {
   final class UserExistsTest {
     @Test
     void userDoesNotExist() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
       assertThat(moderatorsService.userExistsByName(USERNAME), is(false));
     }
 
     @Test
     void userExists() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       assertThat(moderatorsService.userExistsByName(USERNAME), is(true));
     }
   }

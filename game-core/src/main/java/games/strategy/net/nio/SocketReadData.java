@@ -3,16 +3,14 @@ package games.strategy.net.nio;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-
 import lombok.Getter;
 import lombok.extern.java.Log;
 
 /**
  * A packet of data being read over the network.
  *
- * <p>
- * A Packet does not correspond to a network packet, rather it is the bytes for 1 serialized java object.
- * </p>
+ * <p>A Packet does not correspond to a network packet, rather it is the bytes for 1 serialized java
+ * object.
  */
 @Log
 class SocketReadData {
@@ -26,10 +24,8 @@ class SocketReadData {
   private ByteBuffer sizeBuffer;
   // we read into here after knowing out size
   private ByteBuffer contentBuffer;
-  @Getter
-  private final SocketChannel channel;
-  @Getter
-  private int readCalls;
+  @Getter private final SocketChannel channel;
+  @Getter private int readCalls;
 
   SocketReadData(final SocketChannel channel) {
     this.channel = channel;
@@ -38,9 +34,7 @@ class SocketReadData {
   /**
    * Read data from the channel, returning true if this packet is done.
    *
-   * <p>
-   * If we detect the socket is closed, we will throw an IOExcpetion
-   * </p>
+   * <p>If we detect the socket is closed, we will throw an IOException
    */
   public boolean read(final SocketChannel channel) throws IOException {
     readCalls++;
@@ -71,23 +65,19 @@ class SocketReadData {
         contentBuffer = ByteBuffer.allocate(targetSize);
         sizeBuffer = null;
       } else {
-        // we ddnt read all 4 bytes, return
+        // we didn't read all 4 bytes, return
         return false;
       }
     }
     // http://javaalmanac.com/egs/java.nio/DetectClosed.html
     final int size = channel.read(contentBuffer);
-    log.finest(() -> "read content bytes:" + size);
     if (size == -1) {
       throw new IOException("Socket closed");
     }
     return !contentBuffer.hasRemaining();
   }
 
-  /**
-   * Get the data as a byte[].
-   * This method can only be called once.
-   */
+  /** Get the data as a byte[]. This method can only be called once. */
   public byte[] getData() {
     final byte[] data = new byte[contentBuffer.capacity()];
     contentBuffer.flip();

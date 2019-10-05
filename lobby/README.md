@@ -59,7 +59,7 @@ ls build/artifacts/
 
 ### Running the server
 
-Unzip the build artifact after buidling, then run with:
+Unzip the build artifact after building, then run with:
 ```
 java -jar build/artifacts/http-lobby-1.9.0.0.dev-all.jar
 ```

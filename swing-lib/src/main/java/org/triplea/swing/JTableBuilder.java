@@ -2,22 +2,18 @@ package org.triplea.swing;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import com.google.common.base.Preconditions;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Example usage:.
- * <code><pre>
+ * Example usage:. <code><pre>
  *   final JTable panel = JTableBuilder.builder()
  *       .columnNames(columns)
  *       .tableData(rows)
@@ -30,14 +26,11 @@ public class JTableBuilder {
   private List<List<String>> rowData;
   private List<String> columnNames;
 
-
   public static JTableBuilder builder() {
     return new JTableBuilder();
   }
 
-  /**
-   * Constructs the JTable swing component.
-   */
+  /** Constructs the JTable swing component. */
   public JTable build() {
     Preconditions.checkNotNull(columnNames);
     Optional.ofNullable(rowData)
@@ -47,9 +40,8 @@ public class JTableBuilder {
     columnNames.forEach(model::addColumn);
 
     Optional.ofNullable(rowData)
-        .ifPresent(data -> data.stream()
-            .map(row -> row.toArray(new String[0]))
-            .forEach(model::addRow));
+        .ifPresent(
+            data -> data.stream().map(row -> row.toArray(new String[0])).forEach(model::addRow));
     return new JTable(model);
   }
 
@@ -57,18 +49,17 @@ public class JTableBuilder {
    * Make sure that the table is 'rectangular'. Given a number of headers, each row of data should
    * have the same number of columns.
    */
-  private static void verifyRowLengthsMatchHeader(final List<List<String>> rowData, final int headerCount) {
+  private static void verifyRowLengthsMatchHeader(
+      final List<List<String>> rowData, final int headerCount) {
     IntStream.range(0, rowData.size())
         .forEach(
-            i -> checkArgument(
-                rowData.get(i).size() == headerCount,
-                String.format(
-                    "Data row number: %s, had incorrect length: %s, needed to match number of column headers: %s,"
-                        + "data row: %s",
-                    i,
-                    rowData.get(i).size(),
-                    headerCount,
-                    rowData.get(i))));
+            i ->
+                checkArgument(
+                    rowData.get(i).size() == headerCount,
+                    String.format(
+                        "Data row number: %s, had incorrect length: %s, needed to match "
+                            + "number of column headers: %s, data row: %s",
+                        i, rowData.get(i).size(), headerCount, rowData.get(i))));
   }
 
   /**
@@ -87,7 +78,6 @@ public class JTableBuilder {
     model.setRowCount(0);
     addRows(table, rows);
   }
-
 
   public JTableBuilder columnNames(final String... columnNames) {
     return columnNames(Arrays.asList(columnNames));

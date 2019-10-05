@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that allows the use of mechanized infantry units.
- */
+/** A technology advance that allows the use of mechanized infantry units. */
 public final class MechanizedInfantryAdvance extends TechAdvance {
   private static final long serialVersionUID = 3040670614877450791L;
 

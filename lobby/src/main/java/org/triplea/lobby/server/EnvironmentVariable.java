@@ -1,7 +1,6 @@
 package org.triplea.lobby.server;
 
 import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 
 /** Class that represent OS environment variable keys with default values. */
@@ -13,5 +12,9 @@ public enum EnvironmentVariable {
 
   public String getValue() {
     return Optional.ofNullable(System.getenv(name())).orElse(defaultValue);
+  }
+
+  public boolean getBoolean() {
+    return Boolean.parseBoolean(getValue());
   }
 }

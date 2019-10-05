@@ -1,19 +1,14 @@
 package org.triplea.swing;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.util.Optional;
 import java.util.function.Consumer;
-
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * Builder class for building swing text fields. Example usage:
@@ -31,7 +26,6 @@ import lombok.NoArgsConstructor;
  * </code>
  * </pre>
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JTextFieldBuilder {
 
   private String text;
@@ -43,58 +37,45 @@ public class JTextFieldBuilder {
   private boolean enabled = true;
   private boolean readOnly;
 
-
-  /**
-   * Builds the swing component.
-   */
+  /** Builds the swing component. */
   public JTextField build() {
     final JTextField textField = new JTextField(Strings.nullToEmpty(this.text));
 
-    Optional.ofNullable(columns)
-        .ifPresent(textField::setColumns);
-
+    Optional.ofNullable(columns).ifPresent(textField::setColumns);
 
     Optional.ofNullable(textEnteredAction)
         .ifPresent(
-            action -> DocumentListenerBuilder.attachDocumentListener(textField,
-                () -> textEnteredAction.accept(textField)));
+            action ->
+                DocumentListenerBuilder.attachDocumentListener(
+                    textField, () -> textEnteredAction.accept(textField)));
 
-    Optional.ofNullable(maxLength)
-        .map(JTextFieldLimit::new)
-        .ifPresent(textField::setDocument);
+    Optional.ofNullable(maxLength).map(JTextFieldLimit::new).ifPresent(textField::setDocument);
 
-    Optional.ofNullable(text)
-        .ifPresent(textField::setText);
+    Optional.ofNullable(text).ifPresent(textField::setText);
 
-    Optional.ofNullable(toolTip)
-        .ifPresent(textField::setToolTipText);
+    Optional.ofNullable(toolTip).ifPresent(textField::setToolTipText);
 
     textField.setEnabled(enabled);
     textField.setEditable(!readOnly);
     return textField;
   }
 
-
-  /**
-   * Sets the initial value displayed on the text field.
-   */
+  /** Sets the initial value displayed on the text field. */
   public JTextFieldBuilder text(final String value) {
     Preconditions.checkNotNull(value);
     this.text = value;
     return this;
   }
 
-  /**
-   * Convenience method for setting the text value to a numeric value.
-   */
+  /** Convenience method for setting the text value to a numeric value. */
   public JTextFieldBuilder text(final int value) {
     this.text = String.valueOf(value);
     return this;
   }
 
   /**
-   * Defines the width of the text field. Value is passed directly to swing.
-   * TODO: list some typical/reasonable value examples
+   * Defines the width of the text field. Value is passed directly to swing. TODO: list some
+   * typical/reasonable value examples
    */
   public JTextFieldBuilder columns(final int columns) {
     Preconditions.checkArgument(columns > 0);
@@ -137,16 +118,16 @@ public class JTextFieldBuilder {
     }
   }
 
-
   public static JTextFieldBuilder builder() {
     return new JTextFieldBuilder();
   }
 
   /**
-   * Adds an action listener that is fired when the user presses enter after entering text into the text field.
+   * Adds an action listener that is fired when the user presses enter after entering text into the
+   * text field.
    *
    * @param textEnteredAction Action to fire on 'enter', input value is the current value of the
-   *        text field.
+   *     text field.
    */
   public JTextFieldBuilder actionListener(final Consumer<JTextComponent> textEnteredAction) {
     Preconditions.checkNotNull(textEnteredAction);
@@ -155,16 +136,15 @@ public class JTextFieldBuilder {
   }
 
   /**
-   * A ready only text field can't be changed, but the user can still click on it and select the text.
+   * A ready only text field can't be changed, but the user can still click on it and select the
+   * text.
    */
   public JTextFieldBuilder readOnly() {
     this.readOnly = true;
     return this;
   }
 
-  /**
-   * Disables a text field, can no longer be clicked on.
-   */
+  /** Disables a text field, can no longer be clicked on. */
   public JTextFieldBuilder disabled() {
     this.enabled = false;
     return this;

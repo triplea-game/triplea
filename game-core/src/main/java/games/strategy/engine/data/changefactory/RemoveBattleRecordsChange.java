@@ -1,11 +1,10 @@
 package games.strategy.engine.data.changefactory;
 
-import java.util.Map;
-
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.data.BattleRecords;
+import java.util.Map;
 
 class RemoveBattleRecordsChange extends Change {
   private static final long serialVersionUID = 3286634991233029854L;
@@ -15,14 +14,16 @@ class RemoveBattleRecordsChange extends Change {
 
   RemoveBattleRecordsChange(final BattleRecords battleRecords, final int round) {
     this.round = round;
-    // do not make a copy, this is only called from AddBattleRecordsChange, and we make a copy when we
+    // do not make a copy, this is only called from AddBattleRecordsChange, and we make a copy when
+    // we
     // perform, so no need for another copy.
     recordsToRemove = battleRecords;
   }
 
   @Override
   protected void perform(final GameData data) {
-    final Map<Integer, BattleRecords> currentRecords = data.getBattleRecordsList().getBattleRecordsMap();
+    final Map<Integer, BattleRecords> currentRecords =
+        data.getBattleRecordsList().getBattleRecordsMap();
     // make a copy else we will get a concurrent modification error
     BattleRecordsList.removeRecords(currentRecords, round, new BattleRecords(recordsToRemove));
   }

@@ -6,35 +6,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Contains the sound file names and the directory of all sound files.
- */
+/** Contains the sound file names and the directory of all sound files. */
 public final class SoundPath {
-  // MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference will not be saved)
+  // MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference
+  // will not be saved)
 
-  // standard sounds (files can be found in corresponding data/... folder to this package)
+  public static final String CLIP_BATTLE_X_HIT = "_hit";
+  public static final String CLIP_BATTLE_X_MISS = "_miss";
+  public static final String CLIP_BATTLE_X_PREFIX = "battle_";
   public static final String CLIP_CHAT_MESSAGE = "chat_message";
   public static final String CLIP_CHAT_SLAP = "chat_slap";
   public static final String CLIP_CHAT_JOIN_GAME = "chat_join_game";
-  // TODO
   public static final String CLIP_CLICK_BUTTON = "click_button";
-  // TODO
   public static final String CLIP_CLICK_PLOT = "click_plot";
-  public static final String CLIP_GAME_START = "game_start";
-  public static final String CLIP_GAME_WON = "game_won";
-  // TODO
-  public static final String CLIP_REQUIRED_ACTION = "required_action";
-  public static final String CLIP_REQUIRED_YOUR_TURN_SERIES = "required_your_turn_series";
-  // TripleA sounds:
-  // custom AA Guns:
-  public static final String CLIP_BATTLE_X_PREFIX = "battle_";
-  public static final String CLIP_BATTLE_X_HIT = "_hit";
-  public static final String CLIP_BATTLE_X_MISS = "_miss";
-  // custom triggered notification sounds:
-  public static final String CLIP_TRIGGERED_NOTIFICATION_SOUND = "notification_";
   public static final String CLIP_TRIGGERED_DEFEAT_SOUND = "defeat_";
   public static final String CLIP_TRIGGERED_VICTORY_SOUND = "victory_";
-  // normal sounds:
   public static final String CLIP_BATTLE_AA_HIT = "battle_aa_hit";
   public static final String CLIP_BATTLE_AA_MISS = "battle_aa_miss";
   public static final String CLIP_BATTLE_AIR = "battle_air";
@@ -52,6 +38,9 @@ public final class SoundPath {
   public static final String CLIP_BATTLE_STALEMATE = "battle_stalemate";
   public static final String CLIP_BOMBING_ROCKET = "bombing_rocket";
   public static final String CLIP_BOMBING_STRATEGIC = "bombing_strategic";
+  public static final String CLIP_GAME_START = "game_start";
+  public static final String CLIP_GAME_WON = "game_won";
+  public static final String CLIP_TRIGGERED_NOTIFICATION_SOUND = "notification_";
   public static final String CLIP_PHASE_BATTLE = "phase_battle";
   public static final String CLIP_PHASE_END_TURN = "phase_end_turn";
   public static final String CLIP_PHASE_MOVE_COMBAT = "phase_move_combat";
@@ -67,6 +56,8 @@ public final class SoundPath {
   public static final String CLIP_PLACED_SEA = "placed_sea";
   public static final String CLIP_POLITICAL_ACTION_FAILURE = "political_action_failure";
   public static final String CLIP_POLITICAL_ACTION_SUCCESSFUL = "political_action_successful";
+  public static final String CLIP_REQUIRED_ACTION = "required_action";
+  public static final String CLIP_REQUIRED_YOUR_TURN_SERIES = "required_your_turn_series";
   public static final String CLIP_TECHNOLOGY_FAILURE = "technology_failure";
   public static final String CLIP_TECHNOLOGY_SUCCESSFUL = "technology_successful";
   public static final String CLIP_TERRITORY_CAPTURE_BLITZ = "territory_capture_blitz";

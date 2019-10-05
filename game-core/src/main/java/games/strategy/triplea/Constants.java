@@ -2,9 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.PlayerId;
 
-/**
- * Constants used throughout the game.
- */
+/** Constants used throughout the game. */
 public interface Constants {
   // Player names
   String PLAYER_NAME_AMERICANS = "Americans";
@@ -227,6 +225,8 @@ public interface Constants {
   String DISABLED_PLAYERS_ASSETS_DELETED = "Disabled Players Assets Deleted";
   String CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS =
       "Control All Canals Between Territories To Pass";
+  String ENTER_TERRITORIES_WITH_HIGHER_MOVEMENT_COSTS_THEN_REMAINING_MOVEMENT =
+      "Enter Territories With Higher Movement Costs Then Remaining Moves";
   String UNITS_CAN_LOAD_IN_HOSTILE_SEA_ZONES = "Units Can Load In Hostile Sea Zones";
 
   // relationships stuff
@@ -257,5 +257,4 @@ public interface Constants {
   static String getPuIncomeBonus(final PlayerId playerId) {
     return playerId.getName() + "PU Income Bonus";
   }
-
 }

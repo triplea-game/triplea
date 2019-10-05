@@ -1,17 +1,16 @@
 package games.strategy.engine.message;
 
+import games.strategy.engine.message.unifiedmessenger.Invoke;
+import games.strategy.net.INode;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import games.strategy.engine.message.unifiedmessenger.Invoke;
-import games.strategy.net.GUID;
-import games.strategy.net.INode;
+import java.util.UUID;
 
 /**
- * A request forwarded by the hub node to invoke a remote method on a spoke node. Instances of this class should only be
- * created by the messaging framework on the hub node. All remote method invocations should originate as an instance of
- * {@link HubInvoke}.
+ * A request forwarded by the hub node to invoke a remote method on a spoke node. Instances of this
+ * class should only be created by the messaging framework on the hub node. All remote method
+ * invocations should originate as an instance of {@link HubInvoke}.
  */
 public class SpokeInvoke extends Invoke {
   private static final long serialVersionUID = -2007645463748969L;
@@ -19,7 +18,10 @@ public class SpokeInvoke extends Invoke {
 
   public SpokeInvoke() {}
 
-  public SpokeInvoke(final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call,
+  public SpokeInvoke(
+      final UUID methodCallId,
+      final boolean needReturnValues,
+      final RemoteMethodCall call,
       final INode invoker) {
     super(methodCallId, needReturnValues, call);
     this.invoker = invoker;

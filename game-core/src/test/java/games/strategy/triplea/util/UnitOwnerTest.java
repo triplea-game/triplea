@@ -1,12 +1,11 @@
 package games.strategy.triplea.util;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 final class UnitOwnerTest {
   @Nested

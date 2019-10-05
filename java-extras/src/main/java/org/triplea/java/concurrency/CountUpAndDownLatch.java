@@ -4,16 +4,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
- * This synchronization aid is very similar to {@link CountDownLatch}, except that you can increment the latch.
- * Implements AQS behind the scenes similar to CountDownLatch.
- * Class is hobbled together from various learnings and tickets on stackexchange/stackoverflow.
+ * This synchronization aid is very similar to {@link CountDownLatch}, except that you can increment
+ * the latch. Implements AQS behind the scenes similar to CountDownLatch. Class is hobbled together
+ * from various learnings and tickets on stackexchange/stackoverflow.
  */
 public class CountUpAndDownLatch {
   private final Sync sync = new Sync();
 
-  /**
-   * Increment the count by one.
-   */
+  /** Increment the count by one. */
   public void increment() {
     sync.releaseShared(1);
   }
@@ -28,7 +26,8 @@ public class CountUpAndDownLatch {
   }
 
   /**
-   * Causes the current thread to wait until the latch has counted down to zero, unless the thread is interrupted.
+   * Causes the current thread to wait until the latch has counted down to zero, unless the thread
+   * is interrupted.
    *
    * @see CountDownLatch#await()
    */
@@ -37,18 +36,15 @@ public class CountUpAndDownLatch {
   }
 
   /**
-   * Returns a string identifying this latch, as well as its state.
-   * The state, in brackets, includes the String "Count =" followed by the current count.
+   * Returns a string identifying this latch, as well as its state. The state, in brackets, includes
+   * the String "Count =" followed by the current count.
    */
   @Override
   public String toString() {
     return super.toString() + "[Count = " + sync.getCount() + "]";
   }
 
-  /**
-   * Synchronization control for CountingLatch.
-   * Uses AQS state to represent count.
-   */
+  /** Synchronization control for CountingLatch. Uses AQS state to represent count. */
   private static final class Sync extends AbstractQueuedSynchronizer {
     private static final long serialVersionUID = -7639904478060101736L;
 

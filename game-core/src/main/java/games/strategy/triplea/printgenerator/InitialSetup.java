@@ -1,15 +1,14 @@
 package games.strategy.triplea.printgenerator;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.triplea.attachments.UnitAttachment;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
 
 @Log

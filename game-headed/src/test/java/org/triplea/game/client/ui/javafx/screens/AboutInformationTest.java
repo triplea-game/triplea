@@ -4,11 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.Test;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
-
-import javafx.scene.layout.VBox;
 
 class AboutInformationTest {
 

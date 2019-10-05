@@ -1,27 +1,21 @@
 package games.strategy.engine;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.io.FileUtils;
+import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.GameSetting;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.security.CodeSource;
-
 import javax.annotation.Nullable;
-
+import lombok.extern.java.Log;
 import org.triplea.game.ApplicationContext;
 import org.triplea.util.Services;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.io.FileUtils;
-import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
-import lombok.extern.java.Log;
-
-/**
- * Provides methods to work with common file locations in a client installation.
- */
+/** Provides methods to work with common file locations in a client installation. */
 @Log
 public final class ClientFileSystemHelper {
   private ClientFileSystemHelper() {}
@@ -29,10 +23,9 @@ public final class ClientFileSystemHelper {
   /**
    * Returns top-most, or the root folder for the TripleA installation folder.
    *
-   * @return Folder that is the 'root' of the tripleA binary installation. This folder and
-   *         contents contains the versioned content downloaded and initially installed. This is
-   *         in contrast to the user root folder that is not replaced between installations.
-   *
+   * @return Folder that is the 'root' of the tripleA binary installation. This folder and contents
+   *     contains the versioned content downloaded and initially installed. This is in contrast to
+   *     the user root folder that is not replaced between installations.
    * @throws IllegalStateException If the root folder cannot be located.
    */
   public static File getRootFolder() {
@@ -45,7 +38,8 @@ public final class ClientFileSystemHelper {
 
   private static File getCodeSourceFolder() throws IOException {
     final ApplicationContext applicationContext = Services.loadAny(ApplicationContext.class);
-    final @Nullable CodeSource codeSource = applicationContext.getMainClass().getProtectionDomain().getCodeSource();
+    final @Nullable CodeSource codeSource =
+        applicationContext.getMainClass().getProtectionDomain().getCodeSource();
     if (codeSource == null) {
       throw new IOException("code source is not available");
     }
@@ -62,38 +56,39 @@ public final class ClientFileSystemHelper {
   }
 
   @VisibleForTesting
-  static File getFolderContainingFileWithName(final String fileName, final File startFolder) throws IOException {
+  static File getFolderContainingFileWithName(final String fileName, final File startFolder)
+      throws IOException {
     return getFolderContainingFileWithName(fileName, startFolder, startFolder);
   }
 
   private static File getFolderContainingFileWithName(
-      final String fileName,
-      final File startFolder,
-      final @Nullable File currentFolder)
+      final String fileName, final File startFolder, final @Nullable File currentFolder)
       throws IOException {
     if (currentFolder == null) {
-      throw new IOException(String.format(
-          "unable to locate file with name '%s' starting from folder '%s'",
-          fileName, startFolder.getAbsolutePath()));
+      throw new IOException(
+          String.format(
+              "unable to locate file with name '%s' starting from folder '%s'",
+              fileName, startFolder.getAbsolutePath()));
     }
 
-    final boolean currentFolderContainsFileWithName = FileUtils.listFiles(currentFolder).stream()
-        .filter(File::isFile)
-        .map(File::getName)
-        .anyMatch(fileName::equals);
+    final boolean currentFolderContainsFileWithName =
+        FileUtils.listFiles(currentFolder).stream()
+            .filter(File::isFile)
+            .map(File::getName)
+            .anyMatch(fileName::equals);
     return currentFolderContainsFileWithName
         ? currentFolder
         : getFolderContainingFileWithName(fileName, startFolder, currentFolder.getParentFile());
   }
 
   /**
-   * TripleA stores two folders, one for user content that survives between game installs,
-   * and a second that contains binaries. This method returns the 'user folder', which contains
-   * maps and save games.
+   * TripleA stores two folders, one for user content that survives between game installs, and a
+   * second that contains binaries. This method returns the 'user folder', which contains maps and
+   * save games.
    *
    * @return Folder where tripleA 'user data' is stored between game installations. This folder
-   *         would contain as some examples: save games, downloaded maps. This location is currently
-   *         not configurable (ideally we would allow this to be set during install perhaps).
+   *     would contain as some examples: save games, downloaded maps. This location is currently not
+   *     configurable (ideally we would allow this to be set during install perhaps).
    */
   public static File getUserRootFolder() {
     final File userHome = new File(SystemProperties.getUserHome());
@@ -102,15 +97,17 @@ public final class ClientFileSystemHelper {
   }
 
   /**
-   * Returns location of the folder containing downloaded TripleA maps. The folder will be created if it does not exist.
+   * Returns location of the folder containing downloaded TripleA maps. The folder will be created
+   * if it does not exist.
    *
-   * @return Folder where maps are downloaded and stored. Default location is relative
-   *         to users home folder and not the engine install folder, this allows it to be
-   *         retained between engine installations. Users can override this location in settings.
+   * @return Folder where maps are downloaded and stored. Default location is relative to users home
+   *     folder and not the engine install folder, this allows it to be retained between engine
+   *     installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
     final File mapsFolder =
-        getUserMapsFolder(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride).toFile();
+        getUserMapsFolder(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride)
+            .toFile();
     if (!mapsFolder.exists()) {
       mapsFolder.mkdirs();
     }

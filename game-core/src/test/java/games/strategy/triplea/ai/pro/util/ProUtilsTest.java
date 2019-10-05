@@ -3,11 +3,10 @@ package games.strategy.triplea.ai.pro.util;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.xml.TestMapGameData;
+import org.junit.jupiter.api.Test;
 
 class ProUtilsTest {
 
@@ -32,5 +31,4 @@ class ProUtilsTest {
     final PlayerId pirates = data.getPlayerList().getPlayerId("Pirates");
     assertTrue(ProUtils.isNeutralPlayer(pirates));
   }
-
 }

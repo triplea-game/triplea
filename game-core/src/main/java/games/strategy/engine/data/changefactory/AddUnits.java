@@ -1,18 +1,15 @@
 package games.strategy.engine.data.changefactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
+import java.util.ArrayList;
+import java.util.Collection;
 
-/**
- * Add units.
- */
-class AddUnits extends Change {
+/** Add units. */
+public class AddUnits extends Change {
   private static final long serialVersionUID = 2694342784633196289L;
 
   private final String name;

@@ -1,8 +1,7 @@
 package games.strategy.triplea.printgenerator;
 
-import java.io.File;
-
 import games.strategy.engine.data.GameData;
+import java.io.File;
 
 class PrintGenerationData {
   private File outDir;

@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-/**
- * A checked exception that indicates an error occurred while parsing a map.
- */
+/** A checked exception that indicates an error occurred while parsing a map. */
 public final class GameParseException extends Exception {
   private static final long serialVersionUID = 4015574053053781872L;
 

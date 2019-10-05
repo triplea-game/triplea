@@ -1,15 +1,14 @@
 package games.strategy.net;
 
+import games.strategy.engine.lobby.PlayerName;
 import java.io.Serializable;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
-
+import java.util.function.Function;
 import javax.annotation.Nullable;
+import org.triplea.http.client.ApiKey;
 
-/**
- * Implementation of {@link IServerMessenger} for a local game server.
- */
+/** Implementation of {@link IServerMessenger} for a local game server. */
 public class LocalNoOpMessenger implements IServerMessenger {
 
   private final INode node;
@@ -27,12 +26,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
 
   @Override
   public void addMessageListener(final IMessageListener listener) {}
-
-  @Override
-  public void addErrorListener(final IMessengerErrorListener listener) {}
-
-  @Override
-  public void removeErrorListener(final IMessengerErrorListener listener) {}
 
   @Override
   public INode getLocalNode() {
@@ -55,11 +48,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
   @Override
   public INode getServerNode() {
     return node;
-  }
-
-  @Override
-  public InetSocketAddress getRemoteServerSocketAddress() {
-    return null;
   }
 
   @Override
@@ -91,7 +79,7 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public void banPlayer(final String ip, final String mac) {}
 
   @Override
-  public @Nullable String getPlayerMac(final String name) {
+  public @Nullable String getPlayerMac(final PlayerName name) {
     return null;
   }
 
@@ -99,4 +87,7 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public boolean isPlayerBanned(final String ip, final String mac) {
     return false;
   }
+
+  @Override
+  public void setApiKeyGenerator(final Function<PlayerName, ApiKey> apiKeyGenerator) {}
 }

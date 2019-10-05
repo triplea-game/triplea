@@ -3,14 +3,11 @@ package org.triplea.game.client.ui.javafx.util;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javafx.fxml.FXMLLoader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * Enum used to build Node instances from FXML files.
- */
+/** Enum used to build Node instances from FXML files. */
 public enum FxmlManager {
   ROOT_CONTAINER("/org/triplea/game/client/ui/javafx/fxml/TripleAMain.fxml"),
 
@@ -24,7 +21,8 @@ public enum FxmlManager {
 
   MAIN_MENU_CONTROLS("/org/triplea/game/client/ui/javafx/fxml/MainMenuControls.fxml");
 
-  private static final String LANG_CLASS_BASENAME = "org.triplea.game.client.ui.javafx.lang.TripleA";
+  private static final String LANG_CLASS_BASENAME =
+      "org.triplea.game.client.ui.javafx.lang.TripleA";
 
   private final String value;
 

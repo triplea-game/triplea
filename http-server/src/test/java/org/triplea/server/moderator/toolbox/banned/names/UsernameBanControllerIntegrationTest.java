@@ -1,51 +1,27 @@
 package org.triplea.server.moderator.toolbox.banned.names;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.HttpInteractionException;
-import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
-import org.triplea.server.http.AbstractDropwizardTest;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
+import org.triplea.server.http.ProtectedEndpointTest;
 
-class UsernameBanControllerIntegrationTest extends AbstractDropwizardTest {
+class UsernameBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUsernameBanClient> {
 
-  private static final ToolboxUsernameBanClient client =
-      AbstractDropwizardTest.newClient(ToolboxUsernameBanClient::newClient);
-
-  private static final ToolboxUsernameBanClient clientWithBadKey =
-      AbstractDropwizardTest.newClientWithInvalidCreds(ToolboxUsernameBanClient::newClient);
-
-  @Test
-  void removeBannedUsername() {
-    client.removeUsernameBan("not nice");
+  UsernameBanControllerIntegrationTest() {
+    super(ToolboxUsernameBanClient::newClient);
   }
 
   @Test
-  void removeBannedUsernameNotAuthorized() {
-    // username ban exists, but because keys are bad we'll get an exception
-    assertThrows(HttpInteractionException.class, () -> clientWithBadKey.removeUsernameBan("bad"));
+  void removeBannedUsername() {
+    verifyEndpointReturningVoid(client -> client.removeUsernameBan("not nice"));
   }
 
   @Test
   void addBannedUsername() {
-    client.addUsernameBan("new bad name");
-  }
-
-  @Test
-  void addBannedUsernameNotAuthorized() {
-    assertThrows(HttpInteractionException.class, () -> clientWithBadKey.addUsernameBan("name to ban"));
+    verifyEndpointReturningVoid(client -> client.addUsernameBan("new bad name"));
   }
 
   @Test
   void getBannedUsernames() {
-    assertThat(client.getUsernameBans(), not(empty()));
-  }
-
-  @Test
-  void getBannedUsernamesNotAuthorized() {
-    assertThrows(HttpInteractionException.class, clientWithBadKey::getUsernameBans);
+    verifyEndpointReturningCollection(ToolboxUsernameBanClient::getUsernameBans);
   }
 }

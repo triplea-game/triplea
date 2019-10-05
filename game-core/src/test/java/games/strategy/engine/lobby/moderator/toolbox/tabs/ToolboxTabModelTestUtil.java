@@ -5,11 +5,9 @@ import static org.hamcrest.core.Is.is;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
 /**
  * Utility class for verifying toolbox tab data. Notably most tabs have table-like views and this
@@ -18,13 +16,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ToolboxTabModelTestUtil {
 
-  protected static final PagingParams PAGING_PARAMS = PagingParams.builder()
-      .rowNumber(0)
-      .pageSize(10)
-      .build();
+  protected static final PagingParams PAGING_PARAMS =
+      PagingParams.builder().rowNumber(0).pageSize(10).build();
 
   /**
-   * Given a set of table data, verifies that the values at a given row match a set of expected values.
+   * Given a set of table data, verifies that the values at a given row match a set of expected
+   * values.
    *
    * @param data The set of table data.
    * @param row The row index, zero based, of the table data to verify.
@@ -41,16 +38,20 @@ public final class ToolboxTabModelTestUtil {
 
     for (int i = 0; i < expectedData.length; i++) {
       assertThat(
-          String.format("Mismatch at column %s, rowData: %s, expectedData: %s",
+          String.format(
+              "Mismatch at column %s, rowData: %s, expectedData: %s",
               i, rowData, Arrays.asList(expectedData)),
-          rowData.get(i), is(expectedData[i]));
+          rowData.get(i),
+          is(expectedData[i]));
     }
   }
 
   /**
-   * Verifies that a table data is 'square', that each row has the same length as a set of given headers.
+   * Verifies that a table data is 'square', that each row has the same length as a set of given
+   * headers.
    */
-  public static void verifyTableDimensions(final List<List<String>> data, final List<String> headers) {
+  public static void verifyTableDimensions(
+      final List<List<String>> data, final List<String> headers) {
     for (int i = 0; i < data.size(); i++) {
       assertThat(
           String.format(

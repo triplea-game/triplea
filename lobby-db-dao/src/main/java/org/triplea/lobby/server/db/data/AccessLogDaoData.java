@@ -1,18 +1,14 @@
 package org.triplea.lobby.server.db.data;
 
 import java.time.Instant;
-
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.lobby.server.db.TimestampMapper;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.triplea.lobby.server.db.TimestampMapper;
 
-/**
- * Return data when selecting lobby access history.
- */
+/** Return data when selecting lobby access history. */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,16 +26,15 @@ public class AccessLogDaoData {
   private String mac;
   private boolean registered;
 
-  /**
-   * Returns a JDBI row mapper used to convert results into an instance of this bean object.
-   */
+  /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
   public static RowMapper<AccessLogDaoData> buildResultMapper() {
-    return (rs, ctx) -> AccessLogDaoData.builder()
-        .accessTime(TimestampMapper.map(rs, ACCESS_TIME_COLUMN))
-        .username(rs.getString(USERNAME_COLUMN))
-        .ip(rs.getString(IP_COLUMN))
-        .mac(rs.getString(MAC_COLUMN))
-        .registered(rs.getBoolean(REGISTERED_COLUMN))
-        .build();
+    return (rs, ctx) ->
+        AccessLogDaoData.builder()
+            .accessTime(TimestampMapper.map(rs, ACCESS_TIME_COLUMN))
+            .username(rs.getString(USERNAME_COLUMN))
+            .ip(rs.getString(IP_COLUMN))
+            .mac(rs.getString(MAC_COLUMN))
+            .registered(rs.getBoolean(REGISTERED_COLUMN))
+            .build();
   }
 }

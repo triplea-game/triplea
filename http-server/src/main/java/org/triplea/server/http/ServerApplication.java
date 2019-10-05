@@ -1,40 +1,50 @@
 package org.triplea.server.http;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.glassfish.jersey.logging.LoggingFeature;
-import org.jdbi.v3.core.Jdbi;
-import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.server.error.reporting.ErrorReportControllerFactory;
-import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
-import org.triplea.server.moderator.toolbox.api.key.ApiKeyControllerFactory;
-import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutMapper;
-import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyMapper;
-import org.triplea.server.moderator.toolbox.api.key.registration.ApiKeyRegistrationControllerFactory;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationControllerFactory;
-import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
-import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
-import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
-import org.triplea.server.moderator.toolbox.banned.users.UserBanControllerFactory;
-import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFactory;
-
+import com.codahale.metrics.MetricRegistry;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-
+import es.moki.ratelimij.dropwizard.RateLimitBundle;
+import es.moki.ratelimitj.inmemory.InMemoryRateLimiterFactory;
 import io.dropwizard.Application;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.CachingAuthenticator;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.jdbi.v3.core.Jdbi;
+import org.triplea.http.client.AuthenticationHeaders;
+import org.triplea.lobby.server.db.JdbiDatabase;
+import org.triplea.lobby.server.db.dao.ApiKeyDao;
+import org.triplea.server.access.ApiKeyAuthenticator;
+import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.access.RoleAuthorizer;
+import org.triplea.server.error.reporting.ErrorReportControllerFactory;
+import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
+import org.triplea.server.lobby.game.ConnectivityControllerFactory;
+import org.triplea.server.lobby.game.hosting.GameHostingControllerFactory;
+import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
+import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
+import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
+import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
+import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
+import org.triplea.server.moderator.toolbox.banned.users.UserBanControllerFactory;
+import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFactory;
+import org.triplea.server.user.account.UserAccountControllerFactory;
 
 /**
- * Main entry-point for launching drop wizard HTTP server.
- * This class is responsible for configuring any Jersey plugins,
- * registering resources (controllers) and injecting those resources
- * with configuration properties from 'AppConfig'.
+ * Main entry-point for launching drop wizard HTTP server. This class is responsible for configuring
+ * any Jersey plugins, registering resources (controllers) and injecting those resources with
+ * configuration properties from 'AppConfig'.
  */
 public class ServerApplication extends Application<AppConfig> {
 
@@ -42,8 +52,8 @@ public class ServerApplication extends Application<AppConfig> {
       new String[] {"server", "configuration-prerelease.yml"};
 
   /**
-   * Main entry-point method, launches the drop-wizard http server.
-   * If no args are passed then will use default values suitable for local development.
+   * Main entry-point method, launches the drop-wizard http server. If no args are passed then will
+   * use default values suitable for local development.
    */
   public static void main(final String[] args) throws Exception {
     final ServerApplication application = new ServerApplication();
@@ -56,14 +66,17 @@ public class ServerApplication extends Application<AppConfig> {
     // This bootstrap will replace ${...} values in YML configuration with environment
     // variable values. Without it, all values in the YML configuration are treated as literals.
     bootstrap.setConfigurationSourceProvider(
-        new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
-            new EnvironmentVariableSubstitutor(false)));
+        new SubstitutingSourceProvider(
+            bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
 
     // From: https://www.dropwizard.io/0.7.1/docs/manual/jdbi.html
-    // By adding the JdbiExceptionsBundle to your application, Dropwizard will automatically unwrap any
-    // thrown SQLException or DBIException instances. This is critical for debugging, since otherwise
+    // By adding the JdbiExceptionsBundle to your application, Dropwizard will automatically unwrap
+    // any
+    // thrown SQLException or DBIException instances. This is critical for debugging, since
+    // otherwise
     // only the common wrapper exception’s stack trace is logged.
     bootstrap.addBundle(new JdbiExceptionsBundle());
+    bootstrap.addBundle(new RateLimitBundle(new InMemoryRateLimiterFactory()));
   }
 
   @Override
@@ -73,44 +86,73 @@ public class ServerApplication extends Application<AppConfig> {
     }
 
     if (configuration.isLogRequestAndResponses()) {
-      environment.jersey().register(
-          new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
-              Level.INFO,
-              LoggingFeature.Verbosity.PAYLOAD_ANY, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+      environment
+          .jersey()
+          .register(
+              new LoggingFeature(
+                  Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
+                  Level.INFO,
+                  LoggingFeature.Verbosity.PAYLOAD_ANY,
+                  LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
     }
 
-    exceptionMappers()
-        .forEach(mapper -> environment.jersey().register(mapper));
+    final MetricRegistry metrics = new MetricRegistry();
+    final Jdbi jdbi = createJdbi(configuration, environment);
 
-    endPointControllers(configuration, environment)
+    enableAuthentication(environment, metrics, jdbi);
+
+    exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
+
+    endPointControllers(configuration, jdbi)
         .forEach(controller -> environment.jersey().register(controller));
   }
 
-  private List<Object> exceptionMappers() {
-    return ImmutableList.of(
-        new IllegalArgumentMapper(),
-        new IncorrectApiKeyMapper(),
-        new ApiKeyLockOutMapper());
+  private static void enableAuthentication(
+      final Environment environment, final MetricRegistry metrics, final Jdbi jdbi) {
+    environment
+        .jersey()
+        .register(
+            new AuthDynamicFeature(
+                new OAuthCredentialAuthFilter.Builder<AuthenticatedUser>()
+                    .setAuthenticator(buildAuthenticator(metrics, jdbi))
+                    .setAuthorizer(new RoleAuthorizer())
+                    .setPrefix(AuthenticationHeaders.KEY_BEARER_PREFIX)
+                    .buildAuthFilter()));
+    environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUser.class));
   }
 
-  private List<Object> endPointControllers(final AppConfig appConfig, final Environment environment) {
-    final Jdbi jdbi = createJdbi(appConfig, environment);
+  private static CachingAuthenticator<String, AuthenticatedUser> buildAuthenticator(
+      final MetricRegistry metrics, final Jdbi jdbi) {
+    return new CachingAuthenticator<>(
+        metrics,
+        new ApiKeyAuthenticator(jdbi.onDemand(ApiKeyDao.class)),
+        CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).maximumSize(10000));
+  }
+
+  private List<Object> exceptionMappers() {
+    return ImmutableList.of(new IllegalArgumentMapper());
+  }
+
+  private List<Object> endPointControllers(final AppConfig appConfig, final Jdbi jdbi) {
     return ImmutableList.of(
         AccessLogControllerFactory.buildController(appConfig, jdbi),
-        ApiKeyControllerFactory.buildController(appConfig, jdbi),
-        ApiKeyRegistrationControllerFactory.buildController(appConfig, jdbi),
-        ApiKeyValidationControllerFactory.buildController(appConfig, jdbi),
-        BadWordControllerFactory.buildController(appConfig, jdbi),
+        BadWordControllerFactory.buildController(jdbi),
+        ConnectivityControllerFactory.buildController(),
+        ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
+        GameHostingControllerFactory.buildController(jdbi),
+        GameListingControllerFactory.buildController(jdbi),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
         UserBanControllerFactory.buildController(appConfig, jdbi),
         ErrorReportControllerFactory.buildController(appConfig, jdbi),
         ModeratorAuditHistoryControllerFactory.buildController(appConfig, jdbi),
-        ModeratorsControllerFactory.buildController(appConfig, jdbi));
+        ModeratorsControllerFactory.buildController(appConfig, jdbi),
+        UserAccountControllerFactory.buildController(jdbi));
   }
 
   private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
     final JdbiFactory factory = new JdbiFactory();
-    final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    final Jdbi jdbi =
+        factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
     JdbiDatabase.registerRowMappers(jdbi);
 
     if (configuration.isLogSqlStatements()) {

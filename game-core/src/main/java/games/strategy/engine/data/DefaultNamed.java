@@ -2,15 +2,12 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.MoreObjects;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Objects;
 
-import com.google.common.base.MoreObjects;
-
-/**
- * Default implementation of {@link Named} for game data components.
- */
+/** Default implementation of {@link Named} for game data components. */
 public class DefaultNamed extends GameDataComponent implements Named {
   private static final long serialVersionUID = -5737716450699952621L;
 

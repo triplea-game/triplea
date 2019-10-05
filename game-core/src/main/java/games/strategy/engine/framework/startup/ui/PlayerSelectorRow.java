@@ -1,5 +1,9 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
+import games.strategy.triplea.Constants;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -9,21 +13,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
-import games.strategy.triplea.Constants;
-
 /**
- * Represents a player selection row worth of data, during initial setup this is a row where a player can choose
- * to play a country, set it to AI, etc.
+ * Represents a player selection row worth of data, during initial setup this is a row where a
+ * player can choose to play a country, set it to AI, etc.
  */
 public class PlayerSelectorRow implements PlayerCountrySelection {
 
@@ -41,10 +39,15 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   private final Collection<String> disableable;
   private final SetupPanel parent;
 
-  PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerId player,
-      final Map<String, String> reloadSelections, final Collection<String> disableable,
-      final Map<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
-      final SetupPanel parent, final GameProperties gameProperties) {
+  PlayerSelectorRow(
+      final List<PlayerSelectorRow> playerRows,
+      final PlayerId player,
+      final Map<String, String> reloadSelections,
+      final Collection<String> disableable,
+      final Map<String, Boolean> playersEnablementListing,
+      final Collection<String> playerAlliances,
+      final SetupPanel parent,
+      final GameProperties gameProperties) {
     this.disableable = disableable;
     this.parent = parent;
     playerName = player.getName();
@@ -52,21 +55,22 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     name = new JLabel(playerName + ":");
 
     enabledCheckBox = new JCheckBox();
-    final ActionListener disablePlayerActionListener = new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (enabledCheckBox.isSelected()) {
-          enabled = true;
-          // the 1st in the list should be human
-          playerTypes.setSelectedItem(PlayerType.HUMAN_PLAYER);
-        } else {
-          enabled = false;
-          // the 2nd in the list should be Weak AI
-          playerTypes.setSelectedItem(PlayerType.WEAK_AI);
-        }
-        setWidgetActivation();
-      }
-    };
+    final ActionListener disablePlayerActionListener =
+        new ActionListener() {
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            if (enabledCheckBox.isSelected()) {
+              enabled = true;
+              // the 1st in the list should be human
+              playerTypes.setSelectedItem(PlayerType.HUMAN_PLAYER);
+            } else {
+              enabled = false;
+              // the 2nd in the list should be Weak AI
+              playerTypes.setSelectedItem(PlayerType.WEAK_AI);
+            }
+            setWidgetActivation();
+          }
+        };
     enabledCheckBox.addActionListener(disablePlayerActionListener);
     enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
     enabledCheckBox.setEnabled(disableable.contains(playerName));
@@ -86,18 +90,26 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     if (!playerAlliances.contains(playerName)) {
       final String alliancesLabelText = playerAlliances.toString();
       alliances = new JButton(alliancesLabelText);
-      alliances.setToolTipText("Set all " + alliancesLabelText + " to " + playerTypes.getSelectedItem().toString());
-      alliances.addActionListener(e -> {
-        final String currentType = playerTypes.getSelectedItem().toString();
-        playerRows.stream()
-            .filter(row -> row.alliances != null && row.alliances.getText().equals(alliancesLabelText))
-            .forEach(row -> row.setPlayerType(currentType));
-      });
+      alliances.setToolTipText(
+          "Set all " + alliancesLabelText + " to " + playerTypes.getSelectedItem().toString());
+      alliances.addActionListener(
+          e -> {
+            final String currentType = playerTypes.getSelectedItem().toString();
+            playerRows.stream()
+                .filter(
+                    row ->
+                        row.alliances != null && row.alliances.getText().equals(alliancesLabelText))
+                .forEach(row -> row.setPlayerType(currentType));
+          });
     }
 
-    incomePercentage = gameProperties.getPlayerProperty(Constants.getIncomePercentageFor(player)).getEditorComponent();
+    incomePercentage =
+        gameProperties
+            .getPlayerProperty(Constants.getIncomePercentageFor(player))
+            .getEditorComponent();
     incomePercentageLabel = new JLabel("%");
-    puIncomeBonus = gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)).getEditorComponent();
+    puIncomeBonus =
+        gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)).getEditorComponent();
     puIncomeBonusLabel = new JLabel("PUs");
 
     setWidgetActivation();
@@ -106,29 +118,125 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   void layout(final int row, final Container container) {
     int gridx = 0;
     if (!disableable.isEmpty()) {
-      container.add(enabledCheckBox, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+      container.add(
+          enabledCheckBox,
+          new GridBagConstraints(
+              gridx++,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 5, 5, 0),
+              0,
+              0));
     }
-    container.add(name, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    container.add(playerTypes, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    container.add(
+        name,
+        new GridBagConstraints(
+            gridx++,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 5, 0),
+            0,
+            0));
+    container.add(
+        playerTypes,
+        new GridBagConstraints(
+            gridx++,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 5, 0),
+            0,
+            0));
     if (alliances != null) {
-      container.add(alliances, new GridBagConstraints(gridx, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+      container.add(
+          alliances,
+          new GridBagConstraints(
+              gridx,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 7, 5, 5),
+              0,
+              0));
     }
     gridx++;
-    container.add(incomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
-    container.add(incomePercentageLabel, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
-    container.add(puIncomeBonus, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
-    container.add(puIncomeBonusLabel, new GridBagConstraints(gridx, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
+    container.add(
+        incomePercentage,
+        new GridBagConstraints(
+            gridx++,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 20, 2, 0),
+            0,
+            0));
+    container.add(
+        incomePercentageLabel,
+        new GridBagConstraints(
+            gridx++,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 5, 5),
+            0,
+            0));
+    container.add(
+        puIncomeBonus,
+        new GridBagConstraints(
+            gridx++,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 20, 2, 0),
+            0,
+            0));
+    container.add(
+        puIncomeBonusLabel,
+        new GridBagConstraints(
+            gridx,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 5, 5),
+            0,
+            0));
   }
 
-  void setResourceModifiersVisble(final boolean isVisible) {
+  void setResourceModifiersVisible(final boolean isVisible) {
     incomePercentage.setVisible(isVisible);
     incomePercentageLabel.setVisible(isVisible);
     puIncomeBonus.setVisible(isVisible);
@@ -176,5 +284,4 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     puIncomeBonus.setEnabled(enabled);
     parent.notifyObservers();
   }
-
 }

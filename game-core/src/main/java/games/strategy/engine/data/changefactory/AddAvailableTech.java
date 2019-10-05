@@ -26,7 +26,8 @@ class AddAvailableTech extends Change {
 
   @Override
   public void perform(final GameData data) {
-    final TechnologyFrontier front = player.getTechnologyFrontierList().getTechnologyFrontier(frontier.getName());
+    final TechnologyFrontier front =
+        player.getTechnologyFrontierList().getTechnologyFrontier(frontier.getName());
     front.addAdvance(tech);
   }
 

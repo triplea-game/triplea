@@ -7,9 +7,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 
-/**
- * Resets the value to the default value.
- */
+/** Resets the value to the default value. */
 class AttachmentPropertyReset extends Change {
   private static final long serialVersionUID = 9208154387325299072L;
 
@@ -27,7 +25,10 @@ class AttachmentPropertyReset extends Change {
     this.property = property;
   }
 
-  AttachmentPropertyReset(final Attachable attachTo, final String attachmentName, final Object oldValue,
+  AttachmentPropertyReset(
+      final Attachable attachTo,
+      final String attachmentName,
+      final Object oldValue,
       final String property) {
     this.attachmentName = attachmentName;
     attachedTo = attachTo;
@@ -48,7 +49,11 @@ class AttachmentPropertyReset extends Change {
 
   @Override
   public String toString() {
-    return "AttachmentPropertyClear attached to:" + attachedTo + " name:" + attachmentName + ", reset old value:"
+    return "AttachmentPropertyClear attached to:"
+        + attachedTo
+        + " name:"
+        + attachmentName
+        + ", reset old value:"
         + oldValue;
   }
 }

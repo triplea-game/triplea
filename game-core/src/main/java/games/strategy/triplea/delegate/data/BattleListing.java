@@ -1,14 +1,13 @@
 package games.strategy.triplea.delegate.data;
 
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 
 /**
  * Sent by the battle delegate to the game player to indicate which battles are left to be fought.

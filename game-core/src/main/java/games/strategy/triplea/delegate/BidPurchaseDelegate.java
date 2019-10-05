@@ -1,9 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -14,10 +10,10 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
+import java.io.Serializable;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * Logic for purchasing units when bid mode is active.
- */
+/** Logic for purchasing units when bid mode is active. */
 public class BidPurchaseDelegate extends PurchaseDelegate {
   private int bid;
   private int spent;
@@ -37,8 +33,10 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (!doesPlayerHaveBid(getData(), player)) {
       return false;
     }
-    return ((player.getProductionFrontier() != null && !player.getProductionFrontier().getRules().isEmpty())
-        || (player.getRepairFrontier() != null && !player.getRepairFrontier().getRules().isEmpty()))
+    return ((player.getProductionFrontier() != null
+                && !player.getProductionFrontier().getRules().isEmpty())
+            || (player.getRepairFrontier() != null
+                && !player.getRepairFrontier().getRules().isEmpty()))
         && canWePurchaseOrRepair();
   }
 
@@ -47,7 +45,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
     // TODO: allow bids to have more than just PUs
     bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), bid);
-    if (player.getProductionFrontier() != null && player.getProductionFrontier().getRules() != null) {
+    if (player.getProductionFrontier() != null
+        && player.getProductionFrontier().getRules() != null) {
       for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
         if (bidCollection.has(rule.getCosts())) {
           return true;
@@ -83,7 +82,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   }
 
   @Override
-  protected String removeFromPlayer(final IntegerMap<Resource> resources, final CompositeChange change) {
+  protected String removeFromPlayer(
+      final IntegerMap<Resource> resources, final CompositeChange change) {
     spent = resources.getInt(super.getData().getResourceList().getResource(Constants.PUS));
     return (bid - spent) + " PU unused";
   }
@@ -95,10 +95,15 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (unspent == 0) {
       return;
     }
-    bridge.getHistoryWriter()
-        .startEvent(bridge.getPlayerId().getName() + " retains " + unspent + " PUS not spent in bid phase");
-    final Change unspentChange = ChangeFactory.changeResourcesChange(bridge.getPlayerId(),
-        super.getData().getResourceList().getResource(Constants.PUS), unspent);
+    bridge
+        .getHistoryWriter()
+        .startEvent(
+            bridge.getPlayerId().getName() + " retains " + unspent + " PUS not spent in bid phase");
+    final Change unspentChange =
+        ChangeFactory.changeResourcesChange(
+            bridge.getPlayerId(),
+            super.getData().getResourceList().getResource(Constants.PUS),
+            unspent);
     bridge.addChange(unspentChange);
     hasBid = false;
   }

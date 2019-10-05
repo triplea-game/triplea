@@ -2,22 +2,18 @@ package games.strategy.net.nio;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Preconditions;
+import games.strategy.io.IoUtils;
+import games.strategy.net.IObjectStreamFactory;
+import games.strategy.net.MessageHeader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
-
-import com.google.common.base.Preconditions;
-
-import games.strategy.io.IoUtils;
-import games.strategy.net.IObjectStreamFactory;
-import games.strategy.net.MessageHeader;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
-/**
- * Encodes data to be written by a writer.
- */
+/** Encodes data to be written by a writer. */
 @Log
 @AllArgsConstructor
 class Encoder {
@@ -30,7 +26,8 @@ class Encoder {
       throw new IllegalArgumentException("No from node");
     }
     try {
-      final byte[] bytes = IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os)));
+      final byte[] bytes =
+          IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os)));
       final SocketWriteData data = new SocketWriteData(bytes, bytes.length);
       writer.enque(data, to);
     } catch (final IOException e) {

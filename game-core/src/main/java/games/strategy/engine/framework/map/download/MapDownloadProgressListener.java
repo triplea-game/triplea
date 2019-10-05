@@ -1,19 +1,15 @@
 package games.strategy.engine.framework.map.download;
 
 import java.util.Optional;
-
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
-
 import org.apache.commons.io.FileUtils;
 import org.triplea.java.OptionalUtils;
 
 /**
  * A listener of map download progress events that updates the associated controls in the UI.
  *
- * <p>
- * Instances of this class are thread safe.
- * </p>
+ * <p>Instances of this class are thread safe.
  */
 final class MapDownloadProgressListener {
   private static final int MIN_PROGRESS_VALUE = 0;
@@ -24,7 +20,8 @@ final class MapDownloadProgressListener {
   private volatile Optional<Long> downloadLength = Optional.empty();
   private final JProgressBar progressBar;
 
-  MapDownloadProgressListener(final DownloadFileDescription download, final JProgressBar progressBar) {
+  MapDownloadProgressListener(
+      final DownloadFileDescription download, final JProgressBar progressBar) {
     this.download = download;
     this.progressBar = progressBar;
 
@@ -41,7 +38,11 @@ final class MapDownloadProgressListener {
   }
 
   private void requestDownloadLength() {
-    new Thread(() -> downloadLength = DownloadConfiguration.downloadLengthReader().getDownloadLength(download.getUrl()))
+    new Thread(
+            () ->
+                downloadLength =
+                    DownloadConfiguration.downloadLengthReader()
+                        .getDownloadLength(download.getUrl()))
         .start();
   }
 
@@ -49,27 +50,34 @@ final class MapDownloadProgressListener {
     updateProgressBarWithCurrentLength("Pending...", 0L);
   }
 
-  private void updateProgressBarWithCurrentLength(final String toolTipText, final long currentLength) {
-    SwingUtilities.invokeLater(() -> {
-      progressBar.setIndeterminate(true);
-      progressBar.setString(FileUtils.byteCountToDisplaySize(currentLength));
-      progressBar.setToolTipText(toolTipText);
-    });
+  private void updateProgressBarWithCurrentLength(
+      final String toolTipText, final long currentLength) {
+    SwingUtilities.invokeLater(
+        () -> {
+          progressBar.setIndeterminate(true);
+          progressBar.setString(FileUtils.byteCountToDisplaySize(currentLength));
+          progressBar.setToolTipText(toolTipText);
+        });
   }
 
-  private void updateProgressBarWithPercentComplete(final String toolTipText, final int percentComplete) {
-    SwingUtilities.invokeLater(() -> {
-      progressBar.setIndeterminate(false);
-      progressBar.setString(null);
-      progressBar.setValue(percentComplete);
-      progressBar.setToolTipText(toolTipText);
-    });
+  private void updateProgressBarWithPercentComplete(
+      final String toolTipText, final int percentComplete) {
+    SwingUtilities.invokeLater(
+        () -> {
+          progressBar.setIndeterminate(false);
+          progressBar.setString(null);
+          progressBar.setValue(percentComplete);
+          progressBar.setToolTipText(toolTipText);
+        });
   }
 
   void downloadUpdated(final long currentLength) {
     final String toolTipText = String.format("Installing to: %s", download.getInstallLocation());
-    OptionalUtils.ifPresentOrElse(downloadLength,
-        totalLength -> updateProgressBarWithPercentComplete(toolTipText, percentComplete(currentLength, totalLength)),
+    OptionalUtils.ifPresentOrElse(
+        downloadLength,
+        totalLength ->
+            updateProgressBarWithPercentComplete(
+                toolTipText, percentComplete(currentLength, totalLength)),
         () -> updateProgressBarWithCurrentLength(toolTipText, currentLength));
   }
 
@@ -79,7 +87,6 @@ final class MapDownloadProgressListener {
 
   void downloadCompleted() {
     updateProgressBarWithPercentComplete(
-        String.format("Installed to: %s", download.getInstallLocation()),
-        MAX_PROGRESS_VALUE);
+        String.format("Installed to: %s", download.getInstallLocation()), MAX_PROGRESS_VALUE);
   }
 }

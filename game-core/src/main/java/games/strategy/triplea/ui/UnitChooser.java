@@ -1,11 +1,19 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitOwner;
+import games.strategy.triplea.util.UnitSeparator;
+import games.strategy.ui.ScrollableTextField;
+import games.strategy.ui.ScrollableTextFieldListener;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,22 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
 import org.triplea.java.collections.IntegerMap;
-
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.data.CasualtyList;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitOwner;
-import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.ui.ScrollableTextField;
-import games.strategy.ui.ScrollableTextFieldListener;
 
 final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
@@ -43,37 +41,52 @@ final class UnitChooser extends JPanel {
   private JButton selectNoneButton;
   private final UiContext uiContext;
   private final Predicate<Collection<Unit>> match;
-  private final ScrollableTextFieldListener textFieldListener = new ScrollableTextFieldListener() {
-    @Override
-    public void changedValue(final ScrollableTextField field) {
-      if (match != null) {
-        checkMatches();
-      } else {
-        updateLeft();
-      }
-    }
-  };
+  private final ScrollableTextFieldListener textFieldListener =
+      new ScrollableTextFieldListener() {
+        @Override
+        public void changedValue(final ScrollableTextField field) {
+          if (match != null) {
+            checkMatches();
+          } else {
+            updateLeft();
+          }
+        }
+      };
 
-  UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean allowTwoHit, final UiContext uiContext) {
+  UnitChooser(
+      final Collection<Unit> units,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean allowTwoHit,
+      final UiContext uiContext) {
     this(units, Collections.emptyList(), dependent, allowTwoHit, uiContext);
   }
 
-  private UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final boolean allowTwoHit, final UiContext uiContext) {
+  private UnitChooser(
+      final Collection<Unit> units,
+      final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean allowTwoHit,
+      final UiContext uiContext) {
     this(units, defaultSelections, dependent, false, false, allowTwoHit, uiContext);
   }
 
-  private UnitChooser(final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits,
-      final UiContext uiContext, final Predicate<Collection<Unit>> match) {
+  private UnitChooser(
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean allowMultipleHits,
+      final UiContext uiContext,
+      final Predicate<Collection<Unit>> match) {
     dependents = dependent;
     this.allowMultipleHits = allowMultipleHits;
     this.uiContext = uiContext;
     this.match = match;
   }
 
-  UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits, final UiContext uiContext) {
+  UnitChooser(
+      final Collection<Unit> units,
+      final CasualtyList defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean allowMultipleHits,
+      final UiContext uiContext) {
     this(dependent, allowMultipleHits, uiContext, null);
     final List<Unit> combinedList = defaultSelections.getDamaged();
     // TODO: this adds it to the default selections list, is this intended?
@@ -82,26 +95,34 @@ final class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final boolean allowMultipleHits, final UiContext uiContext) {
+  UnitChooser(
+      final Collection<Unit> units,
+      final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean categorizeMovement,
+      final boolean categorizeTransportCost,
+      final boolean allowMultipleHits,
+      final UiContext uiContext) {
     this(dependent, allowMultipleHits, uiContext, null);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
 
-  UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final boolean allowMultipleHits,
-      final UiContext uiContext, final Predicate<Collection<Unit>> match) {
+  UnitChooser(
+      final Collection<Unit> units,
+      final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean categorizeMovement,
+      final boolean categorizeTransportCost,
+      final boolean allowMultipleHits,
+      final UiContext uiContext,
+      final Predicate<Collection<Unit>> match) {
     this(dependent, allowMultipleHits, uiContext, match);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
 
-  /**
-   * Set the maximum number of units that we can choose.
-   */
+  /** Set the maximum number of units that we can choose. */
   void setMax(final int max) {
     total = max;
     textFieldListener.changedValue(null);
@@ -169,20 +190,26 @@ final class UnitChooser extends JPanel {
     return selected;
   }
 
-  private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement, final boolean categorizeTransportCost,
+  private void createEntries(
+      final Collection<Unit> units,
+      final Map<Unit, Collection<Unit>> dependent,
+      final boolean categorizeMovement,
+      final boolean categorizeTransportCost,
       final Collection<Unit> defaultSelections) {
     final Collection<UnitCategory> categories =
         UnitSeparator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
     final Collection<UnitCategory> defaultSelectionsCategorized =
-        UnitSeparator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
-    final IntegerMap<UnitCategory> defaultValues = newDefaultSelectionsMap(defaultSelectionsCategorized);
+        UnitSeparator.categorize(
+            defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+    final IntegerMap<UnitCategory> defaultValues =
+        newDefaultSelectionsMap(defaultSelectionsCategorized);
     for (final UnitCategory category : categories) {
       addCategory(category, defaultValues.getInt(category));
     }
   }
 
-  private static IntegerMap<UnitCategory> newDefaultSelectionsMap(final Collection<UnitCategory> categories) {
+  private static IntegerMap<UnitCategory> newDefaultSelectionsMap(
+      final Collection<UnitCategory> categories) {
     final IntegerMap<UnitCategory> defaultValues = new IntegerMap<>();
     for (final UnitCategory category : categories) {
       final int defaultValue = category.getUnits().size();
@@ -192,8 +219,9 @@ final class UnitChooser extends JPanel {
   }
 
   private void addCategory(final UnitCategory category, final int defaultValue) {
-    final ChooserEntry entry = new ChooserEntry(category, total, textFieldListener, allowMultipleHits,
-        defaultValue, uiContext);
+    final ChooserEntry entry =
+        new ChooserEntry(
+            category, total, textFieldListener, allowMultipleHits, defaultValue, uiContext);
     entries.add(entry);
   }
 
@@ -210,8 +238,20 @@ final class UnitChooser extends JPanel {
     selectNoneButton.setPreferredSize(buttonSize);
     autoSelectButton = new JButton("All");
     autoSelectButton.setPreferredSize(buttonSize);
-    add(title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        nullInsets, 0, 0));
+    add(
+        title,
+        new GridBagConstraints(
+            0,
+            0,
+            7,
+            1,
+            0,
+            0.5,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            nullInsets,
+            0,
+            0));
     selectNoneButton.addActionListener(e -> selectNone());
     autoSelectButton.addActionListener(e -> autoSelect());
     int rowIndex = 1;
@@ -219,11 +259,35 @@ final class UnitChooser extends JPanel {
       entry.createComponents(this, rowIndex);
       rowIndex++;
     }
-    add(autoSelectButton, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, nullInsets, 0, 0));
+    add(
+        autoSelectButton,
+        new GridBagConstraints(
+            0,
+            rowIndex,
+            7,
+            1,
+            0,
+            0.5,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            nullInsets,
+            0,
+            0));
     rowIndex++;
-    add(leftToSelect, new GridBagConstraints(0, rowIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    add(
+        leftToSelect,
+        new GridBagConstraints(
+            0,
+            rowIndex,
+            5,
+            2,
+            0,
+            0.5,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            nullInsets,
+            0,
+            0));
     if (match != null) {
       autoSelectButton.setVisible(false);
       selectNoneButton.setVisible(false);
@@ -236,8 +300,8 @@ final class UnitChooser extends JPanel {
   }
 
   /**
-   * get the units selected.
-   * If units are two hit enabled, returns those with two hits (ie: those killed).
+   * get the units selected. If units are two hit enabled, returns those with two hits (ie: those
+   * killed).
    */
   List<Unit> getSelected(final boolean selectDependents) {
     final List<Unit> selectedUnits = new ArrayList<>();
@@ -247,18 +311,18 @@ final class UnitChooser extends JPanel {
     return selectedUnits;
   }
 
-  /**
-   * Only applicable if this dialog was constructed using multiple hit points.
-   */
+  /** Only applicable if this dialog was constructed using multiple hit points. */
   List<Unit> getSelectedDamagedMultipleHitPointUnits() {
     final List<Unit> selectedUnits = new ArrayList<>();
     for (final ChooserEntry chooserEntry : entries) {
       if (chooserEntry.hasMultipleHitPoints()) {
         // there may be some units being given multiple hits, while others get a single or no hits
         for (int i = 0; i < chooserEntry.size() - 1; i++) {
-          // here we are counting on the fact that unit category stores the units in a list, so the order is the same
+          // here we are counting on the fact that unit category stores the units in a list, so the
+          // order is the same
           // every time we access it.
-          // this means that in the loop we may select the first 2 units in the list to receive 1 hit, then select the
+          // this means that in the loop we may select the first 2 units in the list to receive 1
+          // hit, then select the
           // first unit the list to receive 1 more hit
           addToCollection(selectedUnits, chooserEntry, chooserEntry.getHits(i), false);
         }
@@ -294,21 +358,27 @@ final class UnitChooser extends JPanel {
     }
   }
 
-  private void addToCollection(final Collection<Unit> addTo, final ChooserEntry entry, final int quantity,
+  private void addToCollection(
+      final Collection<Unit> addTo,
+      final ChooserEntry entry,
+      final int quantity,
       final boolean addDependents) {
     final Collection<Unit> possible = entry.getCategory().getUnits();
     if (possible.size() < quantity) {
       throw new IllegalStateException("Not enough units");
     }
-    possible.stream().limit(quantity).forEach(current -> {
-      addTo.add(current);
-      if (addDependents) {
-        final Collection<Unit> dependents = this.dependents.get(current);
-        if (dependents != null) {
-          addTo.addAll(dependents);
-        }
-      }
-    });
+    possible.stream()
+        .limit(quantity)
+        .forEach(
+            current -> {
+              addTo.add(current);
+              if (addDependents) {
+                final Collection<Unit> dependents = this.dependents.get(current);
+                if (dependents != null) {
+                  addTo.addAll(dependents);
+                }
+              }
+            });
   }
 
   public void addChangeListener(final ScrollableTextFieldListener listener) {
@@ -327,13 +397,20 @@ final class UnitChooser extends JPanel {
     private int leftToSelect;
     private final UiContext uiContext;
 
-    ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,
-        final boolean allowTwoHit, final int defaultValue, final UiContext uiContext) {
+    ChooserEntry(
+        final UnitCategory category,
+        final int leftToSelect,
+        final ScrollableTextFieldListener listener,
+        final boolean allowTwoHit,
+        final int defaultValue,
+        final UiContext uiContext) {
       hitTextFieldListener = listener;
       this.category = category;
       this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
       hasMultipleHits =
-          allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
+          allowTwoHit
+              && category.getHitPoints() > 1
+              && category.getDamaged() < category.getHitPoints() - 1;
       hitTexts = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
       defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
       final int numUnits = category.getUnits().size();
@@ -349,32 +426,92 @@ final class UnitChooser extends JPanel {
 
     void createComponents(final JPanel panel, final int rowIndex) {
       int gridx = 0;
-      for (int i =
-          0; i < (hasMultipleHits ? Math.max(1, category.getHitPoints() - category.getDamaged()) : 1); i++) {
+      for (int i = 0;
+          i < (hasMultipleHits ? Math.max(1, category.getHitPoints() - category.getDamaged()) : 1);
+          i++) {
         final ScrollableTextField scroll = new ScrollableTextField(0, category.getUnits().size());
         hitTexts.add(scroll);
         scroll.setValue(defaultHits.get(i));
         scroll.addChangeListener(hitTextFieldListener);
         final JLabel label = new JLabel("x" + category.getUnits().size());
         hitLabel.add(label);
-        panel.add(new UnitChooserEntryIcon(i > 0, uiContext), new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0,
-            GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, (i == 0 ? 0 : 8), 0, 0), 0, 0));
+        panel.add(
+            new UnitChooserEntryIcon(i > 0, uiContext),
+            new GridBagConstraints(
+                gridx++,
+                rowIndex,
+                1,
+                1,
+                0,
+                0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.HORIZONTAL,
+                new Insets(0, (i == 0 ? 0 : 8), 0, 0),
+                0,
+                0));
         if (i == 0) {
-          if (category.getMovement() != -1) {
-            panel.add(new JLabel("mvt " + category.getMovement()), new GridBagConstraints(gridx, rowIndex, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
+          if (category.getMovement().compareTo(new BigDecimal(-1)) != 0) {
+            panel.add(
+                new JLabel("mvt " + category.getMovement()),
+                new GridBagConstraints(
+                    gridx,
+                    rowIndex,
+                    1,
+                    1,
+                    0,
+                    0,
+                    GridBagConstraints.WEST,
+                    GridBagConstraints.HORIZONTAL,
+                    new Insets(0, 4, 0, 4),
+                    0,
+                    0));
           }
           if (category.getTransportCost() != -1) {
-            panel.add(new JLabel("cst " + category.getTransportCost()),
-                new GridBagConstraints(gridx, rowIndex, 1, 1, 0,
-                    0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
+            panel.add(
+                new JLabel("cst " + category.getTransportCost()),
+                new GridBagConstraints(
+                    gridx,
+                    rowIndex,
+                    1,
+                    1,
+                    0,
+                    0,
+                    GridBagConstraints.WEST,
+                    GridBagConstraints.HORIZONTAL,
+                    new Insets(0, 4, 0, 4),
+                    0,
+                    0));
           }
           gridx++;
         }
-        panel.add(label, new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-        panel.add(scroll, new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
+        panel.add(
+            label,
+            new GridBagConstraints(
+                gridx++,
+                rowIndex,
+                1,
+                1,
+                0,
+                0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.HORIZONTAL,
+                nullInsets,
+                0,
+                0));
+        panel.add(
+            scroll,
+            new GridBagConstraints(
+                gridx++,
+                rowIndex,
+                1,
+                1,
+                0,
+                0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.HORIZONTAL,
+                new Insets(0, 4, 0, 0),
+                0,
+                0));
         scroll.addChangeListener(field -> updateLeftToSelect());
       }
       updateLeftToSelect();
@@ -465,23 +602,30 @@ final class UnitChooser extends JPanel {
       UnitChooserEntryIcon(final boolean forceDamaged, final UiContext uiContext) {
         this.forceDamaged = forceDamaged;
         this.uiContext = uiContext;
-        MapUnitTooltipManager.setUnitTooltip(this, category.getType(), category.getOwner(),
-            category.getUnits().size());
+        MapUnitTooltipManager.setUnitTooltip(
+            this, category.getType(), category.getOwner(), category.getUnits().size());
       }
 
       @Override
       public void paint(final Graphics g) {
         super.paint(g);
         final Optional<Image> image =
-            uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
-                forceDamaged || category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+            uiContext
+                .getUnitImageFactory()
+                .getImage(
+                    category.getType(),
+                    category.getOwner(),
+                    forceDamaged || category.hasDamageOrBombingUnitDamage(),
+                    category.getDisabled());
         image.ifPresent(image1 -> g.drawImage(image1, 0, 0, this));
 
         int index = 1;
         for (final UnitOwner holder : category.getDependents()) {
           final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
           final Optional<Image> unitImg =
-              uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), false, false);
+              uiContext
+                  .getUnitImageFactory()
+                  .getImage(holder.getType(), holder.getOwner(), false, false);
           unitImg.ifPresent(image1 -> g.drawImage(image1, x, 0, this));
           index++;
         }
@@ -494,7 +638,9 @@ final class UnitChooser extends JPanel {
 
       @Override
       public Dimension getPreferredSize() {
-        final int width = uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + category.getDependents().size());
+        final int width =
+            uiContext.getUnitImageFactory().getUnitImageWidth()
+                * (1 + category.getDependents().size());
         final int height = uiContext.getUnitImageFactory().getUnitImageHeight();
         return new Dimension(width, height);
       }

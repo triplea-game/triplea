@@ -1,267 +1,159 @@
 package games.strategy.engine.chat;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-
-import org.triplea.java.Interruptibles;
-import org.triplea.util.Tuple;
-
-import games.strategy.engine.chat.IChatController.Tag;
+import com.google.common.collect.EvictingQueue;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * chat logic.
  *
- * <p>
- * A chat can be bound to multiple chat panels.
- * </p>
+ * <p>A chat can be bound to multiple chat panels.
  */
-public class Chat {
-  private static final String TAG_MODERATOR = "[Mod]";
+public class Chat implements ChatClient {
+
+  private final ChatTransmitter chatTransmitter;
 
   private final List<IChatListener> listeners = new CopyOnWriteArrayList<>();
-  private final Messengers messengers;
-  private final String chatChannelName;
-  private final String chatName;
-  private final SentMessagesHistory sentMessages;
-  private final long chatInitVersion;
-  // mutex used for access synchronization to nodes
-  // TODO: check if this mutex is used for something else as well
-  private final Object mutexNodes = new Object();
-  private final List<INode> nodes;
-  private final CountDownLatch latch = new CountDownLatch(1);
-  private final List<ChatMessage> chatHistory = new ArrayList<>();
-  private final StatusManager statusManager;
+
+  @Getter(AccessLevel.PACKAGE)
+  private final SentMessagesHistory sentMessagesHistory;
+
+  private final Map<ChatParticipant, String> chatters;
+
+  @Getter
+  private final Collection<ChatMessage> chatHistory =
+      Collections.synchronizedCollection(EvictingQueue.create(1000));
+
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
-  private final Map<INode, Set<String>> notesMap = new HashMap<>();
   private final ChatSoundProfile chatSoundProfile;
-  private final List<INode> playersThatLeftLast10 = new ArrayList<>();
-  private final IChatChannel chatChannelSubscriber = new IChatChannel() {
-    private void assertMessageFromServer() {
-      final INode senderNode = MessageContext.getSender();
-      final INode serverNode = messengers.getServerNode();
-      // this will happen if the message is queued
-      // but to queue a message, we must first test where it came from
-      // so it is safe in this case to return ok
-      if (senderNode == null) {
-        return;
-      }
-      if (!senderNode.equals(serverNode)) {
-        throw new IllegalStateException("The node:" + senderNode + " sent a message as the server!");
-      }
-    }
+  @Getter private final PlayerName localPlayerName;
+  private final Collection<BiConsumer<PlayerName, String>> statusUpdateListeners =
+      new ArrayList<>();
 
-    @Override
-    public void chatOccured(final String message) {
-      final INode from = MessageContext.getSender();
-      if (isIgnored(from)) {
-        return;
-      }
-      synchronized (mutexNodes) {
-        chatHistory.add(new ChatMessage(message, from.getName(), false));
-        for (final IChatListener listener : listeners) {
-          listener.addMessage(message, from.getName(), false);
-        }
-        // limit the number of messages in our history.
-        while (chatHistory.size() > 1000) {
-          chatHistory.remove(0);
-        }
-      }
-    }
-
-    @Override
-    public void meMessageOccured(final String message) {
-      final INode from = MessageContext.getSender();
-      if (isIgnored(from)) {
-        return;
-      }
-      synchronized (mutexNodes) {
-        chatHistory.add(new ChatMessage(message, from.getName(), true));
-        for (final IChatListener listener : listeners) {
-          listener.addMessage(message, from.getName(), true);
-        }
-      }
-    }
-
-    @Override
-    public void speakerAdded(final INode node, final Tag tag, final long version) {
-      assertMessageFromServer();
-      // Ignore first speaker, it's ourselves.
-      if (version == 1) {
-        return;
-      }
-      Interruptibles.await(latch);
-      if (version > chatInitVersion) {
-        synchronized (mutexNodes) {
-          nodes.add(node);
-          addToNotesMap(node, tag);
-          updateConnections();
-        }
-        for (final IChatListener listener : listeners) {
-          listener.addStatusMessage(node.getName() + " has joined");
-          if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
-            ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
-          }
-        }
-      }
-    }
-
-    @Override
-    public void speakerRemoved(final INode node, final long version) {
-      assertMessageFromServer();
-      Interruptibles.await(latch);
-      if (version > chatInitVersion) {
-        synchronized (mutexNodes) {
-          nodes.remove(node);
-          notesMap.remove(node);
-          updateConnections();
-        }
-        for (final IChatListener listener : listeners) {
-          listener.addStatusMessage(node.getName() + " has left");
-        }
-        playersThatLeftLast10.add(node);
-        if (playersThatLeftLast10.size() > 10) {
-          playersThatLeftLast10.remove(0);
-        }
-      }
-    }
-
-    @Override
-    public void speakerTagUpdated(final INode node, final Tag tag) {
-      synchronized (mutexNodes) {
-        notesMap.remove(node);
-        addToNotesMap(node, tag);
-        updateConnections();
-      }
-    }
-
-    @Override
-    public void slapOccured(final String to) {
-      final INode from = MessageContext.getSender();
-      if (isIgnored(from)) {
-        return;
-      }
-      synchronized (mutexNodes) {
-        if (to.equals(messengers.getLocalNode().getName())) {
-          handleSlap("You were slapped by " + from.getName(), from);
-        } else if (from.equals(messengers.getLocalNode())) {
-          handleSlap("You just slapped " + to, from);
-        }
-      }
-    }
-
-    private void handleSlap(final String message, final INode from) {
-      for (final IChatListener listener : listeners) {
-        chatHistory.add(new ChatMessage(message, from.getName(), false));
-        listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
-      }
-    }
-
-    @Override
-    public void ping() {}
-  };
-
-  /**
-   * A profile defines the sounds to use for various chat events.
-   */
+  /** A profile defines the sounds to use for various chat events. */
   public enum ChatSoundProfile {
-    LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
+    LOBBY_CHATROOM,
+    GAME_CHATROOM,
+    NO_SOUND
   }
 
-  public Chat(final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
+  public Chat(
+      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
+    this.localPlayerName = messengers.getLocalNode().getPlayerName();
+    chatTransmitter = new JavaSocketChatTransmitter(this, chatName, messengers);
     this.chatSoundProfile = chatSoundProfile;
-    this.messengers = messengers;
-    statusManager = new StatusManager(messengers);
-    chatChannelName = ChatController.getChatChannelName(chatName);
-    this.chatName = chatName;
-    sentMessages = new SentMessagesHistory();
-
-    /*
-     * The order of events is significant.
-     *
-     * 1. Register our channel listener. Once the channel is registered, we are guaranteed that
-     * when we receive the response from our init message, our channel subscriber has been added,
-     * and will see any messages broadcasted by the server.
-     *
-     * 2. Call the init message on the server remote. Any add or join messages sent from the server
-     * will wait until we receive the init return value.
-     *
-     * 3. When we receive the init message response, initialize our state and release the latch
-     * so all pending messages will get processed. Messages may be ignored if the server version is incorrect.
-     * This all seems a lot more involved than it needs to be.
-     */
-
-    final IChatController controller = messengers.getRemoteChatController(chatName);
-    messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
-    final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
-    final Map<INode, Tag> chatters = init.getFirst();
-    nodes = new ArrayList<>(chatters.keySet());
-    chatInitVersion = init.getSecond();
-    latch.countDown();
-    assignNodeTags(chatters);
+    sentMessagesHistory = new SentMessagesHistory();
+    chatters = Optional.ofNullable(chatTransmitter.connect()).orElseGet(HashMap::new);
     updateConnections();
   }
 
   private void updateConnections() {
-    synchronized (mutexNodes) {
-      if (nodes == null) {
-        return;
-      }
-      final List<INode> playerNames = new ArrayList<>(nodes);
-      Collections.sort(playerNames);
-      for (final IChatListener listener : listeners) {
-        listener.updatePlayerList(playerNames);
-      }
+    final List<ChatParticipant> playerNames =
+        chatters.keySet().stream()
+            .sorted(Comparator.comparing(c -> c.getPlayerName().getValue()))
+            .collect(Collectors.toList());
+
+    for (final IChatListener listener : listeners) {
+      listener.updatePlayerList(playerNames);
     }
   }
 
-  private void addToNotesMap(final INode node, final Tag tag) {
-    if (tag == Tag.NONE) {
+  @Override
+  public void messageReceived(final String message) {
+    final PlayerName from = MessageContext.getSender().getPlayerName();
+    if (isIgnored(from)) {
       return;
     }
-    final LinkedHashSet<String> current = getTagText(tag);
-    notesMap.put(node, current);
+    chatHistory.add(new ChatMessage(message, from));
+    for (final IChatListener listener : listeners) {
+      listener.addMessage(message, from);
+    }
   }
 
-  private static LinkedHashSet<String> getTagText(final Tag tag) {
-    if (tag == Tag.NONE) {
-      return null;
+  @Override
+  public void participantAdded(final ChatParticipant chatParticipant) {
+    if (chatters == null) {
+      return;
     }
-    final LinkedHashSet<String> tagText = new LinkedHashSet<>();
-    if (tag == Tag.MODERATOR) {
-      tagText.add(TAG_MODERATOR);
+    chatters.put(chatParticipant, "");
+    updateConnections();
+    for (final IChatListener listener : listeners) {
+      listener.addStatusMessage(chatParticipant.getPlayerName() + " has joined");
+      if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
+        ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
+      }
     }
-    // add more here....
-    return tagText;
   }
 
-  String getNotesForNode(final INode node) {
-    final Set<String> notes = notesMap.get(node);
-    if (notes == null) {
-      return null;
-    }
-    final StringBuilder sb = new StringBuilder();
-    for (final String note : notes) {
-      sb.append(" ");
-      sb.append(note);
-    }
-    return sb.toString();
+  @Override
+  public void participantRemoved(final PlayerName playerName) {
+    chatters.keySet().stream()
+        .filter(n -> n.getPlayerName().equals(playerName))
+        .findAny()
+        .ifPresent(
+            node -> {
+              chatters.remove(node);
+              updateConnections();
+              for (final IChatListener listener : listeners) {
+                listener.addStatusMessage(node.getPlayerName() + " has left");
+              }
+            });
   }
 
-  SentMessagesHistory getSentMessagesHistory() {
-    return sentMessages;
+  @Override
+  public void slappedBy(final PlayerName from) {
+    final String message = "You were slapped by " + from;
+    for (final IChatListener listener : listeners) {
+      chatHistory.add(new ChatMessage(message, from));
+      listener.addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
+    }
+  }
+
+  @Override
+  public void eventMessage(final String eventMessage) {
+    for (final IChatListener listener : listeners) {
+      listener.addStatusMessage(eventMessage);
+    }
+  }
+
+  @Override
+  public void statusUpdated(final PlayerName playerName, final String status) {
+    chatters.keySet().stream()
+        .filter(n -> n.getPlayerName().equals(playerName))
+        .findAny()
+        .ifPresent(
+            node -> {
+              chatters.put(node, status);
+              statusUpdateListeners.forEach(l -> l.accept(playerName, status));
+            });
+  }
+
+  void updateStatus(final String status) {
+    chatTransmitter.updateStatus(status);
+  }
+
+  String getStatus(final PlayerName playerName) {
+    return chatters.entrySet().stream()
+        .filter(n -> n.getKey().getPlayerName().equals(playerName))
+        .findAny()
+        .map(Map.Entry::getValue)
+        .orElse("");
   }
 
   void addChatListener(final IChatListener listener) {
@@ -269,94 +161,47 @@ public class Chat {
     updateConnections();
   }
 
-  StatusManager getStatusManager() {
-    return statusManager;
+  void addStatusUpdateListener(final BiConsumer<PlayerName, String> statusUpdateListener) {
+    statusUpdateListeners.add(statusUpdateListener);
   }
 
   void removeChatListener(final IChatListener listener) {
     listeners.remove(listener);
   }
 
-  Object getMutex() {
-    return mutexNodes;
+  void removeStatusUpdateListener(final BiConsumer<PlayerName, String> statusUpdateListener) {
+    statusUpdateListeners.remove(statusUpdateListener);
   }
 
-  /**
-   * Call only when mutex for node is locked.
-   *
-   * @param chatters map from node to tag
-   */
-  private void assignNodeTags(final Map<INode, Tag> chatters) {
-    for (final Map.Entry<INode, Tag> entry : chatters.entrySet()) {
-      addToNotesMap(entry.getKey(), entry.getValue());
-    }
-  }
-
-  /**
-   * Stop receiving events from the messenger.
-   */
+  /** Stop receiving events from the messenger. */
   public void shutdown() {
-    messengers.unregisterChannelSubscriber(chatChannelSubscriber,
-        new RemoteName(chatChannelName, IChatChannel.class));
-    if (messengers.isConnected()) {
-      final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(chatName);
-      final IChatController controller =
-          (IChatController) messengers.getRemote(chatControllerName);
-      controller.leaveChat();
-    }
+    chatTransmitter.disconnect();
   }
 
-  void sendSlap(final String playerName) {
-    final IChatChannel remote = (IChatChannel) messengers.getChannelBroadcaster(
-        new RemoteName(chatChannelName, IChatChannel.class));
-    remote.slapOccured(playerName);
+  void sendSlap(final PlayerName playerName) {
+    chatTransmitter.slap(playerName);
   }
 
-  public void sendMessage(final String message, final boolean meMessage) {
-    final IChatChannel remote = (IChatChannel) messengers.getChannelBroadcaster(
-        new RemoteName(chatChannelName, IChatChannel.class));
-    if (meMessage) {
-      remote.meMessageOccured(message);
-    } else {
-      remote.chatOccured(message);
-    }
-    sentMessages.append(message);
+  public void sendMessage(final String message) {
+    chatTransmitter.sendMessage(message);
+    sentMessagesHistory.append(message);
   }
 
-  void setIgnored(final INode node, final boolean isIgnored) {
+  void setIgnored(final PlayerName playerName, final boolean isIgnored) {
     if (isIgnored) {
-      ignoreList.add(node.getName());
+      ignoreList.add(playerName);
     } else {
-      ignoreList.remove(node.getName());
+      ignoreList.remove(playerName);
     }
   }
 
-  boolean isIgnored(final INode node) {
-    return ignoreList.shouldIgnore(node.getName());
+  boolean isIgnored(final PlayerName playerName) {
+    return ignoreList.shouldIgnore(playerName);
   }
 
-  public INode getLocalNode() {
-    return messengers.getLocalNode();
-  }
-
-  public INode getServerNode() {
-    return messengers.getServerNode();
-  }
-
-  public List<INode> getPlayersThatLeft_Last10() {
-    return new ArrayList<>(playersThatLeftLast10);
-  }
-
-  public List<INode> getOnlinePlayers() {
-    return new ArrayList<>(nodes);
-  }
-
-  /**
-   * While using this, you should synchronize on getMutex().
-   *
-   * @return the messages that have occurred so far.
-   */
-  List<ChatMessage> getChatHistory() {
-    return chatHistory;
+  Collection<PlayerName> getOnlinePlayers() {
+    return chatters.keySet().stream()
+        .map(ChatParticipant::getPlayerName)
+        .collect(Collectors.toSet());
   }
 }

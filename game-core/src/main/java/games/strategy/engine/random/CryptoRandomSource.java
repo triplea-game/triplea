@@ -1,20 +1,18 @@
 package games.strategy.engine.random;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-
 import com.google.common.annotations.VisibleForTesting;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.vault.Vault;
 import games.strategy.engine.vault.VaultId;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 /**
- * A random source that generates numbers using a secure algorithm shared between two players.
- * Code originally contributed by Ben Giddings.
+ * A random source that generates numbers using a secure algorithm shared between two players. Code
+ * originally contributed by Ben Giddings.
  */
 public class CryptoRandomSource implements IRandomSource {
   private final IRandomSource plainRandom = new PlainRandomSource();
@@ -29,12 +27,13 @@ public class CryptoRandomSource implements IRandomSource {
   }
 
   /**
-   * Converts an {@code int} array to a {@code byte} array. Each {@code int} will be encoded in little endian order in
-   * the {@code byte} array.
+   * Converts an {@code int} array to a {@code byte} array. Each {@code int} will be encoded in
+   * little endian order in the {@code byte} array.
    */
   @VisibleForTesting
   static byte[] intsToBytes(final int[] ints) {
-    final ByteBuffer byteBuffer = ByteBuffer.allocate(ints.length * 4).order(ByteOrder.LITTLE_ENDIAN);
+    final ByteBuffer byteBuffer =
+        ByteBuffer.allocate(ints.length * 4).order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.asIntBuffer().put(ints);
     final byte[] bytes = new byte[byteBuffer.remaining()];
     byteBuffer.get(bytes);
@@ -42,8 +41,8 @@ public class CryptoRandomSource implements IRandomSource {
   }
 
   /**
-   * Converts a {@code byte} array to an {@code int} array. The {@code byte} array is assumed to contain {@code int}s
-   * encoded in little endian order.
+   * Converts a {@code byte} array to an {@code int} array. The {@code byte} array is assumed to
+   * contain {@code int}s encoded in little endian order.
    */
   static int[] bytesToInts(final byte[] bytes) {
     final ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length).order(ByteOrder.LITTLE_ENDIAN);
@@ -56,14 +55,13 @@ public class CryptoRandomSource implements IRandomSource {
   }
 
   /**
-   * Mixes the values from the specified sources ensuring that all of the mixed values are in the range [0, max).
+   * Mixes the values from the specified sources ensuring that all of the mixed values are in the
+   * range [0, max).
    *
    * @param val1 The first source of values.
    * @param val2 The second source of values.
    * @param max The maximum mixed value, exclusive.
-   *
    * @return The mixed values.
-   *
    * @throws IllegalArgumentException If {@code val1} and {@code val2} have different lengths.
    */
   static int[] mix(final int[] val1, final int[] val2, final int max) {
@@ -79,16 +77,15 @@ public class CryptoRandomSource implements IRandomSource {
   }
 
   /**
-   * All delegates should use random data that comes from both players so that neither player cheats.
+   * All delegates should use random data that comes from both players so that neither player
+   * cheats.
    */
   @Override
   public int getRandom(final int max, final String annotation) {
     return getRandom(max, 1, annotation)[0];
   }
 
-  /**
-   * Delegates should not use random data that comes from any other source.
-   */
+  /** Delegates should not use random data that comes from any other source. */
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) {
     if (count <= 0) {
@@ -101,7 +98,8 @@ public class CryptoRandomSource implements IRandomSource {
     final VaultId localId = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
     final IRemoteRandom remote =
-        (IRemoteRandom) game.getMessengers().getRemote(ServerGame.getRemoteRandomName(remotePlayer));
+        (IRemoteRandom)
+            game.getMessengers().getRemote(ServerGame.getRemoteRandomName(remotePlayer));
     final int[] remoteNumbers = remote.generate(max, count, annotation, localId);
 
     // unlock ours, tell the client he can verify

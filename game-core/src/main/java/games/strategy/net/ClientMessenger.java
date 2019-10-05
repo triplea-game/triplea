@@ -1,5 +1,17 @@
 package games.strategy.net;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
+import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.message.HubInvoke;
+import games.strategy.engine.message.RemoteMethodCall;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.net.nio.ClientQuarantineConversation;
+import games.strategy.net.nio.ForgotPasswordConversation;
+import games.strategy.net.nio.NioSocket;
+import games.strategy.net.nio.NioSocketListener;
+import games.strategy.net.nio.QuarantineConversation;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,29 +23,16 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-
+import lombok.Getter;
+import lombok.extern.java.Log;
+import org.triplea.http.client.ApiKey;
 import org.triplea.java.Interruptibles;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-
-import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.message.HubInvoke;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.net.nio.ClientQuarantineConversation;
-import games.strategy.net.nio.NioSocket;
-import games.strategy.net.nio.NioSocketListener;
-import games.strategy.net.nio.QuarantineConversation;
-import lombok.extern.java.Log;
-
-/**
- * Default implementation of {@link IClientMessenger}.
- */
+/** Default implementation of {@link IClientMessenger}. */
 @Log
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode node;
@@ -46,19 +45,28 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode serverNode;
   private volatile boolean shutDown = false;
 
+  @Getter(onMethod_ = {@Override})
+  private boolean passwordChangeRequired;
+
+  private ApiKey apiKey;
+
   /**
-   * Note, the name parameter passed in here may not match the name of the
-   * ClientMessenger after it has been constructed.
+   * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
+   * has been constructed.
    */
-  public ClientMessenger(final String host, final int port, final String name, final String mac,
-      final IConnectionLogin login) throws IOException {
+  ClientMessenger(
+      final String host,
+      final int port,
+      final String name,
+      final String mac,
+      final IConnectionLogin login)
+      throws IOException {
     this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
   }
 
-
   /**
-   * Note, the name parameter passed in here may not match the name of the
-   * ClientMessenger after it has been constructed.
+   * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
+   * has been constructed.
    */
   @VisibleForTesting
   public ClientMessenger(final String host, final int port, final String name, final String mac)
@@ -67,11 +75,17 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   /**
-   * Note, the name parameter passed in here may not match the name of the
-   * ClientMessenger after it has been constructed.
+   * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
+   * has been constructed.
    */
-  public ClientMessenger(final String host, final int port, final String name, final String mac,
-      final IObjectStreamFactory streamFact, final IConnectionLogin login)
+  @VisibleForTesting
+  public ClientMessenger(
+      final String host,
+      final int port,
+      final String name,
+      final String mac,
+      final IObjectStreamFactory streamFact,
+      final IConnectionLogin login)
       throws IOException {
     Preconditions.checkNotNull(mac);
     Preconditions.checkArgument(MacFinder.isValidHashedMacAddress(mac), "Not a valid mac: " + mac);
@@ -91,8 +105,10 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
             break;
           }
         } catch (final ConnectException e) {
-          throw new RuntimeException(String.format("Could not connect host: %s, port: %s, name: %s, mac: %s",
-              host, port, name, mac), e);
+          throw new RuntimeException(
+              String.format(
+                  "Could not connect host: %s, port: %s, name: %s, mac: %s", host, port, name, mac),
+              e);
         }
         if (!Interruptibles.sleep(50)) {
           shutDown();
@@ -107,6 +123,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     nioSocket = new NioSocket(streamFact, this);
     final ClientQuarantineConversation conversation =
         new ClientQuarantineConversation(login, socketChannel, nioSocket, name, mac);
+
     nioSocket.add(socketChannel, conversation);
     // allow the credentials to be shown in this thread
     conversation.showCredentials();
@@ -122,6 +139,16 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
         // ignore
       }
     }
+    passwordChangeRequired = conversation.isPasswordChangeRequired();
+    apiKey = conversation.getApiKey();
+
+    if (conversation.getErrorMessage() != null
+        && conversation
+            .getErrorMessage()
+            .equals(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE)) {
+      return;
+    }
+
     if (conversation.getErrorMessage() != null || connectionRefusedError != null) {
       // our socket channel should already be closed
       nioSocket.shutDown();
@@ -205,8 +232,9 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation converstaion2) {
-    final ClientQuarantineConversation conversation = (ClientQuarantineConversation) converstaion2;
+  public void socketUnquarantined(
+      final SocketChannel channel, final QuarantineConversation quarantineConversation) {
+    final var conversation = (ClientQuarantineConversation) quarantineConversation;
     // all ids are based on the socket address of nodes in the network
     // but the address of a node changes depending on who is looking at it
     // ie, sometimes it is the loopback address if connecting locally,
@@ -241,19 +269,10 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public InetSocketAddress getRemoteServerSocketAddress() {
-    return (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
-  }
+  public void addConnectionChangeListener(final IConnectionChangeListener listener) {}
 
   @Override
-  public void addConnectionChangeListener(final IConnectionChangeListener listener) {
-
-  }
-
-  @Override
-  public void removeConnectionChangeListener(final IConnectionChangeListener listener) {
-
-  }
+  public void removeConnectionChangeListener(final IConnectionChangeListener listener) {}
 
   private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
     final List<Object> args = new ArrayList<>();
@@ -316,5 +335,15 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public String toString() {
     return "ClientMessenger LocalNode:" + node + " ServerNodes:" + serverNode;
+  }
+
+  @Override
+  public ApiKey getApiKey() {
+    return Optional.ofNullable(apiKey)
+        .orElseThrow(
+            () ->
+                new UnsupportedOperationException(
+                    "Unexpected missing api key, programmer error. "
+                        + "Likely caused by trying to access API key for a non-lobby connection."));
   }
 }

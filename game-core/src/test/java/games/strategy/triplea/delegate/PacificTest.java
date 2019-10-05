@@ -6,13 +6,6 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -22,6 +15,11 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.Collection;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 class PacificTest extends AbstractDelegateTestCase {
   private UnitType marine;
@@ -93,23 +91,29 @@ class PacificTest extends AbstractDelegateTestCase {
     advanceToStep(bridge, "japaneseEndTurn");
     advanceToStep(bridge, "japaneseBattle");
     final List<Unit> infantryUs = infantry.create(1, americans);
-    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
+    final Collection<TerritoryEffect> territoryEffects =
+        TerritoryEffectHelper.getEffects(queensland);
     whenGetRandom(bridge)
         .thenAnswer(withValues(1)) // Defending US infantry hit on a 2 (0 base)
         .thenAnswer(withValues(1)) // Defending US marines hit on a 2 (0 base)
         .thenAnswer(withValues(1)); // Defending Chinese infantry hit on a 2 (0 base)
     // Defending US infantry
     DiceRoll roll =
-        DiceRoll.rollDice(infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+        DiceRoll.rollDice(
+            infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
-    roll = DiceRoll.rollDice(marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
     final List<Unit> infantryChina = infantry.create(1, chinese);
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
   }
 
@@ -121,7 +125,8 @@ class PacificTest extends AbstractDelegateTestCase {
     }
     // >>> After patch normal to-hits will miss <<<
     final List<Unit> infantryUs = infantry.create(1, americans);
-    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
+    final Collection<TerritoryEffect> territoryEffects =
+        TerritoryEffectHelper.getEffects(queensland);
     whenGetRandom(bridge)
         .thenAnswer(withValues(1)) // Defending US infantry miss on a 2 (0 base)
         .thenAnswer(withValues(1)) // Defending US marines miss on a 2 (0 base)
@@ -131,40 +136,44 @@ class PacificTest extends AbstractDelegateTestCase {
         .thenAnswer(withValues(1)); // Defending Chinese infantry still hit on a 2 (0 base)
     // Defending US infantry
     DiceRoll roll =
-        DiceRoll.rollDice(infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+        DiceRoll.rollDice(
+            infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(0, roll.getHits());
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
-    roll = DiceRoll.rollDice(marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(0, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
     final List<Unit> infantryChina = infantry.create(1, chinese);
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US infantry
-    roll = DiceRoll.rollDice(infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines
-    roll = DiceRoll.rollDice(marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
   }
 
   @Test
   void testCanLand2Airfields() {
     advanceToStep(bridge, "americanCombatMove");
-    final Route route = new Route();
-    route.setStart(unitedStates);
-    route.add(sz5);
-    route.add(sz4);
-    route.add(sz10);
-    route.add(sz16);
-    route.add(sz27);
-    route.add(newBritain);
+    final Route route = new Route(unitedStates, sz5, sz4, sz10, sz16, sz27, newBritain);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -174,13 +183,7 @@ class PacificTest extends AbstractDelegateTestCase {
   @Test
   void testCanLand1AirfieldStart() {
     advanceToStep(bridge, "americanCombatMove");
-    final Route route = new Route();
-    route.setStart(unitedStates);
-    route.add(sz5);
-    route.add(sz7);
-    route.add(sz8);
-    route.add(sz20);
-    route.add(midway);
+    final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -191,13 +194,7 @@ class PacificTest extends AbstractDelegateTestCase {
   @Test
   void testCanLand1AirfieldEnd() {
     advanceToStep(bridge, "americanCombatMove");
-    final Route route = new Route();
-    route.setStart(unitedStates);
-    route.add(sz5);
-    route.add(sz7);
-    route.add(sz8);
-    route.add(sz20);
-    route.add(midway);
+    final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -207,11 +204,7 @@ class PacificTest extends AbstractDelegateTestCase {
   @Test
   void testCanMoveNavalBase() {
     advanceToStep(bridge, "americanNonCombatMove");
-    final Route route = new Route();
-    route.setStart(sz5);
-    route.add(sz7);
-    route.add(sz8);
-    route.add(sz20);
+    final Route route = new Route(sz5, sz7, sz8, sz20);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -228,17 +221,15 @@ class PacificTest extends AbstractDelegateTestCase {
     delegate.start();
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
-    final Route route = new Route();
-    route.setStart(bonin);
+    final Route route = new Route(bonin, sz24);
     // movement to force boarding
-    route.add(sz24);
     // verify unit counts before move
     assertEquals(2, bonin.getUnitCollection().size());
     assertEquals(1, sz24.getUnitCollection().size());
     // validate movement
     final String results =
-        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
-            route.getEnd().getUnits());
+        delegate.move(
+            GameDataTestUtil.getUnits(map, route.getStart()), route, route.getEnd().getUnits());
     assertValid(results);
     // verify unit counts after move
     assertEquals(1, bonin.getUnitCollection().size());

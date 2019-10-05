@@ -5,14 +5,19 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameSequence;
+import games.strategy.engine.framework.GameDataFileUtils;
+import games.strategy.engine.framework.ui.GameChooserEntry;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.net.URI;
 import java.util.Observer;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,12 +26,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.util.Version;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameSequence;
-import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.engine.framework.ui.GameChooserEntry;
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 @ExtendWith(MockitoExtension.class)
 class GameSelectorModelTest extends AbstractClientSettingTestCase {
@@ -37,20 +36,15 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   private GameSelectorModel testObj;
 
-  @Mock
-  private GameChooserEntry mockEntry;
+  @Mock private GameChooserEntry mockEntry;
 
-  @Mock
-  private GameData mockGameData;
+  @Mock private GameData mockGameData;
 
-  @Mock
-  private GameSequence mockSequence;
+  @Mock private GameSequence mockSequence;
 
-  @Mock
-  private Observer mockObserver;
+  @Mock private Observer mockObserver;
 
-  @Mock
-  private ClientModel mockClientModel;
+  @Mock private ClientModel mockClientModel;
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
     assertThat(objectToCheck.getGameData(), nullValue());
@@ -128,14 +122,13 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertThat(testObj.isSavedGame(), is(true));
   }
 
-
   @Test
   void testCanSelect() {
-    assertThat(testObj.canSelect(), is(true));
+    assertThat(testObj.isCanSelect(), is(true));
     testObj.setCanSelect(false);
-    assertThat(testObj.canSelect(), is(false));
+    assertThat(testObj.isCanSelect(), is(false));
     testObj.setCanSelect(true);
-    assertThat(testObj.canSelect(), is(true));
+    assertThat(testObj.isCanSelect(), is(true));
   }
 
   @Test
@@ -170,14 +163,17 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   @Test
   void saveGameNameGetsResetWhenLoadingOtherMap() throws Exception {
     final String testFileName = "someFileName";
-    testObj.load(null, testFileName);
+    when(mockGameData.getSequence()).thenReturn(mock(GameSequence.class));
+    when(mockGameData.getGameVersion()).thenReturn(new Version(0, 0, 0));
+    when(mockGameData.getGameName()).thenReturn("Dummy name");
+    testObj.load(mockGameData, testFileName);
     assertThat(testObj.getFileName(), is(testFileName));
 
     when(mockEntry.getUri()).thenReturn(new URI("abc"));
+    when(mockEntry.getGameData()).thenReturn(mockGameData);
     testObj.load(mockEntry);
     assertThat(testObj.getFileName(), is(not(testFileName)));
   }
-
 
   @Test
   void testLoadFromGameDataFileNamePair() {
@@ -189,7 +185,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertThat(testObj.getFileName(), is(fakeFileName));
   }
 
-
   @Test
   void testGetGameData() {
     assertThat(testObj.getGameData(), nullValue());
@@ -200,13 +195,12 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   @Test
   void testSetAndGetIsHostHeadlessBot() {
-    assertThat(testObj.isHostHeadlessBot(), is(false));
+    assertThat(testObj.isHostIsHeadlessBot(), is(false));
     testObj.setIsHostHeadlessBot(true);
-    assertThat(testObj.isHostHeadlessBot(), is(true));
+    assertThat(testObj.isHostIsHeadlessBot(), is(true));
     testObj.setIsHostHeadlessBot(false);
-    assertThat(testObj.isHostHeadlessBot(), is(false));
+    assertThat(testObj.isHostIsHeadlessBot(), is(false));
   }
-
 
   @Test
   void testSetAndGetClientModelForHostBots() {

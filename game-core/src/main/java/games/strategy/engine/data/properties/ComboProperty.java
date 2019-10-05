@@ -3,10 +3,8 @@ package games.strategy.engine.data.properties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -27,7 +25,8 @@ public class ComboProperty<T> extends AbstractEditableProperty<T> {
    * @param defaultValue default string value
    * @param possibleValues collection of values
    */
-  public ComboProperty(final String name,
+  public ComboProperty(
+      final String name,
       final String description,
       final T defaultValue,
       final Collection<T> possibleValues) {
@@ -62,9 +61,7 @@ public class ComboProperty<T> extends AbstractEditableProperty<T> {
     return possibleValues != null && possibleValues.contains(value);
   }
 
-  /**
-   * Returns an immutable view of the possible values for the property.
-   */
+  /** Returns an immutable view of the possible values for the property. */
   public Collection<T> getPossibleValues() {
     return possibleValues;
   }

@@ -1,25 +1,23 @@
 package games.strategy.engine.message;
 
+import games.strategy.engine.message.unifiedmessenger.HasEndPointImplementor;
+import games.strategy.engine.message.unifiedmessenger.NoLongerHasEndPointImplementor;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.IMessageListener;
+import games.strategy.net.IMessenger;
+import games.strategy.net.INode;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.java.Log;
 
-import games.strategy.engine.message.unifiedmessenger.HasEndPointImplementor;
-import games.strategy.engine.message.unifiedmessenger.NoLongerHasEndPointImplementor;
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-import games.strategy.net.GUID;
-import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessageListener;
-import games.strategy.net.IMessenger;
-import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
-
-/**
- * The hub node in a spoke-hub messaging architecture.
- */
+/** The hub node in a spoke-hub messaging architecture. */
+@Log
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
   private final UnifiedMessenger localUnified;
   // the messenger we are based on
@@ -29,13 +27,13 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   // changes to the list of end points, or reads to it, should be made only while holding this lock
   private final Object endPointMutex = new Object();
   // the invocations that are currently in progress
-  private final Map<GUID, InvocationInProgress> invocations = new ConcurrentHashMap<>();
+  private final Map<UUID, InvocationInProgress> invocations = new ConcurrentHashMap<>();
 
   public UnifiedMessengerHub(final IMessenger messenger, final UnifiedMessenger localUnified) {
     this.messenger = messenger;
     this.localUnified = localUnified;
     this.messenger.addMessageListener(this);
-    ((IServerMessenger) this.messenger).addConnectionChangeListener(this);
+    this.messenger.addConnectionChangeListener(this);
   }
 
   private void send(final Serializable msg, final INode to) {
@@ -51,10 +49,17 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     if (msg instanceof HasEndPointImplementor) {
       synchronized (endPointMutex) {
         final HasEndPointImplementor hasEndPoint = (HasEndPointImplementor) msg;
-        final Collection<INode> nodes = endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
+        log.info("Adding endpoint: " + hasEndPoint + ", from: " + from);
+        final Collection<INode> nodes =
+            endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
         if (nodes.contains(from)) {
           throw new IllegalStateException(
-              "Already contained, new" + from + " existing, " + nodes + " name " + hasEndPoint.endPointName);
+              "Already contained, new"
+                  + from
+                  + " existing, "
+                  + nodes
+                  + " name "
+                  + hasEndPoint.endPointName);
         }
         nodes.add(from);
       }
@@ -84,7 +89,12 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       if (endPointCols.isEmpty()) {
         if (invoke.needReturnValues) {
           final RemoteMethodCallResults results =
-              new RemoteMethodCallResults(new RemoteNotFoundException("Not found:" + invoke.call.getRemoteName()));
+              new RemoteMethodCallResults(
+                  new RemoteNotFoundException(
+                      "Not found:"
+                          + invoke.call.getRemoteName()
+                          + ", endpoints available: "
+                          + endPoints.keySet()));
           send(new SpokeInvocationResults(results, invoke.methodCallId), from);
         }
         // no end points, this is ok, we are a channel with no implementors
@@ -98,7 +108,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   }
 
   private void results(final HubInvocationResults results, final INode from) {
-    final GUID methodId = results.methodCallId;
+    final UUID methodId = results.methodCallId;
     final InvocationInProgress invocationInProgress = invocations.get(methodId);
     final boolean done = invocationInProgress.process(results, from);
     if (done) {
@@ -109,7 +119,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     }
   }
 
-  private void sendResultsToCaller(final GUID methodId, final InvocationInProgress invocationInProgress) {
+  private void sendResultsToCaller(
+      final UUID methodId, final InvocationInProgress invocationInProgress) {
     final RemoteMethodCallResults result = invocationInProgress.getResults();
     final INode caller = invocationInProgress.getCaller();
     final SpokeInvocationResults spokeResults = new SpokeInvocationResults(result, methodId);
@@ -119,7 +130,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   private void invoke(final HubInvoke hubInvoke, final Collection<INode> remote, final INode from) {
     if (hubInvoke.needReturnValues) {
       if (remote.size() != 1) {
-        throw new IllegalStateException("Too many nodes:" + remote + " for remote name " + hubInvoke.call);
+        throw new IllegalStateException(
+            "Too many nodes:" + remote + " for remote name " + hubInvoke.call);
       }
       final InvocationInProgress invocationInProgress =
           new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
@@ -154,8 +166,10 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     for (final InvocationInProgress invocation : invocations.values()) {
       if (invocation.isWaitingOn(to)) {
         final RemoteMethodCallResults results =
-            new RemoteMethodCallResults(new ConnectionLostException("Connection to " + to.getName() + " lost"));
-        final HubInvocationResults hubResults = new HubInvocationResults(results, invocation.getMethodCallId());
+            new RemoteMethodCallResults(
+                new ConnectionLostException("Connection to " + to.getName() + " lost"));
+        final HubInvocationResults hubResults =
+            new HubInvocationResults(results, invocation.getMethodCallId());
         results(hubResults, to);
       }
     }

@@ -8,18 +8,16 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 final class GameStepPropertiesHelperTest {
   private final GameData gameData = new GameData();
@@ -38,9 +36,7 @@ final class GameStepPropertiesHelperTest {
   }
 
   private static String joinPlayerNames(final PlayerId... playerIds) {
-    return Arrays.stream(playerIds)
-        .map(PlayerId::getName)
-        .collect(Collectors.joining(":"));
+    return Arrays.stream(playerIds).map(PlayerId::getName).collect(Collectors.joining(":"));
   }
 
   private void givenGameStepProperty(final String name, final String value) {
@@ -72,14 +68,16 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldReturnUnionOfArgumentPlayerAndCombinedTurnsPlayers() {
-      givenGameStepProperty(GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(player2, player3, player4));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(player2, player3, player4));
 
       assertThat(getCombinedTurns(gameData, player1), contains(player1, player2, player3, player4));
     }
 
     @Test
     void shouldReturnCombinedTurnsPlayersWhenArgumentPlayerIsNull() {
-      givenGameStepProperty(GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(player2, player3, player4));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(player2, player3, player4));
 
       assertThat(getCombinedTurns(gameData, null), contains(player2, player3, player4));
     }
@@ -87,7 +85,8 @@ final class GameStepPropertiesHelperTest {
     @Test
     void shouldIgnoreCombinedTurnsPlayersThatDoNotExist() {
       final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
-      givenGameStepProperty(GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(unknownPlayer, player2));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(unknownPlayer, player2));
 
       assertThat(getCombinedTurns(gameData, player1), contains(player1, player2));
     }
@@ -104,14 +103,16 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldReturnUnionOfArgumentPlayerAndRepairPlayers() {
-      givenGameStepProperty(GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(player2, player3, player4));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(player2, player3, player4));
 
       assertThat(getRepairPlayers(gameData, player1), contains(player1, player2, player3, player4));
     }
 
     @Test
     void shouldReturnRepairPlayersWhenArgumentPlayerIsNull() {
-      givenGameStepProperty(GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(player2, player3, player4));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(player2, player3, player4));
 
       assertThat(getRepairPlayers(gameData, null), contains(player2, player3, player4));
     }
@@ -119,7 +120,8 @@ final class GameStepPropertiesHelperTest {
     @Test
     void shouldIgnoreRepairPlayersThatDoNotExist() {
       final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
-      givenGameStepProperty(GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(unknownPlayer, player2));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(unknownPlayer, player2));
 
       assertThat(getRepairPlayers(gameData, player1), contains(player1, player2));
     }
@@ -136,7 +138,8 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldReturnTurnSummaryPlayers() {
-      givenGameStepProperty(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, joinPlayerNames(player1, player2, player3));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, joinPlayerNames(player1, player2, player3));
 
       assertThat(getTurnSummaryPlayers(gameData), contains(player1, player2, player3));
     }
@@ -144,7 +147,8 @@ final class GameStepPropertiesHelperTest {
     @Test
     void shouldIgnoreTurnSummaryPlayersThatDoNotExist() {
       final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
-      givenGameStepProperty(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, joinPlayerNames(unknownPlayer, player1));
+      givenGameStepProperty(
+          GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, joinPlayerNames(unknownPlayer, player1));
 
       assertThat(getTurnSummaryPlayers(gameData), contains(player1));
     }

@@ -1,5 +1,8 @@
 package games.strategy.triplea.printgenerator;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.triplea.Constants;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,14 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.imageio.ImageIO;
-
 import org.triplea.java.collections.IntegerMap;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.triplea.Constants;
 
 class PuChart {
   private final Iterable<PlayerId> players;
@@ -93,30 +90,33 @@ class PuChart {
         if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
         } else if (avoidMap.containsValue(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
         } else if (moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
         }
       }
       // Draw Ellipses and Numbers
       for (int j = 0; j < rows; j++) {
         for (int k = 0; k < cols; k++) {
-          final int numberincircle = cols * rows * i + cols * j + k;
-          final String string = "" + numberincircle;
+          final int numberInCircle = cols * rows * i + cols * j + k;
+          final String string = "" + numberInCircle;
           drawEllipseAndString(k, j, string);
         }
       }
       // Write to file
-      final int firstnum = cols * rows * i;
-      final int secondnum = cols * rows * (i + 1) - 1;
-      final File outputfile = new File(outDir, "PUchart" + firstnum + "-" + secondnum + ".png");
-      ImageIO.write(puImage, "png", outputfile);
+      final int firstNum = cols * rows * i;
+      final int secondNum = cols * rows * (i + 1) - 1;
+      final File outputFile = new File(outDir, "PUchart" + firstNum + "-" + secondNum + ".png");
+      ImageIO.write(puImage, "png", outputFile);
       final Color transparent = new Color(0, 0, 0, 0);
       g2d.setColor(transparent);
       g2d.setComposite(AlphaComposite.Src);

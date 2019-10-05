@@ -3,9 +3,7 @@ package games.strategy.triplea.delegate.data;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * The result of spending tech tokens.
- */
+/** The result of spending tech tokens. */
 public class TechResults implements Serializable {
   private static final long serialVersionUID = 5574673305892105782L;
   private final int[] rolls;
@@ -22,7 +20,8 @@ public class TechResults implements Serializable {
     rolls = null;
   }
 
-  public TechResults(final int[] rolls, final int remainder, final int hits, final List<String> advances) {
+  public TechResults(
+      final int[] rolls, final int remainder, final int hits, final List<String> advances) {
     this.rolls = rolls;
     this.remainder = remainder;
     this.hits = hits;
@@ -30,9 +29,7 @@ public class TechResults implements Serializable {
     errorString = null;
   }
 
-  /**
-   * Indicates whether there was an error.
-   */
+  /** Indicates whether there was an error. */
   public boolean isError() {
     return errorString != null;
   }

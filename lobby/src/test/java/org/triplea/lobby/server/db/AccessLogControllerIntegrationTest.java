@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.nullValue;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
@@ -32,8 +31,12 @@ final class AccessLogControllerIntegrationTest {
     }
   }
 
-  private void thenAccessLogRecordShouldExist(final User user, final UserType userType) throws Exception {
-    final String sql = "select access_time from access_log where username=? and ip=?::inet and mac=? and registered=?";
+  private void thenAccessLogRecordShouldExist(final User user, final UserType userType)
+      throws Exception {
+    final String sql =
+        "select access_time "
+            + "from access_log "
+            + "where username=? and ip=?::inet and mac=? and registered=?";
     try (Connection conn = TestDatabase.newConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, user.getUsername());
@@ -42,10 +45,13 @@ final class AccessLogControllerIntegrationTest {
       ps.setBoolean(4, userType == UserType.REGISTERED);
       try (ResultSet rs = ps.executeQuery()) {
         assertThat("record should exist", rs.next(), is(true));
-        assertThat("access_time column should have a default value", rs.getTimestamp(1), is(not(nullValue())));
         assertThat(
-            "only one record should exist "
-                + "(possible aliasing from another test run due to no control over access_time value)",
+            "access_time column should have a default value",
+            rs.getTimestamp(1),
+            is(not(nullValue())));
+        assertThat(
+            "only one record should exist (possible aliasing from another test run "
+                + "due to no control over access_time value)",
             rs.next(),
             is(false));
       }

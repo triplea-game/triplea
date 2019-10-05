@@ -1,73 +1,65 @@
 package games.strategy.engine.framework;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 import static org.triplea.java.StringUtils.capitalize;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.triplea.settings.ClientSetting;
+import java.util.Locale;
 
 /**
  * Provides methods for getting the names of auto-save files periodically generated during a game.
  */
-public final class AutoSaveFileUtils {
-  private AutoSaveFileUtils() {}
-
+public class AutoSaveFileUtils {
   @VisibleForTesting
-  static File getAutoSaveFile(final String fileName) {
-    return ClientSetting.saveGamesFolderPath.getValueOrThrow().resolve(Paths.get("autoSave", fileName)).toFile();
-  }
-
-  private static File getAutoSaveFile(final String baseFileName, final boolean headless) {
-    return getAutoSaveFile(getAutoSaveFileName(baseFileName, headless));
+  File getAutoSaveFile(final String baseFileName) {
+    return ClientSetting.saveGamesFolderPath
+        .getValueOrThrow()
+        .resolve(Paths.get("autoSave", getAutoSaveFileName(baseFileName)))
+        .toFile();
   }
 
   @VisibleForTesting
-  static String getAutoSaveFileName(final String baseFileName, final boolean headless) {
-    if (headless) {
-      final String prefix = System.getProperty(TRIPLEA_NAME, "");
-      if (!prefix.isEmpty()) {
-        return prefix + "_" + baseFileName;
-      }
-    }
+  String getAutoSaveFileName(final String baseFileName) {
     return baseFileName;
   }
 
-  public static File getHeadlessAutoSaveFile() {
-    return getAutoSaveFile(addExtension("autosave"), true);
+  public File getOddRoundAutoSaveFile() {
+    return getAutoSaveFile(addExtension("autosave_round_odd"));
   }
 
-  public static File getOddRoundAutoSaveFile(final boolean headless) {
-    return getAutoSaveFile(addExtension("autosave_round_odd"), headless);
+  public File getEvenRoundAutoSaveFile() {
+    return getAutoSaveFile(addExtension("autosave_round_even"));
   }
 
-  public static File getEvenRoundAutoSaveFile(final boolean headless) {
-    return getAutoSaveFile(addExtension("autosave_round_even"), headless);
-  }
-
-  public static File getLostConnectionAutoSaveFile(final LocalDateTime localDateTime) {
+  public File getLostConnectionAutoSaveFile(final LocalDateTime localDateTime) {
     checkNotNull(localDateTime);
 
     return getAutoSaveFile(
-        addExtension("connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(localDateTime)));
+        addExtension(
+            "connection_lost_on_"
+                + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm", Locale.ENGLISH)
+                    .format(localDateTime)));
   }
 
-  public static File getBeforeStepAutoSaveFile(final String stepName, final boolean headless) {
+  public File getBeforeStepAutoSaveFile(final String stepName) {
     checkNotNull(stepName);
 
-    return getAutoSaveFile(addExtension("autosaveBefore" + capitalize(stepName)), headless);
+    return getAutoSaveFile(addExtension("autosaveBefore" + capitalize(stepName)));
   }
 
-  public static File getAfterStepAutoSaveFile(final String stepName, final boolean headless) {
+  public File getAfterStepAutoSaveFile(final String stepName) {
     checkNotNull(stepName);
 
-    return getAutoSaveFile(addExtension("autosaveAfter" + capitalize(stepName)), headless);
+    return getAutoSaveFile(addExtension("autosaveAfter" + capitalize(stepName)));
+  }
+
+  public String getAutoSaveStepName(final String stepName) {
+    return stepName;
   }
 }

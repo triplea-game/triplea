@@ -1,14 +1,12 @@
 package games.strategy.engine.auto.update;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.GameSetting;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
-
-import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
 
 final class UpdatedMapsCheck {
   private UpdatedMapsCheck() {}
@@ -26,9 +24,13 @@ final class UpdatedMapsCheck {
       final GameSetting<String> updateCheckDateSetting,
       final Runnable flushSetting) {
     // check at most once per month
-    final boolean updateCheckRequired = updateCheckDateSetting.getValue()
-        .map(encodedUpdateCheckDate -> !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusMonths(1)))
-        .orElse(true);
+    final boolean updateCheckRequired =
+        updateCheckDateSetting
+            .getValue()
+            .map(
+                encodedUpdateCheckDate ->
+                    !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusMonths(1)))
+            .orElse(true);
     if (!updateCheckRequired) {
       return false;
     }

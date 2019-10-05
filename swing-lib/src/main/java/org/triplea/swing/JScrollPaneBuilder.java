@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.awt.Component;
 import java.util.Optional;
-
 import javax.annotation.Nullable;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
@@ -13,9 +12,7 @@ import javax.swing.border.Border;
 /**
  * A builder for incrementally creating instances of {@link JScrollPane}.
  *
- * <p>
- * Example usage:
- * </p>
+ * <p>Example usage:
  *
  * <pre>
  * <code>
@@ -75,7 +72,6 @@ public final class JScrollPaneBuilder {
    * Creates a new scroll pane using the builder's current state.
    *
    * @return A new scroll pane.
-   *
    * @throws IllegalStateException If {@code view} is unspecified.
    */
   public JScrollPane build() {

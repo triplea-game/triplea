@@ -1,7 +1,6 @@
 package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
-
 import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -9,12 +8,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
+import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTextAreaBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 class StackTraceReportSwingView implements StackTraceReportView {
 
@@ -24,76 +23,81 @@ class StackTraceReportSwingView implements StackTraceReportView {
           + "where and how the error occurred.<br/><br/>"
           + "Uploaded data will be used to create a publicly visible bug report";
 
-  private final JFrame window = JFrameBuilder.builder()
-      .title("Upload Error Report to TripleA Support")
-      .size(600, 450)
-      .minSize(300, 350)
-      .alwaysOnTop()
-      .build();
+  private final JFrame window =
+      JFrameBuilder.builder()
+          .title("Upload Error Report to TripleA Support")
+          .size(600, 450)
+          .minSize(300, 350)
+          .alwaysOnTop()
+          .build();
 
-  private final JTextArea userDescriptionField = JTextAreaBuilder.builder()
-      .toolTip(HELP_TEXT)
-      .build();
+  private final JTextArea userDescriptionField =
+      JTextAreaBuilder.builder().toolTip(HELP_TEXT).build();
 
-  private final JButton submitButton = JButtonBuilder.builder()
-      .title("Upload")
-      .biggerFont()
-      .toolTip("Uploads error report to TripleA support")
-      .build();
+  private final JButton submitButton =
+      new JButtonBuilder()
+          .title("Upload")
+          .biggerFont()
+          .toolTip("Uploads error report to TripleA support")
+          .build();
 
-  private final JButton previewButton = JButtonBuilder.builder()
-      .title("Preview")
-      .toolTip("Shows a preview of the error report")
-      .build();
+  private final JButton previewButton =
+      new JButtonBuilder().title("Preview").toolTip("Shows a preview of the error report").build();
 
-  private final JButton cancelButton = JButtonBuilder.builder()
-      .title("Cancel")
-      .toolTip("Closes this window")
-      .build();
+  private final JButton cancelButton =
+      new JButtonBuilder().title("Cancel").toolTip("Closes this window").build();
 
   StackTraceReportSwingView(@Nullable final Component parentWindow) {
     window.setLocationRelativeTo(parentWindow);
-    window.getContentPane()
-        .add(JPanelBuilder.builder()
-            .addNorth(
-                JPanelBuilder.builder()
-                    .addWest(
-                        JLabelBuilder.builder()
-                            .border(5)
-                            .html("Please describe the error and where it happened:")
-                            .toolTip(HELP_TEXT)
-                            .build())
-                    .addEast(
-                        JPanelBuilder.builder()
-                            .add(
-                                JButtonBuilder.builder()
-                                    .title("(?)")
-                                    .actionListener(() -> JOptionPane.showMessageDialog(
-                                        window,
-                                        HELP_TEXT))
-                                    .build())
-                            .build())
-                    .build())
-            .addCenter(userDescriptionField)
-            .addSouth(buttonPanel())
-            .build());
+    window
+        .getContentPane()
+        .add(
+            new JPanelBuilder()
+                .borderLayout()
+                .addNorth(
+                    new JPanelBuilder()
+                        .borderLayout()
+                        .addWest(
+                            JLabelBuilder.builder()
+                                .border(5)
+                                .html(
+                                    "You may submit up to "
+                                        + ErrorReportClient.MAX_REPORTS_PER_DAY
+                                        + " error reports per day.<br/>"
+                                        + "Please describe the error, where and how it happened:")
+                                .toolTip(HELP_TEXT)
+                                .build())
+                        .addEast(
+                            new JPanelBuilder()
+                                .add(
+                                    new JButtonBuilder()
+                                        .title("(?)")
+                                        .actionListener(
+                                            () -> JOptionPane.showMessageDialog(window, HELP_TEXT))
+                                        .build())
+                                .build())
+                        .build())
+                .addCenter(userDescriptionField)
+                .addSouth(buttonPanel())
+                .build());
   }
 
   private JPanel buttonPanel() {
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(10)
         .add(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
+                .borderLayout()
                 .addWest(
-                    JPanelBuilder.builder()
-                        .horizontalBoxLayout()
+                    new JPanelBuilder()
+                        .boxLayoutHorizontal()
                         .add(submitButton)
                         .add(Box.createHorizontalStrut(30))
                         .add(previewButton)
                         .build())
                 .addEast(
-                    JPanelBuilder.builder()
-                        .horizontalBoxLayout()
+                    new JPanelBuilder()
+                        .boxLayoutHorizontal()
                         .add(Box.createHorizontalStrut(70))
                         .add(cancelButton)
                         .build())

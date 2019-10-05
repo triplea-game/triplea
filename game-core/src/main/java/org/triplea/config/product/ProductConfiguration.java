@@ -1,14 +1,13 @@
 package org.triplea.config.product;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.triplea.config.PropertyReader;
 import org.triplea.config.ResourcePropertyReader;
 import org.triplea.util.Version;
 
-import com.google.common.annotations.VisibleForTesting;
-
 /**
- * Provides access to the product configuration. The product configuration applies to all components of the TripleA
- * application suite (e.g. game client, lobby server, etc.).
+ * Provides access to the product configuration. The product configuration applies to all components
+ * of the TripleA application suite (e.g. game client, lobby server, etc.).
  */
 public final class ProductConfiguration {
   private final PropertyReader propertyReader;

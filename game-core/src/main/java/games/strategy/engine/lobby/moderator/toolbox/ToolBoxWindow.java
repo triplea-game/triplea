@@ -1,41 +1,44 @@
 package games.strategy.engine.lobby.moderator.toolbox;
 
-import java.awt.Component;
-import java.net.URI;
-
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
-import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.JPanelBuilder;
-import org.triplea.swing.SwingAction;
-
 import games.strategy.engine.lobby.moderator.toolbox.tabs.TabFactory;
+import java.awt.Component;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
+import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
+import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
- * This window shows a series of tabs that provide CRUD operations to a moderator. Each tab roughly maps
- * to a DB table.
+ * This window shows a series of tabs that provide CRUD operations to a moderator. Each tab roughly
+ * maps to a DB table.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ToolBoxWindow {
+public final class ToolBoxWindow {
 
-  static void showWindow(final Component parent, final URI serverUri, final ApiKeyPassword apiKeyPassword) {
-    SwingAction.invokeNowOrLater(() -> JFrameBuilder.builder()
-        .title("Moderator Toolbox")
-        .locateRelativeTo(parent)
-        .size(800, 700)
-        .minSize(400, 400)
-        .add(frame -> JPanelBuilder.builder()
-            .border(10)
-            .addCenter(TabFactory.builder()
-                .frame(frame)
-                .uri(serverUri)
-                .apiKeyPassword(apiKeyPassword)
-                .build()
-                .buildTabs())
-            .build())
-        .visible(true)
-        .build());
+  /** Shows the moderator toolbox UI window. */
+  public static void showWindow(
+      final Component parent, final HttpModeratorToolboxClient httpModeratorToolboxClient) {
+    SwingAction.invokeNowOrLater(
+        () ->
+            JFrameBuilder.builder()
+                .title("Moderator Toolbox")
+                .locateRelativeTo(parent)
+                .size(800, 700)
+                .minSize(400, 400)
+                .add(
+                    frame ->
+                        new JPanelBuilder()
+                            .border(10)
+                            .borderLayout()
+                            .addCenter(
+                                TabFactory.builder()
+                                    .frame(frame)
+                                    .httpModeratorToolboxClient(httpModeratorToolboxClient)
+                                    .build()
+                                    .buildTabs())
+                            .build())
+                .visible(true)
+                .build());
   }
 }

@@ -6,13 +6,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
-
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.triplea.util.Tuple;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class PlayerIdTest {
   private final PlayerId playerId = new PlayerId("name", new GameData());
@@ -22,13 +20,15 @@ final class PlayerIdTest {
     @Test
     void shouldReturnType() {
       Arrays.asList(
-          Tuple.of("AI", "Hard (AI)"),
-          Tuple.of("Human", "Patton"),
-          Tuple.of("null", "Bot")).forEach(idAndName -> {
-            playerId.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
+              Tuple.of("AI", "Hard (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))
+          .forEach(
+              idAndName -> {
+                playerId.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
 
-            assertThat(playerId.getPlayerType(), is(new PlayerId.Type(idAndName.getFirst(), idAndName.getSecond())));
-          });
+                assertThat(
+                    playerId.getPlayerType(),
+                    is(new PlayerId.Type(idAndName.getFirst(), idAndName.getSecond())));
+              });
     }
   }
 
@@ -36,24 +36,24 @@ final class PlayerIdTest {
   final class IsAiTest {
     @Test
     void shouldReturnTrueWhenTypeIsAi() {
-      Arrays.asList(
-          "AI:Hard (AI)",
-          "ai:hard (ai)").forEach(encodedType -> {
-            playerId.setWhoAmI(encodedType);
+      Arrays.asList("AI:Hard (AI)", "ai:hard (ai)")
+          .forEach(
+              encodedType -> {
+                playerId.setWhoAmI(encodedType);
 
-            assertThat(playerId.isAi(), is(true));
-          });
+                assertThat(playerId.isAi(), is(true));
+              });
     }
 
     @Test
     void shouldReturnFalseWhenTypeIsNotAi() {
-      Arrays.asList(
-          "Human:Patton",
-          "null:Bot").forEach(encodedType -> {
-            playerId.setWhoAmI(encodedType);
+      Arrays.asList("Human:Patton", "null:Bot")
+          .forEach(
+              encodedType -> {
+                playerId.setWhoAmI(encodedType);
 
-            assertThat(playerId.isAi(), is(false));
-          });
+                assertThat(playerId.isAi(), is(false));
+              });
     }
   }
 
@@ -62,22 +62,25 @@ final class PlayerIdTest {
     @Test
     void shouldSetWhoAmIWhenEncodedTypeIsLegal() {
       Arrays.asList(
-          "AI:Hard (AI)",
-          "ai:Hard (AI)",
-          "Human:Patton",
-          "huMAN:Patton",
-          "null:Bot",
-          "NulL:Bot").forEach(encodedType -> {
-            playerId.setWhoAmI(encodedType);
+              "AI:Hard (AI)",
+              "ai:Hard (AI)",
+              "Human:Patton",
+              "huMAN:Patton",
+              "null:Bot",
+              "NulL:Bot")
+          .forEach(
+              encodedType -> {
+                playerId.setWhoAmI(encodedType);
 
-            assertThat(playerId.getWhoAmI(), is(encodedType));
-          });
+                assertThat(playerId.getWhoAmI(), is(encodedType));
+              });
     }
 
     @Test
     void shouldThrowExceptionWhenEncodedTypeDoesNotContainExactlyTwoTokens() {
       assertThrowsDoesNotHaveExactlyTwoTokensException(() -> playerId.setWhoAmI("Patton"));
-      assertThrowsDoesNotHaveExactlyTwoTokensException(() -> playerId.setWhoAmI("Human:Patton:Third"));
+      assertThrowsDoesNotHaveExactlyTwoTokensException(
+          () -> playerId.setWhoAmI("Human:Patton:Third"));
     }
 
     private void assertThrowsDoesNotHaveExactlyTwoTokensException(final Executable executable) {
@@ -87,7 +90,9 @@ final class PlayerIdTest {
 
     @Test
     void shouldThrowExceptionWhenTypeIdIsIllegal() {
-      final Exception e = assertThrows(IllegalArgumentException.class, () -> playerId.setWhoAmI("otherTypeId:Patton"));
+      final Exception e =
+          assertThrows(
+              IllegalArgumentException.class, () -> playerId.setWhoAmI("otherTypeId:Patton"));
       assertThat(e.getMessage(), containsString("ai or human or null"));
     }
   }

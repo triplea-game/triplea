@@ -1,13 +1,16 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.access.log;
 
+import com.google.common.collect.ImmutableMap;
+import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
+import games.strategy.engine.lobby.moderator.toolbox.tabs.Pager;
 import java.awt.Component;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
-
 import javax.annotation.Nonnull;
 import javax.swing.AbstractButton;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,19 +21,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
+import lombok.Builder;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
-
-import com.google.common.collect.ImmutableMap;
-
-import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
-import games.strategy.engine.lobby.moderator.toolbox.tabs.Pager;
-import lombok.Builder;
-
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 class AccessLogTabActions {
   private static final int PAGE_SIZE = 50;
@@ -40,11 +36,12 @@ class AccessLogTabActions {
   private static final String ONE_WEEK = "1 Week";
   private static final String THREE_WEEKS = "3 Weeks";
 
-  private static final ImmutableMap<String, Integer> TIME_DURATION_MAP = ImmutableMap.of(
-      ONE_HOUR, 1,
-      ONE_DAY, (int) TimeUnit.DAYS.toHours(1),
-      ONE_WEEK, (int) TimeUnit.DAYS.toHours(7),
-      THREE_WEEKS, (int) TimeUnit.DAYS.toHours(21));
+  private static final ImmutableMap<String, Integer> TIME_DURATION_MAP =
+      ImmutableMap.of(
+          ONE_HOUR, 1,
+          ONE_DAY, (int) TimeUnit.DAYS.toHours(1),
+          ONE_WEEK, (int) TimeUnit.DAYS.toHours(7),
+          THREE_WEEKS, (int) TimeUnit.DAYS.toHours(21));
 
   private final JFrame parentFrame;
 
@@ -55,11 +52,8 @@ class AccessLogTabActions {
     this.parentFrame = parentFrame;
     this.accessLogTabModel = accessLogTabModel;
 
-    pager = Pager.builder()
-        .dataFetcher(accessLogTabModel::fetchTableData)
-        .pageSize(PAGE_SIZE)
-        .build();
-
+    pager =
+        Pager.builder().dataFetcher(accessLogTabModel::fetchTableData).pageSize(PAGE_SIZE).build();
   }
 
   void reload(final JTable table, final JButton loadMoreButton) {
@@ -74,10 +68,10 @@ class AccessLogTabActions {
     JTableBuilder.addRows(table, moreData);
   }
 
-  private void disableButtonIfEndOfData(final List<List<String>> tableData, final JButton loadMoreButton) {
+  private void disableButtonIfEndOfData(
+      final List<List<String>> tableData, final JButton loadMoreButton) {
     loadMoreButton.setEnabled(tableData.size() >= PAGE_SIZE);
   }
-
 
   BiConsumer<Integer, DefaultTableModel> banUserName() {
     return (rowNumber, tableModel) -> {
@@ -91,32 +85,33 @@ class AccessLogTabActions {
   }
 
   BiConsumer<Integer, DefaultTableModel> banUser() {
-    return (rowNumber, tableModel) -> promptForBanDuration(
-        BanData.builder()
-            .username(String.valueOf(tableModel.getValueAt(rowNumber, 1)))
-            .ip(String.valueOf(tableModel.getValueAt(rowNumber, 2)))
-            .hashedMac(String.valueOf(tableModel.getValueAt(rowNumber, 3)))
-            .build());
+    return (rowNumber, tableModel) ->
+        promptForBanDuration(
+            BanData.builder()
+                .username(String.valueOf(tableModel.getValueAt(rowNumber, 1)))
+                .ip(String.valueOf(tableModel.getValueAt(rowNumber, 2)))
+                .hashedMac(String.valueOf(tableModel.getValueAt(rowNumber, 3)))
+                .build());
   }
 
   @Builder
   private static final class BanData {
-    @Nonnull
-    private final String username;
-    @Nonnull
-    private final String ip;
-    @Nonnull
-    private final String hashedMac;
+    @Nonnull private final String username;
+    @Nonnull private final String ip;
+    @Nonnull private final String hashedMac;
   }
 
   private void promptForBanDuration(final BanData banData) {
-    final JDialog dialog = new JDialog(
-        JOptionPane.getFrameForComponent(parentFrame), "Ban " + banData.username, true);
-    dialog.getContentPane().add(
-        JPanelBuilder.builder()
-            .addNorth(new JLabel("How long to ban?"))
-            .addCenter(banDurationPanel(dialog, banData))
-            .build());
+    final JDialog dialog =
+        new JDialog(JOptionPane.getFrameForComponent(parentFrame), "Ban " + banData.username, true);
+    dialog
+        .getContentPane()
+        .add(
+            new JPanelBuilder()
+                .borderLayout()
+                .addNorth(new JLabel("How long to ban?"))
+                .addCenter(banDurationPanel(dialog, banData))
+                .build());
     SwingComponents.addEscapeKeyListener(dialog, dialog::dispose);
     dialog.pack();
     dialog.setLocationRelativeTo(parentFrame);
@@ -137,35 +132,36 @@ class AccessLogTabActions {
     group.add(oneWeek);
     group.add(threeWeeks);
 
-    final JPanel radioPanel = JPanelBuilder.builder()
-        .verticalBoxLayout()
-        .add(oneHour)
-        .add(oneDay)
-        .add(oneWeek)
-        .add(threeWeeks)
-        .build();
+    final JPanel radioPanel =
+        new JPanelBuilder()
+            .boxLayoutVertical()
+            .add(oneHour)
+            .add(oneDay)
+            .add(oneWeek)
+            .add(threeWeeks)
+            .build();
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
+        .borderLayout()
         .addCenter(radioPanel)
-        .addSouth(JPanelBuilder.builder()
-            .flowLayout()
-            .addHorizontalStrut(10)
-            .add(JButtonBuilder.builder()
-                .title("Cancel")
-                .actionListener(dialog::dispose)
+        .addSouth(
+            new JPanelBuilder()
+                .flowLayout()
+                .add(Box.createHorizontalStrut(10))
+                .add(new JButtonBuilder().title("Cancel").actionListener(dialog::dispose).build())
+                .add(Box.createHorizontalStrut(25))
+                .add(
+                    new JButtonBuilder()
+                        .title("Submit")
+                        .actionListener(
+                            () -> {
+                              dialog.dispose();
+                              final String selectedDuration =
+                                  getSelection(Arrays.asList(oneHour, oneDay, oneWeek, threeWeeks));
+                              confirmBan(selectedDuration, banData);
+                            })
+                        .build())
                 .build())
-            .addHorizontalStrut(25)
-            .add(JButtonBuilder.builder()
-                .title("Submit")
-                .actionListener(
-                    () -> {
-                      dialog.dispose();
-                      final String selectedDuration =
-                          getSelection(Arrays.asList(oneHour, oneDay, oneWeek, threeWeeks));
-                      confirmBan(selectedDuration, banData);
-                    })
-                .build())
-            .build())
         .build();
   }
 
@@ -175,24 +171,28 @@ class AccessLogTabActions {
         .findFirst()
         .map(AbstractButton::getText)
         // .map(TIME_DURATION_MAP::get)
-        .orElseThrow(() -> new IllegalStateException("Expected to find a selected button, programming error."));
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "Expected to find a selected button, programming error."));
   }
 
   private void confirmBan(final String banDurationText, final BanData banData) {
 
-    SwingComponents.promptUser("Confirm Ban",
+    SwingComponents.promptUser(
+        "Confirm Ban",
         "Are you sure you want to ban: " + banData.username + " for " + banDurationText,
         () -> {
-          accessLogTabModel.banUser(UserBanParams.builder()
-              .username(banData.username)
-              .ip(banData.ip)
-              .hashedMac(banData.hashedMac)
-              .hoursToBan(TIME_DURATION_MAP.get(banDurationText))
-              .build());
+          accessLogTabModel.banUser(
+              UserBanParams.builder()
+                  .username(banData.username)
+                  .ip(banData.ip)
+                  .hashedMac(banData.hashedMac)
+                  .hoursToBan(TIME_DURATION_MAP.get(banDurationText))
+                  .build());
 
           MessagePopup.showMessage(
-              parentFrame,
-              banData.username + " banned for " + banDurationText);
+              parentFrame, banData.username + " banned for " + banDurationText);
         });
   }
 }

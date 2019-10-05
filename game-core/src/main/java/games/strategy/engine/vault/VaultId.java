@@ -1,13 +1,11 @@
 package games.strategy.engine.vault;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 import games.strategy.net.INode;
+import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 
-/**
- * Uniquely identifies a cryptographic vault used to store random numbers on a particular node.
- */
+/** Uniquely identifies a cryptographic vault used to store random numbers on a particular node. */
+@EqualsAndHashCode
 public class VaultId implements Serializable {
   private static final long serialVersionUID = 8863728184933393296L;
   private static long currentId;
@@ -27,20 +25,6 @@ public class VaultId implements Serializable {
 
   INode getGeneratedOn() {
     return generatedOn;
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (!(o instanceof VaultId)) {
-      return false;
-    }
-    final VaultId other = (VaultId) o;
-    return other.generatedOn.equals(this.generatedOn) && other.uniqueId == this.uniqueId;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(uniqueId, generatedOn.getName());
   }
 
   @Override

@@ -1,22 +1,16 @@
 package org.triplea.lobby.server;
 
+import games.strategy.net.MacFinder;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Random;
-
 import org.triplea.java.Interruptibles;
 
-import games.strategy.net.MacFinder;
-
-/**
- * A collection of methods for creating instances of {@link User} for testing purposes.
- */
+/** A collection of methods for creating instances of {@link User} for testing purposes. */
 public final class TestUserUtils {
   private TestUserUtils() {}
 
-  /**
-   * Creates a new unique user.
-   */
+  /** Creates a new unique user. */
   public static User newUser() {
     return User.builder()
         .username(newUsername())

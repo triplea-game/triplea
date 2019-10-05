@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that provides the ability for destroyers to conduct bombardment.
- */
+/** A technology advance that provides the ability for destroyers to conduct bombardment. */
 public final class DestroyerBombardTechAdvance extends TechAdvance {
   private static final long serialVersionUID = -4977423636387126617L;
 

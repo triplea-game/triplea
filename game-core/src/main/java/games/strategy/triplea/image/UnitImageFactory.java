@@ -1,7 +1,18 @@
 package games.strategy.triplea.image;
 
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -10,33 +21,22 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.swing.ImageIcon;
 
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.ui.Util;
-
-/**
- * A factory for creating unit images.
- */
+/** A factory for creating unit images. */
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   /**
-   * Width of all icons.
-   * You probably want getUnitImageWidth(), which takes scale factor into account.
+   * Width of all icons. You probably want getUnitImageWidth(), which takes scale factor into
+   * account.
    */
   private static int unitIconWidth = DEFAULT_UNIT_ICON_SIZE;
   /**
-   * Height of all icons.
-   * You probably want getUnitImageHeight(), which takes scale factor into account.
-   **/
+   * Height of all icons. You probably want getUnitImageHeight(), which takes scale factor into
+   * account.
+   */
   private static int unitIconHeight = DEFAULT_UNIT_ICON_SIZE;
+
   private static int unitCounterOffsetWidth = DEFAULT_UNIT_ICON_SIZE / 4;
   private static int unitCounterOffsetHeight = unitIconHeight;
   private static final String FILE_NAME_BASE = "units/";
@@ -47,23 +47,29 @@ public class UnitImageFactory {
   // Scaling factor for unit images
   private double scaleFactor;
   private ResourceLoader resourceLoader;
+  private MapData mapData;
 
   public UnitImageFactory() {}
 
-  public void setResourceLoader(final ResourceLoader loader, final double scaleFactor, final int initialUnitWidth,
-      final int initialUnitHeight, final int initialUnitCounterOffsetWidth, final int initialUnitCounterOffsetHeight) {
+  public void setResourceLoader(
+      final ResourceLoader loader,
+      final double scaleFactor,
+      final int initialUnitWidth,
+      final int initialUnitHeight,
+      final int initialUnitCounterOffsetWidth,
+      final int initialUnitCounterOffsetHeight,
+      final MapData mapData) {
     unitIconWidth = initialUnitWidth;
     unitIconHeight = initialUnitHeight;
     unitCounterOffsetWidth = initialUnitCounterOffsetWidth;
     unitCounterOffsetHeight = initialUnitCounterOffsetHeight;
     this.scaleFactor = scaleFactor;
     resourceLoader = loader;
+    this.mapData = mapData;
     clearImageCache();
   }
 
-  /**
-   * Set the unitScaling factor.
-   */
+  /** Set the unitScaling factor. */
   public void setScaleFactor(final double scaleFactor) {
     if (this.scaleFactor != scaleFactor) {
       this.scaleFactor = scaleFactor;
@@ -71,23 +77,17 @@ public class UnitImageFactory {
     }
   }
 
-  /**
-   * Return the unit scaling factor.
-   */
+  /** Return the unit scaling factor. */
   public double getScaleFactor() {
     return scaleFactor;
   }
 
-  /**
-   * Return the width of scaled units.
-   */
+  /** Return the width of scaled units. */
   public int getUnitImageWidth() {
     return (int) (scaleFactor * unitIconWidth);
   }
 
-  /**
-   * Return the height of scaled units.
-   */
+  /** Return the height of scaled units. */
   public int getUnitImageHeight() {
     return (int) (scaleFactor * unitIconHeight);
   }
@@ -106,24 +106,28 @@ public class UnitImageFactory {
     icons.clear();
   }
 
-  /**
-   * Return the appropriate unit image.
-   */
-  public Optional<Image> getImage(final UnitType type, final PlayerId player, final boolean damaged,
-      final boolean disabled) {
+  public Image getImage(final UnitCategory unit) {
+    return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
+        .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
+  }
+
+  /** Return the appropriate unit image. */
+  public Optional<Image> getImage(
+      final UnitType type, final PlayerId player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (images.containsKey(fullName)) {
       return Optional.of(images.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player);
-    if (!image.isPresent()) {
+    final Optional<Image> image = getTransformedImage(baseName, player, type);
+    if (image.isEmpty()) {
       return Optional.empty();
     }
     final Image baseImage = image.get();
 
     // We want to scale units according to the given scale factor.
-    // We use smooth scaling since the images are cached to allow to take our time in doing the scaling.
+    // We use smooth scaling since the images are cached to allow to take our time in doing the
+    // scaling.
     // Image observer is null, since the image should have been guaranteed to be loaded.
     final int width = (int) (baseImage.getWidth(null) * scaleFactor);
     final int height = (int) (baseImage.getHeight(null) * scaleFactor);
@@ -138,22 +142,50 @@ public class UnitImageFactory {
     return getBaseImageUrl(baseImageName, id, resourceLoader);
   }
 
-  private static Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerId id,
-      final ResourceLoader resourceLoader) {
+  private static Optional<URL> getBaseImageUrl(
+      final String baseImageName, final PlayerId id, final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
-    final URL url = resourceLoader.getResource(fileName);
+    final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
+    final URL url = resourceLoader.getResource(fileName, fileName2);
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getBaseImage(final String baseImageName, final PlayerId id) {
+  private Optional<Image> getTransformedImage(
+      final String baseImageName, final PlayerId id, final UnitType type) {
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
     Image image = null;
     if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(getBaseImageUrl(baseImageName, id).get());
       Util.ensureImageLoaded(image);
+      if (needToTransformImage(id, type, mapData)) {
+        image = convertToBufferedImage(image);
+        if (mapData.getUnitColor(id.getName()).isPresent()) {
+          final Color color = mapData.getUnitColor(id.getName()).get();
+          final int brightness = mapData.getUnitBrightness(id.getName());
+          ImageTransformer.colorize(color, brightness, (BufferedImage) image);
+        }
+        if (mapData.shouldFlipUnit(id.getName())) {
+          image = ImageTransformer.flipHorizontally((BufferedImage) image);
+        }
+      }
     }
     return Optional.ofNullable(image);
+  }
+
+  private static boolean needToTransformImage(
+      final PlayerId id, final UnitType type, final MapData mapData) {
+    return !mapData.ignoreTransformingUnit(type.getName())
+        && (mapData.getUnitColor(id.getName()).isPresent() || mapData.shouldFlipUnit(id.getName()));
+  }
+
+  private static BufferedImage convertToBufferedImage(final Image image) {
+    final BufferedImage newImage =
+        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = newImage.createGraphics();
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
+    return newImage;
   }
 
   /**
@@ -161,13 +193,14 @@ public class UnitImageFactory {
    *
    * @return The highlight image or empty if no base image is available for the specified unit.
    */
-  public Optional<Image> getHighlightImage(final UnitType type, final PlayerId player, final boolean damaged,
-      final boolean disabled) {
+  public Optional<Image> getHighlightImage(
+      final UnitType type, final PlayerId player, final boolean damaged, final boolean disabled) {
     return getImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
   }
 
   private static Image highlightImage(final Image image) {
-    final BufferedImage highlightedImage = Util.newImage(image.getWidth(null), image.getHeight(null), true);
+    final BufferedImage highlightedImage =
+        Util.newImage(image.getWidth(null), image.getHeight(null), true);
     // copy the real image
     final Graphics2D g = highlightedImage.createGraphics();
     g.drawImage(image, 0, 0, null);
@@ -179,18 +212,16 @@ public class UnitImageFactory {
     return highlightedImage;
   }
 
-  /**
-   * Return a icon image for a unit.
-   */
-  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerId player, final boolean damaged,
-      final boolean disabled) {
+  /** Return a icon image for a unit. */
+  public Optional<ImageIcon> getIcon(
+      final UnitType type, final PlayerId player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (icons.containsKey(fullName)) {
       return Optional.of(icons.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player);
-    if (!image.isPresent()) {
+    final Optional<Image> image = getTransformedImage(baseName, player, type);
+    if (image.isEmpty()) {
       return Optional.empty();
     }
 
@@ -199,8 +230,8 @@ public class UnitImageFactory {
     return Optional.of(icon);
   }
 
-  private static String getBaseImageName(final UnitType type, final PlayerId id, final boolean damaged,
-      final boolean disabled) {
+  private static String getBaseImageName(
+      final UnitType type, final PlayerId id, final boolean damaged, final boolean disabled) {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
     if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
@@ -211,7 +242,8 @@ public class UnitImageFactory {
         if (TechTracker.hasAaRadar(id) && Matches.unitTypeIsAaForAnything().test(type)) {
           name.append("_r");
         }
-      } else if (UnitAttachment.get(type).getIsRocket() && Matches.unitTypeIsAaForAnything().test(type)) {
+      } else if (UnitAttachment.get(type).getIsRocket()
+          && Matches.unitTypeIsAaForAnything().test(type)) {
         if (TechTracker.hasRocket(id)) {
           name.append("_rockets");
         }
@@ -232,7 +264,8 @@ public class UnitImageFactory {
           name.append("_lr");
         }
         if (TechTracker.hasJetFighter(id)
-            && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0)) {
+            && (UnitAttachment.get(type).getAttack(id) > 0
+                || UnitAttachment.get(type).getDefense(id) > 0)) {
           name.append("_jp");
         }
       }
@@ -245,13 +278,16 @@ public class UnitImageFactory {
         }
       }
       if (UnitAttachment.get(type).getIsFirstStrike()
-          && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0)) {
+          && (UnitAttachment.get(type).getAttack(id) > 0
+              || UnitAttachment.get(type).getDefense(id) > 0)) {
         if (TechTracker.hasSuperSubs(id)) {
           name.append("_ss");
         }
       }
-      if (type.getName().equals(Constants.UNIT_TYPE_FACTORY) || UnitAttachment.get(type).getCanProduceUnits()) {
-        if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id)) {
+      if (type.getName().equals(Constants.UNIT_TYPE_FACTORY)
+          || UnitAttachment.get(type).getCanProduceUnits()) {
+        if (TechTracker.hasIndustrialTechnology(id)
+            || TechTracker.hasIncreasedFactoryProduction(id)) {
           name.append("_it");
         }
       }
@@ -262,5 +298,18 @@ public class UnitImageFactory {
       name.append("_hit");
     }
     return name.toString();
+  }
+
+  public Dimension getImageDimensions(final UnitType type, final PlayerId player) {
+    final String baseName = getBaseImageName(type, player, false, false);
+    final Image baseImage =
+        getTransformedImage(baseName, player, type)
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "No image for unit type: " + type + ", player: " + player));
+    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+    return new Dimension(width, height);
   }
 }

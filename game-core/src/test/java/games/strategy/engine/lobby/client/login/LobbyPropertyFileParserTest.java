@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.Test;
 import org.triplea.util.Version;
 
@@ -41,13 +40,11 @@ class LobbyPropertyFileParserTest {
     testPropsMatch.version = TestData.clientCurrentVersion;
     testPropsMatch.httpsPort = TestData.httpsPort;
 
-    return new TestProps[] {
-        testProps1, testProps2, testPropsMatch
-    };
+    return new TestProps[] {testProps1, testProps2, testPropsMatch};
   }
 
   /**
-   * Just one set of values in a config file with no verson. The props we return should be a pretty
+   * Just one set of values in a config file with no version. The props we return should be a pretty
    * straight forward 1:1
    */
   @Test
@@ -72,14 +69,16 @@ class LobbyPropertyFileParserTest {
   }
 
   private static InputStream newYaml(final TestProps... testProps) {
-    return new ByteArrayInputStream(Arrays.stream(testProps)
-        .map(TestProps::toYaml)
-        .collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
+    return new ByteArrayInputStream(
+        Arrays.stream(testProps)
+            .map(TestProps::toYaml)
+            .collect(Collectors.joining("\n"))
+            .getBytes(StandardCharsets.UTF_8));
   }
 
   /**
-   * YAML config has multple lobby configs depending on client version. Here we make sure the version checks
-   * line up and we get the expected lobby config back.
+   * YAML config has multple lobby configs depending on client version. Here we make sure the
+   * version checks line up and we get the expected lobby config back.
    */
   @Test
   void checkVersionSelection() {
@@ -107,9 +106,7 @@ class LobbyPropertyFileParserTest {
     String clientCurrentVersion = "2.0.0.0";
   }
 
-  /**
-   * Simple struct-like object to keep our test data together and form a YAML more easily.
-   */
+  /** Simple struct-like object to keep our test data together and form a YAML more easily. */
   private static class TestProps {
     String host;
     String port;
@@ -121,12 +118,7 @@ class LobbyPropertyFileParserTest {
     String toYaml() {
       final String printVersion = (version == null) ? "" : ("version: \"" + version + "\"");
       return String.format(
-          "- %s: %s\n"
-              + "  %s: %s\n"
-              + "  %s: %s\n"
-              + "  %s: %s\n"
-              + "  %s: %s\n"
-              + "  %s\n",
+          "- %s: %s\n" + "  %s: %s\n" + "  %s: %s\n" + "  %s: %s\n" + "  %s: %s\n" + "  %s\n",
           LobbyPropertyFileParser.YAML_HOST,
           host,
           LobbyPropertyFileParser.YAML_PORT,

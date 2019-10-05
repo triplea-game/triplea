@@ -2,13 +2,13 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.lobby.PlayerName;
 import java.util.Set;
-
+import java.util.function.Function;
 import javax.annotation.Nullable;
+import org.triplea.http.client.ApiKey;
 
-/**
- * A server messenger. Additional methods for accepting new connections.
- */
+/** A server messenger. Additional methods for accepting new connections. */
 public interface IServerMessenger extends IMessenger {
   void setAcceptNewConnections(boolean accept);
 
@@ -16,15 +16,10 @@ public interface IServerMessenger extends IMessenger {
 
   ILoginValidator getLoginValidator();
 
-
-  /**
-   * Remove the node from the network.
-   */
+  /** Remove the node from the network. */
   void removeConnection(INode node);
 
-  /**
-   * Get a list of nodes.
-   */
+  /** Get a list of nodes. */
   Set<INode> getNodes();
 
   /**
@@ -39,17 +34,15 @@ public interface IServerMessenger extends IMessenger {
    * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.
    */
   @Nullable
-  String getPlayerMac(String name);
+  String getPlayerMac(PlayerName name);
 
   boolean isPlayerBanned(String ip, String mac);
 
   /**
    * Returns the real username for the specified (possibly unique) username.
    *
-   * <p>
-   * Node usernames may contain a " (n)" suffix when the same user is logged in multiple times. This method removes such
-   * a suffix yielding the original (real) username.
-   * </p>
+   * <p>Node usernames may contain a " (n)" suffix when the same user is logged in multiple times.
+   * This method removes such a suffix yielding the original (real) username.
    */
   static String getRealName(final String name) {
     checkNotNull(name);
@@ -57,4 +50,6 @@ public interface IServerMessenger extends IMessenger {
     final int spaceIndex = name.indexOf(' ');
     return (spaceIndex != -1) ? name.substring(0, spaceIndex) : name;
   }
+
+  void setApiKeyGenerator(Function<PlayerName, ApiKey> apiKeyGenerator);
 }

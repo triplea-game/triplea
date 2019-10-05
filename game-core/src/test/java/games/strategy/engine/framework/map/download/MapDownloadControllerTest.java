@@ -10,22 +10,20 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.framework.map.download.MapDownloadController.DownloadedMaps;
+import games.strategy.engine.framework.map.download.MapDownloadController.TutorialMapPreferences;
+import games.strategy.engine.framework.map.download.MapDownloadController.UserMaps;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.util.Version;
-
-import games.strategy.engine.framework.map.download.MapDownloadController.DownloadedMaps;
-import games.strategy.engine.framework.map.download.MapDownloadController.TutorialMapPreferences;
-import games.strategy.engine.framework.map.download.MapDownloadController.UserMaps;
 
 final class MapDownloadControllerTest {
 
@@ -38,14 +36,13 @@ final class MapDownloadControllerTest {
 
     private final File mapZipFile2 = new File("file2.zip");
 
-    private final Version version1 = new Version(1, 0);
+    private final Version version1 = new Version(1, 0, 0);
 
-    private final Version version2 = new Version(2, 0);
+    private final Version version2 = new Version(2, 0, 0);
 
     private final Version versionUnknown = null;
 
-    @Mock
-    private DownloadedMaps downloadedMaps;
+    @Mock private DownloadedMaps downloadedMaps;
 
     @Test
     void shouldIncludeMapWhenMapIsOutOfDate() {
@@ -61,7 +58,8 @@ final class MapDownloadControllerTest {
       return givenDownload(newDownloadWithVersion(version));
     }
 
-    private Collection<DownloadFileDescription> givenDownload(final DownloadFileDescription download) {
+    private Collection<DownloadFileDescription> givenDownload(
+        final DownloadFileDescription download) {
       return Collections.singletonList(download);
     }
 
@@ -76,12 +74,14 @@ final class MapDownloadControllerTest {
     }
 
     private void givenDownloadedMapVersionIs(final Version version) {
-      when(downloadedMaps.getZipFileCandidates(mapName)).thenReturn(Arrays.asList(mapZipFile1, mapZipFile2));
+      when(downloadedMaps.getZipFileCandidates(mapName))
+          .thenReturn(Arrays.asList(mapZipFile1, mapZipFile2));
       doReturn(Optional.empty()).when(downloadedMaps).getVersionForZipFile(mapZipFile1);
       doReturn(Optional.of(version)).when(downloadedMaps).getVersionForZipFile(mapZipFile2);
     }
 
-    private Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {
+    private Collection<String> getOutOfDateMapNames(
+        final Collection<DownloadFileDescription> downloads) {
       return MapDownloadController.getOutOfDateMapNames(downloads, downloadedMaps);
     }
 
@@ -106,7 +106,8 @@ final class MapDownloadControllerTest {
     }
 
     private void givenDownloadedMapVersionIsUnknown() {
-      when(downloadedMaps.getZipFileCandidates(mapName)).thenReturn(Arrays.asList(mapZipFile1, mapZipFile2));
+      when(downloadedMaps.getZipFileCandidates(mapName))
+          .thenReturn(Arrays.asList(mapZipFile1, mapZipFile2));
       when(downloadedMaps.getVersionForZipFile(any())).thenReturn(Optional.empty());
     }
 
@@ -133,8 +134,7 @@ final class MapDownloadControllerTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class PreventPromptToDownloadTutorialMapTest {
-    @Mock
-    private TutorialMapPreferences tutorialMapPreferences;
+    @Mock private TutorialMapPreferences tutorialMapPreferences;
 
     @Test
     void shouldChangePreventPromptToDownloadPreference() {
@@ -151,11 +151,9 @@ final class MapDownloadControllerTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class ShouldPromptToDownloadTutorialMapTest {
-    @Mock
-    private TutorialMapPreferences tutorialMapPreferences;
+    @Mock private TutorialMapPreferences tutorialMapPreferences;
 
-    @Mock
-    private UserMaps userMaps;
+    @Mock private UserMaps userMaps;
 
     @Test
     void shouldReturnTrueWhenCanPromptToDownloadAndUserMapsIsEmpty() {
@@ -166,7 +164,8 @@ final class MapDownloadControllerTest {
     }
 
     private boolean shouldPromptToDownloadTutorialMap() {
-      return MapDownloadController.shouldPromptToDownloadTutorialMap(tutorialMapPreferences, userMaps);
+      return MapDownloadController.shouldPromptToDownloadTutorialMap(
+          tutorialMapPreferences, userMaps);
     }
 
     @Test

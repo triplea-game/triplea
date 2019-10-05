@@ -1,5 +1,11 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.LocalPlayers;
+import games.strategy.io.FileUtils;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.ResourceLoader;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
@@ -11,52 +17,44 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.swing.SwingUtilities;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.java.Log;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.LocalPlayers;
-import games.strategy.io.FileUtils;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.ResourceLoader;
-import lombok.extern.java.Log;
-
 /**
- * Superclass for implementations of {@link UiContext} that provides operations common to both headed and headless
- * environments.
+ * Superclass for implementations of {@link UiContext} that provides operations common to both
+ * headed and headless environments.
  */
 @Log
 public abstract class AbstractUiContext implements UiContext {
 
-  protected static final String UNIT_SCALE_PREF = "UnitScale";
-  protected static final String MAP_SKIN_PREF = "MapSkin";
-  protected static final String MAP_SCALE_PREF = "MapScale";
-  protected static String mapDir;
-  protected static final String LOCK_MAP = "LockMap";
-  protected static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
-  protected static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
-  protected static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
-  protected static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
-  protected static ResourceLoader resourceLoader;
+  @Getter protected static String mapDir;
+  @Getter protected static ResourceLoader resourceLoader;
 
-  protected boolean isShutDown = false;
-  protected final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
-  protected final List<Active> activeToDeactivate = new ArrayList<>();
-  protected final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
+  static final String UNIT_SCALE_PREF = "UnitScale";
+  static final String MAP_SCALE_PREF = "MapScale";
+
+  private static final String MAP_SKIN_PREF = "MapSkin";
+  private static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
+  private static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
+  private static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
+  private static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
+
+  @Getter(onMethod_ = {@Override})
+  @Setter(onMethod_ = {@Override})
   protected LocalPlayers localPlayers;
+
+  @Getter(onMethod_ = {@Override})
   protected double scale = 1;
 
-  public static ResourceLoader getResourceLoader() {
-    return resourceLoader;
-  }
+  @Getter(onMethod_ = {@Override})
+  private boolean isShutDown = false;
 
-  @Override
-  public double getScale() {
-    return scale;
-  }
+  private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
+  private final List<Active> activeToDeactivate = new ArrayList<>();
+  private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
   @Override
   public void setScale(final double scale) {
@@ -70,21 +68,17 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * Get the preferences for the map.
-   */
-  protected static Preferences getPreferencesForMap(final String mapName) {
+  /** Get the preferences for the map. */
+  private static Preferences getPreferencesForMap(final String mapName) {
     return Preferences.userNodeForPackage(AbstractUiContext.class).node(mapName);
   }
 
-  /**
-   * Get the preferences for the map or map skin.
-   */
-  protected static Preferences getPreferencesMapOrSkin(final String mapDir) {
+  /** Get the preferences for the map or map skin. */
+  static Preferences getPreferencesMapOrSkin(final String mapDir) {
     return Preferences.userNodeForPackage(AbstractUiContext.class).node(mapDir);
   }
 
-  protected static String getDefaultMapDir(final GameData data) {
+  private static String getDefaultMapDir(final GameData data) {
     final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
     if (mapName == null || mapName.trim().length() == 0) {
       throw new IllegalStateException("Map name property not set on game");
@@ -125,10 +119,6 @@ public abstract class AbstractUiContext implements UiContext {
 
   protected abstract void internalSetMapDir(String dir, GameData data);
 
-  public static String getMapDir() {
-    return mapDir;
-  }
-
   @Override
   public void removeActive(final Active actor) {
     if (isShutDown) {
@@ -139,9 +129,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * Add a latch that will be released when the game shuts down.
-   */
+  /** Add a latch that will be released when the game shuts down. */
   @Override
   public void addActive(final Active actor) {
     if (isShutDown) {
@@ -157,9 +145,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * Add a latch that will be released when the game shuts down.
-   */
+  /** Add a latch that will be released when the game shuts down. */
   @Override
   public void addShutdownLatch(final CountDownLatch latch) {
     latchesToCloseOnShutdown.addShutdownLatch(latch);
@@ -175,9 +161,7 @@ public abstract class AbstractUiContext implements UiContext {
     return latchesToCloseOnShutdown;
   }
 
-  /**
-   * Add a latch that will be released when the game shuts down.
-   */
+  /** Add a latch that will be released when the game shuts down. */
   @Override
   public void addShutdownWindow(final Window window) {
     if (isShutDown) {
@@ -196,9 +180,12 @@ public abstract class AbstractUiContext implements UiContext {
     // If you are calling this method while holding a lock on an object, while the EDT is separately
     // waiting for that lock, then you have a deadlock.
     // A real life example: player disconnects while you have the battle calc open.
-    // Non-EDT thread does shutdown on IGame and HeadedUiContext, causing btl calc to shutdown, which calls the
-    // window closed event on the EDT, and waits for the lock on HeadedUiContext to removeShutdownWindow, meanwhile
-    // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a
+    // Non-EDT thread does shutdown on IGame and HeadedUiContext, causing btl calc to shutdown,
+    // which calls the
+    // window closed event on the EDT, and waits for the lock on HeadedUiContext to
+    // removeShutdownWindow, meanwhile
+    // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait,
+    // resulting in a
     // deadlock.
     SwingUtilities.invokeLater(window::dispose);
   }
@@ -211,11 +198,6 @@ public abstract class AbstractUiContext implements UiContext {
     synchronized (this) {
       windowsToCloseOnShutdown.remove(window);
     }
-  }
-
-  @Override
-  public boolean isShutDown() {
-    return isShutDown;
   }
 
   @Override
@@ -237,10 +219,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * returns the map skins for the game data.
-   * returns is a map of display-name -> map directory
-   */
+  /** returns the map skins for the game data. returns is a map of display-name -> map directory */
   public static Map<String, String> getSkins(final GameData data) {
     final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
@@ -253,7 +232,8 @@ public abstract class AbstractUiContext implements UiContext {
     final Map<String, String> skinsByDisplayName = new HashMap<>();
     for (final File f : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
       if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
-        final String displayName = f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
+        final String displayName =
+            f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
         skinsByDisplayName.put(displayName, f.getName());
       }
     }
@@ -261,7 +241,9 @@ public abstract class AbstractUiContext implements UiContext {
   }
 
   private static boolean mapSkinNameMatchesMapName(final String mapSkin, final String mapName) {
-    return mapSkin.startsWith(mapName) && mapSkin.toLowerCase().contains("skin") && mapSkin.contains("-")
+    return mapSkin.startsWith(mapName)
+        && mapSkin.toLowerCase().contains("skin")
+        && mapSkin.contains("-")
         && !mapSkin.endsWith("properties");
   }
 
@@ -270,23 +252,6 @@ public abstract class AbstractUiContext implements UiContext {
       actor.deactivate();
     } catch (final RuntimeException e) {
       log.log(Level.SEVERE, "Failed to deactivate actor", e);
-    }
-  }
-
-  @Override
-  public boolean getLockMap() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
-    return prefs.getBoolean(LOCK_MAP, false);
-  }
-
-  @Override
-  public void setLockMap(final boolean lockMap) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
-    prefs.putBoolean(LOCK_MAP, lockMap);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -356,15 +321,5 @@ public abstract class AbstractUiContext implements UiContext {
     } catch (final BackingStoreException ex) {
       log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
-  }
-
-  @Override
-  public LocalPlayers getLocalPlayers() {
-    return localPlayers;
-  }
-
-  @Override
-  public void setLocalPlayers(final LocalPlayers players) {
-    localPlayers = players;
   }
 }

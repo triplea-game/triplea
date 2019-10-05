@@ -1,5 +1,6 @@
 package games.strategy.engine.pbem;
 
+import com.google.common.base.Splitter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,7 +8,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.BodyPart;
@@ -22,20 +22,15 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
-import com.google.common.base.Splitter;
-
 /**
  * A PBEM (play by email) sender that will email turn summary and save game.
  *
- * <p>
- * Instances of this class are saved as a property as part of a save game.
- * </p>
+ * <p>Instances of this class are saved as a property as part of a save game.
  *
- * <p>
- * This class has two fields per credential. One is transient and used while the game is running. The other is
- * persistent and "cleared" when the game starts. This is done for security reasons so save games will not include
- * credentials. The persistent password is used when the object is stored in the local cache.
- * </p>
+ * <p>This class has two fields per credential. One is transient and used while the game is running.
+ * The other is persistent and "cleared" when the game starts. This is done for security reasons so
+ * save games will not include credentials. The persistent password is used when the object is
+ * stored in the local cache.
  */
 public class DefaultEmailSender implements IEmailSender {
   private static final long TIMEOUT = TimeUnit.SECONDS.toMillis(60);
@@ -44,7 +39,6 @@ public class DefaultEmailSender implements IEmailSender {
   private final String password;
   private final String toAddress;
   private final EmailProviderSetting providerSetting;
-
 
   DefaultEmailSender(
       final EmailProviderSetting providerSetting,
@@ -59,9 +53,12 @@ public class DefaultEmailSender implements IEmailSender {
     this.toAddress = toAddress;
   }
 
-
   @Override
-  public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName)
+  public void sendEmail(
+      final String subject,
+      final String htmlMessage,
+      final File saveGame,
+      final String saveGameName)
       throws IOException {
     // this is the last step and we create the email to send
     final Properties props = new Properties();
@@ -84,7 +81,8 @@ public class DefaultEmailSender implements IEmailSender {
       // from
       mimeMessage.setFrom(new InternetAddress(username));
       // to address
-      for (final String token : Splitter.on(' ').omitEmptyStrings().trimResults().split(toAddress)) {
+      for (final String token :
+          Splitter.on(' ').omitEmptyStrings().trimResults().split(toAddress)) {
         mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(token));
       }
       // subject
@@ -129,8 +127,20 @@ public class DefaultEmailSender implements IEmailSender {
 
   @Override
   public String toString() {
-    return "GenericEmailSender{" + "toAddress='" + toAddress + '\'' + ", username='" + username + '\''
-        + ", host='" + providerSetting.getHost() + '\'' + ", port=" + providerSetting.getPort()
-        + ", encrypted=" + providerSetting.isEncrypted() + '}';
+    return "GenericEmailSender{"
+        + "toAddress='"
+        + toAddress
+        + '\''
+        + ", username='"
+        + username
+        + '\''
+        + ", host='"
+        + providerSetting.getHost()
+        + '\''
+        + ", port="
+        + providerSetting.getPort()
+        + ", encrypted="
+        + providerSetting.isEncrypted()
+        + '}';
   }
 }

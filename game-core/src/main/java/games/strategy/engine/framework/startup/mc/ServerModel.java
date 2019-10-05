@@ -5,6 +5,36 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.Runnables;
+import games.strategy.engine.chat.Chat;
+import games.strategy.engine.chat.ChatController;
+import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.HeadlessChat;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameState;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
+import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.framework.startup.launcher.LaunchAction;
+import games.strategy.engine.framework.startup.launcher.ServerLauncher;
+import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.ServerOptions;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.io.IoUtils;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.Messengers;
+import games.strategy.net.ServerMessenger;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,12 +54,11 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
+import lombok.extern.java.Log;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
@@ -37,47 +66,16 @@ import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Version;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-
-import games.strategy.engine.chat.Chat;
-import games.strategy.engine.chat.ChatController;
-import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.chat.HeadlessChat;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.GameState;
-import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.framework.startup.launcher.ServerLauncher;
-import games.strategy.engine.framework.startup.login.ClientLoginValidator;
-import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.io.IoUtils;
-import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessengerErrorListener;
-import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
-import games.strategy.net.Messengers;
-import games.strategy.net.ServerMessenger;
-import games.strategy.triplea.settings.ClientSetting;
-import lombok.extern.java.Log;
-
-/**
- * Represents a network-aware game server to which multiple clients may connect.
- */
+/** Represents a network-aware game server to which multiple clients may connect. */
 @Log
-public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
+public class ServerModel extends Observable implements IConnectionChangeListener {
   public static final RemoteName SERVER_REMOTE_NAME =
-      new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
+      new RemoteName(
+          "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE",
+          IServerStartupRemote.class);
 
-  static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
+  public static final String CHAT_NAME =
+      "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final ServerSetupModel serverSetupModel;
@@ -87,171 +85,187 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private Map<String, String> playersToNodeListing = new HashMap<>();
   private Map<String, Boolean> playersEnabledListing = new HashMap<>();
   private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
-  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
+  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
+      new LinkedHashMap<>();
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
-  @Nullable
-  private final JFrame ui;
+  @Nullable private final JFrame ui;
+  private final LaunchAction launchAction;
   private ChatModel chatModel;
+  private Runnable chatModelCancel = Runnables.doNothing();
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
-  private final IServerStartupRemote serverStartupRemote = new IServerStartupRemote() {
-    @Override
-    public PlayerListing getPlayerListing() {
-      return getPlayerListingInternal();
-    }
+  private final IServerStartupRemote serverStartupRemote =
+      new IServerStartupRemote() {
+        @Override
+        public PlayerListing getPlayerListing() {
+          return getPlayerListingInternal();
+        }
 
-    @Override
-    public void takePlayer(final INode who, final String playerName) {
-      takePlayerInternal(who, true, playerName);
-    }
+        @Override
+        public void takePlayer(final INode who, final String playerName) {
+          takePlayerInternal(who, true, playerName);
+        }
 
-    @Override
-    public void releasePlayer(final INode who, final String playerName) {
-      takePlayerInternal(who, false, playerName);
-    }
+        @Override
+        public void releasePlayer(final INode who, final String playerName) {
+          takePlayerInternal(who, false, playerName);
+        }
 
-    @Override
-    public void disablePlayer(final String playerName) {
-      if (ui != null) {
-        return;
-      }
-      // we don't want the client's changing stuff for anyone but a bot
-      setPlayerEnabled(playerName, false);
-    }
-
-    @Override
-    public void enablePlayer(final String playerName) {
-      if (ui != null) {
-        return;
-      }
-      // we don't want the client's changing stuff for anyone but a bot
-      setPlayerEnabled(playerName, true);
-    }
-
-    @Override
-    public boolean isGameStarted(final INode newNode) {
-      if (serverLauncher != null) {
-        final RemoteName remoteName = getObserverWaitingToStartName(newNode);
-        final IObserverWaitingToJoin observerWaitingToJoinBlocking =
-            (IObserverWaitingToJoin) messengers.getRemote(remoteName);
-        final IObserverWaitingToJoin observerWaitingToJoinNonBlocking =
-            (IObserverWaitingToJoin) messengers.getRemote(remoteName, true);
-        serverLauncher.addObserver(observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
-        return true;
-      }
-      return false;
-    }
-
-    @Override
-    public boolean getIsServerHeadless() {
-      return HeadlessGameServer.headless();
-    }
-
-    /**
-     * This should not be called from within game, only from the game setup screen, while everyone is waiting for game
-     * to start.
-     */
-    @Override
-    public byte[] getSaveGame() {
-      try {
-        return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
-      } catch (final IOException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-
-    @Override
-    public byte[] getGameOptions() {
-      if (data == null || data.getProperties() == null || data.getProperties().getEditableProperties() == null
-          || data.getProperties().getEditableProperties().isEmpty()) {
-        return null;
-      }
-      final List<IEditableProperty<?>> currentEditableProperties = data.getProperties().getEditableProperties();
-
-      try {
-        return GameProperties.writeEditableProperties(currentEditableProperties);
-      } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to write game properties", e);
-      }
-      return null;
-    }
-
-    @Override
-    public Set<String> getAvailableGames() {
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null) {
-        return null;
-      }
-      return headless.getAvailableGames();
-    }
-
-    @Override
-    public void changeServerGameTo(final String gameName) {
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null) {
-        return;
-      }
-      headless.setGameMapTo(gameName);
-    }
-
-    @Override
-    public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
-      final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
-      if (headlessGameServer != null) {
-        headlessGameServer.loadGameSave(autoSaveType.getFile());
-      }
-    }
-
-    @Override
-    public void changeToGameSave(final byte[] bytes, final String fileName) {
-      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
-      // if not.
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null || bytes == null) {
-        return;
-      }
-      try {
-        IoUtils.consumeFromMemory(bytes, is -> {
-          try (InputStream oinput = new BufferedInputStream(is)) {
-            headless.loadGameSave(oinput, fileName);
+        @Override
+        public void disablePlayer(final String playerName) {
+          if (ui != null) {
+            return;
           }
-        });
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to load save game: " + fileName, e);
-      }
-    }
+          // we don't want the client's changing stuff for anyone but a bot
+          setPlayerEnabled(playerName, false);
+        }
 
-    @Override
-    public void changeToGameOptions(final byte[] bytes) {
-      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
-      // if not.
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null || bytes == null) {
-        return;
-      }
-      try {
-        headless.loadGameOptions(bytes);
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to load game options", e);
-      }
-    }
-  };
+        @Override
+        public void enablePlayer(final String playerName) {
+          if (ui != null) {
+            return;
+          }
+          // we don't want the client's changing stuff for anyone but a bot
+          setPlayerEnabled(playerName, true);
+        }
 
-  public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
-      @Nullable final JFrame ui) {
+        @Override
+        public boolean isGameStarted(final INode newNode) {
+          if (serverLauncher != null) {
+            final RemoteName remoteName = getObserverWaitingToStartName(newNode);
+            final IObserverWaitingToJoin observerWaitingToJoinBlocking =
+                (IObserverWaitingToJoin) messengers.getRemote(remoteName);
+            final IObserverWaitingToJoin observerWaitingToJoinNonBlocking =
+                (IObserverWaitingToJoin) messengers.getRemote(remoteName, true);
+            serverLauncher.addObserver(
+                observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
+            return true;
+          }
+          return false;
+        }
+
+        @Override
+        public boolean getIsServerHeadless() {
+          return HeadlessGameServer.headless();
+        }
+
+        /**
+         * This should not be called from within game, only from the game setup screen, while
+         * everyone is waiting for game to start.
+         */
+        @Override
+        public byte[] getSaveGame() {
+          try {
+            return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
+          } catch (final IOException e) {
+            throw new IllegalStateException(e);
+          }
+        }
+
+        @Override
+        public byte[] getGameOptions() {
+          if (data == null
+              || data.getProperties() == null
+              || data.getProperties().getEditableProperties() == null
+              || data.getProperties().getEditableProperties().isEmpty()) {
+            return null;
+          }
+          final List<IEditableProperty<?>> currentEditableProperties =
+              data.getProperties().getEditableProperties();
+
+          try {
+            return GameProperties.writeEditableProperties(currentEditableProperties);
+          } catch (final IOException e) {
+            log.log(Level.SEVERE, "Failed to write game properties", e);
+          }
+          return null;
+        }
+
+        @Override
+        public Set<String> getAvailableGames() {
+          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+          if (headless == null) {
+            return null;
+          }
+          return headless.getAvailableGames();
+        }
+
+        @Override
+        public void changeServerGameTo(final String gameName) {
+          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+          if (headless == null) {
+            return;
+          }
+          headless.setGameMapTo(gameName);
+        }
+
+        @Override
+        public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
+          final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
+          if (headlessGameServer != null) {
+            headlessGameServer.loadGameSave(autoSaveType.getFile());
+          }
+        }
+
+        @Override
+        public void changeToGameSave(final byte[] bytes, final String fileName) {
+          // TODO: change to a string message return, so we can tell the user/requestor if it was
+          // successful or not, and why
+          // if not.
+          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+          if (headless == null || bytes == null) {
+            return;
+          }
+          try {
+            IoUtils.consumeFromMemory(
+                bytes,
+                is -> {
+                  try (InputStream inputStream = new BufferedInputStream(is)) {
+                    headless.loadGameSave(inputStream, fileName);
+                  }
+                });
+          } catch (final Exception e) {
+            log.log(Level.SEVERE, "Failed to load save game: " + fileName, e);
+          }
+        }
+
+        @Override
+        public void changeToGameOptions(final byte[] bytes) {
+          // TODO: change to a string message return, so we can tell the user/requestor if it was
+          // successful or not, and why
+          // if not.
+          final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+          if (headless == null || bytes == null) {
+            return;
+          }
+          try {
+            headless.loadGameOptions(bytes);
+          } catch (final Exception e) {
+            log.log(Level.SEVERE, "Failed to load game options", e);
+          }
+        }
+      };
+
+  public ServerModel(
+      final GameSelectorModel gameSelectorModel,
+      final ServerSetupModel serverSetupModel,
+      @Nullable final JFrame ui,
+      final LaunchAction launchAction) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.ui = ui;
+    this.launchAction = launchAction;
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
-    return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
+    return new RemoteName(
+        "games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
         IObserverWaitingToJoin.class);
   }
 
@@ -260,8 +274,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     if (messengers != null) {
       chatController.deactivate();
       messengers.shutDown();
-      messengers.removeErrorListener(this);
-      chatModel.setChat(null);
+      chatModelCancel.run();
     }
   }
 
@@ -279,7 +292,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (data != null) {
         playersToNodeListing = new HashMap<>();
         playersEnabledListing = new HashMap<>();
-        playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
+        playersAllowedToBeDisabled =
+            new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
         for (final PlayerId player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
@@ -294,64 +308,74 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             }
           } else {
             Optional.ofNullable(messengers)
-                .ifPresent(messenger -> playersToNodeListing.put(name, messenger.getLocalNode().getName()));
+                .ifPresent(
+                    messenger ->
+                        playersToNodeListing.put(name, messenger.getLocalNode().getName()));
           }
-          playerNamesAndAlliancesInTurnOrder.put(name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
+          playerNamesAndAlliancesInTurnOrder.put(
+              name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
           playersEnabledListing.put(name, !player.getIsDisabled());
         }
       }
       objectStreamFactory.setData(data);
       localPlayerTypes.clear();
     }
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     remoteModelListener.playerListChanged();
   }
 
   private Optional<ServerConnectionProps> getServerProps() {
-    if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
-        && GameState.notStarted()) {
+    if (System.getProperty(TRIPLEA_SERVER, "false").equals("true") && GameState.notStarted()) {
       GameState.setStarted();
-      return Optional.of(ServerConnectionProps.builder()
-          .name(System.getProperty(TRIPLEA_NAME))
-          .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
-          .password(System.getProperty(SERVER_PASSWORD))
-          .build());
+      return Optional.of(
+          ServerConnectionProps.builder()
+              .name(System.getProperty(TRIPLEA_NAME))
+              .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
+              .password(System.getProperty(SERVER_PASSWORD))
+              .build());
     }
-    final String playername = ClientSetting.playerName.getValueOrThrow();
-    final Interruptibles.Result<ServerOptions> optionsResult = Interruptibles
-        .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
-          final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
-          options.setLocationRelativeTo(ui);
-          options.setVisible(true);
-          options.dispose();
-          if (!options.getOkPressed()) {
-            return null;
-          }
-          final String name = options.getName();
-          log.fine("Server playing as:" + name);
-          ClientSetting.playerName.setValue(name);
-          ClientSetting.flush();
-          final int port = options.getPort();
-          if (port >= 65536 || port == 0) {
-            if (ui == null) {
-              throw new IllegalStateException("Invalid Port: " + port);
-            }
-            JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
-            return null;
-          }
-          return options;
-        }));
+    final String playerName = ClientSetting.playerName.getValueOrThrow();
+    final Interruptibles.Result<ServerOptions> optionsResult =
+        Interruptibles.awaitResult(
+            () ->
+                SwingAction.invokeAndWaitResult(
+                    () -> {
+                      final ServerOptions options =
+                          new ServerOptions(ui, playerName, GameRunner.PORT, false);
+                      options.setLocationRelativeTo(ui);
+                      options.setVisible(true);
+                      options.dispose();
+                      if (!options.getOkPressed()) {
+                        return null;
+                      }
+                      final String name = options.getName();
+                      log.fine("Server playing as:" + name);
+                      ClientSetting.playerName.setValue(name);
+                      ClientSetting.flush();
+                      final int port = options.getPort();
+                      if (port >= 65536 || port == 0) {
+                        if (ui == null) {
+                          throw new IllegalStateException("Invalid Port: " + port);
+                        }
+                        JOptionPane.showMessageDialog(
+                            ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+                        return null;
+                      }
+                      return options;
+                    }));
     if (!optionsResult.completed) {
       throw new IllegalArgumentException("Error while gathering connection details");
     }
-    if (!optionsResult.result.isPresent()) {
+    if (optionsResult.result.isEmpty()) {
       cancel();
     }
-    return optionsResult.result.map(options -> ServerConnectionProps.builder()
-        .name(options.getName())
-        .port(options.getPort())
-        .password(options.getPassword())
-        .build());
+    return optionsResult.result.map(
+        options ->
+            ServerConnectionProps.builder()
+                .name(options.getName())
+                .port(options.getPort())
+                .password(options.getPassword())
+                .build());
   }
 
   public void createServerMessenger() {
@@ -360,11 +384,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
     try {
-      this.serverMessenger = new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      this.serverMessenger =
+          new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
       clientLoginValidator.setGamePassword(props.getPassword());
       serverMessenger.setLoginValidator(clientLoginValidator);
-      serverMessenger.addErrorListener(this);
       serverMessenger.addConnectionChangeListener(this);
 
       messengers = new Messengers(serverMessenger);
@@ -373,8 +397,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
       if (ui == null) {
         chatModel = new HeadlessChat(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+        chatModelCancel = Runnables.doNothing();
       } else {
-        chatModel = ChatPanel.newChatPanel(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+        final var chatPanel =
+            ChatPanel.newChatPanel(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+        chatModelCancel = () -> chatPanel.setChat(null);
+        chatModel = chatPanel;
       }
 
       serverMessenger.setAcceptNewConnections(true);
@@ -389,15 +417,25 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private PlayerListing getPlayerListingInternal() {
     synchronized (this) {
       if (data == null) {
-        return new PlayerListing(new HashMap<>(), new HashMap<>(playersEnabledListing),
-            getLocalPlayerTypes(), new Version(0, 0), gameSelectorModel.getGameName(),
-            gameSelectorModel.getGameRound(), new HashSet<>(playersAllowedToBeDisabled),
+        return new PlayerListing(
+            new HashMap<>(),
+            new HashMap<>(playersEnabledListing),
+            getLocalPlayerTypes(),
+            new Version(0, 0, 0),
+            gameSelectorModel.getGameName(),
+            gameSelectorModel.getGameRound(),
+            new HashSet<>(playersAllowedToBeDisabled),
             new LinkedHashMap<>());
       }
-      return new PlayerListing(new HashMap<>(playersToNodeListing),
-          new HashMap<>(playersEnabledListing), getLocalPlayerTypes(), data.getGameVersion(),
-          data.getGameName(), data.getSequence().getRound() + "",
-          new HashSet<>(playersAllowedToBeDisabled), playerNamesAndAlliancesInTurnOrder);
+      return new PlayerListing(
+          new HashMap<>(playersToNodeListing),
+          new HashMap<>(playersEnabledListing),
+          getLocalPlayerTypes(),
+          data.getGameVersion(),
+          data.getGameName(),
+          data.getSequence().getRound() + "",
+          new HashSet<>(playersAllowedToBeDisabled),
+          playerNamesAndAlliancesInTurnOrder);
     }
   }
 
@@ -409,7 +447,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       playersToNodeListing.put(playerName, take ? from.getName() : null);
     }
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     remoteModelListener.playersTakenChanged();
   }
 
@@ -422,7 +460,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       playersEnabledListing.put(playerName, enabled);
       if (ui == null) {
-        // we do not want the host bot to actually play, so set to null if enabled, and set to weak ai if disabled
+        // we do not want the host bot to actually play, so set to null if enabled, and set to weak
+        // ai if disabled
         if (enabled) {
           playersToNodeListing.put(playerName, null);
         } else {
@@ -430,7 +469,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         }
       }
     }
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     remoteModelListener.playersTakenChanged();
   }
 
@@ -440,13 +479,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  private void notifyChanellPlayersChanged() {
+  private void notifyChannelPlayersChanged() {
     Optional.ofNullable(messengers)
-        .ifPresent(messenger -> {
-          final IClientChannel channel =
-              (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
-          channel.playerListingChanged(getPlayerListingInternal());
-        });
+        .ifPresent(
+            messenger -> {
+              final IClientChannel channel =
+                  (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
+              channel.playerListingChanged(getPlayerListingInternal());
+            });
   }
 
   public void takePlayer(final String playerName) {
@@ -483,14 +523,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrder() {
     return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
-  }
-
-  @Override
-  public void messengerInvalid(final Throwable reason) {
-    if (ui != null) {
-      JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
-    }
-    serverSetupModel.showSelectType();
   }
 
   @Override
@@ -546,9 +578,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     final Map<String, PlayerType> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerType defaultLocalType = ui == null
-        ? PlayerType.WEAK_AI
-        : PlayerType.HUMAN_PLAYER;
+    final PlayerType defaultLocalType = ui == null ? PlayerType.WEAK_AI : PlayerType.HUMAN_PLAYER;
     for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
       final String player = entry.getKey();
       final String playedBy = entry.getValue();
@@ -560,8 +590,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   /**
-   * Returns the game launcher or empty if all players are not assigned to a node (e.g. if a player drops out before
-   * starting the game).
+   * Returns the game launcher or empty if all players are not assigned to a node (e.g. if a player
+   * drops out before starting the game).
    */
   public Optional<ServerLauncher> getLauncher() {
     synchronized (this) {
@@ -581,8 +611,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
               .ifPresent(node -> remotePlayers.put(entry.getKey(), node));
         }
       }
-      return Optional.of(new ServerLauncher(clientCount, messengers, gameSelectorModel, getPlayerListingInternal(),
-          remotePlayers, this, ui == null));
+      return Optional.of(
+          new ServerLauncher(
+              clientCount,
+              messengers,
+              gameSelectorModel,
+              getPlayerListingInternal(),
+              remotePlayers,
+              this,
+              launchAction));
     }
   }
 
@@ -590,7 +627,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     serverMessenger.setAcceptNewConnections(true);
     final IClientChannel channel =
         (IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     channel.gameReset();
   }
 

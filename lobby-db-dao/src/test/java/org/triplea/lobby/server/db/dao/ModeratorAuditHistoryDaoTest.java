@@ -5,19 +5,17 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.Instant;
 import java.util.List;
-
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.data.ModeratorAuditHistoryDaoData;
 import org.triplea.test.common.Integration;
-
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 
 @Integration
 @ExtendWith(DBUnitExtension.class)
@@ -30,30 +28,33 @@ class ModeratorAuditHistoryDaoTest {
       JdbiDatabase.newConnection().onDemand(ModeratorAuditHistoryDao.class);
 
   @Test
-  @DataSet("moderator_audit/pre-insert.yml")
+  @DataSet(cleanBefore = true, value = "moderator_audit/pre_insert.yml")
   void addAuditRecordThrowsIfModeratorNameNotFound() {
     assertThrows(
         UnableToExecuteStatementException.class,
-        () -> dao.addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-            .moderatorUserId(MODERATOR_ID_DOES_NOT_EXIST)
-            .actionTarget("any-value")
-            .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
-            .build()));
+        () ->
+            dao.addAuditRecord(
+                ModeratorAuditHistoryDao.AuditArgs.builder()
+                    .moderatorUserId(MODERATOR_ID_DOES_NOT_EXIST)
+                    .actionTarget("any-value")
+                    .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
+                    .build()));
   }
 
   @Test
-  @DataSet("moderator_audit/pre-insert.yml")
-  @ExpectedDataSet("moderator_audit/post-insert.yml")
+  @DataSet(cleanBefore = true, value = "moderator_audit/pre_insert.yml")
+  @ExpectedDataSet("moderator_audit/post_insert.yml")
   void addAuditRecord() {
-    dao.addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-        .moderatorUserId(MODERATOR_ID)
-        .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
-        .actionTarget("ACTION_TARGET")
-        .build());
+    dao.addAuditRecord(
+        ModeratorAuditHistoryDao.AuditArgs.builder()
+            .moderatorUserId(MODERATOR_ID)
+            .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
+            .actionTarget("ACTION_TARGET")
+            .build());
   }
 
   @Test
-  @DataSet("moderator_audit/history-select.yml")
+  @DataSet(cleanBefore = true, value = "moderator_audit/history_select.yml")
   void selectHistory() {
     List<ModeratorAuditHistoryDaoData> results = dao.lookupHistoryItems(0, 3);
 
@@ -73,7 +74,6 @@ class ModeratorAuditHistoryDaoTest {
     assertThat(results.get(2).getDateCreated(), is(Instant.parse("2016-01-03T23:59:20Z")));
     assertThat(results.get(2).getActionName(), is("BAN_USERNAME"));
     assertThat(results.get(2).getActionTarget(), is("ACTION_TARGET3"));
-
 
     // there are only 5 records total
     results = dao.lookupHistoryItems(3, 3);

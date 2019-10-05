@@ -2,6 +2,8 @@ package games.strategy.triplea.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.UnitType;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Window;
@@ -9,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JToolTip;
@@ -19,18 +20,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
-
 import org.triplea.java.StringUtils;
 
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.UnitType;
-
-/**
- * Responsible for showing tool tips when hovering over units on the main map.
- */
+/** Responsible for showing tool tips when hovering over units on the main map. */
 public final class MapUnitTooltipManager implements ActionListener {
   private final JComponent parent;
-  private final WindowDeactivationObserver windowDeactivationObserver = new WindowDeactivationObserver();
+  private final WindowDeactivationObserver windowDeactivationObserver =
+      new WindowDeactivationObserver();
   private final Timer timer;
   private @Nullable String text;
   private @Nullable Popup popup;
@@ -104,8 +100,8 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @param player The owner of the unit.
    * @param count The number of units.
    */
-  public static void setUnitTooltip(final JComponent component, final UnitType unitType, final PlayerId player,
-      final int count) {
+  public static void setUnitTooltip(
+      final JComponent component, final UnitType unitType, final PlayerId player, final int count) {
     final String text = getTooltipTextForUnit(unitType, player, count);
     component.setToolTipText("<html>" + text + "</html>");
   }
@@ -116,17 +112,22 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @param unitType The type of unit.
    * @param player The owner of the unit.
    * @param count The number of units.
-   *
    * @return The tooltip text.
    */
-  public static String getTooltipTextForUnit(final UnitType unitType, final PlayerId player, final int count) {
-    final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
-        StringUtils.capitalize(unitType.getName()), player.getName());
+  public static String getTooltipTextForUnit(
+      final UnitType unitType, final PlayerId player, final int count) {
+    final String firstLine =
+        String.format(
+            "<b>%s%s (%s)</b><br />",
+            count == 1 ? "" : (count + " "),
+            StringUtils.capitalize(unitType.getName()),
+            player.getName());
     return firstLine + TooltipProperties.getInstance().getTooltip(unitType, player);
   }
 
   /**
-   * Updates the tooltip. The tooltip will show after 1s without another update if the text is not empty.
+   * Updates the tooltip. The tooltip will show after 1s without another update if the text is not
+   * empty.
    *
    * @param tipText The tooltip text to set or the empty string if it should be hidden.
    */

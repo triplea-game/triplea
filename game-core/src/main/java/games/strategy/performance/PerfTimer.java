@@ -1,16 +1,13 @@
 package games.strategy.performance;
 
 import java.io.Closeable;
-
 import lombok.extern.java.Log;
 
 /**
- * Provides a high level API to the game engine for performance measurements.
- * This class handles the library details and sends output to 'PerformanceConsole.java'
- * <br />
- * Example usage with auto-close try block:
- * <code>
- * try(PerfTimer timer = PerfTimer.startTime("timer_name_0")) {
+ * Provides a high level API to the game engine for performance measurements. This class handles the
+ * library details and sends output to 'PerformanceConsole.java' <br>
+ * Example usage with auto-close try block: <code>
+ * try(PerfTimer timer = PerfTimer.startTimer("timer_name_0")) {
  *   // code to be timed
  * }
  * </code>
@@ -22,7 +19,6 @@ public class PerfTimer implements Closeable {
   private static final PerfTimer DISABLED_TIMER = new PerfTimer("disabled");
   final String title;
   private final long startMillis;
-
 
   private PerfTimer(final String title) {
     this.title = title;
@@ -48,6 +44,6 @@ public class PerfTimer implements Closeable {
 
     final long milliFraction = (stopMicros % 1000) / 100;
     final long millis = (stopMicros / 1000);
-    log.info(millis + "." + milliFraction + " ms - " + perfTimer.title);
+    log.info(millis + "." + milliFraction + " ms - " + perfTimer.title + ", " + stopNanos + " ns");
   }
 }

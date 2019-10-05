@@ -9,17 +9,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.function.Consumer;
-
 import javax.annotation.Nullable;
-
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.function.ThrowingFunction;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class ClientSettingTest {
   @Nested
@@ -39,17 +36,18 @@ final class ClientSettingTest {
     void shouldReturnDefaultValueWhenDecodeValueThrowsException() {
       final String defaultValue = "defaultValue";
       final String illegalValue = "illegalValue";
-      final ClientSetting<String> clientSetting = new FakeClientSetting(
-          "name",
-          defaultValue,
-          FakeClientSetting.DEFAULT_ENCODE_VALUE,
-          encodedValue -> {
-            if (illegalValue.equals(encodedValue)) {
-              throw new ClientSetting.ValueEncodingException();
-            }
+      final ClientSetting<String> clientSetting =
+          new FakeClientSetting(
+              "name",
+              defaultValue,
+              FakeClientSetting.DEFAULT_ENCODE_VALUE,
+              encodedValue -> {
+                if (illegalValue.equals(encodedValue)) {
+                  throw new ClientSetting.ValueEncodingException();
+                }
 
-            return FakeClientSetting.DEFAULT_DECODE_VALUE.apply(encodedValue);
-          });
+                return FakeClientSetting.DEFAULT_DECODE_VALUE.apply(encodedValue);
+              });
       clientSetting.setValue(illegalValue);
 
       assertThat(clientSetting.getValue(), isPresentAndIs(defaultValue));
@@ -63,17 +61,18 @@ final class ClientSettingTest {
       final String defaultValue = "defaultValue";
       final String legalValue = "legalValue";
       final String illegalValue = "illegalValue";
-      final ClientSetting<String> clientSetting = new FakeClientSetting(
-          "name",
-          defaultValue,
-          value -> {
-            if (illegalValue.equals(value)) {
-              throw new ClientSetting.ValueEncodingException();
-            }
+      final ClientSetting<String> clientSetting =
+          new FakeClientSetting(
+              "name",
+              defaultValue,
+              value -> {
+                if (illegalValue.equals(value)) {
+                  throw new ClientSetting.ValueEncodingException();
+                }
 
-            return FakeClientSetting.DEFAULT_ENCODE_VALUE.apply(value);
-          },
-          FakeClientSetting.DEFAULT_DECODE_VALUE);
+                return FakeClientSetting.DEFAULT_ENCODE_VALUE.apply(value);
+              },
+              FakeClientSetting.DEFAULT_DECODE_VALUE);
       clientSetting.setValue(legalValue);
 
       clientSetting.setValue(illegalValue);
@@ -99,18 +98,19 @@ final class ClientSettingTest {
   final class ListenerTest extends AbstractClientSettingTestCase {
     private static final String TEST_VALUE = "value";
 
-    @Mock
-    private Consumer<GameSetting<String>> listener;
+    @Mock private Consumer<GameSetting<String>> listener;
     private final ClientSetting<String> clientSetting = new FakeClientSetting("TEST_SETTING");
 
     @Test
     void listenerShouldBeCalled() {
-      doAnswer(invocation -> {
-        @SuppressWarnings("unchecked")
-        final GameSetting<String> gameSetting = (GameSetting<String>) invocation.getArgument(0);
-        assertThat(gameSetting.getValue(), isPresentAndIs(TEST_VALUE));
-        return null;
-      }).when(listener).accept(clientSetting);
+      doAnswer(
+              invocation -> {
+                final GameSetting<String> gameSetting = invocation.getArgument(0);
+                assertThat(gameSetting.getValue(), isPresentAndIs(TEST_VALUE));
+                return null;
+              })
+          .when(listener)
+          .accept(clientSetting);
       clientSetting.addListener(listener);
 
       clientSetting.setValue(TEST_VALUE);
@@ -141,7 +141,8 @@ final class ClientSettingTest {
   }
 
   private static final class FakeClientSetting extends ClientSetting<String> {
-    static final ThrowingFunction<String, String, ValueEncodingException> DEFAULT_ENCODE_VALUE = value -> value;
+    static final ThrowingFunction<String, String, ValueEncodingException> DEFAULT_ENCODE_VALUE =
+        value -> value;
     static final ThrowingFunction<String, String, ValueEncodingException> DEFAULT_DECODE_VALUE =
         encodedValue -> encodedValue;
 

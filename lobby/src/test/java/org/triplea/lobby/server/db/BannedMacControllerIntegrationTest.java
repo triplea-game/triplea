@@ -3,18 +3,16 @@ package org.triplea.lobby.server.db;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.github.npathai.hamcrestopt.OptionalMatchers;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 
-import com.github.npathai.hamcrestopt.OptionalMatchers;
-
 final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
 
-  private final BannedMacDao controller =
+  private final UserBanDao controller =
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedMacDao();
 
   @Test
@@ -25,10 +23,10 @@ final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceC
   }
 
   private void banUser() {
-    controller.addBannedMac(user, null, moderator);
+    controller.banUser(user, null, moderator);
   }
 
   private Optional<Timestamp> isMacBanned() throws Exception {
-    return controller.isMacBanned(InetAddress.getLocalHost(), user.getHashedMacAddress());
+    return controller.isBanned(InetAddress.getLocalHost(), user.getHashedMacAddress());
   }
 }

@@ -1,35 +1,45 @@
 package games.strategy.engine.lobby.client;
 
-import org.triplea.lobby.common.IModeratorController;
-
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 import lombok.Getter;
+import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.lobby.common.IModeratorController;
 
-/**
- * Provides information about a client connection to a lobby server.
- */
+/** Provides information about a client connection to a lobby server. */
+@Getter
 public class LobbyClient {
-  @Getter
   private final Messengers messengers;
-  private final boolean isAnonymousLogin;
-  private Boolean isAdmin;
+  private final boolean anonymousLogin;
+  private final boolean admin;
+  private final HttpLobbyClient httpLobbyClient;
 
-  public LobbyClient(final IMessenger messenger, final boolean anonymousLogin) {
+  public LobbyClient(final IMessenger messenger, final HttpLobbyClient httpLobbyClient) {
+    this(messenger, httpLobbyClient, false);
+  }
+
+  public LobbyClient(
+      final IMessenger messenger,
+      final HttpLobbyClient httpLobbyClient,
+      final boolean anonymousLogin) {
     messengers = new Messengers(messenger);
-    isAnonymousLogin = anonymousLogin;
+    this.httpLobbyClient = httpLobbyClient;
+    this.anonymousLogin = anonymousLogin;
+    final var moderatorController =
+        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    admin = moderatorController.isAdmin();
   }
 
-  public boolean isAdmin() {
-    if (isAdmin == null) {
-      final IModeratorController controller =
-          (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
-      isAdmin = controller.isAdmin();
-    }
-    return isAdmin;
+  public boolean isPasswordChangeRequired() {
+    return messengers.isPasswordChangeRequired();
   }
 
-  public boolean isAnonymousLogin() {
-    return isAnonymousLogin;
+  /** Returns the assigned name of the current player connected to the lobby. */
+  public String getPlayerName() {
+    return messengers.getLocalNode().getName();
+  }
+
+  public IModeratorController getModeratorController() {
+    return (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
   }
 }

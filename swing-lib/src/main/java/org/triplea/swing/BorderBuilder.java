@@ -3,9 +3,7 @@ package org.triplea.swing;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-/**
- * Presents a builder API for creating a swing Border object.
- */
+/** Presents a builder API for creating a swing Border object. */
 public final class BorderBuilder {
 
   private int top;

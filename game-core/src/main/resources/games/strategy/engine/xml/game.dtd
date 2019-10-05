@@ -305,7 +305,7 @@
 		>
 		
 		<!ELEMENT list EMPTY>
-		<!-- a comma seperated list of possible values -->
+		<!-- a comma separated list of possible values -->
 		<!ATTLIST list
 			values CDATA #REQUIRED
 		>

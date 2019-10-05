@@ -1,9 +1,5 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.Action;
-
-import org.triplea.swing.SwingAction;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.player.IPlayerBridge;
@@ -14,9 +10,12 @@ class MoveForumPosterPanel extends AbstractForumPosterPanel {
 
   MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    final Action doneAction = SwingAction.of("Done", e -> release());
-    forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
+    forumPosterComponent = new ForumPosterComponent(getData(), this::performDone, getTitle());
+  }
 
+  @Override
+  void performDone() {
+    release();
   }
 
   @Override
@@ -56,7 +55,8 @@ class MoveForumPosterPanel extends AbstractForumPosterPanel {
 
   @Override
   protected boolean getHasPostedTurnSummary() {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate =
+        (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     return delegate.getHasPostedTurnSummary();
   }
 

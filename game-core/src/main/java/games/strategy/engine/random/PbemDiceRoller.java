@@ -1,5 +1,7 @@
 package games.strategy.engine.random;
 
+import games.strategy.triplea.UrlConstants;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.Window;
@@ -10,7 +12,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -18,18 +19,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 
-import games.strategy.triplea.UrlConstants;
-import games.strategy.ui.Util;
-
 /**
- * It's a bit messy, but the threads are a pain to deal with. We want to be able to call this from any thread, and have
- * a dialog that doesn't close until the dice roll finishes. If there is an error we wait until we get a good roll
- * before returning.
+ * It's a bit messy, but the threads are a pain to deal with. We want to be able to call this from
+ * any thread, and have a dialog that doesn't close until the dice roll finishes. If there is an
+ * error we wait until we get a good roll before returning.
  */
 public class PbemDiceRoller implements IRandomSource {
   private static Frame focusWindow;
@@ -41,17 +38,15 @@ public class PbemDiceRoller implements IRandomSource {
   }
 
   /**
-   * If the game has multiple frames, allows the UI to set what frame should be the parent of the dice rolling window.
-   * If set to null, or not set, we try to guess by finding the currently focused window (or a visible window if none
-   * are focused).
+   * If the game has multiple frames, allows the UI to set what frame should be the parent of the
+   * dice rolling window. If set to null, or not set, we try to guess by finding the currently
+   * focused window (or a visible window if none are focused).
    */
   public static void setFocusWindow(final Frame w) {
     focusWindow = w;
   }
 
-  /**
-   * Do a test roll, leaving the dialog open after the roll is done.
-   */
+  /** Do a test roll, leaving the dialog open after the roll is done. */
   public void test() {
     // TODO: do a test based on data.getDiceSides()
     final HttpDiceRollerDialog dialog =
@@ -61,14 +56,17 @@ public class PbemDiceRoller implements IRandomSource {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
-    final Supplier<int[]> action = () -> {
-      final HttpDiceRollerDialog dialog =
-          new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer);
-      dialog.roll();
-      return dialog.getDiceRoll();
-    };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
+  public int[] getRandom(final int max, final int count, final String annotation)
+      throws IllegalStateException {
+    final Supplier<int[]> action =
+        () -> {
+          final HttpDiceRollerDialog dialog =
+              new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer);
+          dialog.roll();
+          return dialog.getDiceRoll();
+        };
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
+        .result
         .orElseGet(() -> new int[0]);
   }
 
@@ -92,9 +90,7 @@ public class PbemDiceRoller implements IRandomSource {
     return focusedFrame;
   }
 
-  /**
-   * The dialog that will show while the dice are rolling.
-   */
+  /** The dialog that will show while the dice are rolling. */
   private static final class HttpDiceRollerDialog extends JDialog {
     private static final long serialVersionUID = -4802403913826489223L;
     private final JButton exitButton = new JButton("Exit");
@@ -117,10 +113,15 @@ public class PbemDiceRoller implements IRandomSource {
      * @param owner owner frame.
      * @param sides the number of sides on the dice
      * @param count the number of dice rolled
-     * @param subjectMessage the subject for the email the dice roller will send (if it sends emails)
+     * @param subjectMessage the subject for the email the dice roller will send (if it sends
+     *     emails)
      * @param diceServer the dice server implementation
      */
-    HttpDiceRollerDialog(final Frame owner, final int sides, final int count, final String subjectMessage,
+    HttpDiceRollerDialog(
+        final Frame owner,
+        final int sides,
+        final int count,
+        final String subjectMessage,
         final IRemoteDiceServer diceServer) {
       super(owner, "Dice roller", true);
       this.owner = owner;
@@ -146,8 +147,8 @@ public class PbemDiceRoller implements IRandomSource {
     }
 
     /**
-     * There are three differences when we are testing, 1 dont close the window
-     * when we are done 2 remove the exit button 3 add a close button.
+     * There are three differences when we are testing, 1 dont close the window when we are done 2
+     * remove the exit button 3 add a close button.
      */
     void setTest() {
       test = true;
@@ -161,10 +162,11 @@ public class PbemDiceRoller implements IRandomSource {
     }
 
     void notifyError() {
-      SwingUtilities.invokeLater(() -> {
-        exitButton.setEnabled(true);
-        reRollButton.setEnabled(true);
-      });
+      SwingUtilities.invokeLater(
+          () -> {
+            exitButton.setEnabled(true);
+            reRollButton.setEnabled(true);
+          });
     }
 
     int[] getDiceRoll() {
@@ -189,18 +191,20 @@ public class PbemDiceRoller implements IRandomSource {
     }
 
     private void closeAndReturn() {
-      SwingUtilities.invokeLater(() -> {
-        setVisible(false);
-        owner.toFront();
-        owner = null;
-        dispose();
-      });
+      SwingUtilities.invokeLater(
+          () -> {
+            setVisible(false);
+            owner.toFront();
+            owner = null;
+            dispose();
+          });
     }
 
     /**
-     * Should be called from a thread other than the event thread after we are open (or at least in the process of
-     * opening) will close the window and notify any waiting threads when completed successfully.
-     * Before contacting Irony Dice Server, check if email has a reasonable valid syntax.
+     * Should be called from a thread other than the event thread after we are open (or at least in
+     * the process of opening) will close the window and notify any waiting threads when completed
+     * successfully. Before contacting Irony Dice Server, check if email has a reasonable valid
+     * syntax.
      */
     private void rollInSeparateThread() throws IllegalStateException {
       if (SwingUtilities.isEventDispatchThread()) {
@@ -228,20 +232,25 @@ public class PbemDiceRoller implements IRandomSource {
           closeAndReturn();
         }
       } catch (final SocketException ex) { // an error in networking
-        appendText("Connection failure:" + ex.getMessage() + "\n"
-            + "Please ensure your Internet connection is working, and try again.");
+        appendText(
+            "Connection failure:"
+                + ex.getMessage()
+                + "\n"
+                + "Please ensure your Internet connection is working, and try again.");
         notifyError();
       } catch (final InvocationTargetException e) {
         appendText("\nError:" + e.getMessage() + "\n\n");
         appendText("Text from dice server:\n" + text + "\n");
         notifyError();
       } catch (final IOException ex) {
-        appendText("An error has occured!\n");
+        appendText("An error has occurred!\n");
         appendText("Possible reasons the error could have happened:\n");
         appendText("  1: An invalid e-mail address\n");
         appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
         appendText("  3: The e-mail address does not exist\n");
-        appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
+        appendText(
+            "  4: An unknown error, please see the error console and consult the "
+                + "forums for help\n");
         appendText("     Visit " + UrlConstants.TRIPLEA_FORUM + "  for extra help\n");
         if (text != null) {
           appendText("Text from dice server:\n" + text + "\n");
@@ -255,7 +264,10 @@ public class PbemDiceRoller implements IRandomSource {
 
     private void waitForWindowToBecomeVisible() {
       final BooleanSupplier isVisible =
-          () -> Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(this::isVisible)).result.orElse(false);
+          () ->
+              Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(this::isVisible))
+                  .result
+                  .orElse(false);
       while (!isVisible.getAsBoolean()) {
         Interruptibles.sleep(10L);
       }

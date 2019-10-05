@@ -6,10 +6,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
 
 class TupleTest {
   private final Tuple<String, Integer> testObj = Tuple.of("hi", 123);

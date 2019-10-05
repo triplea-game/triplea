@@ -1,14 +1,10 @@
 package games.strategy.net;
 
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
-
 import lombok.extern.java.Log;
 
-/**
- * A collection of methods useful for writing tests that use instances of {@link IMessenger}.
- */
+/** A collection of methods useful for writing tests that use instances of {@link IMessenger}. */
 @Log
 public final class MessengerTestUtils {
   private MessengerTestUtils() {}

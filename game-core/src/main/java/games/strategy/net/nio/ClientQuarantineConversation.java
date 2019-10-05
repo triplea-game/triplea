@@ -1,27 +1,30 @@
 package games.strategy.net.nio;
 
+import games.strategy.net.IConnectionLogin;
+import games.strategy.net.MessageHeader;
+import games.strategy.net.Node;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-
-import org.triplea.java.Interruptibles;
-
-import games.strategy.net.IConnectionLogin;
-import games.strategy.net.MessageHeader;
-import games.strategy.net.Node;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.http.client.ApiKey;
+import org.triplea.java.Interruptibles;
+import org.triplea.swing.DialogBuilder;
 
-/**
- * Client-side implementation of {@link QuarantineConversation}.
- */
+/** Client-side implementation of {@link QuarantineConversation}. */
 @Log
 public class ClientQuarantineConversation extends QuarantineConversation {
   private enum Step {
-    READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
+    READ_CHALLENGE,
+    READ_ERROR,
+    READ_NAMES,
+    READ_ADDRESS
   }
 
   private final IConnectionLogin login;
@@ -30,19 +33,21 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private final CountDownLatch showLatch = new CountDownLatch(1);
   private final CountDownLatch doneShowLatch = new CountDownLatch(1);
   private Step step = Step.READ_CHALLENGE;
-  @Getter
-  private String localName;
-  @Getter
-  private String serverName;
-  @Getter
-  private InetSocketAddress networkVisibleAddress;
-  @Getter
-  private InetSocketAddress serverLocalAddress;
+  @Getter private String localName;
+  @Getter private String serverName;
+  @Getter private InetSocketAddress networkVisibleAddress;
+  @Getter private InetSocketAddress serverLocalAddress;
   private Map<String, String> challengeProperties;
   private Map<String, String> challengeResponse;
   private volatile boolean isClosed = false;
-  @Getter
-  private volatile String errorMessage;
+  @Getter private volatile String errorMessage;
+  /**
+   * On login to lobby, server will respond with an API key that can be used for interacting with
+   * the http server. Game hosts will not provide an API key.
+   */
+  @Nullable @Getter private volatile ApiKey apiKey;
+
+  @Getter private boolean passwordChangeRequired = false;
 
   public ClientQuarantineConversation(
       final IConnectionLogin login,
@@ -60,12 +65,12 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     send(mac);
   }
 
-  /**
-   * Prompts the user to enter their credentials.
-   */
+  /** Prompts the user to enter their credentials. */
   public void showCredentials() {
-    // We need to do this in the thread that created the socket, since the thread that creates the socket will often be,
-    // or will block the swing event thread, but the getting of a username/password must be done in the swing event
+    // We need to do this in the thread that created the socket, since the thread that creates the
+    // socket will often be,
+    // or will block the swing event thread, but the getting of a username/password must be done in
+    // the swing event
     // thread. So we have complex code to switch back and forth.
     Interruptibles.await(showLatch);
 
@@ -114,8 +119,35 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           return Action.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) serializable);
+          final String assignedName = strings[0];
+          // If the assigned name does not start with the desired local name,
+          // it means we are already connected and have been given our existing logged in name.
+          // We warn the user here to let them know explicitly so it does not look like
+          // a silent error.
+          if (!assignedName.startsWith(localName)) {
+            new Thread(
+                    () ->
+                        DialogBuilder.builder()
+                            .parent(null)
+                            .title("Already Logged In")
+                            .infoMessage(
+                                "<html>Already logged in with another name, "
+                                    + "cannot use a different name.<br/>"
+                                    + "Logging in as: "
+                                    + assignedName)
+                            .showDialog())
+                .start();
+          }
           localName = strings[0];
           serverName = strings[1];
+          if (strings.length > 2) {
+            passwordChangeRequired =
+                strings[2] != null
+                    && strings[2].equals(ServerQuarantineConversation.CHANGE_PASSWORD);
+          }
+          if (strings.length > 3) {
+            apiKey = Optional.ofNullable(strings[3]).map(ApiKey::of).orElse(null);
+          }
           step = Step.READ_ADDRESS;
           return Action.NONE;
         case READ_ADDRESS:

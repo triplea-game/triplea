@@ -1,5 +1,12 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.image.ResourceImageFactory;
+import games.strategy.triplea.ui.logic.RouteCalculator;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -17,30 +24,20 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.image.ResourceImageFactory;
-import games.strategy.triplea.ui.logic.RouteCalculator;
-import games.strategy.triplea.ui.mapdata.MapData;
-
-/**
- * Draws a route on a map.
- */
+/** Draws a route on a map. */
 public class MapRouteDrawer {
 
   private static final SplineInterpolator splineInterpolator = new SplineInterpolator();
   /**
-   * This value influences the "resolution" of the Path.
-   * Too low values make the Path look edgy, too high values will cause lag and rendering errors
-   * because the distance between the drawing segments is shorter than 2 pixels
+   * This value influences the "resolution" of the Path. Too low values make the Path look edgy, too
+   * high values will cause lag and rendering errors because the distance between the drawing
+   * segments is shorter than 2 pixels
    */
   private static final double DETAIL_LEVEL = 1.0;
+
   private static final int ARROW_LENGTH = 4;
   private static final int MESSAGE_HEIGHT = 26;
   private static final int MESSAGE_PADDING = 8;
@@ -53,21 +50,24 @@ public class MapRouteDrawer {
   private final MapPanel mapPanel;
 
   MapRouteDrawer(final MapPanel mapPanel, final MapData mapData) {
-    routeCalculator = RouteCalculator.builder()
-        .isInfiniteX(mapData.scrollWrapX())
-        .isInfiniteY(mapData.scrollWrapY())
-        .mapWidth(mapPanel.getImageWidth())
-        .mapHeight(mapPanel.getImageHeight())
-        .build();
+    routeCalculator =
+        RouteCalculator.builder()
+            .isInfiniteX(mapData.scrollWrapX())
+            .isInfiniteY(mapData.scrollWrapY())
+            .mapWidth(mapPanel.getImageWidth())
+            .mapHeight(mapPanel.getImageHeight())
+            .build();
     this.mapData = mapData;
     this.mapPanel = mapPanel;
   }
 
-  /**
-   * Draws the route to the screen.
-   */
-  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final String maxMovement,
-      final ResourceCollection movementFuelCost, final ResourceImageFactory resourceImageFactory) {
+  /** Draws the route to the screen. */
+  public void drawRoute(
+      final Graphics2D graphics,
+      final RouteDescription routeDescription,
+      final String maxMovement,
+      final ResourceCollection movementFuelCost,
+      final ResourceImageFactory resourceImageFactory) {
     final Route route = routeDescription.getRoute();
     if (route == null) {
       return;
@@ -88,11 +88,13 @@ public class MapRouteDrawer {
         drawDirectPath(graphics, points[0], points[points.length - 1]);
       }
       if (tooFewPoints && !tooFewTerritories) {
-        drawMoveLength(graphics, points, numTerritories, maxMovement, movementFuelCost, resourceImageFactory);
+        drawMoveLength(
+            graphics, points, numTerritories, maxMovement, movementFuelCost, resourceImageFactory);
       }
     } else {
       drawCurvedPath(graphics, points);
-      drawMoveLength(graphics, points, numTerritories, maxMovement, movementFuelCost, resourceImageFactory);
+      drawMoveLength(
+          graphics, points, numTerritories, maxMovement, movementFuelCost, resourceImageFactory);
     }
     drawJoints(graphics, points);
     drawCustomCursor(graphics, routeDescription, points[points.length - 1]);
@@ -106,11 +108,14 @@ public class MapRouteDrawer {
    */
   private void drawJoints(final Graphics2D graphics, final Point2D[] points) {
     final int jointsize = 10;
-    // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow instead)
-    final Point2D[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
+    // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow
+    // instead)
+    final Point2D[] newPoints =
+        points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
     for (final Point2D[] joints : routeCalculator.getAllPoints(newPoints)) {
       for (final Point2D p : joints) {
-        final Ellipse2D circle = new Ellipse2D.Double(jointsize / -2.0, jointsize / -2.0, jointsize, jointsize);
+        final Ellipse2D circle =
+            new Ellipse2D.Double(jointsize / -2.0, jointsize / -2.0, jointsize, jointsize);
         final AffineTransform ellipseTransform = getDrawingTransform();
         ellipseTransform.translate(p.getX(), p.getY());
         graphics.fill(ellipseTransform.createTransformedShape(circle));
@@ -123,9 +128,12 @@ public class MapRouteDrawer {
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param routeDescription The RouteDescription object containing the CursorImage
-   * @param lastRoutePoint The last {@linkplain Point2D} on the drawn Route as a center for the cursor icon.
+   * @param lastRoutePoint The last {@linkplain Point2D} on the drawn Route as a center for the
+   *     cursor icon.
    */
-  private void drawCustomCursor(final Graphics2D graphics, final RouteDescription routeDescription,
+  private void drawCustomCursor(
+      final Graphics2D graphics,
+      final RouteDescription routeDescription,
       final Point2D lastRoutePoint) {
     final BufferedImage cursorImage = (BufferedImage) routeDescription.getCursorImage();
     if (cursorImage != null) {
@@ -160,10 +168,9 @@ public class MapRouteDrawer {
   /**
    * Centripetal parameterization.
    *
-   * <p>
-   * Check <a href="http://stackoverflow.com/a/37370620/5769952">http://stackoverflow.com/a/37370620/5769952</a> for
-   * more information
-   * </p>
+   * <p>Check <a
+   * href="http://stackoverflow.com/a/37370620/5769952">http://stackoverflow.com/a/37370620/5769952</a>
+   * for more information
    *
    * @param points - The Points which should be parameterized
    * @return A Parameter-Array called the "Index"
@@ -190,12 +197,12 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Creates a {@linkplain Point2D} Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object.
+   * Creates a {@linkplain Point2D} Array out of a {@linkplain RouteDescription} and a {@linkplain
+   * MapData} object.
    *
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
-   *
-   * @return The {@linkplain Point2D} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
-   *         objects
+   * @return The {@linkplain Point2D} array specified by the {@linkplain RouteDescription} and
+   *     {@linkplain MapData} objects
    */
   protected Point2D[] getRoutePoints(final RouteDescription routeDescription) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
@@ -226,12 +233,11 @@ public class MapRouteDrawer {
       result[i] = extractor.apply(points[i]);
     }
     return result;
-
   }
 
   /**
-   * Creates a double array containing y coordinates of a {@linkplain PolynomialSplineFunction} with the above specified
-   * {@code DETAIL_LEVEL}.
+   * Creates a double array containing y coordinates of a {@linkplain PolynomialSplineFunction} with
+   * the above specified {@code DETAIL_LEVEL}.
    *
    * @param fuction The {@linkplain PolynomialSplineFunction} with the values
    * @param index the parameterized array to indicate the maximum Values
@@ -257,12 +263,19 @@ public class MapRouteDrawer {
    * @param numTerritories how many Territories the unit traveled so far
    * @param maxMovement The String indicating how man
    */
-  private void drawMoveLength(final Graphics2D graphics, final Point2D[] points, final int numTerritories,
-      final String maxMovement, final ResourceCollection movementFuelCost,
+  private void drawMoveLength(
+      final Graphics2D graphics,
+      final Point2D[] points,
+      final int numTerritories,
+      final String maxMovement,
+      final ResourceCollection movementFuelCost,
       final ResourceImageFactory resourceImageFactory) {
 
     final BufferedImage movementImage =
-        newMovementLeftImage(String.valueOf(numTerritories - 1), maxMovement, movementFuelCost,
+        newMovementLeftImage(
+            String.valueOf(numTerritories - 1),
+            maxMovement,
+            movementFuelCost,
             resourceImageFactory);
     final int textXOffset = -movementImage.getWidth() / 2;
     final Point2D cursorPos = points[points.length - 1];
@@ -280,17 +293,13 @@ public class MapRouteDrawer {
   /**
    * Draws a smooth curve through the given array of points.
    *
-   * <p>
-   * This algorithm is called Spline-Interpolation
-   * because the Apache-commons-math library we are using here does not accept
-   * values but {@code f(x)=y} with x having to increase all the time
-   * the idea behind this is to use a parameter array - the so called index
-   * as x array and splitting the points into a x and y coordinates array.
-   * </p>
+   * <p>This algorithm is called Spline-Interpolation because the Apache-commons-math library we are
+   * using here does not accept values but {@code f(x)=y} with x having to increase all the time the
+   * idea behind this is to use a parameter array - the so called index as x array and splitting the
+   * points into a x and y coordinates array.
    *
-   * <p>
-   * Finally those 2 interpolated arrays get unified into a single {@linkplain Point2D} array and drawn to the Map
-   * </p>
+   * <p>Finally those 2 interpolated arrays get unified into a single {@linkplain Point2D} array and
+   * drawn to the Map
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param points The Knot Points for the Spline-Interpolator aka the joints
@@ -307,30 +316,37 @@ public class MapRouteDrawer {
     for (final Path2D path : paths) {
       drawTransformedShape(graphics, path);
     }
-    // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
-    final List<Point2D[]> finishingPoints = routeCalculator.getAllPoints(
-        new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
-        points[points.length - 1]);
-    final boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > ARROW_LENGTH;
+    // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no
+    // matter what...
+    final List<Point2D[]> finishingPoints =
+        routeCalculator.getAllPoints(
+            new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
+            points[points.length - 1]);
+    final boolean hasArrowEnoughSpace =
+        points[points.length - 2].distance(points[points.length - 1]) > ARROW_LENGTH;
     for (final Point2D[] finishingPointArray : finishingPoints) {
-      drawTransformedShape(graphics, new Line2D.Double(finishingPointArray[0], finishingPointArray[1]));
+      drawTransformedShape(
+          graphics, new Line2D.Double(finishingPointArray[0], finishingPointArray[1]));
       if (hasArrowEnoughSpace) {
         drawArrow(graphics, finishingPointArray[0], finishingPointArray[1]);
       }
     }
   }
 
-  /**
-   * This draws current moves, max moves, and fuel cost.
-   */
-  private static BufferedImage newMovementLeftImage(final String curMovement, final String maxMovement,
-      final ResourceCollection movementFuelCost, final ResourceImageFactory resourceImageFactory) {
+  /** This draws current moves, max moves, and fuel cost. */
+  private static BufferedImage newMovementLeftImage(
+      final String curMovement,
+      final String maxMovement,
+      final ResourceCollection movementFuelCost,
+      final ResourceImageFactory resourceImageFactory) {
 
     // Create and configure image
     final String unitMovementLeft =
         (maxMovement == null || maxMovement.trim().length() == 0) ? "" : "/" + maxMovement;
-    final int imageWidth = findMovementLeftImageWidth(curMovement, unitMovementLeft, movementFuelCost);
-    final BufferedImage image = new BufferedImage(imageWidth, MESSAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    final int imageWidth =
+        findMovementLeftImageWidth(curMovement, unitMovementLeft, movementFuelCost);
+    final BufferedImage image =
+        new BufferedImage(imageWidth, MESSAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
     final Graphics2D graphics = image.createGraphics();
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     graphics.setFont(MESSAGE_FONT);
@@ -376,7 +392,9 @@ public class MapRouteDrawer {
     return image;
   }
 
-  private static int findMovementLeftImageWidth(final String curMovement, final String unitMovementLeft,
+  private static int findMovementLeftImageWidth(
+      final String curMovement,
+      final String unitMovementLeft,
       final ResourceCollection movementFuelCost) {
 
     // Create temp graphics to calculate necessary image width based on font sizes
@@ -414,7 +432,6 @@ public class MapRouteDrawer {
     arrowPolygon.addPoint(arrowOffset, 0);
     arrowPolygon.addPoint(arrowOffset - ARROW_LENGTH, ARROW_LENGTH / -2);
 
-
     final AffineTransform transform = new AffineTransform();
     transform.scale(ARROW_LENGTH, ARROW_LENGTH);
     transform.rotate(angle);
@@ -430,7 +447,8 @@ public class MapRouteDrawer {
    * @param to The placement {@linkplain Point2D} for the Arrow
    */
   private void drawArrow(final Graphics2D graphics, final Point2D from, final Point2D to) {
-    final Shape arrow = newArrowTipShape(Math.atan2(to.getY() - from.getY(), to.getX() - from.getX()));
+    final Shape arrow =
+        newArrowTipShape(Math.atan2(to.getY() - from.getY(), to.getX() - from.getX()));
     final AffineTransform transform = getDrawingTransform();
     transform.translate(to.getX(), to.getY());
     graphics.fill(transform.createTransformedShape(arrow));

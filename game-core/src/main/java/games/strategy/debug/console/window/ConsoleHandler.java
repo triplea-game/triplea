@@ -10,15 +10,14 @@ import java.util.logging.SimpleFormatter;
 /**
  * A {@link Handler} that publishes log records to an instance of {@link ConsoleView}.
  *
- * <p>
- * <strong>Configuration:</strong> This handler does not currently support configuration through the {@link LogManager}.
- * It always uses the following default configuration:
- * </p>
+ * <p><strong>Configuration:</strong> This handler does not currently support configuration through
+ * the {@link LogManager}. It always uses the following default configuration:
+ *
  * <ul>
- * <li>Level: {@code Level.ALL}</li>
- * <li>Filter: No {@code Filter}</li>
- * <li>Formatter: {@code java.util.logging.SimpleFormatter}</li>
- * <li>Encoding: default platform encoding</li>
+ *   <li>Level: {@code Level.ALL}
+ *   <li>Filter: No {@code Filter}
+ *   <li>Formatter: {@code java.util.logging.SimpleFormatter}
+ *   <li>Encoding: default platform encoding
  * </ul>
  */
 public final class ConsoleHandler extends Handler {

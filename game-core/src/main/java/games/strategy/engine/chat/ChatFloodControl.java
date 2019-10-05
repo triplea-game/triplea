@@ -1,11 +1,13 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.PlayerName;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Simple flood control, only allow so many events per window of time. During each rolling time window, anyone that
- * sends more than "N" messages will be filtered until the next time window begins.
+ * Simple flood control, only allow so many events per window of time. During each rolling time
+ * window, anyone that sends more than "N" messages will be filtered until the next time window
+ * begins.
  */
 class ChatFloodControl {
   static final int EVENTS_PER_WINDOW = 20;
@@ -13,7 +15,7 @@ class ChatFloodControl {
   static final int WINDOW = ONE_MINUTE;
 
   private final Object lock = new Object();
-  private final Map<String, Integer> messageCount = new HashMap<>();
+  private final Map<PlayerName, Integer> messageCount = new HashMap<>();
   private long clearTime;
 
   ChatFloodControl() {
@@ -24,7 +26,7 @@ class ChatFloodControl {
     clearTime = initialClearTime;
   }
 
-  boolean allow(final String from, final long now) {
+  boolean allow(final PlayerName from, final long now) {
     synchronized (lock) {
       // reset the window
       if (now > clearTime) {

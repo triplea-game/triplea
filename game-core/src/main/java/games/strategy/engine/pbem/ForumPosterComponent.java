@@ -1,27 +1,23 @@
 package games.strategy.engine.pbem;
 
-import java.util.Collection;
-
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import org.triplea.swing.SwingAction;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.triplea.ui.ActionButtons;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
+import java.util.Collection;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingAction;
 
-/**
- * A panel used to configure and post a PBEM/PBF game.
- */
+/** A panel used to configure and post a PBEM/PBF game. */
 public final class ForumPosterComponent extends JPanel {
   private static final long serialVersionUID = 4754052934098190357L;
 
@@ -36,11 +32,11 @@ public final class ForumPosterComponent extends JPanel {
   private final JCheckBox showDiceStatisticsCheckBox;
   private final JCheckBox includeSavegameCheckBox;
   private final JCheckBox repostTurnSummaryCheckBox;
-  private final Action doneAction;
+  private final Runnable doneAction;
   private final String title;
   private IAbstractForumPosterDelegate forumPosterDelegate;
 
-  public ForumPosterComponent(final GameData data, final Action doneAction, final String title) {
+  public ForumPosterComponent(final GameData data, final Runnable doneAction, final String title) {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
 
@@ -48,13 +44,17 @@ public final class ForumPosterComponent extends JPanel {
     this.doneAction = doneAction;
     this.title = title;
 
-    includeTerritoryCheckBox = new JCheckBox(SwingAction.of("Include territory summary", e -> updateHistoryLog()));
-    includeProductionCheckBox = new JCheckBox(SwingAction.of("Include Production Summary", e -> updateHistoryLog()));
-    showDetailsCheckBox = new JCheckBox(SwingAction.of("Show dice/battle details", e -> updateHistoryLog()));
+    includeTerritoryCheckBox =
+        new JCheckBox(SwingAction.of("Include territory summary", e -> updateHistoryLog()));
+    includeProductionCheckBox =
+        new JCheckBox(SwingAction.of("Include Production Summary", e -> updateHistoryLog()));
+    showDetailsCheckBox =
+        new JCheckBox(SwingAction.of("Show dice/battle details", e -> updateHistoryLog()));
     showDiceStatisticsCheckBox =
         new JCheckBox(SwingAction.of("Include Overall Dice Statistics", e -> updateHistoryLog()));
     includeSavegameCheckBox = new JCheckBox("Include SaveGame");
-    repostTurnSummaryCheckBox = new JCheckBox(SwingAction.of("Repost " + title, e -> updateAllowPost()));
+    repostTurnSummaryCheckBox =
+        new JCheckBox(SwingAction.of("Repost " + title, e -> updateAllowPost()));
     postButton = new JButton(SwingAction.of("Post " + title, e -> post()));
   }
 
@@ -69,21 +69,31 @@ public final class ForumPosterComponent extends JPanel {
   private void post() {
     postButton.setEnabled(false);
     updateHistoryLog();
-    poster.postTurn(title, historyLog, includeSavegameCheckBox.isSelected(),
-        forumPosterDelegate, frame, postButton);
+    poster.postTurn(
+        title,
+        historyLog,
+        includeSavegameCheckBox.isSelected(),
+        forumPosterDelegate,
+        frame,
+        postButton);
     repostTurnSummaryCheckBox.setSelected(false);
   }
 
   /**
-   * Invoked by the parent container to layout the components of this panel based on the specified state.
+   * Invoked by the parent container to layout the components of this panel based on the specified
+   * state.
    *
    * @return A reference to this panel; must be added to the parent container's layout.
    */
-  public ForumPosterComponent layoutComponents(final PbemMessagePoster poster,
-      final IAbstractForumPosterDelegate forumPosterDelegate, final TripleAFrame frame,
-      final boolean hasPosted, final boolean allowIncludeTerritorySummary,
+  public ForumPosterComponent layoutComponents(
+      final PbemMessagePoster poster,
+      final IAbstractForumPosterDelegate forumPosterDelegate,
+      final TripleAFrame frame,
+      final boolean hasPosted,
+      final boolean allowIncludeTerritorySummary,
       final boolean allowIncludeProductionSummary,
-      final boolean allowDiceBattleDetails, final boolean allowDiceStatistics) {
+      final boolean allowDiceBattleDetails,
+      final boolean allowDiceStatistics) {
     this.forumPosterDelegate = forumPosterDelegate;
     this.frame = frame;
     this.poster = poster;
@@ -113,7 +123,12 @@ public final class ForumPosterComponent extends JPanel {
     add(new JButton(SwingAction.of("View " + title, e -> viewHistoryLog())));
     postButton.setEnabled(!hasPosted);
     add(postButton);
-    add(new JButton(doneAction));
+    add(
+        new JButtonBuilder()
+            .title("Done")
+            .actionListener(doneAction::run)
+            .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+            .build());
     validate();
     return this;
   }
@@ -134,8 +149,10 @@ public final class ForumPosterComponent extends JPanel {
       historyLog.printProductionSummary(data);
     }
     if (showDiceStatisticsCheckBox.isSelected()) {
-      historyLog.printDiceStatistics(data,
-          (IRandomStats) frame.getGame().getMessengers().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
+      historyLog.printDiceStatistics(
+          data,
+          (IRandomStats)
+              frame.getGame().getMessengers().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
     }
     historyLog.requestFocus();
   }

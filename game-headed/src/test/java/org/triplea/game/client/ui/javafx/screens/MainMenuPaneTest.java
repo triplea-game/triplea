@@ -5,15 +5,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.triplea.game.client.ui.javafx.screen.NavigationPane;
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
-
 import games.strategy.engine.ClientContext;
+import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +14,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.internal.util.reflection.FieldSetter;
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 class MainMenuPaneTest {
 
@@ -47,10 +45,9 @@ class MainMenuPaneTest {
 
     final MainMenuPane aboutInformation = new MainMenuPane(() -> mock, null, mock2, mock3);
 
-
     aboutInformation.initialize();
 
-    assertEquals("Test String " + ClientContext.engineVersion().getExactVersion(), mock3.getText());
+    assertEquals("Test String " + ClientContext.engineVersion().toString(), mock3.getText());
     assertEquals(1, children.size());
     assertEquals(mock4, children.get(0));
 

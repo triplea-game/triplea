@@ -12,7 +12,6 @@ public interface ThrowingSupplier<T, E extends Throwable> {
    * Gets the result.
    *
    * @return The result.
-   *
    * @throws E If an error occurs while getting the result.
    */
   T get() throws E;

@@ -1,19 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-
 import com.google.common.collect.ImmutableList;
-
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -22,23 +9,33 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
-import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
 
-  final GUID battleId = new GUID();
+  final UUID battleId = UUID.randomUUID();
   /**
-   * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results
-   * for an odds calculator so we can skip some steps for efficiency.
+   * In headless mode we should NOT access any Delegates. In headless mode we are just being used to
+   * calculate results for an odds calculator so we can skip some steps for efficiency.
    */
   boolean headless = false;
+
   final Territory battleSite;
   final PlayerId attacker;
   PlayerId defender;
@@ -49,23 +46,29 @@ abstract class AbstractBattle implements IBattle {
   final BattleType battleType;
   boolean isOver = false;
   /**
-   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on
-   * then we lose the corresponding collection of units.
+   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent
+   * on then we lose the corresponding collection of units.
    */
   final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+
   List<Unit> attackingUnits = new ArrayList<>();
   List<Unit> defendingUnits = new ArrayList<>();
   List<Unit> amphibiousLandAttackers = new ArrayList<>();
   List<Unit> bombardingUnits = new ArrayList<>();
   Collection<TerritoryEffect> territoryEffects;
   BattleResultDescription battleResultDescription;
-  WhoWon whoWon = WhoWon.NOTFINISHED;
+  WhoWon whoWon = WhoWon.NOT_FINISHED;
   int attackerLostTuv = 0;
   int defenderLostTuv = 0;
   final GameData gameData;
 
-  AbstractBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
-      final boolean isBombingRun, final BattleType battleType, final GameData data) {
+  AbstractBattle(
+      final Territory battleSite,
+      final PlayerId attacker,
+      final BattleTracker battleTracker,
+      final boolean isBombingRun,
+      final BattleType battleType,
+      final GameData data) {
     this.battleTracker = battleTracker;
     this.attacker = attacker;
     this.battleSite = battleSite;
@@ -92,7 +95,8 @@ abstract class AbstractBattle implements IBattle {
 
   void clearTransportedBy(final IDelegateBridge bridge) {
     // Clear the transported_by for successfully off loaded units
-    final Collection<Unit> transports = CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
+    final Collection<Unit> transports =
+        CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
       final Collection<Unit> dependents = getTransportDependents(transports);
@@ -108,9 +112,7 @@ abstract class AbstractBattle implements IBattle {
     }
   }
 
-  /**
-   * Figure out what units a transport is transporting and has to unloaded.
-   */
+  /** Figure out what units a transport is transporting and has to unloaded. */
   Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (headless) {
       return Collections.emptyList();
@@ -125,7 +127,8 @@ abstract class AbstractBattle implements IBattle {
   }
 
   /**
-   * Remove any units killed by a previous event (like they died from a strategic bombing raid, rocket attack, etc).
+   * Remove any units killed by a previous event (like they died from a strategic bombing raid,
+   * rocket attack, etc).
    */
   protected void removeUnitsThatNoLongerExist() {
     if (headless) {
@@ -211,7 +214,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public GUID getBattleId() {
+  public UUID getBattleId() {
     return battleId;
   }
 
@@ -240,11 +243,9 @@ abstract class AbstractBattle implements IBattle {
   }
 
   /**
-   * 2 Battles are equal if they occur in the same territory,
-   * and are both of the same type (bombing / not-bombing),
-   * and are both of the same sub-type of bombing/normal
-   * (ex: MustFightBattle, or StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc).
-   * <br>
+   * 2 Battles are equal if they occur in the same territory, and are both of the same type (bombing
+   * / not-bombing), and are both of the same sub-type of bombing/normal (ex: MustFightBattle, or
+   * StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc). <br>
    * Equals in the sense that they should never occupy the same Set if these conditions are met.
    */
   @Override
@@ -253,17 +254,27 @@ abstract class AbstractBattle implements IBattle {
       return false;
     }
     final IBattle other = (IBattle) o;
-    return other.getTerritory().equals(this.battleSite) && other.isBombingRun() == this.isBombingRun()
+    return other.getTerritory().equals(this.battleSite)
+        && other.isBombingRun() == this.isBombingRun()
         && other.getBattleType() == this.getBattleType();
   }
 
   @Override
   public String toString() {
-    return "Battle in:" + battleSite + " battle type:" + battleType + " defender:" + defender.getName()
-        + " attacked by:" + attacker.getName() + " attacking with: " + attackingUnits;
+    return "Battle in:"
+        + battleSite
+        + " battle type:"
+        + battleType
+        + " defender:"
+        + defender.getName()
+        + " attacked by:"
+        + attacker.getName()
+        + " attacking with: "
+        + attackingUnits;
   }
 
-  static PlayerId findDefender(final Territory battleSite, final PlayerId attacker, final GameData data) {
+  static PlayerId findDefender(
+      final Territory battleSite, final PlayerId attacker, final GameData data) {
     if (battleSite == null) {
       return PlayerId.NULL_PLAYERID;
     }
@@ -278,7 +289,9 @@ abstract class AbstractBattle implements IBattle {
       }
       return defender;
     }
-    if (defender == null || battleSite.isWater() || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
+    if (defender == null
+        || battleSite.isWater()
+        || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
       // if water find the defender based on who has the most units in the territory
       final IntegerMap<PlayerId> players = battleSite.getUnitCollection().getPlayerUnitCounts();
       int max = -1;
@@ -333,19 +346,15 @@ abstract class AbstractBattle implements IBattle {
     BattleDelegate.markDamaged(damaged, bridge);
   }
 
-  protected static ITripleADisplay getDisplay(final IDelegateBridge bridge) {
-    return (ITripleADisplay) bridge.getDisplayChannelBroadcaster();
+  protected static Player getRemote(final IDelegateBridge bridge) {
+    return bridge.getRemotePlayer();
   }
 
-  protected static ITripleAPlayer getRemote(final IDelegateBridge bridge) {
-    return (ITripleAPlayer) bridge.getRemotePlayer();
-  }
-
-  protected static ITripleAPlayer getRemote(final PlayerId player, final IDelegateBridge bridge) {
+  protected static Player getRemote(final PlayerId player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAi(player.getName());
     }
-    return (ITripleAPlayer) bridge.getRemotePlayer(player);
+    return bridge.getRemotePlayer(player);
   }
 }

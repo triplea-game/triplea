@@ -8,36 +8,28 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
-import java.util.Collection;
-
-import javax.swing.JComponent;
-import javax.swing.UIManager;
-
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.lobby.client.login.LobbyServerPropertiesFetcher;
+import java.util.Collection;
+import javax.swing.JComponent;
+import javax.swing.UIManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Binds a {@code ClientSetting} to a UI component. This is done by adding an enum element. As part of that the
- * corresponding UI component, a {@code SelectionComponent} is specified. This then automatically adds the setting
- * to the settings window.
+ * Binds a {@code ClientSetting} to a UI component. This is done by adding an enum element. As part
+ * of that the corresponding UI component, a {@code SelectionComponent} is specified. This then
+ * automatically adds the setting to the settings window.
  *
- * <p>
- * UI component construction is delegated to {@code SelectionComponentFactory}.
- * </p>
+ * <p>UI component construction is delegated to {@code SelectionComponentFactory}.
  *
- * <p>
- * There is a 1:n between {@code ClientSettingUiBinding} and {@code ClientSetting}, though
+ * <p>There is a 1:n between {@code ClientSettingUiBinding} and {@code ClientSetting}, though
  * typically it will be 1:1, and not all {@code ClientSettings} will be available in the UI.
- * </p>
  */
 @AllArgsConstructor
 enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   AI_PAUSE_DURATION_BINDING(
-      "AI Pause Duration",
-      SettingType.AI,
-      "Time (in milliseconds) between AI moves") {
+      "AI Pause Duration", SettingType.AI, "Time (in milliseconds) between AI moves") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return intValueRange(ClientSetting.aiPauseDuration, 0, 3000);
@@ -97,7 +89,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   CONFIRM_ENEMY_CASUALTIES_BINDING(
       "Confirm enemy casualties",
       SettingType.COMBAT,
-      "Whether battles should proceed only once every player has confirmed the casualties selected") {
+      "Whether battles should proceed only once every player "
+          + "has confirmed the casualties selected") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.confirmEnemyCasualties);
@@ -119,17 +112,20 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Look and Feel",
       SettingType.LOOK_AND_FEEL,
       "Updates UI theme for TripleA.\n"
-          + "WARNING: restart all running TripleA instances after changing this setting to avoid system instability.") {
+          + "WARNING: restart all running TripleA instances after changing this "
+          + "setting to avoid system instability.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      final Collection<UIManager.LookAndFeelInfo> lookAndFeels = LookAndFeel.getAvailableLookAndFeels();
+      final Collection<UIManager.LookAndFeelInfo> lookAndFeels =
+          LookAndFeel.getAvailableLookAndFeels();
       return selectionBox(
           ClientSetting.lookAndFeel,
           UIManager.LookAndFeelInfo.class,
           lookAndFeels,
-          lookAndFeelClassName -> lookAndFeels.stream()
-              .filter(lookAndFeel -> lookAndFeel.getClassName().equals(lookAndFeelClassName))
-              .findAny(),
+          lookAndFeelClassName ->
+              lookAndFeels.stream()
+                  .filter(lookAndFeel -> lookAndFeel.getClassName().equals(lookAndFeelClassName))
+                  .findAny(),
           UIManager.LookAndFeelInfo::getClassName,
           UIManager.LookAndFeelInfo::getName);
     }
@@ -148,10 +144,21 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   MAP_EDGE_SCROLL_ZONE_SIZE_BINDING(
       "Scroll Zone Size",
       SettingType.MAP_SCROLLING,
-      "How close to the edge of the map (in pixels) the mouse needs to be for the map to start scrolling") {
+      "How close to the edge of the map (in pixels) the mouse needs "
+          + "to be for the map to start scrolling") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return intValueRange(ClientSetting.mapEdgeScrollZoneSize, 0, 300);
+    }
+  },
+
+  NOTIFY_ALL_UNITS_MOVED(
+      "Notify When All Units Moved",
+      SettingType.GAME,
+      "Game will show a pop-up notification message when all units have been moved") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.notifyAllUnitsMoved);
     }
   },
 
@@ -210,8 +217,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   MAP_LIST_OVERRIDE_BINDING(
       "Map List Override",
       SettingType.TESTING,
-      "Overrides the location of the map listing file. You can, for example, download a copy of the listing file, "
-          + "update it, and put the path to that file here.") {
+      "Overrides the location of the map listing file. You can, for example, download "
+          + "a copy of the listing file, update it, and put the path to that file here.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return filePath(ClientSetting.mapListOverride);
@@ -221,7 +228,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   TEST_LOBBY_HOST_BINDING(
       "Lobby Host Override",
       SettingType.TESTING,
-      "Overrides the IP address or hostname used to connect to the lobby. Useful for connecting to a test lobby.") {
+      "Overrides the IP address or hostname used to connect to the lobby. "
+          + "Useful for connecting to a test lobby.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return textField(ClientSetting.testLobbyHost);
@@ -298,7 +306,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return proxySettings(ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
+      return proxySettings(
+          ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
   },
 
@@ -335,8 +344,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.tripleaForumUsername,
-          ClientSetting.tripleaForumPassword);
+          ClientSetting.tripleaForumUsername, ClientSetting.tripleaForumPassword);
     }
   },
 
@@ -347,15 +355,26 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.aaForumUsername,
-          ClientSetting.aaForumPassword);
+          ClientSetting.aaForumUsername, ClientSetting.aaForumPassword);
+    }
+  },
+
+  UNIT_SCROLLER_HIGHLIGHT_TERRITORY(
+      "Highlight Territory on Unit Scroll",
+      SettingType.GAME,
+      "When scrolling through units, whether to also highlight territory") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return SelectionComponentFactory.booleanRadioButtons(
+          ClientSetting.unitScrollerHighlightTerritory);
     }
   };
 
   @Getter(onMethod_ = {@Override})
   private final String title;
+
   @Getter(onMethod_ = {@Override})
   private final SettingType type;
-  @Getter
-  private final String description;
+
+  @Getter private final String description;
 }

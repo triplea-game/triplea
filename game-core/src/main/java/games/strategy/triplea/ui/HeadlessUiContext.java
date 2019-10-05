@@ -1,9 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Cursor;
-
-import javax.swing.JLabel;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
@@ -18,9 +14,12 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.awt.Cursor;
+import javax.swing.JLabel;
 
 /**
- * Headless version, so that we don't get error in linux when the system has no graphics configuration.
+ * Headless version, so that we don't get error in linux when the system has no graphics
+ * configuration.
  */
 public class HeadlessUiContext extends AbstractUiContext {
 
@@ -52,8 +51,11 @@ public class HeadlessUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel newUnitImageLabel(final UnitType type, final PlayerId player,
-      final UnitDamage damaged, final UnitEnable disabled) {
+  public JLabel newUnitImageLabel(
+      final UnitType type,
+      final PlayerId player,
+      final UnitDamage damaged,
+      final UnitEnable disabled) {
     return null;
   }
 

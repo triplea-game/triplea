@@ -1,36 +1,25 @@
 package org.triplea.game.startup;
 
-import java.util.Observer;
-import java.util.Optional;
-
-import org.triplea.game.chat.ChatModel;
-
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
+import java.util.Optional;
+import org.triplea.game.chat.ChatModel;
 
 /**
- * Interface to abstract common functionality shared between headless
- * and headed game launching mechanisms.
+ * Interface to abstract common functionality shared between headless and headed game launching
+ * mechanisms.
  */
 public interface SetupModel {
 
-  void addObserver(Observer observer);
-
-  void notifyObservers();
-
   ChatModel getChatModel();
 
-  /**
-   * Cleanup should occur here that occurs when we cancel.
-   */
+  /** Cleanup should occur here that occurs when we cancel. */
   void cancel();
 
-  /**
-   * Indicates we can start the game.
-   */
+  /** Indicates we can start the game. */
   boolean canGameStart();
 
   void postStartGame();
@@ -38,8 +27,8 @@ public interface SetupModel {
   Optional<ILauncher> getLauncher();
 
   /**
-   * Helper method to clear PbF/PbEM related properties from a game that has potentially
-   * been used for PbF/PbEM before.
+   * Helper method to clear PbF/PbEM related properties from a game that has potentially been used
+   * for PbF/PbEM before.
    *
    * @param properties The {@link GameProperties} object the properties should be cleared from.
    */

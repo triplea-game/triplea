@@ -7,134 +7,90 @@ import static org.mockito.Mockito.when;
 import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResponse;
 
 import java.util.Collections;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.NewApiKey;
-import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorInfo;
-import org.triplea.server.moderator.toolbox.api.key.GenerateSingleUseKeyService;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
+import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
+import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.server.access.AuthenticatedUser;
 
-
-@SuppressWarnings("unchecked")
 @ExtendWith(MockitoExtension.class)
 class ModeratorsControllerTest {
 
   private static final String USERNAME = "The gibbet screams faith like an old cannibal.";
   private static final String MODERATOR_NAME = "Where is the lively cannibal?";
-  private static final String API_KEY = "Parrots grow with fight!";
-  private static final int USER_ID = 1235;
+  private static final ModeratorInfo MODERATOR_INFO = ModeratorInfo.builder().name("name").build();
 
-  @Mock
-  private ModeratorsService moderatorsService;
-  @Mock
-  private GenerateSingleUseKeyService generateSingleUseKeyService;
-  @Mock
-  private ApiKeyValidationService apiKeyValidationService;
+  private static final AuthenticatedUser AUTHENTICATED_USER =
+      AuthenticatedUser.builder().userId(100).userRole("").build();
 
-  @InjectMocks
-  private ModeratorsController moderatorsController;
+  @Mock private ModeratorsService moderatorsService;
 
-  @Mock
-  private HttpServletRequest request;
+  @InjectMocks private ModeratorsController moderatorsController;
 
-  @Mock
-  private ModeratorInfo moderatorInfo;
+  @Mock private AuthenticatedUser authenticatedUser;
 
   @Test
   void checkUserExists() {
     when(moderatorsService.userExistsByName(USERNAME)).thenReturn(true);
 
-    final Response response =
-        moderatorsController.checkUserExists(request, USERNAME);
+    final Response response = moderatorsController.checkUserExists(USERNAME);
 
     verifyResponse(response, true);
-    verify(apiKeyValidationService).verifyApiKey(request);
   }
-
-
 
   @Test
   void getModerators() {
-    when(moderatorsService.fetchModerators())
-        .thenReturn(Collections.singletonList(moderatorInfo));
+    when(moderatorsService.fetchModerators()).thenReturn(Collections.singletonList(MODERATOR_INFO));
 
-    final Response response = moderatorsController.getModerators(request);
+    final Response response = moderatorsController.getModerators();
 
-    verifyResponse(response, Collections.singletonList(moderatorInfo));
-    verify(apiKeyValidationService).verifyApiKey(request);
+    verifyResponse(response, Collections.singletonList(MODERATOR_INFO));
   }
 
   @Test
   void isSuperModPositiveCase() {
-    when(apiKeyValidationService.lookupSuperModByApiKey(request))
-        .thenReturn(Optional.of(USER_ID));
+    when(authenticatedUser.getUserRole()).thenReturn(UserRole.ADMIN);
 
-    final Response response = moderatorsController.isSuperMod(request);
+    final Response response = moderatorsController.isSuperMod(authenticatedUser);
 
     verifyResponse(response, true);
-    verify(apiKeyValidationService).verifyApiKey(request);
   }
 
   @Test
   void isSuperModNegativeCase() {
-    when(apiKeyValidationService.lookupSuperModByApiKey(request))
-        .thenReturn(Optional.empty());
+    when(authenticatedUser.getUserRole()).thenReturn(UserRole.MODERATOR);
 
-    final Response response = moderatorsController.isSuperMod(request);
+    final Response response = moderatorsController.isSuperMod(authenticatedUser);
 
     verifyResponse(response, false);
-    verify(apiKeyValidationService).verifyApiKey(request);
-  }
-
-  @Test
-  void generateSingleUseKey() {
-    when(generateSingleUseKeyService.generateSingleUseKey(MODERATOR_NAME))
-        .thenReturn(API_KEY);
-
-
-    final Response response =
-        moderatorsController.generateSingleUseKey(request, MODERATOR_NAME);
-
-    verifyResponse(response, new NewApiKey(API_KEY));
-    verify(apiKeyValidationService).verifySuperMod(request);
   }
 
   @Test
   void removeMod() {
-    when(apiKeyValidationService.verifySuperMod(request)).thenReturn(USER_ID);
-
-    final Response response = moderatorsController.removeMod(request, MODERATOR_NAME);
+    final Response response = moderatorsController.removeMod(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).removeMod(USER_ID, MODERATOR_NAME);
+
+    verify(moderatorsService).removeMod(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
   }
 
   @Test
   void setSuperMod() {
-    when(apiKeyValidationService.verifySuperMod(request)).thenReturn(USER_ID);
-
-    final Response response = moderatorsController.setSuperMod(request, MODERATOR_NAME);
+    final Response response = moderatorsController.setSuperMod(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).addSuperMod(USER_ID, MODERATOR_NAME);
+    verify(moderatorsService).addSuperMod(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
   }
 
   @Test
   void addModerator() {
-    when(apiKeyValidationService.verifySuperMod(request)).thenReturn(USER_ID);
-
-    final Response response = moderatorsController.addModerator(request, MODERATOR_NAME);
+    final Response response = moderatorsController.addModerator(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).addModerator(USER_ID, MODERATOR_NAME);
-
+    verify(moderatorsService).addModerator(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
   }
 }

@@ -2,7 +2,6 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs.bad.words;
 
 import java.awt.Component;
 import java.util.function.Supplier;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,21 +9,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-
-import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient;
+import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
- * Show a scrollable list of 'bad words'. This are words which may not be contained
- * in user names. This tab has a table with the bad words (DB table contents), a remove
- * button for each and a text field at bottom with submit button to add new values.
- * Eg:
+ * Show a scrollable list of 'bad words'. This are words which may not be contained in user names.
+ * This tab has a table with the bad words (DB table contents), a remove button for each and a text
+ * field at bottom with submit button to add new values. Eg:
  *
  * <pre>
  * +-----------------------------------------+
@@ -56,15 +53,18 @@ public final class BadWordsTab implements Supplier<Component> {
   public Component get() {
     final JTable table = buildTable();
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(10)
+        .borderLayout()
         .addNorth(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
+                .borderLayout()
                 .addNorth(new JLabel("Bad words are not allowed to be contained in any user name"))
-                .addCenter(JButtonBuilder.builder()
-                    .title("Refresh")
-                    .actionListener(() -> badWordsTabActions.refresh(table))
-                    .build())
+                .addCenter(
+                    new JButtonBuilder()
+                        .title("Refresh")
+                        .actionListener(() -> badWordsTabActions.refresh(table))
+                        .build())
                 .build())
         .addCenter(SwingComponents.newJScrollPane(table))
         .addSouth(buildAddBadWordsPanel(table))
@@ -72,51 +72,56 @@ public final class BadWordsTab implements Supplier<Component> {
   }
 
   /**
-   * Table is a simple two column table, first is the bad word entry, second is a 'remove' button
-   * to remove that entry.
+   * Table is a simple two column table, first is the bad word entry, second is a 'remove' button to
+   * remove that entry.
    */
   private JTable buildTable() {
-    final JTable table = JTableBuilder.builder()
-        .columnNames(BadWordsTabModel.fetchTableHeaders())
-        .tableData(badWordsTabModel.fetchTableData())
-        .build();
+    final JTable table =
+        JTableBuilder.builder()
+            .columnNames(BadWordsTabModel.fetchTableHeaders())
+            .tableData(badWordsTabModel.fetchTableData())
+            .build();
 
     ButtonColumn.attachButtonColumn(table, 1, badWordsTabActions.removeButtonListener());
 
     return table;
   }
 
-
   private JPanel buildAddBadWordsPanel(final JTable table) {
-    final JTextField addField = JTextFieldBuilder.builder()
-        .columns(10)
-        .maxLength(20)
-        .toolTip("Bad word to add, must be at least " + MIN_LENGTH + " characters long")
-        .build();
+    final JTextField addField =
+        JTextFieldBuilder.builder()
+            .columns(10)
+            .maxLength(20)
+            .toolTip("Bad word to add, must be at least " + MIN_LENGTH + " characters long")
+            .build();
 
-    final JButton addButton = JButtonBuilder.builder()
-        .enabled(false)
-        .title("Add Bad Word")
-        .actionListener(button -> {
-          final String newBadWord = addField.getText();
-          badWordsTabActions.addBadWord(table, newBadWord);
-          addField.setText("");
-          button.setEnabled(false);
-        })
-        .toolTip("Adds a new bad word to the table, must be at least " + MIN_LENGTH + " characters long")
-        .build();
+    final JButton addButton =
+        new JButtonBuilder()
+            .enabled(false)
+            .title("Add Bad Word")
+            .actionListener(
+                button -> {
+                  final String newBadWord = addField.getText();
+                  badWordsTabActions.addBadWord(table, newBadWord);
+                  addField.setText("");
+                  button.setEnabled(false);
+                })
+            .toolTip(
+                "Adds a new bad word to the table, must be at least "
+                    + MIN_LENGTH
+                    + " characters long")
+            .build();
 
     DocumentListenerBuilder.attachDocumentListener(
-        addField,
-        () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
+        addField, () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
 
-    return JPanelBuilder.builder()
-        .add(JPanelBuilder.builder()
-            .flowLayout()
-            .add(addField)
-            .add(Box.createHorizontalStrut(10))
-            .add(addButton)
-            .build())
+    return new JPanelBuilder()
+        .add(
+            new JPanelBuilder()
+                .add(addField)
+                .add(Box.createHorizontalStrut(10))
+                .add(addButton)
+                .build())
         .build();
   }
 }

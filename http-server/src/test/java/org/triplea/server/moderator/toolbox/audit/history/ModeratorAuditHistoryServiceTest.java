@@ -5,19 +5,17 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableList;
 import java.time.Instant;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.data.ModeratorAuditHistoryDaoData;
-
-import com.google.common.collect.ImmutableList;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorAuditHistoryServiceTest {
@@ -25,33 +23,33 @@ class ModeratorAuditHistoryServiceTest {
   private static final int ROW_OFFSET = 30;
   private static final int ROW_COUNT = 70;
 
-  private static final ModeratorAuditHistoryDaoData ITEM_1 = ModeratorAuditHistoryDaoData.builder()
-      .actionName("Jolly courages lead to love.")
-      .actionTarget("All peglegs hoist evil, small rums.")
-      .dateCreated(Instant.now())
-      .username("Ahoy, yer not lootting me without a yellow fever!")
-      .build();
+  private static final ModeratorAuditHistoryDaoData ITEM_1 =
+      ModeratorAuditHistoryDaoData.builder()
+          .actionName("Jolly courages lead to love.")
+          .actionTarget("All peglegs hoist evil, small rums.")
+          .dateCreated(Instant.now())
+          .username("Ahoy, yer not lootting me without a yellow fever!")
+          .build();
 
-  private static final ModeratorAuditHistoryDaoData ITEM_2 = ModeratorAuditHistoryDaoData.builder()
-      .actionName("Ahoy, endure me kraken, ye old wind!")
-      .actionTarget("All gulls love salty, swashbuckling pins.")
-      .dateCreated(Instant.now().minusSeconds(5000))
-      .username("Waves travel with urchin at the sunny singapore!")
-      .build();
+  private static final ModeratorAuditHistoryDaoData ITEM_2 =
+      ModeratorAuditHistoryDaoData.builder()
+          .actionName("Ahoy, endure me kraken, ye old wind!")
+          .actionTarget("All gulls love salty, swashbuckling pins.")
+          .dateCreated(Instant.now().minusSeconds(5000))
+          .username("Waves travel with urchin at the sunny singapore!")
+          .build();
 
-  @Mock
-  private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  @InjectMocks
-  private ModeratorAuditHistoryService moderatorAuditHistoryService;
-
+  @InjectMocks private ModeratorAuditHistoryService moderatorAuditHistoryService;
 
   @Test
   void lookupHistory() {
     when(moderatorAuditHistoryDao.lookupHistoryItems(ROW_OFFSET, ROW_COUNT))
         .thenReturn(ImmutableList.of(ITEM_1, ITEM_2));
 
-    final List<ModeratorEvent> results = moderatorAuditHistoryService.lookupHistory(ROW_OFFSET, ROW_COUNT);
+    final List<ModeratorEvent> results =
+        moderatorAuditHistoryService.lookupHistory(ROW_OFFSET, ROW_COUNT);
 
     assertThat(results, hasSize(2));
     assertThat(results.get(0).getDate(), is(ITEM_1.getDateCreated()));

@@ -59,7 +59,9 @@ final class RemoteMethodCallTest {
     @Test
     void shouldThrowExceptionWhenStringIsUnknownClassName() {
       final Exception e =
-          assertThrows(IllegalStateException.class, () -> RemoteMethodCall.stringToClass("some.unknown.Type", null));
+          assertThrows(
+              IllegalStateException.class,
+              () -> RemoteMethodCall.stringToClass("some.unknown.Type", null));
       assertThat(e.getCause(), is(instanceOf(ClassNotFoundException.class)));
     }
   }

@@ -3,28 +3,26 @@ package games.strategy.triplea.ui;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
 import java.awt.Image;
 import java.awt.Point;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
 
 final class RouteDescriptionTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class EqualsTest {
-    private final Route route = new Route();
+    private final Route route = new Route(Mockito.mock(Territory.class));
     private final Point start = new Point();
     private final Point end = new Point();
-    @Mock
-    private Image image;
+    @Mock private Image image;
 
     @Test
     void shouldReturnFalseWhenOtherIsNotInstanceOfRouteDescription() {

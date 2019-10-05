@@ -6,7 +6,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
 /**
- * A technology advance that allows each anti-aircraft gun to launch a free Strategic Bombing attack.
+ * A technology advance that allows each anti-aircraft gun to launch a free Strategic Bombing
+ * attack.
  */
 public final class RocketsAdvance extends TechAdvance {
   private static final long serialVersionUID = 1526117896586201770L;

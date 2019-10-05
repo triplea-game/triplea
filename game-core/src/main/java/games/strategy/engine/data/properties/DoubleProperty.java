@@ -4,14 +4,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-/**
- * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
- */
+/** Implementation of {@link IEditableProperty} for a double-precision floating-point value. */
 public class DoubleProperty extends AbstractEditableProperty<Double> {
   private static final long serialVersionUID = 5521967819500867581L;
 
@@ -23,11 +20,16 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   /**
    * Initializes a new instance of the {@link DoubleProperty} class.
    *
-   * @throws IllegalArgumentException If {@code max} is less than {@code min}; if {@code def} is less than {@code min};
-   *         or if {@code def} is greater than {@code max}.
+   * @throws IllegalArgumentException If {@code max} is less than {@code min}; if {@code def} is
+   *     less than {@code min}; or if {@code def} is greater than {@code max}.
    */
-  public DoubleProperty(final String name, final String description, final double max, final double min,
-      final double def, final int numberOfPlaces) {
+  public DoubleProperty(
+      final String name,
+      final String description,
+      final double max,
+      final double min,
+      final double def,
+      final int numberOfPlaces) {
     super(name, description);
 
     checkArgument(max >= min, "Max must be greater than min");
@@ -57,7 +59,8 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   public JComponent getEditorComponent() {
     final JSpinner field = new JSpinner(new SpinnerNumberModel(value, min, max, 1.0));
 
-    // NB: Workaround for JSpinner default sizing algorithm when min/max values have very large magnitudes
+    // NB: Workaround for JSpinner default sizing algorithm when min/max values have very large
+    // magnitudes
     // (see: https://implementsblog.com/2012/11/26/java-gotcha-jspinner-preferred-size/)
     final JComponent fieldEditor = field.getEditor();
     if (fieldEditor instanceof JSpinner.DefaultEditor) {

@@ -1,5 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.IEditableProperty;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,25 +16,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.IEditableProperty;
 import lombok.extern.java.Log;
 
-/**
- * A game options cache that uses files to store the game options.
- */
+/** A game options cache that uses files to store the game options. */
 @Log
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   // chars illegal on windows (on linux/mac anything that is allowed on windows works fine)
-  private static final char[] ILLEGAL_CHARS =
-      {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-          22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 58, 60, 62, 63, 92, 124};
+  private static final char[] ILLEGAL_CHARS = {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+    26, 27, 28, 29, 30, 31, 34, 42, 58, 60, 62, 63, 92, 124
+  };
 
   /**
-   * Caches the gameOptions stored in the game data, and associates with this game. only values that are serializable
-   * (which they should all be) will be stored
+   * Caches the gameOptions stored in the game data, and associates with this game. only values that
+   * are serializable (which they should all be) will be stored
    *
    * @param gameData the game which options you want to cache
    */
@@ -54,7 +52,8 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         out.writeObject(serializableMap);
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
+      log.log(
+          Level.SEVERE, "Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
     }
   }
 
@@ -67,8 +66,10 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
       if (cache.exists()) {
         try (InputStream is = new FileInputStream(cache);
             ObjectInputStream in = new ObjectInputStream(is)) {
-          final Map<String, Serializable> serializedMap = (Map<String, Serializable>) in.readObject();
-          for (final IEditableProperty<?> property : gameData.getProperties().getEditableProperties()) {
+          final Map<String, Serializable> serializedMap =
+              (Map<String, Serializable>) in.readObject();
+          for (final IEditableProperty<?> property :
+              gameData.getProperties().getEditableProperties()) {
             final Serializable ser = serializedMap.get(property.getName());
             if (ser != null) {
               property.validateAndSet(ser);
@@ -77,7 +78,8 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         }
       }
     } catch (final IOException | ClassNotFoundException e) {
-      log.log(Level.SEVERE, "Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
+      log.log(
+          Level.SEVERE, "Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
     }
   }
 

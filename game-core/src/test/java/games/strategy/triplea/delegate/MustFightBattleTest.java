@@ -12,14 +12,13 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
+import org.junit.jupiter.api.Test;
 
 class MustFightBattleTest extends AbstractDelegateTestCase {
   @Test
@@ -64,7 +63,8 @@ class MustFightBattleTest extends AbstractDelegateTestCase {
     battleDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(twwGameData).getBattleTracker(), bridge);
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(celebes);
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(celebes);
 
     // Ensure battle ends, both units remain, and has 0 rolls
     battle.fight(bridge);

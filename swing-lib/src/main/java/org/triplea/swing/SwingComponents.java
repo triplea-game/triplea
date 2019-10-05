@@ -2,6 +2,7 @@ package org.triplea.swing;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -15,16 +16,19 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -39,14 +43,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.triplea.awt.OpenFileUtility;
 
-import com.google.common.annotations.VisibleForTesting;
-
 /**
- * Wrapper/utility class to give Swing components a nicer API. This class is to help extract pure UI code out of
- * the rest of the code base. This also gives us a cleaner interface between UI and the rest of the code.
+ * Wrapper/utility class to give Swing components a nicer API. This class is to help extract pure UI
+ * code out of the rest of the code base. This also gives us a cleaner interface between UI and the
+ * rest of the code.
  */
 public final class SwingComponents {
   private static final String PERIOD = ".";
@@ -77,27 +79,23 @@ public final class SwingComponents {
     addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), runnable);
   }
 
-  /**
-   * To a given dialog, adds a key listener that is fired if a key is pressed.
-   */
+  /** To a given dialog, adds a key listener that is fired if a key is pressed. */
   public static void addEscapeKeyListener(
-      final RootPaneContainer dialog,
-      final Runnable keyDownAction) {
+      final RootPaneContainer dialog, final Runnable keyDownAction) {
     if (dialog.getRootPane() != null) {
-      addKeyListener(dialog.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
+      addKeyListener(
+          dialog.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
     }
   }
 
-  /**
-   * To a given component, adds a key listener that is fired if a key is pressed.
-   */
+  /** To a given component, adds a key listener that is fired if a key is pressed. */
   public static void addEscapeKeyListener(
-      final JComponent component,
-      final Runnable keyDownAction) {
+      final JComponent component, final Runnable keyDownAction) {
 
     // TODO: null checks are bit questionable, have them here because they were here before...
     if (component.getRootPane() != null) {
-      addKeyListener(component.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
+      addKeyListener(
+          component.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
     }
   }
 
@@ -116,26 +114,29 @@ public final class SwingComponents {
   }
 
   private static void addKeyListener(
-      final JComponent component,
-      final KeyStroke keyStroke,
-      final Runnable keyDownAction) {
+      final JComponent component, final KeyStroke keyStroke, final Runnable keyDownAction) {
 
     // We are using the object address here of our action.
-    // It is okay since we only need it to be the same value when we store it in the input and action maps below. Having
-    // the address be logged could be useful for debugging, otherwise no particular reason to use this exact value.
+    // It is okay since we only need it to be the same value when we store it in the input and
+    // action maps below. Having
+    // the address be logged could be useful for debugging, otherwise no particular reason to use
+    // this exact value.
     final String actionKey = keyDownAction.toString();
 
-    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(keyStroke, actionKey);
+    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, actionKey);
 
-    component.getActionMap().put(actionKey, new AbstractAction() {
-      private static final long serialVersionUID = -280371946771796597L;
+    component
+        .getActionMap()
+        .put(
+            actionKey,
+            new AbstractAction() {
+              private static final long serialVersionUID = -280371946771796597L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        keyDownAction.run();
-      }
-    });
+              @Override
+              public void actionPerformed(final ActionEvent e) {
+                keyDownAction.run();
+              }
+            });
   }
 
   public static JTabbedPane newJTabbedPane() {
@@ -164,14 +165,15 @@ public final class SwingComponents {
   }
 
   /**
-   * Displays a dialog that prompts the user for a yes/no response. If the user answers yes, {@code confirmedAction} is
-   * run; otherwise no action is performed.
+   * Displays a dialog that prompts the user for a yes/no response. If the user answers yes, {@code
+   * confirmedAction} is run; otherwise no action is performed.
    *
    * @param title The title of the dialog.
    * @param message The message displayed in the dialog; should be phrased as a question.
    * @param confirmedAction The action that is run if the user answers yes.
    */
-  public static void promptUser(final String title, final String message, final Runnable confirmedAction) {
+  public static void promptUser(
+      final String title, final String message, final Runnable confirmedAction) {
     boolean showMessage = false;
     synchronized (visiblePrompts) {
       if (!visiblePrompts.contains(message)) {
@@ -181,19 +183,20 @@ public final class SwingComponents {
     }
 
     if (showMessage) {
-      SwingUtilities.invokeLater(() -> {
-        // blocks until the user responds to the modal dialog
-        final int response = JOptionPane.showConfirmDialog(null, message, title,
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      SwingUtilities.invokeLater(
+          () -> {
+            // blocks until the user responds to the modal dialog
+            final int response =
+                JOptionPane.showConfirmDialog(
+                    null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-        // dialog is now closed
-        visiblePrompts.remove(message);
-        if (response == JOptionPane.YES_OPTION) {
-          confirmedAction.run();
-        }
-      });
+            // dialog is now closed
+            visiblePrompts.remove(message);
+            if (response == JOptionPane.YES_OPTION) {
+              confirmedAction.run();
+            }
+          });
     }
-
   }
 
   public static void newMessageDialog(final String msg) {
@@ -210,12 +213,13 @@ public final class SwingComponents {
     checkNotNull(window);
     checkNotNull(action);
 
-    window.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent e) {
-        action.run();
-      }
-    });
+    window.addWindowListener(
+        new WindowAdapter() {
+          @Override
+          public void windowClosing(final WindowEvent e) {
+            action.run();
+          }
+        });
   }
 
   /**
@@ -228,19 +232,19 @@ public final class SwingComponents {
     checkNotNull(window);
     checkNotNull(action);
 
-    window.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosed(final WindowEvent e) {
-        action.run();
-      }
-    });
+    window.addWindowListener(
+        new WindowAdapter() {
+          @Override
+          public void windowClosed(final WindowEvent e) {
+            action.run();
+          }
+        });
   }
 
   /**
    * Creates a new combo box model containing a copy of the specified collection of values.
    *
    * @param values The values used to populate the combo box model.
-   *
    * @return A new combo box model.
    */
   public static <T> ComboBoxModel<T> newComboBoxModel(final Collection<T> values) {
@@ -255,7 +259,6 @@ public final class SwingComponents {
    * Creates a new list model containing a copy of the specified collection of values.
    *
    * @param values The values used to populate the list model.
-   *
    * @return A new list model.
    */
   public static <T> ListModel<T> newListModel(final Collection<T> values) {
@@ -279,21 +282,23 @@ public final class SwingComponents {
   }
 
   public static void showDialog(final String title, final String message) {
-    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, title,
-        JOptionPane.INFORMATION_MESSAGE));
+    SwingUtilities.invokeLater(
+        () -> JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE));
   }
 
   /**
    * Flag for file selection component, whether to allow selection of files only or folders only.
    */
   public enum FolderSelectionMode {
-    FILES, DIRECTORIES
+    FILES,
+    DIRECTORIES
   }
 
   /**
    * Shows a dialog the user can use to select a folder or file.
    *
-   * @param folderSelectionMode Flag controlling whether files or folders are available for selection.
+   * @param folderSelectionMode Flag controlling whether files or folders are available for
+   *     selection.
    * @return Empty if the user selects nothing, otherwise the users selection.
    */
   public static Optional<File> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
@@ -305,60 +310,67 @@ public final class SwingComponents {
     }
 
     final int result = fileChooser.showOpenDialog(null);
-    return (result == JFileChooser.APPROVE_OPTION) ? Optional.of(fileChooser.getSelectedFile()) : Optional.empty();
+    return (result == JFileChooser.APPROVE_OPTION)
+        ? Optional.of(fileChooser.getSelectedFile())
+        : Optional.empty();
   }
 
   /**
    * Displays a file chooser from which the user can select a file to save.
    *
-   * <p>
-   * The user will be asked to confirm the save if the selected file already exists.
-   * </p>
+   * <p>The user will be asked to confirm the save if the selected file already exists.
    *
-   * @param parent Determines the {@code Frame} in which the dialog is displayed; if {@code null}, or if {@code parent}
-   *        has no {@code Frame}, a default {@code Frame} is used.
-   * @param fileExtension The extension of the file to save, with or without a leading period. This extension will be
-   *        automatically appended to the file name if not present.
-   * @param fileExtensionDescription The description of the file extension to be displayed in the file chooser.
-   *
+   * @param parent Determines the {@code Frame} in which the dialog is displayed; if {@code null},
+   *     or if {@code parent} has no {@code Frame}, a default {@code Frame} is used.
+   * @param fileExtension The extension of the file to save, with or without a leading period. This
+   *     extension will be automatically appended to the file name if not present.
+   * @param fileExtensionDescription The description of the file extension to be displayed in the
+   *     file chooser.
    * @return The file selected by the user or empty if the user aborted the save.
    */
-  public static Optional<File> promptSaveFile(final Component parent, final String fileExtension,
-      final String fileExtensionDescription) {
+  public static Optional<File> promptSaveFile(
+      final Component parent, final String fileExtension, final String fileExtensionDescription) {
     checkNotNull(fileExtension);
     checkNotNull(fileExtensionDescription);
 
-    final JFileChooser fileChooser = new JFileChooser() {
-      private static final long serialVersionUID = -136588718021703367L;
+    final JFileChooser fileChooser =
+        new JFileChooser() {
+          private static final long serialVersionUID = -136588718021703367L;
 
-      @Override
-      public void approveSelection() {
-        final File file = appendExtensionIfAbsent(getSelectedFile(), fileExtension);
-        setSelectedFile(file);
-        if (file.exists()) {
-          final int result = JOptionPane.showConfirmDialog(
-              parent,
-              String.format("A file named \"%s\" already exists. Do you want to replace it?", file.getName()),
-              "Confirm Save",
-              JOptionPane.YES_NO_OPTION,
-              JOptionPane.WARNING_MESSAGE);
-          if (result != JOptionPane.YES_OPTION) {
-            return;
+          @Override
+          public void approveSelection() {
+            final File file = appendExtensionIfAbsent(getSelectedFile(), fileExtension);
+            setSelectedFile(file);
+            if (file.exists()) {
+              final int result =
+                  JOptionPane.showConfirmDialog(
+                      parent,
+                      String.format(
+                          "A file named \"%s\" already exists. Do you want to replace it?",
+                          file.getName()),
+                      "Confirm Save",
+                      JOptionPane.YES_NO_OPTION,
+                      JOptionPane.WARNING_MESSAGE);
+              if (result != JOptionPane.YES_OPTION) {
+                return;
+              }
+            }
+
+            super.approveSelection();
           }
-        }
-
-        super.approveSelection();
-      }
-    };
+        };
 
     final String fileExtensionWithoutLeadingPeriod = extensionWithoutLeadingPeriod(fileExtension);
-    final FileFilter fileFilter = new FileNameExtensionFilter(
-        String.format("%s, *.%s", fileExtensionDescription, fileExtensionWithoutLeadingPeriod),
-        fileExtensionWithoutLeadingPeriod);
+    final FileFilter fileFilter =
+        new FileNameExtensionFilter(
+            String.format("%s, *.%s", fileExtensionDescription, fileExtensionWithoutLeadingPeriod),
+            fileExtensionWithoutLeadingPeriod);
     fileChooser.setFileFilter(fileFilter);
 
     final int result = fileChooser.showSaveDialog(parent);
-    return (result == JFileChooser.APPROVE_OPTION) ? Optional.of(fileChooser.getSelectedFile()) : Optional.empty();
+    return (result == JFileChooser.APPROVE_OPTION)
+        ? Optional.of(fileChooser.getSelectedFile())
+        : Optional.empty();
   }
 
   @VisibleForTesting
@@ -385,43 +397,65 @@ public final class SwingComponents {
    * Runs the specified task on a background thread while displaying a progress dialog.
    *
    * @param <T> The type of the task result.
-   *
-   * @param frame The {@code Frame} from which the progress dialog is displayed or {@code null} to use a shared, hidden
-   *        frame as the owner of the progress dialog.
+   * @param frame The {@code Frame} from which the progress dialog is displayed or {@code null} to
+   *     use a shared, hidden frame as the owner of the progress dialog.
    * @param message The message to display in the progress dialog.
    * @param task The task to be executed.
-   *
    * @return A promise that resolves to the result of the task.
    */
   public static <T> CompletableFuture<T> runWithProgressBar(
-      final Frame frame,
-      final String message,
-      final Callable<T> task) {
+      final Frame frame, final String message, final Callable<T> task) {
     checkNotNull(message);
     checkNotNull(task);
 
     final CompletableFuture<T> promise = new CompletableFuture<>();
-    final SwingWorker<T, ?> worker = new SwingWorker<T, Void>() {
-      @Override
-      protected T doInBackground() throws Exception {
-        return task.call();
-      }
+    final SwingWorker<T, ?> worker =
+        new SwingWorker<T, Void>() {
+          @Override
+          protected T doInBackground() throws Exception {
+            return task.call();
+          }
 
-      @Override
-      protected void done() {
-        try {
-          promise.complete(get());
-        } catch (final ExecutionException e) {
-          promise.completeExceptionally(e.getCause());
-        } catch (final InterruptedException e) {
-          Thread.currentThread().interrupt();
-          promise.completeExceptionally(e);
-        }
-      }
-    };
+          @Override
+          protected void done() {
+            try {
+              promise.complete(get());
+            } catch (final ExecutionException e) {
+              promise.completeExceptionally(e.getCause());
+            } catch (final InterruptedException e) {
+              Thread.currentThread().interrupt();
+              promise.completeExceptionally(e);
+            }
+          }
+        };
     final ProgressDialog progressDialog = new ProgressDialog(frame, message);
     worker.addPropertyChangeListener(new SwingWorkerCompletionWaiter(progressDialog));
     worker.execute();
     return promise;
+  }
+
+  public static JComponent leftBox(final JComponent c) {
+    final Box b = new Box(BoxLayout.X_AXIS);
+    b.add(c);
+    b.add(Box.createHorizontalGlue());
+    return b;
+  }
+
+  public static void addKeyBinding(
+      final JFrame frame, final KeyStroke keyStroke, final Runnable action) {
+    final JComponent component = (JComponent) frame.getContentPane();
+    addKeyBinding(component, keyStroke, action);
+  }
+
+  public static void addKeyBinding(
+      final JDialog component, final KeyStroke keyStroke, final Runnable action) {
+    addKeyBinding(component.getRootPane(), keyStroke, action);
+  }
+
+  private static void addKeyBinding(
+      final JComponent component, final KeyStroke keyStroke, final Runnable action) {
+    final String keyBindingIdentifier = UUID.randomUUID().toString();
+    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, keyBindingIdentifier);
+    component.getActionMap().put(keyBindingIdentifier, SwingAction.of(e -> action.run()));
   }
 }

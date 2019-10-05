@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that allows artillery to support multiple infantry.
- */
+/** A technology advance that allows artillery to support multiple infantry. */
 public final class ImprovedArtillerySupportAdvance extends TechAdvance {
   private static final long serialVersionUID = 3946378995070209879L;
 

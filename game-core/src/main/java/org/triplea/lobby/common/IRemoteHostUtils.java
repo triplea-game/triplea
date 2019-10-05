@@ -7,8 +7,9 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 
 /**
- * A service that provides operations to manage a headless game server (bot) connected to the lobby. Each headless game
- * server provides this service. Only the lobby server is permitted to invoke the operations of this service.
+ * A service that provides operations to manage a headless game server (bot) connected to the lobby.
+ * Each headless game server provides this service. Only the lobby server is permitted to invoke the
+ * operations of this service.
  */
 public interface IRemoteHostUtils extends IRemote {
   String getConnections();
@@ -28,10 +29,8 @@ public interface IRemoteHostUtils extends IRemote {
   /**
    * Companion object for {@link IRemoteHostUtils} that provides various utility methods.
    *
-   * <p>
-   * <strong>NOTE:</strong> These methods cannot be members of {@link IRemoteHostUtils} directly (even if they are
-   * static) because their presence may affect the RMI method ordinal calculation.
-   * </p>
+   * <p><strong>NOTE:</strong> These methods cannot be members of {@link IRemoteHostUtils} directly
+   * (even if they are static) because their presence may affect the RMI method ordinal calculation.
    */
   final class Companion {
     private Companion() {}

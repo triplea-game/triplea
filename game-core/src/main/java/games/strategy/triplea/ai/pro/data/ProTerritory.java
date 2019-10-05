@@ -1,14 +1,5 @@
 package games.strategy.triplea.ai.pro.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.triplea.java.collections.CollectionUtils;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -18,10 +9,15 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.triplea.java.collections.CollectionUtils;
 
-/**
- * The result of an AI territory analysis.
- */
+/** The result of an AI territory analysis. */
 public class ProTerritory {
 
   private final Territory territory;
@@ -160,7 +156,8 @@ public class ProTerritory {
   }
 
   public List<Unit> getMaxEnemyDefenders(final PlayerId player, final GameData data) {
-    final List<Unit> defenders = territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
+    final List<Unit> defenders =
+        territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
     defenders.addAll(maxScrambleUnits);
     return defenders;
   }
@@ -277,7 +274,8 @@ public class ProTerritory {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else if (battleResult.getWinPercentage() >= ProData.winPercentage && battleResult.isHasLandUnitRemaining()) {
+    } else if (battleResult.getWinPercentage() >= ProData.winPercentage
+        && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }
   }
@@ -286,9 +284,7 @@ public class ProTerritory {
     return battleResult;
   }
 
-  /**
-   * Returns a description of the battle result in this territory.
-   */
+  /** Returns a description of the battle result in this territory. */
   public String getResultString() {
     final StringBuilder sb = new StringBuilder();
     sb.append("territory=").append(territory.getName());

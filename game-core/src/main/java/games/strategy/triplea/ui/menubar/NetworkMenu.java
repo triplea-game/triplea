@@ -1,12 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import java.awt.event.KeyEvent;
-import java.util.Optional;
-
-import javax.swing.JMenu;
-
-import org.triplea.swing.SwingAction;
-
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
@@ -16,6 +9,10 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
+import java.awt.event.KeyEvent;
+import java.util.Optional;
+import javax.swing.JMenu;
+import org.triplea.swing.SwingAction;
 
 final class NetworkMenu extends JMenu {
   private static final long serialVersionUID = 2947249649948115833L;
@@ -58,7 +55,9 @@ final class NetworkMenu extends JMenu {
   }
 
   private void addSetGamePassword(final InGameLobbyWatcherWrapper watcher) {
-    add(new SetPasswordAction(this, watcher, (ClientLoginValidator) getServerMessenger().getLoginValidator()));
+    add(
+        new SetPasswordAction(
+            this, watcher, (ClientLoginValidator) getServerMessenger().getLoginValidator()));
   }
 
   private void addShowPlayers() {

@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# This script is mostly in part documentation and convenience. Here
-# we tie together the full flow of building a docker image, launching
-# it, and then executing flyway to have a DB schema installed.
-
+# Convenience script to get a local DB up and running on docker
+# with some sample data.
 
 set -eu
 
 path=$(dirname $0)
 
-$path/build_docker
 $path/run_docker
+sleep 5
 $path/run_flyway
+$path/load_sample_data
 

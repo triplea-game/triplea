@@ -10,10 +10,9 @@ import java.io.ObjectOutput;
 /**
  * A handle to a {@link Named} object within a game object stream.
  *
- * <p>
- * Used to serialize an object's identity without serializing the object itself. Typically used by network game peers to
- * identify the target of a game operation, where the target object already exists in each game process.
- * </p>
+ * <p>Used to serialize an object's identity without serializing the object itself. Typically used
+ * by network game peers to identify the target of a game operation, where the target object already
+ * exists in each game process.
  */
 public class GameObjectStreamData implements Externalizable {
   private static final long serialVersionUID = 740501183336843321L;
@@ -41,12 +40,20 @@ public class GameObjectStreamData implements Externalizable {
   }
 
   enum GameType {
-    PLAYERID, UNITTYPE, TERRITORY, PRODUCTIONRULE, PRODUCTIONFRONTIER
+    PLAYERID,
+    UNITTYPE,
+    TERRITORY,
+    PRODUCTIONRULE,
+    PRODUCTIONFRONTIER
   }
 
   public static boolean canSerialize(final Named obj) {
-    return obj instanceof PlayerId || obj instanceof UnitType || obj instanceof Territory
-        || obj instanceof ProductionRule || obj instanceof IAttachment || obj instanceof ProductionFrontier;
+    return obj instanceof PlayerId
+        || obj instanceof UnitType
+        || obj instanceof Territory
+        || obj instanceof ProductionRule
+        || obj instanceof IAttachment
+        || obj instanceof ProductionFrontier;
   }
 
   Named getReference(final GameData data) {

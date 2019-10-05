@@ -1,8 +1,6 @@
 package games.strategy.debug.console.window;
 
-/**
- * Defines the contract between console window and its view-model.
- */
+/** Defines the contract between console window and its view-model. */
 interface ConsoleView {
   String readText();
 

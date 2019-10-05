@@ -4,21 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.io.IoUtils;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.xml.TestMapGameData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.io.IoUtils;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.xml.TestMapGameData;
 
 class ChangeTest {
   private GameData gameData;
@@ -29,18 +27,23 @@ class ChangeTest {
   }
 
   private Change serialize(final Change change) throws Exception {
-    final byte[] bytes = IoUtils.writeToMemory(os -> {
-      try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
-        output.writeObject(change);
-      }
-    });
-    return IoUtils.readFromMemory(bytes, is -> {
-      try (ObjectInputStream input = new GameObjectInputStream(new GameObjectStreamFactory(gameData), is)) {
-        return (Change) input.readObject();
-      } catch (final ClassNotFoundException e) {
-        throw new IOException(e);
-      }
-    });
+    final byte[] bytes =
+        IoUtils.writeToMemory(
+            os -> {
+              try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
+                output.writeObject(change);
+              }
+            });
+    return IoUtils.readFromMemory(
+        bytes,
+        is -> {
+          try (ObjectInputStream input =
+              new GameObjectInputStream(new GameObjectStreamFactory(gameData), is)) {
+            return (Change) input.readObject();
+          } catch (final ClassNotFoundException e) {
+            throw new IOException(e);
+          }
+        });
   }
 
   @Test
@@ -50,7 +53,8 @@ class ChangeTest {
     assertEquals(5, can.getUnitCollection().getUnitCount());
     // add some units
     final Change change =
-        ChangeFactory.addUnits(can, gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
+        ChangeFactory.addUnits(
+            can, gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     gameData.performChange(change);
     assertEquals(15, can.getUnitCollection().getUnitCount());
     // invert the change
@@ -65,13 +69,17 @@ class ChangeTest {
     assertEquals(5, can.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
-        can.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        can.getUnitCollection()
+            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(can, units);
     gameData.performChange(change);
 
     assertEquals(2, can.getUnitCollection().getUnitCount());
     gameData.performChange(change.invert());
-    assertEquals(5, can.getUnitCollection().getUnitCount(), "last change inverted, should have gained units.");
+    assertEquals(
+        5,
+        can.getUnitCollection().getUnitCount(),
+        "last change inverted, should have gained units.");
   }
 
   @Test
@@ -81,7 +89,8 @@ class ChangeTest {
     assertEquals(5, can.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
-        can.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        can.getUnitCollection()
+            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     gameData.performChange(change);
@@ -98,7 +107,8 @@ class ChangeTest {
     assertEquals(10, chretian.getUnitCollection().getUnitCount());
     // add some units
     final Change change =
-        ChangeFactory.addUnits(chretian,
+        ChangeFactory.addUnits(
+            chretian,
             gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     gameData.performChange(change);
     assertEquals(20, chretian.getUnitCollection().getUnitCount());
@@ -114,7 +124,9 @@ class ChangeTest {
     assertEquals(10, chretian.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
-        chretian.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        chretian
+            .getUnitCollection()
+            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(chretian, units);
     gameData.performChange(change);
     assertEquals(7, chretian.getUnitCollection().getUnitCount());
@@ -130,7 +142,9 @@ class ChangeTest {
     assertEquals(5, canada.getUnitCollection().getUnitCount());
     assertEquals(0, greenland.getUnitCollection().getUnitCount());
     final Collection<Unit> units =
-        canada.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        canada
+            .getUnitCollection()
+            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.moveUnits(canada, greenland, units);
     gameData.performChange(change);
     assertEquals(2, canada.getUnitCollection().getUnitCount());
@@ -147,7 +161,9 @@ class ChangeTest {
     assertEquals(5, canada.getUnitCollection().getUnitCount());
     assertEquals(0, greenland.getUnitCollection().getUnitCount());
     final Collection<Unit> units =
-        canada.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        canada
+            .getUnitCollection()
+            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.moveUnits(canada, greenland, units);
     change = serialize(change);
     gameData.performChange(change);
@@ -161,8 +177,10 @@ class ChangeTest {
   @Test
   void testProductionFrontierChange() {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
-    final ProductionFrontier uspf = gameData.getProductionFrontierList().getProductionFrontier("usProd");
-    final ProductionFrontier canpf = gameData.getProductionFrontierList().getProductionFrontier("canProd");
+    final ProductionFrontier uspf =
+        gameData.getProductionFrontierList().getProductionFrontier("usProd");
+    final ProductionFrontier canpf =
+        gameData.getProductionFrontierList().getProductionFrontier("canProd");
     assertEquals(can.getProductionFrontier(), canpf);
     final Change change = ChangeFactory.changeProductionFrontier(can, uspf);
     gameData.performChange(change);
@@ -235,7 +253,8 @@ class ChangeTest {
     units.add(inf2);
     assertEquals(can, inf1.getOwner());
     assertEquals(us, inf2.getOwner());
-    Change change = ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritory("greenland"));
+    Change change =
+        ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritory("greenland"));
     gameData.performChange(change);
     assertEquals(can, inf1.getOwner());
     assertEquals(can, inf2.getOwner());
@@ -257,7 +276,8 @@ class ChangeTest {
     units.add(inf2);
     assertEquals(can, inf1.getOwner());
     assertEquals(us, inf2.getOwner());
-    Change change = ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritory("greenland"));
+    Change change =
+        ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritory("greenland"));
     change = serialize(change);
     gameData.performChange(change);
     assertEquals(can, inf1.getOwner());
@@ -271,8 +291,10 @@ class ChangeTest {
 
   @Test
   void testChangeProductionFrontier() throws Exception {
-    final ProductionFrontier usProd = gameData.getProductionFrontierList().getProductionFrontier("usProd");
-    final ProductionFrontier canProd = gameData.getProductionFrontierList().getProductionFrontier("canProd");
+    final ProductionFrontier usProd =
+        gameData.getProductionFrontierList().getProductionFrontier("usProd");
+    final ProductionFrontier canProd =
+        gameData.getProductionFrontierList().getProductionFrontier("canProd");
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(can.getProductionFrontier(), canProd);
     Change prodChange = ChangeFactory.changeProductionFrontier(can, usProd);

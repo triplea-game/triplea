@@ -4,10 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
 
 class HashedPasswordTest {
   @Test
@@ -18,25 +16,24 @@ class HashedPasswordTest {
   @Test
   void isValidSyntax() {
     Arrays.asList(
-        "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11",
-        "$2a$10$7v.RGs4Aw.cW8Hg1LGINQO/EKf47TAQDClHXkDAzx6HCuakrjBF7.")
+            "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11",
+            "$2a$10$7v.RGs4Aw.cW8Hg1LGINQO/EKf47TAQDClHXkDAzx6HCuakrjBF7.")
         .forEach(
-            value -> assertThat(
-                "Expecting this to look valid: " + value,
-                new HashedPassword(value).isHashedWithSalt(), is(true)));
+            value ->
+                assertThat(
+                    "Expecting this to look valid: " + value,
+                    new HashedPassword(value).isHashedWithSalt(),
+                    is(true)));
   }
 
   @Test
   void isValidSyntaxInvalidCases() {
-    Arrays.asList(
-        "",
-        "abc",
-        "  ",
-        "\n",
-        "#00000")
+    Arrays.asList("", "abc", "  ", "\n", "#00000")
         .forEach(
-            value -> assertThat(
-                "Expecting this to look invalid: " + value,
-                new HashedPassword(value).isHashedWithSalt(), is(false)));
+            value ->
+                assertThat(
+                    "Expecting this to look invalid: " + value,
+                    new HashedPassword(value).isHashedWithSalt(),
+                    is(false)));
   }
 }

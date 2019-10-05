@@ -2,21 +2,20 @@ package games.strategy.net.nio;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.net.INode;
+import games.strategy.net.IObjectStreamFactory;
+import games.strategy.net.MessageHeader;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
-
-import games.strategy.net.INode;
-import games.strategy.net.IObjectStreamFactory;
-import games.strategy.net.MessageHeader;
 import lombok.extern.java.Log;
 
 /**
- * The threads needed for a group of sockets using NIO.
- * One thread reds socket data, one thread writes socket data and one thread deserializes (decodes) packets read by the
- * read thread.
- * serializing (encoding) objects to be written across the network is done by threads calling this object.
+ * The threads needed for a group of sockets using NIO. One thread reds socket data, one thread
+ * writes socket data and one thread deserializes (decodes) packets read by the read thread.
+ * serializing (encoding) objects to be written across the network is done by threads calling this
+ * object.
  */
 @Log
 public class NioSocket implements ErrorReporter {
@@ -42,10 +41,7 @@ public class NioSocket implements ErrorReporter {
     return listener.getRemoteNode(channel);
   }
 
-  /**
-   * Stop our threads.
-   * This does not close the sockets we are connected to.
-   */
+  /** Stop our threads. This does not close the sockets we are connected to. */
   public void shutDown() {
     writer.shutDown();
     reader.shutDown();
@@ -61,14 +57,12 @@ public class NioSocket implements ErrorReporter {
   public void send(final SocketChannel to, final MessageHeader header) {
     checkNotNull(to);
     checkNotNull(header);
+    checkNotNull(header.getFrom());
 
     encoder.write(to, header);
   }
 
-  /**
-   * Add this channel.
-   * The channel will either be unquarantined, or an error will be reported
-   */
+  /** Add this channel. The channel will either be unquarantined, or an error will be reported */
   public void add(final SocketChannel channel, final QuarantineConversation conversation) {
     if (channel.isBlocking()) {
       throw new IllegalArgumentException("Channel is blocking");
@@ -79,7 +73,7 @@ public class NioSocket implements ErrorReporter {
   }
 
   void unquarantine(final SocketChannel channel, final QuarantineConversation conversation) {
-    listener.socketUnqaurantined(channel, conversation);
+    listener.socketUnquarantined(channel, conversation);
   }
 
   @Override
@@ -88,9 +82,7 @@ public class NioSocket implements ErrorReporter {
     listener.socketError(channel, e);
   }
 
-  /**
-   * Close the channel, and clean up any data associated with it.
-   */
+  /** Close the channel, and clean up any data associated with it. */
   public void close(final SocketChannel channel) {
     try {
       final Socket s = channel.socket();

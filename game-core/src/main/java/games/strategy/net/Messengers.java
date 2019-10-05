@@ -1,8 +1,6 @@
 package games.strategy.net;
 
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
 import games.strategy.engine.chat.IChatController;
@@ -14,11 +12,10 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import java.io.Serializable;
 import lombok.ToString;
 
-/**
- * Convenience grouping of a messenger, remote messenger and channel messenger.
- */
+/** Convenience grouping of a messenger, remote messenger and channel messenger. */
 @ToString
 public class Messengers implements IMessenger, IRemoteMessenger, IChannelMessenger {
   private final IMessenger messenger;
@@ -32,6 +29,7 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     remoteMessenger = new RemoteMessenger(unifiedMessenger);
   }
 
+  @VisibleForTesting
   public Messengers(
       final IMessenger messenger,
       final IRemoteMessenger remoteMessenger,
@@ -41,19 +39,26 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     this.channelMessenger = channelMessenger;
   }
 
-  // TODO: API could be improved, perhaps return an optional, and/or store exact instance types from constructor.
+  public boolean isPasswordChangeRequired() {
+    return messenger instanceof IClientMessenger
+        && ((IClientMessenger) messenger).isPasswordChangeRequired();
+  }
+
+  // TODO: API could be improved, perhaps return an optional, and/or store exact instance types from
+  // constructor.
   public IServerMessenger getServerMessenger() {
     return (IServerMessenger) messenger;
   }
 
   public IChatController getRemoteChatController(final String chatName) {
-    return (IChatController) remoteMessenger
-        .getRemote(ChatController.getChatControlerRemoteName(chatName));
+    return (IChatController)
+        remoteMessenger.getRemote(ChatController.getChatControllerRemoteName(chatName));
   }
 
-  public void addChatChannelSubscriber(final IChatChannel chatChannelSubscriber, final String chatChannelName) {
-    channelMessenger.registerChannelSubscriber(chatChannelSubscriber,
-        new RemoteName(chatChannelName, IChatChannel.class));
+  public void addChatChannelSubscriber(
+      final IChatChannel chatChannelSubscriber, final String chatChannelName) {
+    channelMessenger.registerChannelSubscriber(
+        chatChannelSubscriber, new RemoteName(chatChannelName, IChatChannel.class));
   }
 
   @Override
@@ -111,15 +116,16 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     messenger.addMessageListener(listener);
   }
 
-  @Override
   public void addErrorListener(final IMessengerErrorListener listener) {
-    messenger.addErrorListener(listener);
+    if (messenger instanceof ClientMessenger) {
+      ((ClientMessenger) messenger).addErrorListener(listener);
+    }
   }
 
-  @Override
   public void removeErrorListener(final IMessengerErrorListener listener) {
-
-    messenger.removeErrorListener(listener);
+    if (messenger instanceof ClientMessenger) {
+      ((ClientMessenger) messenger).removeErrorListener(listener);
+    }
   }
 
   @Override
@@ -145,11 +151,6 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
   @Override
   public INode getServerNode() {
     return messenger.getServerNode();
-  }
-
-  @Override
-  public InetSocketAddress getRemoteServerSocketAddress() {
-    return messenger.getRemoteServerSocketAddress();
   }
 
   @Override

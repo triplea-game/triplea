@@ -1,12 +1,11 @@
 package games.strategy.triplea.delegate;
 
+import games.strategy.engine.message.IRemote;
 import java.io.Serializable;
 
-import games.strategy.engine.message.IRemote;
-
 /**
- * A simple dumb delegate, don't actually call these methods.
- * Simply to satisfy the interface requirements for testing.
+ * A simple dumb delegate, don't actually call these methods. Simply to satisfy the interface
+ * requirements for testing.
  */
 public final class TestDelegate extends AbstractDelegate {
   @Override

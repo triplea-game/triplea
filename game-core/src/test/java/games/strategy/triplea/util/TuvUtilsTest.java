@@ -2,15 +2,14 @@ package games.strategy.triplea.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 class TuvUtilsTest {
   private GameData gameData;
@@ -47,5 +46,4 @@ class TuvUtilsTest {
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
     assertEquals(25, result.getInt(GameDataTestUtil.germanBattleship(gameData)));
   }
-
 }

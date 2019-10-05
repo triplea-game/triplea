@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
+import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -11,7 +12,6 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Level;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -27,16 +27,11 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
-
+import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
-import games.strategy.triplea.ui.TripleAFrame;
-import lombok.extern.java.Log;
-
-/**
- * GUI class used to display logging window and logging settings.
- */
+/** GUI class used to display logging window and logging settings. */
 @Log
 class ProLogWindow extends JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
@@ -85,17 +80,18 @@ class ProLogWindow extends JDialog {
     final JPanel pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
     setMinimumSize(new Dimension(775, 400));
-    addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent evt) {
-        formWindowClosing();
-      }
+    addWindowListener(
+        new WindowAdapter() {
+          @Override
+          public void windowClosing(final WindowEvent evt) {
+            formWindowClosing();
+          }
 
-      @Override
-      public void windowOpened(final WindowEvent evt) {
-        formWindowOpened();
-      }
-    });
+          @Override
+          public void windowOpened(final WindowEvent evt) {
+            formWindowOpened();
+          }
+        });
     getContentPane().setLayout(new GridBagLayout());
     panel7.setName("panel7");
     panel7.setPreferredSize(new Dimension(600, 45));
@@ -262,9 +258,7 @@ class ProLogWindow extends JDialog {
     this.pack();
   }
 
-  /**
-   * Loads the settings provided and displays it in this settings window.
-   */
+  /** Loads the settings provided and displays it in this settings window. */
   private void loadSettings(final ProLogSettings settings) {
     enableAiLogging.setSelected(settings.isLogEnabled());
     if (settings.getLogLevel().equals(Level.FINE)) {
@@ -294,15 +288,23 @@ class ProLogWindow extends JDialog {
   }
 
   private void restoreDefaultsButtonActionPerformed() {
-    final int result = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all AI settings?",
-        "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    final int result =
+        JOptionPane.showConfirmDialog(
+            rootPane,
+            "Are you sure you want to reset all AI settings?",
+            "Reset Default Settings",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
       // Default settings are already contained in a new DSettings instance
       final ProLogSettings defaultSettings = new ProLogSettings();
       loadSettings(defaultSettings);
-      JOptionPane.showMessageDialog(rootPane,
-          "Default settings restored.\r\n\r\n(If you don't want to keep these default settings, just hit cancel)",
-          "Default Settings Restored", JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showMessageDialog(
+          rootPane,
+          "Default settings restored.\r\n\r\n"
+              + "(If you don't want to keep these default settings, just hit cancel)",
+          "Default Settings Restored",
+          JOptionPane.INFORMATION_MESSAGE);
     }
   }
 
@@ -312,7 +314,8 @@ class ProLogWindow extends JDialog {
   }
 
   private void limitLogHistoryCbStateChanged() {
-    limitLogHistoryToSpinner.setEnabled(limitLogHistoryCheckBox.isSelected() && enableAiLogging.isSelected());
+    limitLogHistoryToSpinner.setEnabled(
+        limitLogHistoryCheckBox.isSelected() && enableAiLogging.isSelected());
   }
 
   private void formWindowClosing() {
@@ -335,23 +338,25 @@ class ProLogWindow extends JDialog {
     final JDialog dialog = new JDialog(this, "Pro AI - Settings Details");
     String message = "";
     if (tabPaneMain.getSelectedIndex() == 0) { // Debugging
-      message = "Debugging\r\n" + "\r\n"
-          + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see "
-          + "exactly what the AI is thinking.\r\n"
-          + "Note that if you check this on, you still have to press OK then reopen the settings window for the logs "
-          + "to actually start displaying.\r\n"
-          + "\r\n"
-          + "Log Depth: This setting lets you choose how deep you want the AI logging to be. Fine only displays the "
-          + "high-level events, like the start of a phase, etc.\r\n"
-          + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
-          + "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to "
-          + "read through it.\r\n"
-          + "\r\n"
-          + "Pause AI's: This checkbox pauses all the AI's while it's checked, so you can look at the logs without the "
-          + "AI's outputing floods of information.\r\n"
-          + "\r\n"
-          + "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of "
-          + "information.\r\n";
+      message =
+          "Debugging\r\n"
+              + "\r\n"
+              + "AI Logging: When this is checked, the AI's will output their logs, as they come "
+              + "in, so you can see exactly what the AI is thinking.\r\n"
+              + "Note that if you check this on, you still have to press OK then reopen the "
+              + "settings window for the logs to actually start displaying.\r\n"
+              + "\r\n"
+              + "Log Depth: This setting lets you choose how deep you want the AI logging to be. "
+              + "Fine only displays the high-level events, like the start of a phase, etc.\r\n"
+              + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
+              + "Finest displays all the AI logging available. Can be used for detailed analysis, "
+              + "but is a lot harder to read through it.\r\n"
+              + "\r\n"
+              + "Pause AI's: This checkbox pauses all the AI's while it's checked, so you can look "
+              + "at the logs without the AI's outputting floods of information.\r\n"
+              + "\r\n"
+              + "Limit Log History To X Rounds: If this is checked, the AI log information will "
+              + "be limited to X rounds of information.\r\n";
     }
     final JTextArea label = new JTextArea(message);
     label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -386,7 +391,8 @@ class ProLogWindow extends JDialog {
         currentLogTextArea = aiOutputLogArea;
       }
       currentLogTextArea.append(message + "\r\n");
-    } catch (final Exception ex) { // This is bad, but we don't want TripleA crashing because of this...
+    } catch (
+        final Exception ex) { // This is bad, but we don't want TripleA crashing because of this...
       log.log(
           Level.SEVERE,
           "Error adding Pro log message! Level: " + level.getName() + " Message: " + message,
@@ -395,24 +401,29 @@ class ProLogWindow extends JDialog {
   }
 
   void notifyNewRound(final int roundNumber, final String name) {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-      final JPanel newPanel = new JPanel();
-      final JScrollPane newScrollPane = new JScrollPane();
-      final JTextArea newTextArea = new JTextArea();
-      newTextArea.setColumns(20);
-      newTextArea.setRows(5);
-      newTextArea.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-      newTextArea.setEditable(false);
-      newScrollPane.getHorizontalScrollBar().setEnabled(true);
-      newScrollPane.setViewportView(newTextArea);
-      newPanel.setLayout(new GridLayout());
-      newPanel.add(newScrollPane);
-      logHolderTabbedPane.addTab(roundNumber + "-" + name, newPanel);
-      currentLogTextArea = newTextArea;
-    }));
+    Interruptibles.await(
+        () ->
+            SwingAction.invokeAndWait(
+                () -> {
+                  final JPanel newPanel = new JPanel();
+                  final JScrollPane newScrollPane = new JScrollPane();
+                  final JTextArea newTextArea = new JTextArea();
+                  newTextArea.setColumns(20);
+                  newTextArea.setRows(5);
+                  newTextArea.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+                  newTextArea.setEditable(false);
+                  newScrollPane.getHorizontalScrollBar().setEnabled(true);
+                  newScrollPane.setViewportView(newTextArea);
+                  newPanel.setLayout(new GridLayout());
+                  newPanel.add(newScrollPane);
+                  logHolderTabbedPane.addTab(roundNumber + "-" + name, newPanel);
+                  currentLogTextArea = newTextArea;
+                }));
     // Now remove round logging that has 'expired'.
-    // Note that this method will also trim all but the first and last log panels if logging is turned off
-    // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the
+    // Note that this method will also trim all but the first and last log panels if logging is
+    // turned off
+    // (We always keep first round's log panel, and we keep last because the user might turn logging
+    // back on in the
     // middle of the round)
     trimLogRoundPanels();
   }
@@ -427,16 +438,21 @@ class ProLogWindow extends JDialog {
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
-      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-        for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
-          // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
-          if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
-            // Remove the tab and decrease i by one, so the next component will be checked
-            logHolderTabbedPane.removeTabAt(i);
-            i--;
-          }
-        }
-      }));
+      Interruptibles.await(
+          () ->
+              SwingAction.invokeAndWait(
+                  () -> {
+                    for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
+                      // Remember, we never remove last tab, in case user turns logging back on in
+                      // the middle of a round
+                      if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
+                        // Remove the tab and decrease i by one, so the next component will be
+                        // checked
+                        logHolderTabbedPane.removeTabAt(i);
+                        i--;
+                      }
+                    }
+                  }));
     }
   }
 }

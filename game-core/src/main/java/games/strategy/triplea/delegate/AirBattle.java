@@ -1,21 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-
-import org.triplea.java.Interruptibles;
-import org.triplea.java.PredicateBuilder;
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -27,7 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -35,13 +19,25 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.java.Interruptibles;
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * Battle class used for air battles and interception before a standard battle.
- */
+/** Battle class used for air battles and interception before a standard battle. */
 @Log
 public class AirBattle extends AbstractBattle {
   protected static final String AIR_BATTLE = "Air Battle";
@@ -60,29 +56,43 @@ public class AirBattle extends AbstractBattle {
   // -1 would mean forever until one side is eliminated. (default is 1 round)
   protected final int maxRounds;
 
-  AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerId attacker,
+  AirBattle(
+      final Territory battleSite,
+      final boolean bombingRaid,
+      final GameData data,
+      final PlayerId attacker,
       final BattleTracker battleTracker) {
-    super(battleSite, attacker, battleTracker, bombingRaid, (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
+    super(
+        battleSite,
+        attacker,
+        battleTracker,
+        bombingRaid,
+        (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
         data);
     isAmphibious = false;
     maxRounds = Properties.getAirBattleRounds(data);
     updateDefendingUnits();
   }
 
+  /** Updates the set of defending units from current battle site. */
   public void updateDefendingUnits() {
     // fill in defenders
     if (isBombingRun) {
       defendingUnits =
-          battleSite.getUnitCollection().getMatches(defendingBombingRaidInterceptors(battleSite, attacker, gameData));
+          battleSite
+              .getUnitCollection()
+              .getMatches(defendingBombingRaidInterceptors(battleSite, attacker, gameData));
     } else {
       defendingUnits =
-          battleSite.getUnitCollection().getMatches(defendingGroundSeaBattleInterceptors(attacker, gameData));
+          battleSite
+              .getUnitCollection()
+              .getMatches(defendingGroundSeaBattleInterceptors(attacker, gameData));
     }
   }
 
   @Override
-  public Change addAttackChange(final Route route, final Collection<Unit> units,
-      final Map<Unit, Set<Unit>> targets) {
+  public Change addAttackChange(
+      final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
     attackingUnits.addAll(units);
     return ChangeFactory.EMPTY_CHANGE;
   }
@@ -94,7 +104,8 @@ public class AirBattle extends AbstractBattle {
 
   @Override
   public void fight(final IDelegateBridge bridge) {
-    // remove units that may already be dead due to a previous event (like they died from a strategic bombing raid,
+    // remove units that may already be dead due to a previous event (like they died from a
+    // strategic bombing raid,
     // rocket attack, etc)
     removeUnitsThatNoLongerExist();
     // we were interrupted
@@ -137,12 +148,14 @@ public class AirBattle extends AbstractBattle {
   }
 
   protected boolean canAttackerRetreat() {
-    return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle()
+    return !shouldEndBattleDueToMaxRounds()
+        && shouldFightAirBattle()
         && Properties.getAirBattleAttackersCanRetreat(gameData);
   }
 
   protected boolean canDefenderRetreat() {
-    return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle()
+    return !shouldEndBattleDueToMaxRounds()
+        && shouldFightAirBattle()
         && Properties.getAirBattleDefendersCanRetreat(gameData);
   }
 
@@ -154,119 +167,132 @@ public class AirBattle extends AbstractBattle {
       }
       steps.add(new AttackersFire());
       steps.add(new DefendersFire());
-      steps.add(new IExecutable() { // just calculates lost TUV and kills off any suicide units
-        private static final long serialVersionUID = -5575569705493214941L;
+      steps.add(
+          new IExecutable() { // just calculates lost TUV and kills off any suicide units
+            private static final long serialVersionUID = -5575569705493214941L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!intercept) {
-            return;
-          }
-          final IntegerMap<UnitType> defenderCosts = TuvUtils.getCostsForTuv(defender, gameData);
-          final IntegerMap<UnitType> attackerCosts = TuvUtils.getCostsForTuv(attacker, gameData);
-          attackingUnits.removeAll(attackingWaitingToDie);
-          remove(attackingWaitingToDie, bridge, battleSite);
-          defendingUnits.removeAll(defendingWaitingToDie);
-          remove(defendingWaitingToDie, bridge, battleSite);
-          int tuvLostAttacker = TuvUtils.getTuv(attackingWaitingToDie, attacker, attackerCosts, gameData);
-          attackerLostTuv += tuvLostAttacker;
-          int tuvLostDefender = TuvUtils.getTuv(defendingWaitingToDie, defender, defenderCosts, gameData);
-          defenderLostTuv += tuvLostDefender;
-          attackingWaitingToDie.clear();
-          defendingWaitingToDie.clear();
-          // kill any suicide attackers (veqryn)
-          final Predicate<Unit> attackerSuicide = PredicateBuilder
-              .of(Matches.unitIsSuicide())
-              .andIf(isBombingRun, Matches.unitIsNotStrategicBomber())
-              .build();
-          if (attackingUnits.stream().anyMatch(attackerSuicide)) {
-            final List<Unit> suicideUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicide());
-            attackingUnits.removeAll(suicideUnits);
-            remove(suicideUnits, bridge, battleSite);
-            tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, attackerCosts, gameData);
-            attackerLostTuv += tuvLostAttacker;
-          }
-          if (defendingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
-            final List<Unit> suicideUnits = CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicide());
-            defendingUnits.removeAll(suicideUnits);
-            remove(suicideUnits, bridge, battleSite);
-            tuvLostDefender = TuvUtils.getTuv(suicideUnits, defender, defenderCosts, gameData);
-            defenderLostTuv += tuvLostDefender;
-          }
-        }
-      });
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              if (!intercept) {
+                return;
+              }
+              final IntegerMap<UnitType> defenderCosts =
+                  TuvUtils.getCostsForTuv(defender, gameData);
+              final IntegerMap<UnitType> attackerCosts =
+                  TuvUtils.getCostsForTuv(attacker, gameData);
+              attackingUnits.removeAll(attackingWaitingToDie);
+              remove(attackingWaitingToDie, bridge, battleSite);
+              defendingUnits.removeAll(defendingWaitingToDie);
+              remove(defendingWaitingToDie, bridge, battleSite);
+              int tuvLostAttacker =
+                  TuvUtils.getTuv(attackingWaitingToDie, attacker, attackerCosts, gameData);
+              attackerLostTuv += tuvLostAttacker;
+              int tuvLostDefender =
+                  TuvUtils.getTuv(defendingWaitingToDie, defender, defenderCosts, gameData);
+              defenderLostTuv += tuvLostDefender;
+              attackingWaitingToDie.clear();
+              defendingWaitingToDie.clear();
+              // kill any suicide attackers (veqryn)
+              final Predicate<Unit> attackerSuicide =
+                  PredicateBuilder.of(Matches.unitIsSuicide())
+                      .andIf(isBombingRun, Matches.unitIsNotStrategicBomber())
+                      .build();
+              if (attackingUnits.stream().anyMatch(attackerSuicide)) {
+                final List<Unit> suicideUnits =
+                    CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicide());
+                attackingUnits.removeAll(suicideUnits);
+                remove(suicideUnits, bridge, battleSite);
+                tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, attackerCosts, gameData);
+                attackerLostTuv += tuvLostAttacker;
+              }
+              if (defendingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
+                final List<Unit> suicideUnits =
+                    CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicide());
+                defendingUnits.removeAll(suicideUnits);
+                remove(suicideUnits, bridge, battleSite);
+                tuvLostDefender = TuvUtils.getTuv(suicideUnits, defender, defenderCosts, gameData);
+                defenderLostTuv += tuvLostDefender;
+              }
+            }
+          });
     }
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 3148193405425861565L;
+    steps.add(
+        new IExecutable() {
+          private static final long serialVersionUID = 3148193405425861565L;
 
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (shouldFightAirBattle() && !shouldEndBattleDueToMaxRounds()) {
-          return;
-        }
-        makeBattle(bridge);
-      }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 3148193405425861565L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (shouldFightAirBattle() && !shouldEndBattleDueToMaxRounds()) {
-          return;
-        }
-        end(bridge);
-      }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -5408702756335356985L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!isOver && canAttackerRetreat()) {
-          attackerRetreat(bridge);
-        }
-      }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -7819137222487595113L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!isOver && canDefenderRetreat()) {
-          defenderRetreat(bridge);
-        }
-      }
-    });
-    final IExecutable loop = new IExecutable() {
-      private static final long serialVersionUID = -5408702756335356985L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        pushFightLoopOnStack(false);
-      }
-    };
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -4136481765101946944L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!isOver) {
-          AirBattle.this.steps = determineStepStrings(false);
-          final ITripleADisplay display = getDisplay(bridge);
-          display.listBattleSteps(battleId, AirBattle.this.steps);
-          round++;
-          // continue fighting
-          // the recursive step
-          // this should always be the base of the stack
-          // when we execute the loop, it will populate the stack with the battle steps
-          if (!AirBattle.this.stack.isEmpty()) {
-            throw new IllegalStateException("Stack not empty:" + AirBattle.this.stack);
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            if (shouldFightAirBattle() && !shouldEndBattleDueToMaxRounds()) {
+              return;
+            }
+            makeBattle(bridge);
           }
-          AirBattle.this.stack.push(loop);
-        }
-      }
-    });
+        });
+    steps.add(
+        new IExecutable() {
+          private static final long serialVersionUID = 3148193405425861565L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            if (shouldFightAirBattle() && !shouldEndBattleDueToMaxRounds()) {
+              return;
+            }
+            end(bridge);
+          }
+        });
+    steps.add(
+        new IExecutable() {
+          private static final long serialVersionUID = -5408702756335356985L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            if (!isOver && canAttackerRetreat()) {
+              attackerRetreat(bridge);
+            }
+          }
+        });
+    steps.add(
+        new IExecutable() {
+          private static final long serialVersionUID = -7819137222487595113L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            if (!isOver && canDefenderRetreat()) {
+              defenderRetreat(bridge);
+            }
+          }
+        });
+    final IExecutable loop =
+        new IExecutable() {
+          private static final long serialVersionUID = -5408702756335356985L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            pushFightLoopOnStack(false);
+          }
+        };
+    steps.add(
+        new IExecutable() {
+          private static final long serialVersionUID = -4136481765101946944L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            if (!isOver) {
+              AirBattle.this.steps = determineStepStrings(false);
+              final IDisplay display = bridge.getDisplayChannelBroadcaster();
+              display.listBattleSteps(battleId, AirBattle.this.steps);
+              round++;
+              // continue fighting
+              // the recursive step
+              // this should always be the base of the stack
+              // when we execute the loop, it will populate the stack with the battle steps
+              if (!AirBattle.this.stack.isEmpty()) {
+                throw new IllegalStateException("Stack not empty:" + AirBattle.this.stack);
+              }
+              AirBattle.this.stack.push(loop);
+            }
+          }
+        });
     return steps;
   }
 
@@ -288,10 +314,12 @@ public class AirBattle extends AbstractBattle {
     return steps;
   }
 
-  private static void recordUnitsWereInAirBattle(final Collection<Unit> units, final IDelegateBridge bridge) {
+  private static void recordUnitsWereInAirBattle(
+      final Collection<Unit> units, final IDelegateBridge bridge) {
     final CompositeChange wasInAirBattleChange = new CompositeChange();
     for (final Unit u : units) {
-      wasInAirBattleChange.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
+      wasInAirBattleChange.add(
+          ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
     }
     if (!wasInAirBattleChange.isEmpty()) {
       bridge.addChange(wasInAirBattleChange);
@@ -304,29 +332,39 @@ public class AirBattle extends AbstractBattle {
       recordUnitsWereInAirBattle(attackingUnits, bridge);
       recordUnitsWereInAirBattle(defendingUnits, bridge);
     }
-    // so as of right now, Air Battles are created before both normal battles and strategic bombing raids
-    // once completed, the air battle will create a strategic bombing raid, if that is the purpose of those aircraft
-    // however, if the purpose is a normal battle, it will have already been created by the battle tracker / combat move
+    // so as of right now, Air Battles are created before both normal battles and strategic bombing
+    // raids
+    // once completed, the air battle will create a strategic bombing raid, if that is the purpose
+    // of those aircraft
+    // however, if the purpose is a normal battle, it will have already been created by the battle
+    // tracker / combat move
     // so we do not have to create normal battles, only bombing raids
     // setup new battle here
     if (isBombingRun) {
-      final Collection<Unit> bombers = CollectionUtils.getMatches(attackingUnits, Matches.unitIsStrategicBomber());
+      final Collection<Unit> bombers =
+          CollectionUtils.getMatches(attackingUnits, Matches.unitIsStrategicBomber());
       if (!bombers.isEmpty()) {
         Map<Unit, Set<Unit>> targets = null;
-        final Collection<Unit> enemyTargetsTotal = battleSite.getUnitCollection().getMatches(
-            Matches.enemyUnit(bridge.getPlayerId(), gameData)
-                .and(Matches.unitCanBeDamaged())
-                .and(Matches.unitIsBeingTransported().negate()));
+        final Collection<Unit> enemyTargetsTotal =
+            battleSite
+                .getUnitCollection()
+                .getMatches(
+                    Matches.enemyUnit(bridge.getPlayerId(), gameData)
+                        .and(Matches.unitCanBeDamaged())
+                        .and(Matches.unitIsBeingTransported().negate()));
         for (final Unit unit : bombers) {
           final Collection<Unit> enemyTargets =
-              CollectionUtils.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
+              CollectionUtils.getMatches(
+                  enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData)) {
               while (target == null) {
                 target =
-                    getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, Collections.singletonList(unit));
+                    getRemote(bridge)
+                        .whatShouldBomberBomb(
+                            battleSite, enemyTargets, Collections.singletonList(unit));
               }
             } else {
               target = enemyTargets.iterator().next();
@@ -335,16 +373,26 @@ public class AirBattle extends AbstractBattle {
               targets = new HashMap<>();
               targets.put(target, new HashSet<>(Collections.singleton(unit)));
             }
-            battleTracker.addBattle(new RouteScripted(battleSite), Collections.singleton(unit), true, attacker,
-                bridge, null, null, targets, true);
+            battleTracker.addBattle(
+                new RouteScripted(battleSite),
+                Collections.singleton(unit),
+                true,
+                attacker,
+                bridge,
+                null,
+                null,
+                targets,
+                true);
           }
         }
         final IBattle battle = battleTracker.getPendingBombingBattle(battleSite);
-        final IBattle dependent = battleTracker.getPendingBattle(battleSite, false, BattleType.NORMAL);
+        final IBattle dependent =
+            battleTracker.getPendingBattle(battleSite, false, BattleType.NORMAL);
         if (dependent != null) {
           battleTracker.addDependency(dependent, battle);
         }
-        final IBattle dependentAirBattle = battleTracker.getPendingBattle(battleSite, false, BattleType.AIR_BATTLE);
+        final IBattle dependentAirBattle =
+            battleTracker.getPendingBattle(battleSite, false, BattleType.AIR_BATTLE);
         if (dependentAirBattle != null) {
           battleTracker.addDependency(dependentAirBattle, battle);
         }
@@ -365,24 +413,32 @@ public class AirBattle extends AbstractBattle {
             battleResultDescription = BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT;
           }
           text = "Air Battle is over, the remaining bombers go on to their targets";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
+          bridge
+              .getSoundChannelBroadcaster()
+              .playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
         } else {
           whoWon = WhoWon.DRAW;
           battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
           text = "Air Battle is over, the bombers have all died";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, attacker);
+          bridge
+              .getSoundChannelBroadcaster()
+              .playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, attacker);
         }
       } else {
         if (defendingUnits.isEmpty()) {
           whoWon = WhoWon.ATTACKER;
           battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
           text = "Air Battle is over, the defenders have all died";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
+          bridge
+              .getSoundChannelBroadcaster()
+              .playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
         } else {
           whoWon = WhoWon.DRAW;
           battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
           text = "Air Battle is over, neither side is eliminated";
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, attacker);
+          bridge
+              .getSoundChannelBroadcaster()
+              .playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, attacker);
         }
       }
     } else {
@@ -392,9 +448,17 @@ public class AirBattle extends AbstractBattle {
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, attacker);
     }
     bridge.getHistoryWriter().addChildToEvent(text);
-    battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv,
-        defenderLostTuv, battleResultDescription, new BattleResults(this, gameData));
-    getDisplay(bridge).battleEnd(battleId, "Air Battle over");
+    battleTracker
+        .getBattleRecords()
+        .addResultToBattle(
+            attacker,
+            battleId,
+            defender,
+            attackerLostTuv,
+            defenderLostTuv,
+            battleResultDescription,
+            new BattleResults(this, gameData));
+    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Air Battle over");
     isOver = true;
     battleTracker.removeBattle(AirBattle.this, bridge.getData());
   }
@@ -426,7 +490,9 @@ public class AirBattle extends AbstractBattle {
     }
   }
 
-  private void queryRetreat(final boolean defender, final IDelegateBridge bridge,
+  private void queryRetreat(
+      final boolean defender,
+      final IDelegateBridge bridge,
       final Collection<Territory> availableTerritories) {
     if (availableTerritories.isEmpty()) {
       return;
@@ -439,33 +505,45 @@ public class AirBattle extends AbstractBattle {
     final PlayerId retreatingPlayer = defender ? this.defender : attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
-    getDisplay(bridge).gotoBattleStep(battleId, step);
+    bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, step);
     final Territory retreatTo =
-        getRemote(retreatingPlayer, bridge).retreatQuery(battleId, false, battleSite, availableTerritories, text);
+        getRemote(retreatingPlayer, bridge)
+            .retreatQuery(battleId, false, battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      log.severe("Invalid retreat selection :" + retreatTo + " not in "
-          + MyFormatter.defaultNamedToTextList(availableTerritories));
+      log.severe(
+          "Invalid retreat selection :"
+              + retreatTo
+              + " not in "
+              + MyFormatter.defaultNamedToTextList(availableTerritories));
       return;
     }
     if (retreatTo != null) {
       if (!headless) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
+        bridge
+            .getSoundChannelBroadcaster()
+            .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
       }
       retreat(units, defender, bridge);
       final String messageShort = retreatingPlayer.getName() + " retreats";
-      final String messageLong = retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
-      getDisplay(bridge).notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
+      final String messageLong =
+          retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
+      bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
     }
   }
 
-  private void retreat(final Collection<Unit> retreating, final boolean defender, final IDelegateBridge bridge) {
+  private void retreat(
+      final Collection<Unit> retreating, final boolean defender, final IDelegateBridge bridge) {
     if (!defender) {
-      // we must remove any of these units from the land battle that follows (this comes before we remove them from this
+      // we must remove any of these units from the land battle that follows (this comes before we
+      // remove them from this
       // battle, because after we remove from this battle we are no longer blocking any battles)
       final Collection<IBattle> dependentBattles = battleTracker.getBlocked(AirBattle.this);
       removeFromDependents(retreating, bridge, dependentBattles, true);
     }
-    final String transcriptText = MyFormatter.unitsToText(retreating) + (defender ? " grounded" : " retreated");
+    final String transcriptText =
+        MyFormatter.unitsToText(retreating) + (defender ? " grounded" : " retreated");
     final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
     units.removeAll(retreating);
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreating));
@@ -474,10 +552,24 @@ public class AirBattle extends AbstractBattle {
 
   private void showBattle(final IDelegateBridge bridge) {
     final String title = "Air Battle in " + battleSite.getName();
-    getDisplay(bridge).showBattle(battleId, battleSite, title, attackingUnits, defendingUnits, null, null, null,
-        Collections.emptyMap(), attacker, defender, isAmphibious(), getBattleType(),
-        Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(battleId, steps);
+    bridge
+        .getDisplayChannelBroadcaster()
+        .showBattle(
+            battleId,
+            battleSite,
+            title,
+            attackingUnits,
+            defendingUnits,
+            null,
+            null,
+            null,
+            Collections.emptyMap(),
+            attacker,
+            defender,
+            isAmphibious(),
+            getBattleType(),
+            Collections.emptySet());
+    bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
   /**
@@ -489,7 +581,9 @@ public class AirBattle extends AbstractBattle {
       return Integer.MAX_VALUE;
     }
     int result = 0;
-    for (final Unit base : t.getUnitCollection().getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
+    for (final Unit base :
+        t.getUnitCollection()
+            .getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
       final int baseMax = UnitAttachment.get(base.getType()).getMaxInterceptCount();
       if (baseMax == -1) {
         return Integer.MAX_VALUE;
@@ -517,15 +611,20 @@ public class AirBattle extends AbstractBattle {
       final Collection<Unit> interceptors;
       if (isBombingRun) {
         // if bombing run, ask who will intercept
-        interceptors = getRemote(defender, bridge).selectUnitsQuery(battleSite,
-            new ArrayList<>(defendingUnits), "Select Air to Intercept");
+        interceptors =
+            getRemote(defender, bridge)
+                .selectUnitsQuery(
+                    battleSite, new ArrayList<>(defendingUnits), "Select Air to Intercept");
         groundedPlanesRetreated = false;
       } else {
-        // if normal battle, we may choose to withdraw some air units (keep them grounded for both Air battle and the
+        // if normal battle, we may choose to withdraw some air units (keep them grounded for both
+        // Air battle and the
         // subsequent normal battle) instead of launching
         if (Properties.getAirBattleDefendersCanRetreat(gameData)) {
-          interceptors = getRemote(defender, bridge).selectUnitsQuery(battleSite,
-              new ArrayList<>(defendingUnits), "Select Air to Intercept");
+          interceptors =
+              getRemote(defender, bridge)
+                  .selectUnitsQuery(
+                      battleSite, new ArrayList<>(defendingUnits), "Select Air to Intercept");
           groundedPlanesRetreated = true;
         } else {
           // if not allowed to withdraw, we must commit all air
@@ -533,8 +632,9 @@ public class AirBattle extends AbstractBattle {
           groundedPlanesRetreated = false;
         }
       }
-      if (interceptors != null && (!defendingUnits.containsAll(interceptors)
-          || interceptors.size() > getMaxInterceptionCount(battleSite, defendingUnits))) {
+      if (interceptors != null
+          && (!defendingUnits.containsAll(interceptors)
+              || interceptors.size() > getMaxInterceptionCount(battleSite, defendingUnits))) {
         throw new IllegalStateException("Interceptors choose from outside of available units");
       }
       final Collection<Unit> beingRemoved = new ArrayList<>(defendingUnits);
@@ -543,18 +643,35 @@ public class AirBattle extends AbstractBattle {
         beingRemoved.removeAll(interceptors);
         defendingUnits.addAll(interceptors);
       }
-      getDisplay(bridge).changedUnitsNotification(battleId, defender, beingRemoved, null, null);
+      bridge
+          .getDisplayChannelBroadcaster()
+          .changedUnitsNotification(battleId, defender, beingRemoved, null, null);
       if (groundedPlanesRetreated) {
-        // this removes them from the subsequent normal battle. (do not use this for bombing battles)
+        // this removes them from the subsequent normal battle. (do not use this for bombing
+        // battles)
         retreat(beingRemoved, true, bridge);
       }
       if (!attackingUnits.isEmpty()) {
-        bridge.getHistoryWriter().addChildToEvent(attacker.getName() + " attacks with " + attackingUnits.size()
-            + " units heading to " + battleSite.getName(), new ArrayList<>(attackingUnits));
+        bridge
+            .getHistoryWriter()
+            .addChildToEvent(
+                attacker.getName()
+                    + " attacks with "
+                    + attackingUnits.size()
+                    + " units heading to "
+                    + battleSite.getName(),
+                new ArrayList<>(attackingUnits));
       }
       if (!defendingUnits.isEmpty()) {
-        bridge.getHistoryWriter().addChildToEvent(defender.getName() + " launches " + defendingUnits.size()
-            + " interceptors out of " + battleSite.getName(), new ArrayList<>(defendingUnits));
+        bridge
+            .getHistoryWriter()
+            .addChildToEvent(
+                defender.getName()
+                    + " launches "
+                    + defendingUnits.size()
+                    + " interceptors out of "
+                    + battleSite.getName(),
+                new ArrayList<>(defendingUnits));
       }
     }
   }
@@ -570,34 +687,53 @@ public class AirBattle extends AbstractBattle {
       if (!intercept) {
         return;
       }
-      final IExecutable roll = new IExecutable() {
-        private static final long serialVersionUID = 6579019987019614374L;
+      final IExecutable roll =
+          new IExecutable() {
+            private static final long serialVersionUID = 6579019987019614374L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          dice = DiceRoll.airBattle(attackingUnits, false, attacker, bridge, "Attackers Fire, ");
-        }
-      };
-      final IExecutable calculateCasualties = new IExecutable() {
-        private static final long serialVersionUID = 4556409970663527142L;
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              dice =
+                  DiceRoll.airBattle(attackingUnits, false, attacker, bridge, "Attackers Fire, ");
+            }
+          };
+      final IExecutable calculateCasualties =
+          new IExecutable() {
+            private static final long serialVersionUID = 4556409970663527142L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          details = BattleCalculator.selectCasualties(defender, defendingUnits, defendingUnits,
-              attackingUnits, false, new ArrayList<>(), battleSite, null, bridge, ATTACKERS_FIRE,
-              dice, true, battleId, false, dice.getHits(), true);
-          defendingWaitingToDie.addAll(details.getKilled());
-          markDamaged(details.getDamaged(), bridge);
-        }
-      };
-      final IExecutable notifyCasualties = new IExecutable() {
-        private static final long serialVersionUID = 4224354422817922451L;
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              details =
+                  BattleCalculator.selectCasualties(
+                      defender,
+                      defendingUnits,
+                      defendingUnits,
+                      attackingUnits,
+                      false,
+                      new ArrayList<>(),
+                      battleSite,
+                      null,
+                      bridge,
+                      ATTACKERS_FIRE,
+                      dice,
+                      true,
+                      battleId,
+                      false,
+                      dice.getHits(),
+                      true);
+              defendingWaitingToDie.addAll(details.getKilled());
+              markDamaged(details.getDamaged(), bridge);
+            }
+          };
+      final IExecutable notifyCasualties =
+          new IExecutable() {
+            private static final long serialVersionUID = 4224354422817922451L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          notifyCasualties(battleId, bridge, ATTACKERS_FIRE, dice, defender, attacker, details);
-        }
-      };
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              notifyCasualties(battleId, bridge, ATTACKERS_FIRE, dice, defender, attacker, details);
+            }
+          };
       // push in reverse order of execution
       stack.push(notifyCasualties);
       stack.push(calculateCasualties);
@@ -616,34 +752,52 @@ public class AirBattle extends AbstractBattle {
       if (!intercept) {
         return;
       }
-      final IExecutable roll = new IExecutable() {
-        private static final long serialVersionUID = 5953506121350176595L;
+      final IExecutable roll =
+          new IExecutable() {
+            private static final long serialVersionUID = 5953506121350176595L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          dice = DiceRoll.airBattle(defendingUnits, true, defender, bridge, "Defenders Fire, ");
-        }
-      };
-      final IExecutable calculateCasualties = new IExecutable() {
-        private static final long serialVersionUID = 6658309931909306564L;
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              dice = DiceRoll.airBattle(defendingUnits, true, defender, bridge, "Defenders Fire, ");
+            }
+          };
+      final IExecutable calculateCasualties =
+          new IExecutable() {
+            private static final long serialVersionUID = 6658309931909306564L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          details = BattleCalculator.selectCasualties(attacker, attackingUnits, attackingUnits,
-              defendingUnits, false, new ArrayList<>(), battleSite, null, bridge, DEFENDERS_FIRE,
-              dice, false, battleId, false, dice.getHits(), true);
-          attackingWaitingToDie.addAll(details.getKilled());
-          markDamaged(details.getDamaged(), bridge);
-        }
-      };
-      final IExecutable notifyCasualties = new IExecutable() {
-        private static final long serialVersionUID = 4461950841000674515L;
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              details =
+                  BattleCalculator.selectCasualties(
+                      attacker,
+                      attackingUnits,
+                      attackingUnits,
+                      defendingUnits,
+                      false,
+                      new ArrayList<>(),
+                      battleSite,
+                      null,
+                      bridge,
+                      DEFENDERS_FIRE,
+                      dice,
+                      false,
+                      battleId,
+                      false,
+                      dice.getHits(),
+                      true);
+              attackingWaitingToDie.addAll(details.getKilled());
+              markDamaged(details.getDamaged(), bridge);
+            }
+          };
+      final IExecutable notifyCasualties =
+          new IExecutable() {
+            private static final long serialVersionUID = 4461950841000674515L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          notifyCasualties(battleId, bridge, DEFENDERS_FIRE, dice, attacker, defender, details);
-        }
-      };
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              notifyCasualties(battleId, bridge, DEFENDERS_FIRE, dice, attacker, defender, details);
+            }
+          };
       // push in reverse order of execution
       stack.push(notifyCasualties);
       stack.push(calculateCasualties);
@@ -663,9 +817,9 @@ public class AirBattle extends AbstractBattle {
     return Matches.unitCanAirBattle();
   }
 
-  public static Predicate<Unit> defendingGroundSeaBattleInterceptors(final PlayerId attacker, final GameData data) {
-    return PredicateBuilder.of(
-        Matches.unitCanAirBattle())
+  public static Predicate<Unit> defendingGroundSeaBattleInterceptors(
+      final PlayerId attacker, final GameData data) {
+    return PredicateBuilder.of(Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().negate())
         .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
@@ -676,31 +830,37 @@ public class AirBattle extends AbstractBattle {
    * Returns a unit predicate that determines if it can potentially intercept including checking any
    * air base requirements.
    */
-  public static Predicate<Unit> defendingBombingRaidInterceptors(final Territory territory, final PlayerId attacker,
-      final GameData data) {
-    final Predicate<Unit> canIntercept = PredicateBuilder.of(
-        Matches.unitCanIntercept())
-        .and(Matches.unitIsEnemyOf(data, attacker))
-        .and(Matches.unitWasInAirBattle().negate())
-        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
-        .build();
-    final Predicate<Unit> airbasesCanIntercept = Matches.unitIsEnemyOf(data, attacker)
-        .and(Matches.unitIsAirBase())
-        .and(Matches.unitIsNotDisabled())
-        .and(Matches.unitIsBeingTransported().negate());
-    return u -> canIntercept.test(u)
-        && (!Matches.unitRequiresAirBaseToIntercept().test(u)
-            || Matches.territoryHasUnitsThatMatch(airbasesCanIntercept).test(territory));
+  public static Predicate<Unit> defendingBombingRaidInterceptors(
+      final Territory territory, final PlayerId attacker, final GameData data) {
+    final Predicate<Unit> canIntercept =
+        PredicateBuilder.of(Matches.unitCanIntercept())
+            .and(Matches.unitIsEnemyOf(data, attacker))
+            .and(Matches.unitWasInAirBattle().negate())
+            .andIf(
+                !Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
+            .build();
+    final Predicate<Unit> airbasesCanIntercept =
+        Matches.unitIsEnemyOf(data, attacker)
+            .and(Matches.unitIsAirBase())
+            .and(Matches.unitIsNotDisabled())
+            .and(Matches.unitIsBeingTransported().negate());
+    return u ->
+        canIntercept.test(u)
+            && (!Matches.unitRequiresAirBaseToIntercept().test(u)
+                || Matches.territoryHasUnitsThatMatch(airbasesCanIntercept).test(territory));
   }
 
-  /**
-   * Determines if enemy has any air units that can intercept to create an air battle.
-   */
-  public static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerId attacker,
-      final GameData data, final boolean bombing) {
+  /** Determines if enemy has any air units that can intercept to create an air battle. */
+  public static boolean territoryCouldPossiblyHaveAirBattleDefenders(
+      final Territory territory,
+      final PlayerId attacker,
+      final GameData data,
+      final boolean bombing) {
     final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
-    final Predicate<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(territory, attacker, data)
-        : defendingGroundSeaBattleInterceptors(attacker, data);
+    final Predicate<Unit> defendingAirMatch =
+        bombing
+            ? defendingBombingRaidInterceptors(territory, attacker, data)
+            : defendingGroundSeaBattleInterceptors(attacker, data);
     int maxScrambleDistance = 0;
     if (canScrambleToAirBattle) {
       for (final UnitType unitType : data.getUnitTypeList()) {
@@ -736,36 +896,59 @@ public class AirBattle extends AbstractBattle {
         return 0;
       }
     }
-    return Math.max(0, (defending ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner())
-        : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
+    return Math.max(
+        0,
+        (defending
+            ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner())
+            : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
   }
 
-  private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite) {
+  private void remove(
+      final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite) {
     if (killed.size() == 0) {
       return;
     }
     final Collection<Unit> dependent = getDependentUnits(killed);
     killed.addAll(dependent);
     final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
-    final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
+    final String transcriptText =
+        MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
     bridge.addChange(killedChange);
     final Collection<IBattle> dependentBattles = battleTracker.getBlocked(AirBattle.this);
     removeFromDependents(killed, bridge, dependentBattles, false);
   }
 
-  private static void notifyCasualties(final GUID battleId, final IDelegateBridge bridge, final String stepName,
-      final DiceRoll dice, final PlayerId hitPlayer, final PlayerId firingPlayer, final CasualtyDetails details) {
-    getDisplay(bridge).casualtyNotification(battleId, stepName, dice, hitPlayer, details.getKilled(),
-        details.getDamaged(), Collections.emptyMap());
+  private static void notifyCasualties(
+      final UUID battleId,
+      final IDelegateBridge bridge,
+      final String stepName,
+      final DiceRoll dice,
+      final PlayerId hitPlayer,
+      final PlayerId firingPlayer,
+      final CasualtyDetails details) {
+    bridge
+        .getDisplayChannelBroadcaster()
+        .casualtyNotification(
+            battleId,
+            stepName,
+            dice,
+            hitPlayer,
+            details.getKilled(),
+            details.getDamaged(),
+            Collections.emptyMap());
     // execute in a separate thread to allow either player to click continue first.
-    final Thread t = new Thread(() -> {
-      try {
-        getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Error during casualty notification", e);
-      }
-    }, "Click to continue waiter");
+    final Thread t =
+        new Thread(
+            () -> {
+              try {
+                getRemote(firingPlayer, bridge)
+                    .confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
+              } catch (final Exception e) {
+                log.log(Level.SEVERE, "Error during casualty notification", e);
+              }
+            },
+            "Click to continue waiter");
     t.start();
     getRemote(hitPlayer, bridge).confirmOwnCasualties(battleId, "Press space to continue");
     bridge.leaveDelegateExecution();
@@ -773,8 +956,11 @@ public class AirBattle extends AbstractBattle {
     bridge.enterDelegateExecution();
   }
 
-  private static void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
-      final Collection<IBattle> dependents, final boolean withdrawn) {
+  private static void removeFromDependents(
+      final Collection<Unit> units,
+      final IDelegateBridge bridge,
+      final Collection<IBattle> dependents,
+      final boolean withdrawn) {
     for (final IBattle dependent : dependents) {
       dependent.unitsLostInPrecedingBattle(units, bridge, withdrawn);
     }
@@ -786,6 +972,6 @@ public class AirBattle extends AbstractBattle {
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
-      final IDelegateBridge bridge, final boolean withdrawn) {}
+  public void unitsLostInPrecedingBattle(
+      final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {}
 }

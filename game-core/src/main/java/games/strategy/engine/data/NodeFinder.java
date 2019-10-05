@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -13,7 +12,8 @@ class NodeFinder {
   Element getSingleChild(final String name, final Node node) throws GameParseException {
     final List<Element> children = getChildren(name, node);
     if (children.size() != 1) {
-      throw new GameParseException("Expected one child node named: " + name + ", found: " + children.size());
+      throw new GameParseException(
+          "Expected one child node named: " + name + ", found: " + children.size());
     }
     return children.get(0);
   }

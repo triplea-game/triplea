@@ -1,9 +1,6 @@
 package games.strategy.triplea.attachments;
 
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
-
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
@@ -11,10 +8,9 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
+import java.util.Map;
 
-/**
- * An attachment for instances of {@link RelationshipType}.
- */
+/** An attachment for instances of {@link RelationshipType}. */
 public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
   public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
@@ -39,7 +35,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   private String canMoveThroughCanals = PROPERTY_DEFAULT;
   private String rocketsCanFlyOver = PROPERTY_DEFAULT;
 
-  public RelationshipTypeAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  public RelationshipTypeAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
@@ -57,17 +54,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * This sets a ArcheType for this relationshipType, there are 3 different archeTypes: War, Allied and Neutral
-   * These archeTypes can be accessed by using the constants: WAR_ARCHETYPE, ALLIED_ARCHETYPE, NEUTRAL_ARCHETYPE
-   * These archeTypes determine the behavior of isAllied, isWar and isNeutral
-   * These archeTyps determine the default behavior of the engine unless you override some option in this attachment;
-   * for example the RelationshipType ColdWar could be based on the WAR_ARCHETYPE but overrides options like "canInvade"
-   * "canAttackHomeTerritory" to not allow all-out invasion to mimic a not-all-out-war.
-   * Or you could base it on NEUTRAL_ARCHETYPE but override the options like "canAttackAtSea" and "canFireAA" to mimic a
-   * uneasy peace.
+   * This sets a ArcheType for this relationshipType, there are 3 different archeTypes: War, Allied
+   * and Neutral These archeTypes can be accessed by using the constants: WAR_ARCHETYPE,
+   * ALLIED_ARCHETYPE, NEUTRAL_ARCHETYPE These archeTypes determine the behavior of isAllied, isWar
+   * and isNeutral These archeTypes determine the default behavior of the engine unless you override
+   * some option in this attachment; for example the RelationshipType ColdWar could be based on the
+   * WAR_ARCHETYPE but overrides options like "canInvade" "canAttackHomeTerritory" to not allow
+   * all-out invasion to mimic a not-all-out-war. Or you could base it on NEUTRAL_ARCHETYPE but
+   * override the options like "canAttackAtSea" and "canFireAA" to mimic a uneasy peace.
    *
-   * @param archeType the template used to base this relationType on, can be war, allied or neutral, default archeType =
-   *        WAR_ARCHETYPE
+   * @param archeType the template used to base this relationType on, can be war, allied or neutral,
+   *     default archeType = WAR_ARCHETYPE
    * @throws GameParseException if archeType isn't set to war, allied or neutral
    */
   public void setArcheType(final String archeType) throws GameParseException {
@@ -79,14 +76,21 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
         this.archeType = lowerArcheType;
         break;
       default:
-        throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
-            + ARCHETYPE_NEUTRAL + " for " + thisErrorMsg());
+        throw new GameParseException(
+            "archeType must be "
+                + ARCHETYPE_WAR
+                + ","
+                + ARCHETYPE_ALLIED
+                + " or "
+                + ARCHETYPE_NEUTRAL
+                + " for "
+                + thisErrorMsg());
     }
   }
 
   /**
-   * Returns the ArcheType of this relationshipType, this really shouldn't be called, typically you should call
-   * isNeutral, isAllied or isWar().
+   * Returns the ArcheType of this relationshipType, this really shouldn't be called, typically you
+   * should call isNeutral, isAllied or isWar().
    */
   public String getArcheType() {
     return archeType;
@@ -97,9 +101,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
-   * isAllied or isWar();
-   * Just for future reference, doesn't do anything right now.
+   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of
+   * looking at isNeutral, isAllied or isWar(); Just for future reference, doesn't do anything right
+   * now.
    *
    * @param canFlyOver should be "true", "false" or "default"
    */
@@ -112,9 +116,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
-   * isAllied or isWar();
-   * Just for future reference, doesn't do anything right now.
+   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of
+   * looking at isNeutral, isAllied or isWar(); Just for future reference, doesn't do anything right
+   * now.
    *
    * @return whether in this relationshipType you can fly over other territories
    */
@@ -204,12 +208,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
             break;
           case UPKEEP_PERCENTAGE:
             if (cost > 100) {
-              throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
+              throw new GameParseException(
+                  "upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
             }
             break;
           default:
             throw new GameParseException(
-                "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
+                "upkeepCost must have either: "
+                    + UPKEEP_FLAT
+                    + " or "
+                    + UPKEEP_PERCENTAGE
+                    + thisErrorMsg());
         }
       }
       upkeepCost = integerCost;
@@ -228,9 +237,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setAlliancesCanChainTogether(final String value) throws GameParseException {
-    if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or "
-          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+    if (!(value.equals(PROPERTY_DEFAULT)
+        || value.equals(PROPERTY_FALSE)
+        || value.equals(PROPERTY_TRUE))) {
+      throw new GameParseException(
+          "alliancesCanChainTogether must be either "
+              + PROPERTY_DEFAULT
+              + " or "
+              + PROPERTY_FALSE
+              + " or "
+              + PROPERTY_TRUE
+              + thisErrorMsg());
     }
     alliancesCanChainTogether = value;
   }
@@ -251,9 +268,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setIsDefaultWarPosition(final String value) throws GameParseException {
-    if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE
-          + " or " + PROPERTY_TRUE + thisErrorMsg());
+    if (!(value.equals(PROPERTY_DEFAULT)
+        || value.equals(PROPERTY_FALSE)
+        || value.equals(PROPERTY_TRUE))) {
+      throw new GameParseException(
+          "isDefaultWarPosition must be either "
+              + PROPERTY_DEFAULT
+              + " or "
+              + PROPERTY_FALSE
+              + " or "
+              + PROPERTY_TRUE
+              + thisErrorMsg());
     }
     isDefaultWarPosition = value;
   }
@@ -274,9 +299,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setGivesBackOriginalTerritories(final String value) throws GameParseException {
-    if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or "
-          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+    if (!(value.equals(PROPERTY_DEFAULT)
+        || value.equals(PROPERTY_FALSE)
+        || value.equals(PROPERTY_TRUE))) {
+      throw new GameParseException(
+          "givesBackOriginalTerritories must be either "
+              + PROPERTY_DEFAULT
+              + " or "
+              + PROPERTY_FALSE
+              + " or "
+              + PROPERTY_TRUE
+              + thisErrorMsg());
     }
     givesBackOriginalTerritories = value;
   }
@@ -295,9 +328,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setCanMoveIntoDuringCombatMove(final String value) throws GameParseException {
-    if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
-          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+    if (!(value.equals(PROPERTY_DEFAULT)
+        || value.equals(PROPERTY_FALSE)
+        || value.equals(PROPERTY_TRUE))) {
+      throw new GameParseException(
+          "canMoveIntoDuringCombatMove must be either "
+              + PROPERTY_DEFAULT
+              + " or "
+              + PROPERTY_FALSE
+              + " or "
+              + PROPERTY_TRUE
+              + thisErrorMsg());
     }
     canMoveIntoDuringCombatMove = value;
   }
@@ -317,9 +358,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setCanMoveThroughCanals(final String value) throws GameParseException {
-    if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
-          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+    if (!(value.equals(PROPERTY_DEFAULT)
+        || value.equals(PROPERTY_FALSE)
+        || value.equals(PROPERTY_TRUE))) {
+      throw new GameParseException(
+          "canMoveIntoDuringCombatMove must be either "
+              + PROPERTY_DEFAULT
+              + " or "
+              + PROPERTY_FALSE
+              + " or "
+              + PROPERTY_TRUE
+              + thisErrorMsg());
     }
     canMoveThroughCanals = value;
   }
@@ -341,9 +390,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   private void setRocketsCanFlyOver(final String value) throws GameParseException {
-    if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
-          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+    if (!(value.equals(PROPERTY_DEFAULT)
+        || value.equals(PROPERTY_FALSE)
+        || value.equals(PROPERTY_TRUE))) {
+      throw new GameParseException(
+          "canMoveIntoDuringCombatMove must be either "
+              + PROPERTY_DEFAULT
+              + " or "
+              + PROPERTY_FALSE
+              + " or "
+              + PROPERTY_TRUE
+              + thisErrorMsg());
     }
     rocketsCanFlyOver = value;
   }
@@ -361,23 +418,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     rocketsCanFlyOver = PROPERTY_DEFAULT;
   }
 
-  /**
-   * Indicates whether this relationship is based on the WAR_ARCHETYPE.
-   */
+  /** Indicates whether this relationship is based on the WAR_ARCHETYPE. */
   public boolean isWar() {
     return archeType.equals(RelationshipTypeAttachment.ARCHETYPE_WAR);
   }
 
-  /**
-   * Indicates whether this relationship is based on the ALLIED_ARCHETYPE.
-   */
+  /** Indicates whether this relationship is based on the ALLIED_ARCHETYPE. */
   public boolean isAllied() {
     return archeType.equals(RelationshipTypeAttachment.ARCHETYPE_ALLIED);
   }
 
-  /**
-   * Indicates whether this relationship is based on the NEUTRAL_ARCHETYPE.
-   */
+  /** Indicates whether this relationship is based on the NEUTRAL_ARCHETYPE. */
   public boolean isNeutral() {
     return archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);
   }
@@ -388,62 +439,69 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("archeType",
-            MutableProperty.ofString(
-                this::setArcheType,
-                this::getArcheType,
-                this::resetArcheType))
-        .put("canMoveLandUnitsOverOwnedLand",
+        .put(
+            "archeType",
+            MutableProperty.ofString(this::setArcheType, this::getArcheType, this::resetArcheType))
+        .put(
+            "canMoveLandUnitsOverOwnedLand",
             MutableProperty.ofString(
                 this::setCanMoveLandUnitsOverOwnedLand,
                 this::getCanMoveLandUnitsOverOwnedLand,
                 this::resetCanMoveLandUnitsOverOwnedLand))
-        .put("canMoveAirUnitsOverOwnedLand",
+        .put(
+            "canMoveAirUnitsOverOwnedLand",
             MutableProperty.ofString(
                 this::setCanMoveAirUnitsOverOwnedLand,
                 this::getCanMoveAirUnitsOverOwnedLand,
                 this::resetCanMoveAirUnitsOverOwnedLand))
-        .put("alliancesCanChainTogether",
+        .put(
+            "alliancesCanChainTogether",
             MutableProperty.ofString(
                 this::setAlliancesCanChainTogether,
                 this::getAlliancesCanChainTogether,
                 this::resetAlliancesCanChainTogether))
-        .put("isDefaultWarPosition",
+        .put(
+            "isDefaultWarPosition",
             MutableProperty.ofString(
                 this::setIsDefaultWarPosition,
                 this::getIsDefaultWarPosition,
                 this::resetIsDefaultWarPosition))
-        .put("upkeepCost",
+        .put(
+            "upkeepCost",
             MutableProperty.ofString(
-                this::setUpkeepCost,
-                this::getUpkeepCost,
-                this::resetUpkeepCost))
-        .put("canLandAirUnitsOnOwnedLand",
+                this::setUpkeepCost, this::getUpkeepCost, this::resetUpkeepCost))
+        .put(
+            "canLandAirUnitsOnOwnedLand",
             MutableProperty.ofString(
                 this::setCanLandAirUnitsOnOwnedLand,
                 this::getCanLandAirUnitsOnOwnedLand,
                 this::resetCanLandAirUnitsOnOwnedLand))
-        .put("canTakeOverOwnedTerritory",
+        .put(
+            "canTakeOverOwnedTerritory",
             MutableProperty.ofString(
                 this::setCanTakeOverOwnedTerritory,
                 this::getCanTakeOverOwnedTerritory,
                 this::resetCanTakeOverOwnedTerritory))
-        .put("givesBackOriginalTerritories",
+        .put(
+            "givesBackOriginalTerritories",
             MutableProperty.ofString(
                 this::setGivesBackOriginalTerritories,
                 this::getGivesBackOriginalTerritories,
                 this::resetGivesBackOriginalTerritories))
-        .put("canMoveIntoDuringCombatMove",
+        .put(
+            "canMoveIntoDuringCombatMove",
             MutableProperty.ofString(
                 this::setCanMoveIntoDuringCombatMove,
                 this::getCanMoveIntoDuringCombatMove,
                 this::resetCanMoveIntoDuringCombatMove))
-        .put("canMoveThroughCanals",
+        .put(
+            "canMoveThroughCanals",
             MutableProperty.ofString(
                 this::setCanMoveThroughCanals,
                 this::getCanMoveThroughCanals,
                 this::resetCanMoveThroughCanals))
-        .put("rocketsCanFlyOver",
+        .put(
+            "rocketsCanFlyOver",
             MutableProperty.ofString(
                 this::setRocketsCanFlyOver,
                 this::getRocketsCanFlyOver,

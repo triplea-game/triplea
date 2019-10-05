@@ -1,100 +1,97 @@
 package org.triplea.server.moderator.toolbox.banned.names;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.banned.name.UsernameBanData;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
+import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.moderator.toolbox.ControllerTestUtil;
 
 @ExtendWith(MockitoExtension.class)
 class UsernameBanControllerTest {
-  private static final int MODERATOR_ID = 123;
-  private static final String USERNAME = "Well, sail me lubber, ye misty sun!";
-  private static final List<UsernameBanData> banData = new ArrayList<>();
 
-  @Mock
-  private UsernameBanService bannedNamesService;
-  @Mock
-  private ApiKeyValidationService apiKeyValidationService;
+  private static final AuthenticatedUser AUTHENTICATED_USER =
+      AuthenticatedUser.builder().userId(100).userRole("").build();
+  private static final UsernameBanData USERNAME_BAN_DATA =
+      UsernameBanData.builder().banDate(Instant.now()).bannedName("banned name").build();
+  private static final String USERNAME = "Ho-ho-ho! halitosis of treasure.";
 
-  @InjectMocks
-  private UsernameBanController usernameBanController;
+  @Mock private UsernameBanService bannedNamesService;
 
-  @Mock
-  private HttpServletRequest request;
+  @InjectMocks private UsernameBanController bannedUsernamesController;
 
   @Nested
-  final class RemoveBannedUsernameTest {
-
+  final class RemoveBannedUsername {
     @Test
-    void removeBannedUsername() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.removeUsernameBan(MODERATOR_ID, USERNAME))
-          .thenReturn(true);
+    void failureCase() {
+      givenRemoveBanResult(false);
 
-      final Response response = usernameBanController.removeBannedUsername(request, USERNAME);
-      assertThat(response.getStatus(), is(200));
+      final Response response =
+          bannedUsernamesController.removeBannedUsername(AUTHENTICATED_USER, USERNAME);
+
+      assertThat(response.getStatus(), is(400));
     }
 
     @Test
-    void removeBannedUsernameFailCase() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.removeUsernameBan(MODERATOR_ID, USERNAME))
-          .thenReturn(false);
-      final Response response = usernameBanController.removeBannedUsername(request, USERNAME);
-      assertThat(response.getStatus(), is(400));
+    void successCase() {
+      givenRemoveBanResult(true);
+
+      final Response response =
+          bannedUsernamesController.removeBannedUsername(AUTHENTICATED_USER, USERNAME);
+
+      assertThat(response.getStatus(), is(200));
+    }
+
+    private void givenRemoveBanResult(final boolean result) {
+      when(bannedNamesService.removeUsernameBan(AUTHENTICATED_USER.getUserId(), USERNAME))
+          .thenReturn(result);
     }
   }
 
   @Nested
-  final class AddBannedUsernameTest {
+  final class AddBannedUsername {
     @Test
-    void addBannedUsername() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.addBannedUserName(MODERATOR_ID, USERNAME))
-          .thenReturn(true);
+    void failureCase() {
+      givenAddBanResult(false);
 
-      final Response response = usernameBanController.addBannedUsername(request, USERNAME);
-      assertThat(response.getStatus(), is(200));
+      final Response response =
+          bannedUsernamesController.addBannedUsername(AUTHENTICATED_USER, USERNAME);
+
+      assertThat(response.getStatus(), is(400));
     }
 
     @Test
-    void addBannedUsernameFailCase() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.addBannedUserName(MODERATOR_ID, USERNAME))
-          .thenReturn(false);
+    void addBannedUserName() {
+      givenAddBanResult(true);
 
-      final Response response = usernameBanController.addBannedUsername(request, USERNAME);
-      assertThat(response.getStatus(), is(400));
+      final Response response =
+          bannedUsernamesController.addBannedUsername(AUTHENTICATED_USER, USERNAME);
+
+      assertThat(response.getStatus(), is(200));
+    }
+
+    private void givenAddBanResult(final boolean result) {
+      when(bannedNamesService.addBannedUserName(AUTHENTICATED_USER.getUserId(), USERNAME))
+          .thenReturn(result);
     }
   }
 
   @Test
-  void getBannedUsernames() {
-    when(bannedNamesService.getBannedUserNames()).thenReturn(banData);
+  void getBannedUserNames() {
+    when(bannedNamesService.getBannedUserNames()).thenReturn(singletonList(USERNAME_BAN_DATA));
 
-    final Response response = usernameBanController.getBannedUsernames(request);
+    final Response response = bannedUsernamesController.getBannedUsernames();
 
-    assertThat(response.getStatus(), is(200));
-    assertThat(response.getEntity(), is(banData));
-    verify(apiKeyValidationService).verifyApiKey(request);
+    ControllerTestUtil.verifyResponse(response, singletonList(USERNAME_BAN_DATA));
   }
 }

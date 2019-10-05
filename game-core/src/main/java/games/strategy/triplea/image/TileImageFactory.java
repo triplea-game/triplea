@@ -1,5 +1,8 @@
 package games.strategy.triplea.image;
 
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.BlendComposite.BlendingMode;
+import games.strategy.ui.Util;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -17,17 +20,10 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.imageio.ImageIO;
-
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.BlendComposite.BlendingMode;
-import games.strategy.ui.Util;
 import lombok.extern.java.Log;
 
-/**
- * A factory for creating the base tile images used to render a map.
- */
+/** A factory for creating the base tile images used to render a map. */
 @Log
 public final class TileImageFactory {
   // one instance in the application
@@ -41,9 +37,12 @@ public final class TileImageFactory {
   private static final String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
   private static float showMapBlendAlpha;
   private static final GraphicsConfiguration configuration =
-      GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+      GraphicsEnvironment.getLocalGraphicsEnvironment()
+          .getDefaultScreenDevice()
+          .getDefaultConfiguration();
   // maps image name to ImageRef
-  private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, SoftReference<Image>> imageCache =
+      Collections.synchronizedMap(new HashMap<>());
   private ResourceLoader resourceLoader;
 
   static {
@@ -90,7 +89,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "faild to save value: " + showMapBlends, ex);
+      log.log(Level.SEVERE, "failed to save value: " + showMapBlends, ex);
     }
   }
 
@@ -102,7 +101,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "faild to save value: " + showMapBlendMode, ex);
+      log.log(Level.SEVERE, "failed to save value: " + showMapBlendMode, ex);
     }
   }
 
@@ -114,7 +113,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "faild to save value: " + showMapBlendAlpha, ex);
+      log.log(Level.SEVERE, "failed to save value: " + showMapBlendAlpha, ex);
     }
   }
 
@@ -171,12 +170,11 @@ public final class TileImageFactory {
     return "reliefTiles" + "/" + x + "_" + y + ".png";
   }
 
-  /**
-   * This method produces a blank white tile for use in blending.
-   */
+  /** This method produces a blank white tile for use in blending. */
   private static BufferedImage makeMissingBaseTile(final BufferedImage input) {
     final BufferedImage compatibleImage =
-        configuration.createCompatibleImage(input.getWidth(null), input.getHeight(null), Transparency.TRANSLUCENT);
+        configuration.createCompatibleImage(
+            input.getWidth(null), input.getHeight(null), Transparency.TRANSLUCENT);
     final Graphics2D g2 = compatibleImage.createGraphics();
     g2.fillRect(0, 0, input.getWidth(null), input.getHeight(null));
     g2.drawImage(compatibleImage, 0, 0, null);
@@ -184,7 +182,8 @@ public final class TileImageFactory {
     return compatibleImage;
   }
 
-  private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent) {
+  private Image loadImage(
+      final URL imageLocation, final String fileName, final boolean transparent) {
     return (showMapBlends && showReliefImages && transparent)
         ? loadBlendedImage(fileName)
         : loadUnblendedImage(imageLocation, fileName, transparent);
@@ -195,7 +194,7 @@ public final class TileImageFactory {
     BufferedImage baseFile = null;
     // The relief tile
     final String reliefFileName = fileName.replace("baseTiles", "reliefTiles");
-    final URL urlrelief = resourceLoader.getResource(reliefFileName);
+    final URL urlRelief = resourceLoader.getResource(reliefFileName);
     // The base tile
     final String baseFileName = fileName.replace("reliefTiles", "baseTiles");
     final URL urlBase = resourceLoader.getResource(baseFileName);
@@ -205,14 +204,14 @@ public final class TileImageFactory {
 
     // Get buffered images
     try {
-      if (urlrelief != null) {
-        reliefFile = loadCompatibleImage(urlrelief);
+      if (urlRelief != null) {
+        reliefFile = loadCompatibleImage(urlRelief);
       }
       if (urlBase != null) {
         baseFile = loadCompatibleImage(urlBase);
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to load one or more images: " + urlrelief + ", " + urlBase, e);
+      log.log(Level.SEVERE, "Failed to load one or more images: " + urlRelief + ", " + urlBase, e);
     }
 
     // This does the blend
@@ -231,7 +230,8 @@ public final class TileImageFactory {
     /* reversing the to/from files leaves white underlays visible */
     if (reliefFile != null) {
       final BufferedImage blendedImage =
-          new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+          new BufferedImage(
+              reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g2 = blendedImage.createGraphics();
       g2.drawImage(reliefFile, 0, 0, null);
       final BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
@@ -248,7 +248,8 @@ public final class TileImageFactory {
     return baseFile;
   }
 
-  private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent) {
+  private Image loadUnblendedImage(
+      final URL imageLocation, final String fileName, final boolean transparent) {
     Image image;
     try {
       final BufferedImage fromFile = ImageIO.read(imageLocation);
@@ -277,7 +278,8 @@ public final class TileImageFactory {
 
   private static BufferedImage toCompatibleImage(final BufferedImage image) {
     final BufferedImage compatibleImage =
-        configuration.createCompatibleImage(image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
+        configuration.createCompatibleImage(
+            image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
     final Graphics g = compatibleImage.getGraphics();
     g.drawImage(image, 0, 0, null);
     g.dispose();

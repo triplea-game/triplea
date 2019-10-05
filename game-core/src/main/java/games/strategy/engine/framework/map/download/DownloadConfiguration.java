@@ -2,13 +2,10 @@ package games.strategy.engine.framework.map.download;
 // TODO: move to package games.strategy.engine.framework.map.download.client
 
 import java.util.function.Supplier;
-
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-/**
- * Provides methods to download files via HTTP.
- */
+/** Provides methods to download files via HTTP. */
 public final class DownloadConfiguration {
 
   private static final ContentReader contentReader;

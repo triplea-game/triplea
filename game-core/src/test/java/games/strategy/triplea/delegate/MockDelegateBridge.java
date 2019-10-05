@@ -9,18 +9,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.mockito.stubbing.Answer;
-import org.mockito.stubbing.OngoingStubbing;
-import org.mockito.verification.VerificationMode;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.player.Player;
 import games.strategy.sound.ISound;
-import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
+import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.OngoingStubbing;
+import org.mockito.verification.VerificationMode;
 
 final class MockDelegateBridge {
   private MockDelegateBridge() {}
@@ -32,16 +31,19 @@ final class MockDelegateBridge {
    */
   static IDelegateBridge newInstance(final GameData gameData, final PlayerId playerId) {
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    doAnswer(invocation -> {
-      final Change change = invocation.getArgument(0);
-      gameData.performChange(change);
-      return null;
-    }).when(delegateBridge).addChange(any());
+    doAnswer(
+            invocation -> {
+              final Change change = invocation.getArgument(0);
+              gameData.performChange(change);
+              return null;
+            })
+        .when(delegateBridge)
+        .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
-    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
+    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
     when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
     when(delegateBridge.getPlayerId()).thenReturn(playerId);
-    final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
+    final Player remotePlayer = mock(Player.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
@@ -61,13 +63,9 @@ final class MockDelegateBridge {
   }
 
   static void thenGetRandomShouldHaveBeenCalled(
-      final IDelegateBridge delegateBridge,
-      final VerificationMode verificationMode) {
-    verify(delegateBridge, verificationMode).getRandom(anyInt(), anyInt(), any(), any(), anyString());
-  }
-
-  static ITripleAPlayer withRemotePlayer(final IDelegateBridge delegateBridge) {
-    return (ITripleAPlayer) delegateBridge.getRemotePlayer();
+      final IDelegateBridge delegateBridge, final VerificationMode verificationMode) {
+    verify(delegateBridge, verificationMode)
+        .getRandom(anyInt(), anyInt(), any(), any(), anyString());
   }
 
   static void advanceToStep(final IDelegateBridge delegateBridge, final String stepName) {
@@ -76,11 +74,11 @@ final class MockDelegateBridge {
     try {
       final int length = gameData.getSequence().size();
       int i = 0;
-      while ((i < length) && (gameData.getSequence().getStep().getName().indexOf(stepName) == -1)) {
+      while ((i < length) && !gameData.getSequence().getStep().getName().contains(stepName)) {
         gameData.getSequence().next();
         i++;
       }
-      if ((i > length) && (gameData.getSequence().getStep().getName().indexOf(stepName) == -1)) {
+      if ((i > length) && !gameData.getSequence().getStep().getName().contains(stepName)) {
         throw new IllegalArgumentException("Step not found: " + stepName);
       }
     } finally {

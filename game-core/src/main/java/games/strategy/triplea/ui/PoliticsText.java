@@ -1,8 +1,6 @@
 package games.strategy.triplea.ui;
 
-/**
- * Returns a bunch of messages from politicstext.properties
- */
+/** Returns a bunch of messages from politicstext.properties */
 public class PoliticsText extends PropertyFile {
 
   private static final String PROPERTY_FILE = "politicstext.properties";
@@ -14,7 +12,7 @@ public class PoliticsText extends PropertyFile {
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
-  protected PoliticsText() {
+  private PoliticsText() {
     super(PROPERTY_FILE);
   }
 
@@ -22,7 +20,7 @@ public class PoliticsText extends PropertyFile {
     return PropertyFile.getInstance(PoliticsText.class, PoliticsText::new);
   }
 
-  public String getButtonText(final String politicsKey) {
+  String getButtonText(final String politicsKey) {
     return getMessage(politicsKey, BUTTON);
   }
 
@@ -30,7 +28,7 @@ public class PoliticsText extends PropertyFile {
     return getMessage(politicsKey, DESCRIPTION);
   }
 
-  public String getNotificationSucccess(final String politicsKey) {
+  public String getNotificationSuccess(final String politicsKey) {
     return getMessage(politicsKey, NOTIFICATION_SUCCESS);
   }
 
@@ -57,5 +55,4 @@ public class PoliticsText extends PropertyFile {
   private String getString(final String value) {
     return properties.getProperty(value, "NO: " + value + " set.");
   }
-
 }

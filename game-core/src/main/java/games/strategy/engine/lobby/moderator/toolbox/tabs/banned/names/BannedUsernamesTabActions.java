@@ -1,19 +1,16 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.banned.names;
 
+import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
 import java.awt.Component;
 import java.time.Instant;
 import java.util.function.BiConsumer;
-
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
+import lombok.AllArgsConstructor;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.JTableBuilder;
-
-import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
-import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 final class BannedUsernamesTabActions {

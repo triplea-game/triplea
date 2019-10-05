@@ -1,18 +1,14 @@
 package org.triplea.lobby.server.db.data;
 
 import java.time.Instant;
-
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.lobby.server.db.TimestampMapper;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.triplea.lobby.server.db.TimestampMapper;
 
-/**
- * Return data when selecting moderator audit history.
- */
+/** Return data when selecting moderator audit history. */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,15 +24,14 @@ public class ModeratorAuditHistoryDaoData {
   private String actionName;
   private String actionTarget;
 
-  /**
-   * Returns a JDBI row mapper used to convert results into an instance of this bean object.
-   */
+  /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
   public static RowMapper<ModeratorAuditHistoryDaoData> buildResultMapper() {
-    return (rs, ctx) -> ModeratorAuditHistoryDaoData.builder()
-        .dateCreated(TimestampMapper.map(rs, DATE_CREATED_COLUMN))
-        .username(rs.getString(USER_NAME_COLUMN))
-        .actionName(rs.getString(ACTION_NAME_COLUMN))
-        .actionTarget(rs.getString(ACTION_TARGET_COLUMN))
-        .build();
+    return (rs, ctx) ->
+        ModeratorAuditHistoryDaoData.builder()
+            .dateCreated(TimestampMapper.map(rs, DATE_CREATED_COLUMN))
+            .username(rs.getString(USER_NAME_COLUMN))
+            .actionName(rs.getString(ACTION_NAME_COLUMN))
+            .actionTarget(rs.getString(ACTION_TARGET_COLUMN))
+            .build();
   }
 }

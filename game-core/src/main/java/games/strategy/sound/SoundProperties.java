@@ -1,5 +1,6 @@
 package games.strategy.sound;
 
+import games.strategy.triplea.ResourceLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -7,15 +8,10 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
-
+import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
 
-import games.strategy.triplea.ResourceLoader;
-import lombok.extern.java.Log;
-
-/**
- * sounds.properties file helper class
- */
+/** sounds.properties file helper class */
 @Log
 class SoundProperties {
   static final String GENERIC_FOLDER = "generic";
@@ -55,9 +51,7 @@ class SoundProperties {
     return getProperty(PROPERTY_DEFAULT_FOLDER, DEFAULT_ERA_FOLDER);
   }
 
-  /**
-   * Returns the string property, or null if not found.
-   */
+  /** Returns the string property, or null if not found. */
   String getProperty(final String key) {
     return properties.getProperty(key);
   }

@@ -1,24 +1,22 @@
 package games.strategy.engine.framework.startup.launcher;
 
-import java.awt.Component;
 import java.util.Optional;
-
 import javax.annotation.Nullable;
 
 /**
  * Abstract class for launching a game.
  *
- * @param <T> The type of object that gets returned by {@link #loadGame(Component)}
- *        and is required by {@link #launchInternal(Component, Object)}.
+ * @param <T> The type of object that gets returned by {@link #loadGame()} and is required by {@link
+ *     #launchInternal(Object)}.
  */
 public abstract class AbstractLauncher<T> implements ILauncher {
   @Override
-  public void launch(final Component parent) {
-    final Optional<T> result = loadGame(parent);
-    new Thread(() -> launchInternal(parent, result.orElse(null))).start();
+  public void launch() {
+    final Optional<T> result = loadGame();
+    new Thread(() -> launchInternal(result.orElse(null))).start();
   }
 
-  abstract Optional<T> loadGame(Component parent);
+  abstract Optional<T> loadGame();
 
-  abstract void launchInternal(Component parent, @Nullable T data);
+  abstract void launchInternal(@Nullable T data);
 }

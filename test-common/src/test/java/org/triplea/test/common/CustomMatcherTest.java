@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.regex.Pattern;
-
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +47,8 @@ class CustomMatcherTest {
    *     "abc",
    *     hashCodesMatch("abc"));
    *
-   * java.lang.AssertionError: In this example, if there is a failure, the ..[shortened]... get the #toString of 'abc'
+   * java.lang.AssertionError: In this example, if there is a failure,
+   * the ..[shortened]... get the #toString of 'abc'
    * Expected: Expected hashcode: 2987023 (hashed from: abc1)
    *      but: Hashcode value is: 96354
    * </pre>
@@ -60,15 +60,19 @@ class CustomMatcherTest {
         "abc",
         hashCodesMatch("abc"));
 
-    final Throwable e = assertThrows(
-        AssertionError.class,
-        () -> assertThat(
-            "The hashcodes of different strings do not match, so we'll expect an exception here."
-                + "This test can be used as an example to demo the debug messaging we get on a a failure by "
-                + "commenting out the assertThrows",
-            "123",
-            hashCodesMatch("abc")));
-    assertThat(e.getMessage(), matchesPattern(line("Expected: Expected hash code: \\d+ \\(hashed from: abc\\)")));
+    final Throwable e =
+        assertThrows(
+            AssertionError.class,
+            () ->
+                assertThat(
+                    "The hashcodes of different strings do not match, so we'll expect an "
+                        + "exception here. This test can be used as an example to demo the debug "
+                        + "messaging we get on a a failure by commenting out the assertThrows",
+                    "123",
+                    hashCodesMatch("abc")));
+    assertThat(
+        e.getMessage(),
+        matchesPattern(line("Expected: Expected hash code: \\d+ \\(hashed from: abc\\)")));
     assertThat(e.getMessage(), matchesPattern(line("     but: Hash code value is: \\d+")));
   }
 

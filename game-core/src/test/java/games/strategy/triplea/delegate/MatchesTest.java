@@ -7,11 +7,15 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Arrays;
 import java.util.function.Predicate;
-
 import javax.annotation.Nullable;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
@@ -19,18 +23,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.xml.TestMapGameData;
-
 final class MatchesTest {
   private static final Object VALUE = new Object();
 
   private static <T> Matcher<Predicate<T>> matches(final @Nullable T value) {
-    return new TypeSafeDiagnosingMatcher<Predicate<T>>() {
+    return new TypeSafeDiagnosingMatcher<>() {
       @Override
       public void describeTo(final Description description) {
         description.appendText("matcher matches using ").appendValue(value);
@@ -48,7 +45,7 @@ final class MatchesTest {
   }
 
   private static <T> Matcher<Predicate<T>> notMatches(final @Nullable T value) {
-    return new TypeSafeDiagnosingMatcher<Predicate<T>>() {
+    return new TypeSafeDiagnosingMatcher<>() {
       @Override
       public void describeTo(final Description description) {
         description.appendText("matcher does not match using ").appendValue(value);
@@ -133,22 +130,28 @@ final class MatchesTest {
 
     @Test
     void shouldMatchWhenTerritoryContainsEnemyLandUnits() {
-      territory.getUnitCollection().addAll(Arrays.asList(
-          newLandUnitFor(player),
-          newLandUnitFor(enemyPlayer),
-          newAirUnitFor(enemyPlayer),
-          newInfrastructureUnitFor(enemyPlayer)));
+      territory
+          .getUnitCollection()
+          .addAll(
+              Arrays.asList(
+                  newLandUnitFor(player),
+                  newLandUnitFor(enemyPlayer),
+                  newAirUnitFor(enemyPlayer),
+                  newInfrastructureUnitFor(enemyPlayer)));
 
       assertThat(newMatch(), matches(territory));
     }
 
     @Test
     void shouldMatchWhenTerritoryContainsEnemySeaUnits() {
-      territory.getUnitCollection().addAll(Arrays.asList(
-          newSeaUnitFor(player),
-          newSeaUnitFor(enemyPlayer),
-          newAirUnitFor(enemyPlayer),
-          newInfrastructureUnitFor(enemyPlayer)));
+      territory
+          .getUnitCollection()
+          .addAll(
+              Arrays.asList(
+                  newSeaUnitFor(player),
+                  newSeaUnitFor(enemyPlayer),
+                  newAirUnitFor(enemyPlayer),
+                  newInfrastructureUnitFor(enemyPlayer)));
 
       assertThat(newMatch(), matches(territory));
     }
@@ -192,7 +195,8 @@ final class MatchesTest {
       seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
       seaTerritory.setOwner(player);
       assertThat(TerritoryAttachment.get(seaTerritory), is(nullValue()));
-      TerritoryAttachment.add(seaTerritory, new TerritoryAttachment("name", seaTerritory, gameData));
+      TerritoryAttachment.add(
+          seaTerritory, new TerritoryAttachment("name", seaTerritory, gameData));
       assertThat(TerritoryAttachment.get(seaTerritory), is(notNullValue()));
     }
 

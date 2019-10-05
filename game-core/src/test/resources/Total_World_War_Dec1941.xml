@@ -14410,6 +14410,9 @@
       <option name="combatDefenseEffect" value="americanAdvancedTacticalBomber" count="0"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Island" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
+      <option name="movementCostModifier" value="germanInfantry" count="-1"/>
+      <option name="movementCostModifier" value="germanAlpineInfantry" count="-0.5"/>
+      <option name="movementCostModifier" value="germanCombatEngineer" count="1"/>
       <option name="combatOffenseEffect" value="germanInfantry" count="-1"/>
       <option name="combatDefenseEffect" value="germanInfantry" count="1"/>
       <option name="combatOffenseEffect" value="germanAlpineInfantry" count="-1"/>
@@ -16752,7 +16755,7 @@
       <option name="dice" value="strength"/>
       <option name="bonus" value="1"/>
       <option name="number" value="1"/>
-      <option name="bonusType" value="ArtilleryBonus"/>
+      <option name="bonusType" value="ArtilleryBonus" count="2"/>
       <option name="impArtTech" value="false"/>
       <option name="players" value="Germany"/>
     </attachment>

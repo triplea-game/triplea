@@ -1,0 +1,18 @@
+lobby_user:
+  - id: 100000
+    username: not moderator
+    password: 12345678901234567890123456
+    email: email
+    role: MODERATOR
+  - id: 900000
+    username: moderator
+    password: 12345678901234567890123456
+    email: email
+    role: ADMIN
+    last_login: 2001-01-01 23:59:20.0
+  - id: 900001
+    username: Super! moderator
+    password: 12345678901234567890123456
+    email: email
+    role: PLAYER
+    last_login:

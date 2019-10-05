@@ -1,5 +1,18 @@
 package games.strategy.triplea.ui;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.attachments.AbstractConditionsAttachment;
+import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
+import games.strategy.triplea.attachments.AbstractTriggerAttachment;
+import games.strategy.triplea.attachments.ICondition;
+import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.TriggerAttachment;
 import java.awt.Color;
 import java.awt.Component;
 import java.time.Instant;
@@ -14,7 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -32,28 +44,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
+import lombok.extern.java.Log;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.FileNameUtils;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attachments.AbstractConditionsAttachment;
-import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
-import games.strategy.triplea.attachments.AbstractTriggerAttachment;
-import games.strategy.triplea.attachments.ICondition;
-import games.strategy.triplea.attachments.RulesAttachment;
-import games.strategy.triplea.attachments.TriggerAttachment;
-import lombok.extern.java.Log;
-
 /**
- * A panel that will show all objectives for all players, including if the objective is filled or not.
+ * A panel that will show all objectives for all players, including if the objective is filled or
+ * not.
  */
 @Log
 public class ObjectivePanel extends AbstractStatPanel {
@@ -97,10 +94,13 @@ public class ObjectivePanel extends AbstractStatPanel {
     final JScrollPane scroll = new JScrollPane(table);
     final JButton refresh = new JButton("Refresh Objectives");
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
-    refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
-      objectiveModel.loadData();
-      SwingUtilities.invokeLater(table::repaint);
-    }));
+    refresh.addActionListener(
+        SwingAction.of(
+            "Refresh Objectives",
+            e -> {
+              objectiveModel.loadData();
+              SwingUtilities.invokeLater(table::repaint);
+            }));
     add(Box.createVerticalStrut(6));
     add(refresh);
     add(Box.createVerticalStrut(6));
@@ -128,7 +128,9 @@ public class ObjectivePanel extends AbstractStatPanel {
       statsObjective = new LinkedHashMap<>();
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
       final String gameName =
-          FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
+          FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_')
+              .replaceAll(" ", "_")
+              .concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final Set<String> sectionsSorters = new TreeSet<>();
       // do sections first
@@ -140,8 +142,10 @@ public class ObjectivePanel extends AbstractStatPanel {
         final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
-          log.severe("objective.properties keys must be 2 parts: <game_name>."
-              + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
+          log.severe(
+              "objective.properties keys must be 2 parts: <game_name>."
+                  + ObjectiveProperties.GROUP_PROPERTY
+                  + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
         if (!key.get(0).startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
@@ -149,8 +153,11 @@ public class ObjectivePanel extends AbstractStatPanel {
         }
         final List<String> sorter = Splitter.on('.').splitToList(key.get(0));
         if (sorter.size() != 2) {
-          log.severe("objective.properties " + ObjectiveProperties.GROUP_PROPERTY + "must have .<sorter> after it: "
-              + key.get(0));
+          log.severe(
+              "objective.properties "
+                  + ObjectiveProperties.GROUP_PROPERTY
+                  + "must have .<sorter> after it: "
+                  + key.get(0));
           continue;
         }
         sectionsSorters.add(sorter.get(1) + ";" + key.get(1));
@@ -172,14 +179,17 @@ public class ObjectivePanel extends AbstractStatPanel {
         final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
-          log.severe("objective.properties keys must be 2 parts: <game_name>."
-              + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
+          log.severe(
+              "objective.properties keys must be 2 parts: <game_name>."
+                  + ObjectiveProperties.GROUP_PROPERTY
+                  + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
         if (key.get(0).startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
-        final ICondition condition = AbstractPlayerRulesAttachment.getCondition(key.get(0), key.get(1), gameData);
+        final ICondition condition =
+            AbstractPlayerRulesAttachment.getCondition(key.get(0), key.get(1), gameData);
         if (condition == null) {
           continue;
         }
@@ -191,7 +201,8 @@ public class ObjectivePanel extends AbstractStatPanel {
           if (sections.get(player.getName()).contains(key.get(1))) {
             final Map<ICondition, String> map = statsObjectiveUnsorted.get(player.getName());
             if (map == null) {
-              throw new IllegalStateException("objective.properties group has nothing: " + player.getName());
+              throw new IllegalStateException(
+                  "objective.properties group has nothing: " + player.getName());
             }
             map.put(condition, value);
             statsObjectiveUnsorted.put(player.getName(), map);
@@ -203,7 +214,8 @@ public class ObjectivePanel extends AbstractStatPanel {
             if (sectionEntry.getValue().contains(key.get(1))) {
               final Map<ICondition, String> map = statsObjectiveUnsorted.get(sectionEntry.getKey());
               if (map == null) {
-                throw new IllegalStateException("objective.properties group has nothing: " + sectionEntry.getKey());
+                throw new IllegalStateException(
+                    "objective.properties group has nothing: " + sectionEntry.getKey());
               }
               map.put(condition, value);
               statsObjectiveUnsorted.put(sectionEntry.getKey(), map);
@@ -248,7 +260,9 @@ public class ObjectivePanel extends AbstractStatPanel {
         int row = 0;
         for (final Entry<String, Map<ICondition, String>> mapEntry : statsObjective.entrySet()) {
           collectedData[row][1] =
-              "<html><span style=\"font-size:140%\"><b><em>" + mapEntry.getKey() + "</em></b></span></html>";
+              "<html><span style=\"font-size:140%\"><b><em>"
+                  + mapEntry.getKey()
+                  + "</em></b></span></html>";
           for (final Entry<ICondition, String> attachmentEntry : mapEntry.getValue().entrySet()) {
             row++;
             collectedData[row][0] = conditions.get(attachmentEntry.getKey());
@@ -263,7 +277,8 @@ public class ObjectivePanel extends AbstractStatPanel {
       }
     }
 
-    public Map<ICondition, String> getConditionComment(final Map<ICondition, Boolean> testedConditions) {
+    public Map<ICondition, String> getConditionComment(
+        final Map<ICondition, Boolean> testedConditions) {
       final Map<ICondition, String> conditionsComments = new HashMap<>(testedConditions.size());
       for (final Entry<ICondition, Boolean> entry : testedConditions.entrySet()) {
         final boolean satisfied = entry.getValue();
@@ -309,7 +324,8 @@ public class ObjectivePanel extends AbstractStatPanel {
       }
       final Set<ICondition> allConditionsNeeded =
           AbstractConditionsAttachment.getAllConditionsRecursive(myConditions, null);
-      return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, dummyDelegate);
+      return AbstractConditionsAttachment.testAllConditionsRecursive(
+          allConditionsNeeded, null, dummyDelegate);
     }
 
     @Override
@@ -376,11 +392,17 @@ public class ObjectivePanel extends AbstractStatPanel {
     private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 
     @Override
-    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-        final boolean hasFocus, final int row, final int column) {
+    public Component getTableCellRendererComponent(
+        final JTable table,
+        final Object value,
+        final boolean isSelected,
+        final boolean hasFocus,
+        final int row,
+        final int column) {
       adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       final JLabel renderer =
-          (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+          (JLabel)
+              super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       renderer.setHorizontalAlignment(SwingConstants.CENTER);
       if (value == null) {
         renderer.setBorder(BorderFactory.createEmptyBorder());
@@ -409,24 +431,26 @@ public class ObjectivePanel extends AbstractStatPanel {
       final JScrollPane scrollPane = new JScrollPane(textArea);
       scrollPane.setBorder(null);
       editorComponent = scrollPane;
-      delegate = new DefaultCellEditor.EditorDelegate() {
-        private static final long serialVersionUID = 5746645959173385516L;
+      delegate =
+          new DefaultCellEditor.EditorDelegate() {
+            private static final long serialVersionUID = 5746645959173385516L;
 
-        @Override
-        public void setValue(final Object value) {
-          textArea.setText((value != null) ? value.toString() : "");
-        }
+            @Override
+            public void setValue(final Object value) {
+              textArea.setText((value != null) ? value.toString() : "");
+            }
 
-        @Override
-        public Object getCellEditorValue() {
-          return textArea.getText();
-        }
-      };
+            @Override
+            public Object getCellEditorValue() {
+              return textArea.getText();
+            }
+          };
     }
   }
 
   // author: Heinz M. Kabutz (modified for JEditorPane by Mark Christopher Duncan)
-  private static final class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRenderer {
+  private static final class EditorPaneTableCellRenderer extends JEditorPane
+      implements TableCellRenderer {
     private static final long serialVersionUID = -2835145877164663862L;
     private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
     private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
@@ -437,8 +461,13 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     @Override
-    public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected,
-        final boolean hasFocus, final int row, final int column) {
+    public Component getTableCellRendererComponent(
+        final JTable table,
+        final Object obj,
+        final boolean isSelected,
+        final boolean hasFocus,
+        final int row,
+        final int column) {
       // set the colors, etc. using the standard for that platform
       adaptee.getTableCellRendererComponent(table, obj, isSelected, hasFocus, row, column);
       setForeground(adaptee.getForeground());
@@ -459,14 +488,15 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private void addSize(final JTable table, final int row, final int column, final int height) {
-      final Map<Integer, Map<Integer, Integer>> rows = cellSizes.computeIfAbsent(table, k -> new HashMap<>());
-      final Map<Integer, Integer> rowheights = rows.computeIfAbsent(row, k -> new HashMap<>());
-      rowheights.put(column, height);
+      final Map<Integer, Map<Integer, Integer>> rows =
+          cellSizes.computeIfAbsent(table, k -> new HashMap<>());
+      final var rowHeights = rows.computeIfAbsent(row, k -> new HashMap<>());
+      rowHeights.put(column, height);
     }
 
     /**
-     * Look through all columns and get the renderer. If it is also a TextAreaRenderer, we look at the maximum height in
-     * its hash table for this row.
+     * Look through all columns and get the renderer. If it is also a TextAreaRenderer, we look at
+     * the maximum height in its hash table for this row.
      */
     private static int findTotalMaximumRowSize(final JTable table, final int row) {
       int maximumHeight = 0;
@@ -499,5 +529,4 @@ public class ObjectivePanel extends AbstractStatPanel {
       return maximumHeight;
     }
   }
-
 }

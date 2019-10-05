@@ -27,14 +27,6 @@ final class RouteTest {
     }
 
     @Test
-    void shouldReturnTrueWhenReferenceAndOtherAreEmpty() {
-      final Route reference = new Route();
-      final Route other = new Route();
-
-      assertThat(reference.equals(other), is(true));
-    }
-
-    @Test
     void shouldReturnFalseWhenOtherIsNull() {
       assertThat(reference.equals(null), is(false));
     }
@@ -59,7 +51,8 @@ final class RouteTest {
     }
 
     @Test
-    void shouldReturnFalseWhenOtherHasSameStepCountAndHasSameStartTerritoryButHasDifferentTerritoryList() {
+    void
+        shouldReturnFalseWhenOtherHasSameStepCountAndSameStartTerritoryButDifferentTerritoryList() {
       final Route other = new Route(territory1, new Territory("territory3", gameData));
 
       assertThat(reference.equals(other), is(false));

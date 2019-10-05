@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class WrappedInvocationHandlerTest {
@@ -13,28 +13,31 @@ final class WrappedInvocationHandlerTest {
     return Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] {}, handler);
   }
 
-  @Test
-  void equals_ShouldReturnTrueWhenOtherInstanceIsWrappedInvocationHandlerProxyWithEqualDelegate() {
-    final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
-    final Object proxy2 = newProxy(new WrappedInvocationHandler("test"));
+  @Nested
+  final class VerifyEquals {
+    @Test
+    void shouldReturnTrueWhenOtherInstanceIsWrappedInvocationHandlerProxyWithEqualDelegate() {
+      final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
+      final Object proxy2 = newProxy(new WrappedInvocationHandler("test"));
 
-    assertEquals(proxy1, proxy2);
-  }
+      assertEquals(proxy1, proxy2);
+    }
 
-  @Test
-  void equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
-    final Object proxy1 = newProxy(new WrappedInvocationHandler("test1"));
-    final Object proxy2 = newProxy(new WrappedInvocationHandler("test2"));
+    @Test
+    void shouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
+      final Object proxy1 = newProxy(new WrappedInvocationHandler("test1"));
+      final Object proxy2 = newProxy(new WrappedInvocationHandler("test2"));
 
-    assertNotEquals(proxy1, proxy2);
-  }
+      assertNotEquals(proxy1, proxy2);
+    }
 
-  @Test
-  void equals_ShouldReturnFalseWhenOtherInstanceIsProxyWithoutWrappedInvocationHandler() {
-    final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
-    final Object proxy2 = newProxy((proxy, method, args) -> null);
+    @Test
+    void shouldReturnFalseWhenOtherInstanceIsProxyWithoutWrappedInvocationHandler() {
+      final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
+      final Object proxy2 = newProxy((proxy, method, args) -> null);
 
-    assertNotEquals(proxy1, proxy2);
+      assertNotEquals(proxy1, proxy2);
+    }
   }
 
   @Test

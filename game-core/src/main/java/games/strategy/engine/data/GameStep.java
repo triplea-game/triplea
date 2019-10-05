@@ -1,17 +1,15 @@
 package games.strategy.engine.data;
 
-import java.util.Objects;
-import java.util.Properties;
-
 import games.strategy.engine.delegate.IDelegate;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
 
 /**
  * A single step in a game.
  *
- * <p>
- * Typically turn based strategy games are composed of a set of distinct phases (in chess this would be two, white move,
- * black move).
- * </p>
+ * <p>Typically turn based strategy games are composed of a set of distinct phases (in chess this
+ * would be two, white move, black move).
  */
 public class GameStep extends GameDataComponent {
   private static final long serialVersionUID = -7944468945162840931L;
@@ -57,8 +55,13 @@ public class GameStep extends GameDataComponent {
    * @param data game data
    * @param stepProperties properties of the game step
    */
-  public GameStep(final String name, final String displayName, final PlayerId player, final IDelegate delegate,
-      final GameData data, final Properties stepProperties) {
+  public GameStep(
+      final String name,
+      final String displayName,
+      final PlayerId player,
+      final IDelegate delegate,
+      final GameData data,
+      final Properties stepProperties) {
     super(data);
     this.name = name;
     this.displayName = displayName;
@@ -85,7 +88,8 @@ public class GameStep extends GameDataComponent {
       return false;
     }
     final GameStep other = (GameStep) o;
-    return other.name.equals(this.name) && other.delegateName.equals(this.delegateName)
+    return other.name.equals(this.name)
+        && other.delegateName.equals(this.delegateName)
         && other.player.equals(this.player);
   }
 
@@ -118,10 +122,10 @@ public class GameStep extends GameDataComponent {
   }
 
   /**
-   * Returns the properties of the game step.
-   * Allowed Properties so far:<br>
+   * Returns the properties of the game step. Allowed Properties so far:<br>
    * EndTurn delegates -> skipPosting = true/false<br>
-   * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary<br>
+   * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary
+   * <br>
    * Move delegates -> airborneMove = true/false<br>
    * Move delegates -> combatMove = true/false<br>
    * Move delegates -> nonCombatMove = true/false<br>
@@ -132,8 +136,10 @@ public class GameStep extends GameDataComponent {
    * Move delegates -> resetUnitStateAtStart = true/false<br>
    * Move delegates -> resetUnitStateAtEnd = true/false<br>
    * Purchase & Place delegates -> bid = true/false<br>
-   * Purchase delegates -> repairPlayers = colon separated list of players which you can repair for<br>
-   * Move delegates -> combinedTurns = colon separated list of players which have intermeshed phases<br>
+   * Purchase delegates -> repairPlayers = colon separated list of players which you can repair for
+   * <br>
+   * Move delegates -> combinedTurns = colon separated list of players which have intermeshed phases
+   * <br>
    */
   public Properties getProperties() {
     return properties;
@@ -141,6 +147,21 @@ public class GameStep extends GameDataComponent {
 
   @Override
   public String toString() {
-    return "GameStep:" + name + " delegate:" + delegateName + " player:" + player + " displayName:" + displayName;
+    return "GameStep:"
+        + name
+        + " delegate:"
+        + delegateName
+        + " player:"
+        + player
+        + " displayName:"
+        + displayName;
+  }
+
+  /** Utility method to determine if the current game step is a 'nonCombat' move phase. */
+  public boolean isNonCombat() {
+    return Optional.ofNullable(properties.getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE))
+            .map(Boolean::parseBoolean)
+            .orElse(false)
+        || name.endsWith("NonCombatMove");
   }
 }

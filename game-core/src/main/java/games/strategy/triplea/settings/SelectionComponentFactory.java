@@ -3,6 +3,9 @@ package games.strategy.triplea.settings;
 import static org.triplea.util.Arrays.withSensitiveArray;
 import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
+import com.google.common.base.Strings;
+import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.pbem.IEmailSender;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.nio.file.Path;
@@ -14,7 +17,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -30,24 +32,18 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-
+import lombok.extern.java.Log;
 import org.triplea.java.OptionalUtils;
 import org.triplea.java.function.ThrowingFunction;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
-
-import com.google.common.base.Strings;
-
-import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.engine.pbem.IEmailSender;
-import lombok.extern.java.Log;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
- * Logic for building UI components that "bind" to ClientSettings.
- * For example, if we have a setting that needs a number, we could create an integer text field with this
- * class. This class takes care of the UI code to ensure we render the proper swing component with validation.
+ * Logic for building UI components that "bind" to ClientSettings. For example, if we have a setting
+ * that needs a number, we could create an integer text field with this class. This class takes care
+ * of the UI code to ensure we render the proper swing component with validation.
  */
 @Log
 final class SelectionComponentFactory {
@@ -57,43 +53,51 @@ final class SelectionComponentFactory {
       final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
       final ClientSetting<String> proxyHostClientSetting,
       final ClientSetting<Integer> proxyPortClientSetting) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.getValueOrThrow();
-      final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
+      final JRadioButton noneButton =
+          new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
-          new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+          new JRadioButton(
+              "Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
       final JRadioButton userButton =
-          new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+          new JRadioButton(
+              "Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       final JTextField hostText = new JTextField(proxyHostClientSetting.getValue().orElse(""), 20);
-      final JTextField portText = new JTextField(proxyPortClientSetting.getValue().map(Object::toString).orElse(""), 6);
-      final JPanel radioPanel = JPanelBuilder.builder()
-          .verticalBoxLayout()
-          .addLeftJustified(noneButton)
-          .addLeftJustified(systemButton)
-          .addLeftJustified(userButton)
-          .addLeftJustified(JPanelBuilder.builder()
-              .horizontalBoxLayout()
-              .addHorizontalStrut(getRadioButtonLabelHorizontalOffset())
-              .add(JPanelBuilder.builder()
-                  .verticalBoxLayout()
-                  .addLeftJustified(new JLabel("Proxy Host:"))
-                  .addLeftJustified(hostText)
-                  .addLeftJustified(new JLabel("Proxy Port:"))
-                  .addLeftJustified(portText)
-                  .build())
-              .build())
-          .build();
-      final ActionListener enableUserSettings = e -> {
-        if (userButton.isSelected()) {
-          hostText.setEnabled(true);
-          portText.setEnabled(true);
-        } else {
-          hostText.setEnabled(false);
-          hostText.setText("");
-          portText.setEnabled(false);
-          portText.setText("");
-        }
-      };
+      final JTextField portText =
+          new JTextField(proxyPortClientSetting.getValue().map(Object::toString).orElse(""), 6);
+      final JPanel radioPanel =
+          new JPanelBuilder()
+              .boxLayoutVertical()
+              .addLeftJustified(noneButton)
+              .addLeftJustified(systemButton)
+              .addLeftJustified(userButton)
+              .addLeftJustified(
+                  new JPanelBuilder()
+                      .boxLayoutHorizontal()
+                      .addHorizontalStrut(getRadioButtonLabelHorizontalOffset())
+                      .add(
+                          new JPanelBuilder()
+                              .boxLayoutHorizontal()
+                              .addLeftJustified(new JLabel("Proxy Host:"))
+                              .addLeftJustified(hostText)
+                              .addLeftJustified(new JLabel("Proxy Port:"))
+                              .addLeftJustified(portText)
+                              .build())
+                      .build())
+              .build();
+      final ActionListener enableUserSettings =
+          e -> {
+            if (userButton.isSelected()) {
+              hostText.setEnabled(true);
+              portText.setEnabled(true);
+            } else {
+              hostText.setEnabled(false);
+              hostText.setText("");
+              portText.setEnabled(false);
+              portText.setText("");
+            }
+          };
 
       @Override
       public JComponent getUiComponent() {
@@ -120,23 +124,33 @@ final class SelectionComponentFactory {
         } else {
           final String encodedHost = hostText.getText().trim();
           final Optional<String> optionalHost = parseHost(encodedHost);
-          OptionalUtils.ifEmpty(optionalHost, () -> context.reportError(
-              proxyHostClientSetting,
-              "must be a network name or an IP address",
-              Strings.emptyToNull(encodedHost)));
+          OptionalUtils.ifEmpty(
+              optionalHost,
+              () ->
+                  context.reportError(
+                      proxyHostClientSetting,
+                      "must be a network name or an IP address",
+                      Strings.emptyToNull(encodedHost)));
 
           final String encodedPort = portText.getText().trim();
           final Optional<Integer> optionalPort = parsePort(encodedPort);
-          OptionalUtils.ifEmpty(optionalPort, () -> context.reportError(
-              proxyPortClientSetting,
-              "must be a positive integer, usually 4 to 5 digits",
-              Strings.emptyToNull(encodedPort)));
+          OptionalUtils.ifEmpty(
+              optionalPort,
+              () ->
+                  context.reportError(
+                      proxyPortClientSetting,
+                      "must be a positive integer, usually 4 to 5 digits",
+                      Strings.emptyToNull(encodedPort)));
 
-          OptionalUtils.ifAllPresent(optionalHost, optionalPort, (host, port) -> {
-            context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-            context.setValue(proxyHostClientSetting, host);
-            context.setValue(proxyPortClientSetting, port);
-          });
+          OptionalUtils.ifAllPresent(
+              optionalHost,
+              optionalPort,
+              (host, port) -> {
+                context.setValue(
+                    proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+                context.setValue(proxyHostClientSetting, host);
+                context.setValue(proxyPortClientSetting, port);
+              });
         }
       }
 
@@ -158,7 +172,8 @@ final class SelectionComponentFactory {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.getDefaultValue().orElse(""));
         portText.setText(proxyPortClientSetting.getDefaultValue().map(Object::toString).orElse(""));
-        setProxyChoice(proxyChoiceClientSetting.getDefaultValue().orElse(HttpProxy.ProxyChoice.NONE));
+        setProxyChoice(
+            proxyChoiceClientSetting.getDefaultValue().orElse(HttpProxy.ProxyChoice.NONE));
       }
 
       private void setProxyChoice(final HttpProxy.ProxyChoice proxyChoice) {
@@ -183,27 +198,23 @@ final class SelectionComponentFactory {
     return radioButton.getPreferredSize().width - radioButton.getInsets().right;
   }
 
-  /**
-   * Text field that only accepts numbers between a certain range.
-   */
+  /** Text field that only accepts numbers between a certain range. */
   static SelectionComponent<JComponent> intValueRange(
-      final ClientSetting<Integer> clientSetting,
-      final int lo,
-      final int hi) {
+      final ClientSetting<Integer> clientSetting, final int lo, final int hi) {
     return intValueRange(clientSetting, lo, hi, false);
   }
 
-  /**
-   * Text field that only accepts numbers between a certain range.
-   */
+  /** Text field that only accepts numbers between a certain range. */
   static SelectionComponent<JComponent> intValueRange(
       final ClientSetting<Integer> clientSetting,
       final int lo,
       final int hi,
       final boolean allowUnset) {
-    return new SelectionComponent<JComponent>() {
-      private final JSpinner component = new JSpinner(new SpinnerNumberModel(
-          toValidIntValue(clientSetting.getValue()), lo - (allowUnset ? 1 : 0), hi, 1));
+    return new SelectionComponent<>() {
+      private final JSpinner component =
+          new JSpinner(
+              new SpinnerNumberModel(
+                  toValidIntValue(clientSetting.getValue()), lo - (allowUnset ? 1 : 0), hi, 1));
 
       @Override
       public JComponent getUiComponent() {
@@ -240,19 +251,15 @@ final class SelectionComponentFactory {
     };
   }
 
-  /**
-   * yes/no radio buttons.
-   */
-  static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting<Boolean> clientSetting) {
-    return new SelectionComponent<JComponent>() {
+  /** yes/no radio buttons. */
+  static SelectionComponent<JComponent> booleanRadioButtons(
+      final ClientSetting<Boolean> clientSetting) {
+    return new SelectionComponent<>() {
       final boolean initialSelection = clientSetting.getValueOrThrow();
       final JRadioButton yesButton = new JRadioButton("True");
       final JRadioButton noButton = new JRadioButton("False");
-      final JPanel buttonPanel = JPanelBuilder.builder()
-          .horizontalBoxLayout()
-          .add(yesButton)
-          .add(noButton)
-          .build();
+      final JPanel buttonPanel =
+          new JPanelBuilder().boxLayoutHorizontal().add(yesButton).add(noButton).build();
 
       @Override
       public JComponent getUiComponent() {
@@ -283,9 +290,7 @@ final class SelectionComponentFactory {
     };
   }
 
-  /**
-   * File selection prompt.
-   */
+  /** File selection prompt. */
   static SelectionComponent<JComponent> filePath(final ClientSetting<Path> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
   }
@@ -293,21 +298,24 @@ final class SelectionComponentFactory {
   private static SelectionComponent<JComponent> selectFile(
       final ClientSetting<Path> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
-    return new SelectionComponent<JComponent>() {
-      final JTextField field = new JTextField(SelectionComponentUiUtils.toString(clientSetting.getValue()), 20);
-      final JButton button = JButtonBuilder.builder()
-          .title("Select")
-          .actionListener(
-              () -> SwingComponents.showJFileChooser(folderSelectionMode)
-                  .ifPresent(file -> field.setText(file.getAbsolutePath())))
-          .build();
+    return new SelectionComponent<>() {
+      final JTextField field =
+          new JTextField(SelectionComponentUiUtils.toString(clientSetting.getValue()), 20);
+      final JButton button =
+          new JButtonBuilder()
+              .title("Select")
+              .actionListener(
+                  () ->
+                      SwingComponents.showJFileChooser(folderSelectionMode)
+                          .ifPresent(file -> field.setText(file.getAbsolutePath())))
+              .build();
 
       @Override
       public JComponent getUiComponent() {
         field.setEditable(false);
 
-        return JPanelBuilder.builder()
-            .horizontalBoxLayout()
+        return new JPanelBuilder()
+            .boxLayoutHorizontal()
             .add(field)
             .addHorizontalStrut(5)
             .add(button)
@@ -332,9 +340,7 @@ final class SelectionComponentFactory {
     };
   }
 
-  /**
-   * Folder selection prompt.
-   */
+  /** Folder selection prompt. */
   static SelectionComponent<JComponent> folderPath(final ClientSetting<Path> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
@@ -346,43 +352,42 @@ final class SelectionComponentFactory {
       final Function<T, Optional<E>> convertSettingValueToComboBoxItem,
       final Function<E, T> convertComboBoxItemToSettingValue,
       final Function<E, ?> convertComboBoxItemToDisplayValue) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       private final JComboBox<E> comboBox = newComboBox();
 
       private JComboBox<E> newComboBox() {
         final JComboBox<E> comboBox = new JComboBox<>();
         comboBoxItems.forEach(comboBox::addItem);
         setComboBoxSelectedItem(comboBox, clientSetting::getValue);
-        comboBox.setRenderer(new DefaultListCellRenderer() {
-          private static final long serialVersionUID = -3094995494539073655L;
+        comboBox.setRenderer(
+            new DefaultListCellRenderer() {
+              private static final long serialVersionUID = -3094995494539073655L;
 
-          @Override
-          public Component getListCellRendererComponent(
-              final JList<?> list,
-              final @Nullable Object value,
-              final int index,
-              final boolean isSelected,
-              final boolean cellHasFocus) {
-            return super.getListCellRendererComponent(
-                list,
-                Optional.ofNullable(value)
-                    .map(comboBoxItemType::cast)
-                    .map(convertComboBoxItemToDisplayValue)
-                    .orElse(null),
-                index,
-                isSelected,
-                cellHasFocus);
-          }
-        });
+              @Override
+              public Component getListCellRendererComponent(
+                  final JList<?> list,
+                  final @Nullable Object value,
+                  final int index,
+                  final boolean isSelected,
+                  final boolean cellHasFocus) {
+                return super.getListCellRendererComponent(
+                    list,
+                    Optional.ofNullable(value)
+                        .map(comboBoxItemType::cast)
+                        .map(convertComboBoxItemToDisplayValue)
+                        .orElse(null),
+                    index,
+                    isSelected,
+                    cellHasFocus);
+              }
+            });
         return comboBox;
       }
 
       private void setComboBoxSelectedItem(
-          final JComboBox<E> comboBox,
-          final Supplier<Optional<T>> settingValueSupplier) {
-        comboBox.setSelectedItem(settingValueSupplier.get()
-            .flatMap(convertSettingValueToComboBoxItem)
-            .orElse(null));
+          final JComboBox<E> comboBox, final Supplier<Optional<T>> settingValueSupplier) {
+        comboBox.setSelectedItem(
+            settingValueSupplier.get().flatMap(convertSettingValueToComboBoxItem).orElse(null));
       }
 
       @Override
@@ -392,10 +397,11 @@ final class SelectionComponentFactory {
 
       @Override
       public void save(final SaveContext context) {
-        final @Nullable T value = Optional.ofNullable(comboBox.getSelectedItem())
-            .map(comboBoxItemType::cast)
-            .map(convertComboBoxItemToSettingValue)
-            .orElse(null);
+        final @Nullable T value =
+            Optional.ofNullable(comboBox.getSelectedItem())
+                .map(comboBoxItemType::cast)
+                .map(convertComboBoxItemToSettingValue)
+                .orElse(null);
         context.setValue(clientSetting, value);
       }
 
@@ -420,22 +426,26 @@ final class SelectionComponentFactory {
       final ThrowingFunction<T, String, ValueEncodingException> encodeValue,
       final ThrowingFunction<String, T, ValueEncodingException> decodeValue,
       final String invalidValueMessage) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       private final JTextField textField = new JTextField(encode(clientSetting::getValue), 20);
 
       private String encode(final Supplier<Optional<T>> valueSupplier) {
-        return valueSupplier.get()
-            .map(value -> {
-              try {
-                return encodeValue.apply(value);
-              } catch (final ValueEncodingException e) {
-                log.log(
-                    Level.FINE,
-                    String.format("Failed to encode value '%s' from client setting '%s'", value, clientSetting),
-                    e);
-                return null;
-              }
-            })
+        return valueSupplier
+            .get()
+            .map(
+                value -> {
+                  try {
+                    return encodeValue.apply(value);
+                  } catch (final ValueEncodingException e) {
+                    log.log(
+                        Level.FINE,
+                        String.format(
+                            "Failed to encode value '%s' from client setting '%s'",
+                            value, clientSetting),
+                        e);
+                    return null;
+                  }
+                })
             .orElse("");
       }
 
@@ -474,7 +484,8 @@ final class SelectionComponentFactory {
    * Returns an unscrubbable string containing sensitive data. Use only when absolutely required.
    */
   private static String credentialToString(final Supplier<Optional<char[]>> credentialSupplier) {
-    return withSensitiveArrayAndReturn(() -> credentialSupplier.get().orElseGet(() -> new char[0]), String::new);
+    return withSensitiveArrayAndReturn(
+        () -> credentialSupplier.get().orElseGet(() -> new char[0]), String::new);
   }
 
   static SelectionComponent<JComponent> emailSettings(
@@ -483,57 +494,69 @@ final class SelectionComponentFactory {
       final ClientSetting<Boolean> tlsSetting,
       final ClientSetting<char[]> usernameSetting,
       final ClientSetting<char[]> passwordSetting) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
 
-      private final List<IEmailSender.EmailProviderSetting> knownProviders = Arrays.asList(
-          new IEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
-          new IEmailSender.EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
+      private final List<IEmailSender.EmailProviderSetting> knownProviders =
+          Arrays.asList(
+              new IEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
+              new IEmailSender.EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
 
       private final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 
-      private final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
-          (int) portSetting.getValue().orElse(465), 0, 65535, 1));
+      private final JSpinner portSpinner =
+          new JSpinner(
+              new SpinnerNumberModel((int) portSetting.getValue().orElse(465), 0, 65535, 1));
 
-      private final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
+      private final JCheckBox tlsCheckBox =
+          new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
 
-      private final JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
+      private final JTextField usernameField =
+          new JTextField(credentialToString(usernameSetting::getValue), 20);
 
       private final JPasswordField passwordField =
           new JPasswordField(credentialToString(passwordSetting::getValue), 20);
 
-      private final JPanel panel = JPanelBuilder.builder()
-          .verticalBoxLayout()
-          .addLeftJustified(new JLabel("Email Server"))
-          .addLeftJustified(serverField)
-          .addLeftJustified(new JLabel("Port"))
-          .addLeftJustified(JPanelBuilder.builder()
-              .horizontalBoxLayout()
-              .addLeftJustified(portSpinner)
-              .addLeftJustified(tlsCheckBox)
-              .build())
-          .addVerticalStrut(5)
-          .addLeftJustified(JButtonBuilder.builder()
-              .title("Presets...")
-              .actionListener(() -> {
-                final JComboBox<IEmailSender.EmailProviderSetting> comboBox =
-                    JComboBoxBuilder.builder(IEmailSender.EmailProviderSetting.class)
-                        .items(knownProviders)
-                        .build();
-                if (JOptionPane.showConfirmDialog(this.panel.getParent(), JPanelBuilder.builder().add(comboBox).build(),
-                    "Select a Preset", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                  final IEmailSender.EmailProviderSetting config =
-                      (IEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
-                  serverField.setText(config.getHost());
-                  portSpinner.setValue(config.getPort());
-                  tlsCheckBox.setSelected(config.isEncrypted());
-                }
-              })
-              .build())
-          .addLeftJustified(new JLabel("Username"))
-          .addLeftJustified(usernameField)
-          .addLeftJustified(new JLabel("Password"))
-          .addLeftJustified(passwordField)
-          .build();
+      private final JPanel panel =
+          new JPanelBuilder()
+              .boxLayoutVertical()
+              .addLeftJustified(new JLabel("Email Server"))
+              .addLeftJustified(serverField)
+              .addLeftJustified(new JLabel("Port"))
+              .addLeftJustified(
+                  new JPanelBuilder()
+                      .boxLayoutHorizontal()
+                      .addLeftJustified(portSpinner)
+                      .addLeftJustified(tlsCheckBox)
+                      .build())
+              .addVerticalStrut(5)
+              .addLeftJustified(
+                  new JButtonBuilder()
+                      .title("Presets...")
+                      .actionListener(
+                          () -> {
+                            final JComboBox<IEmailSender.EmailProviderSetting> comboBox =
+                                JComboBoxBuilder.builder(IEmailSender.EmailProviderSetting.class)
+                                    .items(knownProviders)
+                                    .build();
+                            if (JOptionPane.showConfirmDialog(
+                                    this.panel.getParent(),
+                                    new JPanelBuilder().add(comboBox).build(),
+                                    "Select a Preset",
+                                    JOptionPane.OK_CANCEL_OPTION)
+                                == JOptionPane.OK_OPTION) {
+                              final IEmailSender.EmailProviderSetting config =
+                                  (IEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
+                              serverField.setText(config.getHost());
+                              portSpinner.setValue(config.getPort());
+                              tlsCheckBox.setSelected(config.isEncrypted());
+                            }
+                          })
+                      .build())
+              .addLeftJustified(new JLabel("Username"))
+              .addLeftJustified(usernameField)
+              .addLeftJustified(new JLabel("Password"))
+              .addLeftJustified(passwordField)
+              .build();
 
       @Override
       public JComponent getUiComponent() {
@@ -549,10 +572,11 @@ final class SelectionComponentFactory {
         context.setValue(usernameSetting, username.isEmpty() ? null : username.toCharArray());
         withSensitiveArray(
             passwordField::getPassword,
-            password -> context.setValue(
-                passwordSetting,
-                (password.length == 0) ? null : password,
-                SaveContext.ValueSensitivity.SENSITIVE));
+            password ->
+                context.setValue(
+                    passwordSetting,
+                    (password.length == 0) ? null : password,
+                    SaveContext.ValueSensitivity.SENSITIVE));
       }
 
       @Override
@@ -576,21 +600,22 @@ final class SelectionComponentFactory {
   }
 
   static SelectionComponent<JComponent> forumPosterSettings(
-      final ClientSetting<char[]> usernameSetting,
-      final ClientSetting<char[]> passwordSetting) {
-    return new SelectionComponent<JComponent>() {
+      final ClientSetting<char[]> usernameSetting, final ClientSetting<char[]> passwordSetting) {
+    return new SelectionComponent<>() {
 
-      private final JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
+      private final JTextField usernameField =
+          new JTextField(credentialToString(usernameSetting::getValue), 20);
       private final JPasswordField passwordField =
           new JPasswordField(credentialToString(passwordSetting::getValue), 20);
 
-      private final JPanel mainPanel = JPanelBuilder.builder()
-          .verticalBoxLayout()
-          .addLeftJustified(new JLabel("Username:"))
-          .addLeftJustified(usernameField)
-          .addLeftJustified(new JLabel("Password:"))
-          .addLeftJustified(passwordField)
-          .build();
+      private final JPanel mainPanel =
+          new JPanelBuilder()
+              .boxLayoutVertical()
+              .addLeftJustified(new JLabel("Username:"))
+              .addLeftJustified(usernameField)
+              .addLeftJustified(new JLabel("Password:"))
+              .addLeftJustified(passwordField)
+              .build();
 
       @Override
       public JComponent getUiComponent() {
@@ -603,10 +628,11 @@ final class SelectionComponentFactory {
         context.setValue(usernameSetting, username.isEmpty() ? null : username.toCharArray());
         withSensitiveArray(
             passwordField::getPassword,
-            password -> context.setValue(
-                passwordSetting,
-                (password.length == 0) ? null : password,
-                SaveContext.ValueSensitivity.SENSITIVE));
+            password ->
+                context.setValue(
+                    passwordSetting,
+                    (password.length == 0) ? null : password,
+                    SaveContext.ValueSensitivity.SENSITIVE));
       }
 
       @Override

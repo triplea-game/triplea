@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eu
+
+echo "create database lobby_db" | psql -h localhost -U postgres -d postgres
+echo "create user lobby_user with password 'postgres'" | psql -h localhost -U postgres -d postgres
+echo "alter database lobby_db owner to lobby_user" | psql -h localhost -U postgres -d postgres
+
+./gradlew flywayMigrate
+

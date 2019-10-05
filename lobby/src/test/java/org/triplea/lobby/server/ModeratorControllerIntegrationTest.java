@@ -5,11 +5,18 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.lobby.PlayerName;
+import games.strategy.engine.message.MessageContext;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.MacFinder;
+import games.strategy.net.Node;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -18,13 +25,6 @@ import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserDao;
 import org.triplea.test.common.Integration;
-
-import games.strategy.engine.message.MessageContext;
-import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
-import games.strategy.net.Node;
 
 @Integration
 class ModeratorControllerIntegrationTest {
@@ -41,17 +41,20 @@ class ModeratorControllerIntegrationTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    moderatorController = new ModeratorController(
-        serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao());
+    moderatorController =
+        new ModeratorController(
+            serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao());
     final String adminName = TestUserUtils.newUniqueTimestamp();
     final String email = "n@n.n";
 
-    final UserDao userController = TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao();
-    userController.createUser(adminName, email, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
+    final UserDao userController =
+        TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao();
+    userController.createUser(
+        adminName, email, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
     UserDaoTestSupport.makeAdmin(adminName);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
-    when(serverMessenger.getPlayerMac(adminName)).thenReturn(newHashedMacAddress());
+    when(serverMessenger.getPlayerMac(PlayerName.of(adminName))).thenReturn(newHashedMacAddress());
   }
 
   @Test
@@ -60,14 +63,19 @@ class ModeratorControllerIntegrationTest {
     connectionChangeListener = new ConnectionChangeListener();
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);
 
-    doAnswer((Answer<Void>) invocation -> {
-      connectionChangeListener.connectionRemoved(invocation.getArgument(0));
-      return null;
-    }).when(serverMessenger).removeConnection(booted);
+    doAnswer(
+            (Answer<Void>)
+                invocation -> {
+                  connectionChangeListener.connectionRemoved(invocation.getArgument(0));
+                  return null;
+                })
+        .when(serverMessenger)
+        .removeConnection(booted);
 
     final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
-    moderatorController.boot(booted);
+    when(serverMessenger.getNodes()).thenReturn(Collections.singleton(booted));
+    moderatorController.boot(booted.getPlayerName());
     assertTrue(connectionChangeListener.removed.contains(booted));
   }
 

@@ -4,22 +4,18 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
+import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 
-import lombok.extern.java.Log;
-
 /**
- * A panel for showing the battle steps in a display.
- * Contains code for walking from the current step, to a given step
- * there is a delay while we walk so that the user can see the steps progression.
- * Users of this class should deactivate it after they are done.
+ * A panel for showing the battle steps in a display. Contains code for walking from the current
+ * step, to a given step there is a delay while we walk so that the user can see the steps
+ * progression. Users of this class should deactivate it after they are done.
  */
 @Log
 class BattleStepsPanel extends JPanel implements Active {
@@ -58,10 +54,8 @@ class BattleStepsPanel extends JPanel implements Active {
     }
   }
 
-  /**
-   * Set the steps given, setting the selected step to the first step.
-   */
-  public void listBattle(final List<String> steps) {
+  /** Set the steps given, setting the selected step to the first step. */
+  void listBattle(final List<String> steps) {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Not in dispatch thread");
     }
@@ -107,9 +101,7 @@ class BattleStepsPanel extends JPanel implements Active {
     return false;
   }
 
-  /**
-   * Walks through and pause at each list item until we find our target.
-   */
+  /** Walks through and pause at each list item until we find our target. */
   private void walkStep() {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
@@ -127,29 +119,32 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   private void waitThenWalk() {
-    new Thread(() -> {
-      synchronized (mutex) {
-        if (hasWalkThread) {
-          return;
-        }
-        hasWalkThread = true;
-      }
-      try {
-        if (Interruptibles.sleep(330)) {
-          SwingUtilities.invokeLater(this::walkStep);
-        }
-      } finally {
-        synchronized (mutex) {
-          hasWalkThread = false;
-        }
-      }
-    }).start();
+    new Thread(
+            () -> {
+              synchronized (mutex) {
+                if (hasWalkThread) {
+                  return;
+                }
+                hasWalkThread = true;
+              }
+              try {
+                if (Interruptibles.sleep(330)) {
+                  SwingUtilities.invokeLater(this::walkStep);
+                }
+              } finally {
+                synchronized (mutex) {
+                  hasWalkThread = false;
+                }
+              }
+            })
+        .start();
   }
 
   /**
-   * This method blocks until the last step is reached, unless this method is called from the swing event thread.
+   * This method blocks until the last step is reached, unless this method is called from the swing
+   * event thread.
    */
-  public void walkToLastStep() {
+  void walkToLastStep() {
     synchronized (mutex) {
       targetStep = LAST_STEP;
     }
@@ -157,8 +152,8 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   /**
-   * Set the target step for this panel.
-   * This method returns immediately, and must be called from the swing event thread.
+   * Set the target step for this panel. This method returns immediately, and must be called from
+   * the swing event thread.
    */
   public void setStep(final String step) {
     synchronized (mutex) {
@@ -179,7 +174,8 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   /**
-   * Doesn't allow the user to change the selection, must be done through hiddenSetSelectionInterval.
+   * Doesn't allow the user to change the selection, must be done through
+   * hiddenSetSelectionInterval.
    */
   private static final class MyListSelectionModel extends DefaultListSelectionModel {
     private static final long serialVersionUID = -4359950441657840015L;

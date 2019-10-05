@@ -1,20 +1,17 @@
 package games.strategy.engine.random;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemoteMessenger;
+import java.util.HashMap;
+import java.util.Map;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * Default implementation of {@link IRandomStats}.
  *
- * <p>
- * This implementation only isolates the {@link IRandomStats.DiceType#COMBAT} dice type for each player. All other dice
- * types are grouped under the {@code null} player in the resulting {@link RandomStatsDetails}.
- * </p>
+ * <p>This implementation only isolates the {@link IRandomStats.DiceType#COMBAT} dice type for each
+ * player. All other dice types are grouped under the {@code null} player in the resulting {@link
+ * RandomStatsDetails}.
  */
 public class RandomStats implements IRandomStats {
   private final IRemoteMessenger remoteMessenger;
@@ -29,7 +26,8 @@ public class RandomStats implements IRandomStats {
     remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
   }
 
-  public synchronized void addRandom(final int[] random, final PlayerId player, final DiceType diceType) {
+  public synchronized void addRandom(
+      final int[] random, final PlayerId player, final DiceType diceType) {
     IntegerMap<Integer> map = randomStats.get(player);
     if (map == null) {
       map = new IntegerMap<>();
@@ -41,7 +39,8 @@ public class RandomStats implements IRandomStats {
     randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
   }
 
-  public synchronized void addRandom(final int random, final PlayerId player, final DiceType diceType) {
+  public synchronized void addRandom(
+      final int random, final PlayerId player, final DiceType diceType) {
     IntegerMap<Integer> map = randomStats.get(player);
     if (map == null) {
       map = new IntegerMap<>();

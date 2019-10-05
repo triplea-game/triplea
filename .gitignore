@@ -10,6 +10,9 @@
 *.iml
 *.backup
 *.swp
+*.png
+*.gif
+*.mp3
 
 bin/
 build/

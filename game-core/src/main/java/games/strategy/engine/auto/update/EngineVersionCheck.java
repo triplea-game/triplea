@@ -1,22 +1,18 @@
 package games.strategy.engine.auto.update;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import games.strategy.engine.ClientContext;
+import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.GameSetting;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.logging.Level;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
-import org.triplea.swing.EventThreadJOptionPane;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
-
-import games.strategy.engine.ClientContext;
-import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
 import lombok.extern.java.Log;
+import org.triplea.swing.EventThreadJOptionPane;
 
 @Log
 final class EngineVersionCheck {
@@ -30,10 +26,14 @@ final class EngineVersionCheck {
 
       final EngineVersionProperties latestEngineOut = new EngineVersionProperties();
 
-      if (ClientContext.engineVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
-        SwingUtilities
-            .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
-                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));
+      if (latestEngineOut.getLatestVersionOut().isGreaterThan(ClientContext.engineVersion())) {
+        SwingUtilities.invokeLater(
+            () ->
+                EventThreadJOptionPane.showMessageDialog(
+                    null,
+                    latestEngineOut.getOutOfDateComponent(),
+                    "Please Update TripleA",
+                    JOptionPane.INFORMATION_MESSAGE));
       }
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error while checking for engine updates", e);
@@ -54,11 +54,16 @@ final class EngineVersionCheck {
       final GameSetting<Boolean> firstRunSetting,
       final GameSetting<String> updateCheckDateSetting,
       final Runnable flushSetting) {
-    // check at most once per 2 days (but still allow a 'first run message' for a new version of TripleA)
-    final boolean updateCheckRequired = firstRunSetting.getValueOrThrow()
-        || updateCheckDateSetting.getValue()
-            .map(encodedUpdateCheckDate -> !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusDays(2)))
-            .orElse(true);
+    // check at most once per 2 days (but still allow a 'first run message' for a new version of
+    // TripleA)
+    final boolean updateCheckRequired =
+        firstRunSetting.getValueOrThrow()
+            || updateCheckDateSetting
+                .getValue()
+                .map(
+                    encodedUpdateCheckDate ->
+                        !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusDays(2)))
+                .orElse(true);
     if (!updateCheckRequired) {
       return false;
     }

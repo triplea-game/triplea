@@ -1,14 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -23,10 +14,15 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.UserActionText;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * Contains validation and logic to change game data for UserActionAttachments.
- */
+/** Contains validation and logic to change game data for UserActionAttachments. */
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
   public UserActionDelegate() {}
 
@@ -56,9 +52,11 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   private Map<ICondition, Boolean> getTestedConditions() {
-    final Set<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
-        new HashSet<>(UserActionAttachment.getUserActionAttachments(player)), null);
-    return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
+    final Set<ICondition> allConditionsNeeded =
+        AbstractConditionsAttachment.getAllConditionsRecursive(
+            new HashSet<>(UserActionAttachment.getUserActionAttachments(player)), null);
+    return AbstractConditionsAttachment.testAllConditionsRecursive(
+        allConditionsNeeded, null, bridge);
   }
 
   @Override
@@ -77,7 +75,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   @Override
   public void attemptAction(final UserActionAttachment actionChoice) {
     if (actionChoice.canPerform(getTestedConditions())) {
-      if (checkEnoughMoney(actionChoice)) { // See if the player has got enough money to pay for the action
+      if (checkEnoughMoney(
+          actionChoice)) { // See if the player has got enough money to pay for the action
         // Charge for attempting the action
         chargeForAction(actionChoice);
         // take one of the uses this round
@@ -118,16 +117,22 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private void chargeForAction(final UserActionAttachment uaa) {
     final IntegerMap<Resource> cost = uaa.getCostResources();
     if (!cost.isEmpty()) {
-      final String transcriptText = bridge.getPlayerId().getName() + " spend "
-          + ResourceCollection.toString(cost, getData()) + " on User Action: "
-          + MyFormatter.attachmentNameToText(uaa.getName());
+      final String transcriptText =
+          bridge.getPlayerId().getName()
+              + " spend "
+              + ResourceCollection.toString(cost, getData())
+              + " on User Action: "
+              + MyFormatter.attachmentNameToText(uaa.getName());
       bridge.getHistoryWriter().startEvent(transcriptText);
       final Change charge =
-          ChangeFactory.removeResourceCollection(bridge.getPlayerId(), new ResourceCollection(getData(), cost));
+          ChangeFactory.removeResourceCollection(
+              bridge.getPlayerId(), new ResourceCollection(getData(), cost));
       bridge.addChange(charge);
     } else {
       final String transcriptText =
-          bridge.getPlayerId().getName() + " takes action: " + MyFormatter.attachmentNameToText(uaa.getName());
+          bridge.getPlayerId().getName()
+              + " takes action: "
+              + MyFormatter.attachmentNameToText(uaa.getName());
       // we must start an event anyway
       bridge.getHistoryWriter().startEvent(transcriptText);
     }
@@ -149,27 +154,45 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
       uaa.changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, false, true);
       return false;
     }
-    final int rollResult = bridge.getRandom(diceSides, player, DiceType.NONCOMBAT,
-        "Attempting the User Action: " + MyFormatter.attachmentNameToText(uaa.getName())) + 1;
+    final int rollResult =
+        bridge.getRandom(
+                diceSides,
+                player,
+                DiceType.NONCOMBAT,
+                "Attempting the User Action: " + MyFormatter.attachmentNameToText(uaa.getName()))
+            + 1;
     final boolean success = rollResult <= hitTarget;
-    final String notificationMessage = "rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult
-        + " = " + (success ? "Success!" : "Failure!");
-    bridge.getHistoryWriter()
-        .addChildToEvent(MyFormatter.attachmentNameToText(uaa.getName()) + " : " + notificationMessage);
+    final String notificationMessage =
+        "rolling ("
+            + hitTarget
+            + " out of "
+            + diceSides
+            + ") result: "
+            + rollResult
+            + " = "
+            + (success ? "Success!" : "Failure!");
+    bridge
+        .getHistoryWriter()
+        .addChildToEvent(
+            MyFormatter.attachmentNameToText(uaa.getName()) + " : " + notificationMessage);
     uaa.changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, success, true);
     sendNotification(notificationMessage);
     return success;
   }
 
   /**
-   * Get a list of players that should accept this action and then ask each player if it accepts this action.
+   * Get a list of players that should accept this action and then ask each player if it accepts
+   * this action.
    *
    * @param uaa the UserActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final UserActionAttachment uaa) {
     for (final PlayerId player : uaa.getActionAccept()) {
-      if (!getRemotePlayer(player).acceptAction(this.player,
-          UserActionText.getInstance().getAcceptanceQuestion(uaa.getText()), false)) {
+      if (!getRemotePlayer(player)
+          .acceptAction(
+              this.player,
+              UserActionText.getInstance().getAcceptanceQuestion(uaa.getText()),
+              false)) {
         return false;
       }
     }
@@ -193,22 +216,26 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
       // "To " + player.getName() + ": " +
-      this.getRemotePlayer().reportMessage(text, text);
+      bridge.getRemotePlayer().reportMessage(text, text);
     }
   }
 
-  private void sendNotificationToPlayers(final Collection<PlayerId> toPlayers, final Collection<PlayerId> dontSendTo,
+  private void sendNotificationToPlayers(
+      final Collection<PlayerId> toPlayers,
+      final Collection<PlayerId> dontSendTo,
       final String text) {
     if (!"NONE".equals(text)) {
-      this.getDisplay().reportMessageToPlayers(toPlayers, dontSendTo, text, text);
+      bridge
+          .getDisplayChannelBroadcaster()
+          .reportMessageToPlayers(toPlayers, dontSendTo, text, text);
     }
   }
 
   /**
    * Send notifications to the other players (all players except the player starting the action).
    */
-  private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification,
-      final String targetNotification) {
+  private void notifyOtherPlayers(
+      final UserActionAttachment uaa, final String notification, final String targetNotification) {
     final Collection<PlayerId> dontSendTo = new ArrayList<>();
     dontSendTo.add(player);
 
@@ -229,11 +256,14 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifySuccess(final UserActionAttachment uaa) {
     // play a sound
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
+    bridge
+        .getSoundChannelBroadcaster()
+        .playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
     final UserActionText uat = UserActionText.getInstance();
     final String text = uaa.getText();
-    sendNotification(uat.getNotificationSucccess(text));
-    notifyOtherPlayers(uaa, uat.getNotificationSuccessOthers(text), uat.getNotificationSuccessTarget(text));
+    sendNotification(uat.getNotificationSuccess(text));
+    notifyOtherPlayers(
+        uaa, uat.getNotificationSuccessOthers(text), uat.getNotificationSuccessTarget(text));
   }
 
   /**
@@ -243,37 +273,42 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifyFailure(final UserActionAttachment uaa) {
     // play a sound
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, player);
+    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, player);
     final String transcriptText =
-        bridge.getPlayerId().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
+        bridge.getPlayerId().getName()
+            + " fails on action: "
+            + MyFormatter.attachmentNameToText(uaa.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);
     final UserActionText uat = UserActionText.getInstance();
     final String text = uaa.getText();
     sendNotification(uat.getNotificationFailure(text));
-    notifyOtherPlayers(uaa, uat.getNotificationFailureOthers(text), uat.getNotificationFailureTarget(text));
+    notifyOtherPlayers(
+        uaa, uat.getNotificationFailureOthers(text), uat.getNotificationFailureTarget(text));
   }
 
   /**
    * Let the player know he is being charged for money or that he hasn't got enough money.
    *
    * @param uaa the UserActionAttachment the player is notified about
-   *
    */
   private void notifyMoney(final UserActionAttachment uaa) {
-    sendNotification("You don't have enough money, you need "
-        + ResourceCollection.toString(uaa.getCostResources(), getData()) + " to perform this action");
+    sendNotification(
+        "You don't have enough money, you need "
+            + ResourceCollection.toString(uaa.getCostResources(), getData())
+            + " to perform this action");
   }
 
   /**
-   * Let the player know this action isn't valid anymore, this shouldn't happen as the player shouldn't get an option to
-   * push the button on non-valid actions.
+   * Let the player know this action isn't valid anymore, this shouldn't happen as the player
+   * shouldn't get an option to push the button on non-valid actions.
    */
   private void notifyNoValidAction() {
     sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
   }
 
   /**
-   * Reset the attempts-counter for this action, so next round the player can try again for a number of attempts.
+   * Reset the attempts-counter for this action, so next round the player can try again for a number
+   * of attempts.
    */
   private void resetAttempts() {
     for (final UserActionAttachment uaa : UserActionAttachment.getUserActionAttachments(player)) {

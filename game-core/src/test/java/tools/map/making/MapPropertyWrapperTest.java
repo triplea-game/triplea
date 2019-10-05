@@ -4,21 +4,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.lang.reflect.Field;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TestAttachment;
+import java.lang.reflect.Field;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 final class MapPropertyWrapperTest {
   @Nested
   final class GetPropertyFieldTest {
     @Test
     void shouldReturnFieldWhenFieldExistsInTargetClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("doubleValue", ExampleChildAttachment.class);
+      final Field field =
+          MapPropertyWrapper.getPropertyField("doubleValue", ExampleChildAttachment.class);
 
       assertThat(field.getName(), is("doubleValue"));
       assertThat(field.getDeclaringClass(), is(ExampleChildAttachment.class));
@@ -26,7 +25,8 @@ final class MapPropertyWrapperTest {
 
     @Test
     void shouldReturnFieldWhenFieldExistsInAncestorClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleChildAttachment.class);
+      final Field field =
+          MapPropertyWrapper.getPropertyField("intValue", ExampleChildAttachment.class);
 
       assertThat(field.getName(), is("intValue"));
       assertThat(field.getDeclaringClass(), is(ExampleParentAttachment.class));
@@ -34,7 +34,9 @@ final class MapPropertyWrapperTest {
 
     @Test
     void shouldThrowExceptionWhenFieldDoesNotExist() {
-      assertThrows(IllegalStateException.class, () -> MapPropertyWrapper.getPropertyField("xxx", TestAttachment.class));
+      assertThrows(
+          IllegalStateException.class,
+          () -> MapPropertyWrapper.getPropertyField("xxx", TestAttachment.class));
     }
   }
 
@@ -43,7 +45,8 @@ final class MapPropertyWrapperTest {
 
     int intValue;
 
-    ExampleParentAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    ExampleParentAttachment(
+        final String name, final Attachable attachable, final GameData gameData) {
       super(name, attachable, gameData);
     }
   }
@@ -53,7 +56,8 @@ final class MapPropertyWrapperTest {
 
     double doubleValue;
 
-    ExampleChildAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    ExampleChildAttachment(
+        final String name, final Attachable attachable, final GameData gameData) {
       super(name, attachable, gameData);
     }
   }

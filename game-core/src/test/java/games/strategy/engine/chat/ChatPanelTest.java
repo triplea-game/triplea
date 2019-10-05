@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledDocument;
-
 import org.junit.jupiter.api.Test;
 
 class ChatPanelTest {
@@ -12,11 +11,7 @@ class ChatPanelTest {
   @Test
   void testTrim() throws Exception {
     final StyledDocument doc = new DefaultStyledDocument();
-    final StringBuilder buffer = new StringBuilder();
-    for (int i = 0; i < 10; i++) {
-      buffer.append("\n");
-    }
-    doc.insertString(0, buffer.toString(), null);
+    doc.insertString(0, "\n".repeat(10), null);
     ChatMessagePanel.trimLines(doc, 20);
     assertEquals(10, doc.getLength());
     ChatMessagePanel.trimLines(doc, 10);

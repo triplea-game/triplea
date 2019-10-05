@@ -1,15 +1,13 @@
 package games.strategy.triplea.delegate.data;
 
+import games.strategy.engine.data.Unit;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-import games.strategy.engine.data.Unit;
-
 /**
- * A response to a must move query.
- * Returns a mapping of unit -> collection of units.
- * Units that must move are land units in transports, and friendly aircraft that must move with carriers.
+ * A response to a must move query. Returns a mapping of unit -> collection of units. Units that
+ * must move are land units in transports, and friendly aircraft that must move with carriers.
  */
 public class MustMoveWithDetails implements Serializable {
   private static final long serialVersionUID = 936060269327534445L;

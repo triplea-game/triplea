@@ -5,9 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 
-/**
- * Change a players production frontier.
- */
+/** Change a players production frontier. */
 class ProductionFrontierChange extends Change {
   private static final long serialVersionUID = 3336145814067456701L;
 
@@ -21,7 +19,8 @@ class ProductionFrontierChange extends Change {
     playerName = player.getName();
   }
 
-  ProductionFrontierChange(final String startFrontierName, final String endFrontierName, final String playerName) {
+  ProductionFrontierChange(
+      final String startFrontierName, final String endFrontierName, final String playerName) {
     this.startFrontierName = startFrontierName;
     this.endFrontierName = endFrontierName;
     this.playerName = playerName;
@@ -30,7 +29,8 @@ class ProductionFrontierChange extends Change {
   @Override
   protected void perform(final GameData data) {
     final PlayerId player = data.getPlayerList().getPlayerId(playerName);
-    final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(endFrontierName);
+    final ProductionFrontier frontier =
+        data.getProductionFrontierList().getProductionFrontier(endFrontierName);
     player.setProductionFrontier(frontier);
   }
 

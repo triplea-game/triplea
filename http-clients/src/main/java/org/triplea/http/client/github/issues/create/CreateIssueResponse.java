@@ -1,14 +1,11 @@
 package org.triplea.http.client.github.issues.create;
 
 import com.google.gson.annotations.SerializedName;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * Response JSON object from github after we create a new issue.
- */
+/** Response JSON object from github after we create a new issue. */
 @ToString
 @AllArgsConstructor
 @Getter

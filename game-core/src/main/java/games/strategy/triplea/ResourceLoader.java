@@ -2,6 +2,11 @@ package games.strategy.triplea;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -17,20 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nullable;
-
-import org.triplea.java.UrlStreams;
-import org.triplea.swing.SwingComponents;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
-
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.java.UrlStreams;
+import org.triplea.swing.SwingComponents;
 
 /**
  * Utility for managing where images and property files for maps and units should be loaded from.
@@ -42,8 +38,7 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
   private final ResourceLocationTracker resourceLocationTracker;
-  @Getter
-  private final String mapName;
+  @Getter private final String mapName;
 
   private ResourceLoader(final String mapName, final String[] paths) {
     final URL[] urls = new URL[paths.length];
@@ -73,14 +68,15 @@ public class ResourceLoader implements Closeable {
     return getMapResourceLoader("");
   }
 
-  /**
-   * Returns a resource loader that will find assets in a map directory.
-   */
+  /** Returns a resource loader that will find assets in a map directory. */
   public static ResourceLoader getMapResourceLoader(final String mapName) {
     final List<String> dirs = getPaths(mapName);
     if (mapName != null && dirs.isEmpty()) {
-      SwingComponents.promptUser("Download Map?",
-          "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
+      SwingComponents.promptUser(
+          "Download Map?",
+          "Map missing: "
+              + mapName
+              + ", could not join game.\nWould you like to download the map now?"
               + "\nOnce the download completes, you may reconnect to this game.",
           () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
 
@@ -109,13 +105,11 @@ public class ResourceLoader implements Closeable {
   /**
    * Returns a list of candidate directories from which the specified map may be loaded.
    *
-   * <p>
-   * The candidate directories are returned in order of preference. That is, a candidate directory earlier in the list
-   * should be preferred to a candidate directory later in the list assuming they both exist.
-   * </p>
+   * <p>The candidate directories are returned in order of preference. That is, a candidate
+   * directory earlier in the list should be preferred to a candidate directory later in the list
+   * assuming they both exist.
    *
    * @param mapName The map name; must not be {@code null}.
-   *
    * @return A list of candidate directories; never {@code null}.
    */
   @VisibleForTesting
@@ -135,13 +129,11 @@ public class ResourceLoader implements Closeable {
   /**
    * Returns a list of candidate zip files from which the specified map may be loaded.
    *
-   * <p>
-   * The candidate zip files are returned in order of preference. That is, a candidate file earlier in the list should
-   * be preferred to a candidate file later in the list assuming they both exist.
-   * </p>
+   * <p>The candidate zip files are returned in order of preference. That is, a candidate file
+   * earlier in the list should be preferred to a candidate file later in the list assuming they
+   * both exist.
    *
    * @param mapName The map name; must not be {@code null}.
-   *
    * @return A list of candidate zip files; never {@code null}.
    */
   public static List<File> getMapZipFileCandidates(final String mapName) {
@@ -183,7 +175,7 @@ public class ResourceLoader implements Closeable {
     candidates.addAll(getMapZipFileCandidates(mapName));
 
     final Optional<File> match = candidates.stream().filter(File::exists).findFirst();
-    if (!match.isPresent()) {
+    if (match.isEmpty()) {
       // if we get no results, we will eventually prompt the user to download the map
       return new ArrayList<>();
     }
@@ -192,18 +184,16 @@ public class ResourceLoader implements Closeable {
     paths.add(match.get().getAbsolutePath());
     // find dependencies
     try (URLClassLoader url = new URLClassLoader(new URL[] {match.get().toURI().toURL()})) {
-      final URL dependencesUrl = url.getResource("dependencies.txt");
-      if (dependencesUrl != null) {
-        final Optional<InputStream> inputStream = UrlStreams.openStream(dependencesUrl);
+      final URL dependenciesUrl = url.getResource("dependencies.txt");
+      if (dependenciesUrl != null) {
+        final Optional<InputStream> inputStream = UrlStreams.openStream(dependenciesUrl);
         if (inputStream.isPresent()) {
           try (InputStream stream = inputStream.get()) {
             final java.util.Properties dependenciesFile = new java.util.Properties();
             dependenciesFile.load(stream);
             paths.addAll(
-                Splitter.on(',')
-                    .omitEmptyStrings()
-                    .splitToList(dependenciesFile.getProperty("dependencies"))
-                    .stream()
+                Splitter.on(',').omitEmptyStrings()
+                    .splitToList(dependenciesFile.getProperty("dependencies")).stream()
                     .map(ResourceLoader::getPaths)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList()));
@@ -230,16 +220,37 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
-   * Returns the URL of the resource at the specified path or {@code null} if the resource does not exist.
+   * Returns the URL of the resource at the specified path or {@code null} if the resource does not
+   * exist.
    *
-   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\'
-   *        or File.separator)
+   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
+   *     resource. Do not use '\' or File.separator)
    */
   public @Nullable URL getResource(final String inputPath) {
     final String path = resourceLocationTracker.getMapPrefix() + inputPath;
-    return getMatchingResources(path).stream().findFirst().orElse(
-        getMatchingResources(inputPath).stream().findFirst().orElse(
-            null));
+    return findResource(path).or(() -> findResource(inputPath)).orElse(null);
+  }
+
+  /**
+   * Returns the URL of the resource at the specified path or {@code null} if the resource does not
+   * exist. Tries the given 2 paths in order first in the map resources then engine resources.
+   *
+   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
+   *     resource. Do not use '\' or File.separator)
+   * @param inputPath2 Same as inputPath but this takes second priority when loading
+   */
+  public @Nullable URL getResource(final String inputPath, final String inputPath2) {
+    final String path = resourceLocationTracker.getMapPrefix() + inputPath;
+    final String path2 = resourceLocationTracker.getMapPrefix() + inputPath2;
+    return findResource(path)
+        .or(() -> findResource(path2))
+        .or(() -> findResource(inputPath))
+        .or(() -> findResource(inputPath2))
+        .orElse(null);
+  }
+
+  private Optional<URL> findResource(final String searchPath) {
+    return getMatchingResources(searchPath).stream().findFirst();
   }
 
   private List<URL> getMatchingResources(final String path) {
@@ -251,10 +262,11 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
-   * Returns an input stream for the specified resource or {@code null} if the resource does not exist. The caller is
-   * responsible for closing the returned input stream.
+   * Returns an input stream for the specified resource or {@code null} if the resource does not
+   * exist. The caller is responsible for closing the returned input stream.
    *
-   * @throws IllegalStateException If the specified resource exists but the input stream cannot be opened.
+   * @throws IllegalStateException If the specified resource exists but the input stream cannot be
+   *     opened.
    */
   public @Nullable InputStream getResourceAsStream(final String path) {
     final URL url = getResource(path);

@@ -1,18 +1,15 @@
 package games.strategy.engine.lobby.moderator.toolbox;
 
 import java.time.Duration;
-
 import javax.swing.JFrame;
-
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.Toast;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 /**
- * Utility class to show 'toast' pop-ups that are used to confirm
- * success actions have been executed on the server.
+ * Utility class to show 'toast' pop-ups that are used to confirm success actions have been executed
+ * on the server.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MessagePopup {
@@ -22,13 +19,14 @@ public final class MessagePopup {
         .message(message)
         .sleepTime(Duration.ofMillis(350))
         .build()
-        .showtoast();
+        .showToast();
   }
 
   public static void showServerError(final RuntimeException e) {
     SwingComponents.showDialog(
         "Server Error",
         "Http server operation failed. Report this to TripleA support if it keeps happening."
-            + " Error:\n" + e.getMessage());
+            + " Error:\n"
+            + e.getMessage());
   }
 }

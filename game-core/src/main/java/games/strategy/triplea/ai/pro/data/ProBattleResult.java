@@ -1,16 +1,13 @@
 package games.strategy.triplea.ai.pro.data;
 
+import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
 import java.util.List;
-
-import games.strategy.engine.data.Unit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * The result of an AI battle analysis.
- */
+/** The result of an AI battle analysis. */
 @Getter
 @ToString
 @AllArgsConstructor

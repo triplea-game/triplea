@@ -1,54 +1,79 @@
 dist: xenial
 sudo: false
 language: java
-matrix:
+if: tag is blank
+
+# Note: Travis generally does not allocate more than 5 VMs at once.
+# Avoid running more than 5 jobs in parallel. Try to keep the jobs
+# balanced so that they each take about the same amount of time.
+jobs:
   include:
-  - jdk: openjdk11
-    env: TRIPLEA_RELEASE=true
-addons:
-  postgresql: "10"
-  apt:
-    packages:
-      # python for map file splitter
-      - python3
-      - python3-yaml
-install:
- - echo "create database lobby" | psql -h localhost -U postgres
- - ./.travis/setup_gradle
- - ./gradlew flywayMigrate
- - ./gradlew shadowJar
- - RELEASE_VERSION=$(sed "s/@buildId@/$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties  | sed 's/version\s*=\s*//')
- - echo "Release version = $RELEASE_VERSION"
- # launch http server so that logged output will be displayed. This is to support eventual integration
- # testing of client/server interactions and allow for debugging in case of problems.
- - "java -jar http-server/build/libs/triplea-http-server-${RELEASE_VERSION}.jar server ./http-server/configuration-prerelease.yml &"
-before_script:
-#- ./.travis/setup_gpg
-script:
-- ./gradlew --parallel check jacocoTestReport
-after_success:
-- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
-before_deploy:
-- INSTALL4J_HOME=~/install4j
-- ./.travis/install_install4j "$INSTALL4J_HOME"
-- ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release
-- ./.travis/collect_artifacts
-#- ./.travis/generate_artifact_checksums
-- ./.travis/push_tag
-## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
-## to website json data directory.
-- ./.travis/push_maps
-deploy:
-  provider: releases
-  api_key:
-    secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
-  file_glob: true
-  file: build/artifacts/*
-  ## This is set to true to not delete artifacts between the 'before-deploy' and 'deploy' steps
-  skip_cleanup: true
-  prerelease: true
-  on:
-    tags: false
-    condition: "$TRIPLEA_RELEASE = true"
-    repo: triplea-game/triplea
-    branch: master
+    - stage: verify
+      env: DESCRIPTION="static verification"
+      jdk: openjdk11
+      install: skip
+      script:
+        ## shellcheck all shell scripts
+        - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
+        - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain
+    - stage: verify
+      env: DESCRIPTION=integTest
+      jdk: openjdk11
+      addons: {postgresql: "10"}
+      install: skip
+      script:
+        - ./.travis/setup_database &
+        - ./.travis/launch_http_server
+        - ./gradlew integTest
+    - stage: verify
+      env: DESCRIPTION="JDK12 unitTests"
+      jdk: openjdk12
+      install: skip
+      script:
+        - ./gradlew --parallel test
+    - stage: verify
+      jdk: openjdk11
+      env: DESCRIPTION="JDK11 unitTests and Test Coverage"
+      install: skip
+      script:
+        - ./gradlew --parallel test jacocoTestReport
+        - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+    - stage: verify
+      jdk: openjdk11
+      env: DESCRIPTION="Smoke Test"
+      addons: {postgresql: "10"}
+      install: skip
+      script:
+        - ./.travis/setup_database
+        - ./.travis/run_smoke_tests
+    - stage: deploy
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      install: skip
+      script:
+        - ./.travis/setup_gpg
+        ## Update product version to include build number.
+        ## EG: replace "2.0.0" to be "2.0.15555";
+        - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
+        - ./.travis/do_release
+      deploy:
+        jdk: openjdk11
+        provider: releases
+        addons:
+          apt:
+            packages:
+              # python for map file splitter
+              - python3
+              - python3-yaml
+        api_key:
+          secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
+        file_glob: true
+        file: build/artifacts/*
+        skip_cleanup: true        
+        prerelease: true
+        on:
+          tags: false
+          repo: triplea-game/triplea
+          branch: master
+after_failure:
+  - echo "================ Build step 'after_failure' =================" > /dev/null
+  -  test "$TRAVIS_EVENT_TYPE" != "pull_request" && test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE

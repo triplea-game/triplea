@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +23,7 @@ final class OptionalUtilsTest {
     private static final String FIRST_VALUE = "value";
     private static final int SECOND_VALUE = 42;
 
-    @Mock
-    private BiConsumer<String, Integer> action;
+    @Mock private BiConsumer<String, Integer> action;
 
     @Test
     void shouldInvokeActionWhenOptional1PresentAndOptional2Present() {
@@ -59,8 +57,7 @@ final class OptionalUtilsTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class IfEmptyTest {
-    @Mock
-    private Runnable action;
+    @Mock private Runnable action;
 
     @Test
     void shouldNotInvokeActionWhenValuePresent() {
@@ -90,9 +87,7 @@ final class OptionalUtilsTest {
             presentActionInvoked.set(true);
             assertThat(it, is(value));
           },
-          () -> {
-            fail("empty action should not have been invoked");
-          });
+          () -> fail("empty action should not have been invoked"));
 
       assertThat(presentActionInvoked.get(), is(true));
     }
@@ -103,12 +98,8 @@ final class OptionalUtilsTest {
 
       OptionalUtils.ifPresentOrElse(
           Optional.empty(),
-          it -> {
-            fail("present action should not have been invoked");
-          },
-          () -> {
-            emptyActionInvoked.set(true);
-          });
+          it -> fail("present action should not have been invoked"),
+          () -> emptyActionInvoked.set(true));
 
       assertThat(emptyActionInvoked.get(), is(true));
     }

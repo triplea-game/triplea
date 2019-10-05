@@ -1,62 +1,42 @@
 package org.triplea.server.error.reporting;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+import es.moki.ratelimij.dropwizard.annotation.Rate;
+import es.moki.ratelimij.dropwizard.annotation.RateLimited;
+import es.moki.ratelimij.dropwizard.filter.KeyPart;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-import org.triplea.http.client.error.report.ErrorUploadClient;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
-import org.triplea.http.client.error.report.ErrorUploadResponse;
+import lombok.Builder;
+import org.triplea.http.client.error.report.ErrorReportClient;
+import org.triplea.http.client.error.report.ErrorReportRequest;
+import org.triplea.http.client.error.report.ErrorReportResponse;
+import org.triplea.server.http.HttpController;
 import org.triplea.server.http.IpAddressExtractor;
 
-import lombok.Builder;
-
-/**
- * Http controller that binds the error upload endpoint with the error report upload handler.
- */
+/** Http controller that binds the error upload endpoint with the error report upload handler. */
 @Builder
-@Produces(MediaType.APPLICATION_JSON)
-@Path("/")
-public class ErrorReportController {
+public class ErrorReportController extends HttpController {
   @Nonnull
-  private final Function<ErrorReportRequest, ErrorUploadResponse> errorReportIngestion;
-  @Nonnull
-  private final Predicate<String> errorReportRateChecker;
+  private final BiFunction<String, ErrorReportRequest, ErrorReportResponse> errorReportIngestion;
 
   @POST
-  @Path(ErrorUploadClient.ERROR_REPORT_PATH)
-  public ErrorUploadResponse uploadErrorReport(
-      @Context final HttpServletRequest request,
-      final ErrorUploadRequest errorReport) {
+  @Path(ErrorReportClient.ERROR_REPORT_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {
+        @Rate(limit = ErrorReportClient.MAX_REPORTS_PER_DAY, duration = 1, timeUnit = TimeUnit.DAYS)
+      })
+  public ErrorReportResponse uploadErrorReport(
+      @Context final HttpServletRequest request, final ErrorReportRequest errorReport) {
 
     if (errorReport.getBody() == null || errorReport.getTitle() == null) {
       throw new IllegalArgumentException("Missing error report body and/or title");
     }
 
-    return errorReportIngestion.apply(ErrorReportRequest.builder()
-        .clientIp(IpAddressExtractor.extractClientIp(request))
-        .errorReport(errorReport)
-        .build());
-  }
-
-
-  /**
-   * Checks if the user has hit their rate limit for submitting error reports.
-   *
-   * @return True if the user can submit an error report, false if they
-   *         have hit their limit.
-   */
-  @GET
-  @Path(ErrorUploadClient.CAN_REPORT_PATH)
-  public boolean canSubmitErrorReport(@Context final HttpServletRequest request) {
-    return errorReportRateChecker.test(IpAddressExtractor.extractClientIp(request));
+    return errorReportIngestion.apply(IpAddressExtractor.extractClientIp(request), errorReport);
   }
 }

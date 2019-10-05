@@ -2,6 +2,11 @@ package org.triplea.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
+import com.google.common.primitives.Ints;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.io.BufferedReader;
@@ -21,34 +26,28 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Streams;
-import com.google.common.primitives.Ints;
-
 /**
- * Utility to read and write files in the form of String -> a list of points, or string-> list of polygons.
+ * Utility to read and write files in the form of String -> a list of points, or string-> list of
+ * polygons.
  */
 public final class PointFileReaderWriter {
 
   // Matches an int tuple like this: (123, 456)
-  private static final Pattern pointPattern = Pattern.compile("\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
+  private static final Pattern pointPattern =
+      Pattern.compile("\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
   // Matches a "polygon" like this: < something that's not a greater than or less than char >
   private static final Pattern polygonPattern = Pattern.compile("<[^>]*>");
-  // Matches a Name-Int-Tuple pair like this: Some Weird Territory Name without an opening round bracket (654, 321)
-  private static final Pattern singlePointPattern = Pattern
-      .compile("^([^(]*?)\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
+  // Matches a Name-Int-Tuple pair like this: Some Weird Territory Name without an opening round
+  // bracket (654, 321)
+  private static final Pattern singlePointPattern =
+      Pattern.compile("^([^(]*?)\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
 
   private PointFileReaderWriter() {}
 
-  /**
-   * Returns a map of the form String -> Point.
-   */
+  /** Returns a map of the form String -> Point. */
   public static Map<String, Point> readOneToOne(final InputStream stream) throws IOException {
     checkNotNull(stream);
 
@@ -62,10 +61,16 @@ public final class PointFileReaderWriter {
     if (matcher.find()) {
       final String territoryName = matcher.group(1);
       if (mapping.containsKey(territoryName)) {
-        throw new IllegalArgumentException("Territory '" + territoryName
-            + "' was found twice, it's already mapped to '" + mapping.get(territoryName) + "'");
+        throw new IllegalArgumentException(
+            "Territory '"
+                + territoryName
+                + "' was found twice, it's already mapped to '"
+                + mapping.get(territoryName)
+                + "'");
       }
-      mapping.put(territoryName, new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
+      mapping.put(
+          territoryName,
+          new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
     } else {
       throw new IllegalArgumentException(
           "Line '" + line + "' did not match required pattern. Example: Territory (1,2)");
@@ -77,16 +82,18 @@ public final class PointFileReaderWriter {
    *
    * @param sink The stream to which the name-to-point mappings will be written.
    * @param mapping The name-to-point mapping to be written.
-   *
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
-  public static void writeOneToOne(final OutputStream sink, final Map<String, Point> mapping) throws IOException {
+  public static void writeOneToOne(final OutputStream sink, final Map<String, Point> mapping)
+      throws IOException {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    write(mapping.entrySet().stream()
-        .map(entry -> entry.getKey() + " " + pointToString(entry.getValue()))
-        .collect(Collectors.joining("\r\n")), sink);
+    write(
+        mapping.entrySet().stream()
+            .map(entry -> entry.getKey() + " " + pointToString(entry.getValue()))
+            .collect(Collectors.joining("\r\n")),
+        sink);
   }
 
   /**
@@ -94,23 +101,29 @@ public final class PointFileReaderWriter {
    *
    * @param sink The stream to which the name-to-polygons mappings will be written.
    * @param mapping The name-to-polygons mapping to be written.
-   *
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
-  public static void writeOneToManyPolygons(final OutputStream sink, final Map<String, List<Polygon>> mapping)
-      throws IOException {
+  public static void writeOneToManyPolygons(
+      final OutputStream sink, final Map<String, List<Polygon>> mapping) throws IOException {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    write(mapping.entrySet().stream()
-        .map(entry -> entry.getKey() + " " + entry.getValue().stream()
-            .map(PointFileReaderWriter::polygonToString)
-            .collect(Collectors.joining()))
-        .collect(Collectors.joining("\r\n")), sink);
+    write(
+        mapping.entrySet().stream()
+            .map(
+                entry ->
+                    entry.getKey()
+                        + " "
+                        + entry.getValue().stream()
+                            .map(PointFileReaderWriter::polygonToString)
+                            .collect(Collectors.joining()))
+            .collect(Collectors.joining("\r\n")),
+        sink);
   }
 
   private static void write(final String string, final OutputStream sink) throws IOException {
-    try (Writer out = new OutputStreamWriter(new CloseShieldOutputStream(sink), StandardCharsets.UTF_8)) {
+    try (Writer out =
+        new OutputStreamWriter(new CloseShieldOutputStream(sink), StandardCharsets.UTF_8)) {
       out.write(string);
     }
   }
@@ -120,8 +133,10 @@ public final class PointFileReaderWriter {
   }
 
   private static String polygonToString(final Polygon polygon) {
-    return Streams
-        .zip(Ints.asList(polygon.xpoints).stream(), Ints.asList(polygon.ypoints).stream(), Point::new)
+    return Streams.zip(
+            Ints.asList(polygon.xpoints).stream(),
+            Ints.asList(polygon.ypoints).stream(),
+            Point::new)
         .map(PointFileReaderWriter::pointToString)
         .collect(Collectors.joining("", " < ", " > "));
   }
@@ -131,7 +146,6 @@ public final class PointFileReaderWriter {
    *
    * @param sink The stream to which the name-to-points mappings will be written.
    * @param mapping The name-to-points mapping to be written.
-   *
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
   public static void writeOneToMany(final OutputStream sink, final Map<String, List<Point>> mapping)
@@ -139,21 +153,20 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    write(mapping.entrySet().stream()
-        .map(entry -> entry.getKey() + " " + pointsToString(entry.getValue()))
-        .collect(Collectors.joining("\r\n")), sink);
+    write(
+        mapping.entrySet().stream()
+            .map(entry -> entry.getKey() + " " + pointsToString(entry.getValue()))
+            .collect(Collectors.joining("\r\n")),
+        sink);
   }
 
   private static String pointsToString(final List<Point> points) {
-    return points.stream()
-        .map(PointFileReaderWriter::pointToString)
-        .collect(Collectors.joining());
+    return points.stream().map(PointFileReaderWriter::pointToString).collect(Collectors.joining());
   }
 
-  /**
-   * Returns a map of the form String -> Collection of points.
-   */
-  public static Map<String, List<Point>> readOneToMany(final InputStream stream) throws IOException {
+  /** Returns a map of the form String -> Collection of points. */
+  public static Map<String, List<Point>> readOneToMany(final InputStream stream)
+      throws IOException {
     checkNotNull(stream);
 
     final Map<String, List<Point>> mapping = new HashMap<>();
@@ -162,51 +175,55 @@ public final class PointFileReaderWriter {
   }
 
   /**
-   * Writes the specified one-to-many mapping between names and (points, overflowToLeft) to the specified stream.
+   * Writes the specified one-to-many mapping between names and (points, overflowToLeft) to the
+   * specified stream.
    *
    * @param sink The stream to which the name-to-points mappings will be written.
    * @param mapping The name-to-points mapping to be written.
-   *
    * @throws IOException If an I/O error occurs while writing to the stream.
    */
-  public static void writeOneToManyPlacements(final OutputStream sink,
-      final Map<String, Tuple<List<Point>, Boolean>> mapping)
+  public static void writeOneToManyPlacements(
+      final OutputStream sink, final Map<String, Tuple<List<Point>, Boolean>> mapping)
       throws IOException {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    write(mapping.entrySet().stream()
-        .map(entry -> entry.getKey()
-            + " "
-            + pointsToString(entry.getValue().getFirst())
-            + " | overflowToLeft="
-            + entry.getValue().getSecond())
-        .collect(Collectors.joining("\r\n")), sink);
+    write(
+        mapping.entrySet().stream()
+            .map(
+                entry ->
+                    entry.getKey()
+                        + " "
+                        + pointsToString(entry.getValue().getFirst())
+                        + " | overflowToLeft="
+                        + entry.getValue().getSecond())
+            .collect(Collectors.joining("\r\n")),
+        sink);
   }
 
-  /**
-   * Returns a map of the form String -> (points, overflowToLeft).
-   */
-  public static Map<String, Tuple<List<Point>, Boolean>> readOneToManyPlacements(final InputStream stream)
-      throws IOException {
+  /** Returns a map of the form String -> (points, overflowToLeft). */
+  public static Map<String, Tuple<List<Point>, Boolean>> readOneToManyPlacements(
+      final InputStream stream) throws IOException {
     checkNotNull(stream);
 
     final Map<String, List<Point>> mapping = new HashMap<>();
     final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
-    readStream(stream, current -> {
-      final List<String> s = Splitter.on(" | ").splitToList(current);
-      final Tuple<String, List<Point>> tuple = readMultiple(s.get(0), mapping);
-      final boolean overflowToLeft = (s.size() == 2)
-          && Boolean.parseBoolean(Iterables.get(Splitter.on('=').split(s.get(1)), 1));
-      result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
-    });
+    readStream(
+        stream,
+        current -> {
+          final List<String> s = Splitter.on(" | ").splitToList(current);
+          final Tuple<String, List<Point>> tuple = readMultiple(s.get(0), mapping);
+          final boolean overflowToLeft =
+              (s.size() == 2)
+                  && Boolean.parseBoolean(Iterables.get(Splitter.on('=').split(s.get(1)), 1));
+          result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
+        });
     return result;
   }
 
-  /**
-   * Returns a map of the form String -> Collection of polygons.
-   */
-  public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
+  /** Returns a map of the form String -> Collection of polygons. */
+  public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream)
+      throws IOException {
     checkNotNull(stream);
 
     final Map<String, List<Polygon>> mapping = new HashMap<>();
@@ -214,7 +231,8 @@ public final class PointFileReaderWriter {
     return mapping;
   }
 
-  private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping) {
+  private static void readMultiplePolygons(
+      final String line, final Map<String, List<Polygon>> mapping) {
     final String name = line.substring(0, line.indexOf('<')).trim();
     if (mapping.containsKey(name)) {
       throw new IllegalArgumentException("name found twice:" + name);
@@ -225,7 +243,9 @@ public final class PointFileReaderWriter {
       final List<Point> points = new ArrayList<>();
       final Matcher pointMatcher = pointPattern.matcher(polyMatcher.group());
       while (pointMatcher.find()) {
-        points.add(new Point(Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
+        points.add(
+            new Point(
+                Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
       }
       polygons.add(newPolygonFromPoints(points));
     }
@@ -239,7 +259,8 @@ public final class PointFileReaderWriter {
         points.size());
   }
 
-  private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping) {
+  private static Tuple<String, List<Point>> readMultiple(
+      final String line, final Map<String, List<Point>> mapping) {
     final String name = line.substring(0, line.indexOf("(")).trim();
     if (mapping.containsKey(name)) {
       throw new IllegalArgumentException("name found twice:" + name);
@@ -254,12 +275,12 @@ public final class PointFileReaderWriter {
   }
 
   @VisibleForTesting
-  static void readStream(final InputStream stream, final Consumer<String> lineParser) throws IOException {
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
+  static void readStream(final InputStream stream, final Consumer<String> lineParser)
+      throws IOException {
+    try (Reader inputStreamReader =
+            new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputStreamReader)) {
-      reader.lines()
-          .filter(current -> current.trim().length() != 0)
-          .forEachOrdered(lineParser);
+      reader.lines().filter(current -> current.trim().length() != 0).forEachOrdered(lineParser);
     } catch (final IllegalArgumentException e) {
       throw new IOException(e);
     }

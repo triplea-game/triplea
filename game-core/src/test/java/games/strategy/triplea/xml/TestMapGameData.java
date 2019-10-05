@@ -1,19 +1,16 @@
 package games.strategy.triplea.xml;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.Collections;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.triplea.delegate.TestDelegate;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.Collections;
 
-/**
- * The available maps for use during testing.
- */
+/** The available maps for use during testing. */
 public enum TestMapGameData {
   BIG_WORLD_1942("big_world_1942_test.xml"),
 
@@ -58,14 +55,17 @@ public enum TestMapGameData {
    * Gets the game data for the associated map.
    *
    * @return The game data for the associated map.
-   *
    * @throws Exception If an error occurs while loading the map.
    */
   public GameData getGameData() throws Exception {
-    try (InputStream is = new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
-      return GameParser.parse("game name", is, new XmlGameElementMapper(
-          Collections.singletonMap("TestDelegate", TestDelegate::new),
-          Collections.singletonMap("TestAttachment", TestAttachment::new)));
+    try (InputStream is =
+        new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
+      return GameParser.parse(
+          "game name",
+          is,
+          new XmlGameElementMapper(
+              Collections.singletonMap("TestDelegate", TestDelegate::new),
+              Collections.singletonMap("TestAttachment", TestAttachment::new)));
     }
   }
 }

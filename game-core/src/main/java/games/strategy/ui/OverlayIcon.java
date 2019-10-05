@@ -2,12 +2,9 @@ package games.strategy.ui;
 
 import java.awt.Component;
 import java.awt.Graphics;
-
 import javax.swing.Icon;
 
-/**
- * Make one icon from two.
- */
+/** Make one icon from two. */
 public class OverlayIcon implements Icon {
   private final Icon back;
   private final Icon front;
@@ -30,14 +27,12 @@ public class OverlayIcon implements Icon {
 
   @Override
   public int getIconHeight() {
-    return back.getIconHeight() > (front.getIconHeight() + offsetY) ? back.getIconHeight()
-        : (front.getIconHeight() + offsetY);
+    return Math.max(back.getIconHeight(), front.getIconHeight() + offsetY);
   }
 
   @Override
   public int getIconWidth() {
-    return back.getIconWidth() > (front.getIconWidth() + offsetX) ? back.getIconWidth()
-        : (front.getIconWidth() + offsetX);
+    return Math.max(back.getIconWidth(), front.getIconWidth() + offsetX);
   }
 
   @Override

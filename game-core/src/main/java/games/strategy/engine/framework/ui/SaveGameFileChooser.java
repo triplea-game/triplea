@@ -1,16 +1,12 @@
 package games.strategy.engine.framework.ui;
 
+import games.strategy.engine.framework.GameDataFileUtils;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.triplea.settings.ClientSetting;
-
-/**
- * A file chooser for save games. Defaults to the user's configured save game folder.
- */
+/** A file chooser for save games. Defaults to the user's configured save game folder. */
 public final class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
 

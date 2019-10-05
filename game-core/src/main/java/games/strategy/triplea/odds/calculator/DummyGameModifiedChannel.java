@@ -17,11 +17,15 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   @Override
   public void startHistoryEvent(final String event) {}
 
-
   @Override
   public void startHistoryEvent(final String event, final Object renderingData) {}
 
   @Override
-  public void stepChanged(final String stepName, final String delegateName, final PlayerId player, final int round,
-      final String displayName, final boolean loadedFromSavedGame) {}
+  public void stepChanged(
+      final String stepName,
+      final String delegateName,
+      final PlayerId player,
+      final int round,
+      final String displayName,
+      final boolean loadedFromSavedGame) {}
 }

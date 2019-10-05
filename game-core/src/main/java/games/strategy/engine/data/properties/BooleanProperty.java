@@ -3,9 +3,7 @@ package games.strategy.engine.data.properties;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 
-/**
- * Implementation of {@link IEditableProperty} for a Boolean value.
- */
+/** Implementation of {@link IEditableProperty} for a Boolean value. */
 public class BooleanProperty extends AbstractEditableProperty<Boolean> {
   private static final long serialVersionUID = -7265501762343216435L;
 

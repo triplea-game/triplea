@@ -1,32 +1,26 @@
 package games.strategy.engine.lobby.client.login;
 
-import java.awt.Window;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-import javax.swing.JOptionPane;
-
-import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
-import org.triplea.lobby.common.login.RsaAuthenticator;
-
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
-import games.strategy.net.ClientMessenger;
+import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.CouldNotLogInException;
-import games.strategy.net.IMessenger;
+import games.strategy.net.IClientMessenger;
 import games.strategy.net.MacFinder;
+import java.awt.Window;
+import java.io.IOException;
+import javax.annotation.Nullable;
+import javax.swing.JOptionPane;
+import org.triplea.http.client.forgot.password.ForgotPasswordClient;
+import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
+import org.triplea.http.client.lobby.HttpLobbyClient;
+import org.triplea.swing.DialogBuilder;
 
 /**
  * The client side of the lobby authentication protocol.
  *
- * <p>
- * The client is responsible for sending the initial authentication request to the server containing the user's name.
- * The server will send back an authentication challenge. The client then sends a response to the challenge to prove the
- * user knows the correct password.
- * </p>
+ * <p>The client is responsible for sending the initial authentication request to the server
+ * containing the user's name. The server will send back an authentication challenge. The client
+ * then sends a response to the challenge to prove the user knows the correct password.
  */
 public class LobbyLogin {
   private final Window parentWindow;
@@ -40,9 +34,7 @@ public class LobbyLogin {
   /**
    * Attempt to login to the LobbyServer.
    *
-   * <p>
-   * If we could not login, return null.
-   * </p>
+   * <p>If we could not login, return null.
    */
   public @Nullable LobbyClient login() {
     if (lobbyServerProperties.getServerErrorMessage().isPresent()) {
@@ -54,12 +46,22 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient login(final LoginPanel panel) {
     try {
-      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
-          "Connecting to lobby...",
-          () -> login(panel.getUserName(), panel.getPassword(), panel.isAnonymousLogin()),
-          IOException.class);
-      panel.getLobbyLoginPreferences().save();
-      return new LobbyClient(messenger, panel.isAnonymousLogin());
+      final IClientMessenger messenger =
+          GameRunner.newBackgroundTaskRunner()
+              .runInBackgroundAndReturn(
+                  "Connecting to lobby...",
+                  () ->
+                      panel.isAnonymousLogin()
+                          ? ClientMessengerFactory.newAnonymousUserMessenger(
+                              lobbyServerProperties, panel.getUserName())
+                          : ClientMessengerFactory.newRegisteredUserMessenger(
+                              lobbyServerProperties, panel.getUserName(), panel.getPassword()),
+                  IOException.class);
+      return new LobbyClient(
+          messenger,
+          HttpLobbyClient.newClient(
+              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey()),
+          panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
       showError("Login Failed", e.getMessage() + "\n" + playerMacIdString());
       return loginToServer(); // NB: potential stack overflow due to recursive call
@@ -72,25 +74,6 @@ public class LobbyLogin {
     }
   }
 
-  private IMessenger login(final String userName, final String password, final boolean anonymousLogin)
-      throws IOException {
-    return new ClientMessenger(
-        lobbyServerProperties.getHost(),
-        lobbyServerProperties.getPort(),
-        userName,
-        MacFinder.getHashedMacAddress(),
-        challenge -> {
-          final Map<String, String> response = new HashMap<>();
-          if (anonymousLogin) {
-            response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-          } else {
-            response.putAll(RsaAuthenticator.newResponse(challenge, password));
-          }
-          response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-          return response;
-        });
-  }
-
   private static String playerMacIdString() {
     final String mac = MacFinder.getHashedMacAddress();
     return mac.substring(mac.length() - 10);
@@ -101,7 +84,7 @@ public class LobbyLogin {
   }
 
   private @Nullable LobbyClient loginToServer() {
-    final LoginPanel loginPanel = new LoginPanel(LobbyLoginPreferences.load());
+    final LoginPanel loginPanel = new LoginPanel();
     final LoginPanel.ReturnValue returnValue = loginPanel.show(parentWindow);
     switch (returnValue) {
       case LOGON:
@@ -110,14 +93,17 @@ public class LobbyLogin {
         return null;
       case CREATE_ACCOUNT:
         return createAccount();
+      case FORGOT_PASSWORD:
+        forgotPassword();
+        return null;
       default:
         throw new AssertionError("unknown login panel return value: " + returnValue);
     }
   }
 
   private @Nullable LobbyClient createAccount() {
-    final CreateUpdateAccountPanel createAccountPanel = CreateUpdateAccountPanel.newCreatePanel();
-    final CreateUpdateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
+    final CreateAccountPanel createAccountPanel = new CreateAccountPanel();
+    final CreateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
     switch (returnValue) {
       case OK:
         return createAccount(createAccountPanel);
@@ -128,14 +114,23 @@ public class LobbyLogin {
     }
   }
 
-  private @Nullable LobbyClient createAccount(final CreateUpdateAccountPanel panel) {
+  private @Nullable LobbyClient createAccount(final CreateAccountPanel panel) {
     try {
-      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
-          "Connecting to lobby...",
-          () -> createAccount(panel.getUserName(), panel.getPassword(), panel.getEmail()),
-          IOException.class);
-      panel.getLobbyLoginPreferences().save();
-      return new LobbyClient(messenger, false);
+      final IClientMessenger messenger =
+          GameRunner.newBackgroundTaskRunner()
+              .runInBackgroundAndReturn(
+                  "Connecting to lobby...",
+                  () ->
+                      ClientMessengerFactory.newCreateAccountMessenger(
+                          lobbyServerProperties,
+                          panel.getUserName(),
+                          panel.getEmail(),
+                          panel.getPassword()),
+                  IOException.class);
+      return new LobbyClient(
+          messenger,
+          HttpLobbyClient.newClient(
+              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey()));
     } catch (final CouldNotLogInException e) {
       showError("Account Creation Failed", e.getMessage());
       return createAccount(); // NB: potential stack overflow due to recursive call
@@ -148,20 +143,44 @@ public class LobbyLogin {
     }
   }
 
-  private IMessenger createAccount(final String userName, final String password, final String email)
-      throws IOException {
-    return new ClientMessenger(
-        lobbyServerProperties.getHost(),
-        lobbyServerProperties.getPort(),
-        userName,
-        MacFinder.getHashedMacAddress(),
-        challenge -> {
-          final Map<String, String> response = new HashMap<>();
-          response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
-          response.put(LobbyLoginResponseKeys.EMAIL, email);
-          response.putAll(RsaAuthenticator.newResponse(challenge, password));
-          response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-          return response;
-        });
+  private void forgotPassword() {
+    final ForgotPasswordPanel forgotPasswordPanel = ForgotPasswordPanel.newForgotPasswordPanel();
+    final ForgotPasswordPanel.ReturnValue returnValue = forgotPasswordPanel.show(parentWindow);
+    switch (returnValue) {
+      case OK:
+        forgotPassword(forgotPasswordPanel);
+        return;
+      case CANCEL:
+        return;
+      default:
+        throw new AssertionError("unknown forgot password panel return value: " + returnValue);
+    }
+  }
+
+  private void forgotPassword(final ForgotPasswordPanel panel) {
+    try {
+      final String response =
+          GameRunner.newBackgroundTaskRunner()
+              .runInBackgroundAndReturn(
+                  "Sending forgot password request...",
+                  () ->
+                      ForgotPasswordClient.newClient(lobbyServerProperties.getHttpsServerUri())
+                          .sendForgotPasswordRequest(
+                              ForgotPasswordRequest.builder()
+                                  .username(panel.getUserName())
+                                  .email(panel.getEmail())
+                                  .build()),
+                  IOException.class)
+              .getResponseMessage();
+      DialogBuilder.builder()
+          .parent(parentWindow)
+          .title("Server Response")
+          .infoMessage(response)
+          .showDialog();
+    } catch (final IOException e) {
+      showError("Error", "Failed to generate a temporary password: " + e.getMessage());
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 }
