@@ -9,6 +9,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.util.PlayerOrderComparator;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,14 +21,13 @@ import java.util.Comparator;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -51,6 +51,21 @@ public class PoliticsPanel extends ActionPanel {
    */
   private final Action selectPoliticalActionAction;
 
+  private static GridBagConstraints makeGridBagConstraints(final Insets insets, final int row) {
+    return new GridBagConstraints(
+        1,
+        row,
+        1,
+        1,
+        1.0,
+        1.0,
+        GridBagConstraints.WEST,
+        GridBagConstraints.HORIZONTAL,
+        insets,
+        0,
+        0);
+  }
+
   PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
     selectPoliticalActionAction =
@@ -68,50 +83,60 @@ public class PoliticsPanel extends ActionPanel {
               final JPanel politicalChoicePanel = new JPanel();
               politicalChoicePanel.setLayout(new GridBagLayout());
               final PoliticalStateOverview overview =
-                  new PoliticalStateOverview(getData(), getMap().getUiContext(), false);
+                  new PoliticalStateOverview(getData(), getMap().getUiContext(), false) {
+
+                    @Override
+                    protected JPanel getRelationshipComponent(
+                        final PlayerId player1,
+                        final PlayerId player2,
+                        final RelationshipType relType,
+                        final Color relColor) {
+                      final JPanel panel = new JPanel();
+                      panel.setOpaque(false);
+                      panel.setLayout(new GridBagLayout());
+
+                      final Insets insets = new Insets(1, 1, 1, 1);
+                      int row = 0;
+                      final JPanel status = wrapInJPanel(new JLabel(relType.getName()), relColor);
+                      panel.add(status, makeGridBagConstraints(insets, row++));
+                      if (!player1.equals(getCurrentPlayer())) {
+                        return panel;
+                      }
+
+                      for (final PoliticalActionAttachment paa : validPoliticalActions) {
+                        if (!paa.getOtherPlayers().contains(player2)) {
+                          continue;
+                        }
+                        final JButton button =
+                            getMap()
+                                .getUiContext()
+                                .getResourceImageFactory()
+                                .getResourcesButton(
+                                    new ResourceCollection(getData(), paa.getCostResources()),
+                                    PoliticsText.getInstance().getButtonText(paa.getText()));
+                        button.addActionListener(
+                            ae -> {
+                              selectPoliticalActionButton.setEnabled(false);
+                              doneButton.setEnabled(false);
+                              validPoliticalActions = null;
+                              choice = paa;
+                              politicalChoiceDialog.setVisible(false);
+                              release();
+                            });
+                        panel.add(button, makeGridBagConstraints(insets, row++));
+                      }
+
+                      final GridBagConstraints constraints =
+                          makeGridBagConstraints(new Insets(0, 0, 0, 0), row);
+                      constraints.weighty = 1000.0;
+                      panel.add(Box.createHorizontalStrut(1), constraints);
+                      return panel;
+                    }
+                  };
               final JScrollPane overviewScroll = new JScrollPane(overview);
               overviewScroll.setBorder(BorderFactory.createEmptyBorder());
-              // add 26 to height when the actions are empty, because for some stupid reason java
-              // calculates the pack size wrong
-              // (again)...
-              // add 20 to either when the opposite needs scroll bars, because that is how big
-              // scroll bars are..
-              overviewScroll.setPreferredSize(
-                  new Dimension(
-                      (overviewScroll.getPreferredSize().width > availWidth
-                          ? availWidth
-                          : (overviewScroll.getPreferredSize().width
-                              + (overviewScroll.getPreferredSize().height > availHeightOverview
-                                  ? 20
-                                  : 0))),
-                      (overviewScroll.getPreferredSize().height > availHeightOverview
-                          ? availHeightOverview
-                          : (overviewScroll.getPreferredSize().height
-                              + (validPoliticalActions.isEmpty() ? 26 : 0)
-                              + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
-
-              final JScrollPane choiceScroll =
-                  new JScrollPane(politicalActionButtonPanel(politicalChoiceDialog));
-              choiceScroll.setBorder(BorderFactory.createEmptyBorder());
-              choiceScroll.setPreferredSize(
-                  new Dimension(
-                      (choiceScroll.getPreferredSize().width > availWidth
-                          ? availWidth
-                          : (choiceScroll.getPreferredSize().width
-                              + (choiceScroll.getPreferredSize().height > availHeightChoice
-                                  ? 20
-                                  : 0))),
-                      (choiceScroll.getPreferredSize().height > availHeightChoice
-                          ? availHeightChoice
-                          : choiceScroll.getPreferredSize().height
-                              + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
-
-              final JSplitPane splitPane =
-                  new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
-              splitPane.setOneTouchExpandable(true);
-              splitPane.setDividerSize(8);
               politicalChoicePanel.add(
-                  splitPane,
+                  overviewScroll,
                   new GridBagConstraints(
                       0,
                       0,
@@ -127,7 +152,7 @@ public class PoliticsPanel extends ActionPanel {
               final JButton noActionButton =
                   new JButton(
                       SwingAction.of(
-                          "No Actions", event -> politicalChoiceDialog.setVisible(false)));
+                          "No Further Actions", event -> politicalChoiceDialog.setVisible(false)));
               SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
               politicalChoicePanel.add(
                   noActionButton,
@@ -220,75 +245,6 @@ public class PoliticsPanel extends ActionPanel {
     return choice;
   }
 
-  private JPanel politicalActionButtonPanel(final JDialog parent) {
-    final JPanel politicalActionButtonPanel = new JPanel();
-    politicalActionButtonPanel.setLayout(new GridBagLayout());
-    int row = 0;
-    final Insets insets = new Insets(1, 1, 1, 1);
-    for (final PoliticalActionAttachment paa : validPoliticalActions) {
-      politicalActionButtonPanel.add(
-          getOtherPlayerFlags(paa),
-          new GridBagConstraints(
-              0,
-              row,
-              1,
-              1,
-              1.0,
-              1.0,
-              GridBagConstraints.WEST,
-              GridBagConstraints.HORIZONTAL,
-              insets,
-              0,
-              0));
-      final JButton button =
-          getMap()
-              .getUiContext()
-              .getResourceImageFactory()
-              .getResourcesButton(
-                  new ResourceCollection(getData(), paa.getCostResources()),
-                  PoliticsText.getInstance().getButtonText(paa.getText()));
-      button.addActionListener(
-          ae -> {
-            selectPoliticalActionButton.setEnabled(false);
-            doneButton.setEnabled(false);
-            validPoliticalActions = null;
-            choice = paa;
-            parent.setVisible(false);
-            release();
-          });
-      politicalActionButtonPanel.add(
-          button,
-          new GridBagConstraints(
-              1,
-              row,
-              1,
-              1,
-              1.0,
-              1.0,
-              GridBagConstraints.WEST,
-              GridBagConstraints.HORIZONTAL,
-              insets,
-              0,
-              0));
-      politicalActionButtonPanel.add(
-          getActionDescriptionLabel(paa),
-          new GridBagConstraints(
-              2,
-              row,
-              1,
-              1,
-              5.0,
-              1.0,
-              GridBagConstraints.WEST,
-              GridBagConstraints.HORIZONTAL,
-              insets,
-              0,
-              0));
-      row++;
-    }
-    return politicalActionButtonPanel;
-  }
-
   private boolean youSureDoNothing() {
     final int selectedOption =
         JOptionPane.showConfirmDialog(
@@ -297,29 +253,6 @@ public class PoliticsPanel extends ActionPanel {
             "End Politics",
             JOptionPane.YES_NO_OPTION);
     return selectedOption == JOptionPane.YES_OPTION;
-  }
-
-  /**
-   * Convenient method to get a JComponent showing the flags involved in this action.
-   *
-   * @param paa the political action attachment to get the "otherflags" for
-   * @return a JComponent with the flags involved.
-   */
-  private JPanel getOtherPlayerFlags(final PoliticalActionAttachment paa) {
-    final JPanel panel = new JPanel();
-    for (final PlayerId p : paa.getOtherPlayers()) {
-      panel.add(
-          new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
-    }
-    return panel;
-  }
-
-  private static JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {
-    final String chanceString =
-        paa.getChanceToHit() >= paa.getChanceDiceSides()
-            ? ""
-            : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
-    return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
   }
 
   private static final class PoliticalActionComparator
