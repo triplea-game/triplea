@@ -6068,16 +6068,14 @@
       <option name="maxConstructionsPerTypePerTerr" value="3"/>
       <option name="requiresUnits" value="spanishCombatEngineer"/>
       <option name="consumesUnits" value="1:Material"/>
-      <option name="givesMovement" value="2:germanFighter"/>
+      <option name="givesMovement" value="2:germanFighter:germanNavalFighter:germanRocket"/>
       <option name="givesMovement" value="4:germanAdvancedFighter"/>
-      <option name="givesMovement" value="2:germanNavalFighter"/>
       <option name="givesMovement" value="4:germanAdvancedNavalFighter"/>
       <option name="givesMovement" value="3:germanTacticalBomber"/>
       <option name="givesMovement" value="5:germanAdvancedTacticalBomber"/>
       <option name="givesMovement" value="4:germanStrategicBomber"/>
       <option name="givesMovement" value="6:germanHeavyStrategicBomber"/>
       <option name="givesMovement" value="3:germanAirTransport"/>
-      <option name="givesMovement" value="2:germanRocket"/>
       <option name="givesMovement" value="4:germanAdvancedRocket"/>
       <option name="givesMovement" value="2:italianFighter"/>
       <option name="givesMovement" value="4:italianAdvancedFighter"/>
