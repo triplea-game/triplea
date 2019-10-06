@@ -205,6 +205,6 @@ final class ChatIntegrationTest {
     }
 
     @Override
-    public void addStatusMessage(final String message, boolean joined) {}
+    public void addStatusMessage(final String message, final boolean joined) {}
   }
 }
