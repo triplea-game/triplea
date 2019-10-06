@@ -199,7 +199,7 @@ final class ChatIntegrationTest {
     }
 
     @Override
-    public void addSlapMessage(String message) {}
+    public void addSlapMessage(final String message) {}
 
     @Override
     public void addMessage(final String message, final PlayerName from) {
