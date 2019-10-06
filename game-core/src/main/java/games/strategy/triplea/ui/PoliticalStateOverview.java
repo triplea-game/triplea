@@ -46,7 +46,7 @@ public class PoliticalStateOverview extends JPanel {
     drawPoliticsUi();
   }
 
-  private void addCell(final Component cell, final Insets insets, int x, int y) {
+  private void addCell(final Component cell, final Insets insets, final int x, final int y) {
     maxColumnWidth = Math.max(maxColumnWidth, cell.getPreferredSize().width);
     this.add(
         cell,

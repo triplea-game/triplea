@@ -51,21 +51,6 @@ public class PoliticsPanel extends ActionPanel {
    */
   private final Action selectPoliticalActionAction;
 
-  private static GridBagConstraints makeGridBagConstraints(final Insets insets, final int row) {
-    return new GridBagConstraints(
-        1,
-        row,
-        1,
-        1,
-        1.0,
-        1.0,
-        GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL,
-        insets,
-        0,
-        0);
-  }
-
   PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
     selectPoliticalActionAction =
@@ -84,6 +69,22 @@ public class PoliticsPanel extends ActionPanel {
               politicalChoicePanel.setLayout(new GridBagLayout());
               final PoliticalStateOverview overview =
                   new PoliticalStateOverview(getData(), getMap().getUiContext(), false) {
+
+                    private GridBagConstraints makeGridBagConstraints(
+                        final Insets insets, final int row) {
+                      return new GridBagConstraints(
+                          1,
+                          row,
+                          1,
+                          1,
+                          1.0,
+                          1.0,
+                          GridBagConstraints.WEST,
+                          GridBagConstraints.HORIZONTAL,
+                          insets,
+                          0,
+                          0);
+                    }
 
                     @Override
                     protected JPanel getRelationshipComponent(
