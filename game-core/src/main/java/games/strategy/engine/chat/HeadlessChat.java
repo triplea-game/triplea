@@ -50,7 +50,7 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
   }
 
   @Override
-  public void addStatusMessage(final String message) {
+  public void addStatusMessage(final String message, final boolean joined) {
     trimLengthIfNecessary();
     allText.append("--- ").append(message).append(" ---\n");
   }

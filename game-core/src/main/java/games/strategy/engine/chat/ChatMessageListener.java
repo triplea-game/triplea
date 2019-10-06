@@ -8,5 +8,5 @@ public interface ChatMessageListener {
 
   void addSlapMessage(String message, PlayerName from);
 
-  void addStatusMessage(String message);
+  void addStatusMessage(String message, boolean joined);
 }

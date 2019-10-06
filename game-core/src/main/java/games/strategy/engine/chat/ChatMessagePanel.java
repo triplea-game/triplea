@@ -298,7 +298,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   @Override
-  public void addStatusMessage(final String message) {
+  public void addStatusMessage(final String message, final boolean joined) {
     SwingUtilities.invokeLater(
         () -> {
           try {
@@ -313,7 +313,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
                 e);
           }
         });
-    if (chatSoundProfile == ChatSoundProfile.GAME) {
+    if (joined && chatSoundProfile == ChatSoundProfile.GAME) {
       ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
     }
   }
