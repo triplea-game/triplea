@@ -11,8 +11,6 @@ import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Level;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -43,7 +41,7 @@ import org.triplea.swing.SwingAction;
  * <p>We can change the chat we are connected to using the setChat(...) method.
  */
 @Log
-public class ChatMessagePanel extends JPanel implements IChatListener {
+public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   private static final long serialVersionUID = 118727200083595226L;
   private static final int MAX_LINES = 5000;
 
@@ -110,7 +108,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
                   } else {
                     send.setEnabled(false);
                     text.setEnabled(false);
-                    updatePlayerList(Collections.emptyList());
                   }
                 }));
   }
@@ -335,7 +332,4 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     chat.sendMessage(nextMessage.getText());
     nextMessage.setText("");
   }
-
-  @Override
-  public void updatePlayerList(final Collection<ChatParticipant> players) {}
 }

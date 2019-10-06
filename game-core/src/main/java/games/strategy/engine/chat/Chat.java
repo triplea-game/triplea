@@ -29,7 +29,8 @@ public class Chat implements ChatClient {
 
   private final ChatTransmitter chatTransmitter;
 
-  private final List<IChatListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<ChatMessageListener> chatMessageListeners = new CopyOnWriteArrayList<>();
+  private final List<ChatPlayerListener> chatPlayerListeners = new CopyOnWriteArrayList<>();
 
   @Getter(AccessLevel.PACKAGE)
   private final SentMessagesHistory sentMessagesHistory;
@@ -69,9 +70,7 @@ public class Chat implements ChatClient {
             .sorted(Comparator.comparing(c -> c.getPlayerName().getValue()))
             .collect(Collectors.toList());
 
-    for (final IChatListener listener : listeners) {
-      listener.updatePlayerList(playerNames);
-    }
+    chatPlayerListeners.forEach(listener -> listener.updatePlayerList(playerNames));
   }
 
   @Override
@@ -81,9 +80,7 @@ public class Chat implements ChatClient {
       return;
     }
     chatHistory.add(new ChatMessage(message, from));
-    for (final IChatListener listener : listeners) {
-      listener.addMessage(message, from);
-    }
+    chatMessageListeners.forEach(listener -> listener.addMessage(message, from));
   }
 
   @Override
@@ -93,12 +90,13 @@ public class Chat implements ChatClient {
     }
     chatters.put(chatParticipant, "");
     updateConnections();
-    for (final IChatListener listener : listeners) {
-      listener.addStatusMessage(chatParticipant.getPlayerName() + " has joined");
-      if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
-        ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
-      }
-    }
+    chatMessageListeners.forEach(
+        listener -> {
+          listener.addStatusMessage(chatParticipant.getPlayerName() + " has joined");
+          if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
+            ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
+          }
+        });
   }
 
   @Override
@@ -110,26 +108,22 @@ public class Chat implements ChatClient {
             node -> {
               chatters.remove(node);
               updateConnections();
-              for (final IChatListener listener : listeners) {
-                listener.addStatusMessage(node.getPlayerName() + " has left");
-              }
+              chatMessageListeners.forEach(
+                  listener -> listener.addStatusMessage(node.getPlayerName() + " has left"));
             });
   }
 
   @Override
   public void slappedBy(final PlayerName from) {
     final String message = "You were slapped by " + from;
-    for (final IChatListener listener : listeners) {
-      chatHistory.add(new ChatMessage(message, from));
-      listener.addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
-    }
+    chatHistory.add(new ChatMessage(message, from));
+    chatMessageListeners.forEach(
+        listener -> listener.addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP));
   }
 
   @Override
   public void eventMessage(final String eventMessage) {
-    for (final IChatListener listener : listeners) {
-      listener.addStatusMessage(eventMessage);
-    }
+    chatMessageListeners.forEach(listener -> listener.addStatusMessage(eventMessage));
   }
 
   @Override
@@ -156,17 +150,25 @@ public class Chat implements ChatClient {
         .orElse("");
   }
 
-  void addChatListener(final IChatListener listener) {
-    listeners.add(listener);
+  void addChatListener(final ChatPlayerListener listener) {
+    chatPlayerListeners.add(listener);
     updateConnections();
+  }
+
+  void addChatListener(final ChatMessageListener listener) {
+    chatMessageListeners.add(listener);
   }
 
   void addStatusUpdateListener(final BiConsumer<PlayerName, String> statusUpdateListener) {
     statusUpdateListeners.add(statusUpdateListener);
   }
 
-  void removeChatListener(final IChatListener listener) {
-    listeners.remove(listener);
+  void removeChatListener(final ChatMessageListener listener) {
+    chatMessageListeners.remove(listener);
+  }
+
+  void removeChatListener(final ChatPlayerListener listener) {
+    chatPlayerListeners.remove(listener);
   }
 
   void removeStatusUpdateListener(final BiConsumer<PlayerName, String> statusUpdateListener) {

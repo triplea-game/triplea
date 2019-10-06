@@ -34,7 +34,7 @@ import javax.swing.UIManager;
 import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
-public class ChatPlayerPanel extends JPanel implements IChatListener {
+public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   private static final String TAG_MODERATOR = "[Mod]";
   private static final long serialVersionUID = -3153022965393962945L;
   private static final Icon ignoreIcon;
@@ -227,13 +227,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
         });
   }
 
-  @Override
-  public void addMessageWithSound(
-      final String message, final PlayerName from, final String sound) {}
-
-  @Override
-  public void addMessage(final String message, final PlayerName from) {}
-
   private String getDisplayString(final ChatParticipant chatParticipant) {
     if (chat == null) {
       return "";
@@ -245,9 +238,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
 
     return chatParticipant.getPlayerName() + extra + suffix;
   }
-
-  @Override
-  public void addStatusMessage(final String message) {}
 
   /**
    * Add an action factory that will be used to populate the pop up many when right clicking on a

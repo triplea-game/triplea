@@ -46,9 +46,8 @@ public class LobbyFrame extends JFrame {
             Chat.ChatSoundProfile.LOBBY_CHATROOM);
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
-    final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
+    final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
-    chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::newAdminActions);
 

@@ -1,23 +1,19 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
-import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.lobby.PlayerName;
-import games.strategy.net.Messengers;
-import java.util.Collection;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.TimeManager;
 
 /** Headless version of ChatPanel. */
-public class HeadlessChat implements IChatListener, ChatModel {
+public class HeadlessChat implements ChatMessageListener, ChatModel {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
-  private Chat chat;
+  private final Chat chat;
   private final StringBuilder allText = new StringBuilder();
 
-  public HeadlessChat(
-      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    this.chat = new Chat(messengers, chatName, chatSoundProfile);
+  public HeadlessChat(final Chat chat) {
+    this.chat = chat;
     chat.addChatListener(this);
   }
 
@@ -35,9 +31,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
   public Chat getChat() {
     return chat;
   }
-
-  @Override
-  public void updatePlayerList(final Collection<ChatParticipant> players) {}
 
   /** thread safe. */
   @Override
