@@ -132,7 +132,7 @@ final class ChatIntegrationTest {
   }
 
   private static Chat newChat(final Messengers messengers) {
-    return new Chat(messengers, CHAT_NAME, Chat.ChatSoundProfile.NO_SOUND);
+    return new Chat(messengers, CHAT_NAME);
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {

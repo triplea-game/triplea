@@ -4,8 +4,6 @@ import com.google.common.collect.EvictingQueue;
 import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.Messengers;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.SoundPath;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,23 +40,13 @@ public class Chat implements ChatClient {
       Collections.synchronizedCollection(EvictingQueue.create(1000));
 
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
-  private final ChatSoundProfile chatSoundProfile;
   @Getter private final PlayerName localPlayerName;
   private final Collection<BiConsumer<PlayerName, String>> statusUpdateListeners =
       new ArrayList<>();
 
-  /** A profile defines the sounds to use for various chat events. */
-  public enum ChatSoundProfile {
-    LOBBY_CHATROOM,
-    GAME_CHATROOM,
-    NO_SOUND
-  }
-
-  public Chat(
-      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
+  public Chat(final Messengers messengers, final String chatName) {
     this.localPlayerName = messengers.getLocalNode().getPlayerName();
     chatTransmitter = new JavaSocketChatTransmitter(this, chatName, messengers);
-    this.chatSoundProfile = chatSoundProfile;
     sentMessagesHistory = new SentMessagesHistory();
     chatters = Optional.ofNullable(chatTransmitter.connect()).orElseGet(HashMap::new);
     updateConnections();
@@ -91,12 +79,7 @@ public class Chat implements ChatClient {
     chatters.put(chatParticipant, "");
     updateConnections();
     chatMessageListeners.forEach(
-        listener -> {
-          listener.addStatusMessage(chatParticipant.getPlayerName() + " has joined");
-          if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
-            ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
-          }
-        });
+        listener -> listener.addStatusMessage(chatParticipant.getPlayerName() + " has joined"));
   }
 
   @Override

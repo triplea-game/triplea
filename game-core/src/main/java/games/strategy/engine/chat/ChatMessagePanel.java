@@ -68,8 +68,16 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
               chat.updateStatus(status.trim());
             }
           });
+  private final ChatSoundProfile chatSoundProfile;
 
-  public ChatMessagePanel(final Chat chat) {
+  /** A profile defines the sounds to use for various chat events. */
+  public enum ChatSoundProfile {
+    LOBBY,
+    GAME
+  }
+
+  public ChatMessagePanel(final Chat chat, final ChatSoundProfile chatSoundProfile) {
+    this.chatSoundProfile = chatSoundProfile;
     init();
     setChat(chat);
   }
@@ -82,7 +90,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     setSize(300, 200);
   }
 
-  public String getAllText() {
+  String getAllText() {
     return text.getText();
   }
 
@@ -305,6 +313,9 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
                 e);
           }
         });
+    if (chatSoundProfile == ChatSoundProfile.GAME) {
+      ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
+    }
   }
 
   /** Show only the first n lines. */

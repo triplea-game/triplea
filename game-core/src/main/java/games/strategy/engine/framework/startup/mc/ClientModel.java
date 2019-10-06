@@ -6,7 +6,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.chat.Chat;
+import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
@@ -233,9 +233,7 @@ public class ClientModel implements IMessengerErrorListener {
     this.messengers = new Messengers(messenger);
     messengers.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
 
-    chatPanel =
-        ChatPanel.newChatPanel(
-            messengers, ServerModel.CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+    chatPanel = ChatPanel.newChatPanel(messengers, ServerModel.CHAT_NAME, ChatSoundProfile.GAME);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
       chatPanel
