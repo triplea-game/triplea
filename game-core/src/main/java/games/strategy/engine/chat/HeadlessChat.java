@@ -45,7 +45,7 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
+  public void addSlapMessage(final String message, final PlayerName from) {
     addMessage(message, from);
   }
 

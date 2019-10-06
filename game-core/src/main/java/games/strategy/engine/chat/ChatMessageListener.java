@@ -6,7 +6,7 @@ import games.strategy.engine.lobby.PlayerName;
 public interface ChatMessageListener {
   void addMessage(String message, PlayerName from);
 
-  void addMessageWithSound(String message, PlayerName from, String sound);
+  void addSlapMessage(String message, PlayerName from);
 
   void addStatusMessage(String message);
 }

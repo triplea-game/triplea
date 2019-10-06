@@ -117,8 +117,7 @@ public class Chat implements ChatClient {
   public void slappedBy(final PlayerName from) {
     final String message = "You were slapped by " + from;
     chatHistory.add(new ChatMessage(message, from));
-    chatMessageListeners.forEach(
-        listener -> listener.addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP));
+    chatMessageListeners.forEach(listener -> listener.addSlapMessage(message, from));
   }
 
   @Override

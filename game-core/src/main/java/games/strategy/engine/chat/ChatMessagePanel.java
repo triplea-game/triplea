@@ -222,9 +222,13 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
-  /** thread safe. */
   @Override
-  public void addMessageWithSound(final String message, final PlayerName from, final String sound) {
+  public void addSlapMessage(final String message, final PlayerName from) {
+    addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
+  }
+
+  private void addMessageWithSound(
+      final String message, final PlayerName from, final String sound) {
     SwingAction.invokeNowOrLater(
         () -> {
           if (from == null || chat == null) {
