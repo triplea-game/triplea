@@ -122,9 +122,8 @@ public class PoliticalStateOverview extends JPanel {
     }
 
     // Add horizontal struts for all the columns to make them have the same width.
-    x = 1;
-    for (final PlayerId verticalPlayer : data.getPlayerList()) {
-      addCell(Box.createHorizontalStrut(maxColumnWidth), insets, x++, y);
+    for (int i = 0; i < data.getPlayerList().size(); i++) {
+      addCell(Box.createHorizontalStrut(maxColumnWidth), insets, i + 1, y);
     }
   }
 

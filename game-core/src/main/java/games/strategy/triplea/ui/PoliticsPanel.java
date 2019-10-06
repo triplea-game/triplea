@@ -10,11 +10,9 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -57,12 +55,6 @@ public class PoliticsPanel extends ActionPanel {
         SwingAction.of(
             "Do Politics...",
             e -> {
-              final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-              final int availHeight = screenResolution.height - 96;
-              final int availWidth = screenResolution.width - 30;
-              final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
-              final int availHeightChoice = (int) ((float) availHeight / 3);
-
               final JDialog politicalChoiceDialog = new JDialog(parent, "Political Actions", true);
               final Insets insets = new Insets(1, 1, 1, 1);
               final JPanel politicalChoicePanel = new JPanel();
