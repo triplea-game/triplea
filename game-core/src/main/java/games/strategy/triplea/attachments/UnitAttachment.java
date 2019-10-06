@@ -1817,20 +1817,22 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void setGivesMovement(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
-    if (s.length <= 0 || s.length > 2) {
+    if (s.length < 2) {
       throw new GameParseException(
-          "givesMovement cannot be empty or have more than two fields" + thisErrorMsg());
+          "givesMovement must have an integer followed by 1 or more unit types" + thisErrorMsg());
     }
-    final String unitTypeToProduce = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
+    final int movement = getInt(s[0]);
+    for (int i = 1; i < s.length; i++) {
+      final String unitTypeName = s[i];
+      // validate that this unit exists in the xml
+      final UnitType type = getData().getUnitTypeList().getUnitType(unitTypeName);
+      if (type == null) {
+        throw new GameParseException("No unit called: " + unitTypeName + thisErrorMsg());
+      }
+      // we should allow positive and negative numbers, since you can give bonuses to units or take
+      // away a unit's movement
+      givesMovement.put(type, movement);
     }
-    // we should allow positive and negative numbers, since you can give bonuses to units or take
-    // away a unit's movement
-    final int n = getInt(s[0]);
-    givesMovement.put(ut, n);
   }
 
   private void setGivesMovement(final IntegerMap<UnitType> value) {
