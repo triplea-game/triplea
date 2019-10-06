@@ -205,6 +205,12 @@ final class ChatIntegrationTest {
     }
 
     @Override
-    public void addStatusMessage(final String message, final boolean joined) {}
+    public void addPlayerJoinedMessage(final String message) {}
+
+    @Override
+    public void addPlayerLeftMessage(final String message) {}
+
+    @Override
+    public void addSlapMessage(String message) {}
   }
 }

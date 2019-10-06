@@ -80,7 +80,7 @@ public class Chat implements ChatClient {
     updateConnections();
     chatMessageListeners.forEach(
         listener ->
-            listener.addStatusMessage(chatParticipant.getPlayerName() + " has joined", true));
+            listener.addPlayerJoinedMessage(chatParticipant.getPlayerName() + " has joined"));
   }
 
   @Override
@@ -93,7 +93,7 @@ public class Chat implements ChatClient {
               chatters.remove(node);
               updateConnections();
               chatMessageListeners.forEach(
-                  listener -> listener.addStatusMessage(node.getPlayerName() + " has left", false));
+                  listener -> listener.addPlayerLeftMessage(node.getPlayerName() + " has left"));
             });
   }
 
@@ -105,8 +105,8 @@ public class Chat implements ChatClient {
   }
 
   @Override
-  public void eventMessage(final String eventMessage) {
-    chatMessageListeners.forEach(listener -> listener.addStatusMessage(eventMessage, false));
+  public void playerSlapped(final String eventMessage) {
+    chatMessageListeners.forEach(listener -> listener.addSlapMessage(eventMessage));
   }
 
   @Override

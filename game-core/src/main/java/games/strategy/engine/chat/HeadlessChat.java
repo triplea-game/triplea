@@ -50,7 +50,21 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
   }
 
   @Override
-  public void addStatusMessage(final String message, final boolean joined) {
+  public void addPlayerJoinedMessage(final String message) {
+    addGenericMessage(message);
+  }
+
+  @Override
+  public void addPlayerLeftMessage(final String message) {
+    addGenericMessage(message);
+  }
+
+  @Override
+  public void addSlapMessage(final String message) {
+    addGenericMessage(message);
+  }
+
+  private void addGenericMessage(final String message) {
     trimLengthIfNecessary();
     allText.append("--- ").append(message).append(" ---\n");
   }

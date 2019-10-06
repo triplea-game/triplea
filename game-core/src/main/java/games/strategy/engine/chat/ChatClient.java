@@ -34,7 +34,7 @@ public interface ChatClient {
   /**
    * An event message is a message from the server that is a non-chat message, eg: "x slapped y".
    */
-  void eventMessage(String eventMessage);
+  void playerSlapped(String eventMessage);
 
   /** Indicates a players status has changed. */
   void statusUpdated(PlayerName playerName, String status);
