@@ -199,6 +199,9 @@ final class ChatIntegrationTest {
     }
 
     @Override
+    public void addSlapMessage(String message) {}
+
+    @Override
     public void addMessage(final String message, final PlayerName from) {
       lastMessageReceived.set(message);
       messageCount.incrementAndGet();
@@ -209,8 +212,5 @@ final class ChatIntegrationTest {
 
     @Override
     public void addPlayerLeftMessage(final String message) {}
-
-    @Override
-    public void addSlapMessage(String message) {}
   }
 }

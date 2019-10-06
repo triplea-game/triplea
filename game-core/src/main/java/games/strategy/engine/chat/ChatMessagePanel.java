@@ -235,6 +235,11 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
   }
 
+  @Override
+  public void addSlapMessage(final String message) {
+    addGenericMessage(message);
+  }
+
   private void addMessageWithSound(
       final String message, final PlayerName from, final String sound) {
     SwingAction.invokeNowOrLater(
@@ -303,11 +308,6 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     if (chatSoundProfile == ChatSoundProfile.GAME) {
       ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
     }
-  }
-
-  @Override
-  public void addSlapMessage(final String message) {
-    addGenericMessage(message);
   }
 
   @Override
