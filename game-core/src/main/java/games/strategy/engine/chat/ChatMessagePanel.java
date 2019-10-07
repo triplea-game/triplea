@@ -231,7 +231,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   @Override
-  public void slap(final String message, final PlayerName from) {
+  public void slapped(final String message, final PlayerName from) {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
   }
 

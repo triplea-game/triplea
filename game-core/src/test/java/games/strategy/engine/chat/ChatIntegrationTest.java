@@ -194,7 +194,7 @@ final class ChatIntegrationTest {
     final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
-    public void slap(final String message, final PlayerName from) {
+    public void slapped(final String message, final PlayerName from) {
       messageReceived(message, from);
     }
 

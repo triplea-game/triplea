@@ -6,7 +6,7 @@ import games.strategy.engine.lobby.PlayerName;
 public interface ChatMessageListener {
   void messageReceived(String message, PlayerName from);
 
-  void slap(String message, PlayerName from);
+  void slapped(String message, PlayerName from);
 
   void slap(String message);
 
