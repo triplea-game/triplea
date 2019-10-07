@@ -14,7 +14,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
-import games.strategy.sound.SoundPath;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -133,7 +132,7 @@ final class ChatIntegrationTest {
   }
 
   private static Chat newChat(final Messengers messengers) {
-    return new Chat(messengers, CHAT_NAME, Chat.ChatSoundProfile.NO_SOUND);
+    return new Chat(messengers, CHAT_NAME);
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {
@@ -195,18 +194,23 @@ final class ChatIntegrationTest {
     final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
-    public void addMessageWithSound(
-        final String message, final PlayerName from, final String sound) {
+    public void slapped(final String message, final PlayerName from) {
+      messageReceived(message, from);
+    }
+
+    @Override
+    public void slap(final String message) {}
+
+    @Override
+    public void messageReceived(final String message, final PlayerName from) {
       lastMessageReceived.set(message);
       messageCount.incrementAndGet();
     }
 
     @Override
-    public void addMessage(final String message, final PlayerName from) {
-      addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
-    }
+    public void playerJoined(final String message) {}
 
     @Override
-    public void addStatusMessage(final String message) {}
+    public void playerLeft(final String message) {}
   }
 }

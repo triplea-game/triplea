@@ -38,7 +38,7 @@ class JavaSocketChatTransmitter implements ChatTransmitter {
         if (slappedPlayer.equals(playerName)) {
           chatClient.slappedBy(slapper);
         } else {
-          chatClient.eventMessage(slappedPlayer + " was slapped by " + slapper);
+          chatClient.playerSlapped(slappedPlayer + " was slapped by " + slapper);
         }
       }
 

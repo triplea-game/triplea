@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.client.ui;
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
+import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatParticipant;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
@@ -39,12 +40,8 @@ public class LobbyFrame extends JFrame {
     setIconImage(JFrameBuilder.getGameIcon());
     this.client = client;
     setJMenuBar(new LobbyMenu(this));
-    final Chat chat =
-        new Chat(
-            client.getMessengers(),
-            LobbyConstants.LOBBY_CHAT,
-            Chat.ChatSoundProfile.LOBBY_CHATROOM);
-    final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat);
+    final Chat chat = new Chat(client.getMessengers(), LobbyConstants.LOBBY_CHAT);
+    final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);

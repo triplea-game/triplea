@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.chat.Chat;
+import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -498,7 +499,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(chat);
+      chatPanel = new ChatPanel(chat, ChatSoundProfile.GAME);
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
       final Dimension chatPrefSize =
           new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);

@@ -31,10 +31,8 @@ public interface ChatClient {
    */
   void slappedBy(PlayerName slapper);
 
-  /**
-   * An event message is a message from the server that is a non-chat message, eg: "x slapped y".
-   */
-  void eventMessage(String eventMessage);
+  /** A message that notifies players that another player has been slapped, eg: "x slapped y". */
+  void playerSlapped(String eventMessage);
 
   /** Indicates a players status has changed. */
   void statusUpdated(PlayerName playerName, String status);

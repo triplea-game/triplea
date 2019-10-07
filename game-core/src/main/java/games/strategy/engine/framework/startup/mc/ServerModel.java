@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Runnables;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
+import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.data.GameData;
@@ -74,8 +75,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE",
           IServerStartupRemote.class);
 
-  public static final String CHAT_NAME =
-      "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
+  static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final ServerSetupModel serverSetupModel;
@@ -396,12 +396,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
       if (ui == null) {
-        chatModel =
-            new HeadlessChat(new Chat(messengers, CHAT_NAME, Chat.ChatSoundProfile.NO_SOUND));
+        chatModel = new HeadlessChat(new Chat(messengers, CHAT_NAME));
         chatModelCancel = Runnables.doNothing();
       } else {
-        final var chatPanel =
-            ChatPanel.newChatPanel(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+        final var chatPanel = ChatPanel.newChatPanel(messengers, CHAT_NAME, ChatSoundProfile.GAME);
         chatModelCancel = () -> chatPanel.setChat(null);
         chatModel = chatPanel;
       }

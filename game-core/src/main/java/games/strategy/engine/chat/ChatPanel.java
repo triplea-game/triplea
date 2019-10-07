@@ -1,6 +1,6 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.chat.Chat.ChatSoundProfile;
+import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.net.Messengers;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -24,10 +24,10 @@ public class ChatPanel extends JPanel implements ChatModel {
   private final ChatPlayerPanel chatPlayerPanel;
   private final ChatMessagePanel chatMessagePanel;
 
-  public ChatPanel(final Chat chat) {
+  public ChatPanel(final Chat chat, final ChatSoundProfile chatSoundProfile) {
     setSize(300, 200);
     chatPlayerPanel = new ChatPlayerPanel(chat);
-    chatMessagePanel = new ChatMessagePanel(chat);
+    chatMessagePanel = new ChatMessagePanel(chat, chatSoundProfile);
     setLayout(new BorderLayout());
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     split.setLeftComponent(chatMessagePanel);
@@ -46,9 +46,9 @@ public class ChatPanel extends JPanel implements ChatModel {
    */
   public static ChatPanel newChatPanel(
       final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(messengers, chatName, chatSoundProfile);
+    final Chat chat = new Chat(messengers, chatName);
     return Interruptibles.awaitResult(
-            () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat)))
+            () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat, chatSoundProfile)))
         .result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
