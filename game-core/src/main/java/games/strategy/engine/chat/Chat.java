@@ -68,7 +68,7 @@ public class Chat implements ChatClient {
       return;
     }
     chatHistory.add(new ChatMessage(message, from));
-    chatMessageListeners.forEach(listener -> listener.addMessage(message, from));
+    chatMessageListeners.forEach(listener -> listener.messageReceived(message, from));
   }
 
   @Override
@@ -79,8 +79,7 @@ public class Chat implements ChatClient {
     chatters.put(chatParticipant, "");
     updateConnections();
     chatMessageListeners.forEach(
-        listener ->
-            listener.addPlayerJoinedMessage(chatParticipant.getPlayerName() + " has joined"));
+        listener -> listener.playerJoined(chatParticipant.getPlayerName() + " has joined"));
   }
 
   @Override
@@ -93,7 +92,7 @@ public class Chat implements ChatClient {
               chatters.remove(node);
               updateConnections();
               chatMessageListeners.forEach(
-                  listener -> listener.addPlayerLeftMessage(node.getPlayerName() + " has left"));
+                  listener -> listener.playerLeft(node.getPlayerName() + " has left"));
             });
   }
 
@@ -101,12 +100,12 @@ public class Chat implements ChatClient {
   public void slappedBy(final PlayerName from) {
     final String message = "You were slapped by " + from;
     chatHistory.add(new ChatMessage(message, from));
-    chatMessageListeners.forEach(listener -> listener.addSlapMessage(message, from));
+    chatMessageListeners.forEach(listener -> listener.slap(message, from));
   }
 
   @Override
   public void playerSlapped(final String eventMessage) {
-    chatMessageListeners.forEach(listener -> listener.addSlapMessage(eventMessage));
+    chatMessageListeners.forEach(listener -> listener.slap(eventMessage));
   }
 
   @Override

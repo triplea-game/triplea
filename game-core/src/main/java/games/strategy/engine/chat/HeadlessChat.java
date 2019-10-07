@@ -34,7 +34,7 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String originalMessage, final PlayerName from) {
+  public void messageReceived(final String originalMessage, final PlayerName from) {
     trimLengthIfNecessary();
 
     final String message = Ascii.truncate(originalMessage, 200, "...");
@@ -45,22 +45,22 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addSlapMessage(final String message, final PlayerName from) {
-    addMessage(message, from);
+  public void slap(final String message, final PlayerName from) {
+    messageReceived(message, from);
   }
 
   @Override
-  public void addSlapMessage(final String message) {
+  public void slap(final String message) {
     addGenericMessage(message);
   }
 
   @Override
-  public void addPlayerJoinedMessage(final String message) {
+  public void playerJoined(final String message) {
     addGenericMessage(message);
   }
 
   @Override
-  public void addPlayerLeftMessage(final String message) {
+  public void playerLeft(final String message) {
     addGenericMessage(message);
   }
 

@@ -4,13 +4,13 @@ import games.strategy.engine.lobby.PlayerName;
 
 /** Callback interface for a component that is interested in chat messages. */
 public interface ChatMessageListener {
-  void addMessage(String message, PlayerName from);
+  void messageReceived(String message, PlayerName from);
 
-  void addSlapMessage(String message, PlayerName from);
+  void slap(String message, PlayerName from);
 
-  void addSlapMessage(String message);
+  void slap(String message);
 
-  void addPlayerJoinedMessage(String message);
+  void playerJoined(String message);
 
-  void addPlayerLeftMessage(String message);
+  void playerLeft(String message);
 }

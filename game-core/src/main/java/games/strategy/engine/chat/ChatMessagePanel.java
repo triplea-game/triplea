@@ -226,17 +226,17 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final PlayerName from) {
+  public void messageReceived(final String message, final PlayerName from) {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   @Override
-  public void addSlapMessage(final String message, final PlayerName from) {
+  public void slap(final String message, final PlayerName from) {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
   }
 
   @Override
-  public void addSlapMessage(final String message) {
+  public void slap(final String message) {
     addGenericMessage(message);
   }
 
@@ -303,7 +303,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   @Override
-  public void addPlayerJoinedMessage(final String message) {
+  public void playerJoined(final String message) {
     addGenericMessage(message);
     if (chatSoundProfile == ChatSoundProfile.GAME) {
       ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
@@ -311,7 +311,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   @Override
-  public void addPlayerLeftMessage(final String message) {
+  public void playerLeft(final String message) {
     addGenericMessage(message);
   }
 
