@@ -1,7 +1,7 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IRemote;
-import java.util.Map;
+import java.util.Collection;
 
 /**
  * A central controller of who is in the chat.
@@ -9,8 +9,8 @@ import java.util.Map;
  * <p>When joining you get a list of all the players currently in the chat and their statuses.
  */
 public interface IChatController extends IRemote {
-  /** Join the chat, returns the chatters currently in the chat mapped to their status. */
-  Map<ChatParticipant, String> joinChat();
+  /** Join the chat, returns the chatters currently in the chat. */
+  Collection<ChatParticipant> joinChat();
 
   /** Leave the chat, and ask that everyone stops bothering me. */
   void leaveChat();

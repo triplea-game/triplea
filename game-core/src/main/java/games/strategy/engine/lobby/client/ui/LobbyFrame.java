@@ -6,6 +6,7 @@ import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatParticipant;
 import games.strategy.engine.chat.ChatPlayerPanel;
+import games.strategy.engine.chat.MessengersChatTransmitter;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
@@ -40,7 +41,8 @@ public class LobbyFrame extends JFrame {
     setIconImage(JFrameBuilder.getGameIcon());
     this.client = client;
     setJMenuBar(new LobbyMenu(this));
-    final Chat chat = new Chat(client.getMessengers(), LobbyConstants.LOBBY_CHAT);
+    final Chat chat =
+        new Chat(new MessengersChatTransmitter(LobbyConstants.LOBBY_CHAT, client.getMessengers()));
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);

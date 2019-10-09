@@ -132,7 +132,7 @@ final class ChatIntegrationTest {
   }
 
   private static Chat newChat(final Messengers messengers) {
-    return new Chat(messengers, CHAT_NAME);
+    return new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers));
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {

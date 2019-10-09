@@ -7,6 +7,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -101,7 +102,7 @@ public class ChatController implements IChatController {
 
   // a player has joined
   @Override
-  public Map<ChatParticipant, String> joinChat() {
+  public Collection<ChatParticipant> joinChat() {
     final INode node = MessageContext.getSender();
     log.info("Chatter:" + node + " is joining chat:" + chatName);
     final Tag tag = isModerator.test(node) ? Tag.MODERATOR : Tag.NONE;
@@ -120,10 +121,9 @@ public class ChatController implements IChatController {
                   ChatParticipant.builder()
                       .isModerator(entry.getValue() == Tag.MODERATOR)
                       .playerName(entry.getKey().getPlayerName())
+                      .status(chatterStatus.get(entry.getKey().getPlayerName()))
                       .build())
-          .collect(
-              Collectors.toMap(
-                  p -> p, p -> Strings.nullToEmpty(chatterStatus.get(p.getPlayerName()))));
+          .collect(Collectors.toSet());
     }
   }
 

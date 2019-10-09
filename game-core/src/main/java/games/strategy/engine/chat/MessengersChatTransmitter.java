@@ -4,24 +4,25 @@ import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.Messengers;
-import java.util.Map;
+import java.util.Collection;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
-class JavaSocketChatTransmitter implements ChatTransmitter {
-  private final PlayerName playerName;
+public class MessengersChatTransmitter implements ChatTransmitter {
   private final Messengers messengers;
 
-  private final IChatChannel chatChannelSubscriber;
+  private IChatChannel chatChannelSubscriber;
 
   private final String chatName;
   private final String chatChannelName;
 
-  JavaSocketChatTransmitter(
-      final ChatClient chatClient, final String chatName, final Messengers messengers) {
-    this.playerName = messengers.getLocalNode().getPlayerName();
+  public MessengersChatTransmitter(final String chatName, final Messengers messengers) {
     this.messengers = messengers;
     this.chatName = chatName;
     this.chatChannelName = ChatController.getChatChannelName(chatName);
+  }
+
+  @Override
+  public void setChatClient(final ChatClient chatClient) {
     chatChannelSubscriber = chatChannelSubscriber(chatClient);
   }
 
@@ -29,13 +30,13 @@ class JavaSocketChatTransmitter implements ChatTransmitter {
     return new IChatChannel() {
       @Override
       public void chatOccurred(final String message) {
-        chatClient.messageReceived(message);
+        chatClient.messageReceived(MessageContext.getSender().getPlayerName(), message);
       }
 
       @Override
       public void slapOccurred(final PlayerName slappedPlayer) {
         final PlayerName slapper = MessageContext.getSender().getPlayerName();
-        if (slappedPlayer.equals(playerName)) {
+        if (slappedPlayer.equals(messengers.getLocalNode().getPlayerName())) {
           chatClient.slappedBy(slapper);
         } else {
           chatClient.playerSlapped(slappedPlayer + " was slapped by " + slapper);
@@ -63,7 +64,7 @@ class JavaSocketChatTransmitter implements ChatTransmitter {
   }
 
   @Override
-  public Map<ChatParticipant, String> connect() {
+  public Collection<ChatParticipant> connect() {
     final String chatChannelName = ChatController.getChatChannelName(chatName);
     final IChatController controller = messengers.getRemoteChatController(chatName);
     messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
@@ -92,6 +93,11 @@ class JavaSocketChatTransmitter implements ChatTransmitter {
     final RemoteName chatControllerName = ChatController.getChatControllerRemoteName(chatName);
     final IChatController controller = (IChatController) messengers.getRemote(chatControllerName);
     controller.setStatus(status);
+  }
+
+  @Override
+  public PlayerName getLocalPlayerName() {
+    return messengers.getLocalNode().getPlayerName();
   }
 
   @Override
