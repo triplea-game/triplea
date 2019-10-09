@@ -1,6 +1,5 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.PlayerName;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +8,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.PlayerName;
 
 @Log
 class ChatIgnoreList {

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.INode;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.ui.UiContext;
@@ -22,6 +21,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
+import org.triplea.domain.data.PlayerName;
 
 /**
  * Renders a chat participant in a {@link JList}.

@@ -29,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.java.Interruptibles;
 
 /** Default implementation of {@link IClientMessenger}. */

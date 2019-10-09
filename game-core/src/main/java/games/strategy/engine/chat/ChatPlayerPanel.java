@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
-import games.strategy.engine.lobby.PlayerName;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -31,6 +30,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */

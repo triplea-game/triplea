@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.HttpInteractionException;
 
 /**

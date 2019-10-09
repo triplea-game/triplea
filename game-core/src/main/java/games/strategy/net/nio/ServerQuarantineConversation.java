@@ -1,6 +1,5 @@
 package games.strategy.net.nio;
 
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.INode;
@@ -18,7 +17,8 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.PlayerName;
 
 /** Server-side implementation of {@link QuarantineConversation}. */
 @Log

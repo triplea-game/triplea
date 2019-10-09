@@ -1,11 +1,11 @@
 package org.triplea.lobby.server.api.key;
 
-import games.strategy.engine.lobby.PlayerName;
 import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 

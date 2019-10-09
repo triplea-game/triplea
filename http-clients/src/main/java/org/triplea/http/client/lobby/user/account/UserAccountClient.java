@@ -3,7 +3,7 @@ package org.triplea.http.client.lobby.user.account;
 import java.net.URI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 

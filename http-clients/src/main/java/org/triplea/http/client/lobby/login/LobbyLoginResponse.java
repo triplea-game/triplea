@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 
 /** Represents data that would be uploaded to a server. */
 @Getter

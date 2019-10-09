@@ -2,7 +2,7 @@ package org.triplea.http.client.lobby;
 
 import java.net.URI;
 import lombok.Getter;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;

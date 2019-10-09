@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;

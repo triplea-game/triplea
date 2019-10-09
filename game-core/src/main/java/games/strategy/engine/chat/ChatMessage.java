@@ -1,8 +1,8 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.PlayerName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.triplea.domain.data.PlayerName;
 
 @AllArgsConstructor
 @Getter

@@ -18,6 +18,7 @@ dependencies {
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
     implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
+    implementation project(":domain-data")
     implementation project(":http-clients")
     implementation project(":java-extras")
     implementation project(":swing-lib")

@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.login;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.nio.ServerQuarantineConversation;
@@ -16,6 +15,7 @@ import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;

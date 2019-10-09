@@ -1,9 +1,9 @@
 package games.strategy.net;
 
-import games.strategy.engine.lobby.PlayerName;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import org.triplea.domain.data.PlayerName;
 
 /**
  * A Node in a network.

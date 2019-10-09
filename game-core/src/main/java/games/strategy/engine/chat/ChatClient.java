@@ -1,6 +1,6 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.PlayerName;
+import org.triplea.domain.data.PlayerName;
 
 /**
  * ChatClient can also be thought of as a 'ChatListener' (it is not named so to avoid confusion with

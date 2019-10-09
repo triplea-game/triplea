@@ -3,6 +3,7 @@ package org.triplea.http.client;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
+import org.triplea.domain.data.ApiKey;
 
 /** Small class to encapsulate api key and create http Authorization header. */
 @AllArgsConstructor

@@ -3,8 +3,8 @@ package games.strategy.engine.chat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import games.strategy.engine.lobby.PlayerName;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.PlayerName;
 
 class ChatFloodControlTest {
   private static final long INITIAL_CLEAR_TIME = 100;

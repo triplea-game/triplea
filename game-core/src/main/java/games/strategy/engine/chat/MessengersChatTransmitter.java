@@ -1,10 +1,10 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.Messengers;
 import java.util.Collection;
+import org.triplea.domain.data.PlayerName;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
 public class MessengersChatTransmitter implements ChatTransmitter {

@@ -2,7 +2,7 @@ package org.triplea.http.client.lobby.moderator.toolbox;
 
 import java.net.URI;
 import lombok.Getter;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
