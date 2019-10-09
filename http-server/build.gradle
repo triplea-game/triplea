@@ -20,31 +20,27 @@ configurations {
 }
 
 dependencies {
-    implementation project(':java-extras')
-    implementation project(':http-clients')
-    implementation project(':lobby-db-dao')
-
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
-    implementation 'es.moki.ratelimitj:ratelimitj-dropwizard:0.6.0'
-    implementation 'es.moki.ratelimitj:ratelimitj-inmemory:0.6.0'
+    implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
+    implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
+    implementation "es.moki.ratelimitj:ratelimitj-dropwizard:$rateLimitjVersion"
+    implementation "es.moki.ratelimitj:ratelimitj-inmemory:$rateLimitjVersion"
+    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
-    implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
-    implementation 'io.github.openfeign:feign-gson:10.2.0'
-    implementation 'org.jdbi:jdbi3-core:3.8.2'
-    implementation 'org.jdbi:jdbi3-sqlobject:3.8.2'
-
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
-    implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
-    implementation 'javax.activation:activation:1.1.1'
+    implementation "io.github.openfeign:feign-gson:$openFeignVersion"
+    implementation "javax.activation:activation:$javaxActivationVersion"
+    implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
-
+    implementation project(':http-clients')
+    implementation project(':java-extras')
+    implementation project(':lobby-db-dao')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
-
-    testImplementation project(':test-common')
-    testImplementation 'com.github.database-rider:rider-junit5:1.5.2'
-    testImplementation 'io.dropwizard:dropwizard-testing:1.3.12'
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation project(":test-common")
 }
 
 jar {

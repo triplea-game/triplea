@@ -19,14 +19,13 @@ javafx {
 }
 
 dependencies {
-    implementation project(':game-core')
-    implementation project(':java-extras')
-    implementation project(':swing-lib')
-    implementation 'org.pushing-pixels:radiance-substance:2.0.1'
-    implementation 'org.openjfx:javafx:11'
-
-    testImplementation project(':test-common')
+    implementation "org.openjfx:javafx:$javafxVersion"
+    implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
+    implementation project(":game-core")
+    implementation project(":java-extras")
+    implementation project(":swing-lib")
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation project(":test-common")
 }
 
 install4j {

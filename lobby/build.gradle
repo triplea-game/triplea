@@ -9,21 +9,18 @@ description = 'TripleA Lobby'
 mainClassName = 'org.triplea.lobby.server.LobbyRunner'
 
 dependencies {
-    implementation project(':http-clients')
-    implementation project(':java-extras')
-    implementation project(':game-core')
-    implementation project(':lobby-db-dao')
-
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
-    implementation 'org.jdbi:jdbi3-core:3.8.2'
-    implementation 'org.jdbi:jdbi3-sqlobject:3.8.2'
-
+    implementation project(":game-core")
+    implementation project(":http-clients")
+    implementation project(":java-extras")
+    implementation project(":lobby-db-dao")
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.21'
-
-    testImplementation project(':test-common')
-    testImplementation 'com.github.database-rider:rider-junit5:1.5.2'
-    testImplementation 'uk.co.datumedge:hamcrest-json:0.2'
+    runtimeOnly "org.slf4j:slf4j-simple:$slf4jSimpleVersion"
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
+    testImplementation project(":test-common")
 }
 
 jar {
