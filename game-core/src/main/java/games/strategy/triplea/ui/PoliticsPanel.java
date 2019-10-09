@@ -126,8 +126,7 @@ public class PoliticsPanel extends ActionPanel {
                       0));
               final JButton noActionButton =
                   new JButton(
-                      SwingAction.of(
-                          "No Actions", event -> politicalChoiceDialog.setVisible(false)));
+                      SwingAction.of("Done", event -> politicalChoiceDialog.setVisible(false)));
               SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
               politicalChoicePanel.add(
                   noActionButton,
