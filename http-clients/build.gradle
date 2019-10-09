@@ -8,7 +8,5 @@ dependencies {
     testImplementation project(':test-common')
     testImplementation 'com.github.tomakehurst:wiremock:2.21.0'
     testImplementation 'ru.lanwen.wiremock:wiremock-junit5:1.3.0'
-
-    testImplementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.9'
-    compile group: 'io.github.openfeign', name: 'feign-gson', version: '10.2.0'
+    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9'
 }
