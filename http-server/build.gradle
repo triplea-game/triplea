@@ -30,6 +30,7 @@ dependencies {
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"
+    implementation 'io.github.openfeign:feign-gson:10.2.0'
     implementation 'org.jdbi:jdbi3-core:3.8.2'
     implementation 'org.jdbi:jdbi3-sqlobject:3.8.2'
 
