@@ -5,6 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -20,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Triple;
 
 /**
@@ -34,6 +37,7 @@ public class PoliticalStateOverview extends JPanel {
   private final GameData data;
   private final boolean editable;
   private final Set<Triple<PlayerId, PlayerId, RelationshipType>> editChanges = new HashSet<>();
+  private int maxColumnWidth;
 
   public PoliticalStateOverview(
       final GameData data, final UiContext uiContext, final boolean editable) {
@@ -46,33 +50,21 @@ public class PoliticalStateOverview extends JPanel {
   /** does the actual adding of elements to this panel. */
   private void drawPoliticsUi() {
     this.setLayout(new GridBagLayout());
-    // draw horizontal labels
-    int currentCell = 1;
     final Insets insets = new Insets(5, 2, 5, 2);
+    maxColumnWidth = 0;
+
+    int x = 1;
+    int y = 1;
     for (final PlayerId p : data.getPlayerList()) {
-      this.add(
-          getPlayerLabel(p),
-          new GridBagConstraints(
-              currentCell++,
-              0,
-              1,
-              1,
-              1.0,
-              1.0,
-              GridBagConstraints.CENTER,
-              GridBagConstraints.BOTH,
-              insets,
-              0,
-              0));
-    }
-    // draw vertical labels and dividers
-    currentCell = 1;
-    for (final PlayerId p : data.getPlayerList()) {
+      // add horizontal labels
+      addCell(getPlayerLabel(p, JLabel.CENTER), insets, x++, 0);
+
+      // add vertical labels and dividers
       this.add(
           new JSeparator(),
           new GridBagConstraints(
               0,
-              currentCell++,
+              y++,
               20,
               1,
               0.1,
@@ -83,10 +75,10 @@ public class PoliticalStateOverview extends JPanel {
               0,
               0));
       this.add(
-          getPlayerLabel(p),
+          getPlayerLabel(p, JLabel.LEFT),
           new GridBagConstraints(
               0,
-              currentCell++,
+              y++,
               1,
               1,
               1.0,
@@ -97,50 +89,56 @@ public class PoliticalStateOverview extends JPanel {
               0,
               0));
     }
+
     // draw cells
-    int x = 1;
-    int y = 2;
+    x = 1;
+    y = 2;
     for (final PlayerId verticalPlayer : data.getPlayerList()) {
       for (final PlayerId horizontalPlayer : data.getPlayerList()) {
-        if (horizontalPlayer.equals(verticalPlayer)) {
-          this.add(
-              new JLabel(PoliticalStateOverview.LABEL_SELF),
-              new GridBagConstraints(
-                  x++,
-                  y,
-                  1,
-                  1,
-                  1.0,
-                  1.0,
-                  GridBagConstraints.CENTER,
-                  GridBagConstraints.NONE,
-                  insets,
-                  0,
-                  0));
-        } else {
-          this.add(
-              getRelationshipLabel(verticalPlayer, horizontalPlayer),
-              new GridBagConstraints(
-                  x++,
-                  y,
-                  1,
-                  1,
-                  1.0,
-                  1.0,
-                  GridBagConstraints.CENTER,
-                  GridBagConstraints.BOTH,
-                  insets,
-                  0,
-                  0));
-        }
+        addCell(getRelationshipLabel(verticalPlayer, horizontalPlayer), insets, x++, y);
       }
       y = y + 2;
       x = 1;
     }
+
+    // Add horizontal struts for all the columns to make them have the same width.
+    for (int i = 0; i < data.getPlayerList().size(); i++) {
+      addCell(Box.createHorizontalStrut(maxColumnWidth), insets, i + 1, y);
+    }
+  }
+
+  private void addCell(final Component cell, final Insets insets, final int x, final int y) {
+    maxColumnWidth = Math.max(maxColumnWidth, cell.getPreferredSize().width);
+    this.add(
+        cell,
+        new GridBagConstraints(
+            x,
+            y,
+            1,
+            1,
+            1.0,
+            1.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH,
+            insets,
+            0,
+            0));
   }
 
   /** Gets a label showing the colored relationshipName between these two players. */
   private JPanel getRelationshipLabel(final PlayerId player1, final PlayerId player2) {
+    if (player1.equals(player2)) {
+      return new JPanelBuilder().add(new JLabel(PoliticalStateOverview.LABEL_SELF)).build();
+    }
+    final RelationshipType relType = computeRelationship(player1, player2);
+    final JPanel panel =
+        new JPanelBuilder().add(getRelationshipComponent(player1, player2, relType)).build();
+    panel.setOpaque(true);
+    panel.setBackground(getRelationshipTypeColor(relType));
+    return panel;
+  }
+
+  private RelationshipType computeRelationship(final PlayerId player1, final PlayerId player2) {
     RelationshipType relType = null;
     for (final Triple<PlayerId, PlayerId, RelationshipType> changesSoFar : editChanges) {
       if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
@@ -157,11 +155,7 @@ public class PoliticalStateOverview extends JPanel {
         data.releaseReadLock();
       }
     }
-    final JComponent relationshipLabel = getRelationshipComponent(player1, player2, relType);
-    final JPanel relationshipLabelPanel = new JPanel();
-    relationshipLabelPanel.add(relationshipLabel);
-    relationshipLabelPanel.setBackground(getRelationshipTypeColor(relType));
-    return relationshipLabelPanel;
+    return relType;
   }
 
   private JComponent getRelationshipComponent(
@@ -248,13 +242,14 @@ public class PoliticalStateOverview extends JPanel {
    * Gets a label showing the flag + name of this player.
    *
    * @param player the player to get the label for
+   * @param alignment the JLabel alignment
    * @return the label representing this player
    */
-  protected JLabel getPlayerLabel(final PlayerId player) {
+  protected JLabel getPlayerLabel(final PlayerId player, final int alignment) {
     return new JLabel(
         player.getName(),
         new ImageIcon(uiContext.getFlagImageFactory().getFlag(player)),
-        JLabel.LEFT);
+        alignment);
   }
 
   /** Redraw this panel (because of changed politics). */

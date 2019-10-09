@@ -14,6 +14,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,6 +32,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /**
  * This panel is fired by ActionButtons and controls the selection of a valid political action to
@@ -124,13 +126,22 @@ public class PoliticsPanel extends ActionPanel {
                       insets,
                       0,
                       0));
-              final JButton noActionButton =
+
+              SwingComponents.addKeyBinding(
+                  politicalChoiceDialog,
+                  KeyBindingSupplier.fromKeyEventCode(
+                      KeyEvent.VK_D, KeyBindingSupplier.ModifierKey.SHIFT),
+                  () -> politicalChoiceDialog.setVisible(false));
+              SwingComponents.addKeyBinding(
+                  politicalChoiceDialog,
+                  KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_ESCAPE),
+                  () -> politicalChoiceDialog.setVisible(false));
+              final JButton doneButton =
                   new JButton(
-                      SwingAction.of(
-                          "No Actions", event -> politicalChoiceDialog.setVisible(false)));
-              SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
+                      SwingAction.of("Done", event -> politicalChoiceDialog.setVisible(false)));
+              SwingUtilities.invokeLater(doneButton::requestFocusInWindow);
               politicalChoicePanel.add(
-                  noActionButton,
+                  doneButton,
                   new GridBagConstraints(
                       0,
                       1,
