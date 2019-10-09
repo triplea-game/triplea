@@ -46,7 +46,7 @@ public class ChatPanel extends JPanel implements ChatModel {
    */
   public static ChatPanel newChatPanel(
       final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(messengers, chatName);
+    final Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers));
     return Interruptibles.awaitResult(
             () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat, chatSoundProfile)))
         .result

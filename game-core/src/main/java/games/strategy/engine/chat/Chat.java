@@ -2,15 +2,12 @@ package games.strategy.engine.chat;
 
 import com.google.common.collect.EvictingQueue;
 import games.strategy.engine.lobby.PlayerName;
-import games.strategy.engine.message.MessageContext;
-import games.strategy.net.Messengers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
@@ -33,7 +30,7 @@ public class Chat implements ChatClient {
   @Getter(AccessLevel.PACKAGE)
   private final SentMessagesHistory sentMessagesHistory;
 
-  private final Map<ChatParticipant, String> chatters;
+  private final Collection<ChatParticipant> chatters;
 
   @Getter
   private final Collection<ChatMessage> chatHistory =
@@ -44,17 +41,18 @@ public class Chat implements ChatClient {
   private final Collection<BiConsumer<PlayerName, String>> statusUpdateListeners =
       new ArrayList<>();
 
-  public Chat(final Messengers messengers, final String chatName) {
-    this.localPlayerName = messengers.getLocalNode().getPlayerName();
-    chatTransmitter = new JavaSocketChatTransmitter(this, chatName, messengers);
+  public Chat(final ChatTransmitter chatTransmitter) {
+    this.localPlayerName = chatTransmitter.getLocalPlayerName();
+    this.chatTransmitter = chatTransmitter;
+    chatTransmitter.setChatClient(this);
     sentMessagesHistory = new SentMessagesHistory();
-    chatters = Optional.ofNullable(chatTransmitter.connect()).orElseGet(HashMap::new);
+    chatters = Optional.ofNullable(chatTransmitter.connect()).orElseGet(HashSet::new);
     updateConnections();
   }
 
   private void updateConnections() {
     final List<ChatParticipant> playerNames =
-        chatters.keySet().stream()
+        chatters.stream()
             .sorted(Comparator.comparing(c -> c.getPlayerName().getValue()))
             .collect(Collectors.toList());
 
@@ -62,8 +60,7 @@ public class Chat implements ChatClient {
   }
 
   @Override
-  public void messageReceived(final String message) {
-    final PlayerName from = MessageContext.getSender().getPlayerName();
+  public void messageReceived(final PlayerName from, final String message) {
     if (isIgnored(from)) {
       return;
     }
@@ -76,7 +73,7 @@ public class Chat implements ChatClient {
     if (chatters == null) {
       return;
     }
-    chatters.put(chatParticipant, "");
+    chatters.add(chatParticipant);
     updateConnections();
     chatMessageListeners.forEach(
         listener -> listener.playerJoined(chatParticipant.getPlayerName() + " has joined"));
@@ -84,7 +81,7 @@ public class Chat implements ChatClient {
 
   @Override
   public void participantRemoved(final PlayerName playerName) {
-    chatters.keySet().stream()
+    chatters.stream()
         .filter(n -> n.getPlayerName().equals(playerName))
         .findAny()
         .ifPresent(
@@ -110,12 +107,15 @@ public class Chat implements ChatClient {
 
   @Override
   public void statusUpdated(final PlayerName playerName, final String status) {
-    chatters.keySet().stream()
+    chatters.stream()
         .filter(n -> n.getPlayerName().equals(playerName))
         .findAny()
         .ifPresent(
             node -> {
-              chatters.put(node, status);
+              chatters.stream()
+                  .filter(p -> p.getPlayerName().equals(playerName))
+                  .findAny()
+                  .ifPresent(p -> p.setStatus(status));
               statusUpdateListeners.forEach(l -> l.accept(playerName, status));
             });
   }
@@ -125,10 +125,10 @@ public class Chat implements ChatClient {
   }
 
   String getStatus(final PlayerName playerName) {
-    return chatters.entrySet().stream()
-        .filter(n -> n.getKey().getPlayerName().equals(playerName))
+    return chatters.stream()
+        .filter(n -> n.getPlayerName().equals(playerName))
         .findAny()
-        .map(Map.Entry::getValue)
+        .map(ChatParticipant::getStatus)
         .orElse("");
   }
 
@@ -184,8 +184,6 @@ public class Chat implements ChatClient {
   }
 
   Collection<PlayerName> getOnlinePlayers() {
-    return chatters.keySet().stream()
-        .map(ChatParticipant::getPlayerName)
-        .collect(Collectors.toSet());
+    return chatters.stream().map(ChatParticipant::getPlayerName).collect(Collectors.toSet());
   }
 }

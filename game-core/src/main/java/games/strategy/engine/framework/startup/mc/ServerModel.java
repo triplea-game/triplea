@@ -13,6 +13,7 @@ import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
+import games.strategy.engine.chat.MessengersChatTransmitter;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.properties.GameProperties;
@@ -396,7 +397,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
       if (ui == null) {
-        chatModel = new HeadlessChat(new Chat(messengers, CHAT_NAME));
+        chatModel =
+            new HeadlessChat(new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers)));
         chatModelCancel = Runnables.doNothing();
       } else {
         final var chatPanel = ChatPanel.newChatPanel(messengers, CHAT_NAME, ChatSoundProfile.GAME);

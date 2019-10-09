@@ -12,7 +12,7 @@ import games.strategy.engine.lobby.PlayerName;
  */
 public interface ChatClient {
   /** A chat message has been received. */
-  void messageReceived(String message);
+  void messageReceived(PlayerName from, String message);
 
   /**
    * A new chatter has joined.
