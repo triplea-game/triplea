@@ -2,11 +2,10 @@ archivesBaseName = "$group-$name"
 description = 'TripleA Lobby DB data access layer, Java code to query database'
 
 dependencies {
+    implementation "org.jdbi:jdbi3-core:$jdbiVersion"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
-    implementation 'org.jdbi:jdbi3-core:3.8.2'
-    implementation 'org.jdbi:jdbi3-sqlobject:3.8.2'
-
+    testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
     testImplementation project(':test-common')
-    testImplementation 'com.github.database-rider:rider-junit5:1.5.2'
-    testImplementation 'uk.co.datumedge:hamcrest-json:0.2'
 }

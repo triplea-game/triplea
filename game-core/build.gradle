@@ -7,22 +7,21 @@ ext {
 }
 
 dependencies {
-    implementation project(':java-extras')
-    implementation project(':http-clients')
-    implementation project(':swing-lib')
-    implementation 'org.snakeyaml:snakeyaml-engine:1.0'
-    implementation 'com.googlecode.soundlibs:jlayer:1.0.1.4'
+    implementation "com.googlecode.soundlibs:jlayer:$jlayerVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
-    implementation 'commons-cli:commons-cli:1.4'
-    implementation 'commons-codec:commons-codec:1.11'
-    implementation 'commons-io:commons-io:2.6'
-    implementation 'io.github.openfeign:feign-gson:10.2.0'
-    implementation 'org.apache.commons:commons-math3:3.6.1'
+    implementation "commons-cli:commons-cli:$commonsCliVersion"
+    implementation "commons-codec:commons-codec:$commonsCodecVersion"
+    implementation "commons-io:commons-io:$commonsIoVersion"
+    implementation "io.github.openfeign:feign-gson:$openFeignVersion"
+    implementation "org.apache.commons:commons-math3:$commonsMathVersion"
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
-
-    testImplementation project(':test-common')
-    testImplementation 'org.awaitility:awaitility:3.1.6'
+    implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
+    implementation project(":http-clients")
+    implementation project(":java-extras")
+    implementation project(":swing-lib")
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation project(":test-common")
 }
