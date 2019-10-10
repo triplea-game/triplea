@@ -112,12 +112,11 @@ class GameListingTest {
     @Test
     void gameExists() {
       when(cache.getIfPresent(ID_0)).thenReturn(lobbyGame0);
-      final Map<GameListing.GameId, LobbyGame> map = new HashMap<>();
-      map.put(ID_0, lobbyGame0);
-      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(map));
 
       final boolean result = gameListing.keepAlive(API_KEY_0, GAME_ID_0);
+
       assertThat("Game found, keep alive should return true", result, is(true));
+      verify(cache).put(ID_0, lobbyGame0);
     }
   }
 
