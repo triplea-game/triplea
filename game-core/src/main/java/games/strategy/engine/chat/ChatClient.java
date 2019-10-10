@@ -1,6 +1,9 @@
 package games.strategy.engine.chat;
 
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 
 /**
  * ChatClient can also be thought of as a 'ChatListener' (it is not named so to avoid confusion with
@@ -12,7 +15,7 @@ import org.triplea.domain.data.PlayerName;
  */
 public interface ChatClient {
   /** A chat message has been received. */
-  void messageReceived(PlayerName from, String message);
+  void messageReceived(ChatMessage chatMessage);
 
   /**
    * A new chatter has joined.
@@ -35,5 +38,5 @@ public interface ChatClient {
   void playerSlapped(String eventMessage);
 
   /** Indicates a players status has changed. */
-  void statusUpdated(PlayerName playerName, String status);
+  void statusUpdated(StatusUpdate statusUpdate);
 }

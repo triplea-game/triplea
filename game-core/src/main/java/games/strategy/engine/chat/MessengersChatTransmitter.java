@@ -5,9 +5,13 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.Messengers;
 import java.util.Collection;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
 public class MessengersChatTransmitter implements ChatTransmitter {
+  private final PlayerName playerName;
   private final Messengers messengers;
 
   private IChatChannel chatChannelSubscriber;
@@ -16,6 +20,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
   private final String chatChannelName;
 
   public MessengersChatTransmitter(final String chatName, final Messengers messengers) {
+    this.playerName = messengers.getLocalNode().getPlayerName();
     this.messengers = messengers;
     this.chatName = chatName;
     this.chatChannelName = ChatController.getChatChannelName(chatName);
@@ -30,13 +35,14 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     return new IChatChannel() {
       @Override
       public void chatOccurred(final String message) {
-        chatClient.messageReceived(MessageContext.getSender().getPlayerName(), message);
+        chatClient.messageReceived(
+            new ChatMessage(MessageContext.getSender().getPlayerName(), message));
       }
 
       @Override
       public void slapOccurred(final PlayerName slappedPlayer) {
         final PlayerName slapper = MessageContext.getSender().getPlayerName();
-        if (slappedPlayer.equals(messengers.getLocalNode().getPlayerName())) {
+        if (slappedPlayer.equals(playerName)) {
           chatClient.slappedBy(slapper);
         } else {
           chatClient.playerSlapped(slappedPlayer + " was slapped by " + slapper);
@@ -58,7 +64,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
 
       @Override
       public void statusChanged(final PlayerName playerName, final String status) {
-        chatClient.statusUpdated(playerName, status);
+        chatClient.statusUpdated(new StatusUpdate(playerName, status));
       }
     };
   }

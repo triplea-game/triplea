@@ -3,6 +3,7 @@ package games.strategy.engine.chat;
 import com.google.common.base.Ascii;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.game.chat.ChatModel;
+import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.java.TimeManager;
 
 /** Headless version of ChatPanel. */
@@ -32,21 +33,20 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
     return chat;
   }
 
-  /** thread safe. */
   @Override
-  public void messageReceived(final String originalMessage, final PlayerName from) {
+  public void messageReceived(final ChatMessage chatMessage) {
     trimLengthIfNecessary();
 
-    final String message = Ascii.truncate(originalMessage, 200, "...");
+    final String message = Ascii.truncate(chatMessage.getMessage(), 200, "...");
     final String fullMessage =
-        String.format("(%s) %s: %s\n", TimeManager.getLocalizedTime(), from, message);
+        String.format(
+            "(%s) %s: %s\n", TimeManager.getLocalizedTime(), chatMessage.getFrom(), message);
     allText.append(fullMessage);
   }
 
-  /** thread safe. */
   @Override
   public void slapped(final String message, final PlayerName from) {
-    messageReceived(message, from);
+    messageReceived(new ChatMessage(from, message));
   }
 
   @Override
