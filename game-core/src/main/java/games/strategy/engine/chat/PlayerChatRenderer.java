@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /**
  * Renders a chat participant in a {@link JList}.

@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
@@ -31,6 +31,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
@@ -61,7 +63,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   // instead we feed it the node name and status as a string
   private ListCellRenderer<Object> setCellRenderer = new DefaultListCellRenderer();
   private final List<IPlayerActionFactory> actionFactories = new ArrayList<>();
-  private final BiConsumer<PlayerName, String> statusUpdateListener = (name, status) -> repaint();
+  private final Consumer<StatusUpdate> statusUpdateListener = status -> repaint();
 
   public ChatPlayerPanel(final Chat chat) {
     createComponents();

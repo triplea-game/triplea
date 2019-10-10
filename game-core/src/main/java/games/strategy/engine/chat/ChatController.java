@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /** Default implementation of {@link IChatController}. */
 @Log

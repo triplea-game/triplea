@@ -1,4 +1,4 @@
-package games.strategy.engine.chat;
+package org.triplea.http.client.lobby.chat;
 
 import com.google.common.base.Strings;
 import java.io.Serializable;

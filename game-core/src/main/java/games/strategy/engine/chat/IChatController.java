@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IRemote;
 import java.util.Collection;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /**
  * A central controller of who is in the chat.

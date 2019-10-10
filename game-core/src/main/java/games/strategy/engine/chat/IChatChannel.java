@@ -2,6 +2,7 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IChannelSubscriber;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /**
  * Chat messages occur on this channel.

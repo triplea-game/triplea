@@ -9,11 +9,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 
 /**
  * chat logic.
@@ -38,8 +41,7 @@ public class Chat implements ChatClient {
 
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   @Getter private final PlayerName localPlayerName;
-  private final Collection<BiConsumer<PlayerName, String>> statusUpdateListeners =
-      new ArrayList<>();
+  private final Collection<Consumer<StatusUpdate>> statusUpdateListeners = new ArrayList<>();
 
   public Chat(final ChatTransmitter chatTransmitter) {
     this.localPlayerName = chatTransmitter.getLocalPlayerName();
@@ -60,12 +62,12 @@ public class Chat implements ChatClient {
   }
 
   @Override
-  public void messageReceived(final PlayerName from, final String message) {
-    if (isIgnored(from)) {
+  public void messageReceived(final ChatMessage chatMessage) {
+    if (isIgnored(chatMessage.getFrom())) {
       return;
     }
-    chatHistory.add(new ChatMessage(message, from));
-    chatMessageListeners.forEach(listener -> listener.messageReceived(message, from));
+    chatHistory.add(chatMessage);
+    chatMessageListeners.forEach(listener -> listener.messageReceived(chatMessage));
   }
 
   @Override
@@ -82,7 +84,7 @@ public class Chat implements ChatClient {
   @Override
   public void participantRemoved(final PlayerName playerName) {
     chatters.stream()
-        .filter(n -> n.getPlayerName().equals(playerName))
+        .filter(chatter -> chatter.getPlayerName().equals(playerName))
         .findAny()
         .ifPresent(
             node -> {
@@ -96,7 +98,7 @@ public class Chat implements ChatClient {
   @Override
   public void slappedBy(final PlayerName from) {
     final String message = "You were slapped by " + from;
-    chatHistory.add(new ChatMessage(message, from));
+    chatHistory.add(new ChatMessage(from, message));
     chatMessageListeners.forEach(listener -> listener.slapped(message, from));
   }
 
@@ -106,17 +108,17 @@ public class Chat implements ChatClient {
   }
 
   @Override
-  public void statusUpdated(final PlayerName playerName, final String status) {
+  public void statusUpdated(final StatusUpdate statusUpdate) {
     chatters.stream()
-        .filter(n -> n.getPlayerName().equals(playerName))
+        .filter(chatter -> chatter.getPlayerName().equals(statusUpdate.getPlayerName()))
         .findAny()
         .ifPresent(
             node -> {
               chatters.stream()
-                  .filter(p -> p.getPlayerName().equals(playerName))
+                  .filter(chatter -> chatter.getPlayerName().equals(statusUpdate.getPlayerName()))
                   .findAny()
-                  .ifPresent(p -> p.setStatus(status));
-              statusUpdateListeners.forEach(l -> l.accept(playerName, status));
+                  .ifPresent(chatter -> chatter.setStatus(statusUpdate.getStatus()));
+              statusUpdateListeners.forEach(l -> l.accept(statusUpdate));
             });
   }
 
@@ -126,7 +128,7 @@ public class Chat implements ChatClient {
 
   String getStatus(final PlayerName playerName) {
     return chatters.stream()
-        .filter(n -> n.getPlayerName().equals(playerName))
+        .filter(chatter -> chatter.getPlayerName().equals(playerName))
         .findAny()
         .map(ChatParticipant::getStatus)
         .orElse("");
@@ -141,7 +143,7 @@ public class Chat implements ChatClient {
     chatMessageListeners.add(listener);
   }
 
-  void addStatusUpdateListener(final BiConsumer<PlayerName, String> statusUpdateListener) {
+  void addStatusUpdateListener(final Consumer<StatusUpdate> statusUpdateListener) {
     statusUpdateListeners.add(statusUpdateListener);
   }
 
@@ -153,7 +155,7 @@ public class Chat implements ChatClient {
     chatPlayerListeners.remove(listener);
   }
 
-  void removeStatusUpdateListener(final BiConsumer<PlayerName, String> statusUpdateListener) {
+  void removeStatusUpdateListener(final Consumer<StatusUpdate> statusUpdateListener) {
     statusUpdateListeners.remove(statusUpdateListener);
   }
 

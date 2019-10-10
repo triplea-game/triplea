@@ -29,6 +29,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.TimeManager;
 import org.triplea.swing.SwingAction;
@@ -110,9 +111,8 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
                     send.setEnabled(true);
                     text.setEnabled(true);
                     text.setText("");
-                    for (final ChatMessage message : chat.getChatHistory()) {
-                      addChatMessage(message.getMessage(), message.getFrom());
-                    }
+                    chat.getChatHistory()
+                        .forEach(msg -> addChatMessage(msg.getMessage(), msg.getFrom()));
                   } else {
                     send.setEnabled(false);
                     text.setEnabled(false);
@@ -224,10 +224,10 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     nextMessageKeymap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false));
   }
 
-  /** thread safe. */
   @Override
-  public void messageReceived(final String message, final PlayerName from) {
-    addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
+  public void messageReceived(final ChatMessage chatMessage) {
+    addMessageWithSound(
+        chatMessage.getMessage(), chatMessage.getFrom(), SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   @Override
