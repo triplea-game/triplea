@@ -7,7 +7,8 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class PostConditionsTest {
+@SuppressWarnings("InnerClassMayBeStatic")
+class PostconditionsTest {
 
   private static final String MESSAGE = "additional context and informational message";
 
@@ -15,18 +16,18 @@ class PostConditionsTest {
   final class AssertState {
     @Test
     void positiveCase() {
-      PostConditions.assertState(true);
+      Postconditions.assertState(true);
     }
 
     @Test
     void assertionFails() {
-      assertThrows(AssertionError.class, () -> PostConditions.assertState(false));
+      assertThrows(AssertionError.class, () -> Postconditions.assertState(false));
     }
 
     @Test
     void assertionFailsWithMessage() {
       final Throwable thrown =
-          assertThrows(AssertionError.class, () -> PostConditions.assertState(false, MESSAGE));
+          assertThrows(AssertionError.class, () -> Postconditions.assertState(false, MESSAGE));
       assertThat(thrown.getMessage(), StringContains.containsString(MESSAGE));
     }
   }
@@ -35,13 +36,13 @@ class PostConditionsTest {
   final class AssertNotNull {
     @Test
     void positiveCase() {
-      PostConditions.assertNotNull(new Object(), "no exception expected");
+      Postconditions.assertNotNull(new Object(), "no exception expected");
     }
 
     @Test
     void assertFailsWithMessage() {
       final Throwable thrown =
-          assertThrows(AssertionError.class, () -> PostConditions.assertNotNull(null, MESSAGE));
+          assertThrows(AssertionError.class, () -> Postconditions.assertNotNull(null, MESSAGE));
 
       assertThat(thrown.getMessage(), StringContains.containsString(MESSAGE));
     }
