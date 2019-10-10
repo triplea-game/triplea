@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import com.google.common.collect.EvictingQueue;
-import games.strategy.engine.lobby.PlayerName;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,6 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.triplea.domain.data.PlayerName;
 
 /**
  * chat logic.

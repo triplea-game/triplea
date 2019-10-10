@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.settings.ClientSetting;
@@ -29,6 +28,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.TimeManager;
 import org.triplea.swing.SwingAction;

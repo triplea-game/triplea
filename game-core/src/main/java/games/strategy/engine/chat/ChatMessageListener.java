@@ -1,6 +1,6 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.PlayerName;
+import org.triplea.domain.data.PlayerName;
 
 /** Callback interface for a component that is interested in chat messages. */
 public interface ChatMessageListener {

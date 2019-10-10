@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 

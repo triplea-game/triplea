@@ -1,9 +1,9 @@
 package org.triplea.lobby.server.login.forgot.password.verify;
 
-import games.strategy.engine.lobby.PlayerName;
 import java.util.function.BiPredicate;
 import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
 
 /**

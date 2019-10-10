@@ -2,7 +2,6 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -30,7 +29,8 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.PlayerName;
 
 /** A Messenger that can have many clients connected to it. */
 @Log

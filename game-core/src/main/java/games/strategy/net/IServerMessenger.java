@@ -2,11 +2,11 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.lobby.PlayerName;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.PlayerName;
 
 /** A server messenger. Additional methods for accepting new connections. */
 public interface IServerMessenger extends IMessenger {

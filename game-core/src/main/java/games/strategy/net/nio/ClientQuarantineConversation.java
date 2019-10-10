@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.DialogBuilder;
 

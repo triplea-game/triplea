@@ -3,7 +3,7 @@ package org.triplea.server.access;
 import io.dropwizard.auth.Authenticator;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.ApiKey;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 
 /**

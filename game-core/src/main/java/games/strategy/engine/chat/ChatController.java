@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Strings;
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
@@ -17,6 +16,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.PlayerName;
 
 /** Default implementation of {@link IChatController}. */
 @Log

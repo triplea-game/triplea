@@ -1,7 +1,7 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
-import games.strategy.engine.lobby.PlayerName;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.TimeManager;
 

@@ -1,8 +1,8 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.PlayerName;
 import java.util.HashMap;
 import java.util.Map;
+import org.triplea.domain.data.PlayerName;
 
 /**
  * Simple flood control, only allow so many events per window of time. During each rolling time

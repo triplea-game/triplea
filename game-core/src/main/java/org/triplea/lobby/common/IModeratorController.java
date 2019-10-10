@@ -1,11 +1,11 @@
 package org.triplea.lobby.common;
 
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import java.time.Instant;
 import javax.annotation.Nullable;
+import org.triplea.domain.data.PlayerName;
 
 /**
  * A service that provides lobby management operations whose use is restricted to lobby moderators.

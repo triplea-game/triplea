@@ -1,6 +1,5 @@
 package org.triplea.lobby.server;
 
-import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
@@ -13,6 +12,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.server.db.DatabaseDao;

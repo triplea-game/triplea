@@ -1,4 +1,4 @@
-package org.triplea.http.client;
+package org.triplea.domain.data;
 
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
@@ -6,18 +6,20 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-/** Simple value object for strong typing. */
+/**
+ * An OAuth token, represents an authorization token passed to client from server on successful
+ * authentication. The token is passed back to the server on subsequent requests to prove
+ * authorization.
+ */
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiKey {
-  private static final int DB_COLUMN_LENGTH = 256;
   private final String value;
 
   public static ApiKey of(final String value) {
     Preconditions.checkArgument(value != null);
     Preconditions.checkArgument(!value.isEmpty());
-    Preconditions.checkArgument(value.length() <= DB_COLUMN_LENGTH);
     Preconditions.checkArgument(!value.contains("\n"));
 
     return new ApiKey(value);

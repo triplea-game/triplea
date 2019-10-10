@@ -1,4 +1,5 @@
 rootProject.name='triplea'
+include 'domain-data'
 include 'game-core'
 include 'game-headed'
 include 'game-headless'

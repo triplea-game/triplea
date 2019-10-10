@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Strings;
-import games.strategy.engine.lobby.PlayerName;
 import java.io.Serializable;
 import javax.annotation.Nullable;
 import lombok.Builder;
@@ -10,6 +9,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import org.triplea.domain.data.PlayerName;
 
 @Builder
 @Getter

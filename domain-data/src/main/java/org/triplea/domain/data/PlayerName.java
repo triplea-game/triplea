@@ -1,11 +1,14 @@
-package games.strategy.engine.lobby;
+package org.triplea.domain.data;
 
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-/** Simple value object to encapsulate a player name and provide strong typing. */
+/**
+ * AKA username, represents the display name of a player. This is the name used when taking a
+ * game-seat or when chatting.
+ */
 @AllArgsConstructor(staticName = "of")
 @EqualsAndHashCode
 public class PlayerName implements Serializable {

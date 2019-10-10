@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.domain.data.ApiKey;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
