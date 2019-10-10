@@ -5,22 +5,15 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.test.common.Integration;
 
-@ExtendWith(DBUnitExtension.class)
-@Integration
 @DataSet(cleanBefore = true, value = "bad_words/select.yml")
-class BadWordsDaoTest {
-  private static final BadWordsDao badWordsDao =
-      JdbiDatabase.newConnection().onDemand(BadWordsDao.class);
-
+class BadWordsDaoTest extends DaoTest {
   private static final List<String> expectedBadWords = Arrays.asList("aaa", "one", "two", "zzz");
+
+  private final BadWordsDao badWordsDao = DaoTest.newDao(BadWordsDao.class);
 
   @Test
   void getBadWords() {

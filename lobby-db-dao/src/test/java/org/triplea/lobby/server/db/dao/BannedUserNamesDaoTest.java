@@ -6,21 +6,13 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.data.UsernameBanDaoData;
-import org.triplea.test.common.Integration;
 
-@ExtendWith(DBUnitExtension.class)
-@Integration
-class BannedUserNamesDaoTest {
-
-  private static final UsernameBanDao bannedUserNamesDao =
-      JdbiDatabase.newConnection().onDemand(UsernameBanDao.class);
+class BannedUserNamesDaoTest extends DaoTest {
+  private final UsernameBanDao bannedUserNamesDao = DaoTest.newDao(UsernameBanDao.class);
 
   @DataSet(cleanBefore = true, value = "banned_names/two_rows.yml")
   @Test

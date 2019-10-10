@@ -5,20 +5,13 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.data.AccessLogDaoData;
-import org.triplea.test.common.Integration;
 
-@ExtendWith(DBUnitExtension.class)
-@Integration
-class AccessLogDaoTest {
-  private static final AccessLogDao accessLogDao =
-      JdbiDatabase.newConnection().onDemand(AccessLogDao.class);
+class AccessLogDaoTest extends DaoTest {
+  private final AccessLogDao accessLogDao = DaoTest.newDao(AccessLogDao.class);
 
   @Test
   @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")

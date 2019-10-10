@@ -6,17 +6,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.SeedStrategy;
-import com.github.database.rider.junit5.DBUnitExtension;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.test.common.Integration;
 
-@Integration
-@ExtendWith(DBUnitExtension.class)
-@DataSet(cleanBefore = true, value = "temp_password/sample.yml", strategy = SeedStrategy.REFRESH)
-class TempPasswordDaoTest {
+@DataSet(cleanBefore = true, value = "temp_password/sample.yml")
+class TempPasswordDaoTest extends DaoTest {
 
   private static final String USERNAME = "username";
   private static final String EMAIL = "email";
@@ -25,8 +18,7 @@ class TempPasswordDaoTest {
   private static final String PASSWORD = "temp";
   private static final String NEW_PASSWORD = "new-temp";
 
-  private final TempPasswordDao tempPasswordDao =
-      JdbiDatabase.newConnection().onDemand(TempPasswordDao.class);
+  private final TempPasswordDao tempPasswordDao = DaoTest.newDao(TempPasswordDao.class);
 
   @Test
   void fetchTempPassword() {
