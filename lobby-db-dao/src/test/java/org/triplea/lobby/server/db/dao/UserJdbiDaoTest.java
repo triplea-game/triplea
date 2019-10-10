@@ -7,16 +7,10 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.test.common.Integration;
 
-@Integration
-@ExtendWith(DBUnitExtension.class)
 @DataSet(cleanBefore = true, value = "user/select.yml")
-class UserJdbiDaoTest {
+class UserJdbiDaoTest extends DaoTest {
 
   private static final int USER_ID = 900000;
   private static final String USERNAME = "user";
@@ -25,7 +19,7 @@ class UserJdbiDaoTest {
   private static final String NEW_PASSWORD =
       "$2a$abcde_123456789_123456789_123456789_123456789_123456789_";
 
-  private final UserJdbiDao userDao = JdbiDatabase.newConnection().onDemand(UserJdbiDao.class);
+  private final UserJdbiDao userDao = DaoTest.newDao(UserJdbiDao.class);
 
   @Test
   void lookupUserIdByName() {
