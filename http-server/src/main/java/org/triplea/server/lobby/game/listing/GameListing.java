@@ -3,7 +3,6 @@ package org.triplea.server.lobby.game.listing;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -17,6 +16,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.server.lobby.CacheUtils;
 
 /**
  * Class that stores the set of games in the lobby. Games are identified by a combination of two
@@ -57,22 +57,22 @@ class GameListing {
 
   /** Adds a game. */
   String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
-    final String gameId = UUID.randomUUID().toString();
-    games.put(new GameId(apiKey, gameId), lobbyGame);
-    log.info("Posted game: {}", gameId);
-    return gameId;
+    final String id = UUID.randomUUID().toString();
+    games.put(new GameId(apiKey, id), lobbyGame);
+    log.info("Posted game: {}", id);
+    return id;
   }
 
   /** Adds or updates a game. Returns true if game is updated, false if game was not found. */
-  boolean updateGame(final ApiKey apiKey, final String gameId, final LobbyGame lobbyGame) {
-    final var listedGameId = new GameId(apiKey, gameId);
+  boolean updateGame(final ApiKey apiKey, final String id, final LobbyGame lobbyGame) {
+    final var listedGameId = new GameId(apiKey, id);
     final var existingValue = games.asMap().replace(listedGameId, lobbyGame);
     return existingValue != null;
   }
 
-  void removeGame(final ApiKey apiKey, final String gameId) {
-    log.info("Removing game: {}", gameId);
-    games.invalidate(new GameId(apiKey, gameId));
+  void removeGame(final ApiKey apiKey, final String id) {
+    log.info("Removing game: {}", id);
+    games.invalidate(new GameId(apiKey, id));
   }
 
   List<LobbyGameListing> getGames() {
@@ -93,29 +93,19 @@ class GameListing {
    *     their game. Otherwise true indicates the game is present and the keep-alive period has been
    *     extended.
    */
-  boolean keepAlive(final ApiKey apiKey, final String gameId) {
-    final Optional<LobbyGame> game =
-        Optional.ofNullable(games.getIfPresent(new GameId(apiKey, gameId)));
-    if (game.isEmpty()) {
-      log.warn("Keep alive for removed game: {}", gameId);
-      return false;
-    }
-    updateGame(apiKey, gameId, game.get());
-    return true;
+  boolean keepAlive(final ApiKey apiKey, final String id) {
+    return CacheUtils.refresh(games, new GameId(apiKey, id));
   }
 
   /** Moderator action to remove a game. */
-  void bootGame(final int moderatorId, final String gameId) {
-    games.asMap().entrySet().stream()
-        .filter(entry -> entry.getKey().id.equals(gameId))
-        .findAny()
+  void bootGame(final int moderatorId, final String id) {
+    CacheUtils.findEntryByKey(games, gameId -> gameId.id.equals(id))
         .ifPresent(
             gameToRemove -> {
               final String hostName = gameToRemove.getValue().getHostName();
               removeGame(gameToRemove.getKey().apiKey, gameToRemove.getKey().id);
 
-              log.info(
-                  "Moderator {} booted game: {}, hosted by: {}", moderatorId, gameId, hostName);
+              log.info("Moderator {} booted game: {}, hosted by: {}", moderatorId, id, hostName);
               auditHistoryDao.addAuditRecord(
                   ModeratorAuditHistoryDao.AuditArgs.builder()
                       .moderatorUserId(moderatorId)
