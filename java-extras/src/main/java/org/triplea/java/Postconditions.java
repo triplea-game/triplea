@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
  * <pre><code>
  * int methodCall() {
  *    int returnValue = doCalculation();
- *    PostConditions.assertState(returnValue > 0);
+ *    Postconditions.assertState(returnValue > 0);
  *    return returnValue;
  * }
  * </code></pre>
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PostConditions {
+public final class Postconditions {
 
   /**
    * Checks value of a boolean state value to be true, if not throws an exception with message.
@@ -28,7 +28,7 @@ public final class PostConditions {
    */
   public static void assertState(final boolean state) {
     if (!state) {
-      throw new AssertionError("Post condition failed, was: " + state);
+      throw new AssertionError("Post condition failed!");
     }
   }
 
@@ -40,7 +40,7 @@ public final class PostConditions {
    */
   public static void assertState(final boolean state, final String message) {
     if (!state) {
-      throw new AssertionError("Post condition failed, was: " + state + ", details: " + message);
+      throw new AssertionError("Post condition failed! Details: " + message);
     }
   }
 

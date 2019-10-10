@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.triplea.java.PostConditions;
+import org.triplea.java.Postconditions;
 
 /**
  * Convenience builder for Gridbag layout where row/column numbers are auto-incremented. Example:
@@ -97,7 +97,7 @@ public class SimpleGridBagLayoutBuilder {
 
     int calculateColumn(final int elementCount) {
       final int column = elementCount % columnCount;
-      PostConditions.assertState(
+      Postconditions.assertState(
           column < columnCount, "Column out of bounds: " + column + ", max: " + columnCount);
       return column;
     }
