@@ -33,7 +33,7 @@ public class Chat implements ChatClient {
   @Getter(AccessLevel.PACKAGE)
   private final SentMessagesHistory sentMessagesHistory;
 
-  private final Collection<ChatParticipant> chatters;
+  private final Collection<ChatParticipant> chatters = new HashSet<>();
 
   @Getter
   private final Collection<ChatMessage> chatHistory =
@@ -48,7 +48,7 @@ public class Chat implements ChatClient {
     this.chatTransmitter = chatTransmitter;
     chatTransmitter.setChatClient(this);
     sentMessagesHistory = new SentMessagesHistory();
-    chatters = Optional.ofNullable(chatTransmitter.connect()).orElseGet(HashSet::new);
+    Optional.ofNullable(chatTransmitter.connect()).ifPresent(chatters::addAll);
     updateConnections();
   }
 
@@ -62,6 +62,12 @@ public class Chat implements ChatClient {
   }
 
   @Override
+  public void connected(final Collection<ChatParticipant> chatters) {
+    this.chatters.addAll(chatters);
+    updateConnections();
+  }
+
+  @Override
   public void messageReceived(final ChatMessage chatMessage) {
     if (isIgnored(chatMessage.getFrom())) {
       return;
@@ -72,9 +78,6 @@ public class Chat implements ChatClient {
 
   @Override
   public void participantAdded(final ChatParticipant chatParticipant) {
-    if (chatters == null) {
-      return;
-    }
     chatters.add(chatParticipant);
     updateConnections();
     chatMessageListeners.forEach(
