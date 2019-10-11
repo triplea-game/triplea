@@ -11,13 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.server.TestData;
 import org.triplea.server.access.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)
 class BadWordsControllerTest {
   private static final String TEST_VALUE = "some-value";
-  private static final AuthenticatedUser AUTHENTICATED_USER =
-      AuthenticatedUser.builder().userId(100).userRole("").build();
+
+  private static final AuthenticatedUser AUTHENTICATED_USER = TestData.AUTHENTICATED_USER;
   private static final ImmutableList<String> BAD_WORD_LIST =
       ImmutableList.of("bad-word", "another-bad-word");
 

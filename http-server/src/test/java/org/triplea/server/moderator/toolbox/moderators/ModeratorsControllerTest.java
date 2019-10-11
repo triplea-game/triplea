@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.server.TestData;
 import org.triplea.server.access.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,8 +25,7 @@ class ModeratorsControllerTest {
   private static final String MODERATOR_NAME = "Where is the lively cannibal?";
   private static final ModeratorInfo MODERATOR_INFO = ModeratorInfo.builder().name("name").build();
 
-  private static final AuthenticatedUser AUTHENTICATED_USER =
-      AuthenticatedUser.builder().userId(100).userRole("").build();
+  private static final AuthenticatedUser AUTHENTICATED_USER = TestData.AUTHENTICATED_USER;
 
   @Mock private ModeratorsService moderatorsService;
 

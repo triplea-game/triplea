@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import feign.FeignException;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.lobby.common.LobbyGameUpdateListener;
+import org.triplea.test.TestData;
 
 @ExtendWith(MockitoExtension.class)
 class GamePollerTaskTest {
@@ -33,20 +33,7 @@ class GamePollerTaskTest {
   private static final String ID_2 = "id2";
   private static final String ID_3 = "id3";
 
-  private static final LobbyGame GAME_0 =
-      LobbyGame.builder()
-          .hostAddress("127.0.0.1")
-          .hostPort(12)
-          .hostName("name")
-          .mapName("map")
-          .playerCount(3)
-          .gameRound(1)
-          .epochMilliTimeStarted(Instant.now().toEpochMilli())
-          .mapVersion("1")
-          .passworded(false)
-          .status("WAITING_FOR_PLAYERS")
-          .comments("comments")
-          .build();
+  private static final LobbyGame GAME_0 = TestData.LOBBY_GAME;
 
   private static final LobbyGame GAME_1 = GAME_0.withComments("comments1");
   private static final LobbyGame GAME_2 = GAME_0.withComments("");
