@@ -41,6 +41,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
@@ -251,7 +252,7 @@ public final class GameRunner {
   }
 
   /** Spawns a new process to join a network game. */
-  public static void joinGame(final GameDescription description, final String playerName) {
+  public static void joinGame(final GameDescription description, final PlayerName playerName) {
     final GameDescription.GameStatus status = description.getStatus();
     if (GameDescription.GameStatus.LAUNCHING == status) {
       return;
@@ -264,7 +265,7 @@ public final class GameRunner {
     commands.add(prefix + TRIPLEA_PORT + "=" + description.getHostedBy().getPort());
     commands.add(
         prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
-    commands.add(prefix + TRIPLEA_NAME + "=" + playerName);
+    commands.add(prefix + TRIPLEA_NAME + "=" + playerName.getValue());
     commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
     ProcessRunnerUtil.exec(commands);
   }

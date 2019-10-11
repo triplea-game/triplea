@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.client;
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 import lombok.Getter;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.lobby.common.IModeratorController;
 
@@ -35,8 +36,8 @@ public class LobbyClient {
   }
 
   /** Returns the assigned name of the current player connected to the lobby. */
-  public String getPlayerName() {
-    return messengers.getLocalNode().getName();
+  public PlayerName getPlayerName() {
+    return messengers.getLocalNode().getPlayerName();
   }
 
   public IModeratorController getModeratorController() {
