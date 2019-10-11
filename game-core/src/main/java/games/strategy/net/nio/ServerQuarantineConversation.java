@@ -8,12 +8,13 @@ import games.strategy.net.Node;
 import games.strategy.net.PlayerNameAssigner;
 import games.strategy.net.ServerMessenger;
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
@@ -54,14 +55,14 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private String remoteMac;
   private Map<String, String> challenge;
   private final ServerMessenger serverMessenger;
-  private final Function<PlayerName, ApiKey> apiKeyGenerator;
+  private final BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator;
 
   public ServerQuarantineConversation(
       final ILoginValidator validator,
       final SocketChannel channel,
       final NioSocket socket,
       final ServerMessenger serverMessenger,
-      final Function<PlayerName, ApiKey> apiKeyGenerator) {
+      final BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
@@ -114,7 +115,10 @@ public class ServerQuarantineConversation extends QuarantineConversation {
             }
             apiKey =
                 Optional.ofNullable(apiKeyGenerator)
-                    .map(keyGenerator -> keyGenerator.apply(PlayerName.of(remoteName)))
+                    .map(
+                        keyGenerator ->
+                            keyGenerator.apply(
+                                PlayerName.of(remoteName), channel.socket().getInetAddress()))
                     .map(ApiKey::getValue)
                     .orElse(null);
           } else {

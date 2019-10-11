@@ -8,6 +8,7 @@ import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -23,7 +24,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -51,7 +52,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private ILoginValidator loginValidator;
 
   @Setter(onMethod_ = {@Override})
-  private Function<PlayerName, ApiKey> apiKeyGenerator;
+  private BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator;
 
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
