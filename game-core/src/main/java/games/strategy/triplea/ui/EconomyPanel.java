@@ -48,6 +48,7 @@ class EconomyPanel extends AbstractStatPanel {
       final Resource resource = resourceStats.get(i - 1).resource;
       try {
         label.setIcon(uiContext.getResourceImageFactory().getIcon(resource, false));
+        label.setToolTipText(resource.getName());
       } catch (final IllegalStateException e) {
         // ignore missing resource image
       }
