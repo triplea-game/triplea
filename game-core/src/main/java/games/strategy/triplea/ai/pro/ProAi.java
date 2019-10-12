@@ -254,7 +254,7 @@ public class ProAi extends AbstractAi {
         } else if (stepName.endsWith("Politics")) {
           ProData.initializeSimulation(this, dataCopy, player);
           // Can only do politics if this player still owns its capital.
-          if (ProData.myCapital != null && ProData.myCapital.getOwner().equals(player)) {
+          if (ProData.myCapital == null || ProData.myCapital.getOwner().equals(player)) {
             final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
             politicsDelegate.setDelegateBridgeAndPlayer(bridge);
             final List<PoliticalActionAttachment> actions = politicsAi.politicalActions();
