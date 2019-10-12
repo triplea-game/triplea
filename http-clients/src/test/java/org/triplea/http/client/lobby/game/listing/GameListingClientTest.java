@@ -11,12 +11,12 @@ import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.TestData;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -24,21 +24,7 @@ class GameListingClientTest extends WireMockTest {
 
   private static final String GAME_ID = "gameId";
 
-  private static final LobbyGame LOBBY_GAME =
-      LobbyGame.builder()
-          .hostAddress("127.0.0.1")
-          .hostPort(12)
-          .hostName("name")
-          .mapName("map")
-          .playerCount(3)
-          .gameRound(1)
-          .epochMilliTimeStarted(Instant.now().toEpochMilli())
-          .mapVersion("1")
-          .passworded(false)
-          .status("WAITING_FOR_PLAYERS")
-          .comments("comments")
-          .build();
-
+  private static final LobbyGame LOBBY_GAME = TestData.LOBBY_GAME;
   private static final LobbyGameListing LOBBY_GAME_LISTING =
       LobbyGameListing.builder().gameId(GAME_ID).lobbyGame(LOBBY_GAME).build();
 

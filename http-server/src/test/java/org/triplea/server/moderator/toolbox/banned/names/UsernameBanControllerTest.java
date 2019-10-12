@@ -14,14 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
+import org.triplea.server.TestData;
 import org.triplea.server.access.AuthenticatedUser;
 import org.triplea.server.moderator.toolbox.ControllerTestUtil;
 
 @ExtendWith(MockitoExtension.class)
 class UsernameBanControllerTest {
-
-  private static final AuthenticatedUser AUTHENTICATED_USER =
-      AuthenticatedUser.builder().userId(100).userRole("").build();
+  private static final AuthenticatedUser AUTHENTICATED_USER = TestData.AUTHENTICATED_USER;
   private static final UsernameBanData USERNAME_BAN_DATA =
       UsernameBanData.builder().banDate(Instant.now()).bannedName("banned name").build();
   private static final String USERNAME = "Ho-ho-ho! halitosis of treasure.";

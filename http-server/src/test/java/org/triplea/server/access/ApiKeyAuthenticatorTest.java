@@ -14,10 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 import org.triplea.lobby.server.db.data.ApiKeyUserData;
+import org.triplea.server.TestData;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyAuthenticatorTest {
-  private static final String API_KEY = "key-value";
+  private static final String API_KEY = TestData.API_KEY.getValue();
 
   private static final ApiKeyUserData USER_DATA =
       ApiKeyUserData.builder().role("role").userId(100).build();

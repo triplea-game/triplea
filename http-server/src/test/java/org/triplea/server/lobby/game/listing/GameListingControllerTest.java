@@ -3,28 +3,15 @@ package org.triplea.server.lobby.game.listing;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.server.TestData;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class GameListingControllerTest extends ProtectedEndpointTest<GameListingClient> {
 
-  private static final LobbyGame LOBBY_GAME =
-      LobbyGame.builder()
-          .hostAddress("127.0.0.1")
-          .hostPort(12)
-          .hostName("name")
-          .mapName("map")
-          .playerCount(3)
-          .gameRound(1)
-          .epochMilliTimeStarted(Instant.now().toEpochMilli())
-          .mapVersion("1")
-          .passworded(false)
-          .status("WAITING_FOR_PLAYERS")
-          .comments("comments")
-          .build();
+  private static final LobbyGame LOBBY_GAME = TestData.LOBBY_GAME;
 
   GameListingControllerTest() {
     super(GameListingClient::newClient);

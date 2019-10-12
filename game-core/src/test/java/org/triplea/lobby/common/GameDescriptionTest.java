@@ -12,22 +12,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.test.TestData;
 
 final class GameDescriptionTest {
-  private static final LobbyGame LOBBY_GAME =
-      LobbyGame.builder()
-          .hostAddress("127.0.0.1")
-          .hostPort(12)
-          .hostName("name")
-          .mapName("map")
-          .playerCount(3)
-          .gameRound(1)
-          .epochMilliTimeStarted(Instant.now().toEpochMilli())
-          .mapVersion("1")
-          .passworded(false)
-          .status(GameDescription.GameStatus.WAITING_FOR_PLAYERS.toString())
-          .comments("comments")
-          .build();
+  private static final LobbyGame LOBBY_GAME = TestData.LOBBY_GAME;
 
   @Nested
   final class IsBotTest {
