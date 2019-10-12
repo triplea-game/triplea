@@ -21,6 +21,7 @@ public final class ApiKeyGeneratorFactory {
             .apiKeyDao(jdbi.onDemand(ApiKeyDao.class))
             .userDao(jdbi.onDemand(UserJdbiDao.class))
             .build();
+    // TODO: Project#12 replace ApiKeyGeneartor with ApiKeyDaoWrapper
     return (name, ip) -> keyGenerator.apply(name);
   }
 }
