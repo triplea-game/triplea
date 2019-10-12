@@ -15,7 +15,6 @@ import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.server.http.HttpController;
-import org.triplea.server.http.IpAddressExtractor;
 
 /** Http controller that binds the error upload endpoint with the error report upload handler. */
 @Builder
@@ -37,6 +36,6 @@ public class ErrorReportController extends HttpController {
       throw new IllegalArgumentException("Missing error report body and/or title");
     }
 
-    return errorReportIngestion.apply(IpAddressExtractor.extractClientIp(request), errorReport);
+    return errorReportIngestion.apply(request.getRemoteAddr(), errorReport);
   }
 }
