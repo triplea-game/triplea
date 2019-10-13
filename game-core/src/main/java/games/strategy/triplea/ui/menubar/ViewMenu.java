@@ -467,7 +467,7 @@ final class ViewMenu extends JMenu {
     flagDisplayMenu.add(smallFlags);
     flagDisplayMenu.add(largeFlags);
 
-    // Add a menu listener to update the checked stateof the items, as the flag state
+    // Add a menu listener to update the checked state of the items, as the flag state
     // may change externally (e.g. via UnitScroller UI).
     flagDisplayMenu.addMenuListener(
         new MenuListener() {
