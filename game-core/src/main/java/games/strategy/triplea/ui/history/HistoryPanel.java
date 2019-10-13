@@ -86,8 +86,8 @@ public class HistoryPanel extends JPanel {
       throw new IllegalStateException();
     }
     tree = new JTree(this.data.getHistory());
-	// Register the tree with the tooltip manager to make the tooltips we set work.
-	ToolTipManager.sharedInstance().registerComponent(tree);
+    // Register the tree with the tooltip manager to make the tooltips we set work.
+    ToolTipManager.sharedInstance().registerComponent(tree);
     this.data.getHistory().setTreePanel(this);
     tree.expandRow(0);
     this.popup = popup;
