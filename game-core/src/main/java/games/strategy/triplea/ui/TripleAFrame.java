@@ -172,7 +172,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private static final long serialVersionUID = 7640069668264418976L;
 
   private final LocalPlayers localPlayers;
-  private PlayerId currentPlayer;
   private final GameData data;
   private final IGame game;
   private final MapPanel mapPanel;
