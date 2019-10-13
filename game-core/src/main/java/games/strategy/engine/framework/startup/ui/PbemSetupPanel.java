@@ -55,9 +55,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
-    diceServerEditor = new DiceServerEditor(this::notifyObservers);
-    forumPosterEditor = new ForumPosterEditor(this::notifyObservers);
-    emailSenderEditor = new EmailSenderEditor(this::notifyObservers);
+    diceServerEditor = new DiceServerEditor(this::fireListeners);
+    forumPosterEditor = new ForumPosterEditor(this::fireListeners);
+    emailSenderEditor = new EmailSenderEditor(this::fireListeners);
     createComponents();
     layoutComponents();
     setupListeners();

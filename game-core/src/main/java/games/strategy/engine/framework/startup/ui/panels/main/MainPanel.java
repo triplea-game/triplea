@@ -129,12 +129,12 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   @Override
   public void accept(final SetupPanel panel) {
     if (gameSetupPanel != null) {
-      gameSetupPanel.removeObserver(this);
+      gameSetupPanel.removePanelChangedListener(this);
     }
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
     gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
-    panel.addObserver(this);
+    panel.addPanelChangedListener(this);
     setWidgetActivation();
     // add the cancel button if we are not choosing the type.
     if (panel.isCancelButtonVisible()) {
