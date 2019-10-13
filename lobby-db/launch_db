@@ -3,8 +3,7 @@
 # Convenience script to get a local DB up and running on docker
 # with some sample data.
 
-set -u
-set -e
+set -uu
 
 path=$(dirname "$0")
 "$path/run_docker"
