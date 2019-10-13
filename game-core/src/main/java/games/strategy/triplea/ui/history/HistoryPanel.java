@@ -25,6 +25,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -85,6 +86,8 @@ public class HistoryPanel extends JPanel {
       throw new IllegalStateException();
     }
     tree = new JTree(this.data.getHistory());
+    // Register the tree with the tooltip manager to make the tooltips we set work.
+    ToolTipManager.sharedInstance().registerComponent(tree);
     this.data.getHistory().setTreePanel(this);
     tree.expandRow(0);
     this.popup = popup;
@@ -447,12 +450,13 @@ public class HistoryPanel extends JPanel {
       if (value instanceof Step) {
         final PlayerId player = ((Step) value).getPlayerId();
         if (player != null) {
+          final String text = value.toString() + " (" + player.getName() + ")";
           if (uiContext != null) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
             icon.setImage(uiContext.getFlagImageFactory().getSmallFlag(player));
             setIcon(icon);
+            setToolTipText(text);
           } else {
-            final String text = value.toString() + " (" + player.getName() + ")";
             super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, haveFocus);
           }
         } else {
