@@ -11,8 +11,9 @@ import javax.swing.SwingUtilities;
 /**
  * FlowLayout subclass that fully supports wrapping of components.
  *
- * <p>Originally from: https://tips4java.wordpress.com/2008/11/06/wrap-layout/ From that page: "You
- * can use/modify the code however you wish."
+ * <p>Originally from: https://tips4java.wordpress.com/2008/11/06/wrap-layout/.
+ *
+ * <p>From that page: "You can use/modify the code however you wish."
  */
 public class WrapLayout extends FlowLayout {
   private static final long serialVersionUID = 1L;
@@ -88,9 +89,9 @@ public class WrapLayout extends FlowLayout {
    */
   private Dimension layoutSize(final Container target, final boolean preferred) {
     synchronized (target.getTreeLock()) {
-      //  Each row must fit with the width allocated to the containter.
-      //  When the container width = 0, the preferred width of the container
-      //  has not yet been calculated so lets ask for the maximum.
+      // Each row must fit with the width allocated to the containter.
+      // When the container width = 0, the preferred width of the container
+      // has not yet been calculated so lets ask for the maximum.
 
       int targetWidth = target.getSize().width;
       Container container = target;
@@ -109,7 +110,7 @@ public class WrapLayout extends FlowLayout {
       int horizontalInsetsAndGap = insets.left + insets.right + (hgap * 2);
       int maxWidth = targetWidth - horizontalInsetsAndGap;
 
-      //  Fit components into the allowed width
+      // Fit components into the allowed width
 
       Dimension dim = new Dimension(0, 0);
       int rowWidth = 0;
@@ -123,7 +124,7 @@ public class WrapLayout extends FlowLayout {
         if (m.isVisible()) {
           Dimension d = preferred ? m.getPreferredSize() : m.getMinimumSize();
 
-          //  Can't add the component to current row. Start a new row.
+          // Can't add the component to current row. Start a new row.
 
           if (rowWidth + d.width > maxWidth) {
             addRow(dim, rowWidth, rowHeight);
@@ -131,7 +132,7 @@ public class WrapLayout extends FlowLayout {
             rowHeight = 0;
           }
 
-          //  Add a horizontal gap for all components after the first
+          // Add a horizontal gap for all components after the first
 
           if (rowWidth != 0) {
             rowWidth += hgap;
@@ -147,10 +148,10 @@ public class WrapLayout extends FlowLayout {
       dim.width += horizontalInsetsAndGap;
       dim.height += insets.top + insets.bottom + vgap * 2;
 
-      //	When using a scroll pane or the DecoratedLookAndFeel we need to
-      //  make sure the preferred size is less than the size of the
-      //  target containter so shrinking the container size works
-      //  correctly. Removing the horizontal gap is an easy way to do this.
+      // When using a scroll pane or the DecoratedLookAndFeel we need to
+      // make sure the preferred size is less than the size of the
+      // target containter so shrinking the container size works
+      // correctly. Removing the horizontal gap is an easy way to do this.
 
       Container scrollPane = SwingUtilities.getAncestorOfClass(JScrollPane.class, target);
 
@@ -162,13 +163,13 @@ public class WrapLayout extends FlowLayout {
     }
   }
 
-  /*
-   *  A new row has been completed. Use the dimensions of this row
-   *  to update the preferred size for the container.
+  /**
+   * A new row has been completed. Use the dimensions of this row to update the preferred size for
+   * the container.
    *
-   *  @param dim update the width and height when appropriate
-   *  @param rowWidth the width of the row to add
-   *  @param rowHeight the height of the row to add
+   * @param dim update the width and height when appropriate
+   * @param rowWidth the width of the row to add
+   * @param rowHeight the height of the row to add
    */
   private void addRow(final Dimension dim, final int rowWidth, final int rowHeight) {
     dim.width = Math.max(dim.width, rowWidth);
