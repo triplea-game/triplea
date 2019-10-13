@@ -70,8 +70,9 @@ final class ViewMenu extends JMenu {
     addZoomMenu();
     addUnitSizeMenu();
     addLockMap();
-    addShowUnits();
-    addUnitNationDrawMenu();
+    addShowUnitsMenu();
+    addFlagDisplayModeMenu();
+
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
       addShowTerritoryEffects();
     }
@@ -307,7 +308,7 @@ final class ViewMenu extends JMenu {
     add(showMapBlends);
   }
 
-  private void addShowUnits() {
+  private void addShowUnitsMenu() {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
     showUnitsBox.setMnemonic(KeyEvent.VK_U);
     showUnitsBox.setSelected(true);
@@ -431,40 +432,52 @@ final class ViewMenu extends JMenu {
     add(new JMenuItemCheckBoxBuilder("Lock Map", 'M').bindSetting(ClientSetting.lockMap).build());
   }
 
-  private void addUnitNationDrawMenu() {
-    final JMenu unitSizeMenu = new JMenu();
-    unitSizeMenu.setMnemonic(KeyEvent.VK_N);
-    unitSizeMenu.setText("Flag Display Mode");
-
-    unitSizeMenu.add(
-        newMenuItem(
+  private void addFlagDisplayModeMenu() {
+    final JMenu flagDisplayMenu = new JMenu();
+    flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
+    flagDisplayMenu.setText("Flag Display Mode");
+    final ButtonGroup flagsDisplayGroup = new ButtonGroup();
+    final var drawModel = ClientSetting.unitFlagDrawMode.getValueOrThrow();
+    flagDisplayMenu.add(
+        newRadioMenuItem(
+            flagsDisplayGroup,
             "Off",
             KeyCode.O,
+            drawModel == UnitsDrawer.UnitFlagDrawMode.NONE,
             () ->
                 FlagDrawMode.toggleDrawMode(
                     UnitsDrawer.UnitFlagDrawMode.NONE, frame.getMapPanel())));
-
-    unitSizeMenu.add(
-        newMenuItem(
+    flagDisplayMenu.add(
+        newRadioMenuItem(
+            flagsDisplayGroup,
             "Small",
             KeyCode.S,
+            drawModel == UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG,
             () ->
                 FlagDrawMode.toggleDrawMode(
                     UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel())));
-
-    unitSizeMenu.add(
-        newMenuItem(
+    flagDisplayMenu.add(
+        newRadioMenuItem(
+            flagsDisplayGroup,
             "Large",
             KeyCode.L,
+            drawModel == UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG,
             () ->
                 FlagDrawMode.toggleDrawMode(
                     UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel())));
-    add(unitSizeMenu);
+    add(flagDisplayMenu);
   }
 
-  private static JMenuItem newMenuItem(
-      final String text, final KeyCode mnemonic, final Runnable action) {
-    return new JMenuItemBuilder(text, mnemonic).actionListener(action).build();
+  private static JRadioButtonMenuItem newRadioMenuItem(
+      final ButtonGroup group,
+      final String text,
+      final KeyCode mnemonic,
+      final boolean selected,
+      final Runnable action) {
+    return new JMenuItemBuilder(text, mnemonic)
+        .selected(selected)
+        .actionListener(action)
+        .buildRadio(group);
   }
 
   private void addChatTimeMenu() {
