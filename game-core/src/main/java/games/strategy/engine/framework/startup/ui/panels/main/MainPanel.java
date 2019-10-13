@@ -128,6 +128,9 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   /** This method will 'change' screens, swapping out one setup panel for another. */
   @Override
   public void accept(final SetupPanel panel) {
+    if (gameSetupPanel != null) {
+      gameSetupPanel.removeObserver(this);
+    }
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
     gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
