@@ -3,8 +3,10 @@ package org.triplea.server.lobby.game.hosting;
 import es.moki.ratelimij.dropwizard.annotation.Rate;
 import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -24,7 +26,7 @@ import org.triplea.server.http.HttpController;
 @Builder
 public class GameHostingController extends HttpController {
 
-  @Nonnull private final Supplier<ApiKey> apiKeySupplier;
+  @Nonnull private final Function<InetAddress, ApiKey> apiKeySupplier;
 
   @POST
   @Path(GameHostingClient.GAME_HOSTING_REQUEST_PATH)
@@ -33,9 +35,14 @@ public class GameHostingController extends HttpController {
       rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
   public GameHostingResponse hostingRequest(@Context final HttpServletRequest request) {
     // TODO: Project#12 check that IP address is allowed to host
-    return GameHostingResponse.builder()
-        .apiKey(apiKeySupplier.get().getValue())
-        .publicVisibleIp(request.getRemoteAddr())
-        .build();
+    try {
+      return GameHostingResponse.builder()
+          .apiKey(apiKeySupplier.apply(InetAddress.getByName(request.getRemoteAddr())).getValue())
+          .publicVisibleIp(request.getRemoteAddr())
+          .build();
+    } catch (final UnknownHostException e) {
+      throw new IllegalArgumentException(
+          "Invalid IP address in request: " + request.getRemoteAddr(), e);
+    }
   }
 }

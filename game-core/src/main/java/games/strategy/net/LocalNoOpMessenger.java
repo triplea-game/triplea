@@ -1,9 +1,10 @@
 package games.strategy.net;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import javax.annotation.Nullable;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
@@ -89,5 +90,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
   }
 
   @Override
-  public void setApiKeyGenerator(final Function<PlayerName, ApiKey> apiKeyGenerator) {}
+  public void setApiKeyGenerator(
+      final BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator) {}
 }
