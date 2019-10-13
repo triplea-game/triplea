@@ -172,6 +172,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private static final long serialVersionUID = 7640069668264418976L;
 
   private final LocalPlayers localPlayers;
+  private PlayerId currentPlayer;
   private final GameData data;
   private final IGame game;
   private final MapPanel mapPanel;
@@ -186,6 +187,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final ActionButtons actionButtons;
   private final JPanel gameMainPanel = new JPanel();
   private final JPanel rightHandSidePanel = new JPanel();
+  private final SimpleUnitPanel purchasedUnitsPanel;
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
@@ -605,6 +607,9 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     rightHandSidePanel.add(smallView, BorderLayout.NORTH);
     tabsPanel.setBorder(null);
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
+    purchasedUnitsPanel = new SimpleUnitPanel(uiContext, true);
+    purchasedUnitsPanel.setBorder(BorderFactory.createTitledBorder("Purchased Units"));
+    purchasedUnitsPanel.setEmptyLabel(new JLabel("(None)"));
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
@@ -905,7 +910,11 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   public IntegerMap<ProductionRule> getProduction(final PlayerId player, final boolean bid) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToProduce(player);
-    return actionButtons.waitForPurchase(bid);
+    final IntegerMap<ProductionRule> production = actionButtons.waitForPurchase(bid);
+	// TODO: Support updating the purchasedUnitsPanel on opponents' moves.
+    purchasedUnitsPanel.setUnitsFromProductionRuleMap(production, player);
+    rightHandSidePanel.add(purchasedUnitsPanel, BorderLayout.SOUTH);
+    return production;
   }
 
   public Map<Unit, IntegerMap<RepairRule>> getRepair(
@@ -1910,6 +1919,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     }
     final int round;
     final String stepDisplayName;
+    final PlayerId lastPlayer = lastStepPlayer;
     final PlayerId player;
     data.acquireReadLock();
     try {
@@ -1920,14 +1930,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
       data.releaseReadLock();
     }
     final boolean isPlaying = localPlayers.playing(player);
-    SwingUtilities.invokeLater(
-        () -> {
-          this.round.setText("Round:" + round + " ");
-          step.setText(stepDisplayName);
-          if (player != null) {
-            this.player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
-          }
-        });
     if (player != null && !player.isNull()) {
       final CompletableFuture<?> future =
           CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
@@ -1938,6 +1940,18 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
+    SwingUtilities.invokeLater(
+        () -> {
+          this.round.setText("Round:" + round + " ");
+          step.setText(stepDisplayName);
+          if (player != null) {
+            this.player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
+          }
+          // When the current player changes, hide the purchasedUnitsPanel.
+          if (player == null || !player.equals(lastPlayer)) {
+            rightHandSidePanel.remove(purchasedUnitsPanel);
+          }
+        });
     resourceBar.gameDataChanged(null);
     // if the game control has passed to someone else and we are not just showing the map, show the
     // history
