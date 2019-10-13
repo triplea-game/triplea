@@ -79,7 +79,7 @@ class RepairPanel extends ActionPanel {
           add(buyButton);
           add(
               new JButtonBuilder()
-                  .toolTip("Done")
+                  .title("Done")
                   .actionListener(this::performDone)
                   .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
                   .build());
