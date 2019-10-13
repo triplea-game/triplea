@@ -5,12 +5,13 @@
 # this script. Once initializated then 'run_flyway' can be run to install
 # schema and tables.
 
-set -eux
+set -eu
 function stop_container() {
+  echo "Stopping docker..."
   local runningContainerId=$(docker container ls | grep triplea-lobby-db | cut -f 1 -d ' ')
   if [ ! -z "$runningContainerId" ]; then
-     docker container stop $runningContainerId
-     docker container rm $runningContainerId
+     docker container stop $runningContainerId > /dev/null
+     docker container rm $runningContainerId > /dev/null
   fi
 }
 
@@ -21,7 +22,8 @@ function remove_dead_containers() {
 }
 
 function start_container() {
-  docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db
+  echo "Starting docker..."
+  docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db > /dev/null
 }
 
 stop_container

@@ -3,12 +3,40 @@
 # Convenience script to get a local DB up and running on docker
 # with some sample data.
 
-set -eu
+set -u
+set -e
 
-path=$(dirname $0)
+path=$(dirname "$0")
+"$path/run_docker"
 
-$path/run_docker
-sleep 5
-$path/run_flyway
-$path/load_sample_data
+set +e
+echo -n "Waiting for Database start"
+status=1
+tryAttempt=0
+while [ "$status" != 0 ]; do
+  echo 'select 1' \
+     | psql -h localhost -U lobby_user lobby_db 2> /dev/null \
+     | grep -q '1 row'
+  status=$?
+  sleep 0.2
+  echo -n .
+  tryAttempt=$((tryAttempt+1))
+
+  # timeout after 10s
+  if [ "$tryAttempt" -gt 100 ]; then
+    echo "Aborting DB startup timed out"
+    exit 1
+  fi
+done
+set -e
+
+echo "Database started!"
+echo "Running flyway migrations..."
+
+
+"$path/run_flyway"
+
+echo ""
+echo "Loading Sample data..."
+"$path/load_sample_data"
 
