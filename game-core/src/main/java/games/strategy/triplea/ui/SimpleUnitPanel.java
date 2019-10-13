@@ -117,6 +117,10 @@ public class SimpleUnitPanel extends JPanel {
         }
       };
 
+  public SimpleUnitPanel(final UiContext uiContext) {
+    this(uiContext, false);
+  }
+
   public SimpleUnitPanel(final UiContext uiContext, final boolean useSmallIconWrapLayout) {
     this.uiContext = uiContext;
     this.useLargeIcons = !useSmallIconWrapLayout;
@@ -125,10 +129,6 @@ public class SimpleUnitPanel extends JPanel {
     } else {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
-  }
-
-  public SimpleUnitPanel(final UiContext uiContext) {
-    this(uiContext, false);
   }
 
   /**
