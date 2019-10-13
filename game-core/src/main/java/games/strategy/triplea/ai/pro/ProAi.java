@@ -253,11 +253,14 @@ public class ProAi extends AbstractAi {
           break;
         } else if (stepName.endsWith("Politics")) {
           ProData.initializeSimulation(this, dataCopy, player);
-          final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
-          politicsDelegate.setDelegateBridgeAndPlayer(bridge);
-          final List<PoliticalActionAttachment> actions = politicsAi.politicalActions();
-          if (storedPoliticalActions == null) {
-            storedPoliticalActions = actions;
+          // Can only do politics if this player still owns its capital.
+          if (ProData.myCapital == null || ProData.myCapital.getOwner().equals(player)) {
+            final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
+            politicsDelegate.setDelegateBridgeAndPlayer(bridge);
+            final List<PoliticalActionAttachment> actions = politicsAi.politicalActions();
+            if (storedPoliticalActions == null) {
+              storedPoliticalActions = actions;
+            }
           }
         }
       }
