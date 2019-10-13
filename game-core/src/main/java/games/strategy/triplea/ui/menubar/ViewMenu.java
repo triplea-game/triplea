@@ -41,6 +41,8 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import lombok.extern.java.Log;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
@@ -70,8 +72,9 @@ final class ViewMenu extends JMenu {
     addZoomMenu();
     addUnitSizeMenu();
     addLockMap();
-    addShowUnits();
-    addUnitNationDrawMenu();
+    addShowUnitsMenu();
+    addFlagDisplayModeMenu();
+
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
       addShowTerritoryEffects();
     }
@@ -307,7 +310,7 @@ final class ViewMenu extends JMenu {
     add(showMapBlends);
   }
 
-  private void addShowUnits() {
+  private void addShowUnitsMenu() {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
     showUnitsBox.setMnemonic(KeyEvent.VK_U);
     showUnitsBox.setSelected(true);
@@ -431,40 +434,63 @@ final class ViewMenu extends JMenu {
     add(new JMenuItemCheckBoxBuilder("Lock Map", 'M').bindSetting(ClientSetting.lockMap).build());
   }
 
-  private void addUnitNationDrawMenu() {
-    final JMenu unitSizeMenu = new JMenu();
-    unitSizeMenu.setMnemonic(KeyEvent.VK_N);
-    unitSizeMenu.setText("Flag Display Mode");
-
-    unitSizeMenu.add(
-        newMenuItem(
+  private void addFlagDisplayModeMenu() {
+    final JMenu flagDisplayMenu = new JMenu();
+    flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
+    flagDisplayMenu.setText("Flag Display Mode");
+    final ButtonGroup flagsDisplayGroup = new ButtonGroup();
+    final JRadioButtonMenuItem noFlags =
+        newRadioMenuItem(
+            flagsDisplayGroup,
             "Off",
             KeyCode.O,
             () ->
                 FlagDrawMode.toggleDrawMode(
-                    UnitsDrawer.UnitFlagDrawMode.NONE, frame.getMapPanel())));
-
-    unitSizeMenu.add(
-        newMenuItem(
+                    UnitsDrawer.UnitFlagDrawMode.NONE, frame.getMapPanel()));
+    final JRadioButtonMenuItem smallFlags =
+        newRadioMenuItem(
+            flagsDisplayGroup,
             "Small",
             KeyCode.S,
             () ->
                 FlagDrawMode.toggleDrawMode(
-                    UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel())));
-
-    unitSizeMenu.add(
-        newMenuItem(
+                    UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel()));
+    final JRadioButtonMenuItem largeFlags =
+        newRadioMenuItem(
+            flagsDisplayGroup,
             "Large",
             KeyCode.L,
             () ->
                 FlagDrawMode.toggleDrawMode(
-                    UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel())));
-    add(unitSizeMenu);
+                    UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel()));
+    flagDisplayMenu.add(noFlags);
+    flagDisplayMenu.add(smallFlags);
+    flagDisplayMenu.add(largeFlags);
+
+    // Add a menu listener to update the checked state of the items, as the flag state
+    // may change externally (e.g. via UnitScroller UI).
+    flagDisplayMenu.addMenuListener(
+        new MenuListener() {
+          @Override
+          public void menuSelected(final MenuEvent e) {
+            final var drawModel = ClientSetting.unitFlagDrawMode.getValueOrThrow();
+            noFlags.setSelected(drawModel == UnitsDrawer.UnitFlagDrawMode.NONE);
+            smallFlags.setSelected(drawModel == UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG);
+            largeFlags.setSelected(drawModel == UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG);
+          }
+
+          @Override
+          public void menuDeselected(final MenuEvent e) {}
+
+          @Override
+          public void menuCanceled(final MenuEvent e) {}
+        });
+    add(flagDisplayMenu);
   }
 
-  private static JMenuItem newMenuItem(
-      final String text, final KeyCode mnemonic, final Runnable action) {
-    return new JMenuItemBuilder(text, mnemonic).actionListener(action).build();
+  private static JRadioButtonMenuItem newRadioMenuItem(
+      final ButtonGroup group, final String text, final KeyCode mnemonic, final Runnable action) {
+    return new JMenuItemBuilder(text, mnemonic).actionListener(action).buildRadio(group);
   }
 
   private void addChatTimeMenu() {

@@ -3,7 +3,10 @@ package org.triplea.swing;
 import com.google.common.base.Preconditions;
 import java.awt.Toolkit;
 import java.util.Optional;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import org.triplea.java.ArgChecker;
 
@@ -21,6 +24,7 @@ public class JMenuItemBuilder {
   private final KeyCode mnemonic;
   private Runnable actionListener;
   private KeyCode acceleratorKey;
+  private boolean selected;
 
   public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
     ArgChecker.checkNotEmpty(title);
@@ -30,9 +34,29 @@ public class JMenuItemBuilder {
 
   /** Constructs a Swing JMenuItem using current builder values. */
   public JMenuItem build() {
+    final JMenuItem menuItem = new JMenuItem(title);
+    buildImpl(menuItem);
+    return menuItem;
+  }
+
+  /** Constructs a Swing JCheckBoxMenuItem using current builder values. */
+  public JCheckBoxMenuItem buildCheckbox() {
+    final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(title, selected);
+    buildImpl(menuItem);
+    return menuItem;
+  }
+
+  /** Constructs a Swing JRadioButtonMenuItem using current builder values. */
+  public JRadioButtonMenuItem buildRadio(final ButtonGroup group) {
+    final JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(title, selected);
+    buildImpl(menuItem);
+    group.add(menuItem);
+    return menuItem;
+  }
+
+  private void buildImpl(final JMenuItem menuItem) {
     Preconditions.checkNotNull(actionListener);
 
-    final JMenuItem menuItem = new JMenuItem(title);
     menuItem.setMnemonic(mnemonic.getKeyEvent());
     menuItem.addActionListener(e -> actionListener.run());
     Optional.ofNullable(acceleratorKey)
@@ -42,7 +66,6 @@ public class JMenuItemBuilder {
                     KeyStroke.getKeyStroke(
                         accelerator.getKeyEvent(),
                         Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())));
-    return menuItem;
   }
 
   /**
@@ -66,6 +89,12 @@ public class JMenuItemBuilder {
    */
   public JMenuItemBuilder accelerator(final KeyCode acceleratorKey) {
     this.acceleratorKey = acceleratorKey;
+    return this;
+  }
+
+  /** @param selected Whether the menu item should be selected. */
+  public JMenuItemBuilder selected(final boolean selected) {
+    this.selected = selected;
     return this;
   }
 }
