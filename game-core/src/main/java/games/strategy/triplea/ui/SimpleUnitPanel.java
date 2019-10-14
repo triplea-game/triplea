@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.triplea.java.collections.IntegerMap;
@@ -30,8 +29,12 @@ import org.triplea.swing.WrapLayout;
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
-  private boolean useLargeIcons;
-  private JComponent emptyLabel;
+  private final Style style;
+
+  enum Style {
+    LARGE_ICONS_COLUMN,
+    SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
+  }
 
   private final Comparator<ProductionRule> productionRuleComparator =
       new Comparator<>() {
@@ -118,26 +121,17 @@ public class SimpleUnitPanel extends JPanel {
       };
 
   public SimpleUnitPanel(final UiContext uiContext) {
-    this(uiContext, false);
+    this(uiContext, Style.LARGE_ICONS_COLUMN);
   }
 
-  public SimpleUnitPanel(final UiContext uiContext, final boolean useSmallIconWrapLayout) {
+  public SimpleUnitPanel(final UiContext uiContext, final Style style) {
     this.uiContext = uiContext;
-    this.useLargeIcons = !useSmallIconWrapLayout;
-    if (useSmallIconWrapLayout) {
+    this.style = style;
+    if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY) {
       setLayout(new WrapLayout());
     } else {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
-  }
-
-  /**
-   * Sets a component to be shown when there are no units. The default is to show nothing.
-   *
-   * @param emptyLabel the JComponent to show when empty.
-   */
-  public void setEmptyLabel(final JComponent emptyLabel) {
-    this.emptyLabel = emptyLabel;
   }
 
   /**
@@ -230,14 +224,15 @@ public class SimpleUnitPanel extends JPanel {
       icon.ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
-      label.setIcon(uiContext.getResourceImageFactory().getIcon(unit, useLargeIcons));
+      label.setIcon(
+          uiContext.getResourceImageFactory().getIcon(unit, style == Style.LARGE_ICONS_COLUMN));
     }
     add(label);
   }
 
   private void addEmptyLabelIfNeeded() {
-    if (emptyLabel != null && getComponentCount() == 0) {
-      add(emptyLabel);
+    if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY && getComponentCount() == 0) {
+      add(new JLabel("(None)"));
     }
   }
 }

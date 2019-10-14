@@ -606,9 +606,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     rightHandSidePanel.add(smallView, BorderLayout.NORTH);
     tabsPanel.setBorder(null);
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
-    purchasedUnitsPanel = new SimpleUnitPanel(uiContext, true);
+    purchasedUnitsPanel =
+        new SimpleUnitPanel(
+            uiContext, SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
     purchasedUnitsPanel.setBorder(BorderFactory.createTitledBorder("Purchased Units"));
-    purchasedUnitsPanel.setEmptyLabel(new JLabel("(None)"));
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
