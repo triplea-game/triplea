@@ -282,6 +282,6 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     enabledCheckBox.setEnabled(disableable.contains(playerName));
     incomePercentage.setEnabled(enabled);
     puIncomeBonus.setEnabled(enabled);
-    parent.fireListeners();
+    parent.fireListener();
   }
 }
