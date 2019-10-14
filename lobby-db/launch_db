@@ -34,7 +34,7 @@ function waitForDatabaseToStart() {
     tryAttempt=$((tryAttempt+1))
     # timeout after 10s
     if [ "$tryAttempt" -gt 50 ]; then
-      echo "Aborting DB startup timed out"
+      echo "Aborting DB startup (timed out)"
       exit 1
     fi
   done
