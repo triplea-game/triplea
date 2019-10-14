@@ -33,7 +33,7 @@ public class WrapLayout extends FlowLayout {
   /**
    * Constructs a new <code>FlowLayout</code> with the specified alignment and a default 5-unit
    * horizontal and vertical gap. The value of the alignment argument must be one of <code>
-   * WrapLayout</code>, <code>WrapLayout</code>, or <code>WrapLayout</code>.
+   * WrapLayout.LEFT</code>, <code>WrapLayout.RIGHT</code>, or <code>WrapLayout.CENTER</code>.
    *
    * @param align the alignment value
    */
@@ -45,8 +45,8 @@ public class WrapLayout extends FlowLayout {
    * Creates a new flow layout manager with the indicated alignment and the indicated horizontal and
    * vertical gaps.
    *
-   * <p>The value of the alignment argument must be one of <code>WrapLayout</code>, <code>WrapLayout
-   * </code>, or <code>WrapLayout</code>.
+   * <p>The value of the alignment argument must be one of <code>WrapLayout.LEFT</code>, <code>
+   * WrapLayout.RIGHT</code>, or <code>WrapLayout.CENTER</code>.
    *
    * @param align the alignment value
    * @param hgap the horizontal gap between components
@@ -147,10 +147,9 @@ public class WrapLayout extends FlowLayout {
       dim.width += horizontalInsetsAndGap;
       dim.height += insets.top + insets.bottom + vgap * 2;
 
-      // When using a scroll pane or the DecoratedLookAndFeel we need to
-      // make sure the preferred size is less than the size of the
-      // target containter so shrinking the container size works
-      // correctly. Removing the horizontal gap is an easy way to do this
+      // When using a scroll pane or the DecoratedLookAndFeel we need to make sure the preferred
+      // size is less than the size of the target containter so shrinking the container size works
+      // correctly. Removing the horizontal gap is an easy way to do this.
       final Container scrollPane = SwingUtilities.getAncestorOfClass(JScrollPane.class, target);
 
       if (scrollPane != null && target.isValid()) {
