@@ -411,7 +411,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     for (final PlayerRow row : playerRows) {
       row.update(playersToNode, playersEnabled);
     }
-    super.notifyObservers();
+    super.fireListener();
   }
 
   private void internalPlayerListChanged() {
