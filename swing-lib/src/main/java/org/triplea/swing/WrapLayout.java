@@ -12,9 +12,8 @@ import javax.swing.SwingUtilities;
  * FlowLayout subclass that fully supports wrapping of components.
  *
  * <p>It dynamically calculates the preferred size as the size of the container is changed. In other
- * words, as the width of the container changes the height will need to be recalculated as well. The
- * WrapLayout extends the FlowLayout to implement this functionality. This will result in
- * synchronizing the preferred size of the container with the layout of the container.
+ * words, as the width of the container changes the height is recalculated. This allows its members
+ * to wrap onto subsequent rows, when the container is not wide enough to display them all.
  *
  * <p>Originally from: https://tips4java.wordpress.com/2008/11/06/wrap-layout/.
  */
