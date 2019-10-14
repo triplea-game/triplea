@@ -31,12 +31,12 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
 
   private final List<Consumer<SetupPanel>> listeners = new CopyOnWriteArrayList<>();
 
-  public void addPanelChangedListener(final Consumer<SetupPanel> observer) {
-    listeners.add(observer);
+  public void addPanelChangedListener(final Consumer<SetupPanel> listener) {
+    listeners.add(listener);
   }
 
-  public void removePanelChangedListener(final Consumer<SetupPanel> observer) {
-    listeners.remove(observer);
+  public void removePanelChangedListener(final Consumer<SetupPanel> listener) {
+    listeners.remove(listener);
   }
 
   void fireListeners() {
