@@ -20,8 +20,6 @@ import javax.swing.SwingUtilities;
 public class WrapLayout extends FlowLayout {
   private static final long serialVersionUID = 1L;
 
-  private Dimension preferredLayoutSize;
-
   /**
    * Constructs a new <code>WrapLayout</code> with a left alignment and a default 5-unit horizontal
    * and vertical gap.
