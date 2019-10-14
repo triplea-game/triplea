@@ -94,7 +94,6 @@ public class WrapLayout extends FlowLayout {
       // Each row must fit with the width allocated to the containter.
       // When the container width = 0, the preferred width of the container
       // has not yet been calculated so lets ask for the maximum.
-
       int targetWidth = target.getSize().width;
       Container container = target;
 
@@ -115,7 +114,6 @@ public class WrapLayout extends FlowLayout {
       final int maxWidth = targetWidth - horizontalInsetsAndGap;
 
       // Fit components into the allowed width
-
       final Dimension dim = new Dimension(0, 0);
       int rowWidth = 0;
       int rowHeight = 0;
@@ -128,7 +126,6 @@ public class WrapLayout extends FlowLayout {
           final Dimension d = preferred ? m.getPreferredSize() : m.getMinimumSize();
 
           // Can't add the component to current row. Start a new row.
-
           if (rowWidth + d.width > maxWidth) {
             addRow(dim, rowWidth, rowHeight);
             rowWidth = 0;
@@ -136,7 +133,6 @@ public class WrapLayout extends FlowLayout {
           }
 
           // Add a horizontal gap for all components after the first
-
           if (rowWidth != 0) {
             rowWidth += hgap;
           }
@@ -154,8 +150,7 @@ public class WrapLayout extends FlowLayout {
       // When using a scroll pane or the DecoratedLookAndFeel we need to
       // make sure the preferred size is less than the size of the
       // target containter so shrinking the container size works
-      // correctly. Removing the horizontal gap is an easy way to do this.
-
+      // correctly. Removing the horizontal gap is an easy way to do this
       final Container scrollPane = SwingUtilities.getAncestorOfClass(JScrollPane.class, target);
 
       if (scrollPane != null && target.isValid()) {
