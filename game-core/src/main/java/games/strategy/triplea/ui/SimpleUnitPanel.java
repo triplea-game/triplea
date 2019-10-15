@@ -23,11 +23,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.WrapLayout;
 
 /** A Simple panel that displays a list of units. */
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
+  private final Style style;
+
+  enum Style {
+    LARGE_ICONS_COLUMN,
+    SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
+  }
 
   private final Comparator<ProductionRule> productionRuleComparator =
       new Comparator<>() {
@@ -114,8 +121,17 @@ public class SimpleUnitPanel extends JPanel {
       };
 
   public SimpleUnitPanel(final UiContext uiContext) {
+    this(uiContext, Style.LARGE_ICONS_COLUMN);
+  }
+
+  public SimpleUnitPanel(final UiContext uiContext, final Style style) {
     this.uiContext = uiContext;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.style = style;
+    if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY) {
+      setLayout(new WrapLayout());
+    } else {
+      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    }
   }
 
   /**
@@ -140,6 +156,7 @@ public class SimpleUnitPanel extends JPanel {
             false);
       }
     }
+    addEmptyLabelIfNeeded();
   }
 
   /**
@@ -171,6 +188,7 @@ public class SimpleUnitPanel extends JPanel {
         }
       }
     }
+    addEmptyLabelIfNeeded();
   }
 
   /**
@@ -188,6 +206,7 @@ public class SimpleUnitPanel extends JPanel {
           category.hasDamageOrBombingUnitDamage(),
           category.getDisabled());
     }
+    addEmptyLabelIfNeeded();
   }
 
   private void addUnits(
@@ -205,8 +224,15 @@ public class SimpleUnitPanel extends JPanel {
       icon.ifPresent(label::setIcon);
       MapUnitTooltipManager.setUnitTooltip(label, unitType, player, quantity);
     } else if (unit instanceof Resource) {
-      label.setIcon(uiContext.getResourceImageFactory().getIcon(unit, true));
+      label.setIcon(
+          uiContext.getResourceImageFactory().getIcon(unit, style == Style.LARGE_ICONS_COLUMN));
     }
     add(label);
+  }
+
+  private void addEmptyLabelIfNeeded() {
+    if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY && getComponentCount() == 0) {
+      add(new JLabel("(None)"));
+    }
   }
 }
