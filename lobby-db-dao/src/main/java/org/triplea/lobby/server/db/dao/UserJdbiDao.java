@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.triplea.lobby.server.db.data.UserRoleLookup;
 
 /** Data access object for the users table. */
 public interface UserJdbiDao {
@@ -24,4 +25,14 @@ public interface UserJdbiDao {
 
   @SqlUpdate("update lobby_user set email = :newEmail where id = :userId")
   int updateEmail(@Bind("userId") int userId, @Bind("newEmail") String newEmail);
+
+  @SqlQuery(
+      "select "
+          + "   id as "
+          + UserRoleLookup.USER_ID_COLUMN
+          + ",   user_role_id as "
+          + UserRoleLookup.USER_ROLE_ID_COLUMN
+          + " from lobby_user "
+          + " where username = :username")
+  Optional<UserRoleLookup> lookupUserRoleByName(@Bind("username") String username);
 }

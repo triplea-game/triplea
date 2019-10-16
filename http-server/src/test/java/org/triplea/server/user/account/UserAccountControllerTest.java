@@ -11,16 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.user.account.FetchEmailResponse;
-import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.server.TestData;
 import org.triplea.server.access.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)
 class UserAccountControllerTest {
-
-  private static final AuthenticatedUser AUTHENTICATED_USER =
-      AuthenticatedUser.builder().userId(10).userRole(UserRole.PLAYER).build();
+  private static final AuthenticatedUser AUTHENTICATED_USER = TestData.AUTHENTICATED_USER;
   private static final String NEW_PASSWORD = "new-password-value";
-
   private static final String EMAIL = "email-value";
 
   @Mock private UserAccountService userAccountService;

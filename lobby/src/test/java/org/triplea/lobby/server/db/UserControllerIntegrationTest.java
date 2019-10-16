@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.server.TestUserUtils;
@@ -16,6 +17,7 @@ import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
 
+@Disabled
 @Integration
 final class UserControllerIntegrationTest {
   private final UserDao controller =

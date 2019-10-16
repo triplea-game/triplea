@@ -17,6 +17,7 @@ import org.triplea.test.common.Integration;
 @DataSet(cleanBefore = true, value = "integration.yml")
 @ExtendWith(DBUnitExtension.class)
 @ExtendWith(DropwizardTest.DropwizardServerExtension.class)
+@SuppressWarnings("PrivateConstructorForUtilityClass")
 abstract class DropwizardTest {
   final URI localhost = URI.create("http://localhost:8080");
 

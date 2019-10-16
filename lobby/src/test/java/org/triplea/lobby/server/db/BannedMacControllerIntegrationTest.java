@@ -7,9 +7,11 @@ import com.github.npathai.hamcrestopt.OptionalMatchers;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.Optional;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 
+@Disabled
 final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
 
   private final UserBanDao controller =

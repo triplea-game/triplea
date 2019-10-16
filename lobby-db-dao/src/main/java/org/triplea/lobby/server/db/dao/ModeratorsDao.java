@@ -14,19 +14,24 @@ import org.triplea.lobby.server.db.data.UserRole;
 public interface ModeratorsDao {
   @SqlQuery(
       "select "
+          + "lu.username as "
           + USERNAME_COLUMN
-          + ", "
+          + ", lu.last_login as "
           + LAST_LOGIN_COLUMN
           + "\n"
-          + "from lobby_user\n"
-          + "where role = '"
+          + "from lobby_user lu\n"
+          + "join user_role ur on ur.id = lu.user_role_id\n"
+          + "where ur.name in ('"
           + UserRole.MODERATOR
-          + "' or role = '"
+          + "', '"
           + UserRole.ADMIN
-          + "'\n"
+          + "')\n"
           + "order by username")
   List<ModeratorUserDaoData> getModerators();
 
-  @SqlUpdate("update lobby_user set role = :role where id = :userId")
+  @SqlUpdate(
+      "update lobby_user "
+          + "set user_role_id = (select id from user_role where name = :role) "
+          + "where id = :userId")
   int setRole(@Bind("userId") int userId, @Bind("role") String role);
 }

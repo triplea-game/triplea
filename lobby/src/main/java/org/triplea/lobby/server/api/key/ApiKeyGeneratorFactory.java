@@ -7,21 +7,14 @@ import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
-import org.triplea.lobby.server.db.dao.ApiKeyDao;
-import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ApiKeyGeneratorFactory {
 
   /** Creates a new key generator instance that can generate a new API key for a given player. */
   public static BiFunction<PlayerName, InetAddress, ApiKey> newApiKeyGenerator(final Jdbi jdbi) {
-    final ApiKeyGenerator keyGenerator =
-        ApiKeyGenerator.builder()
-            .keyMaker(ApiKeyGenerator.createKeyMaker())
-            .apiKeyDao(jdbi.onDemand(ApiKeyDao.class))
-            .userDao(jdbi.onDemand(UserJdbiDao.class))
-            .build();
-    // TODO: Project#12 replace ApiKeyGeneartor with ApiKeyDaoWrapper
-    return (name, ip) -> keyGenerator.apply(name);
+    final ApiKeyDaoWrapper wrapper = new ApiKeyDaoWrapper(jdbi);
+    return wrapper::newKey;
   }
 }
