@@ -1542,7 +1542,8 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                 if (!dialog.isVisible()) {
                   return;
                 }
-                final String option = ((String) optionPane.getValue());
+                // Note: getValue() can return either an int (user pressed escape), or a String.
+                final Object option = optionPane.getValue();
                 if (option.equals(optionNone)) {
                   unitPanels.clear();
                   selection.clear();
@@ -1718,6 +1719,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                 if (!dialog.isVisible()) {
                   return;
                 }
+                // Note: getValue() can return either an int (user pressed escape), or a JButton.
                 final Object option = optionPane.getValue();
                 if (option == noneButton) {
                   choosers.clear();
@@ -1813,7 +1815,8 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                 if (!dialog.isVisible()) {
                   return;
                 }
-                final String option = ((String) optionPane.getValue());
+                // Note: getValue() can return either an int (user pressed escape), or a String.
+                final Object option = optionPane.getValue();
                 if (option.equals(optionNone)) {
                   selection.clear();
                   dialog.setVisible(false);
