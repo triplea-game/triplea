@@ -20,6 +20,8 @@ configurations {
 }
 
 dependencies {
+    // TODO: extract websockets version number to variable, the version MUST be 1.3.14
+    implementation "com.liveperson:dropwizard-websockets:1.3.14"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
     implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
@@ -39,6 +41,7 @@ dependencies {
     implementation project(':java-extras')
     implementation project(':lobby-db-dao')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+    testImplementation 'org.java-websocket:Java-WebSocket:1.4.0'
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testImplementation project(":test-common")

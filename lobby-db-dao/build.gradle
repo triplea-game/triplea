@@ -4,6 +4,8 @@ description = 'TripleA Lobby DB data access layer, Java code to query database'
 dependencies {
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
+    implementation project(":domain-data")
+    implementation project(":java-extras")
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"

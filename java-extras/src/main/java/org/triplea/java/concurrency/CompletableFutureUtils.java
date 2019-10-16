@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.extern.java.Log;
@@ -27,12 +29,23 @@ public final class CompletableFutureUtils {
 
   @SuppressWarnings("FutureReturnValueIgnored")
   @VisibleForTesting
-  static void logExceptionWhenComplete(
+  public static void logExceptionWhenComplete(
       final CompletableFuture<?> future, final String message, final Logger logger) {
     future.whenComplete(
         (result, ex) -> {
           if (ex != null) {
             logger.log(Level.SEVERE, message, ex);
+          }
+        });
+  }
+
+  public static <T> CompletableFuture<T> toCompletableFuture(final Future<T> future) {
+    return CompletableFuture.supplyAsync(
+        () -> {
+          try {
+            return future.get();
+          } catch (final InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
           }
         });
   }

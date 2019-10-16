@@ -6,11 +6,20 @@ delete
 from lobby_user;
 delete
 from access_log;
+delete
+from user_role;
 
-insert into lobby_user(id, username, email, role,  bcrypt_password)
-values (1000, 'test', 'email@email.com', 'ADMIN',
+insert into user_role(id, name)
+values (1, 'ADMIN'), -- user can add/remove admins and add/remove moderators, has boot/ban privileges
+       (2, 'MODERATOR'), -- user has boot/ban privileges
+       (3, 'PLAYER'), -- standard registered user
+       (4, 'ANONYMOUS'), -- users that are not registered, they do not have an entry in lobby_user table
+       (5, 'HOST'); -- AKA LobbyWatcher, special connection for hosts to send game updates to lobby
+
+insert into lobby_user(id, username, email, user_role_id,  bcrypt_password)
+values (1000, 'test', 'email@email.com', (select id from user_role where name = 'ADMIN'),
         '$2a$10$Ut3tvElEhPPr4s5wPd4dFuOvY25fa4r5XH3T7ucFTr5gJsotZl5d6'), -- password = 'test'
-       (1001, 'user1', 'email@email.com', 'PLAYER',
+       (1001, 'user1', 'email@email.com', (select id from user_role where name = 'PLAYER'),
         '$2a$10$C4rHfjK/seKexc6KlyknP.oFVBZ7Wi.kp91qUQFgmkKajwgczXzcS');
 
 insert into access_log(access_time, username, ip, mac, registered)

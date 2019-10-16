@@ -1,14 +1,18 @@
+user_role:
+  - id: 1
+    name: MODERATOR
+
 lobby_user:
   - id: 800000
     username: moderator1
     password: 12345678901234567890123456
     email: email
-    role: MODERATOR
+    user_role_id: 1
   - id: 900000
     username: moderator2
     password: 12345678901234567890123456
     email: email
-    role: MODERATOR
+    user_role_id: 1
 
 moderator_action_history:
   - lobby_user_id: 800000

@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
-import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.lobby.server.db.dao.UserRoleDao;
 
 /** Implementation of {@link UserDao} for a Postgres database. */
 @AllArgsConstructor
@@ -52,11 +52,27 @@ final class UserController implements UserDao {
   @Override
   public void createUser(
       final String name, final String email, final HashedPassword hashedPassword) {
+
+    try (Connection con = connection.get();
+        PreparedStatement ps =
+            con.prepareStatement("insert into user_role(id, name) values(10, 'ANONYMOUS')")) {
+
+      ps.execute();
+      con.commit();
+    } catch (final SQLException e) {
+      // ignore
+    }
+
+    final UserRoleDao dao = JdbiDatabase.newConnection().onDemand(UserRoleDao.class);
+    final int anonymousRoleId = dao.lookupAnonymousRoleId();
+
     try (Connection con = connection.get();
         PreparedStatement ps =
             con.prepareStatement(
-                "insert into lobby_user (username, bcrypt_password, email) "
-                    + "values (?, ?, ?)")) {
+                "insert into lobby_user (username, bcrypt_password, email, user_role_id) "
+                    + "values (?, ?, ?, "
+                    + anonymousRoleId
+                    + ")")) {
       ps.setString(1, name);
       ps.setString(2, hashedPassword.value);
       ps.setString(3, email);
@@ -87,19 +103,7 @@ final class UserController implements UserDao {
 
   @Override
   public boolean isAdmin(final String username) {
-    final String sql = "select role from lobby_user where username = ?";
-    try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, username);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (!rs.next()) {
-          return false;
-        }
-        final String role = rs.getString("role");
-        return UserRole.ADMIN.equals(role) || UserRole.MODERATOR.equals(role);
-      }
-    } catch (final SQLException e) {
-      throw new DatabaseException("Error getting admin flag for user: " + username, e);
-    }
+    // TODO: Project#12 deprecated/dead code, Usercontroller should be removed soon.
+    return false;
   }
 }

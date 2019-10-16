@@ -16,20 +16,25 @@ import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.websockets.WebsocketBundle;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.websocket.server.ServerEndpointConfig;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
+import org.triplea.http.client.lobby.chat.LobbyChatClient;
 import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.lobby.server.db.dao.ApiKeyDao;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
 import org.triplea.server.access.AuthenticatedUser;
 import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
+import org.triplea.server.lobby.chat.ChatSocketController;
+import org.triplea.server.lobby.chat.MessagingServiceFactory;
 import org.triplea.server.lobby.game.ConnectivityControllerFactory;
 import org.triplea.server.lobby.game.hosting.GameHostingControllerFactory;
 import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
@@ -50,6 +55,7 @@ public class ServerApplication extends Application<AppConfig> {
 
   private static final String[] DEFAULT_ARGS =
       new String[] {"server", "configuration-prerelease.yml"};
+  private ServerEndpointConfig chatSocketConfiguration;
 
   /**
    * Main entry-point method, launches the drop-wizard http server. If no args are passed then will
@@ -77,6 +83,15 @@ public class ServerApplication extends Application<AppConfig> {
     // only the common wrapper exception’s stack trace is logged.
     bootstrap.addBundle(new JdbiExceptionsBundle());
     bootstrap.addBundle(new RateLimitBundle(new InMemoryRateLimiterFactory()));
+
+    // Note, websocket endpoint is instantiated dynamically on every new connection and does
+    // not allow for constructor injection. To inject objects, we use 'userProperties' of the
+    // socket configuration that can then be retrieved from a websocket session.
+    chatSocketConfiguration =
+        ServerEndpointConfig.Builder.create(
+                ChatSocketController.class, LobbyChatClient.WEBSOCKET_PATH)
+            .build();
+    bootstrap.addBundle(new WebsocketBundle(chatSocketConfiguration));
   }
 
   @Override
@@ -105,6 +120,11 @@ public class ServerApplication extends Application<AppConfig> {
 
     endPointControllers(configuration, jdbi)
         .forEach(controller -> environment.jersey().register(controller));
+
+    // Inject beans into websocket endpoint
+    chatSocketConfiguration
+        .getUserProperties()
+        .put(ChatSocketController.MESSAGING_SERVICE_KEY, MessagingServiceFactory.build(jdbi));
   }
 
   private static void enableAuthentication(
@@ -125,7 +145,7 @@ public class ServerApplication extends Application<AppConfig> {
       final MetricRegistry metrics, final Jdbi jdbi) {
     return new CachingAuthenticator<>(
         metrics,
-        new ApiKeyAuthenticator(jdbi.onDemand(ApiKeyDao.class)),
+        new ApiKeyAuthenticator(new ApiKeyDaoWrapper(jdbi)),
         CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).maximumSize(10000));
   }
 

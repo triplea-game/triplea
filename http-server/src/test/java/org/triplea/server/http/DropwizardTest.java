@@ -17,8 +17,9 @@ import org.triplea.test.common.Integration;
 @DataSet(cleanBefore = true, value = "integration.yml")
 @ExtendWith(DBUnitExtension.class)
 @ExtendWith(DropwizardTest.DropwizardServerExtension.class)
-abstract class DropwizardTest {
-  final URI localhost = URI.create("http://localhost:8080");
+@SuppressWarnings("PrivateConstructorForUtilityClass")
+public abstract class DropwizardTest {
+  public static final URI localhost = URI.create("http://localhost:8080");
 
   /**
    * Extension to start a drop wizard server before all tests and then shuts it down afterwards.

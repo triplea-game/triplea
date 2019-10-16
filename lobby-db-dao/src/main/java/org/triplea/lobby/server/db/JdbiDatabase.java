@@ -14,6 +14,7 @@ import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.ModeratorAuditHistoryDaoData;
 import org.triplea.lobby.server.db.data.ModeratorUserDaoData;
 import org.triplea.lobby.server.db.data.UserBanDaoData;
+import org.triplea.lobby.server.db.data.UserRoleLookup;
 import org.triplea.lobby.server.db.data.UsernameBanDaoData;
 
 /** Utility to get connections to the Postgres lobby database. */
@@ -50,6 +51,7 @@ public final class JdbiDatabase {
     jdbi.registerRowMapper(ApiKeyUserData.class, ApiKeyUserData.buildResultMapper());
     jdbi.registerRowMapper(UserBanDaoData.class, UserBanDaoData.buildResultMapper());
     jdbi.registerRowMapper(UsernameBanDaoData.class, UsernameBanDaoData.buildResultMapper());
+    jdbi.registerRowMapper(UserRoleLookup.class, UserRoleLookup.buildResultMapper());
     jdbi.registerRowMapper(
         ModeratorAuditHistoryDaoData.class, ModeratorAuditHistoryDaoData.buildResultMapper());
     jdbi.registerRowMapper(ModeratorUserDaoData.class, ModeratorUserDaoData.buildResultMapper());

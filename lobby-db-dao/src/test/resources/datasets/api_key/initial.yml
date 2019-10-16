@@ -1,14 +1,35 @@
+user_role:
+  - id: 1
+    name: MODERATOR
+  - id: 2
+    name: PLAYER
+  - id: 3
+    name: ANONYMOUS
+  - id: 4
+    name: HOST
 lobby_user:
   - id: 50
-    username: registered-user
+    user_role_id: 1
+    username: existing-name
     bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
     email: email
-    role: MODERATOR
 api_key:
   - id: 1000
-    key: api-key1
+    key: zapi-key1
     lobby_user_id: 50
+    username: registered-user
+    user_role_id: 1
+    ip: 127.0.0.1
     date_created: 2000-01-01 23:59:20.0
   - id: 1001
-    key: api-key2
+    key: zapi-key2
+    username: some-other-name
+    user_role_id: 3
+    ip: 127.0.0.1
+    date_created: 2100-01-01 23:59:20.0
+  - id: 1002
+    key: zapi-key3
+    username:
+    user_role_id: 4
+    ip: 127.0.0.1
     date_created: 2100-01-01 23:59:20.0

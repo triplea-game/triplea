@@ -12,8 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyDaoDataTest {
-  private static final String ROLE = "Plunders are the scallywags of the scrawny grace.";
+  private static final String ROLE = UserRole.PLAYER;
   private static final int USER_ID = 55;
+  private static final String NAME = "player-name";
 
   @Mock private ResultSet resultSet;
 
@@ -21,10 +22,12 @@ class ApiKeyDaoDataTest {
   void buildResultMapper() throws Exception {
     when(resultSet.getInt(ApiKeyUserData.USER_ID_COLUMN)).thenReturn(USER_ID);
     when(resultSet.getString(ApiKeyUserData.ROLE_COLUMN)).thenReturn(ROLE);
+    when(resultSet.getString(ApiKeyUserData.USERNAME_COLUMN)).thenReturn(NAME);
 
     final ApiKeyUserData result = ApiKeyUserData.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUserId(), is(USER_ID));
-    assertThat(result.getRole(), is(ROLE));
+    assertThat(result.getRole(), is(UserRole.PLAYER));
+    assertThat(result.getUsername(), is(NAME));
   }
 }

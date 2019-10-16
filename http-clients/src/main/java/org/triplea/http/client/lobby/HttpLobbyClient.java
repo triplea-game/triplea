@@ -3,6 +3,7 @@ package org.triplea.http.client.lobby;
 import java.net.URI;
 import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.http.client.lobby.chat.LobbyChatClient;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
@@ -17,12 +18,14 @@ public class HttpLobbyClient {
   private final GameListingClient gameListingClient;
   private final HttpModeratorToolboxClient httpModeratorToolboxClient;
   private final UserAccountClient userAccountClient;
+  private final LobbyChatClient lobbyChatClient;
 
   private HttpLobbyClient(final URI lobbyUri, final ApiKey apiKey) {
     connectivityCheckClient = ConnectivityCheckClient.newClient(lobbyUri, apiKey);
     gameListingClient = GameListingClient.newClient(lobbyUri, apiKey);
     httpModeratorToolboxClient = HttpModeratorToolboxClient.newClient(lobbyUri, apiKey);
     userAccountClient = UserAccountClient.newClient(lobbyUri, apiKey);
+    lobbyChatClient = LobbyChatClient.newClient(lobbyUri, apiKey);
   }
 
   public static HttpLobbyClient newClient(final URI lobbyUri, final ApiKey apiKey) {
