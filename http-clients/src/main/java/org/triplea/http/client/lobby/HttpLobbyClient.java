@@ -17,15 +17,15 @@ public class HttpLobbyClient {
   private final ConnectivityCheckClient connectivityCheckClient;
   private final GameListingClient gameListingClient;
   private final HttpModeratorToolboxClient httpModeratorToolboxClient;
-  private final UserAccountClient userAccountClient;
   private final LobbyChatClient lobbyChatClient;
+  private final UserAccountClient userAccountClient;
 
   private HttpLobbyClient(final URI lobbyUri, final ApiKey apiKey) {
     connectivityCheckClient = ConnectivityCheckClient.newClient(lobbyUri, apiKey);
     gameListingClient = GameListingClient.newClient(lobbyUri, apiKey);
     httpModeratorToolboxClient = HttpModeratorToolboxClient.newClient(lobbyUri, apiKey);
-    userAccountClient = UserAccountClient.newClient(lobbyUri, apiKey);
     lobbyChatClient = LobbyChatClient.newClient(lobbyUri, apiKey);
+    userAccountClient = UserAccountClient.newClient(lobbyUri, apiKey);
   }
 
   public static HttpLobbyClient newClient(final URI lobbyUri, final ApiKey apiKey) {

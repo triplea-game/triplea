@@ -14,6 +14,7 @@ import org.triplea.http.client.lobby.chat.events.server.ServerEventEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 
+/** Utility component to {@code LobbyChatClient} to wire inbound messages to callback logic. */
 @Log
 class InboundChat {
 

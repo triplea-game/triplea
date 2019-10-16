@@ -10,6 +10,7 @@ import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.events.server.ServerEventEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 
+/** Interprets and handles routing of inbound messages to the appropriate callback listener. */
 @Log
 class InboundEventHandler {
 

@@ -6,7 +6,12 @@ import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
 
-/** Chat transmitter that sends and receives messages over Websockets. */
+/**
+ * Chat transmitter designed to work with lobby, sends and receives messages over Websocket. This
+ * class mostly does wiring to connect a {@code ChatClient} to receive callbacks (messages received
+ * from server) from a {@code LobbyChatClient} and to send messages via the same {@code
+ * LobbyChatClient}.
+ */
 public class LobbyChatTransmitter implements ChatTransmitter {
   private final LobbyChatClient lobbyChatClient;
   private final PlayerName localPlayerName;
