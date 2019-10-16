@@ -15,7 +15,7 @@ import org.triplea.java.Postconditions;
 @EqualsAndHashCode
 public class UserRoleLookup {
   public static final String USER_ID_COLUMN = "id";
-  public static final String USER_ROLE_ID_COLUMN = "username";
+  public static final String USER_ROLE_ID_COLUMN = "role_id";
 
   private int userId;
   private int userRoleId;
