@@ -1,11 +1,9 @@
 package org.triplea.http.client.lobby.chat.events.server;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import org.triplea.domain.data.PlayerName;
 
-@AllArgsConstructor
-@Getter
+@Value
 public class StatusUpdate {
   private final PlayerName playerName;
   private final String status;
