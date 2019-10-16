@@ -913,9 +913,12 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     actionButtons.changeToProduce(player);
     final IntegerMap<ProductionRule> production = actionButtons.waitForPurchase(bid);
     if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
-      // TODO: Topic#1602 Support updating the purchasedUnitsPanel on opponents' moves.
-      purchasedUnitsPanel.setUnitsFromProductionRuleMap(production, player);
-      rightHandSidePanel.add(purchasedUnitsPanel, BorderLayout.SOUTH);
+      SwingUtilities.invokeLater(
+          () -> {
+            // TODO: Topic#1602 Support updating the purchasedUnitsPanel on opponents' moves.
+            purchasedUnitsPanel.setUnitsFromProductionRuleMap(production, player);
+            rightHandSidePanel.add(purchasedUnitsPanel, BorderLayout.SOUTH);
+          });
     }
     return production;
   }
