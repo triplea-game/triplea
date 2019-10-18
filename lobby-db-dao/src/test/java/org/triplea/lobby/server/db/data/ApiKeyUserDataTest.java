@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
@@ -73,18 +74,19 @@ class ApiKeyUserDataTest {
     assertPostconditionFailure();
   }
 
-  private static List<List<String>> mustHaveUserName() {
+  private static List<Arguments> mustHaveUserName() {
     return Arrays.asList(
-        Arrays.asList("0", UserRole.ANONYMOUS), //
-        Arrays.asList(String.valueOf(USER_ID), UserRole.PLAYER), //
-        Arrays.asList(String.valueOf(USER_ID), UserRole.MODERATOR), //
-        Arrays.asList(String.valueOf(USER_ID), UserRole.ADMIN));
+        Arguments.of(0, UserRole.ANONYMOUS), //
+        Arguments.of(USER_ID, UserRole.PLAYER), //
+        Arguments.of(USER_ID, UserRole.MODERATOR), //
+        Arguments.of(USER_ID, UserRole.ADMIN));
   }
 
   @ParameterizedTest
   @MethodSource("mustHaveUserName")
-  void assertInvalidStatesRolesThatMustHaveName(final List<String> data) throws Exception {
-    givenResults(Integer.parseInt(data.get(0)), data.get(1), null);
+  void assertInvalidStatesRolesThatMustHaveName(final int userId, final String roleName)
+      throws Exception {
+    givenResults(userId, roleName, null);
 
     assertPostconditionFailure();
   }
