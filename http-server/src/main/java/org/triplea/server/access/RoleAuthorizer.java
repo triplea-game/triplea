@@ -14,13 +14,13 @@ public class RoleAuthorizer implements Authorizer<AuthenticatedUser> {
   public boolean authorize(final AuthenticatedUser user, final String requestedRole) {
     switch (user.getUserRole()) {
       case UserRole.ADMIN:
-        return adminPermissions(requestedRole);
+        return adminAuthorizedFor(requestedRole);
       case UserRole.MODERATOR:
-        return moderatorPermission(requestedRole);
+        return moderatorAuthorizedFor(requestedRole);
       case UserRole.PLAYER:
-        return playerPermissions(requestedRole);
+        return playerAuthorizedFor(requestedRole);
       case UserRole.ANONYMOUS:
-        return anonymousPermissions(requestedRole);
+        return anonymousAuthorizedFor(requestedRole);
       case UserRole.HOST:
         return requestedRole.equals(UserRole.HOST);
       default:
@@ -28,19 +28,19 @@ public class RoleAuthorizer implements Authorizer<AuthenticatedUser> {
     }
   }
 
-  private static boolean adminPermissions(final String requestedRole) {
-    return requestedRole.equals(UserRole.ADMIN) || moderatorPermission(requestedRole);
+  private static boolean adminAuthorizedFor(final String requestedRole) {
+    return requestedRole.equals(UserRole.ADMIN) || moderatorAuthorizedFor(requestedRole);
   }
 
-  private static boolean moderatorPermission(final String requestedRole) {
-    return requestedRole.equals(UserRole.MODERATOR) || playerPermissions(requestedRole);
+  private static boolean moderatorAuthorizedFor(final String requestedRole) {
+    return requestedRole.equals(UserRole.MODERATOR) || playerAuthorizedFor(requestedRole);
   }
 
-  private static boolean playerPermissions(final String requestedRole) {
-    return requestedRole.equals(UserRole.PLAYER) || anonymousPermissions(requestedRole);
+  private static boolean playerAuthorizedFor(final String requestedRole) {
+    return requestedRole.equals(UserRole.PLAYER) || anonymousAuthorizedFor(requestedRole);
   }
 
-  private static boolean anonymousPermissions(final String requestedRole) {
+  private static boolean anonymousAuthorizedFor(final String requestedRole) {
     return requestedRole.equals(UserRole.ANONYMOUS);
   }
 }
