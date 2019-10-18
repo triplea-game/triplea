@@ -11,6 +11,7 @@ import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
 
 /** Implementation of {@link UserDao} for a Postgres database. */
+// TODO: Project#12 dead code soon, ensure this code is removed.
 @AllArgsConstructor
 final class UserController implements UserDao {
   private final Supplier<Connection> connection;
@@ -61,6 +62,8 @@ final class UserController implements UserDao {
       con.commit();
     } catch (final SQLException e) {
       // ignore
+      // TODO: Project#12 this is a super-dirty hack to support test code.
+      // The only exception we expect is a UK violation error which we can safely ignore.
     }
 
     final UserRoleDao dao = JdbiDatabase.newConnection().onDemand(UserRoleDao.class);
