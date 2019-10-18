@@ -205,6 +205,7 @@ subprojects {
         consoleOutput = true
         ruleSetFiles = files(rootProject.file('config/pmd/pmd.xml'))
         ruleSets = []
+        incrementalAnalysis = true
     }
 
     spotless {
