@@ -45,10 +45,6 @@ public class GameStep extends GameDataComponent {
     String ONLY_REPAIR_IF_DISABLED = "onlyRepairIfDisabled";
   }
 
-  public static boolean isPurchaseOrBidStep(String stepName) {
-    return stepName.endsWith("Bid") || stepName.endsWith("Purchase");
-  }
-
   /**
    * Creates new GameStep.
    *
@@ -167,5 +163,9 @@ public class GameStep extends GameDataComponent {
             .map(Boolean::parseBoolean)
             .orElse(false)
         || name.endsWith("NonCombatMove");
+  }
+
+  public static boolean isPurchaseOrBidStep(final String stepName) {
+    return stepName.endsWith("Bid") || stepName.endsWith("Purchase");
   }
 }
