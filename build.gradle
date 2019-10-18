@@ -122,7 +122,7 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
             '-Xlint:all,-processing',
-            '-Xmaxwarns', '1000'
+            '-Xmaxwarns', '15'
         ]
         options.encoding = 'UTF-8'
         options.errorprone {
