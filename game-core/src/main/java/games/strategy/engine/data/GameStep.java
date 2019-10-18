@@ -45,6 +45,10 @@ public class GameStep extends GameDataComponent {
     String ONLY_REPAIR_IF_DISABLED = "onlyRepairIfDisabled";
   }
 
+  public static boolean isPurchaseOrBidStep(String stepName) {
+    return stepName.endsWith("Bid") || stepName.endsWith("Purchase");
+  }
+
   /**
    * Creates new GameStep.
    *
