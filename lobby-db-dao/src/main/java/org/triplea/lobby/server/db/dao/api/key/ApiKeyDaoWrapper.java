@@ -56,8 +56,8 @@ public class ApiKeyDaoWrapper {
 
   /** Creates (and stores in DB) a new API key for registered or anonymous users. */
   public ApiKey newKey(final PlayerName playerName, final InetAddress ip) {
-    Preconditions.checkArgument(playerName != null);
-    Preconditions.checkArgument(ip != null);
+    Preconditions.checkNotNull(playerName);
+    Preconditions.checkNotNull(ip);
 
     final ApiKey key = keyMaker.get();
 
