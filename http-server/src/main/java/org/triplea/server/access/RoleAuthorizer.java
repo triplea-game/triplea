@@ -9,27 +9,38 @@ import org.triplea.lobby.server.db.data.UserRole;
  */
 public class RoleAuthorizer implements Authorizer<AuthenticatedUser> {
 
-  /**
-   * Verifies a user is authorized to assume a requestedRole. <br>
-   * Rules are:<br>
-   * - admin is authorized all roles<br>
-   * - moderator is authorized all roles except admin<br>
-   * - player can access player or anonymous resources<br>
-   * - anonymous has lowest privilege and can access only the anonymous role
-   */
+  /** Verifies a user is authorized to assume a requestedRole. <br> */
   @Override
   public boolean authorize(final AuthenticatedUser user, final String requestedRole) {
     switch (user.getUserRole()) {
       case UserRole.ADMIN:
-        return true;
+        return adminAuthorizedFor(requestedRole);
       case UserRole.MODERATOR:
-        return !requestedRole.equals(UserRole.ADMIN);
+        return moderatorAuthorizedFor(requestedRole);
       case UserRole.PLAYER:
-        return requestedRole.equals(UserRole.PLAYER) || requestedRole.equals(UserRole.ANONYMOUS);
+        return playerAuthorizedFor(requestedRole);
       case UserRole.ANONYMOUS:
-        return requestedRole.equals(UserRole.ANONYMOUS);
+        return anonymousAuthorizedFor(requestedRole);
+      case UserRole.HOST:
+        return requestedRole.equals(UserRole.HOST);
       default:
         throw new AssertionError("Unrecognized user role: " + user.getUserRole());
     }
+  }
+
+  private static boolean adminAuthorizedFor(final String requestedRole) {
+    return requestedRole.equals(UserRole.ADMIN) || moderatorAuthorizedFor(requestedRole);
+  }
+
+  private static boolean moderatorAuthorizedFor(final String requestedRole) {
+    return requestedRole.equals(UserRole.MODERATOR) || playerAuthorizedFor(requestedRole);
+  }
+
+  private static boolean playerAuthorizedFor(final String requestedRole) {
+    return requestedRole.equals(UserRole.PLAYER) || anonymousAuthorizedFor(requestedRole);
+  }
+
+  private static boolean anonymousAuthorizedFor(final String requestedRole) {
+    return requestedRole.equals(UserRole.ANONYMOUS);
   }
 }

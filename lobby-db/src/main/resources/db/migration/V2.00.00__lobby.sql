@@ -20,6 +20,19 @@ alter table banned_usernames
 comment on table banned_usernames is 'A Table storing a username blacklilst.';
 comment on column banned_usernames.username is 'The blacklisted username';
 
+create table user_role
+(
+    id   int primary key,
+    name character varying(16) not null unique
+);
+
+comment on table user_role is 'Table storing the names of the different user (authentication) roles.';
+insert into user_role(id, name)
+values (1, 'ADMIN'), -- user can add/remove admins and add/remove moderators, has boot/ban privileges
+       (2, 'MODERATOR'), -- user has boot/ban privileges
+       (3, 'PLAYER'), -- standard registered user
+       (4, 'ANONYMOUS'), -- users that are not registered, they do not have an entry in lobby_user table
+       (5, 'HOST'); -- AKA LobbyWatcher, special connection for hosts to send game updates to lobby
 
 create table lobby_user
 (
@@ -30,7 +43,7 @@ create table lobby_user
     check (email <> ''),
     date_created    timestamptz           not null default current_timestamp,
     last_login      timestamptz,
-    role            character varying(16) not null default 'PLAYER' check (role in ('PLAYER', 'MODERATOR', 'ADMIN')),
+    user_role_id    int                   not null references user_role (id),
     bcrypt_password character(60) check (char_length(bcrypt_password) = 60)
 );
 alter table lobby_user
@@ -45,9 +58,6 @@ comment on column lobby_user.password is
 comment on column lobby_user.email is
     $$Email storage of every user. Large size to match the maximum email length.
     More information here: https://stackoverflow.com/a/574698.$$;
-comment on column lobby_user.role is
-    $$The role of the user, controls privileges. If moderator the user is able to ban and mute other people.
-     Admin is able to add/remove other moderators.$$;
 comment on column lobby_user.bcrypt_password is
     $$The BCrypt-Hashed password of the user, should be the same as the md5 password but in another form.
     The length of the hash must always be 60 chars. Either password or bcrypt_password must be not null.$$;
@@ -157,16 +167,22 @@ comment on column temp_password_request_history.username is 'The requested usern
 comment on column temp_password_request_history.date_created is 'Timestamp of when the temp password request is made';
 create index temp_password_request_history_inet on temp_password_request_history (inetaddress);
 
-
 create table api_key
 (
     id            serial primary key,
     lobby_user_id integer references lobby_user (id),
+    username      character varying(40),
     key           character varying(256) not null unique,
+    user_role_id  int                    not null references user_role (id),
+    ip            inet                   not null,
     date_created  timestamptz            not null default now()
 );
 alter table api_key
     owner to lobby_user;
 comment on table api_key is
-    $$Table that stores api keys of users that have logged into the lobby. Denormalized to reflect time
-        of login and to support anonymous user logins.$$;
+    $$Table that stores api keys of users that are allowed to connect to the lobby.$$;
+comment on column api_key.lobby_user_id is
+    $$Nullable for anonymous and game hosting connections/users$$;
+comment on column api_key.username is
+    $$Name of the user when key is granted, nullable for game hosting connections$$;
+

@@ -2,10 +2,10 @@ package org.triplea.server.access;
 
 import com.google.common.base.Preconditions;
 import java.security.Principal;
-import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.lobby.server.db.data.UserRole;
@@ -16,20 +16,31 @@ import org.triplea.lobby.server.db.data.UserRole;
  * that throws an {@code UnsupportedOperationException} if accessed.
  */
 @Builder
+@EqualsAndHashCode
 public class AuthenticatedUser implements Principal {
   @Getter @Nullable private final Integer userId;
   @Getter @Nonnull private final String userRole;
-  @Getter @Nullable private final ApiKey apiKey;
+  @Getter @Nonnull private final ApiKey apiKey;
+  @Nullable private final String name;
 
+  @Nullable
   @Override
   public String getName() {
-    throw new UnsupportedOperationException("Name lookup is not done on authentication.");
+    Preconditions.checkState(
+        (name == null) == userRole.equals(UserRole.HOST),
+        "All user roles will have a name except the 'HOST' role (lobby watcher)");
+    return name;
   }
 
   public int getUserIdOrThrow() {
     Preconditions.checkState(
-        !userRole.equals(UserRole.ANONYMOUS), "Anonymous users always have a null user id");
-    return Optional.ofNullable(userId)
-        .orElseThrow(() -> new AssertionError("Error, expected to have a non-null user id"));
+        userId != null, "This method is called when we expect user id to not be null");
+    Preconditions.checkState(
+        !userRole.equals(UserRole.ANONYMOUS),
+        "Integrity check, anonymous user role implies null user id, userId = " + userId);
+    Preconditions.checkState(
+        !userRole.equals(UserRole.HOST),
+        "Integrity check, host user role implies null user id, userId = " + userId);
+    return userId;
   }
 }

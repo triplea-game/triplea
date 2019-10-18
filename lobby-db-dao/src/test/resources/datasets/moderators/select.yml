@@ -1,18 +1,25 @@
+user_role:
+  - id: 1
+    name: PLAYER
+  - id: 2
+    name: MODERATOR
+  - id: 3
+    name: ADMIN
 lobby_user:
   - id: 100000
     username: not moderator
     password: 12345678901234567890123456
     email: email
-    role: PLAYER
+    user_role_id: 1
   - id: 900000
     username: moderator
     password: 12345678901234567890123456
     email: email
-    role: MODERATOR
+    user_role_id: 2
     last_login: 2001-01-01 23:59:20.0
   - id: 900001
     username: Super! moderator
     password: 12345678901234567890123456
     email: email
-    role: ADMIN
+    user_role_id: 3
     last_login:

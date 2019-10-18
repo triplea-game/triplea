@@ -28,7 +28,7 @@ import org.triplea.server.http.HttpController;
 @AllArgsConstructor(
     access = AccessLevel.PACKAGE,
     onConstructor_ = {@VisibleForTesting})
-@RolesAllowed(UserRole.ANONYMOUS)
+@RolesAllowed(UserRole.HOST)
 public class GameListingController extends HttpController {
 
   private final GameListing gameListing;

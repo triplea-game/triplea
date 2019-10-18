@@ -7,12 +7,13 @@ import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.server.access.AuthenticatedUser;
 
+@SuppressWarnings("UnstableApiUsage")
 @UtilityClass
 public class TestData {
-  public static final AuthenticatedUser AUTHENTICATED_USER =
-      AuthenticatedUser.builder().userId(100).userRole(UserRole.PLAYER).build();
+  public static final ApiKey API_KEY = ApiKey.of("test");
 
-  public static final ApiKey API_KEY = ApiKey.of("api-key-value");
+  public static final AuthenticatedUser AUTHENTICATED_USER =
+      AuthenticatedUser.builder().userId(100).userRole(UserRole.PLAYER).apiKey(API_KEY).build();
 
   public static final LobbyGame LOBBY_GAME =
       LobbyGame.builder()

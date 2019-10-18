@@ -1,9 +1,12 @@
+user_role:
+  - id: 1
+    name: PLAYER
 lobby_user:
   - id: 500000
     username: username
     password: 12345678901234567890123456
     email: email
-    role: PLAYER
+    user_role_id: 1
 
 temp_password_request:
   - lobby_user_id: 500000

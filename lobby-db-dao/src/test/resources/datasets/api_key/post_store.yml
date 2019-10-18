@@ -1,7 +1,0 @@
-api_key:
-  - key: anonymous-user-key
-  - key: api-key1
-    lobby_user_id: 50
-  - key: api-key2
-  - lobby_user_id: 50
-    key: registered-user-key

@@ -33,32 +33,42 @@ banned_user:
     ban_expiry: 2100-01-01 23:59:20.0
     date_created: 2010-01-01 23:59:20.0
 
+user_role:
+  - id: 1
+    name: ADMIN
+  - id: 2
+    name: MODERATOR
+  - id: 3
+    name: PLAYER
+  - id: 4
+    name: HOST
+
 lobby_user:
   - id: 5000
     username: "super-mod"
     email: "test@test.com"
     password: "1234567890"
-    role: ADMIN
+    user_role_id: 1
   - id: 5001
     username: "mod"
     email: "test1@test.com"
     password: "1234567890"
-    role: MODERATOR
+    user_role_id: 2
   - id: 5002
     username: "mod2"
     email: "test2@test.com"
     password: "1234567890"
-    role: MODERATOR
+    user_role_id: 2
   - id: 5003
     username: "mod3"
     email: "test3@test.com"
     password: "1234567890"
-    role: MODERATOR
+    user_role_id: 2
   - id: 5004
     username: "not-mod"
     email: "test3@test.com"
     password: "1234567890"
-    role: PLAYER
+    user_role_id: 3
 
 moderator_action_history:
   - id: 1000
@@ -75,5 +85,15 @@ access_log:
     registered: false
 
 api_key:
-  - key: test
+    #  key = sha512(test)
+  - key: ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff
+    username: "mod"
     lobby_user_id: 5000
+    user_role_id: 1
+    ip: "127.0.0.1"
+    # key = sha512(test1)
+  - key: b16ed7d24b3ecbd4164dcdad374e08c0ab7518aa07f9d3683f34c2b3c67a15830268cb4a56c1ff6f54c8e54a795f5b87c08668b51f82d0093f7baee7d2981181
+    username: "chatter"
+    lobby_user_id: 5000
+    user_role_id: 3
+    ip: "127.0.0.1"
