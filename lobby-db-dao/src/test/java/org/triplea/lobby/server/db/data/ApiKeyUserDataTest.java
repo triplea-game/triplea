@@ -74,6 +74,7 @@ class ApiKeyUserDataTest {
     assertPostconditionFailure();
   }
 
+  @SuppressWarnings("unused")
   private static List<Arguments> mustHaveUserName() {
     return Arrays.asList(
         Arguments.of(0, UserRole.ANONYMOUS), //
