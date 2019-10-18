@@ -26,11 +26,8 @@ public class AuthenticatedUser implements Principal {
   @Nullable
   @Override
   public String getName() {
-    Preconditions.checkState(
-        (name == null && userRole.equals(UserRole.HOST))
-            || (name != null && !userRole.equals(UserRole.HOST)),
+    Preconditions.checkState((name == null) == userRole.equals(UserRole.HOST),
         "All user roles will have a name except the 'HOST' role (lobby watcher)");
-
     return name;
   }
 
