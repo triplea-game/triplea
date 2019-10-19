@@ -149,7 +149,7 @@ class PlacePanel extends AbstractMovePanel {
     SwingUtilities.invokeLater(
         () -> {
           JSplitPane splitPane = null;
-          Component parent = (JSplitPane) unitsToPlacePanel.getParent();
+          Component parent = unitsToPlacePanel.getParent();
           if (parent instanceof JSplitPane) {
             splitPane = ((JSplitPane) parent);
           }
@@ -170,9 +170,8 @@ class PlacePanel extends AbstractMovePanel {
           } else {
             // Hide the panel.
             if (splitPane != null) {
-              // If the panel was visible before, remember whether the split pane
-              // was minimized so that we don't open it up again the next time
-              // we show it.
+              // If the panel was visible before, remember whether the split pane was
+              // minimized so that we don't open it up again the next time we show it.
               if (unitsToPlacePanel.isVisible()) {
                 // Note: We don't use getMaximumDividerLocation() because that takes into account
                 // the preferred size of the unit panel and therefore when not minimized, it may
