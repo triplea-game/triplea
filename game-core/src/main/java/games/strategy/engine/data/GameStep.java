@@ -164,4 +164,8 @@ public class GameStep extends GameDataComponent {
             .orElse(false)
         || name.endsWith("NonCombatMove");
   }
+
+  public static boolean isPurchaseOrBidStep(final String stepName) {
+    return stepName.endsWith("Bid") || stepName.endsWith("Purchase");
+  }
 }

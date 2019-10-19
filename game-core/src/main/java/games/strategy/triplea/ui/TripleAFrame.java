@@ -9,6 +9,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -75,6 +76,8 @@ import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.triplea.util.UnitCategory;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -187,7 +190,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final ActionButtons actionButtons;
   private final JPanel gameMainPanel = new JPanel();
   private final JPanel rightHandSidePanel = new JPanel();
-  private final SimpleUnitPanel purchasedUnitsPanel;
+  private final SimpleUnitPanel unitsToPlacePanel;
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
@@ -214,6 +217,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private List<Unit> unitsBeingMousedOver;
   private PlayerId lastStepPlayer;
   private PlayerId currentStepPlayer;
+  private boolean postProductionStep;
   private final Map<PlayerId, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
@@ -607,10 +611,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     rightHandSidePanel.add(smallView, BorderLayout.NORTH);
     tabsPanel.setBorder(null);
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
-    purchasedUnitsPanel =
+    unitsToPlacePanel =
         new SimpleUnitPanel(
             uiContext, SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    purchasedUnitsPanel.setBorder(BorderFactory.createTitledBorder("Purchased Units"));
+    unitsToPlacePanel.setBorder(BorderFactory.createTitledBorder("Units to Place"));
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
@@ -911,16 +915,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   public IntegerMap<ProductionRule> getProduction(final PlayerId player, final boolean bid) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToProduce(player);
-    final IntegerMap<ProductionRule> production = actionButtons.waitForPurchase(bid);
-    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
-      SwingUtilities.invokeLater(
-          () -> {
-            // TODO: Topic#1602 Support updating the purchasedUnitsPanel on opponents' moves.
-            purchasedUnitsPanel.setUnitsFromProductionRuleMap(production, player);
-            rightHandSidePanel.add(purchasedUnitsPanel, BorderLayout.SOUTH);
-          });
-    }
-    return production;
+    return actionButtons.waitForPurchase(bid);
   }
 
   public Map<Unit, IntegerMap<RepairRule>> getRepair(
@@ -1928,16 +1923,20 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     }
     final int round;
     final String stepDisplayName;
-    final PlayerId lastPlayer = lastStepPlayer;
     final PlayerId player;
+    @Nullable final Collection<UnitCategory> unitsToPlace;
     data.acquireReadLock();
     try {
       round = data.getSequence().getRound();
-      stepDisplayName = data.getSequence().getStep().getDisplayName();
+      final GameStep step = data.getSequence().getStep();
+      stepDisplayName = step.getDisplayName();
+      final PlayerId lastPlayer = lastStepPlayer;
       player = data.getSequence().getStep().getPlayerId();
+      unitsToPlace = getUpdatedUnitsToPlace(lastPlayer, player, step);
     } finally {
       data.releaseReadLock();
     }
+
     final boolean isPlaying = localPlayers.playing(player);
     if (player != null && !player.isNull()) {
       final CompletableFuture<?> future =
@@ -1956,9 +1955,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
           if (player != null) {
             this.player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
           }
-          // When the current player changes, hide the purchasedUnitsPanel.
-          if (player == null || !player.equals(lastPlayer)) {
-            rightHandSidePanel.remove(purchasedUnitsPanel);
+          rightHandSidePanel.remove(unitsToPlacePanel);
+          if (unitsToPlace != null) {
+            unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
+            rightHandSidePanel.add(unitsToPlacePanel, BorderLayout.SOUTH);
           }
         });
     resourceBar.gameDataChanged(null);
@@ -1977,6 +1977,27 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
         }
       }
     }
+  }
+
+  private @Nullable Collection<UnitCategory> getUpdatedUnitsToPlace(
+      final PlayerId lastPlayer, final PlayerId player, final GameStep step) {
+    if (!ClientSetting.showBetaFeatures.getValueOrThrow()) {
+      return null;
+    }
+    Collection<UnitCategory> unitCategories = null;
+    // Keep track if we're past the production step for the current player.
+    // If the current player changes, reset to false.
+    if (player == null || !player.equals(lastPlayer)) {
+      postProductionStep = false;
+    } else if (postProductionStep || !player.getUnits().isEmpty()) {
+      // If we're past the production step (even if player didn't produce anything)
+      // or there are units that are available to place, show the panel (return non-null).
+      unitCategories = UnitSeparator.categorize(player.getUnits());
+    }
+    if (GameStep.isPurchaseOrBidStep(step.getName())) {
+      postProductionStep = true;
+    }
+    return unitCategories;
   }
 
   /**

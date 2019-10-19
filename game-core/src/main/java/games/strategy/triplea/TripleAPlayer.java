@@ -1,6 +1,7 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -130,7 +131,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     boolean badStep = false;
     if (name.endsWith("Tech")) {
       tech();
-    } else if (name.endsWith("Bid") || name.endsWith("Purchase")) {
+    } else if (GameStep.isPurchaseOrBidStep(name)) {
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
       if (!GameStepPropertiesHelper.isBid(getGameData())) {
         ui.waitForMoveForumPoster(getPlayerId(), getPlayerBridge());
