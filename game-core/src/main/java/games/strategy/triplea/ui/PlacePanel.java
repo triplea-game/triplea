@@ -149,7 +149,7 @@ class PlacePanel extends AbstractMovePanel {
     SwingUtilities.invokeLater(
         () -> {
           JSplitPane splitPane = null;
-          Component parent = unitsToPlacePanel.getParent();
+          final Component parent = unitsToPlacePanel.getParent();
           if (parent instanceof JSplitPane) {
             splitPane = ((JSplitPane) parent);
           }
