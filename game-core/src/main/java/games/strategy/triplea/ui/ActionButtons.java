@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.CardLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -30,6 +31,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -39,11 +42,18 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
       "Press shift+D or click this button to end the current turn phase";
   private static final long serialVersionUID = 2175685892863042399L;
   private final CardLayout layout = new CardLayout();
+
+  @Getter(AccessLevel.PUBLIC)
   private BattlePanel battlePanel;
+
   private MovePanel movePanel;
+
   private PurchasePanel purchasePanel;
   private RepairPanel repairPanel;
+
+  @Getter(AccessLevel.PUBLIC)
   private PlacePanel placePanel;
+
   private TechPanel techPanel;
   private EndTurnPanel endTurnPanel;
   private MoveForumPosterPanel moveForumPosterPanel;
@@ -61,7 +71,11 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
     this.movePanel = movePanel;
     purchasePanel = new PurchasePanel(data, map);
     repairPanel = new RepairPanel(data, map);
-    placePanel = new PlacePanel(data, map, parent);
+    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
+      placePanel = new PlacePanel(data, map, PlacePanel.Mode.UNITS_TO_PLACE_VIEW_DETACHED, parent);
+    } else {
+      placePanel = new PlacePanel(data, map, PlacePanel.Mode.UNITS_TO_PLACE_VIEW_ATTACHED, parent);
+    }
     techPanel = new TechPanel(data, map);
     endTurnPanel = new EndTurnPanel(data, map);
     moveForumPosterPanel = new MoveForumPosterPanel(data, map);
@@ -270,10 +284,6 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
 
   public Optional<ActionPanel> getCurrent() {
     return Optional.ofNullable(actionPanel);
-  }
-
-  public BattlePanel getBattlePanel() {
-    return battlePanel;
   }
 
   /**
