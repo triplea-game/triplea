@@ -287,10 +287,14 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   private void updateUnits() {
-    final Collection<UnitCategory> unitCategories =
-        UnitSeparator.categorize(getCurrentPlayer().getUnits());
-    unitsToPlacePanel.setUnitsFromCategories(unitCategories);
-    unitsToPlacePanel.revalidate();
+    SwingUtilities.invokeLater(
+        () -> {
+          final Collection<UnitCategory> unitCategories =
+              UnitSeparator.categorize(getCurrentPlayer().getUnits());
+          unitsToPlacePanel.setUnitsFromCategories(unitCategories);
+          unitsToPlacePanel.revalidate();
+          unitsToPlacePanel.repaint();
+        });
   }
 
   @Override
