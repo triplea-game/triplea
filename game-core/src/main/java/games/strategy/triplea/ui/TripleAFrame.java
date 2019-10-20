@@ -187,7 +187,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final JLabel player = new JLabel("xxxxxx");
   private final ActionButtons actionButtons;
   private final JPanel gameMainPanel = new JPanel();
-  private JPanel rightHandSidePanel;
+  private final JPanel rightHandSidePanel = new JPanel();
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
@@ -592,7 +592,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     step.setHorizontalTextPosition(SwingConstants.LEADING);
     gameSouthPanel.add(stepPanel, BorderLayout.EAST);
     gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-    rightHandSidePanel = new JPanel();
     rightHandSidePanel.setLayout(new BorderLayout());
     final FocusAdapter focusToMapPanelFocusListener =
         new FocusAdapter() {
