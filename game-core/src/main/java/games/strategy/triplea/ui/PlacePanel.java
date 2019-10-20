@@ -1,9 +1,13 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
@@ -23,21 +27,31 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.SwingComponents;
 
-class PlacePanel extends AbstractMovePanel {
+class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private static final long serialVersionUID = -4411301492537704785L;
+  @Getter private final Mode mode;
   private final JLabel actionLabel = new JLabel();
   private final JLabel leftToPlaceLabel = new JLabel();
   private PlaceData placeData;
-  private final SimpleUnitPanel unitsToPlace;
+
+  private @Nullable CollapsiblePanel detachedCollapsiblePanel;
+  private final SimpleUnitPanel unitsToPlacePanel;
+
+  private PlayerId lastPlayer;
+  private boolean postProductionStep;
 
   private final MapSelectionListener placeMapSelectionListener =
       new DefaultMapSelectionListener() {
@@ -94,11 +108,104 @@ class PlacePanel extends AbstractMovePanel {
         }
       };
 
-  PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
+  /**
+   * Indicates wheter the view that shows the units to place should be part of the panel
+   * (UNITS_TO_PLACE_VIEW_ATTACHED), or simply managed by the panel, but shown externally
+   * (UNITS_TO_PLACE_VIEW_DETACHED). In the later case, it's responsibility of the owner of this
+   * object to display that view, which can be accessed via getUnitsToPlacePanel().
+   */
+  enum Mode {
+    UNITS_TO_PLACE_VIEW_ATTACHED,
+    UNITS_TO_PLACE_VIEW_DETACHED
+  }
+
+  PlacePanel(final GameData data, final MapPanel map, final Mode mode, final TripleAFrame frame) {
     super(data, map, frame);
+    this.mode = mode;
     undoableMovesPanel = new UndoablePlacementsPanel(this);
-    unitsToPlace = new SimpleUnitPanel(map.getUiContext());
+    if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
+      unitsToPlacePanel =
+          new SimpleUnitPanel(
+              map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
+      unitsToPlacePanel.setVisible(false);
+      detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units to Place");
+      data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
+    } else {
+      unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
+    }
     leftToPlaceLabel.setText("Units left to place:");
+  }
+
+  public JComponent getDetachedUnitsToPlacePanel() {
+    return detachedCollapsiblePanel;
+  }
+
+  private void updateStep() {
+    final Collection<UnitCategory> unitsToPlace;
+    final boolean showUnitsToPlace;
+    final GameData data = getData();
+    data.acquireReadLock();
+    try {
+      final GameStep step = data.getSequence().getStep();
+      if (step == null) {
+        return;
+      }
+      // Note: This doesn't use getCurrentPlayer() as that may not be updated yet.
+      final PlayerId player = step.getPlayerId();
+      final boolean isFirstTurn = (player == null || !player.equals(lastPlayer));
+      if (isFirstTurn) {
+        postProductionStep = false;
+      }
+      // If we're past the production step (even if player didn't produce anything) or
+      // there are units that are available to place, show the panel (set unitsToPlace).
+      showUnitsToPlace = (postProductionStep || (player != null && !player.getUnits().isEmpty()));
+      unitsToPlace = showUnitsToPlace ? UnitSeparator.categorize(player.getUnits()) : null;
+      if (GameStep.isPurchaseOrBidStep(step.getName())) {
+        postProductionStep = true;
+      }
+      lastPlayer = player;
+      // During the place step, listen for changes to update the panel.
+      if (GameStep.isPlaceStep(step.getName())) {
+        data.addDataChangeListener(this);
+      } else {
+        data.removeDataChangeListener(this);
+      }
+    } finally {
+      data.releaseReadLock();
+    }
+
+    SwingUtilities.invokeLater(
+        () -> {
+          if (showUnitsToPlace) {
+            unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
+            detachedCollapsiblePanel.setVisible(true);
+            unitsToPlacePanel.revalidate();
+            unitsToPlacePanel.repaint();
+          } else {
+            detachedCollapsiblePanel.setVisible(false);
+            unitsToPlacePanel.removeAll();
+          }
+        });
+  }
+
+  @Override
+  public void gameDataChanged(final Change change) {
+    final Collection<UnitCategory> unitsToPlace;
+    final GameData data = getData();
+    data.acquireReadLock();
+    try {
+      final PlayerId player = data.getSequence().getStep().getPlayerId();
+      unitsToPlace = UnitSeparator.categorize(player.getUnits());
+    } finally {
+      data.releaseReadLock();
+    }
+
+    SwingUtilities.invokeLater(
+        () -> {
+          unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
+          unitsToPlacePanel.revalidate();
+          unitsToPlacePanel.repaint();
+        });
   }
 
   @Override
@@ -196,9 +303,13 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   private void updateUnits() {
+    if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
+      // Units are updated via a different mechanism that supports remote players.
+      return;
+    }
     final Collection<UnitCategory> unitCategories =
         UnitSeparator.categorize(getCurrentPlayer().getUnits());
-    unitsToPlace.setUnitsFromCategories(unitCategories);
+    unitsToPlacePanel.setUnitsFromCategories(unitCategories);
   }
 
   @Override
@@ -238,7 +349,6 @@ class PlacePanel extends AbstractMovePanel {
               "TripleA",
               JOptionPane.YES_NO_OPTION,
               JOptionPane.PLAIN_MESSAGE);
-      // TODO COMCO add code here to store the units until next time
       if (option != JOptionPane.YES_OPTION) {
         return false;
       }
@@ -254,7 +364,10 @@ class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected final List<Component> getAdditionalButtons() {
+    if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
+      return super.getAdditionalButtons();
+    }
     updateUnits();
-    return Arrays.asList(SwingComponents.leftBox(leftToPlaceLabel), add(unitsToPlace));
+    return Arrays.asList(SwingComponents.leftBox(leftToPlaceLabel), add(unitsToPlacePanel));
   }
 }

@@ -76,8 +76,6 @@ import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -190,7 +188,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final ActionButtons actionButtons;
   private final JPanel gameMainPanel = new JPanel();
   private final JPanel rightHandSidePanel = new JPanel();
-  private final SimpleUnitPanel unitsToPlacePanel;
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
@@ -217,7 +214,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private List<Unit> unitsBeingMousedOver;
   private PlayerId lastStepPlayer;
   private PlayerId currentStepPlayer;
-  private boolean postProductionStep;
   private final Map<PlayerId, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
@@ -611,13 +607,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     rightHandSidePanel.add(smallView, BorderLayout.NORTH);
     tabsPanel.setBorder(null);
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
-    unitsToPlacePanel =
-        new SimpleUnitPanel(
-            uiContext, SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    unitsToPlacePanel.setBorder(BorderFactory.createTitledBorder("Units to Place"));
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
+    final PlacePanel placePanel = actionButtons.getPlacePanel();
+    if (placePanel.getMode() == PlacePanel.Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
+      rightHandSidePanel.add(placePanel.getDetachedUnitsToPlacePanel(), BorderLayout.SOUTH);
+    }
 
     addKeyBindings(movePanel, actionButtons, this);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
@@ -1913,26 +1909,18 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     if (uiContext == null || uiContext.isShutDown()) {
       return;
     }
-    data.acquireReadLock();
-    try {
-      if (data.getSequence().getStep() == null) {
-        return;
-      }
-    } finally {
-      data.releaseReadLock();
-    }
     final int round;
     final String stepDisplayName;
     final PlayerId player;
-    @Nullable final Collection<UnitCategory> unitsToPlace;
     data.acquireReadLock();
     try {
       round = data.getSequence().getRound();
       final GameStep step = data.getSequence().getStep();
+      if (step == null) {
+        return;
+      }
       stepDisplayName = step.getDisplayName();
-      final PlayerId lastPlayer = lastStepPlayer;
-      player = data.getSequence().getStep().getPlayerId();
-      unitsToPlace = getUpdatedUnitsToPlace(lastPlayer, player, step);
+      player = step.getPlayerId();
     } finally {
       data.releaseReadLock();
     }
@@ -1955,11 +1943,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
           if (player != null) {
             this.player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
           }
-          rightHandSidePanel.remove(unitsToPlacePanel);
-          if (unitsToPlace != null) {
-            unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
-            rightHandSidePanel.add(unitsToPlacePanel, BorderLayout.SOUTH);
-          }
         });
     resourceBar.gameDataChanged(null);
     // if the game control has passed to someone else and we are not just showing the map, show the
@@ -1977,27 +1960,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
         }
       }
     }
-  }
-
-  private @Nullable Collection<UnitCategory> getUpdatedUnitsToPlace(
-      final PlayerId lastPlayer, final PlayerId player, final GameStep step) {
-    if (!ClientSetting.showBetaFeatures.getValueOrThrow()) {
-      return null;
-    }
-    Collection<UnitCategory> unitCategories = null;
-    // Keep track if we're past the production step for the current player.
-    // If the current player changes, reset to false.
-    if (player == null || !player.equals(lastPlayer)) {
-      postProductionStep = false;
-    } else if (postProductionStep || !player.getUnits().isEmpty()) {
-      // If we're past the production step (even if player didn't produce anything)
-      // or there are units that are available to place, show the panel (return non-null).
-      unitCategories = UnitSeparator.categorize(player.getUnits());
-    }
-    if (GameStep.isPurchaseOrBidStep(step.getName())) {
-      postProductionStep = true;
-    }
-    return unitCategories;
   }
 
   /**
