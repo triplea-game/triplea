@@ -25,29 +25,31 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel {
   private static final long serialVersionUID = -4411301492537704785L;
-  private final Mode mode;
+  @Getter private final Mode mode;
   private final JLabel actionLabel = new JLabel();
   private final JLabel leftToPlaceLabel = new JLabel();
   private PlaceData placeData;
 
-  @Getter private final SimpleUnitPanel unitsToPlacePanel;
+  private @Nullable CollapsiblePanel detachedCollapsiblePanel;
+  private final SimpleUnitPanel unitsToPlacePanel;
 
   private PlayerId lastPlayer;
   private boolean postProductionStep;
-  private boolean splitPaneWasMinimized;
 
   private final MapSelectionListener placeMapSelectionListener =
       new DefaultMapSelectionListener() {
@@ -123,13 +125,17 @@ class PlacePanel extends AbstractMovePanel {
       unitsToPlacePanel =
           new SimpleUnitPanel(
               map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-      unitsToPlacePanel.setBorder(BorderFactory.createTitledBorder("Units to Place"));
       unitsToPlacePanel.setVisible(false);
       data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
+      detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units to Place");
     } else {
       unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
     }
     leftToPlaceLabel.setText("Units left to place:");
+  }
+
+  public JComponent getDetachedUnitsToPlacePanel() {
+    return detachedCollapsiblePanel;
   }
 
   private void updateStep() {
@@ -162,31 +168,11 @@ class PlacePanel extends AbstractMovePanel {
 
     SwingUtilities.invokeLater(
         () -> {
-          JSplitPane splitPane = (JSplitPane) unitsToPlacePanel.getParent();
-          if (showUnitsToPlace) { // Show the panel.
+          if (showUnitsToPlace) {
             unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
-            if (!unitsToPlacePanel.isVisible()) {
-              unitsToPlacePanel.setVisible(true);
-              // If we're making the panel visible, also make the split
-              // pane divider visible and maximize.
-              splitPane.setDividerSize(8);
-              if (!splitPaneWasMinimized) {
-                splitPane.resetToPreferredSizes();
-              }
-            }
-          } else { // Hide the panel.
-            // If the panel was visible before, remember whether the split pane was
-            // minimized so that we don't open it up again the next time we show it.
-            if (unitsToPlacePanel.isVisible()) {
-              // Note: We don't use getMaximumDividerLocation() because that takes into account
-              // the preferred size of the unit panel and therefore when not minimized, it may
-              // still be at its "maximum location".
-              final var dividerBottom = splitPane.getDividerLocation() + splitPane.getDividerSize();
-              splitPaneWasMinimized = (dividerBottom == splitPane.getHeight());
-            }
-            // Set the divider size to 0 to hide the divider UI.
-            splitPane.setDividerSize(0);
-            unitsToPlacePanel.setVisible(false);
+            detachedCollapsiblePanel.setVisible(true);
+          } else {
+            detachedCollapsiblePanel.setVisible(false);
             unitsToPlacePanel.removeAll();
           }
         });

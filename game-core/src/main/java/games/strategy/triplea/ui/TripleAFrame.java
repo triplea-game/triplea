@@ -187,7 +187,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final JLabel player = new JLabel("xxxxxx");
   private final ActionButtons actionButtons;
   private final JPanel gameMainPanel = new JPanel();
-  private JSplitPane rightHandSideSplit;
+  private JPanel rightHandSidePanel;
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
   private final EconomyPanel economyPanel;
@@ -592,7 +592,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     step.setHorizontalTextPosition(SwingConstants.LEADING);
     gameSouthPanel.add(stepPanel, BorderLayout.EAST);
     gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-    final JPanel rightHandSidePanel = new JPanel();
+    rightHandSidePanel = new JPanel();
     rightHandSidePanel.setLayout(new BorderLayout());
     final FocusAdapter focusToMapPanelFocusListener =
         new FocusAdapter() {
@@ -611,17 +611,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
-
-    rightHandSideSplit =
-        new JSplitPane(
-            JSplitPane.VERTICAL_SPLIT,
-            rightHandSidePanel,
-            actionButtons.getPlacePanel().getUnitsToPlacePanel());
-    rightHandSideSplit.setOneTouchExpandable(true);
-    rightHandSideSplit.setResizeWeight(1.0);
-    // Initial divider size is 0 so that the split pane is basically invisible.
-    // This will be adjusted when the units to place panel gets shown.
-    rightHandSideSplit.setDividerSize(0);
+    final PlacePanel placePanel = actionButtons.getPlacePanel();
+    if (placePanel.getMode() == PlacePanel.Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
+      rightHandSidePanel.add(placePanel.getDetachedUnitsToPlacePanel(), BorderLayout.SOUTH);
+    }
 
     addKeyBindings(movePanel, actionButtons, this);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
@@ -668,12 +661,12 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
             editPanel.setActive(false);
           }
         });
-    rightHandSideSplit.setPreferredSize(
+    rightHandSidePanel.setPreferredSize(
         new Dimension(
             (int) smallView.getPreferredSize().getWidth(),
             (int) mapPanel.getPreferredSize().getHeight()));
     gameCenterPanel =
-        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSideSplit);
+        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
     gameCenterPanel.setOneTouchExpandable(true);
     gameCenterPanel.setDividerSize(8);
     gameCenterPanel.setResizeWeight(1.0);
@@ -2106,11 +2099,11 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   }
 
   public void showRightHandSidePanel() {
-    rightHandSideSplit.setVisible(true);
+    rightHandSidePanel.setVisible(true);
   }
 
   public void hideRightHandSidePanel() {
-    rightHandSideSplit.setVisible(false);
+    rightHandSidePanel.setVisible(false);
   }
 
   public HistoryPanel getHistoryPanel() {
@@ -2371,7 +2364,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
       gameMainPanel.removeAll();
       gameMainPanel.setLayout(new BorderLayout());
       gameMainPanel.add(mapAndChatPanel, BorderLayout.CENTER);
-      gameMainPanel.add(rightHandSideSplit, BorderLayout.EAST);
+      gameMainPanel.add(rightHandSidePanel, BorderLayout.EAST);
       gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
       getContentPane().removeAll();
       getContentPane().add(gameMainPanel, BorderLayout.CENTER);
