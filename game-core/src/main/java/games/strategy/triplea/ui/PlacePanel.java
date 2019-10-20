@@ -1,11 +1,13 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
@@ -38,7 +40,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.SwingComponents;
 
-class PlacePanel extends AbstractMovePanel {
+class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private static final long serialVersionUID = -4411301492537704785L;
   @Getter private final Mode mode;
   private final JLabel actionLabel = new JLabel();
@@ -126,8 +128,8 @@ class PlacePanel extends AbstractMovePanel {
           new SimpleUnitPanel(
               map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
       unitsToPlacePanel.setVisible(false);
-      data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
       detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units to Place");
+      data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
     } else {
       unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
     }
@@ -162,6 +164,14 @@ class PlacePanel extends AbstractMovePanel {
         postProductionStep = true;
       }
       lastPlayer = player;
+      // During the place step, listen for changes to update the panel.
+      if (GameStep.isPlaceStep(step.getName())) {
+        if (showUnitsToPlace) {
+          data.addDataChangeListener(this);
+        } else {
+          data.removeDataChangeListener(this);
+        }
+      }
     } finally {
       data.releaseReadLock();
     }
@@ -171,10 +181,32 @@ class PlacePanel extends AbstractMovePanel {
           if (showUnitsToPlace) {
             unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
             detachedCollapsiblePanel.setVisible(true);
+            unitsToPlacePanel.revalidate();
+            unitsToPlacePanel.repaint();
           } else {
             detachedCollapsiblePanel.setVisible(false);
             unitsToPlacePanel.removeAll();
           }
+        });
+  }
+
+  @Override
+  public void gameDataChanged(Change change) {
+    final Collection<UnitCategory> unitsToPlace;
+    final GameData data = getData();
+    data.acquireReadLock();
+    try {
+      final PlayerId player = data.getSequence().getStep().getPlayerId();
+      unitsToPlace = UnitSeparator.categorize(player.getUnits());
+    } finally {
+      data.releaseReadLock();
+    }
+
+    SwingUtilities.invokeLater(
+        () -> {
+          unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
+          unitsToPlacePanel.revalidate();
+          unitsToPlacePanel.repaint();
         });
   }
 
@@ -273,14 +305,13 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   private void updateUnits() {
-    SwingUtilities.invokeLater(
-        () -> {
-          final Collection<UnitCategory> unitCategories =
-              UnitSeparator.categorize(getCurrentPlayer().getUnits());
-          unitsToPlacePanel.setUnitsFromCategories(unitCategories);
-          unitsToPlacePanel.revalidate();
-          unitsToPlacePanel.repaint();
-        });
+    if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
+      // Units are updated via a different mechanism that supports remote players.
+      return;
+    }
+    final Collection<UnitCategory> unitCategories =
+        UnitSeparator.categorize(getCurrentPlayer().getUnits());
+    unitsToPlacePanel.setUnitsFromCategories(unitCategories);
   }
 
   @Override

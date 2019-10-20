@@ -146,7 +146,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       }
     } else if (name.endsWith("Battle")) {
       battle();
-    } else if (name.endsWith("Place")) {
+    } else if (GameStep.isPlaceStep(name)) {
       place();
     } else if (name.endsWith("Politics")) {
       politics(true);
