@@ -189,7 +189,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   @Override
-  public void gameDataChanged(Change change) {
+  public void gameDataChanged(final Change change) {
     final Collection<UnitCategory> unitsToPlace;
     final GameData data = getData();
     data.acquireReadLock();
