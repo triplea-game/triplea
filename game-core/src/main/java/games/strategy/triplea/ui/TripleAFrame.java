@@ -214,7 +214,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private List<Unit> unitsBeingMousedOver;
   private PlayerId lastStepPlayer;
   private PlayerId currentStepPlayer;
-  private boolean postProductionStep;
   private final Map<PlayerId, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;

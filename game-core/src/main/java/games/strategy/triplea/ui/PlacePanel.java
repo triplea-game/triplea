@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingComponents;
@@ -45,8 +43,7 @@ class PlacePanel extends AbstractMovePanel {
   private final JLabel leftToPlaceLabel = new JLabel();
   private PlaceData placeData;
 
-  @Getter(AccessLevel.PUBLIC)
-  private final SimpleUnitPanel unitsToPlacePanel;
+  @Getter private final SimpleUnitPanel unitsToPlacePanel;
 
   private PlayerId lastPlayer;
   private boolean postProductionStep;
@@ -107,6 +104,12 @@ class PlacePanel extends AbstractMovePanel {
         }
       };
 
+  /**
+   * Indicates wheter the view that shows the units to place should be part of the panel
+   * (UNITS_TO_PLACE_VIEW_ATTACHED), or simply managed by the panel, but shown externally
+   * (UNITS_TO_PLACE_VIEW_DETACHED). In the later case, it's responsibility of the owner of this
+   * object to display that view, which can be accessed via getUnitsToPlacePanel().
+   */
   enum Mode {
     UNITS_TO_PLACE_VIEW_ATTACHED,
     UNITS_TO_PLACE_VIEW_DETACHED
@@ -131,6 +134,7 @@ class PlacePanel extends AbstractMovePanel {
 
   private void updateStep() {
     final Collection<UnitCategory> unitsToPlace;
+    final boolean showUnitsToPlace;
     final GameData data = getData();
     data.acquireReadLock();
     try {
@@ -140,7 +144,17 @@ class PlacePanel extends AbstractMovePanel {
       }
       // Note: This doesn't use getCurrentPlayer() as that may not be updated yet.
       final PlayerId player = step.getPlayerId();
-      unitsToPlace = getUpdatedUnitsToPlace(lastPlayer, player, step);
+      final boolean isFirstTurn = (player == null || !player.equals(lastPlayer));
+      if (isFirstTurn) {
+        postProductionStep = false;
+      }
+      // If we're past the production step (even if player didn't produce anything) or
+      // there are units that are available to place, show the panel (set unitsToPlace).
+      showUnitsToPlace = (postProductionStep || (player != null && !player.getUnits().isEmpty()));
+      unitsToPlace = showUnitsToPlace ? UnitSeparator.categorize(player.getUnits()) : null;
+      if (GameStep.isPurchaseOrBidStep(step.getName())) {
+        postProductionStep = true;
+      }
       lastPlayer = player;
     } finally {
       data.releaseReadLock();
@@ -148,63 +162,34 @@ class PlacePanel extends AbstractMovePanel {
 
     SwingUtilities.invokeLater(
         () -> {
-          JSplitPane splitPane = null;
-          final Component parent = unitsToPlacePanel.getParent();
-          if (parent instanceof JSplitPane) {
-            splitPane = ((JSplitPane) parent);
-          }
-          if (unitsToPlace != null) {
-            // Show the panel.
+          JSplitPane splitPane = (JSplitPane) unitsToPlacePanel.getParent();
+          if (showUnitsToPlace) { // Show the panel.
             unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
             if (!unitsToPlacePanel.isVisible()) {
               unitsToPlacePanel.setVisible(true);
               // If we're making the panel visible, also make the split
               // pane divider visible and maximize.
-              if (splitPane != null) {
-                splitPane.setDividerSize(8);
-                if (!splitPaneWasMinimized) {
-                  splitPane.resetToPreferredSizes();
-                }
+              splitPane.setDividerSize(8);
+              if (!splitPaneWasMinimized) {
+                splitPane.resetToPreferredSizes();
               }
             }
-          } else {
-            // Hide the panel.
-            if (splitPane != null) {
-              // If the panel was visible before, remember whether the split pane was
-              // minimized so that we don't open it up again the next time we show it.
-              if (unitsToPlacePanel.isVisible()) {
-                // Note: We don't use getMaximumDividerLocation() because that takes into account
-                // the preferred size of the unit panel and therefore when not minimized, it may
-                // still be at its "maximum location".
-                final var dividerBottom =
-                    splitPane.getDividerLocation() + splitPane.getDividerSize();
-                splitPaneWasMinimized = (dividerBottom == splitPane.getHeight());
-              }
-              // Set the divider size to 0 to hide the divider UI.
-              splitPane.setDividerSize(0);
+          } else { // Hide the panel.
+            // If the panel was visible before, remember whether the split pane was
+            // minimized so that we don't open it up again the next time we show it.
+            if (unitsToPlacePanel.isVisible()) {
+              // Note: We don't use getMaximumDividerLocation() because that takes into account
+              // the preferred size of the unit panel and therefore when not minimized, it may
+              // still be at its "maximum location".
+              final var dividerBottom = splitPane.getDividerLocation() + splitPane.getDividerSize();
+              splitPaneWasMinimized = (dividerBottom == splitPane.getHeight());
             }
+            // Set the divider size to 0 to hide the divider UI.
+            splitPane.setDividerSize(0);
             unitsToPlacePanel.setVisible(false);
             unitsToPlacePanel.removeAll();
           }
         });
-  }
-
-  private @Nullable Collection<UnitCategory> getUpdatedUnitsToPlace(
-      final PlayerId lastPlayer, final PlayerId player, final GameStep step) {
-    Collection<UnitCategory> unitCategories = null;
-    // Keep track if we're past the production step for the current player.
-    // If the current player changes, reset to false.
-    if (player == null || !player.equals(lastPlayer)) {
-      postProductionStep = false;
-    } else if (postProductionStep || !player.getUnits().isEmpty()) {
-      // If we're past the production step (even if player didn't produce anything)
-      // or there are units that are available to place, show the panel (return non-null).
-      unitCategories = UnitSeparator.categorize(player.getUnits());
-    }
-    if (GameStep.isPurchaseOrBidStep(step.getName())) {
-      postProductionStep = true;
-    }
-    return unitCategories;
   }
 
   @Override
@@ -361,7 +346,7 @@ class PlacePanel extends AbstractMovePanel {
   @Override
   protected final List<Component> getAdditionalButtons() {
     if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
-      return Arrays.asList(new Component[0]);
+      return super.getAdditionalButtons();
     }
     updateUnits();
     return Arrays.asList(SwingComponents.leftBox(leftToPlaceLabel), add(unitsToPlacePanel));

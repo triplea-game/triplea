@@ -31,7 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -43,16 +42,14 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
   private static final long serialVersionUID = 2175685892863042399L;
   private final CardLayout layout = new CardLayout();
 
-  @Getter(AccessLevel.PUBLIC)
-  private BattlePanel battlePanel;
+  @Getter private BattlePanel battlePanel;
 
   private MovePanel movePanel;
 
   private PurchasePanel purchasePanel;
   private RepairPanel repairPanel;
 
-  @Getter(AccessLevel.PUBLIC)
-  private PlacePanel placePanel;
+  @Getter private PlacePanel placePanel;
 
   private TechPanel techPanel;
   private EndTurnPanel endTurnPanel;
@@ -71,11 +68,11 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
     this.movePanel = movePanel;
     purchasePanel = new PurchasePanel(data, map);
     repairPanel = new RepairPanel(data, map);
-    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
-      placePanel = new PlacePanel(data, map, PlacePanel.Mode.UNITS_TO_PLACE_VIEW_DETACHED, parent);
-    } else {
-      placePanel = new PlacePanel(data, map, PlacePanel.Mode.UNITS_TO_PLACE_VIEW_ATTACHED, parent);
-    }
+    final var placeMode =
+        ClientSetting.showBetaFeatures.getValueOrThrow()
+            ? PlacePanel.Mode.UNITS_TO_PLACE_VIEW_DETACHED
+            : PlacePanel.Mode.UNITS_TO_PLACE_VIEW_ATTACHED;
+    placePanel = new PlacePanel(data, map, placeMode, parent);
     techPanel = new TechPanel(data, map);
     endTurnPanel = new EndTurnPanel(data, map);
     moveForumPosterPanel = new MoveForumPosterPanel(data, map);
