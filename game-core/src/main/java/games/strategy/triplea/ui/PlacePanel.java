@@ -166,11 +166,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       lastPlayer = player;
       // During the place step, listen for changes to update the panel.
       if (GameStep.isPlaceStep(step.getName())) {
-        if (showUnitsToPlace) {
-          data.addDataChangeListener(this);
-        } else {
-          data.removeDataChangeListener(this);
-        }
+        data.addDataChangeListener(this);
+      } else {
+        data.removeDataChangeListener(this);
       }
     } finally {
       data.releaseReadLock();
