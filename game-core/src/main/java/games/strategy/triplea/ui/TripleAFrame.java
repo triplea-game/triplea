@@ -611,9 +611,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
     final PlacePanel placePanel = actionButtons.getPlacePanel();
-    if (placePanel.getMode() == PlacePanel.Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
-      rightHandSidePanel.add(placePanel.getDetachedUnitsToPlacePanel(), BorderLayout.SOUTH);
-    }
+    rightHandSidePanel.add(placePanel.getDetachedUnitsToPlacePanel(), BorderLayout.SOUTH);
 
     addKeyBindings(movePanel, actionButtons, this);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));

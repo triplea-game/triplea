@@ -16,7 +16,6 @@ import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
-import games.strategy.triplea.settings.ClientSetting;
 import java.awt.CardLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -68,11 +67,7 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
     this.movePanel = movePanel;
     purchasePanel = new PurchasePanel(data, map);
     repairPanel = new RepairPanel(data, map);
-    final var placeMode =
-        ClientSetting.showBetaFeatures.getValueOrThrow()
-            ? PlacePanel.Mode.UNITS_TO_PLACE_VIEW_DETACHED
-            : PlacePanel.Mode.UNITS_TO_PLACE_VIEW_ATTACHED;
-    placePanel = new PlacePanel(data, map, placeMode, parent);
+    placePanel = new PlacePanel(data, map, parent);
     techPanel = new TechPanel(data, map);
     endTurnPanel = new EndTurnPanel(data, map);
     moveForumPosterPanel = new MoveForumPosterPanel(data, map);

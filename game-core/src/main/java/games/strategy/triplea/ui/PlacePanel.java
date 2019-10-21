@@ -22,12 +22,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -35,19 +32,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.CollapsiblePanel;
-import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private static final long serialVersionUID = -4411301492537704785L;
-  @Getter private final Mode mode;
   private final JLabel actionLabel = new JLabel();
-  private final JLabel leftToPlaceLabel = new JLabel();
   private PlaceData placeData;
 
-  private @Nullable CollapsiblePanel detachedCollapsiblePanel;
+  private final CollapsiblePanel detachedCollapsiblePanel;
   private final SimpleUnitPanel unitsToPlacePanel;
 
   private PlayerId lastPlayer;
@@ -99,41 +92,20 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
           if (option == JOptionPane.OK_OPTION) {
             final Collection<Unit> choosen = chooser.getSelected();
             placeData = new PlaceData(choosen, territory);
-            updateUnits();
-            if (choosen.containsAll(units)) {
-              leftToPlaceLabel.setText("");
-            }
             release();
           }
         }
       };
 
-  /**
-   * Indicates wheter the view that shows the units to place should be part of the panel
-   * (UNITS_TO_PLACE_VIEW_ATTACHED), or simply managed by the panel, but shown externally
-   * (UNITS_TO_PLACE_VIEW_DETACHED). In the later case, it's responsibility of the owner of this
-   * object to display that view, which can be accessed via getUnitsToPlacePanel().
-   */
-  enum Mode {
-    UNITS_TO_PLACE_VIEW_ATTACHED,
-    UNITS_TO_PLACE_VIEW_DETACHED
-  }
-
-  PlacePanel(final GameData data, final MapPanel map, final Mode mode, final TripleAFrame frame) {
+  PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
-    this.mode = mode;
     undoableMovesPanel = new UndoablePlacementsPanel(this);
-    if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
-      unitsToPlacePanel =
-          new SimpleUnitPanel(
-              map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-      unitsToPlacePanel.setVisible(false);
-      detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units to Place");
-      data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
-    } else {
-      unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
-    }
-    leftToPlaceLabel.setText("Units left to place:");
+    unitsToPlacePanel =
+        new SimpleUnitPanel(
+            map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
+    unitsToPlacePanel.setVisible(false);
+    detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units to Place");
+    data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
   }
 
   public JComponent getDetachedUnitsToPlacePanel() {
@@ -302,16 +274,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     }
   }
 
-  private void updateUnits() {
-    if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
-      // Units are updated via a different mechanism that supports remote players.
-      return;
-    }
-    final Collection<UnitCategory> unitCategories =
-        UnitSeparator.categorize(getCurrentPlayer().getUnits());
-    unitsToPlacePanel.setUnitsFromCategories(unitCategories);
-  }
-
   @Override
   public String toString() {
     return "PlacePanel";
@@ -324,10 +286,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   @Override
-  protected final void undoMoveSpecific() {
-    leftToPlaceLabel.setText("Units left to place:");
-    updateUnits();
-  }
+  protected final void undoMoveSpecific() {}
 
   @Override
   protected final void cleanUpSpecific() {
@@ -360,14 +319,5 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   @Override
   protected boolean setCancelButton() {
     return false;
-  }
-
-  @Override
-  protected final List<Component> getAdditionalButtons() {
-    if (mode == Mode.UNITS_TO_PLACE_VIEW_DETACHED) {
-      return super.getAdditionalButtons();
-    }
-    updateUnits();
-    return Arrays.asList(SwingComponents.leftBox(leftToPlaceLabel), add(unitsToPlacePanel));
   }
 }
