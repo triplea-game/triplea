@@ -103,7 +103,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     unitsToPlacePanel =
         new SimpleUnitPanel(
             map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    unitsToPlacePanel.setVisible(false);
     detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units to Place");
     data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
   }
