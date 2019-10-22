@@ -312,7 +312,7 @@ public class DownloadMapsWindow extends JFrame {
   private Component newTabbedPanelForMaps(
       final List<DownloadFileDescription> downloads,
       final Set<DownloadFileDescription> pendingDownloads) {
-    final JTabbedPane mapTabs = SwingComponents.newJTabbedPane();
+    final JTabbedPane mapTabs = SwingComponents.newJTabbedPaneWithFixedWidthTabs(900, 600);
     for (final DownloadFileDescription.MapCategory mapCategory :
         DownloadFileDescription.MapCategory.values()) {
       final List<DownloadFileDescription> categorizedDownloads =
