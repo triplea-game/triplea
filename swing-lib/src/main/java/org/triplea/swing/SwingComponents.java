@@ -140,7 +140,7 @@ public final class SwingComponents {
   }
 
   public static JTabbedPane newJTabbedPane(final int width, final int height) {
-    final JTabbedPane tabbedPane = new JTabbedPaneWithFixedWidthTabs();
+    final JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setPreferredSize(new Dimension(width, height));
     return tabbedPane;
   }
