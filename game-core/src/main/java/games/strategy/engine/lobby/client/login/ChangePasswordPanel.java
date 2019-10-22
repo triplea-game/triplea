@@ -31,6 +31,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** Panel dedicated to changing password after user has logged in with a temporary password. */
 public final class ChangePasswordPanel extends JPanel {
+  private static final long serialVersionUID = 1L;
 
   private static final String TITLE = "Change Password";
   private @Nullable JDialog dialog;
