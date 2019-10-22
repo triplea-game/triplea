@@ -3,6 +3,7 @@ package org.triplea.swing;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.framework.system.SystemProperties;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -41,6 +42,7 @@ import javax.swing.ListModel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.triplea.awt.OpenFileUtility;
@@ -144,7 +146,12 @@ public final class SwingComponents {
   }
 
   public static JTabbedPane newJTabbedPane(final int width, final int height) {
-    final JTabbedPane tabbedPane = new JTabbedPaneWithFixedWidthTabs();
+    // On Mac with the native L&F, JTabbedPane does not show multiple rows of tabs, so having
+    // them fixed width causes more to overflow. Don't use fixed width tabs in that case.
+    final boolean useFixedWidthTabs =
+        !SystemProperties.isMac() || !UIManager.getLookAndFeel().isNativeLookAndFeel();
+    final JTabbedPane tabbedPane =
+        useFixedWidthTabs ? new JTabbedPaneWithFixedWidthTabs() : new JTabbedPane();
     tabbedPane.setPreferredSize(new Dimension(width, height));
     return tabbedPane;
   }
