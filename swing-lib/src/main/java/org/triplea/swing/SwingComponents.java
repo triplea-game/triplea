@@ -139,11 +139,13 @@ public final class SwingComponents {
             });
   }
 
-  public static JTabbedPane newJTabbedPane() {
-    return newJTabbedPane(900, 600);
+  public static JTabbedPane newJTabbedPane(final int width, final int height) {
+    final JTabbedPane tabbedPane = new JTabbedPaneWithFixedWidthTabs();
+    tabbedPane.setPreferredSize(new Dimension(width, height));
+    return tabbedPane;
   }
 
-  public static JTabbedPane newJTabbedPane(final int width, final int height) {
+  public static JTabbedPane newJTabbedPaneWithFixedWidthTabs(final int width, final int height) {
     final JTabbedPane tabbedPane = new JTabbedPaneWithFixedWidthTabs();
     tabbedPane.setPreferredSize(new Dimension(width, height));
     return tabbedPane;
