@@ -57,12 +57,13 @@ public class RootActionPane implements ScreenController<Screens> {
   }
 
   @FXML
+  @SuppressWarnings("unused")
   private void hideExitConfirm() {
     switchScreen(Screens.CONTENT);
   }
 
   @FXML
-  @SuppressWarnings("static-method")
+  @SuppressWarnings({"static-method", "unused"})
   private void exit() {
     Platform.exit();
     if (!GraphicsEnvironment.isHeadless()) {
