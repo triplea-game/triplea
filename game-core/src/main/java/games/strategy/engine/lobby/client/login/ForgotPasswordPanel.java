@@ -25,6 +25,7 @@ import org.triplea.swing.SwingComponents;
  * username.
  */
 final class ForgotPasswordPanel extends JPanel {
+  private static final long serialVersionUID = 1L;
 
   /** Indicates how the user dismissed the dialog displaying the panel. */
   public enum ReturnValue {
