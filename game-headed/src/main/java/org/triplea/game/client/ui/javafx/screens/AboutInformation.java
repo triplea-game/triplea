@@ -27,11 +27,13 @@ public class AboutInformation implements ControlledScreen<ScreenController<FxmlM
   }
 
   @FXML
+  @SuppressWarnings("unused")
   private void showHelp() {
     open(UrlConstants.USER_GUIDE);
   }
 
   @FXML
+  @SuppressWarnings("unused")
   private void showRuleBook() {
     open(UrlConstants.RULE_BOOK);
   }
