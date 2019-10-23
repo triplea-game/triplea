@@ -23,8 +23,7 @@ jobs:
       install: skip
       script:
         - ./.travis/setup_database &
-        - ./.travis/launch_http_server
-        - ./gradlew integTest
+        - ./gradlew --parallel integTest
     - stage: verify
       env: DESCRIPTION="JDK12 unitTests"
       jdk: openjdk12

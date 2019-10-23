@@ -30,7 +30,7 @@ abstract class DropwizardTest {
     private static AtomicBoolean started = new AtomicBoolean(false);
 
     private static final DropwizardTestSupport<AppConfig> support =
-        new DropwizardTestSupport<>(ServerApplication.class, "configuration-prerelease.yml");
+        new DropwizardTestSupport<>(ServerApplication.class, "configuration-testing.yml");
 
     @Override
     public void beforeAll(final ExtensionContext context) {
