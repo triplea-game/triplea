@@ -27,7 +27,11 @@ public class KeyTypeValidator {
                     () -> {
                       if (!validationIsInFlight) {
                         validationIsInFlight = true;
-                        Interruptibles.sleep(200);
+
+                        if(!Interruptibles.sleep(200)) {
+                          validationIsInFlight = false;
+                          return;
+                        }
 
                         final String textData = textComponent.getText().trim();
                         final boolean valid = dataValidation.test(textData);
