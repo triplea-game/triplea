@@ -227,12 +227,7 @@ public final class CreateAccountPanel extends JPanel {
     buttons.add(cancelButton);
 
     cancelButton.addActionListener(e -> close());
-    okButton.addActionListener(
-        e -> {
-          if (okButton.isEnabled()) {
-            okPressed();
-          }
-        });
+    okButton.addActionListener(e -> okPressed());
 
     SwingComponents.addEnterKeyListener(
         this,
