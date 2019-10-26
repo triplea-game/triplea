@@ -9,14 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
-import org.triplea.java.Interruptibles;
 import org.triplea.swing.ButtonColumn;
-import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.JTextFieldBuilder;
+import org.triplea.swing.KeyTypeValidator;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -26,7 +24,6 @@ public final class ModeratorsTab implements Supplier<Component> {
   private final JFrame parentFrame;
   private final ModeratorsTabModel moderatorsTabModel;
   private final ModeratorsTabActions moderatorsTabActions;
-  private volatile boolean checkUserNameIsInFlight = false;
 
   public ModeratorsTab(
       final JFrame parentFrame,
@@ -91,24 +88,13 @@ public final class ModeratorsTab implements Supplier<Component> {
     // This is a very fancy listener that will validate the entered requested new moderator
     // name exists (as the user types) before we enable the submit button.
     // To avoid sending too many requests to server we have a back-off period to batch requests.
-    DocumentListenerBuilder.attachDocumentListener(
-        addField,
-        () ->
-            new Thread(
-                    () -> {
-                      if (!checkUserNameIsInFlight) {
-                        checkUserNameIsInFlight = true;
-                        Interruptibles.sleep(200);
-                        final String usernameRequested = addField.getText().trim();
-                        SwingUtilities.invokeLater(
-                            () ->
-                                addButton.setEnabled(
-                                    usernameRequested.length() >= USERNAME_MIN_LENGTH
-                                        && moderatorsTabModel.checkUserExists(usernameRequested)));
-                        checkUserNameIsInFlight = false;
-                      }
-                    })
-                .start());
+    new KeyTypeValidator()
+        .attachKeyTypeValidator(
+            addField,
+            usernameRequested ->
+                usernameRequested.length() >= USERNAME_MIN_LENGTH
+                    && moderatorsTabModel.checkUserExists(usernameRequested),
+            addButton::setEnabled);
 
     return new JPanelBuilder()
         .add(
