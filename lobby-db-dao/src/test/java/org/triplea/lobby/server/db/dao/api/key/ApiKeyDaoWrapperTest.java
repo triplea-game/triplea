@@ -109,7 +109,8 @@ class ApiKeyDaoWrapperTest {
     @Test
     void newKeyForAnonymousUsers() {
       givenNewKey();
-      when(userJdbiDao.lookupUserRoleByName(PLAYER_NAME.getValue())).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdAndRoleIdByUserName(PLAYER_NAME.getValue()))
+          .thenReturn(Optional.empty());
       when(userRoleDao.lookupAnonymousRoleId()).thenReturn(ANONYMOUS_USER_ROLE_ID);
       when(apiKeyDao.storeKey(
               null,
@@ -127,7 +128,7 @@ class ApiKeyDaoWrapperTest {
     @Test
     void newKeyForRegisteredUser() {
       givenNewKey();
-      when(userJdbiDao.lookupUserRoleByName(PLAYER_NAME.getValue()))
+      when(userJdbiDao.lookupUserIdAndRoleIdByUserName(PLAYER_NAME.getValue()))
           .thenReturn(
               Optional.of(
                   UserRoleLookup.builder()

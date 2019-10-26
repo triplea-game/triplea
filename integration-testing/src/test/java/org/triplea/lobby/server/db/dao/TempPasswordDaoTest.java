@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class TempPasswordDaoTest extends DaoTest {
 
   private static final String USERNAME = "username";
-  private static final String EMAIL = "email";
+  private static final String EMAIL = "email@";
   private static final int USER_ID = 500000;
 
   private static final String PASSWORD = "temp";

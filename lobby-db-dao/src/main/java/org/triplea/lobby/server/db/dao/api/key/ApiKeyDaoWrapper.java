@@ -62,7 +62,7 @@ public class ApiKeyDaoWrapper {
     final ApiKey key = keyMaker.get();
 
     userJdbiDao
-        .lookupUserRoleByName(playerName.getValue())
+        .lookupUserIdAndRoleIdByUserName(playerName.getValue())
         .ifPresentOrElse(
             userRoleLookup -> {
               // insert key for registered user

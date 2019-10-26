@@ -5,9 +5,12 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @DataSet(cleanBefore = true, value = "bad_words/select.yml")
 class BadWordsDaoTest extends DaoTest {
@@ -34,5 +37,29 @@ class BadWordsDaoTest extends DaoTest {
     assertThat(badWordsDao.removeBadWord("not-present"), is(0));
 
     expectedBadWords.forEach(badWord -> assertThat(badWordsDao.removeBadWord(badWord), is(1)));
+  }
+
+  @SuppressWarnings("unused")
+  private static List<String> badWordContains() {
+    final List<String> badWords = new ArrayList<>(Arrays.asList("zzZz", "_two_"));
+    badWords.addAll(expectedBadWords);
+    return badWords;
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  void badWordContains(final String badWord) {
+    assertThat(badWordsDao.containsBadWord(badWord), is(1));
+  }
+
+  @SuppressWarnings("unused")
+  private static List<String> notBadWordContains() {
+    return Arrays.asList("zz", "", null, "some word not containing any bad words");
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  void notBadWordContains(final String notInBadWords) {
+    assertThat(badWordsDao.containsBadWord(notInBadWords), is(0));
   }
 }

@@ -1,64 +1,31 @@
 package org.triplea.http.client.lobby.login;
 
-import feign.Headers;
-import feign.RequestLine;
 import java.net.URI;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpConstants;
+import org.triplea.http.client.SystemIdHeader;
 
-/**
- * Http client to authenticate a user with the http(s)-lobby. Both registered and anonymous users
- * use this to gain a single-use token that can be used to establish a non-https socket connection.
- */
-@SuppressWarnings("InterfaceNeverImplemented")
-@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-public interface LobbyLoginClient {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class LobbyLoginClient {
+  public static final String LOGIN_PATH = "/user-login/authenticate";
+  public static final String CREATE_ACCOUNT = "/user-login/create-account";
 
-  String LOGIN_PATH = "/login/registered-user";
-  String ANONYMOUS_LOGIN_PATH = "/login/anonymous-user";
-  String HOST_GAME_PATH = "/login/host-game";
+  private final LobbyLoginFeignClient lobbyLoginFeignClient;
 
-  static LobbyLoginClient newClient(final URI uri) {
-    return new HttpClient<>(LobbyLoginClient.class, uri).get();
+  public static LobbyLoginClient newClient(final URI uri) {
+    return new LobbyLoginClient(new HttpClient<>(LobbyLoginFeignClient.class, uri).get());
   }
 
-  /**
-   * Http client method to do username and password verification. Example usage:
-   *
-   * <pre>
-   * LobbyLoginClient client = LobbyLoginClient.newClient(uri);
-   * try {
-   *   String token = client.login(name, password);
-   *   if (!token.isPresent()) {
-   *     // login failed, bad credentials
-   *   }
-   * } catch (FeignException e) {
-   *   // communication or server error
-   * }
-   * </pre>
-   */
-  @RequestLine("POST " + LOGIN_PATH)
-  LobbyLoginResponse login(RegisteredUserLoginRequest loginRequest);
+  public LobbyLoginResponse login(final String userName, final String password) {
+    return lobbyLoginFeignClient.login(
+        SystemIdHeader.headers(), LoginRequest.builder().name(userName).password(password).build());
+  }
 
-  /**
-   * Http client method to for anonymous login, should only check that a given username is not
-   * reserved nor violates any rules. Example usage:
-   *
-   * <pre>
-   * LobbyLoginClient client = LobbyLoginClient.newClient(uri);
-   * try {
-   *   String token = client.anonymousLogin(name);
-   *   if (!token.isPresent()) {
-   *     // login failed, bad credentials
-   *   }
-   * } catch (FeignException e) {
-   *   // communication or server error
-   * }
-   * </pre>
-   */
-  @RequestLine("POST " + ANONYMOUS_LOGIN_PATH)
-  LobbyLoginResponse anonymousLogin(String name);
-
-  @RequestLine("POST " + HOST_GAME_PATH)
-  LobbyLoginResponse hostGame();
+  public CreateAccountResponse createAccount(
+      final String username, final String email, final String password) {
+    return lobbyLoginFeignClient.createAccount(
+        SystemIdHeader.headers(),
+        CreateAccountRequest.builder().username(username).email(email).password(password).build());
+  }
 }

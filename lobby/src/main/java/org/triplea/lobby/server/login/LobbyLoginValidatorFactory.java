@@ -1,10 +1,10 @@
 package org.triplea.lobby.server.login;
 
-import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.db.JdbiDatabase;

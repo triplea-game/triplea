@@ -22,6 +22,6 @@ class UserAccountControllerIntegrationTest extends ProtectedEndpointTest<UserAcc
 
   @Test
   void changeEmail() {
-    verifyEndpointReturningVoid(client -> client.changeEmail("email"));
+    verifyEndpointReturningVoid(client -> client.changeEmail("email@"));
   }
 }

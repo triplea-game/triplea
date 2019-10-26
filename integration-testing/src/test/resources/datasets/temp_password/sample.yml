@@ -5,7 +5,7 @@ lobby_user:
   - id: 500000
     username: username
     password: 12345678901234567890123456
-    email: email
+    email: email@
     user_role_id: 1
 
 temp_password_request:

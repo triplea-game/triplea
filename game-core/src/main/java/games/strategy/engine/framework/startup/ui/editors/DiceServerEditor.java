@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
@@ -13,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 
 /** A class to configure a Dice Server for the game. */
