@@ -275,7 +275,6 @@ public final class CreateAccountPanel extends JPanel {
     }
   }
 
-  // TODO: Project#12 show validation message as a label (?)
   private Optional<String> validationMessage() {
     if (!Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword())) {
       return Optional.of("Passwords must match");
@@ -313,7 +312,7 @@ public final class CreateAccountPanel extends JPanel {
   }
 
   public String getPassword() {
-    // TODO: Md5-Deprecation SHA512 hash password on client side here
+    // TODO: Project#12 SHA512 hash password on client side here
     return new String(passwordField.getPassword());
   }
 

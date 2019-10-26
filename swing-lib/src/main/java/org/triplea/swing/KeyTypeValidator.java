@@ -35,16 +35,16 @@ public class KeyTypeValidator {
                           return;
                         }
                         // release the boolean lock, if we get another validation
-                        // request, allow it to enter queue.
+                        // request, allow it to enter queue. This way even if 'getText()'
+                        // returns us stale data, that new request will have a chance to
+                        // operate on the most recent.
                         validationIsInFlight.set(false);
 
                         final String textData = textComponent.getText().trim();
                         final boolean valid = dataValidation.test(textData);
 
                         SwingUtilities.invokeLater(
-                            () -> {
-                              action.accept(valid);
-                            });
+                            () -> action.accept(valid));
                       }
                     })
                 .start());
