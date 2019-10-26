@@ -43,8 +43,7 @@ public class KeyTypeValidator {
                         final String textData = textComponent.getText().trim();
                         final boolean valid = dataValidation.test(textData);
 
-                        SwingUtilities.invokeLater(
-                            () -> action.accept(valid));
+                        SwingUtilities.invokeLater(() -> action.accept(valid));
                       }
                     })
                 .start());
