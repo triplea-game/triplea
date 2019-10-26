@@ -1,5 +1,6 @@
 package org.triplea.swing;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.swing.SwingUtilities;
@@ -14,7 +15,7 @@ import org.triplea.java.Interruptibles;
  * button depending on the value of a text-field.
  */
 public class KeyTypeValidator {
-  private boolean validationIsInFlight = false;
+  private AtomicBoolean validationIsInFlight = new AtomicBoolean(false);
 
   public void attachKeyTypeValidator(
       final JTextComponent textComponent,
@@ -25,13 +26,17 @@ public class KeyTypeValidator {
         () ->
             new Thread(
                     () -> {
-                      if (!validationIsInFlight) {
-                        validationIsInFlight = true;
-
-                        if(!Interruptibles.sleep(200)) {
-                          validationIsInFlight = false;
+                      if (validationIsInFlight.compareAndSet(false, true)) {
+                        // sleep to delay our current check and allow
+                        // the check to be done once at the end of any
+                        // further input that might still be in-flight.
+                        if (!Interruptibles.sleep(200)) {
+                          validationIsInFlight.set(false);
                           return;
                         }
+                        // release the boolean lock, if we get another validation
+                        // request, allow it to enter queue.
+                        validationIsInFlight.set(false);
 
                         final String textData = textComponent.getText().trim();
                         final boolean valid = dataValidation.test(textData);
@@ -39,7 +44,6 @@ public class KeyTypeValidator {
                         SwingUtilities.invokeLater(
                             () -> {
                               action.accept(valid);
-                              validationIsInFlight = false;
                             });
                       }
                     })
