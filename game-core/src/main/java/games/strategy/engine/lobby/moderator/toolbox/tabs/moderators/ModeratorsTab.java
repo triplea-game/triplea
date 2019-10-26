@@ -87,7 +87,6 @@ public final class ModeratorsTab implements Supplier<Component> {
 
     // This is a very fancy listener that will validate the entered requested new moderator
     // name exists (as the user types) before we enable the submit button.
-    // To avoid sending too many requests to server we have a back-off period to batch requests.
     new KeyTypeValidator()
         .attachKeyTypeValidator(
             addField,
