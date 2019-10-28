@@ -26,7 +26,8 @@ class PasswordBcrypterTest {
   void bcryptHashAndPasswordVerification() {
     final String crypted = new PasswordBCrypter().apply("password");
 
-    final boolean result = BCrypt.checkpw("password", crypted);
+    final boolean result =
+        BCrypt.checkpw(PasswordBCrypter.hashPasswordWithSalt("password"), crypted);
 
     assertThat(
         "Verify BCrypt to match a plaintext password against a crypted password", result, is(true));

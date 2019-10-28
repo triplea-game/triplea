@@ -51,18 +51,4 @@ class TempPasswordDaoTest extends DaoTest {
     assertThat(tempPasswordDao.insertTempPassword(USERNAME, EMAIL, NEW_PASSWORD), is(true));
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(NEW_PASSWORD));
   }
-
-  @Test
-  void invalidateTempPasswordsForMissingNameDoesNothing() {
-    tempPasswordDao.insertTempPassword(USERNAME, EMAIL, PASSWORD);
-    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
-    tempPasswordDao.invalidateTempPasswords(-1);
-    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
-  }
-
-  @Test
-  void invalidatePassword() {
-    tempPasswordDao.invalidateTempPasswords(USER_ID);
-    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isEmpty());
-  }
 }

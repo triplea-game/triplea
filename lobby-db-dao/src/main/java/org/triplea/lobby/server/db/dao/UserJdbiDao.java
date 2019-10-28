@@ -38,6 +38,12 @@ public interface UserJdbiDao {
           + " where username = :username")
   Optional<UserRoleLookup> lookupUserIdAndRoleIdByUserName(@Bind("username") String username);
 
+  @SqlQuery(
+      "select ur.name from user_role ur "
+          + "join lobby_user lu on lu.user_role_id = ur.id "
+          + "where lu.username = :username")
+  Optional<String> lookupUserRoleByUserName(@Bind("username") String username);
+
   @SqlUpdate(
       "insert into lobby_user(username, email, bcrypt_password, user_role_id) "
           + "select "
@@ -48,4 +54,7 @@ public interface UserJdbiDao {
       @Bind("username") String username,
       @Bind("email") String email,
       @Bind("password") String cryptedPassword);
+
+  @SqlQuery("select password from lobby_user where username = :username")
+  Optional<String> getLegacyPassword(@Bind("username") String username);
 }

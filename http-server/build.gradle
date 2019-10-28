@@ -31,6 +31,7 @@ dependencies {
     implementation "io.github.openfeign:feign-gson:$openFeignVersion"
     implementation "javax.activation:activation:$javaxActivationVersion"
     implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    implementation "commons-codec:commons-codec:$commonsCodecVersion" // TODO: Md5-Deprecation - used for md5crypt
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
