@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.login;
 
-import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
@@ -24,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.KeyTypeValidator;
 import org.triplea.swing.SwingComponents;

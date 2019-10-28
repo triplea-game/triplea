@@ -1,48 +1,38 @@
 package org.triplea.http.client.lobby.login;
 
-import java.util.Optional;
+import com.google.common.base.Preconditions;
+import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.triplea.domain.data.ApiKey;
 
 /** Represents data that would be uploaded to a server. */
 @Getter
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class LobbyLoginResponse {
-  private final String loginToken;
-  private final String failReason;
-
+  /** On successful login, a non-null API key token is passed back from the server. */
+  @Nullable private final String apiKey;
+  /** When non-null, indicates login did not occur, reason for failed login will be present. */
+  @Nullable private final String failReason;
+  /** True if the authenticated user is a moderator. */
+  private final boolean moderator;
   /**
-   * Factory method for creating login responses where login was not successful.
-   *
-   * @param reason A reason for why login failed, to be shown to user.
+   * True indicates user has used a temporary password that is now expired and should change their
+   * password.
    */
-  public static LobbyLoginResponse newFailResponse(final String reason) {
-    return new LobbyLoginResponse(null, reason);
+  private final boolean passwordChangeRequired;
+
+  public String getFailReason() {
+    Preconditions.checkState(failReason == null ^ apiKey == null);
+    return failReason;
   }
 
-  /**
-   * Factory method for creating login response where login was successful.
-   *
-   * @param token Single-use token that can be used to establish a socket connection.
-   */
-  public static LobbyLoginResponse newSuccessResponse(final String token) {
-    return new LobbyLoginResponse(token, null);
-  }
-
-  /** If present, indicates login was success. */
-  public Optional<ApiKey> getLoginToken() {
-    return Optional.ofNullable(loginToken).map(ApiKey::of);
-  }
-
-  /**
-   * If login fails, this will return a 'reason' string that can be shown to the user. This is here
-   * so we can tell a user that they were banned or if they simply got the wrong password.
-   */
-  public Optional<String> getFailReason() {
-    return Optional.ofNullable(failReason);
+  public String getApiKey() {
+    Preconditions.checkState(failReason == null ^ apiKey == null);
+    return apiKey;
   }
 }

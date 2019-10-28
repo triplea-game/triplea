@@ -1,5 +1,8 @@
 package org.triplea.http.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.net.URI;
 import java.util.function.BiFunction;
@@ -12,7 +15,13 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
 @SuppressWarnings("PrivateConstructorForUtilityClass")
 @ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
 public class WireMockTest {
-  static final ApiKey API_KEY = ApiKey.of("api-fdsa key----api-----key-----api----key");
+  protected static final ApiKey API_KEY = ApiKey.of("api-key-value");
+  private static final ObjectMapper objectMapper;
+
+  static {
+    objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+  }
 
   protected static <T> T newClient(
       final WireMockServer wireMockServer, final BiFunction<URI, ApiKey, T> factoryFunction) {
@@ -28,5 +37,13 @@ public class WireMockTest {
 
   private static URI buildHostUri(final WireMockServer wireMockServer) {
     return URI.create(wireMockServer.url(""));
+  }
+
+  protected static <T> String toJson(final T object) {
+    try {
+      return objectMapper.writeValueAsString(object);
+    } catch (final JsonProcessingException e) {
+      throw new RuntimeException("Failed to convert to JSON string: " + object, e);
+    }
   }
 }

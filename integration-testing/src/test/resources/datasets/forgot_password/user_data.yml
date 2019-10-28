@@ -2,6 +2,6 @@ lobby_user:
   - id: 1234000
     username: user
     password: 12345678901234567890123456
-    email: email
+    email: email@
     admin: false
     super_mod: false

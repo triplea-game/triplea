@@ -12,7 +12,7 @@ lobby_user:
     user_role_id: 1
     username: existing-name
     bcrypt_password: $2a$56789_123456789_123456789_123456789_123456789_123456789_
-    email: email
+    email: email@
 api_key:
   - id: 1000
     key: zapi-key1

@@ -31,8 +31,8 @@ interface ApiKeyDao {
           + ApiKeyUserData.ROLE_COLUMN
           + " from api_key ak "
           + " join user_role ur on ur.id = ak.user_role_id "
-          + " left join lobby_user lu on lu.id = aK.lobby_user_id "
-          + " where aK.key = :apiKey")
+          + " left join lobby_user lu on lu.id = ak.lobby_user_id "
+          + " where ak.key = :apiKey")
   Optional<ApiKeyUserData> lookupByApiKey(@Bind("apiKey") String apiKey);
 
   @SqlUpdate("delete from api_key where date_created < (now() - '7 days'::interval)")

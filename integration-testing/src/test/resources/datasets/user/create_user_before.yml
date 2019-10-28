@@ -1,0 +1,8 @@
+user_role:
+  - id: 10
+    name: PLAYER
+
+api_key:
+temp_password_request:
+moderator_action_history:
+lobby_user:

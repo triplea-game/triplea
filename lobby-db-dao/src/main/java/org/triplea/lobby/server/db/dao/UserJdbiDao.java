@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.lobby.server.db.data.UserRoleLookup;
 
 /** Data access object for the users table. */
@@ -17,7 +18,8 @@ public interface UserJdbiDao {
   @SqlUpdate("update lobby_user set last_login = now() where username = :username")
   int updateLastLoginTime(@Bind("username") String username);
 
-  @SqlUpdate("update lobby_user set bcrypt_password = :newPassword where id = :userId")
+  @SqlUpdate(
+      "update lobby_user set password = null, bcrypt_password = :newPassword where id = :userId")
   int updatePassword(@Bind("userId") int userId, @Bind("newPassword") String newPassword);
 
   @SqlQuery("select email from lobby_user where id = :userId")
@@ -34,5 +36,16 @@ public interface UserJdbiDao {
           + UserRoleLookup.USER_ROLE_ID_COLUMN
           + " from lobby_user "
           + " where username = :username")
-  Optional<UserRoleLookup> lookupUserRoleByName(@Bind("username") String username);
+  Optional<UserRoleLookup> lookupUserIdAndRoleIdByUserName(@Bind("username") String username);
+
+  @SqlUpdate(
+      "insert into lobby_user(username, email, bcrypt_password, user_role_id) "
+          + "select "
+          + ":username, :email, :password, (select id from user_role where name = '"
+          + UserRole.PLAYER
+          + "') as role_id")
+  int createUser(
+      @Bind("username") String username,
+      @Bind("email") String email,
+      @Bind("password") String cryptedPassword);
 }

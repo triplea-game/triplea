@@ -1,124 +1,111 @@
 package org.triplea.http.client.lobby.login;
 
-import static java.util.Collections.singletonList;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.google.gson.Gson;
-import java.net.URI;
-import java.util.Arrays;
-import org.junit.jupiter.api.Nested;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
-import org.triplea.http.client.error.report.ErrorReportClient;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
 class LobbyLoginClientTest extends WireMockTest {
-  private static final LobbyLoginResponse SUCCESS_LOGIN =
-      LobbyLoginResponse.newSuccessResponse("success");
-  private static final LobbyLoginResponse FAILED_LOGIN =
-      LobbyLoginResponse.newFailResponse("fail-reason");
-  private static final String LOGIN_NAME = "example";
-  private static final RegisteredUserLoginRequest REGISTERED_USER_LOGIN_REQUEST =
-      RegisteredUserLoginRequest.builder().name("example").password("password").build();
 
-  @Nested
-  final class LoginTestCases {
-    @Test
-    void loginSuccess(@WiremockResolver.Wiremock final WireMockServer server) {
-      final LobbyLoginResponse response =
-          HttpClientTesting.sendServiceCallToWireMock(
-              HttpClientTesting.ServiceCallArgs.<LobbyLoginResponse>builder()
-                  .wireMockServer(server)
-                  .expectedRequestPath(LobbyLoginClient.LOGIN_PATH)
-                  .expectedBodyContents(
-                      Arrays.asList(
-                          REGISTERED_USER_LOGIN_REQUEST.getName(),
-                          REGISTERED_USER_LOGIN_REQUEST.getPassword()))
-                  .serverReturnValue(new Gson().toJson(SUCCESS_LOGIN))
-                  .serviceCall(this::doServiceCall)
-                  .build());
+  private static final LoginRequest LOGIN_REQUEST =
+      LoginRequest.builder().name("login_name").password("password_value").build();
 
-      assertThat(response, is(SUCCESS_LOGIN));
-    }
+  private static final LobbyLoginResponse SUCCESS_LOGIN_RESPONSE =
+      LobbyLoginResponse.builder()
+          .apiKey(WireMockTest.API_KEY.getValue())
+          .passwordChangeRequired(true)
+          .moderator(true)
+          .build();
 
-    private LobbyLoginResponse doServiceCall(final URI hostUri) {
-      return LobbyLoginClient.newClient(hostUri).login(REGISTERED_USER_LOGIN_REQUEST);
-    }
+  private static final LobbyLoginResponse FAILED_LOGIN_RESPONSE =
+      LobbyLoginResponse.builder().failReason("fail-reason").build();
 
-    @Test
-    void loginFailure(@WiremockResolver.Wiremock final WireMockServer server) {
-      final LobbyLoginResponse response =
-          HttpClientTesting.sendServiceCallToWireMock(
-              HttpClientTesting.ServiceCallArgs.<LobbyLoginResponse>builder()
-                  .wireMockServer(server)
-                  .expectedRequestPath(LobbyLoginClient.LOGIN_PATH)
-                  .expectedBodyContents(
-                      Arrays.asList(
-                          REGISTERED_USER_LOGIN_REQUEST.getName(),
-                          REGISTERED_USER_LOGIN_REQUEST.getPassword()))
-                  .serverReturnValue(new Gson().toJson(FAILED_LOGIN))
-                  .serviceCall(this::doServiceCall)
-                  .build());
+  private static final CreateAccountRequest CREATE_ACCOUNT_REQUEST =
+      CreateAccountRequest.builder()
+          .username("username")
+          .email("email")
+          .password("password")
+          .build();
 
-      assertThat(response, is(FAILED_LOGIN));
-    }
+  private static final CreateAccountResponse CREATE_ACCOUNT_SUCCESS_RESPONSE =
+      CreateAccountResponse.SUCCESS_RESPONSE;
 
-    @Test
-    void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
-      HttpClientTesting.verifyErrorHandling(
-          wireMockServer,
-          ErrorReportClient.ERROR_REPORT_PATH,
-          HttpClientTesting.RequestType.POST,
-          this::doServiceCall);
-    }
+  private static final CreateAccountResponse CREATE_ACCOUNT_FAILURE_RESPONSE =
+      CreateAccountResponse.builder().errorMessage("error").build();
+
+  private static LobbyLoginClient newClient(final WireMockServer wireMockServer) {
+    return newClient(wireMockServer, LobbyLoginClient::newClient);
   }
 
-  @Nested
-  final class AnonymousLoginCases {
-    @Test
-    void loginSuccess(@WiremockResolver.Wiremock final WireMockServer server) {
-      final LobbyLoginResponse response =
-          HttpClientTesting.sendServiceCallToWireMock(
-              HttpClientTesting.ServiceCallArgs.<LobbyLoginResponse>builder()
-                  .wireMockServer(server)
-                  .expectedRequestPath(LobbyLoginClient.ANONYMOUS_LOGIN_PATH)
-                  .expectedBodyContents(singletonList(LOGIN_NAME))
-                  .serverReturnValue(new Gson().toJson(SUCCESS_LOGIN))
-                  .serviceCall(this::doServiceCall)
-                  .build());
+  @Test
+  void loginSucces(@WiremockResolver.Wiremock final WireMockServer server) {
+    givenLoginRequestReturning(server, SUCCESS_LOGIN_RESPONSE);
 
-      assertThat(response, is(SUCCESS_LOGIN));
-    }
+    final LobbyLoginResponse result = withLoginRequest(server);
 
-    private LobbyLoginResponse doServiceCall(final URI hostUri) {
-      return LobbyLoginClient.newClient(hostUri).anonymousLogin(LOGIN_NAME);
-    }
+    assertThat(result, is(SUCCESS_LOGIN_RESPONSE));
+  }
 
-    @Test
-    void loginFailure(@WiremockResolver.Wiremock final WireMockServer server) {
-      final LobbyLoginResponse response =
-          HttpClientTesting.sendServiceCallToWireMock(
-              HttpClientTesting.ServiceCallArgs.<LobbyLoginResponse>builder()
-                  .wireMockServer(server)
-                  .expectedRequestPath(LobbyLoginClient.ANONYMOUS_LOGIN_PATH)
-                  .expectedBodyContents(singletonList(LOGIN_NAME))
-                  .serverReturnValue(new Gson().toJson(FAILED_LOGIN))
-                  .serviceCall(this::doServiceCall)
-                  .build());
+  private void givenLoginRequestReturning(
+      final WireMockServer server, final LobbyLoginResponse lobbyLoginResponse) {
+    server.stubFor(
+        post(LobbyLoginClient.LOGIN_PATH)
+            .withRequestBody(equalToJson(toJson(LOGIN_REQUEST)))
+            .willReturn(WireMock.aResponse().withStatus(200).withBody(toJson(lobbyLoginResponse))));
+  }
 
-      assertThat(response, is(FAILED_LOGIN));
-    }
+  private LobbyLoginResponse withLoginRequest(final WireMockServer server) {
+    return newClient(server).login(LOGIN_REQUEST.getName(), LOGIN_REQUEST.getPassword());
+  }
 
-    @Test
-    void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
-      HttpClientTesting.verifyErrorHandling(
-          wireMockServer,
-          ErrorReportClient.ERROR_REPORT_PATH,
-          HttpClientTesting.RequestType.POST,
-          this::doServiceCall);
-    }
+  @Test
+  void loginFailure(@WiremockResolver.Wiremock final WireMockServer server) {
+    givenLoginRequestReturning(server, FAILED_LOGIN_RESPONSE);
+
+    final LobbyLoginResponse result =
+        newClient(server).login(LOGIN_REQUEST.getName(), LOGIN_REQUEST.getPassword());
+
+    assertThat(result, is(FAILED_LOGIN_RESPONSE));
+  }
+
+  @Test
+  void createAccount(@WiremockResolver.Wiremock final WireMockServer server) {
+    givenCreateAccountRequestReturning(server, CREATE_ACCOUNT_SUCCESS_RESPONSE);
+
+    final CreateAccountResponse result = withCreateAccountRequest(server);
+
+    assertThat(result, is(CREATE_ACCOUNT_SUCCESS_RESPONSE));
+  }
+
+  private void givenCreateAccountRequestReturning(
+      final WireMockServer server, final CreateAccountResponse createAccountResponse) {
+    server.stubFor(
+        post(LobbyLoginClient.CREATE_ACCOUNT)
+            .withRequestBody(equalToJson(toJson(CREATE_ACCOUNT_REQUEST)))
+            .willReturn(
+                WireMock.aResponse().withStatus(200).withBody(toJson(createAccountResponse))));
+  }
+
+  private CreateAccountResponse withCreateAccountRequest(final WireMockServer server) {
+    return newClient(server)
+        .createAccount(
+            CREATE_ACCOUNT_REQUEST.getUsername(),
+            CREATE_ACCOUNT_REQUEST.getEmail(),
+            CREATE_ACCOUNT_REQUEST.getPassword());
+  }
+
+  @Test
+  void setCreateAccountFailureResponse(@WiremockResolver.Wiremock final WireMockServer server) {
+    givenCreateAccountRequestReturning(server, CREATE_ACCOUNT_FAILURE_RESPONSE);
+
+    final CreateAccountResponse result = withCreateAccountRequest(server);
+
+    assertThat(result, is(CREATE_ACCOUNT_FAILURE_RESPONSE));
   }
 }

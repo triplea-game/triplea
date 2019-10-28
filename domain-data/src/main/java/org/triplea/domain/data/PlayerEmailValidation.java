@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby;
+package org.triplea.domain.data;
 
 import lombok.NoArgsConstructor;
 
