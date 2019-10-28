@@ -5,12 +5,14 @@ import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.util.Arrays;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -23,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.triplea.swing.JCheckBoxBuilder;
+import org.triplea.swing.KeyTypeValidator;
 import org.triplea.swing.SwingComponents;
 
 /** The panel used to create a new lobby account or update an existing lobby account. */
@@ -195,11 +198,30 @@ public final class CreateAccountPanel extends JPanel {
             0,
             0));
 
+    final JLabel validationLabel = new JLabel(" ");
+    validationLabel.setForeground(Color.RED);
+
+    main.add(
+        validationLabel,
+        new GridBagConstraints(
+            0,
+            5,
+            2,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
+
     final JPanel buttons = new JPanel();
     add(buttons, BorderLayout.SOUTH);
     buttons.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
     final JButton okButton = new JButton("OK");
+    okButton.setEnabled(false);
     buttons.add(okButton);
     final JButton cancelButton = new JButton("Cancel");
     buttons.add(cancelButton);
@@ -207,7 +229,39 @@ public final class CreateAccountPanel extends JPanel {
     cancelButton.addActionListener(e -> close());
     okButton.addActionListener(e -> okPressed());
 
-    SwingComponents.addEnterKeyListener(this, this::okPressed);
+    SwingComponents.addEnterKeyListener(
+        this,
+        () -> {
+          if (okButton.isEnabled()) {
+            okPressed();
+          }
+        });
+
+    Arrays.asList(passwordField, passwordConfirmField, emailField)
+        .forEach(
+            inputField ->
+                new KeyTypeValidator()
+                    .attachKeyTypeValidator(
+                        inputField,
+                        textInput -> validationMessage().isEmpty(),
+                        valid -> {
+                          if (valid) {
+                            validationLabel.setText(" ");
+                            okButton.setEnabled(true);
+                            okButton.setToolTipText("Click to create an account and login");
+                          } else {
+                            okButton.setEnabled(false);
+
+                            final String message = validationMessage().orElse("");
+                            validationLabel.setText(message);
+                            okButton.setToolTipText(message);
+                          }
+                        }));
+  }
+
+  private void okPressed() {
+    returnValue = ReturnValue.OK;
+    Optional.ofNullable(dialog).ifPresent(d -> d.setVisible(false));
   }
 
   private void close() {
@@ -216,43 +270,21 @@ public final class CreateAccountPanel extends JPanel {
     }
   }
 
-  private void okPressed() {
+  private Optional<String> validationMessage() {
     if (!Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword())) {
-      JOptionPane.showMessageDialog(
-          this, "The passwords do not match", "Passwords Do Not Match", JOptionPane.ERROR_MESSAGE);
-      passwordField.setText("");
-      passwordConfirmField.setText("");
-      return;
+      return Optional.of("Passwords must match");
     } else if (!PlayerEmailValidation.isValid(emailField.getText())) {
-      JOptionPane.showMessageDialog(
-          this, "You must enter a valid email", "No Email", JOptionPane.ERROR_MESSAGE);
-      return;
+      return Optional.of("Email must be valid");
     } else if (!PlayerNameValidation.isValid(usernameField.getText())) {
-      JOptionPane.showMessageDialog(
-          this,
-          PlayerNameValidation.validate(usernameField.getText()),
-          "Invalid name",
-          JOptionPane.ERROR_MESSAGE);
-      return;
+      return Optional.ofNullable(PlayerNameValidation.validate(usernameField.getText()));
     } else if (emailField.getText().isEmpty()) {
-      JOptionPane.showMessageDialog(
-          this, "You must enter an email", "No Email", JOptionPane.ERROR_MESSAGE);
-      return;
+      return Optional.of("You must enter an email");
     } else if (passwordField.getPassword().length == 0) {
-      JOptionPane.showMessageDialog(
-          this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
-      return;
-    } else if (passwordField.getPassword().length < 3) {
-      JOptionPane.showMessageDialog(
-          this,
-          "Passwords must be at least three characters long",
-          "Invalid Password",
-          JOptionPane.ERROR_MESSAGE);
-      return;
+      return Optional.of("You must enter a password");
+    } else if (passwordField.getPassword().length < 5) {
+      return Optional.of("Passwords must be at least five characters long");
     }
-
-    returnValue = ReturnValue.OK;
-    close();
+    return Optional.empty();
   }
 
   /**
@@ -275,6 +307,7 @@ public final class CreateAccountPanel extends JPanel {
   }
 
   public String getPassword() {
+    // TODO: Project#12 SHA512 hash password on client side here
     return new String(passwordField.getPassword());
   }
 
@@ -282,7 +315,7 @@ public final class CreateAccountPanel extends JPanel {
     return emailField.getText();
   }
 
-  String getUserName() {
+  String getUsername() {
     return usernameField.getText();
   }
 }

@@ -123,7 +123,7 @@ public class LobbyLogin {
                   () ->
                       ClientMessengerFactory.newCreateAccountMessenger(
                           lobbyServerProperties,
-                          panel.getUserName(),
+                          panel.getUsername(),
                           panel.getEmail(),
                           panel.getPassword()),
                   IOException.class);
