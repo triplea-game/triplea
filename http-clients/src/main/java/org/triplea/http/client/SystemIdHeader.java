@@ -20,7 +20,7 @@ import lombok.extern.java.Log;
 @Log
 @UtilityClass
 public class SystemIdHeader {
-  public static final String SYSTEM_ID_HEADER = "system-id-header";
+  public static final String SYSTEM_ID_HEADER = "System-Id-Header";
 
   private static final String SYSTEM_KEY = "system-id-key";
 
