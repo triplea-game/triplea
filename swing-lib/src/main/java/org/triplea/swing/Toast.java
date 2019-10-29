@@ -2,7 +2,9 @@ package org.triplea.swing;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Window;
 import java.time.Duration;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,7 +21,8 @@ public class Toast {
 
   @Nonnull private final String message;
   @Nonnull private final Duration sleepTime;
-  @Nonnull private final JFrame parent;
+  private final JFrame parentFrame;
+  private final Window parentWindow;
 
   private final int windowHeight = 75;
   private final int windowWidth = 400;
@@ -29,9 +32,12 @@ public class Toast {
   }
 
   private void showInBackground() {
-    final JWindow window = new JWindow(parent);
+    final JWindow window =
+        Optional.ofNullable(parentWindow)
+            .map(JWindow::new)
+            .orElseGet(() -> new JWindow(parentFrame));
 
-    window.setLocationRelativeTo(parent);
+    window.setLocationRelativeTo(Optional.ofNullable(parentWindow).orElse(parentFrame));
     // make the background transparent
     window.setBackground(Color.DARK_GRAY);
 
