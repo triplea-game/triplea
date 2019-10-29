@@ -13,4 +13,9 @@ public final class UserRole {
   public static final String PLAYER = "PLAYER";
   public static final String ANONYMOUS = "ANONYMOUS";
   public static final String HOST = "HOST";
+
+  // TODO: Project#12 test-me
+  public static boolean isModerator(final String roleName) {
+    return ADMIN.equals(roleName) || MODERATOR.equals(roleName);
+  }
 }

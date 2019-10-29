@@ -34,16 +34,7 @@ public class TempPasswordVerification implements BiPredicate<PlayerName, String>
       return false;
     }
 
-    final int userId =
-        tempPasswordDao
-            .lookupUserIdByUsername(username.getValue())
-            .orElseThrow(
-                () ->
-                    new IllegalStateException(
-                        "Was able to validate temp password for user but "
-                            + "could not find them in DB: "
-                            + username));
-    tempPasswordDao.invalidateTempPasswords(userId);
+    tempPasswordDao.invalidateTempPasswords(username.getValue());
     return true;
   }
 }

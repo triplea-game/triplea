@@ -40,9 +40,9 @@ public interface TempPasswordDao {
   @SqlUpdate(
       "update temp_password_request"
           + " set date_invalidated = now()"
-          + " where lobby_user_id = :userId"
+          + " where lobby_user_id = (select id from lobby_user where username = :playerName)"
           + "   and date_invalidated is null")
-  int invalidateTempPasswords(@Bind("userId") int userId);
+  int invalidateTempPasswords(@Bind("playerName") String playerName);
 
   @Transaction
   default boolean insertTempPassword(
@@ -50,7 +50,7 @@ public interface TempPasswordDao {
     return lookupUserIdByUsernameAndEmail(username, email)
         .map(
             userId -> {
-              invalidateTempPasswords(userId);
+              invalidateTempPasswords(username);
               insertPassword(userId, password);
               return true;
             })
