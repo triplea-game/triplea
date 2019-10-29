@@ -49,7 +49,7 @@ public final class LobbyMenu extends JMenuBar {
               .build());
     }
 
-    if (lobbyFrame.getLobbyClient().isAdmin()) {
+    if (lobbyFrame.getLobbyClient().isModerator()) {
       add(
           new JMenuBuilder("Admin", 'M')
               .addMenuItem(

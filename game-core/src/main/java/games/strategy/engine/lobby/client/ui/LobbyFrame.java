@@ -52,7 +52,7 @@ public class LobbyFrame extends JFrame {
 
     final LobbyGameTableModel tableModel =
         new LobbyGameTableModel(
-            client.isAdmin(),
+            client.isModerator(),
             client.getHttpLobbyClient().getGameListingClient(),
             this::reportErrorMessage);
     final LobbyGamePanel gamePanel = new LobbyGamePanel(client, lobbyServerProperties, tableModel);
@@ -96,7 +96,7 @@ public class LobbyFrame extends JFrame {
   }
 
   private List<Action> newAdminActions(final ChatParticipant clickedOn) {
-    if (!client.isAdmin()) {
+    if (!client.isModerator()) {
       return Collections.emptyList();
     }
     if (clickedOn.getPlayerName().equals(client.getMessengers().getLocalNode().getPlayerName())) {
