@@ -16,6 +16,7 @@ public class AuthenticationHeaders {
   public Map<String, Object> createHeaders() {
     final Map<String, Object> headerMap = new HashMap<>();
     headerMap.put(API_KEY_HEADER, KEY_BEARER_PREFIX + " " + apiKey);
+    headerMap.putAll(SystemIdHeader.headers());
     return headerMap;
   }
 }
