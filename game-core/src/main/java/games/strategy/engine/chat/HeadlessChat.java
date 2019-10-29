@@ -34,6 +34,11 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
   }
 
   @Override
+  public void eventReceived(final String eventText) {
+    allText.append(eventText);
+  }
+
+  @Override
   public void messageReceived(final ChatMessage chatMessage) {
     trimLengthIfNecessary();
 

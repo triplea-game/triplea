@@ -5,6 +5,8 @@ import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 
 /** Callback interface for a component that is interested in chat messages. */
 public interface ChatMessageListener {
+  void eventReceived(String eventText);
+
   void messageReceived(ChatMessage chatMessage);
 
   void slapped(String message, PlayerName from);
