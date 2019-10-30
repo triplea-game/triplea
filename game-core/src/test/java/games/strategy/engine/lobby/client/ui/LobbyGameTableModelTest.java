@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.java.Interruptibles;
@@ -26,6 +27,7 @@ import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 final class LobbyGameTableModelTest {
 
   private static final String id0 = "id0";
@@ -57,6 +59,7 @@ final class LobbyGameTableModelTest {
   @Nested
   final class RemoveAndUpdateGameTest {
     private LobbyGameTableModel testObj;
+    @Mock private HttpLobbyClient httpLobbyClient;
     @Mock private GameListingClient gameListingClient;
 
     private List<LobbyGameListing> fakeGameListing = new ArrayList<>();
@@ -71,8 +74,9 @@ final class LobbyGameTableModelTest {
               .lobbyGame(gameDescription0.toLobbyGame())
               .build());
 
+      when(httpLobbyClient.getGameListingClient()).thenReturn(gameListingClient);
       when(gameListingClient.fetchGameListing()).thenReturn(fakeGameListing);
-      testObj = new LobbyGameTableModel(true, gameListingClient, errMsg -> {});
+      testObj = new LobbyGameTableModel(true, httpLobbyClient, errMsg -> {});
       waitForSwingThreads();
     }
 

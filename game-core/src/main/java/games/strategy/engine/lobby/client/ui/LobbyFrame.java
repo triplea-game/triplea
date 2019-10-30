@@ -52,9 +52,7 @@ public class LobbyFrame extends JFrame {
 
     final LobbyGameTableModel tableModel =
         new LobbyGameTableModel(
-            client.isAdmin(),
-            client.getHttpLobbyClient().getGameListingClient(),
-            this::reportErrorMessage);
+            client.isAdmin(), client.getHttpLobbyClient(), this::reportErrorMessage);
     final LobbyGamePanel gamePanel = new LobbyGamePanel(client, lobbyServerProperties, tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
