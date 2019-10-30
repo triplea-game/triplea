@@ -12,10 +12,11 @@ import org.triplea.lobby.server.db.dao.DaoTest;
  * Make sure data transforms successfully from wrapper to database. Simply make valid requests and
  * ensure we do not get any exceptions.
  */
-@DataSet(cleanBefore = true, value = "api_key/initial.yml")
-class ApiKeyDaoWrapperIntegrationTest extends DaoTest {
+@DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
+class LobbyApiKeyDaoWrapperIntegrationTest extends DaoTest {
 
-  private final ApiKeyDaoWrapper wrapper = new ApiKeyDaoWrapper(JdbiDatabase.newConnection());
+  private final LobbyApiKeyDaoWrapper wrapper =
+      new LobbyApiKeyDaoWrapper(JdbiDatabase.newConnection());
 
   @Test
   void lookupApiKey() {

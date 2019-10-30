@@ -21,9 +21,9 @@ import org.triplea.lobby.server.db.data.ApiKeyUserData;
 
 /** Wrapper to abstract away DB details of how API key is stored and to provide convenience APIs. */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class ApiKeyDaoWrapper {
+public class LobbyApiKeyDaoWrapper {
 
-  private final ApiKeyDao apiKeyDao;
+  private final LobbyApiKeyDao apiKeyDao;
   private final UserJdbiDao userJdbiDao;
   private final UserRoleDao userRoleDao;
   private final Supplier<ApiKey> keyMaker;
@@ -31,9 +31,9 @@ public class ApiKeyDaoWrapper {
   private final Function<ApiKey, String> keyHashingFunction;
 
   @SuppressWarnings("UnstableApiUsage")
-  public ApiKeyDaoWrapper(final Jdbi jdbi) {
+  public LobbyApiKeyDaoWrapper(final Jdbi jdbi) {
     this(
-        jdbi.onDemand(ApiKeyDao.class),
+        jdbi.onDemand(LobbyApiKeyDao.class),
         jdbi.onDemand(UserJdbiDao.class),
         jdbi.onDemand(UserRoleDao.class),
         () -> ApiKey.of(UUID.randomUUID().toString()),

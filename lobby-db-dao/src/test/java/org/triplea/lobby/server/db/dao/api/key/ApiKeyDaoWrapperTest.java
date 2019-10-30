@@ -47,13 +47,13 @@ class ApiKeyDaoWrapperTest {
     }
   }
 
-  @Mock private ApiKeyDao apiKeyDao;
+  @Mock private LobbyApiKeyDao apiKeyDao;
   @Mock private UserJdbiDao userJdbiDao;
   @Mock private UserRoleDao userRoleDao;
   @Mock private Supplier<ApiKey> keyMaker;
   @Mock private Function<ApiKey, String> keyHashingFunction;
 
-  @InjectMocks private ApiKeyDaoWrapper wrapper;
+  @InjectMocks private LobbyApiKeyDaoWrapper wrapper;
 
   @Mock private ApiKeyUserData apiKeyUserData;
 
