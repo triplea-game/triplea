@@ -1,4 +1,4 @@
-package org.triplea.server.user.account;
+package org.triplea.server.user.account.update;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @ExtendWith(MockitoExtension.class)
-class UserAccountServiceTest {
+class UpdateAccountServiceTest {
 
   private static final int USER_ID = 100;
   private static final String PASSWORD = "password-value";
@@ -24,12 +24,12 @@ class UserAccountServiceTest {
   @Mock private UserJdbiDao userJdbiDao;
   @Mock private Function<String, String> passwordEncrypter;
 
-  private UserAccountService userAccountService;
+  private UpdateAccountService userAccountService;
 
   @BeforeEach
   void setup() {
     userAccountService =
-        UserAccountService.builder()
+        UpdateAccountService.builder()
             .userJdbiDao(userJdbiDao)
             .passwordEncrpter(passwordEncrypter)
             .build();

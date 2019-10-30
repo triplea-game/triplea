@@ -1,4 +1,4 @@
-package org.triplea.server.user.account;
+package org.triplea.server.user.account.update;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -6,7 +6,7 @@ import lombok.Builder;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @Builder
-class UserAccountService {
+class UpdateAccountService {
 
   @Nonnull private final UserJdbiDao userJdbiDao;
 
