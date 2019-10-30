@@ -12,7 +12,7 @@ import org.triplea.lobby.server.db.data.ApiKeyUserData;
  * determine the users 'Role'. Anonymous users are still granted API keys, they have no user id and
  * given role 'ANONYMOUS'.
  */
-interface ApiKeyDao {
+interface LobbyApiKeyDao {
   @SqlUpdate(
       "insert into api_key(lobby_user_id, username, key, ip, user_role_id) "
           + "values (:userId, :username, :apiKey, :ip::inet, :userRoleId)")
