@@ -1,4 +1,4 @@
-package org.triplea.server.user.account;
+package org.triplea.server.user.account.update;
 
 import com.google.common.base.Preconditions;
 import io.dropwizard.auth.Auth;
@@ -18,8 +18,8 @@ import org.triplea.server.http.HttpController;
 
 /** Controller providing endpoints for user account management. */
 @Builder
-public class UserAccountController extends HttpController {
-  @Nonnull private final UserAccountService userAccountService;
+public class UpdateAccountController extends HttpController {
+  @Nonnull private final UpdateAccountService userAccountService;
 
   @POST
   @Path(UserAccountClient.CHANGE_PASSWORD_PATH)
