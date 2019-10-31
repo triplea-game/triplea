@@ -75,7 +75,7 @@ class LobbyGamePanel extends JPanel {
         .getColumnModel()
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
         .setPreferredWidth(32);
-    if (lobbyClient.isAdmin()) {
+    if (lobbyClient.isModerator()) {
       gameTable
           .getColumnModel()
           .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
@@ -104,7 +104,7 @@ class LobbyGamePanel extends JPanel {
     final JToolBar toolBar = new JToolBar();
     toolBar.add(hostGame);
     toolBar.add(joinGame);
-    if (lobbyClient.isAdmin()) {
+    if (lobbyClient.isModerator()) {
       toolBar.add(bootGame);
     }
     toolBar.setFloatable(false);
@@ -166,7 +166,7 @@ class LobbyGamePanel extends JPanel {
             SwingAction.of("Host Game", () -> hostGame(lobbyServerProperties)))
         .forEach(menu::add);
 
-    if (lobbyClient.isAdmin()) {
+    if (lobbyClient.isModerator()) {
       final Collection<Action> generalAdminActions = getGeneralAdminGamesListContextActions();
       if (!generalAdminActions.isEmpty()) {
         menu.addSeparator();
