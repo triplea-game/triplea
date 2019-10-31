@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -121,6 +122,7 @@ final class LobbyGameTableModelTest {
       assertThat(testObj.getRowCount(), is(2));
     }
 
+    @Disabled // Test is non-deterministic and sometimes fails
     @Test
     void removeGame() {
       testObj.getLobbyGameBroadcaster().gameRemoved(fakeGame.getFirst());
