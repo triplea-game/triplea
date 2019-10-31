@@ -3,10 +3,8 @@ package org.triplea.java.concurrency;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 
 /** A collection of useful methods for working with instances of {@link CompletableFuture}. */
-@Log
 @UtilityClass
 public final class CompletableFutureUtils {
 
