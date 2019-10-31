@@ -1,6 +1,7 @@
 package org.triplea.domain.data;
 
 import com.google.common.base.Preconditions;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,10 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiKey {
   private final String value;
+
+  public static ApiKey newKey() {
+    return of(UUID.randomUUID().toString());
+  }
 
   public static ApiKey of(final String value) {
     Preconditions.checkArgument(value != null);

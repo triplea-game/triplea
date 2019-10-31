@@ -315,6 +315,11 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     addGenericMessage(message);
   }
 
+  @Override
+  public void eventReceived(final String eventText) {
+    addGenericMessage(eventText);
+  }
+
   private void addGenericMessage(final String message) {
     SwingUtilities.invokeLater(
         () -> {

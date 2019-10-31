@@ -1,19 +1,20 @@
-package org.triplea.server.user.account;
+package org.triplea.server.user.account.update;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.server.user.account.PasswordBCrypter;
 
 /** Creates instances of UserAccountController. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UserAccountControllerFactory {
+public final class UpdateAccountControllerFactory {
 
   /** Instantiates controller with dependencies. */
-  public static UserAccountController buildController(final Jdbi jdbi) {
-    return UserAccountController.builder()
+  public static UpdateAccountController buildController(final Jdbi jdbi) {
+    return UpdateAccountController.builder()
         .userAccountService(
-            UserAccountService.builder()
+            UpdateAccountService.builder()
                 .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
                 .passwordEncrpter(new PasswordBCrypter())
                 .build())

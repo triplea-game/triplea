@@ -24,7 +24,7 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
 import org.triplea.server.access.AuthenticatedUser;
 import org.triplea.server.access.RoleAuthorizer;
@@ -39,7 +39,7 @@ import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
 import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
 import org.triplea.server.moderator.toolbox.banned.users.UserBanControllerFactory;
 import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFactory;
-import org.triplea.server.user.account.UserAccountControllerFactory;
+import org.triplea.server.user.account.update.UpdateAccountControllerFactory;
 
 /**
  * Main entry-point for launching drop wizard HTTP server. This class is responsible for configuring
@@ -125,7 +125,7 @@ public class ServerApplication extends Application<AppConfig> {
       final MetricRegistry metrics, final Jdbi jdbi) {
     return new CachingAuthenticator<>(
         metrics,
-        new ApiKeyAuthenticator(new ApiKeyDaoWrapper(jdbi)),
+        new ApiKeyAuthenticator(new LobbyApiKeyDaoWrapper(jdbi)),
         CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).maximumSize(10000));
   }
 
@@ -146,7 +146,7 @@ public class ServerApplication extends Application<AppConfig> {
         ErrorReportControllerFactory.buildController(appConfig, jdbi),
         ModeratorAuditHistoryControllerFactory.buildController(appConfig, jdbi),
         ModeratorsControllerFactory.buildController(appConfig, jdbi),
-        UserAccountControllerFactory.buildController(jdbi));
+        UpdateAccountControllerFactory.buildController(jdbi));
   }
 
   private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {

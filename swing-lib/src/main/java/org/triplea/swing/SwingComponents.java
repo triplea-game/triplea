@@ -460,4 +460,9 @@ public final class SwingComponents {
     component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, keyBindingIdentifier);
     component.getActionMap().put(keyBindingIdentifier, SwingAction.of(e -> action.run()));
   }
+
+  public static void showError(
+      final Component parentWindow, final String title, final String message) {
+    JOptionPane.showMessageDialog(parentWindow, message, title, JOptionPane.ERROR_MESSAGE);
+  }
 }

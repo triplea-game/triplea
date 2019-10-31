@@ -202,6 +202,9 @@ final class ChatIntegrationTest {
     public void slap(final String message) {}
 
     @Override
+    public void eventReceived(final String eventText) {}
+
+    @Override
     public void messageReceived(final ChatMessage chatMessage) {
       lastMessageReceived.set(chatMessage.getMessage());
       messageCount.incrementAndGet();

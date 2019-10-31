@@ -1,4 +1,4 @@
-package org.triplea.server.user.account;
+package org.triplea.server.user.account.update;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -15,19 +15,19 @@ import org.triplea.server.TestData;
 import org.triplea.server.access.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)
-class UserAccountControllerTest {
+class UpdateAccountControllerTest {
   private static final AuthenticatedUser AUTHENTICATED_USER = TestData.AUTHENTICATED_USER;
   private static final String NEW_PASSWORD = "new-password-value";
   private static final String EMAIL = "email-value";
 
-  @Mock private UserAccountService userAccountService;
+  @Mock private UpdateAccountService userAccountService;
 
-  private UserAccountController userAccountController;
+  private UpdateAccountController userAccountController;
 
   @BeforeEach
   void setup() {
     userAccountController =
-        UserAccountController.builder().userAccountService(userAccountService).build();
+        UpdateAccountController.builder().userAccountService(userAccountService).build();
   }
 
   @Test

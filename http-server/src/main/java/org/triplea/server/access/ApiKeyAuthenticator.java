@@ -4,7 +4,7 @@ import io.dropwizard.auth.Authenticator;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 
 /**
  * Verifies a 'bearer' token API key is valid. This means checking if the key is in database, if so
@@ -14,7 +14,7 @@ import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 @AllArgsConstructor
 public class ApiKeyAuthenticator implements Authenticator<String, AuthenticatedUser> {
 
-  private final ApiKeyDaoWrapper apiKeyDaoWrapper;
+  private final LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
 
   @Override
   public Optional<AuthenticatedUser> authenticate(final String apiKey) {
