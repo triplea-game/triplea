@@ -19,13 +19,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import lombok.extern.java.Log;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.SwingComponents;
 
 /** Provides methods to export a screenshot for a game at a particular point in time. */
+@Log
 public final class ScreenshotExporter {
   private final TripleAFrame frame;
 
@@ -83,7 +86,8 @@ public final class ScreenshotExporter {
                                 JOptionPane.ERROR_MESSAGE);
                           }
                         }));
-    CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to save map snapshot");
+    CompletableFutureUtils.logExceptionWhenComplete(
+        future, throwable -> log.log(Level.SEVERE, "Failed to save map snapshot", throwable));
   }
 
   private void save(final GameData gameData, final HistoryNode node, final File file)
