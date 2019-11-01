@@ -22,7 +22,7 @@ class ToolboxAccessLogClientTest extends WireMockTest {
   private static final AccessLogData ACCESS_LOG_DATA =
       AccessLogData.builder()
           .accessDate(Instant.now())
-          .hashedMac("Dubloon of an old life, fight the yellow fever!")
+          .systemId("Dubloon of an old life, fight the yellow fever!")
           .ip("Haul me pants, ye jolly woodchuck!")
           .registered(true)
           .username("Plunders grow with fortune at the cloudy norman island!")

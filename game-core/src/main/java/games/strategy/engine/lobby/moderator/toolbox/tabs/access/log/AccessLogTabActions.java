@@ -187,7 +187,7 @@ class AccessLogTabActions {
               UserBanParams.builder()
                   .username(banData.username)
                   .ip(banData.ip)
-                  .hashedMac(banData.hashedMac)
+                  .systemId(banData.hashedMac)
                   .hoursToBan(TIME_DURATION_MAP.get(banDurationText))
                   .build());
 

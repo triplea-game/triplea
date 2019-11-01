@@ -28,9 +28,9 @@ create table user_role
 
 comment on table user_role is 'Table storing the names of the different user (authentication) roles.';
 insert into user_role(id, name)
-values (1, 'ADMIN'), -- user can add/remove admins and add/remove moderators, has boot/ban privileges
+values (1, 'ADMIN'),     -- user can add/remove admins and add/remove moderators, has boot/ban privileges
        (2, 'MODERATOR'), -- user has boot/ban privileges
-       (3, 'PLAYER'), -- standard registered user
+       (3, 'PLAYER'),    -- standard registered user
        (4, 'ANONYMOUS'), -- users that are not registered, they do not have an entry in lobby_user table
        (5, 'HOST'); -- AKA LobbyWatcher, special connection for hosts to send game updates to lobby
 
@@ -39,7 +39,7 @@ create table lobby_user
     id              serial primary key,
     username        character varying(40) not null unique,
     password        character varying(60),
-    email           character varying(40) not null check(email like '%@%' and email <> ''),
+    email           character varying(40) not null check (email like '%@%' and email <> ''),
     date_created    timestamptz           not null default current_timestamp,
     last_login      timestamptz,
     user_role_id    int                   not null references user_role (id),
@@ -64,11 +64,11 @@ comment on column lobby_user.bcrypt_password is
 
 create table access_log
 (
-    access_time timestamptz not null default now(),
-    username    varchar(40) not null,
-    ip          inet        not null,
-    mac         char(28)    not null check (char_length(mac) = 28),
-    registered  boolean     not null
+    access_time timestamptz   not null default now(),
+    username    varchar(40)   not null,
+    ip          inet          not null,
+    system_id   character(36) not null,
+    registered  boolean       not null
 );
 alter table access_log
     owner to lobby_user;
@@ -91,7 +91,7 @@ comment on table moderator_action_history is 'Table storing an audit history of 
 comment on column moderator_action_history.lobby_user_id is 'FK to lobby_user table, this is the moderator that initiated an action.';
 comment on column moderator_action_history.date_created is 'Row creation timestamp, when the action was taken.';
 comment on column moderator_action_history.action_name is 'Specifier of what action the moderator took, eg: ban|mute';
-comment on column moderator_action_history.action_target is 'The target of the action, eg: banned player name, banned mac address';
+comment on column moderator_action_history.action_target is 'The target of the action, eg: banned player name, banned IP';
 
 
 create table error_report_history
@@ -113,7 +113,7 @@ create table banned_user
     id           serial primary key,
     public_id    varchar(36)   not null unique,
     username     varchar(40)   not null,
-    hashed_mac   character(28) not null check (char_length(hashed_mac) = 28),
+    system_id    character(36) not null,
     ip           inet          not null,
     ban_expiry   timestamptz   not null check (ban_expiry > now()),
     date_created timestamptz   not null default now()
@@ -121,8 +121,8 @@ create table banned_user
 alter table banned_user
     owner to lobby_user;
 comment on table banned_user is
-    $$Table that records player bans, when players join lobby we check their IP address and hashed mac
-          against this table. If there there is an IP or mac match, then the user is not allowed to join.$$;
+    $$Table that records player bans, when players join lobby we check their IP address and system-id
+          against this table. If there there is an IP or system-id match, then the user is not allowed to join.$$;
 comment on column banned_user.public_id is
     $$A value that publicly identifiers the ban. When a player is rejected from joining lobby we can
         show them this ID value. If the player wants to dispute the ban, they can give us the public id

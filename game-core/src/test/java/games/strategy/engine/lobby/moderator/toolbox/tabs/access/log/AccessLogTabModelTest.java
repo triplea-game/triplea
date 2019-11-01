@@ -28,7 +28,7 @@ class AccessLogTabModelTest {
       UserBanParams.builder()
           .username("Never sail a captain.")
           .ip("Aye, fine beauty!")
-          .hashedMac("Cockroaches stutter from endurance like jolly scallywags.")
+          .systemId("Cockroaches stutter from endurance like jolly scallywags.")
           .hoursToBan(10)
           .build();
   private static final String USERNAME = "Ahoy there's nothing like the stormy death.";
@@ -38,7 +38,7 @@ class AccessLogTabModelTest {
   private static final AccessLogData ACCESS_LOG_DATA_1 =
       AccessLogData.builder()
           .registered(true)
-          .hashedMac("The mainland commands with punishment")
+          .systemId("The mainland commands with punishment")
           .ip("Avast, yer not viewing me without a life!")
           .username("Biscuit eaters travel with grace at the dark rummage island!")
           .accessDate(Instant.now())
@@ -47,7 +47,7 @@ class AccessLogTabModelTest {
   private static final AccessLogData ACCESS_LOG_DATA_2 =
       AccessLogData.builder()
           .registered(false)
-          .hashedMac("Command me woodchuck, ye clear wave!")
+          .systemId("Command me woodchuck, ye clear wave!")
           .ip("Hoist me rum, ye mighty cockroach!")
           .username("Arg, wow.")
           .accessDate(Instant.now().plusSeconds(100))
@@ -76,7 +76,7 @@ class AccessLogTabModelTest {
         ACCESS_LOG_DATA_1.getAccessDate().toString(),
         ACCESS_LOG_DATA_1.getUsername(),
         ACCESS_LOG_DATA_1.getIp(),
-        ACCESS_LOG_DATA_1.getHashedMac(),
+        ACCESS_LOG_DATA_1.getSystemId(),
         "Y");
 
     ToolboxTabModelTestUtil.verifyTableDataAtRow(
@@ -85,7 +85,7 @@ class AccessLogTabModelTest {
         ACCESS_LOG_DATA_2.getAccessDate().toString(),
         ACCESS_LOG_DATA_2.getUsername(),
         ACCESS_LOG_DATA_2.getIp(),
-        ACCESS_LOG_DATA_2.getHashedMac(),
+        ACCESS_LOG_DATA_2.getSystemId(),
         "");
   }
 

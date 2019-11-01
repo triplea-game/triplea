@@ -28,7 +28,7 @@ class UserBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUser
             client.banUser(
                 UserBanParams.builder()
                     .hoursToBan(10)
-                    .hashedMac("$1$AA$AA7qDBliIofq8jOm4nMBB/")
+                    .systemId("$1$AA$AA7qDBliIofq8jOm4nMBB/")
                     .ip("2.2.2.2")
                     .username("name")
                     .build()));

@@ -35,7 +35,7 @@ class BannedMacController implements UserBanDao {
     final String sql =
         ""
             + "insert into banned_user "
-            + "  (public_id, username, hashed_mac, ip, ban_expiry)"
+            + "  (public_id, username, system_id, ip, ban_expiry)"
             + "values (?, ?, ?, ?::inet, ?)";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
@@ -43,7 +43,7 @@ class BannedMacController implements UserBanDao {
       ps.setString(
           1, Instant.now().getEpochSecond() + String.valueOf(Math.random()).substring(0, 5));
       ps.setString(2, bannedUser.getUsername());
-      ps.setString(3, bannedUser.getHashedMacAddress());
+      ps.setString(3, bannedUser.getSystemId());
       ps.setString(4, bannedUser.getInetAddress().getHostAddress());
       ps.setTimestamp(
           5,
@@ -53,8 +53,7 @@ class BannedMacController implements UserBanDao {
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new DatabaseException(
-          "Error inserting banned mac: " + bannedUser.getHashedMacAddress(), e);
+      throw new DatabaseException("Error inserting banned mac: " + bannedUser.getSystemId(), e);
     }
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
@@ -66,23 +65,23 @@ class BannedMacController implements UserBanDao {
                             new IllegalStateException(
                                 "Failed to find user: " + moderator.getUsername())))
             .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_MAC)
-            .actionTarget(bannedUser.getHashedMacAddress())
+            .actionTarget(bannedUser.getSystemId())
             .build());
   }
 
   @Override
-  public Optional<Timestamp> isBanned(final InetAddress ipAddress, final String mac) {
-    final String sql = "select ban_expiry from banned_user where hashed_mac=? or ip =?::inet";
+  public Optional<Timestamp> isBanned(final InetAddress ipAddress, final String systemid) {
+    final String sql = "select ban_expiry from banned_user where system_id=? or ip =?::inet";
 
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, mac);
+      ps.setString(1, systemid);
       ps.setString(2, ipAddress.getHostAddress());
       try (ResultSet rs = ps.executeQuery()) {
         return rs.next() ? Optional.of(rs.getTimestamp(1)) : Optional.empty();
       }
     } catch (final SQLException e) {
-      throw new DatabaseException("Error for testing banned mac existence: " + mac, e);
+      throw new DatabaseException("Error for testing banned mac existence: " + systemid, e);
     }
   }
 }

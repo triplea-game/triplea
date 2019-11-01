@@ -18,14 +18,14 @@ banned_user:
   - id: 1000
     public_id: xyz
     username: banned
-    hashed_mac: $1$AA$AA7qDBliIofq8jOm4nM0H/
+    system_id: system-id
     ip: 1.1.1.1
     ban_expiry: 2100-01-01 23:59:20.0
     date_created: 2010-01-01 23:59:20.0
   - id: 1001
     public_id: 123
     username: another ban
-    hashed_mac: $1$AA$AA7qDBliIofq8jOm4nMAA/
+    system_id: system-id
     ip: 1.1.1.2
     ban_expiry: 2100-01-01 23:59:20.0
     date_created: 2010-01-01 23:59:20.0
@@ -80,7 +80,7 @@ access_log:
   - access_time: 2010-01-01 23:59:20.0
     username: example
     ip: 1.1.1.1
-    mac: $1$AA$AA7qDBliIofq8jOm4nM0H/
+    system_id: system-id
     registered: false
 
 api_key:
