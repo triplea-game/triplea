@@ -98,7 +98,7 @@ class MessagingServiceTest {
 
     /**
      * In this case we have a valid API key, though the ClientEnvelope we de-serialized from JSON
-     * string is invalid. This is represented by teh eventProcessing returning zero server messages.
+     * string is invalid. This is represented by the eventProcessing returning zero server messages.
      * This is an unlikely scenario, though could happen with version differences or a
      * custom/malicious client.
      */
