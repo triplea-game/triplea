@@ -4,7 +4,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.Sets;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import javax.websocket.Session;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class MessageBroadcasterTest {
 
   @Test
   void accept() {
-    when(session0.getOpenSessions()).thenReturn(Sets.newHashSet(session0, session1, session2));
+    when(session0.getOpenSessions()).thenReturn(Set.of(session0, session1, session2));
     when(session0.isOpen()).thenReturn(true);
     when(session1.isOpen()).thenReturn(true);
     when(session2.isOpen()).thenReturn(false);
