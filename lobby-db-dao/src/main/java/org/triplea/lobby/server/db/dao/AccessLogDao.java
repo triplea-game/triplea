@@ -2,8 +2,8 @@ package org.triplea.lobby.server.db.dao;
 
 import static org.triplea.lobby.server.db.data.AccessLogDaoData.ACCESS_TIME_COLUMN;
 import static org.triplea.lobby.server.db.data.AccessLogDaoData.IP_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogDaoData.MAC_COLUMN;
 import static org.triplea.lobby.server.db.data.AccessLogDaoData.REGISTERED_COLUMN;
+import static org.triplea.lobby.server.db.data.AccessLogDaoData.SYSTEM_ID_COLUMN;
 import static org.triplea.lobby.server.db.data.AccessLogDaoData.USERNAME_COLUMN;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public interface AccessLogDao {
           + ", "
           + IP_COLUMN
           + ", "
-          + MAC_COLUMN
+          + SYSTEM_ID_COLUMN
           + ", "
           + REGISTERED_COLUMN
           + "\n"

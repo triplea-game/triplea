@@ -20,14 +20,14 @@ import org.triplea.lobby.server.db.TimestampMapper;
 public class UserBanDaoData {
   public static final String PUBLIC_ID_COLUMN = "public_id";
   public static final String USERNAME_COLUMN = "username";
-  public static final String HASHED_MAC_COLUMN = "hashed_mac";
+  public static final String SYSTEM_ID_COLUMN = "system_id";
   public static final String IP_COLUMN = "ip";
   public static final String BAN_EXPIRY_COLUMN = "ban_expiry";
   public static final String DATE_CREATED_COLUMN = "date_created";
 
   private String publicBanId;
   private String username;
-  private String hashedMac;
+  private String systemId;
   private String ip;
   private Instant banExpiry;
   private Instant dateCreated;
@@ -38,7 +38,7 @@ public class UserBanDaoData {
         UserBanDaoData.builder()
             .publicBanId(rs.getString(PUBLIC_ID_COLUMN))
             .username(rs.getString(USERNAME_COLUMN))
-            .hashedMac(rs.getString(HASHED_MAC_COLUMN))
+            .systemId(rs.getString(SYSTEM_ID_COLUMN))
             .ip(rs.getString(IP_COLUMN))
             .dateCreated(TimestampMapper.map(rs, DATE_CREATED_COLUMN))
             .banExpiry(TimestampMapper.map(rs, BAN_EXPIRY_COLUMN))

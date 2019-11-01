@@ -72,7 +72,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         User.builder()
             .username(clientName)
             .inetAddress(((InetSocketAddress) remoteAddress).getAddress())
-            .hashedMacAddress(clientMac)
+            .systemId(clientMac)
             .build();
     final @Nullable String errorMessage =
         Optional.ofNullable(allowLoginRules.checkLoginIsAllowed(response, user))

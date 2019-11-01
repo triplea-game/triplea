@@ -2,10 +2,10 @@ access_log:
   - access_time: 2016-01-01 23:59:20.0
     username: first
     ip: 127.0.0.1
-    mac: $1$AA$AA7qDBliIofq8jOm4nM0H/
+    system_id: system-id
     registered: true
   - access_time: 2016-01-03 23:59:20.0
     username: second
     ip: 127.0.0.2
-    mac: $1$BB$AA7qDBliIofq8jOm4nM0H/
+    system_id: system-id2
     registered: false

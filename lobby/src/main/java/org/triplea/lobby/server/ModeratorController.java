@@ -47,7 +47,7 @@ final class ModeratorController implements IModeratorController {
     return User.builder()
         .username(IServerMessenger.getRealName(node.getName()))
         .inetAddress(node.getAddress())
-        .hashedMacAddress(getNodeMacAddress(node.getPlayerName()))
+        .systemId(getNodeMacAddress(node.getPlayerName()))
         .build();
   }
 
@@ -74,9 +74,8 @@ final class ModeratorController implements IModeratorController {
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
-    final String hashedMac = getNodeMacAddress(playerName);
-
-    final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
+    // TODO: Project#12 legacy code here, ModeratorController to be deleted
+    final User bannedUser = getUserForNode(node).withSystemId("");
     final User moderator = getUserForNode(MessageContext.getSender());
     database.getBannedMacDao().banUser(bannedUser, banExpires, moderator);
   }

@@ -22,17 +22,17 @@ import lombok.ToString;
 public final class User {
   @Nonnull private final String username;
   @Nonnull private final InetAddress inetAddress;
-  @Nonnull private final String hashedMacAddress;
+  @Nonnull private final String systemId;
 
   /** Creates a copy of this user but with the specified hashed MAC address. */
-  public User withHashedMacAddress(final String hashedMacAddress) {
-    checkNotNull(hashedMacAddress);
-    return new User(username, inetAddress, hashedMacAddress);
+  public User withSystemId(final String systemId) {
+    checkNotNull(systemId);
+    return new User(username, inetAddress, systemId);
   }
 
   /** Creates a copy of this user but with the specified username. */
   public User withUsername(final String username) {
     checkNotNull(username);
-    return new User(username, inetAddress, hashedMacAddress);
+    return new User(username, inetAddress, systemId);
   }
 }

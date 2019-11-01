@@ -24,12 +24,12 @@ final class AccessLogController implements AccessLogDao {
     checkNotNull(userType);
 
     final String sql =
-        "insert into access_log (username, ip, mac, registered) values (?, ?::inet, ?, ?)";
+        "insert into access_log (username, ip, system_id, registered) values (?, ?::inet, ?, ?)";
     try (Connection conn = connection.get();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getInetAddress().getHostAddress());
-      ps.setString(3, user.getHashedMacAddress());
+      ps.setString(3, user.getSystemId());
       ps.setBoolean(4, userType == UserType.REGISTERED);
       ps.execute();
       conn.commit();

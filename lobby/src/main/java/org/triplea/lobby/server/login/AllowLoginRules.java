@@ -48,12 +48,12 @@ class AllowLoginRules {
     if (database.getBadWordDao().containsBadWord(user.getUsername())) {
       return ErrorMessages.THAT_IS_NOT_A_NICE_NAME;
     }
-    if (!MacFinder.isValidHashedMacAddress(user.getHashedMacAddress())) {
+    if (!MacFinder.isValidHashedMacAddress(user.getSystemId())) {
       // Must have been tampered with
       return ErrorMessages.INVALID_MAC;
     }
     final Optional<Timestamp> banExpiry =
-        database.getBannedMacDao().isBanned(user.getInetAddress(), user.getHashedMacAddress());
+        database.getBannedMacDao().isBanned(user.getInetAddress(), user.getSystemId());
 
     if (banExpiry.isPresent() && banExpiry.get().toInstant().isAfter(Instant.now())) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(banExpiry.get());

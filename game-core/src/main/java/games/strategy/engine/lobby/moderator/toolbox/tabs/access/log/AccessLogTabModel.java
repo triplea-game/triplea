@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.access.log;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,16 +12,12 @@ import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClien
 
 @RequiredArgsConstructor
 class AccessLogTabModel {
-
-  @VisibleForTesting static final String BAN_NAME_BUTTON_TEXT = "Ban Name";
-  @VisibleForTesting static final String BAN_USER_BUTTON_TEXT = "Ban User";
-
   private final ToolboxAccessLogClient toolboxAccessLogClient;
   private final ToolboxUserBanClient toolboxUserBanClient;
   private final ToolboxUsernameBanClient toolboxUsernameBanClient;
 
   static List<String> fetchTableHeaders() {
-    return Arrays.asList("Access Date", "Username", "IP", "Hashed Mac", "Registered", "", "");
+    return Arrays.asList("Access Date", "Username", "IP", "System Id", "Registered", "", "");
   }
 
   List<List<String>> fetchTableData(final PagingParams pagingParams) {
@@ -33,7 +28,7 @@ class AccessLogTabModel {
                     accessLogData.getAccessDate().toString(),
                     accessLogData.getUsername(),
                     accessLogData.getIp(),
-                    accessLogData.getHashedMac(),
+                    accessLogData.getSystemId(),
                     accessLogData.isRegistered() ? "Y" : "",
                     "Ban Name",
                     "Ban User"))

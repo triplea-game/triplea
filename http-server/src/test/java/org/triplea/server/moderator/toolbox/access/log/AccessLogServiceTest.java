@@ -28,7 +28,7 @@ class AccessLogServiceTest {
           .accessTime(Instant.now())
           .username("username")
           .ip("ip")
-          .mac("hashed-mac")
+          .systemId("system-id")
           .registered(true)
           .build();
 
@@ -47,7 +47,7 @@ class AccessLogServiceTest {
     assertThat(results, hasSize(1));
 
     assertThat(results.get(0).getAccessDate(), is(ACCESS_LOG_DAO_DATA.getAccessTime()));
-    assertThat(results.get(0).getHashedMac(), is(ACCESS_LOG_DAO_DATA.getMac()));
+    assertThat(results.get(0).getSystemId(), is(ACCESS_LOG_DAO_DATA.getSystemId()));
     assertThat(results.get(0).getIp(), is(ACCESS_LOG_DAO_DATA.getIp()));
     assertThat(results.get(0).getUsername(), is(ACCESS_LOG_DAO_DATA.getUsername()));
     assertThat(results.get(0).isRegistered(), is(ACCESS_LOG_DAO_DATA.isRegistered()));
