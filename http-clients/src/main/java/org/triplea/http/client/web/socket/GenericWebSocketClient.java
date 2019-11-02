@@ -26,7 +26,7 @@ import org.triplea.java.concurrency.CompletableFutureUtils;
 @Log
 public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketConnectionListener {
   private static final Gson gson = new Gson();
-  private final ExecutorService threadPool = Executors.newFixedThreadPool(4);
+  private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
   private final WebSocketConnection client;
   private final Class<IncomingT> incomingMessageType;
@@ -59,9 +59,8 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
    * @param message The data object to send to the server.
    */
   public void send(final OutgoingT message) {
-    final String json = gson.toJson(message);
     CompletableFutureUtils.logExceptionWhenComplete(
-        CompletableFuture.runAsync(() -> client.sendMessage(json), threadPool),
+        CompletableFuture.runAsync(() -> client.sendMessage(gson.toJson(message)), threadPool),
         e -> log.log(Level.WARNING, "Failed to send message to server", e));
   }
 
