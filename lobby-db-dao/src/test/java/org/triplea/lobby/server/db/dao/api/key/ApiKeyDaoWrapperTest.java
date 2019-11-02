@@ -22,6 +22,7 @@ import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
 import org.triplea.lobby.server.db.data.ApiKeyUserData;
+import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.lobby.server.db.data.UserRoleLookup;
 
 @ExtendWith(MockitoExtension.class)
@@ -92,7 +93,7 @@ class ApiKeyDaoWrapperTest {
     @Test
     void newKeyForGameHosts() {
       givenNewKey();
-      when(userRoleDao.lookupHostRoleId()).thenReturn(HOST_USER_ROLE_ID);
+      when(userRoleDao.lookupRoleId(UserRole.HOST)).thenReturn(HOST_USER_ROLE_ID);
       when(apiKeyDao.storeKey(null, null, HASHED_KEY, IP.getHostAddress(), HOST_USER_ROLE_ID))
           .thenReturn(1);
 
@@ -111,7 +112,7 @@ class ApiKeyDaoWrapperTest {
       givenNewKey();
       when(userJdbiDao.lookupUserIdAndRoleIdByUserName(PLAYER_NAME.getValue()))
           .thenReturn(Optional.empty());
-      when(userRoleDao.lookupAnonymousRoleId()).thenReturn(ANONYMOUS_USER_ROLE_ID);
+      when(userRoleDao.lookupRoleId(UserRole.ANONYMOUS)).thenReturn(ANONYMOUS_USER_ROLE_ID);
       when(apiKeyDao.storeKey(
               null,
               PLAYER_NAME.getValue(),
