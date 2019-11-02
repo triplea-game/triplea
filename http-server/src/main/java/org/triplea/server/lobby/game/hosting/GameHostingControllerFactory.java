@@ -10,6 +10,6 @@ public final class GameHostingControllerFactory {
 
   public static GameHostingController buildController(final Jdbi jdbi) {
     final LobbyApiKeyDaoWrapper wrapper = new LobbyApiKeyDaoWrapper(jdbi);
-    return GameHostingController.builder().apiKeySupplier(wrapper::newKey).build();
+    return GameHostingController.builder().apiKeySupplier(wrapper::newGameHostKey).build();
   }
 }
