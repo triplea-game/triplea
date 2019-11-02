@@ -36,12 +36,12 @@ final class AccessLogControllerIntegrationTest {
     final String sql =
         "select access_time "
             + "from access_log "
-            + "where username=? and ip=?::inet and mac=? and registered=?";
+            + "where username=? and ip=?::inet and system_id=? and registered=?";
     try (Connection conn = TestDatabase.newConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getInetAddress().getHostAddress());
-      ps.setString(3, user.getHashedMacAddress());
+      ps.setString(3, user.getSystemId());
       ps.setBoolean(4, userType == UserType.REGISTERED);
       try (ResultSet rs = ps.executeQuery()) {
         assertThat("record should exist", rs.next(), is(true));

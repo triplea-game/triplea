@@ -1,9 +1,9 @@
 package org.triplea.server.moderator.toolbox.banned.users;
 
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.lobby.server.db.PublicIdSupplier;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.UserBanDao;
 import org.triplea.server.http.AppConfig;
@@ -16,7 +16,7 @@ public final class UserBanControllerFactory {
     return UserBanController.builder()
         .bannedUsersService(
             UserBanService.builder()
-                .publicIdSupplier(new PublicIdSupplier())
+                .publicIdSupplier(() -> UUID.randomUUID().toString())
                 .bannedUserDao(jdbi.onDemand(UserBanDao.class))
                 .moderatorAuditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
                 .build())

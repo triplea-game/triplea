@@ -44,7 +44,7 @@ public class UserBanController extends HttpController {
   public Response banUser(
       @Auth final AuthenticatedUser authenticatedUser, final UserBanParams banUserParams) {
     Preconditions.checkArgument(banUserParams != null);
-    Preconditions.checkArgument(banUserParams.getHashedMac() != null);
+    Preconditions.checkArgument(banUserParams.getSystemId() != null);
     Preconditions.checkArgument(banUserParams.getIp() != null);
     Preconditions.checkArgument(banUserParams.getUsername() != null);
     Preconditions.checkArgument(banUserParams.getHoursToBan() > 0);

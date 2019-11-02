@@ -31,7 +31,7 @@ class AccessLogDaoDataTest {
   void buildResultMapper() throws Exception {
     when(resultSet.getBoolean(AccessLogDaoData.REGISTERED_COLUMN)).thenReturn(true);
     when(resultSet.getString(AccessLogDaoData.USERNAME_COLUMN)).thenReturn(USERNAME);
-    when(resultSet.getString(AccessLogDaoData.MAC_COLUMN)).thenReturn(MAC);
+    when(resultSet.getString(AccessLogDaoData.SYSTEM_ID_COLUMN)).thenReturn(MAC);
     when(resultSet.getString(AccessLogDaoData.IP_COLUMN)).thenReturn(IP);
     when(resultSet.getTimestamp(eq(AccessLogDaoData.ACCESS_TIME_COLUMN), any(Calendar.class)))
         .thenReturn(timestamp);
@@ -40,7 +40,7 @@ class AccessLogDaoDataTest {
 
     assertThat(result.isRegistered(), is(true));
     assertThat(result.getUsername(), is(USERNAME));
-    assertThat(result.getMac(), is(MAC));
+    assertThat(result.getSystemId(), is(MAC));
     assertThat(result.getIp(), is(IP));
     assertThat(result.getAccessTime(), is(NOW));
   }

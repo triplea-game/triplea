@@ -27,6 +27,6 @@ final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceC
   }
 
   private Optional<Timestamp> isMacBanned() throws Exception {
-    return controller.isBanned(InetAddress.getLocalHost(), user.getHashedMacAddress());
+    return controller.isBanned(InetAddress.getLocalHost(), user.getSystemId());
   }
 }

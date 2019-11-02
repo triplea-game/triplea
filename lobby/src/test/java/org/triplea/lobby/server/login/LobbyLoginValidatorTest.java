@@ -147,7 +147,7 @@ final class LobbyLoginValidatorTest {
               challenge,
               responseGenerator.apply(challenge),
               user.getUsername(),
-              user.getHashedMacAddress(),
+              user.getSystemId(),
               remoteAddress);
     }
 

@@ -21,7 +21,7 @@ class AccessLogService {
                     .accessDate(daoData.getAccessTime())
                     .username(daoData.getUsername())
                     .ip(daoData.getIp())
-                    .hashedMac(daoData.getMac())
+                    .systemId(daoData.getSystemId())
                     .registered(daoData.isRegistered())
                     .build())
         .collect(Collectors.toList());

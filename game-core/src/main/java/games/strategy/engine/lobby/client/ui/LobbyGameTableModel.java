@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.java.Timers;
@@ -41,7 +41,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private final boolean admin;
-  private final Timer gamePoller;
+  private final transient Timer gamePoller;
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<String, GameDescription>> gameList = new ArrayList<>();
@@ -62,7 +62,7 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   LobbyGameTableModel(
       final boolean admin,
-      final GameListingClient gameListingClient,
+      final HttpLobbyClient httpLobbyClient,
       final Consumer<String> errorMessageReporter) {
     this.admin = admin;
 
@@ -76,11 +76,11 @@ class LobbyGameTableModel extends AbstractTableModel {
                 new GamePollerTask(
                     lobbyGameBroadcaster,
                     gameListingSupplier(),
-                    gameListingClient::fetchGameListing,
+                    () -> httpLobbyClient.getGameListingClient().fetchGameListing(),
                     errorMessageReporter));
 
     final Map<String, GameDescription> games =
-        gameListingClient.fetchGameListing().stream()
+        httpLobbyClient.getGameListingClient().fetchGameListing().stream()
             .collect(Collectors.toMap(LobbyGameListing::getGameId, GameDescription::fromLobbyGame));
 
     for (final Map.Entry<String, GameDescription> entry : games.entrySet()) {

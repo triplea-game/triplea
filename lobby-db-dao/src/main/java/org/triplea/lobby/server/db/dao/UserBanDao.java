@@ -2,9 +2,9 @@ package org.triplea.lobby.server.db.dao;
 
 import static org.triplea.lobby.server.db.data.UserBanDaoData.BAN_EXPIRY_COLUMN;
 import static org.triplea.lobby.server.db.data.UserBanDaoData.DATE_CREATED_COLUMN;
-import static org.triplea.lobby.server.db.data.UserBanDaoData.HASHED_MAC_COLUMN;
 import static org.triplea.lobby.server.db.data.UserBanDaoData.IP_COLUMN;
 import static org.triplea.lobby.server.db.data.UserBanDaoData.PUBLIC_ID_COLUMN;
+import static org.triplea.lobby.server.db.data.UserBanDaoData.SYSTEM_ID_COLUMN;
 import static org.triplea.lobby.server.db.data.UserBanDaoData.USERNAME_COLUMN;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface UserBanDao {
           + ", "
           + USERNAME_COLUMN
           + ", "
-          + HASHED_MAC_COLUMN
+          + SYSTEM_ID_COLUMN
           + ", "
           + IP_COLUMN
           + ", "
@@ -44,12 +44,12 @@ public interface UserBanDao {
 
   @SqlUpdate(
       "insert into banned_user"
-          + "(public_id, username, hashed_mac, ip, ban_expiry) values\n"
-          + "(:banId, :username, :hashedMac, :ip::inet, now() + :banHours * '1 hour'::interval)")
+          + "(public_id, username, system_id, ip, ban_expiry) values\n"
+          + "(:banId, :username, :systemId, :ip::inet, now() + :banHours * '1 hour'::interval)")
   int addBan(
       @Bind("banId") String banId,
       @Bind("username") String username,
-      @Bind("hashedMac") String hashedMac,
+      @Bind("systemId") String systemId,
       @Bind("ip") String ip,
       @Bind("banHours") int banHours);
 }

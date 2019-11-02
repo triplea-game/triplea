@@ -1930,7 +1930,8 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
               .thenApplyAsync(ImageIcon::new)
               .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
       CompletableFutureUtils.logExceptionWhenComplete(
-          future, "Failed to set round icon for " + player);
+          future,
+          throwable -> log.log(Level.SEVERE, "Failed to set round icon for " + player, throwable));
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }

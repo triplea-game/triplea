@@ -7,6 +7,7 @@ import static org.hamcrest.core.Is.is;
 import com.github.database.rider.core.api.dataset.DataSet;
 import java.time.Instant;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.db.data.AccessLogDaoData;
 
@@ -31,7 +32,7 @@ class AccessLogDaoTest extends DaoTest {
 
     assertThat(data.get(0).getAccessTime(), is(Instant.parse("2016-01-03T23:59:20.0Z")));
     assertThat(data.get(0).getIp(), is("127.0.0.2"));
-    assertThat(data.get(0).getMac(), is("$1$BB$AA7qDBliIofq8jOm4nM0H/"));
+    assertThat(data.get(0).getSystemId(), is(StringUtils.rightPad("system-id2", 36)));
     assertThat(data.get(0).getUsername(), is("second"));
     assertThat(data.get(0).isRegistered(), is(false));
 
@@ -40,7 +41,7 @@ class AccessLogDaoTest extends DaoTest {
 
     assertThat(data.get(0).getAccessTime(), is(Instant.parse("2016-01-01T23:59:20.0Z")));
     assertThat(data.get(0).getIp(), is("127.0.0.1"));
-    assertThat(data.get(0).getMac(), is("$1$AA$AA7qDBliIofq8jOm4nM0H/"));
+    assertThat(data.get(0).getSystemId(), is(StringUtils.rightPad("system-id", 36)));
     assertThat(data.get(0).getUsername(), is("first"));
     assertThat(data.get(0).isRegistered(), is(true));
   }

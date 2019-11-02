@@ -12,7 +12,7 @@ import org.triplea.lobby.common.IModeratorController;
 public class LobbyClient {
   private final Messengers messengers;
   private final boolean anonymousLogin;
-  private final boolean admin;
+  private final boolean moderator;
   private final HttpLobbyClient httpLobbyClient;
 
   public LobbyClient(final IMessenger messenger, final HttpLobbyClient httpLobbyClient) {
@@ -28,7 +28,7 @@ public class LobbyClient {
     this.anonymousLogin = anonymousLogin;
     final var moderatorController =
         (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
-    admin = moderatorController.isAdmin();
+    moderator = moderatorController.isAdmin();
   }
 
   public boolean isPasswordChangeRequired() {

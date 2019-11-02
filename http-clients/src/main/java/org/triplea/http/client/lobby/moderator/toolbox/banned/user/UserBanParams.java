@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class UserBanParams {
   private String ip;
   private String username;
-  private String hashedMac;
+  private String systemId;
   private int hoursToBan;
 }

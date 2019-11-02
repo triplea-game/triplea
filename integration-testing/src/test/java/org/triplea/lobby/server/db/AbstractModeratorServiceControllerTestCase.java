@@ -22,7 +22,7 @@ public abstract class AbstractModeratorServiceControllerTestCase {
         User.builder()
             .username(newUsername())
             .inetAddress(newInetAddress())
-            .hashedMacAddress(newHashedMacAddress())
+            .systemId(newHashedMacAddress())
             .build();
     new LobbyConfiguration()
         .getDatabaseDao()

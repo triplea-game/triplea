@@ -20,6 +20,6 @@ public class AccessLogData {
   private final Instant accessDate;
   private final String username;
   private final String ip;
-  private final String hashedMac;
+  private final String systemId;
   private final boolean registered;
 }

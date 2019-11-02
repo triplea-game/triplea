@@ -37,7 +37,7 @@ class UserBanDaoDataTest {
         .thenReturn(timestamp);
     when(resultSet.getTimestamp(eq(UserBanDaoData.DATE_CREATED_COLUMN), any(Calendar.class)))
         .thenReturn(yesterdayTimestamp);
-    when(resultSet.getString(UserBanDaoData.HASHED_MAC_COLUMN)).thenReturn(MAC);
+    when(resultSet.getString(UserBanDaoData.SYSTEM_ID_COLUMN)).thenReturn(MAC);
     when(resultSet.getString(UserBanDaoData.IP_COLUMN)).thenReturn(IP);
     when(resultSet.getString(UserBanDaoData.PUBLIC_ID_COLUMN)).thenReturn(PUBLIC_ID);
     when(resultSet.getString(UserBanDaoData.USERNAME_COLUMN)).thenReturn(USERNAME);
@@ -46,7 +46,7 @@ class UserBanDaoDataTest {
 
     assertThat(result.getBanExpiry(), is(NOW));
     assertThat(result.getDateCreated(), is(YESTERDAY));
-    assertThat(result.getHashedMac(), is(MAC));
+    assertThat(result.getSystemId(), is(MAC));
     assertThat(result.getIp(), is(IP));
     assertThat(result.getPublicBanId(), is(PUBLIC_ID));
     assertThat(result.getUsername(), is(USERNAME));

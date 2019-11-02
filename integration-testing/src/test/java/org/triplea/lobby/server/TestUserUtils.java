@@ -18,7 +18,7 @@ public final class TestUserUtils {
     return User.builder()
         .username(newUsername())
         .inetAddress(newInetAddress())
-        .hashedMacAddress(newHashedMacAddress())
+        .systemId(newHashedMacAddress())
         .build();
   }
 

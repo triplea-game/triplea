@@ -28,7 +28,7 @@ public class UserBanService {
                 UserBanData.builder()
                     .banId(daoData.getPublicBanId())
                     .username(daoData.getUsername())
-                    .hashedMac(daoData.getHashedMac())
+                    .hashedMac(daoData.getSystemId())
                     .ip(daoData.getIp())
                     .banDate(daoData.getDateCreated())
                     .banExpiry(daoData.getBanExpiry())
@@ -54,7 +54,7 @@ public class UserBanService {
     if (bannedUserDao.addBan(
             publicIdSupplier.get(),
             banUserParams.getUsername(),
-            banUserParams.getHashedMac(),
+            banUserParams.getSystemId(),
             banUserParams.getIp(),
             banUserParams.getHoursToBan())
         != 1) {
