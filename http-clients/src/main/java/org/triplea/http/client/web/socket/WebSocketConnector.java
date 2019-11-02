@@ -45,7 +45,7 @@ class WebSocketConnector {
   void initiateConnection() {
     executorService = Executors.newSingleThreadExecutor();
     connectionThread = executorService.submit((Callable<Boolean>) webSocketClient::connectBlocking);
-    executorService.shutdownNow();
+    executorService.shutdown();
   }
 
   void waitUntilConnectionIsOpen() {
