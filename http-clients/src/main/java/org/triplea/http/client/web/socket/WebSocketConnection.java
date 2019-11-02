@@ -27,6 +27,7 @@ import org.triplea.java.Postconditions;
 @Log
 class WebSocketConnection {
   private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
+
   @Setter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
