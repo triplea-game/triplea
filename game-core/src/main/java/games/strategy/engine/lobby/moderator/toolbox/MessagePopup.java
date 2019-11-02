@@ -15,7 +15,7 @@ import org.triplea.swing.Toast;
 public final class MessagePopup {
   public static void showMessage(final JFrame frame, final String message) {
     Toast.builder()
-        .parent(frame)
+        .parentFrame(frame)
         .message(message)
         .sleepTime(Duration.ofMillis(350))
         .build()
