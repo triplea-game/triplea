@@ -13,7 +13,7 @@ import org.triplea.lobby.server.db.TimestampMapper;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AccessLogDaoData {
+public class AccessLogRecord {
   public static final String ACCESS_TIME_COLUMN = "access_time";
   public static final String USERNAME_COLUMN = "username";
   public static final String IP_COLUMN = "ip";
@@ -27,9 +27,9 @@ public class AccessLogDaoData {
   private boolean registered;
 
   /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
-  public static RowMapper<AccessLogDaoData> buildResultMapper() {
+  public static RowMapper<AccessLogRecord> buildResultMapper() {
     return (rs, ctx) ->
-        AccessLogDaoData.builder()
+        AccessLogRecord.builder()
             .accessTime(TimestampMapper.map(rs, ACCESS_TIME_COLUMN))
             .username(rs.getString(USERNAME_COLUMN))
             .ip(rs.getString(IP_COLUMN))

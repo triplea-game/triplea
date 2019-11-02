@@ -1,15 +1,15 @@
 package org.triplea.lobby.server.db.dao;
 
-import static org.triplea.lobby.server.db.data.AccessLogDaoData.ACCESS_TIME_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogDaoData.IP_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogDaoData.REGISTERED_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogDaoData.SYSTEM_ID_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogDaoData.USERNAME_COLUMN;
+import static org.triplea.lobby.server.db.data.AccessLogRecord.ACCESS_TIME_COLUMN;
+import static org.triplea.lobby.server.db.data.AccessLogRecord.IP_COLUMN;
+import static org.triplea.lobby.server.db.data.AccessLogRecord.REGISTERED_COLUMN;
+import static org.triplea.lobby.server.db.data.AccessLogRecord.SYSTEM_ID_COLUMN;
+import static org.triplea.lobby.server.db.data.AccessLogRecord.USERNAME_COLUMN;
 
 import java.util.List;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.triplea.lobby.server.db.data.AccessLogDaoData;
+import org.triplea.lobby.server.db.data.AccessLogRecord;
 
 /**
  * Provides access to the access log table. This is a table that records user data as they enter the
@@ -35,6 +35,6 @@ public interface AccessLogDao {
           + " desc\n"
           + "offset :rowOffset rows\n"
           + "fetch next :rowCount rows only")
-  List<AccessLogDaoData> lookupAccessLogData(
+  List<AccessLogRecord> fetchAccessLogRows(
       @Bind("rowOffset") int rowOffset, @Bind("rowCount") int rowCount);
 }

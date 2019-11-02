@@ -16,15 +16,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
 import org.triplea.lobby.server.db.dao.AccessLogDao;
-import org.triplea.lobby.server.db.data.AccessLogDaoData;
+import org.triplea.lobby.server.db.data.AccessLogRecord;
 
 @ExtendWith(MockitoExtension.class)
 class AccessLogServiceTest {
   private static final PagingParams PAGING_PARAMS =
       PagingParams.builder().pageSize(100).rowNumber(0).build();
 
-  private static final AccessLogDaoData ACCESS_LOG_DAO_DATA =
-      AccessLogDaoData.builder()
+  private static final AccessLogRecord ACCESS_LOG_DAO_DATA =
+      AccessLogRecord.builder()
           .accessTime(Instant.now())
           .username("username")
           .ip("ip")
@@ -38,8 +38,7 @@ class AccessLogServiceTest {
 
   @Test
   void fetchAccessLog() {
-    when(accessLogDao.lookupAccessLogData(
-            PAGING_PARAMS.getRowNumber(), PAGING_PARAMS.getPageSize()))
+    when(accessLogDao.fetchAccessLogRows(PAGING_PARAMS.getRowNumber(), PAGING_PARAMS.getPageSize()))
         .thenReturn(Collections.singletonList(ACCESS_LOG_DAO_DATA));
 
     final List<AccessLogData> results = accessLogService.fetchAccessLog(PAGING_PARAMS);
