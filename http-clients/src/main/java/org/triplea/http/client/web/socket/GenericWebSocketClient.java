@@ -59,6 +59,8 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
    * @param message The data object to send to the server.
    */
   public void send(final OutgoingT message) {
+    // TODO: Project#12 time the sendMessage action on large messages to see what we gain
+    // we get by doing the send on a new thread.
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(() -> client.sendMessage(gson.toJson(message)), threadPool),
         e -> log.log(Level.WARNING, "Failed to send message to server", e));
