@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class AccessLogDaoDataTest {
+class AccessLogRecordTest {
   private static final Instant NOW = Instant.now();
   private static final Timestamp timestamp = Timestamp.from(NOW);
 
@@ -29,14 +29,14 @@ class AccessLogDaoDataTest {
 
   @Test
   void buildResultMapper() throws Exception {
-    when(resultSet.getBoolean(AccessLogDaoData.REGISTERED_COLUMN)).thenReturn(true);
-    when(resultSet.getString(AccessLogDaoData.USERNAME_COLUMN)).thenReturn(USERNAME);
-    when(resultSet.getString(AccessLogDaoData.SYSTEM_ID_COLUMN)).thenReturn(MAC);
-    when(resultSet.getString(AccessLogDaoData.IP_COLUMN)).thenReturn(IP);
-    when(resultSet.getTimestamp(eq(AccessLogDaoData.ACCESS_TIME_COLUMN), any(Calendar.class)))
+    when(resultSet.getBoolean(AccessLogRecord.REGISTERED_COLUMN)).thenReturn(true);
+    when(resultSet.getString(AccessLogRecord.USERNAME_COLUMN)).thenReturn(USERNAME);
+    when(resultSet.getString(AccessLogRecord.SYSTEM_ID_COLUMN)).thenReturn(MAC);
+    when(resultSet.getString(AccessLogRecord.IP_COLUMN)).thenReturn(IP);
+    when(resultSet.getTimestamp(eq(AccessLogRecord.ACCESS_TIME_COLUMN), any(Calendar.class)))
         .thenReturn(timestamp);
 
-    final AccessLogDaoData result = AccessLogDaoData.buildResultMapper().map(resultSet, null);
+    final AccessLogRecord result = AccessLogRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.isRegistered(), is(true));
     assertThat(result.getUsername(), is(USERNAME));

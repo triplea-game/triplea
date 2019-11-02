@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.triplea.lobby.server.db.data.AccessLogDaoData;
+import org.triplea.lobby.server.db.data.AccessLogRecord;
 
 class AccessLogDaoTest extends DaoTest {
   private final AccessLogDao accessLogDao = DaoTest.newDao(AccessLogDao.class);
@@ -17,7 +17,7 @@ class AccessLogDaoTest extends DaoTest {
   @Test
   @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
   void emptyDataCase() {
-    assertThat(accessLogDao.lookupAccessLogData(0, 1), hasSize(0));
+    assertThat(accessLogDao.fetchAccessLogRows(0, 1), hasSize(0));
   }
 
   /**
@@ -27,7 +27,7 @@ class AccessLogDaoTest extends DaoTest {
   @Test
   @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
   void fetchTwoRows() {
-    List<AccessLogDaoData> data = accessLogDao.lookupAccessLogData(0, 1);
+    List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 1);
     assertThat(data, hasSize(1));
 
     assertThat(data.get(0).getAccessTime(), is(Instant.parse("2016-01-03T23:59:20.0Z")));
@@ -36,7 +36,7 @@ class AccessLogDaoTest extends DaoTest {
     assertThat(data.get(0).getUsername(), is("second"));
     assertThat(data.get(0).isRegistered(), is(false));
 
-    data = accessLogDao.lookupAccessLogData(1, 1);
+    data = accessLogDao.fetchAccessLogRows(1, 1);
     assertThat(data, hasSize(1));
 
     assertThat(data.get(0).getAccessTime(), is(Instant.parse("2016-01-01T23:59:20.0Z")));
@@ -50,6 +50,6 @@ class AccessLogDaoTest extends DaoTest {
   @Test
   @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
   void requestingRowsOffDataSetReturnsNothing() {
-    assertThat(accessLogDao.lookupAccessLogData(2, 1), hasSize(0));
+    assertThat(accessLogDao.fetchAccessLogRows(2, 1), hasSize(0));
   }
 }

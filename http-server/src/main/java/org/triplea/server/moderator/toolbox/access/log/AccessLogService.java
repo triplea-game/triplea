@@ -13,7 +13,7 @@ class AccessLogService {
   @Nonnull private final AccessLogDao accessLogDao;
 
   List<AccessLogData> fetchAccessLog(final PagingParams pagingParams) {
-    return accessLogDao.lookupAccessLogData(pagingParams.getRowNumber(), pagingParams.getPageSize())
+    return accessLogDao.fetchAccessLogRows(pagingParams.getRowNumber(), pagingParams.getPageSize())
         .stream()
         .map(
             daoData ->
