@@ -58,93 +58,17 @@ vagrant destroy -f
 ```
 
 
-# Testing on PreRelease Server
+# PreRelease and Production Deployments
 
-
-Manually copy a ansible.zip file to the infrastructure machine, comment out the run_deployment
-steps that download ansible.zip and then execute 'run_deployment' from the infrastructure
-machine.
-
-
-```bash
-cd ~/triplea/infrastructure/ansible
-rm -f ansible.zip
-zip -r ansible.zip *
-scp ansible.zip ansible@173.255.247.175:~/
-```
-
-```bash
-ssh ansible@173.255.247.175
-rm -rf ansible/ bot/ lobby/
-unzip ansible.zip -d ansible/
-## update "run_deployment" and comment out the download function for ansible.zip
-./run_deployment <version> prerelease
-```
-
-
-## Infrastructure Server
-
-### How the infrastructure server is used
-
-The infrastructure server is where we run ansible. The general process
-is that we do a one-time setup to configure access and install ansible.
-From there we have a 'run_deployment' script on the infrastructure server
-we would use to execute deployments. The difference between prerelease and
-production deployments will be just which inventory file is used.
-
-
-### Setup Notes
-
-These were one-time setup to configure the infrastructure machine:
-
-- Update server host name in `/etc/hostname` to `infrastructure.triplea-game.org`
-
-- Reboot
-
-- Add ansible user
-
-```bash
-adduser -m ansible
-```
-
-- Allow password login for ansible, update `/etc/ssh/ssh` to have following:
-```bash
-ChallengeResponseAuthentication yes
-PasswordAuthentication yes
-PermitRootLogin no
-```
-
-Then reload sshd for settings to take effect:
-```bash
-service sshd reload
-```
-
-(note: to get root access, login as ansible first, then `su` to root)
-
-
-- As root:
-
-```bash
-ufw enable
-ufw allow 22
-apt install -y ansible \
-    fail2ban \
-    unattended-upgrades \
-    shellcheck \
-    unzip
-```
-
-Copy `secrets` and `run_deployment` from `~/triplea/infrastructure/infrastructure-machine`
-to the infrastructure machine. Update the values in secrets to be real secret values.
-
-Switch to ansible user, generate a ssh key (use elliptic curve algorithm).
-
-### Access to infrastructure server
-
-Login from linode console using user: `root` and password.
-
-Add your ssh public key to `/root/.ssh/authorized_keys`
-
+- Executed as part of travis pipeline build after release artifacts are generated
+and deployed to github releases.
+- Variable values, such as passwords are kept constant between prerelease and production
+- Production version is controlled by a variable, prerelease is always latest version
+- Prerelease specific deployment instructions are excluded via ansible 'if' instructions,
+  when promoting such steps to production, we remove those if statements.
+- Production deployment occurs on every build, ansible is idempotent by design,
+  this allows us to ensure updates, update/add/change servers from inventory files
+- Variables are stored in travis online website configuration
 
 ## Setting up target machines
 
