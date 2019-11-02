@@ -3,7 +3,7 @@ package org.triplea.server.moderator.toolbox.access.log;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.lobby.server.db.dao.AccessLogDao;
+import org.triplea.lobby.server.db.dao.access.log.AccessLogDao;
 import org.triplea.server.http.AppConfig;
 
 /** Factory class, instantiates {@code AccessLogControllerFactory}. */

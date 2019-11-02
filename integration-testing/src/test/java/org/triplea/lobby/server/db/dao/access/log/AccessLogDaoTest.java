@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.db.dao;
+package org.triplea.lobby.server.db.dao.access.log;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.triplea.lobby.server.db.data.AccessLogRecord;
+import org.triplea.lobby.server.db.dao.DaoTest;
 
 class AccessLogDaoTest extends DaoTest {
   private final AccessLogDao accessLogDao = DaoTest.newDao(AccessLogDao.class);
