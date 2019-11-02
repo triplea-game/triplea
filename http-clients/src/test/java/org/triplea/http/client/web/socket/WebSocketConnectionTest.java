@@ -58,6 +58,7 @@ class WebSocketConnectionTest {
   class SendMessageAndConnect {
     @Mock private WebSocketClient webSocketClient;
     @Mock private WebSocket webSocket;
+    @Mock private WebSocketConnector webSocketConnector;
 
     private WebSocketConnection webSocketConnection;
 
@@ -65,14 +66,14 @@ class WebSocketConnectionTest {
     void setup() {
       webSocketConnection = new WebSocketConnection(LOCALHOST_URI);
       webSocketConnection.setClient(webSocketClient);
-      webSocketConnection.setConnectTimeout(30);
+      webSocketConnection.setWebSocketConnector(webSocketConnector);
     }
 
     @Test
     void connect() {
       webSocketConnection.connect();
 
-      verify(webSocketClient).connect();
+      verify(webSocketConnector).initiateConnection();
     }
 
     @Test
@@ -88,20 +89,12 @@ class WebSocketConnectionTest {
     }
 
     @Test
-    void sendMessageNotCalledIfConnectTimesOut() {
-      when(webSocketClient.isOpen()).thenReturn(false);
-
-      webSocketConnection.sendMessage(MESSAGE);
-
-      verify(webSocketClient, never()).send(MESSAGE);
-    }
-
-    @Test
     void sendMessageWaitsForConnection() {
-      when(webSocketClient.isOpen()).thenReturn(false).thenReturn(false).thenReturn(true);
+      when(webSocketClient.isOpen()).thenReturn(true);
 
       webSocketConnection.sendMessage(MESSAGE);
 
+      verify(webSocketConnector).waitUntilConnectionIsOpen();
       verify(webSocketClient).send(MESSAGE);
     }
   }

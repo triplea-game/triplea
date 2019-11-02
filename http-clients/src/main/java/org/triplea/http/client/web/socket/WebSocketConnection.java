@@ -11,19 +11,27 @@ import lombok.Setter;
 import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.triplea.java.Interruptibles;
+import org.triplea.java.Postconditions;
 
-/** Lowest level component for interfacing with websocket connection. */
+/**
+ * Component to manage a websocket connection. Responsible for:
+ *
+ * <ul>
+ *   <li>initiating the connection (async)
+ *   <li>blocking send message requests until the connection to server has been established and then
+ *       sends messages async
+ *   <li>triggering listener callbacks when messages are received from server
+ *   <li>closing the websocket connection (async)
+ * </ul>
+ */
 @Log
 class WebSocketConnection {
-  private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
-
+  private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
   @Setter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  private int connectTimeout = DEFAULT_CONNECT_TIMEOUT_MILLIS;
+  private WebSocketConnector webSocketConnector;
 
-  private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
   private boolean closed = false;
 
   @Getter(
@@ -55,6 +63,7 @@ class WebSocketConnection {
             listeners.forEach(listener -> listener.handleError(exception));
           }
         };
+    webSocketConnector = new WebSocketConnector(client);
   }
 
   void addListener(final WebSocketConnectionListener listener) {
@@ -62,6 +71,7 @@ class WebSocketConnection {
     listeners.add(listener);
   }
 
+  /** Does an async close of the current websocket connection. */
   void close() {
     if (client.isOpen()) {
       new Thread(
@@ -76,27 +86,15 @@ class WebSocketConnection {
   }
 
   void connect() {
+    Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
-    client.connect();
+    webSocketConnector.initiateConnection();
   }
 
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
-    waitForConnection();
-    if (client.isOpen()) {
-      client.send(message);
-    } else {
-      log.severe("Failed to establish connection to server.");
-    }
-  }
-
-  private void waitForConnection() {
-    final long startWait = System.currentTimeMillis();
-    while (!client.isOpen()) {
-      final long elapsed = System.currentTimeMillis() - startWait;
-      if (!Interruptibles.sleep(10L) || elapsed > connectTimeout) {
-        return;
-      }
-    }
+    webSocketConnector.waitUntilConnectionIsOpen();
+    Postconditions.assertState(client.isOpen());
+    client.send(message);
   }
 }
