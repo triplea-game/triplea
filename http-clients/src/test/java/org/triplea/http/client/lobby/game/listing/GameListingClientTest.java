@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.TestData;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
@@ -40,8 +39,7 @@ class GameListingClientTest extends WireMockTest {
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(
-                        HttpClientTesting.toJson(Collections.singletonList(LOBBY_GAME_LISTING)))));
+                    .withBody(toJson(Collections.singletonList(LOBBY_GAME_LISTING)))));
 
     final List<LobbyGameListing> results = newClient(server).fetchGameListing();
 
@@ -54,7 +52,7 @@ class GameListingClientTest extends WireMockTest {
     server.stubFor(
         post(GameListingClient.POST_GAME_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalToJson(HttpClientTesting.toJson(LOBBY_GAME)))
+            .withRequestBody(equalToJson(toJson(LOBBY_GAME)))
             .willReturn(WireMock.aResponse().withStatus(200).withBody(GAME_ID)));
 
     final String gameId = newClient(server).postGame(LOBBY_GAME);
@@ -69,7 +67,7 @@ class GameListingClientTest extends WireMockTest {
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(
                 equalToJson(
-                    HttpClientTesting.toJson(
+                    toJson(
                         UpdateGameRequest.builder().gameId(GAME_ID).gameData(LOBBY_GAME).build())))
             .willReturn(WireMock.aResponse().withStatus(200)));
 

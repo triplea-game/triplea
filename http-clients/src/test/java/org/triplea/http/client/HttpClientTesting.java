@@ -13,7 +13,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -73,22 +72,8 @@ public final class HttpClientTesting {
     server.stubFor(
         WireMock.post(path)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalToJson(toJson(jsonObject)))
+            .withRequestBody(equalToJson(WireMockTest.toJson(jsonObject)))
             .willReturn(WireMock.aResponse().withStatus(200)));
-  }
-
-  /**
-   * Utility method to convert objects to JSON. Serialization of Instant classes is customized so
-   * that instant is serialized as "epoch_second.nanos". Without this default Instants are
-   * serialized to be JSON objects (example of what we do not want: Instant: {"second":value,
-   * "nano":value"})
-   */
-  public static <T> String toJson(final T object) {
-    try {
-      return objectMapper.writeValueAsString(object);
-    } catch (final JsonProcessingException e) {
-      throw new RuntimeException("Failed to convert to JSON string: " + object, e);
-    }
   }
 
   /**

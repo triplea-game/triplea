@@ -6,7 +6,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBody;
-import static org.triplea.http.client.HttpClientTesting.toJson;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -19,6 +18,7 @@ import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 class ToolboxModeratorManagementClientTest extends WireMockTest {
 
   private static final String MODERATOR_NAME = "Ooh! Pieces o' urchin are forever coal-black.";
