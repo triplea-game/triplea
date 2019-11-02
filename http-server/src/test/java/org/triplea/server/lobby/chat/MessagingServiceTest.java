@@ -22,8 +22,8 @@ import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 import org.triplea.server.TestData;
 import org.triplea.server.lobby.chat.event.processing.ChatEventProcessor;
 import org.triplea.server.lobby.chat.event.processing.ServerResponse;
@@ -46,8 +46,11 @@ class MessagingServiceTest {
 
   private static final ChatParticipantAdapter chatParticipantAdapter = new ChatParticipantAdapter();
 
-  private static final ApiKeyUserData API_KEY_USER_DATA =
-      ApiKeyUserData.builder().role(UserRole.MODERATOR).username("player-name-moderator").build();
+  private static final UserWithRoleRecord API_KEY_USER_DATA =
+      UserWithRoleRecord.builder()
+          .role(UserRole.MODERATOR)
+          .username("player-name-moderator")
+          .build();
 
   private static final ChatParticipant CHAT_PARTICIPANT =
       chatParticipantAdapter.apply(API_KEY_USER_DATA);

@@ -13,7 +13,7 @@ import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 import org.triplea.server.lobby.chat.event.processing.ChatEventProcessor;
 import org.triplea.server.lobby.chat.event.processing.ServerResponse;
 
@@ -27,7 +27,7 @@ class MessagingService {
   /** Sends to all connected sessions. */
   @Nonnull private final BiConsumer<Session, ServerMessageEnvelope> messageBroadcaster;
 
-  @Nonnull private final Function<ApiKeyUserData, ChatParticipant> chatParticipantAdapter;
+  @Nonnull private final Function<UserWithRoleRecord, ChatParticipant> chatParticipantAdapter;
 
   void handleMessage(final Session session, final String message) {
     // TODO: Project#12 Bans: check API key

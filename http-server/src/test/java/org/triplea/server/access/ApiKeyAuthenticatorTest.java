@@ -13,22 +13,26 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 import org.triplea.server.TestData;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyAuthenticatorTest {
   private static final ApiKey API_KEY = TestData.API_KEY;
 
-  private static final ApiKeyUserData PLAYER_DATA =
-      ApiKeyUserData.builder().username("player-name").role(UserRole.PLAYER).userId(100).build();
+  private static final UserWithRoleRecord PLAYER_DATA =
+      UserWithRoleRecord.builder()
+          .username("player-name")
+          .role(UserRole.PLAYER)
+          .userId(100)
+          .build();
 
-  private static final ApiKeyUserData HOST_DATA =
-      ApiKeyUserData.builder().role(UserRole.HOST).build();
+  private static final UserWithRoleRecord HOST_DATA =
+      UserWithRoleRecord.builder().role(UserRole.HOST).build();
 
-  private static final ApiKeyUserData ANONYMOUS_USER_DATA =
-      ApiKeyUserData.builder().username("anonymous-user-name").role(UserRole.ANONYMOUS).build();
+  private static final UserWithRoleRecord ANONYMOUS_USER_DATA =
+      UserWithRoleRecord.builder().username("anonymous-user-name").role(UserRole.ANONYMOUS).build();
 
   @Mock private LobbyApiKeyDaoWrapper apiKeyDao;
 
@@ -54,7 +58,7 @@ class ApiKeyAuthenticatorTest {
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private static void verify(
-      final Optional<AuthenticatedUser> result, final ApiKeyUserData userData) {
+      final Optional<AuthenticatedUser> result, final UserWithRoleRecord userData) {
     assertThat(
         result,
         isPresentAndIs(

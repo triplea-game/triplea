@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ApiKeyUserDataTest {
+class UserWithRoleRecordTest {
   private static final String ROLE = UserRole.PLAYER;
   private static final int USER_ID = 55;
   private static final String NAME = "player-name";
@@ -30,7 +30,7 @@ class ApiKeyUserDataTest {
   void buildResultMapper() throws Exception {
     givenResults(USER_ID, ROLE, NAME);
 
-    final ApiKeyUserData result = ApiKeyUserData.buildResultMapper().map(resultSet, null);
+    final UserWithRoleRecord result = UserWithRoleRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUserId(), is(USER_ID));
     assertThat(result.getRole(), is(UserRole.PLAYER));
@@ -39,16 +39,16 @@ class ApiKeyUserDataTest {
 
   private void givenResults(final int userId, final String role, final String name)
       throws Exception {
-    when(resultSet.getInt(ApiKeyUserData.USER_ID_COLUMN)).thenReturn(userId);
-    when(resultSet.getString(ApiKeyUserData.ROLE_COLUMN)).thenReturn(role);
-    when(resultSet.getString(ApiKeyUserData.USERNAME_COLUMN)).thenReturn(name);
+    when(resultSet.getInt(UserWithRoleRecord.USER_ID_COLUMN)).thenReturn(userId);
+    when(resultSet.getString(UserWithRoleRecord.ROLE_COLUMN)).thenReturn(role);
+    when(resultSet.getString(UserWithRoleRecord.USERNAME_COLUMN)).thenReturn(name);
   }
 
   @Test
   void zeroUserIdIsMappedToNull() throws Exception {
     givenResults(0, UserRole.HOST, null);
 
-    final ApiKeyUserData result = ApiKeyUserData.buildResultMapper().map(resultSet, null);
+    final UserWithRoleRecord result = UserWithRoleRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUserId(), nullValue());
   }
@@ -63,7 +63,7 @@ class ApiKeyUserDataTest {
 
   void assertPostconditionFailure() {
     assertThrows(
-        AssertionError.class, () -> ApiKeyUserData.buildResultMapper().map(resultSet, null));
+        AssertionError.class, () -> UserWithRoleRecord.buildResultMapper().map(resultSet, null));
   }
 
   @ParameterizedTest

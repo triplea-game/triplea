@@ -17,8 +17,8 @@ import org.triplea.domain.data.PlayerName;
 import org.triplea.java.Postconditions;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 /** Wrapper to abstract away DB details of how API key is stored and to provide convenience APIs. */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -41,7 +41,7 @@ public class LobbyApiKeyDaoWrapper {
         apiKey -> Hashing.sha512().hashString(apiKey.getValue(), Charsets.UTF_8).toString());
   }
 
-  public Optional<ApiKeyUserData> lookupByApiKey(final ApiKey apiKey) {
+  public Optional<UserWithRoleRecord> lookupByApiKey(final ApiKey apiKey) {
     return apiKeyDao.lookupByApiKey(keyHashingFunction.apply(apiKey));
   }
 
