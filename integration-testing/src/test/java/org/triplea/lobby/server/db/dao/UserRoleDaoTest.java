@@ -6,6 +6,7 @@ import static org.hamcrest.core.Is.is;
 import com.github.database.rider.core.api.dataset.DataSet;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.db.JdbiDatabase;
+import org.triplea.lobby.server.db.data.UserRole;
 
 @DataSet(cleanBefore = true, value = "user_role/initial.yml")
 class UserRoleDaoTest extends DaoTest {
@@ -14,11 +15,11 @@ class UserRoleDaoTest extends DaoTest {
 
   @Test
   void lookupAnonymousRoleId() {
-    assertThat(userRoleDao.lookupAnonymousRoleId(), is(1));
+    assertThat(userRoleDao.lookupRoleId(UserRole.ANONYMOUS), is(1));
   }
 
   @Test
   void lookupHostRoleId() {
-    assertThat(userRoleDao.lookupHostRoleId(), is(2));
+    assertThat(userRoleDao.lookupRoleId(UserRole.HOST), is(2));
   }
 }

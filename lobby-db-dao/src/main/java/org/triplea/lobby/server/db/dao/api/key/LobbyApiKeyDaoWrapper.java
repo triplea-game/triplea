@@ -18,6 +18,7 @@ import org.triplea.java.Postconditions;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
 import org.triplea.lobby.server.db.data.ApiKeyUserData;
+import org.triplea.lobby.server.db.data.UserRole;
 
 /** Wrapper to abstract away DB details of how API key is stored and to provide convenience APIs. */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -49,7 +50,7 @@ public class LobbyApiKeyDaoWrapper {
     Preconditions.checkArgument(ip != null);
 
     final ApiKey key = keyMaker.get();
-    final int hostRoleId = userRoleDao.lookupHostRoleId();
+    final int hostRoleId = userRoleDao.lookupRoleId(UserRole.HOST);
     insertKey(null, null, key, ip, hostRoleId);
     return key;
   }
@@ -75,7 +76,7 @@ public class LobbyApiKeyDaoWrapper {
             },
             () -> {
               // insert key for anonymous user
-              final int anonymousUserRoleId = userRoleDao.lookupAnonymousRoleId();
+              final int anonymousUserRoleId = userRoleDao.lookupRoleId(UserRole.ANONYMOUS);
               insertKey(null, playerName.getValue(), key, ip, anonymousUserRoleId);
             });
     return key;

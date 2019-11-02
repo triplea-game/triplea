@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
+import org.triplea.lobby.server.db.data.UserRole;
 
 /** Implementation of {@link UserDao} for a Postgres database. */
 // TODO: Project#12 dead code soon, ensure this code is removed.
@@ -67,7 +68,7 @@ final class UserController implements UserDao {
     }
 
     final UserRoleDao dao = JdbiDatabase.newConnection().onDemand(UserRoleDao.class);
-    final int anonymousRoleId = dao.lookupAnonymousRoleId();
+    final int anonymousRoleId = dao.lookupRoleId(UserRole.ANONYMOUS);
 
     try (Connection con = connection.get();
         PreparedStatement ps =
