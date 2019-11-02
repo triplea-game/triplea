@@ -95,7 +95,10 @@ class WebSocketConnection {
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
     webSocketConnector.waitUntilConnectionIsOpen();
-    Postconditions.assertState(client.isOpen());
-    client.send(message);
+    Postconditions.assertState(Thread.currentThread().isInterrupted() || client.isOpen());
+    // if we aborted waiting for the connection, current thread will be interrupted, do a no-op.
+    if (!Thread.currentThread().isInterrupted()) {
+      client.send(message);
+    }
   }
 }

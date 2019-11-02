@@ -54,7 +54,9 @@ class WebSocketConnector {
       if (!connectionThread.get() || !webSocketClient.isOpen()) {
         throw new CouldNotConnect();
       }
-    } catch (final InterruptedException | ExecutionException e) {
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } catch (final ExecutionException e) {
       throw new CouldNotConnect(e);
     }
   }
