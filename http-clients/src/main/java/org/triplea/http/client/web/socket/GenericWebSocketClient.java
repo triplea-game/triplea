@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 
@@ -61,7 +62,7 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
     final String json = gson.toJson(message);
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(() -> client.sendMessage(json), threadPool),
-        "Failed to send message to server");
+        e -> log.log(Level.WARNING, "Failed to send message to server", e));
   }
 
   /** Non-blocking close of the websocket connection. */
