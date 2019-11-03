@@ -37,12 +37,11 @@ class ToolboxAccessLogClientTest extends WireMockTest {
     server.stubFor(
         WireMock.post(ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalToJson(HttpClientTesting.toJson(HttpClientTesting.PAGING_PARAMS)))
+            .withRequestBody(equalToJson(toJson(HttpClientTesting.PAGING_PARAMS)))
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(
-                        HttpClientTesting.toJson(Collections.singletonList(ACCESS_LOG_DATA)))));
+                    .withBody(toJson(Collections.singletonList(ACCESS_LOG_DATA)))));
 
     final List<AccessLogData> results =
         newClient(server).getAccessLog(HttpClientTesting.PAGING_PARAMS);

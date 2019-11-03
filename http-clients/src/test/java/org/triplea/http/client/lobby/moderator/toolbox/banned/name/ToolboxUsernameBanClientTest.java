@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -55,9 +54,7 @@ class ToolboxUsernameBanClientTest extends WireMockTest {
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(
-                        HttpClientTesting.toJson(
-                            Collections.singletonList(BANNED_USERNAME_DATA)))));
+                    .withBody(toJson(Collections.singletonList(BANNED_USERNAME_DATA)))));
 
     final List<UsernameBanData> results = newClient(server).getUsernameBans();
 

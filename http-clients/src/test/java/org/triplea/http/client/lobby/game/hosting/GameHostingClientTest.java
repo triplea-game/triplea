@@ -7,7 +7,6 @@ import static org.hamcrest.core.Is.is;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -24,9 +23,7 @@ class GameHostingClientTest extends WireMockTest {
     wireMockServer.stubFor(
         post(GameHostingClient.GAME_HOSTING_REQUEST_PATH)
             .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withBody(HttpClientTesting.toJson(GAME_HOSTING_RESPONSE))));
+                WireMock.aResponse().withStatus(200).withBody(toJson(GAME_HOSTING_RESPONSE))));
 
     final GameHostingResponse result = newClient(wireMockServer).sendGameHostingRequest();
 

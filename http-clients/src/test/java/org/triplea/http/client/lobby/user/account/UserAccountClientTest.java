@@ -9,7 +9,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -40,7 +39,7 @@ class UserAccountClientTest extends WireMockTest {
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(HttpClientTesting.toJson(new FetchEmailResponse(EMAIL)))));
+                    .withBody(toJson(new FetchEmailResponse(EMAIL)))));
 
     final String result = newClient(server).fetchEmail();
 
