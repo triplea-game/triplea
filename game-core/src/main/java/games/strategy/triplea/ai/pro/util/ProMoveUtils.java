@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -43,6 +44,7 @@ public final class ProMoveUtils {
       final boolean isCombatMove) {
 
     final GameData data = ProData.getData();
+    final GameMap map = data.getMap();
 
     // Find all amphib units
     final Set<Unit> amphibUnits =
@@ -95,52 +97,48 @@ public final class ProMoveUtils {
 
           // Sea unit (including carriers with planes)
           route =
-              data.getMap()
-                  .getRouteForUnit(
-                      startTerritory,
-                      t,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove),
-                      u,
-                      player);
+              map.getRouteForUnit(
+                  startTerritory,
+                  t,
+                  ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove),
+                  u,
+                  player);
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsLand())) {
 
           // Land unit
           route =
-              data.getMap()
-                  .getRouteForUnit(
-                      startTerritory,
-                      t,
-                      ProMatches.territoryCanMoveLandUnitsThrough(
-                          player, data, u, startTerritory, isCombatMove, new ArrayList<>()),
-                      u,
-                      player);
+              map.getRouteForUnit(
+                  startTerritory,
+                  t,
+                  ProMatches.territoryCanMoveLandUnitsThrough(
+                      player, data, u, startTerritory, isCombatMove, List.of()),
+                  u,
+                  player);
           if (route == null && startTerritory.equals(lastLandTransport.getFirst())) {
             route =
-                data.getMap()
-                    .getRouteForUnit(
+                map.getRouteForUnit(
+                    startTerritory,
+                    t,
+                    ProMatches.territoryCanMoveLandUnitsThrough(
+                        player,
+                        data,
+                        lastLandTransport.getSecond(),
                         startTerritory,
-                        t,
-                        ProMatches.territoryCanMoveLandUnitsThrough(
-                            player,
-                            data,
-                            lastLandTransport.getSecond(),
-                            startTerritory,
-                            isCombatMove,
-                            new ArrayList<>()),
-                        u,
-                        player);
+                        isCombatMove,
+                        List.of()),
+                    u,
+                    player);
           }
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
 
           // Air unit
           route =
-              data.getMap()
-                  .getRouteForUnit(
-                      startTerritory,
-                      t,
-                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove),
-                      u,
-                      player);
+              map.getRouteForUnit(
+                  startTerritory,
+                  t,
+                  ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove),
+                  u,
+                  player);
         }
         if (route == null) {
           ProLogger.warn(
@@ -177,6 +175,7 @@ public final class ProMoveUtils {
       final boolean isCombatMove) {
 
     final GameData data = ProData.getData();
+    final GameMap map = data.getMap();
 
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
@@ -203,8 +202,7 @@ public final class ProMoveUtils {
           if (Matches.territoryHasEnemyUnits(player, data).negate().test(transportTerritory)) {
             final List<Unit> unitsToRemove = new ArrayList<>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
-              if (data.getMap()
-                      .getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit))
+              if (map.getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit))
                   == 1) {
                 moveUnits.add(Collections.singletonList(amphibUnit));
                 transportsToLoad.add(Collections.singletonList(transport));
@@ -223,7 +221,7 @@ public final class ProMoveUtils {
           // Move transport if I'm not already at the end or out of moves
           final Territory unloadTerritory =
               attackMap.get(t).getTransportTerritoryMap().get(transport);
-          int distanceFromEnd = data.getMap().getDistance(transportTerritory, t);
+          int distanceFromEnd = map.getDistance(transportTerritory, t);
           if (t.isWater()) {
             distanceFromEnd++;
           }
@@ -232,10 +230,9 @@ public final class ProMoveUtils {
                   || !remainingUnitsToLoad.isEmpty()
                   || (unloadTerritory != null && !unloadTerritory.equals(transportTerritory)))) {
             final Set<Territory> neighbors =
-                data.getMap()
-                    .getNeighbors(
-                        transportTerritory,
-                        ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                map.getNeighbors(
+                    transportTerritory,
+                    ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
             Territory territoryToMoveTo = null;
             int minUnitDistance = Integer.MAX_VALUE;
             int maxDistanceFromEnd =
@@ -252,25 +249,22 @@ public final class ProMoveUtils {
               int distanceFromUnloadTerritory = 0;
               if (unloadTerritory != null) {
                 distanceFromUnloadTerritory =
-                    data.getMap()
-                        .getDistance_IgnoreEndForCondition(
-                            neighbor,
-                            unloadTerritory,
-                            ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                    map.getDistance_IgnoreEndForCondition(
+                        neighbor,
+                        unloadTerritory,
+                        ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
               }
               int neighborDistanceFromEnd =
-                  data.getMap()
-                      .getDistance_IgnoreEndForCondition(
-                          neighbor,
-                          t,
-                          ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                  map.getDistance_IgnoreEndForCondition(
+                      neighbor,
+                      t,
+                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
               if (t.isWater()) {
                 neighborDistanceFromEnd++;
               }
               int maxUnitDistance = 0;
               for (final Unit u : remainingUnitsToLoad) {
-                final int distance =
-                    data.getMap().getDistance(neighbor, ProData.unitTerritoryMap.get(u));
+                final int distance = map.getDistance(neighbor, ProData.unitTerritoryMap.get(u));
                 if (distance > maxUnitDistance) {
                   maxUnitDistance = distance;
                 }
@@ -340,6 +334,7 @@ public final class ProMoveUtils {
       final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ProData.getData();
+    final GameMap map = data.getMap();
 
     // Loop through all territories to attack
     for (final ProTerritory t : attackMap.values()) {
@@ -366,13 +361,12 @@ public final class ProMoveUtils {
 
           // Naval unit
           route =
-              data.getMap()
-                  .getRouteForUnit(
-                      startTerritory,
-                      bombardFromTerritory,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true),
-                      u,
-                      player);
+              map.getRouteForUnit(
+                  startTerritory,
+                  bombardFromTerritory,
+                  ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true),
+                  u,
+                  player);
         }
         moveRoutes.add(route);
       }
@@ -393,6 +387,7 @@ public final class ProMoveUtils {
       final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ProData.getData();
+    final GameMap map = data.getMap();
 
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
@@ -415,13 +410,12 @@ public final class ProMoveUtils {
         Route route = null;
         if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
           route =
-              data.getMap()
-                  .getRouteForUnit(
-                      startTerritory,
-                      t,
-                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true),
-                      u,
-                      player);
+              map.getRouteForUnit(
+                  startTerritory,
+                  t,
+                  ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true),
+                  u,
+                  player);
         }
         moveRoutes.add(route);
       }
