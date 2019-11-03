@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
-import org.triplea.lobby.server.db.dao.AccessLogDao;
-import org.triplea.lobby.server.db.data.AccessLogRecord;
+import org.triplea.lobby.server.db.dao.access.log.AccessLogDao;
+import org.triplea.lobby.server.db.dao.access.log.AccessLogRecord;
 
 @ExtendWith(MockitoExtension.class)
 class AccessLogServiceTest {

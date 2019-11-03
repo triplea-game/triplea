@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
-import org.triplea.lobby.server.db.dao.AccessLogDao;
+import org.triplea.lobby.server.db.dao.access.log.AccessLogDao;
 
 @Builder
 class AccessLogService {

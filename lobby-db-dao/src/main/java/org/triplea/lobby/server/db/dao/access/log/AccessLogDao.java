@@ -1,15 +1,14 @@
-package org.triplea.lobby.server.db.dao;
+package org.triplea.lobby.server.db.dao.access.log;
 
-import static org.triplea.lobby.server.db.data.AccessLogRecord.ACCESS_TIME_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogRecord.IP_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogRecord.REGISTERED_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogRecord.SYSTEM_ID_COLUMN;
-import static org.triplea.lobby.server.db.data.AccessLogRecord.USERNAME_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.ACCESS_TIME_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.IP_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.REGISTERED_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.SYSTEM_ID_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.USERNAME_COLUMN;
 
 import java.util.List;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.triplea.lobby.server.db.data.AccessLogRecord;
 
 /**
  * Provides access to the access log table. This is a table that records user data as they enter the
