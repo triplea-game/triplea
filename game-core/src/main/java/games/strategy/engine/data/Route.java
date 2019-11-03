@@ -41,9 +41,10 @@ public class Route implements Serializable, Iterable<Territory> {
   private final List<Territory> steps = new ArrayList<>();
 
   public Route(final List<Territory> territories) {
-    this(
-        territories.get(0),
-        territories.subList(1, territories.size()).toArray(new Territory[territories.size() - 1]));
+    this.start = checkNotNull(territories.get(0));
+    for (int i = 1; i < territories.size(); i++) {
+      add(territories.get(i));
+    }
   }
 
   public Route(final Territory start, final Territory... territories) {
