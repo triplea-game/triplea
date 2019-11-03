@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.client.ui;
 
 import com.google.common.annotations.VisibleForTesting;
+import feign.FeignException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -79,12 +80,18 @@ class LobbyGameTableModel extends AbstractTableModel {
                     () -> httpLobbyClient.getGameListingClient().fetchGameListing(),
                     errorMessageReporter));
 
-    final Map<String, GameDescription> games =
-        httpLobbyClient.getGameListingClient().fetchGameListing().stream()
-            .collect(Collectors.toMap(LobbyGameListing::getGameId, GameDescription::fromLobbyGame));
+    try {
+      final Map<String, GameDescription> games =
+          httpLobbyClient.getGameListingClient().fetchGameListing().stream()
+              .collect(
+                  Collectors.toMap(LobbyGameListing::getGameId, GameDescription::fromLobbyGame));
 
-    for (final Map.Entry<String, GameDescription> entry : games.entrySet()) {
-      updateGame(entry.getKey(), entry.getValue());
+      for (final Map.Entry<String, GameDescription> entry : games.entrySet()) {
+        updateGame(entry.getKey(), entry.getValue());
+      }
+    } catch (final FeignException e) {
+      gamePoller.cancel();
+      throw new CouldNotConnectToLobby(e);
     }
   }
 
@@ -92,6 +99,15 @@ class LobbyGameTableModel extends AbstractTableModel {
     return () ->
         gameList.stream()
             .collect(Collectors.toMap(Tuple::getFirst, t -> t.getSecond().toLobbyGame()));
+  }
+
+  private static class CouldNotConnectToLobby extends RuntimeException {
+    private static final long serialVersionUID = -651924799081225628L;
+
+    CouldNotConnectToLobby(final FeignException e) {
+      // TODO: Project#12 add up-time-robot link and/or link to report this error.
+      super(e.getMessage(), e);
+    }
   }
 
   private void removeGame(final String gameId) {
