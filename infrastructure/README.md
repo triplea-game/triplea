@@ -1,3 +1,32 @@
+## Ansible Public Key
+
+When creating a new linode, add this public key to your account and then select for it to be added
+to the new linode. This key is used by ansible to gain server access.
+
+> ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBdU9dU02UR5MCutULVgpdT1mN6wjJOKL8sW1/ZZkdym ansible-public-key
+
+### Running
+
+Will need to create a 'vault_password' file containing the ansible vault passowrd:
+
+```
+cd infrastructure/
+# create file 'vault_password' containing the ansible vault password
+```
+
+Encrypting a file looks like this:
+```
+ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed25519
+```
+
+### Creating Secrets
+
+* Create a file "vault_password" and place vault_password in the file
+* Create a file 'secret' and place the secret to encrypt in the file
+```
+ansible-vault encrypt_string --vault-password-file vault_password "$(cat secret)" --name 'the_secret'
+```
+
 
 # Executing a Deployment
 
@@ -68,31 +97,12 @@ and deployed to github releases.
   when promoting such steps to production, we remove those if statements.
 - Production deployment occurs on every build, ansible is idempotent by design,
   this allows us to ensure updates, update/add/change servers from inventory files
-- Variables are stored in travis online website configuration
 
-## Setting up target machines
+## Ansible-vault / Secrets
 
-This will need to be done once for any new linode server, largely
-we are just creating an 'ansible' user that ansible will use
-to remote execute deployment commands:
-
-```bash
-sudo useradd -m ansible
-sudo mkdir /home/ansible/.ssh
-sudo chown ansible:ansible /home/ansible/.ssh
-sudo chmod 700 /home/ansible/.ssh
-echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJWlr72ICC96nQjLLPN5kcEJ6yCjKv8SMoXQEBWyZRy1 ansible@infrastructure.triplea-game.org" | sudo tee /home/ansible/.ssh/authorized_keys
-sudo chown ansible:ansible /home/ansible/.ssh/authorized_keys
-sudo usermod -p '*' ansible
-```
-
-Note, the ssh key above is already generated on the infrastructure machine.
+[Ansible-Vault Docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 
 
-Add ansible to sudoer, add the following line to `/etc/sudoer`:
-```bash
-ansible ALL=(ALL) NOPASSWD: ALL
-```
 
 # TODO
 
