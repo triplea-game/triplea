@@ -9,7 +9,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.triplea.lobby.server.db.data.AccessLogRecord;
+import org.triplea.lobby.server.db.dao.access.log.AccessLogRecord;
 import org.triplea.lobby.server.db.data.ModeratorAuditHistoryDaoData;
 import org.triplea.lobby.server.db.data.ModeratorUserDaoData;
 import org.triplea.lobby.server.db.data.UserBanDaoData;

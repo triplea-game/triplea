@@ -111,9 +111,8 @@ public class SetupPanelModel implements ServerSetupModel {
             .fetchLobbyServerProperties()
             .orElseThrow(LobbyAddressFetchException::new);
 
-    final LobbyLogin login = new LobbyLogin(ui, lobbyServerProperties);
-
-    Optional.ofNullable(login.login())
+    new LobbyLogin(ui, lobbyServerProperties)
+        .login()
         .ifPresent(
             lobbyClient -> {
               final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);

@@ -97,7 +97,7 @@ class ApiKeyDaoWrapperTest {
       when(apiKeyDao.storeKey(null, null, HASHED_KEY, IP.getHostAddress(), HOST_USER_ROLE_ID))
           .thenReturn(1);
 
-      final ApiKey result = wrapper.newKey(IP);
+      final ApiKey result = wrapper.newGameHostKey(IP);
 
       assertThat(result, sameInstance(API_KEY));
     }

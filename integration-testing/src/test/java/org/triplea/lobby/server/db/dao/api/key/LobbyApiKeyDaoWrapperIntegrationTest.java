@@ -25,7 +25,7 @@ class LobbyApiKeyDaoWrapperIntegrationTest extends DaoTest {
 
   @Test
   void storeKeyHostRole() throws Exception {
-    wrapper.newKey(InetAddress.getLocalHost());
+    wrapper.newGameHostKey(InetAddress.getLocalHost());
   }
 
   @Test

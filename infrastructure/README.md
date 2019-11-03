@@ -1,3 +1,32 @@
+## Ansible Public Key
+
+When creating a new linode, add this public key to your account and then select for it to be added
+to the new linode. This key is used by ansible to gain server access.
+
+> ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBdU9dU02UR5MCutULVgpdT1mN6wjJOKL8sW1/ZZkdym ansible-public-key
+
+### Running
+
+Will need to create a 'vault_password' file containing the ansible vault passowrd:
+
+```
+cd infrastructure/
+# create file 'vault_password' containing the ansible vault password
+```
+
+Encrypting a file looks like this:
+```
+ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed25519
+```
+
+### Creating Secrets
+
+* Create a file "vault_password" and place vault_password in the file
+* Create a file 'secret' and place the secret to encrypt in the file
+```
+ansible-vault encrypt_string --vault-password-file vault_password "$(cat secret)" --name 'the_secret'
+```
+
 
 # Executing a Deployment
 
@@ -58,117 +87,22 @@ vagrant destroy -f
 ```
 
 
-# Testing on PreRelease Server
+# PreRelease and Production Deployments
+
+- Executed as part of travis pipeline build after release artifacts are generated
+and deployed to github releases.
+- Variable values, such as passwords are kept constant between prerelease and production
+- Production version is controlled by a variable, prerelease is always latest version
+- Prerelease specific deployment instructions are excluded via ansible 'if' instructions,
+  when promoting such steps to production, we remove those if statements.
+- Production deployment occurs on every build, ansible is idempotent by design,
+  this allows us to ensure updates, update/add/change servers from inventory files
+
+## Ansible-vault / Secrets
+
+[Ansible-Vault Docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 
 
-Manually copy a ansible.zip file to the infrastructure machine, comment out the run_deployment
-steps that download ansible.zip and then execute 'run_deployment' from the infrastructure
-machine.
-
-
-```bash
-cd ~/triplea/infrastructure/ansible
-rm -f ansible.zip
-zip -r ansible.zip *
-scp ansible.zip ansible@173.255.247.175:~/
-```
-
-```bash
-ssh ansible@173.255.247.175
-rm -rf ansible/ bot/ lobby/
-unzip ansible.zip -d ansible/
-## update "run_deployment" and comment out the download function for ansible.zip
-./run_deployment <version> prerelease
-```
-
-
-## Infrastructure Server
-
-### How the infrastructure server is used
-
-The infrastructure server is where we run ansible. The general process
-is that we do a one-time setup to configure access and install ansible.
-From there we have a 'run_deployment' script on the infrastructure server
-we would use to execute deployments. The difference between prerelease and
-production deployments will be just which inventory file is used.
-
-
-### Setup Notes
-
-These were one-time setup to configure the infrastructure machine:
-
-- Update server host name in `/etc/hostname` to `infrastructure.triplea-game.org`
-
-- Reboot
-
-- Add ansible user
-
-```bash
-adduser -m ansible
-```
-
-- Allow password login for ansible, update `/etc/ssh/ssh` to have following:
-```bash
-ChallengeResponseAuthentication yes
-PasswordAuthentication yes
-PermitRootLogin no
-```
-
-Then reload sshd for settings to take effect:
-```bash
-service sshd reload
-```
-
-(note: to get root access, login as ansible first, then `su` to root)
-
-
-- As root:
-
-```bash
-ufw enable
-ufw allow 22
-apt install -y ansible \
-    fail2ban \
-    unattended-upgrades \
-    shellcheck \
-    unzip
-```
-
-Copy `secrets` and `run_deployment` from `~/triplea/infrastructure/infrastructure-machine`
-to the infrastructure machine. Update the values in secrets to be real secret values.
-
-Switch to ansible user, generate a ssh key (use elliptic curve algorithm).
-
-### Access to infrastructure server
-
-Login from linode console using user: `root` and password.
-
-Add your ssh public key to `/root/.ssh/authorized_keys`
-
-
-## Setting up target machines
-
-This will need to be done once for any new linode server, largely
-we are just creating an 'ansible' user that ansible will use
-to remote execute deployment commands:
-
-```bash
-sudo useradd -m ansible
-sudo mkdir /home/ansible/.ssh
-sudo chown ansible:ansible /home/ansible/.ssh
-sudo chmod 700 /home/ansible/.ssh
-echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJWlr72ICC96nQjLLPN5kcEJ6yCjKv8SMoXQEBWyZRy1 ansible@infrastructure.triplea-game.org" | sudo tee /home/ansible/.ssh/authorized_keys
-sudo chown ansible:ansible /home/ansible/.ssh/authorized_keys
-sudo usermod -p '*' ansible
-```
-
-Note, the ssh key above is already generated on the infrastructure machine.
-
-
-Add ansible to sudoer, add the following line to `/etc/sudoer`:
-```bash
-ansible ALL=(ALL) NOPASSWD: ALL
-```
 
 # TODO
 

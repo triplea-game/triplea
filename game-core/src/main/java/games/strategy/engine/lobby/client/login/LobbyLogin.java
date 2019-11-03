@@ -8,7 +8,7 @@ import games.strategy.net.IClientMessenger;
 import games.strategy.net.MacFinder;
 import java.awt.Window;
 import java.io.IOException;
-import javax.annotation.Nullable;
+import java.util.Optional;
 import javax.swing.JOptionPane;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
@@ -36,15 +36,15 @@ public class LobbyLogin {
    *
    * <p>If we could not login, return null.
    */
-  public @Nullable LobbyClient login() {
+  public Optional<LobbyClient> login() {
     if (lobbyServerProperties.getServerErrorMessage().isPresent()) {
       showError("Could not connect to server", lobbyServerProperties.getServerErrorMessage().get());
-      return null;
+      return Optional.empty();
     }
     return loginToServer();
   }
 
-  private @Nullable LobbyClient login(final LoginPanel panel) {
+  private Optional<LobbyClient> login(final LoginPanel panel) {
     try {
       final IClientMessenger messenger =
           GameRunner.newBackgroundTaskRunner()
@@ -57,20 +57,21 @@ public class LobbyLogin {
                           : ClientMessengerFactory.newRegisteredUserMessenger(
                               lobbyServerProperties, panel.getUserName(), panel.getPassword()),
                   IOException.class);
-      return new LobbyClient(
-          messenger,
-          HttpLobbyClient.newClient(
-              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey()),
-          panel.isAnonymousLogin());
+      return Optional.of(
+          new LobbyClient(
+              messenger,
+              HttpLobbyClient.newClient(
+                  lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey()),
+              panel.isAnonymousLogin()));
     } catch (final CouldNotLogInException e) {
       showError("Login Failed", e.getMessage() + "\n" + playerMacIdString());
       return loginToServer(); // NB: potential stack overflow due to recursive call
     } catch (final IOException e) {
       showError("Could Not Connect", "Could not connect to lobby: " + e.getMessage());
-      return null;
+      return Optional.empty();
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
-      return null;
+      return Optional.empty();
     }
   }
 
@@ -83,38 +84,38 @@ public class LobbyLogin {
     JOptionPane.showMessageDialog(parentWindow, message, title, JOptionPane.ERROR_MESSAGE);
   }
 
-  private @Nullable LobbyClient loginToServer() {
+  private Optional<LobbyClient> loginToServer() {
     final LoginPanel loginPanel = new LoginPanel();
     final LoginPanel.ReturnValue returnValue = loginPanel.show(parentWindow);
     switch (returnValue) {
       case LOGON:
         return login(loginPanel);
       case CANCEL:
-        return null;
+        return Optional.empty();
       case CREATE_ACCOUNT:
         return createAccount();
       case FORGOT_PASSWORD:
         forgotPassword();
-        return null;
+        return Optional.empty();
       default:
         throw new AssertionError("unknown login panel return value: " + returnValue);
     }
   }
 
-  private @Nullable LobbyClient createAccount() {
+  private Optional<LobbyClient> createAccount() {
     final CreateAccountPanel createAccountPanel = new CreateAccountPanel();
     final CreateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
     switch (returnValue) {
       case OK:
         return createAccount(createAccountPanel);
       case CANCEL:
-        return null;
+        return Optional.empty();
       default:
         throw new AssertionError("unknown create account panel return value: " + returnValue);
     }
   }
 
-  private @Nullable LobbyClient createAccount(final CreateAccountPanel panel) {
+  private Optional<LobbyClient> createAccount(final CreateAccountPanel panel) {
     try {
       final IClientMessenger messenger =
           GameRunner.newBackgroundTaskRunner()
@@ -127,19 +128,20 @@ public class LobbyLogin {
                           panel.getEmail(),
                           panel.getPassword()),
                   IOException.class);
-      return new LobbyClient(
-          messenger,
-          HttpLobbyClient.newClient(
-              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey()));
+      return Optional.of(
+          new LobbyClient(
+              messenger,
+              HttpLobbyClient.newClient(
+                  lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey())));
     } catch (final CouldNotLogInException e) {
       showError("Account Creation Failed", e.getMessage());
       return createAccount(); // NB: potential stack overflow due to recursive call
     } catch (final IOException e) {
       showError("Could Not Connect", "Could not connect to lobby: " + e.getMessage());
-      return null;
+      return Optional.empty();
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
-      return null;
+      return Optional.empty();
     }
   }
 

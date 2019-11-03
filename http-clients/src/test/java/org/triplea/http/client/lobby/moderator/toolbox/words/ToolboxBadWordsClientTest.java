@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -43,8 +42,7 @@ class ToolboxBadWordsClientTest extends WireMockTest {
     server.stubFor(
         WireMock.get(ToolboxBadWordsClient.BAD_WORD_GET_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .willReturn(
-                WireMock.aResponse().withStatus(200).withBody(HttpClientTesting.toJson(badWords))));
+            .willReturn(WireMock.aResponse().withStatus(200).withBody(toJson(badWords))));
 
     final List<String> result = newClient(server).getBadWords();
 

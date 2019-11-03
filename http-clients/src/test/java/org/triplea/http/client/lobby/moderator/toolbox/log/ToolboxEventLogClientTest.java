@@ -7,7 +7,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import static org.triplea.http.client.HttpClientTesting.PAGING_PARAMS;
-import static org.triplea.http.client.HttpClientTesting.toJson;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -16,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -43,8 +41,7 @@ class ToolboxEventLogClientTest extends WireMockTest {
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(
-                        HttpClientTesting.toJson(Collections.singletonList(MODERATOR_EVENT)))));
+                    .withBody(toJson(Collections.singletonList(MODERATOR_EVENT)))));
 
     final List<ModeratorEvent> results = newClient(server).lookupModeratorEvents(PAGING_PARAMS);
 

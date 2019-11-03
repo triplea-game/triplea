@@ -46,7 +46,7 @@ public class LobbyApiKeyDaoWrapper {
   }
 
   /** Creates (and stores in DB) a new API key for 'host' connections (AKA: LobbyWatcher). */
-  public ApiKey newKey(final InetAddress ip) {
+  public ApiKey newGameHostKey(final InetAddress ip) {
     Preconditions.checkArgument(ip != null);
 
     final ApiKey key = keyMaker.get();
