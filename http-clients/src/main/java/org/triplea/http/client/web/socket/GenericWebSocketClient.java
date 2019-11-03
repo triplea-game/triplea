@@ -49,7 +49,9 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
     this.messageListener = messageListener;
     client = webSocketClient;
     client.addListener(this);
-    client.connect();
+    CompletableFutureUtils.logExceptionWhenComplete(
+        CompletableFuture.runAsync(client::connect, threadPool),
+        e -> log.log(Level.WARNING, "Failed to open connection with server", e));
   }
 
   /**

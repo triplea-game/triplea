@@ -5,12 +5,14 @@ import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.triplea.java.Interruptibles;
 import org.triplea.java.Postconditions;
 
 /**
@@ -26,12 +28,8 @@ import org.triplea.java.Postconditions;
  */
 @Log
 class WebSocketConnection {
+  @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
   private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
-
-  @Setter(
-      value = AccessLevel.PACKAGE,
-      onMethod_ = {@VisibleForTesting})
-  private WebSocketConnector webSocketConnector;
 
   private boolean closed = false;
 
@@ -64,7 +62,6 @@ class WebSocketConnection {
             listeners.forEach(listener -> listener.handleError(exception));
           }
         };
-    webSocketConnector = new WebSocketConnector(client);
   }
 
   void addListener(final WebSocketConnectionListener listener) {
@@ -89,16 +86,14 @@ class WebSocketConnection {
   void connect() {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
-    webSocketConnector.initiateConnection();
+    Interruptibles.await(
+        () -> client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
   }
 
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
-    webSocketConnector.waitUntilConnectionIsOpen();
     Postconditions.assertState(Thread.currentThread().isInterrupted() || client.isOpen());
     // if we aborted waiting for the connection, current thread will be interrupted, do a no-op.
-    if (!Thread.currentThread().isInterrupted()) {
-      client.send(message);
-    }
+    client.send(message);
   }
 }

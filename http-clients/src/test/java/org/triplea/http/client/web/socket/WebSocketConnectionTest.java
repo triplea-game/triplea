@@ -1,17 +1,14 @@
 package org.triplea.http.client.web.socket;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,7 +59,6 @@ class WebSocketConnectionTest {
   class SendMessageAndConnect {
     @Mock private WebSocketClient webSocketClient;
     @Mock private WebSocket webSocket;
-    @Mock private WebSocketConnector webSocketConnector;
 
     private WebSocketConnection webSocketConnection;
 
@@ -70,14 +66,15 @@ class WebSocketConnectionTest {
     void setup() {
       webSocketConnection = new WebSocketConnection(LOCALHOST_URI);
       webSocketConnection.setClient(webSocketClient);
-      webSocketConnection.setWebSocketConnector(webSocketConnector);
     }
 
     @Test
-    void connect() {
+    void connect() throws Exception {
       webSocketConnection.connect();
 
-      verify(webSocketConnector).initiateConnection();
+      verify(webSocketClient)
+          .connectBlocking(
+              WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     @Test
@@ -96,24 +93,7 @@ class WebSocketConnectionTest {
 
       webSocketConnection.sendMessage(MESSAGE);
 
-      verify(webSocketConnector).waitUntilConnectionIsOpen();
       verify(webSocketClient).send(MESSAGE);
-    }
-
-    @Test
-    @DisplayName("Check if thread becomes interrupted, we will not send a message")
-    void sendMessageIsNoOpIfThreadIsInterrupted() throws Exception {
-      // use a new thread to do this check so that we can set the current
-      // thread as interrupted.
-      Executors.newSingleThreadExecutor()
-          .submit(
-              () -> {
-                Thread.currentThread().interrupt();
-                webSocketConnection.sendMessage(MESSAGE);
-
-                verify(webSocketClient, never()).send(anyString());
-              })
-          .get();
     }
   }
 }
