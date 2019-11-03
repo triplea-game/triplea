@@ -8,12 +8,12 @@ import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 public class ChatParticipantAdapter implements Function<UserWithRoleRecord, ChatParticipant> {
   @Override
-  public ChatParticipant apply(final UserWithRoleRecord apiKeyUserData) {
+  public ChatParticipant apply(final UserWithRoleRecord userWithRoleRecord) {
     return ChatParticipant.builder()
-        .playerName(PlayerName.of(apiKeyUserData.getUsername()))
+        .playerName(PlayerName.of(userWithRoleRecord.getUsername()))
         .isModerator(
-            apiKeyUserData.getRole().equals(UserRole.ADMIN)
-                || apiKeyUserData.getRole().equals(UserRole.MODERATOR))
+            userWithRoleRecord.getRole().equals(UserRole.ADMIN)
+                || userWithRoleRecord.getRole().equals(UserRole.MODERATOR))
         .build();
   }
 }

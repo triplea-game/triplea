@@ -18,7 +18,7 @@ class ChatParticipantAdapterTest {
   @ParameterizedTest
   @ValueSource(strings = {UserRole.ADMIN, UserRole.MODERATOR})
   void moderatorUsers(final String moderatorUserRole) {
-    final var userWithRoleRecord = givenUserDataWithRole(moderatorUserRole);
+    final var userWithRoleRecord = givenUserRecordWithRole(moderatorUserRole);
 
     final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 
@@ -31,14 +31,14 @@ class ChatParticipantAdapterTest {
                 .build()));
   }
 
-  private UserWithRoleRecord givenUserDataWithRole(final String userRole) {
+  private UserWithRoleRecord givenUserRecordWithRole(final String userRole) {
     return UserWithRoleRecord.builder().username(USERNAME).role(userRole).build();
   }
 
   @ParameterizedTest
   @ValueSource(strings = {UserRole.ANONYMOUS, UserRole.PLAYER})
   void nonModeratorUsers(final String notModeratorUserRole) {
-    final var userWithRoleRecord = givenUserDataWithRole(notModeratorUserRole);
+    final var userWithRoleRecord = givenUserRecordWithRole(notModeratorUserRole);
 
     final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 

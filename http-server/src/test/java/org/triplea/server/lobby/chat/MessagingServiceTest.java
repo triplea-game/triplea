@@ -46,14 +46,14 @@ class MessagingServiceTest {
 
   private static final ChatParticipantAdapter chatParticipantAdapter = new ChatParticipantAdapter();
 
-  private static final UserWithRoleRecord API_KEY_USER_DATA =
+  private static final UserWithRoleRecord MODERATOR_DATA =
       UserWithRoleRecord.builder()
           .role(UserRole.MODERATOR)
           .username("player-name-moderator")
           .build();
 
   private static final ChatParticipant CHAT_PARTICIPANT =
-      chatParticipantAdapter.apply(API_KEY_USER_DATA);
+      chatParticipantAdapter.apply(MODERATOR_DATA);
 
   @Mock private LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private ChatEventProcessor eventProcessing;
@@ -108,7 +108,7 @@ class MessagingServiceTest {
     @Test
     void eventProcessingFails() {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
-          .thenReturn(Optional.of(API_KEY_USER_DATA));
+          .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
           .thenReturn(Collections.emptyList());
       when(session.getUserProperties()).thenReturn(userPropertiesMap);
@@ -129,7 +129,7 @@ class MessagingServiceTest {
 
     private void givenServerResponse(final ServerResponse... responses) {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
-          .thenReturn(Optional.of(API_KEY_USER_DATA));
+          .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
           .thenReturn(Arrays.asList(responses));
     }
