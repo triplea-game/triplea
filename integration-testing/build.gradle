@@ -21,6 +21,7 @@ dependencies {
     testImplementation "io.github.openfeign:feign-gson:$openFeignVersion"
     testImplementation "javax.activation:activation:$javaxActivationVersion"
     testImplementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.jdbi:jdbi3-core:$jdbiVersion"
     testImplementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     testImplementation "org.mindrot:jbcrypt:$jbcryptVersion"
