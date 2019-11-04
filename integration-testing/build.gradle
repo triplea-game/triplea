@@ -7,7 +7,6 @@ configurations {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
