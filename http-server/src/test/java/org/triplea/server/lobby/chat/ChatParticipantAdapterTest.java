@@ -7,8 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 class ChatParticipantAdapterTest {
 
@@ -18,9 +18,9 @@ class ChatParticipantAdapterTest {
   @ParameterizedTest
   @ValueSource(strings = {UserRole.ADMIN, UserRole.MODERATOR})
   void moderatorUsers(final String moderatorUserRole) {
-    final ApiKeyUserData apiKeyUserData = givenUserDataWithRole(moderatorUserRole);
+    final var userWithRoleRecord = givenUserRecordWithRole(moderatorUserRole);
 
-    final ChatParticipant result = chatParticipantAdapter.apply(apiKeyUserData);
+    final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 
     assertThat(
         result,
@@ -31,16 +31,16 @@ class ChatParticipantAdapterTest {
                 .build()));
   }
 
-  private ApiKeyUserData givenUserDataWithRole(final String userRole) {
-    return ApiKeyUserData.builder().username(USERNAME).role(userRole).build();
+  private UserWithRoleRecord givenUserRecordWithRole(final String userRole) {
+    return UserWithRoleRecord.builder().username(USERNAME).role(userRole).build();
   }
 
   @ParameterizedTest
   @ValueSource(strings = {UserRole.ANONYMOUS, UserRole.PLAYER})
   void nonModeratorUsers(final String notModeratorUserRole) {
-    final ApiKeyUserData apiKeyUserData = givenUserDataWithRole(notModeratorUserRole);
+    final var userWithRoleRecord = givenUserRecordWithRole(notModeratorUserRole);
 
-    final ChatParticipant result = chatParticipantAdapter.apply(apiKeyUserData);
+    final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 
     assertThat(
         result,

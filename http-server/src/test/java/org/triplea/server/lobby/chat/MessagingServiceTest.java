@@ -22,8 +22,8 @@ import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 import org.triplea.server.TestData;
 import org.triplea.server.lobby.chat.event.processing.ChatEventProcessor;
 import org.triplea.server.lobby.chat.event.processing.ServerResponse;
@@ -46,11 +46,14 @@ class MessagingServiceTest {
 
   private static final ChatParticipantAdapter chatParticipantAdapter = new ChatParticipantAdapter();
 
-  private static final ApiKeyUserData API_KEY_USER_DATA =
-      ApiKeyUserData.builder().role(UserRole.MODERATOR).username("player-name-moderator").build();
+  private static final UserWithRoleRecord MODERATOR_DATA =
+      UserWithRoleRecord.builder()
+          .role(UserRole.MODERATOR)
+          .username("player-name-moderator")
+          .build();
 
   private static final ChatParticipant CHAT_PARTICIPANT =
-      chatParticipantAdapter.apply(API_KEY_USER_DATA);
+      chatParticipantAdapter.apply(MODERATOR_DATA);
 
   @Mock private LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private ChatEventProcessor eventProcessing;
@@ -105,7 +108,7 @@ class MessagingServiceTest {
     @Test
     void eventProcessingFails() {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
-          .thenReturn(Optional.of(API_KEY_USER_DATA));
+          .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
           .thenReturn(Collections.emptyList());
       when(session.getUserProperties()).thenReturn(userPropertiesMap);
@@ -126,7 +129,7 @@ class MessagingServiceTest {
 
     private void givenServerResponse(final ServerResponse... responses) {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
-          .thenReturn(Optional.of(API_KEY_USER_DATA));
+          .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
           .thenReturn(Arrays.asList(responses));
     }

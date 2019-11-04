@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 /**
  * Dao for interacting with api_key table. Api_key table stores keys that are generated on login.
@@ -26,14 +26,14 @@ interface LobbyApiKeyDao {
   @SqlQuery(
       "select lu.id, "
           + "ak.username as "
-          + ApiKeyUserData.USERNAME_COLUMN
+          + UserWithRoleRecord.USERNAME_COLUMN
           + ", ur.name as "
-          + ApiKeyUserData.ROLE_COLUMN
+          + UserWithRoleRecord.ROLE_COLUMN
           + " from api_key ak "
           + " join user_role ur on ur.id = ak.user_role_id "
           + " left join lobby_user lu on lu.id = ak.lobby_user_id "
           + " where ak.key = :apiKey")
-  Optional<ApiKeyUserData> lookupByApiKey(@Bind("apiKey") String apiKey);
+  Optional<UserWithRoleRecord> lookupByApiKey(@Bind("apiKey") String apiKey);
 
   @SqlUpdate("delete from api_key where date_created < (now() - '7 days'::interval)")
   void deleteOldKeys();

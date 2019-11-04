@@ -21,9 +21,9 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.lobby.server.db.data.UserRoleLookup;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyDaoWrapperTest {
@@ -56,7 +56,7 @@ class ApiKeyDaoWrapperTest {
 
   @InjectMocks private LobbyApiKeyDaoWrapper wrapper;
 
-  @Mock private ApiKeyUserData apiKeyUserData;
+  @Mock private UserWithRoleRecord apiKeyUserData;
 
   @Nested
   class LookupByApiKey {
@@ -65,14 +65,14 @@ class ApiKeyDaoWrapperTest {
     void foundCase() {
       givenKeyLookupResult(Optional.of(apiKeyUserData));
 
-      final Optional<ApiKeyUserData> result = wrapper.lookupByApiKey(API_KEY);
+      final Optional<UserWithRoleRecord> result = wrapper.lookupByApiKey(API_KEY);
 
       assertThat(result, isPresent());
       assertThat(result.get(), sameInstance(apiKeyUserData));
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private void givenKeyLookupResult(final Optional<ApiKeyUserData> dataResult) {
+    private void givenKeyLookupResult(final Optional<UserWithRoleRecord> dataResult) {
       when(keyHashingFunction.apply(API_KEY)).thenReturn(HASHED_KEY);
       when(apiKeyDao.lookupByApiKey(HASHED_KEY)).thenReturn(dataResult);
     }
@@ -81,7 +81,7 @@ class ApiKeyDaoWrapperTest {
     void notFoundCase() {
       givenKeyLookupResult(Optional.empty());
 
-      final Optional<ApiKeyUserData> result = wrapper.lookupByApiKey(API_KEY);
+      final Optional<UserWithRoleRecord> result = wrapper.lookupByApiKey(API_KEY);
 
       assertThat(result, isEmpty());
     }

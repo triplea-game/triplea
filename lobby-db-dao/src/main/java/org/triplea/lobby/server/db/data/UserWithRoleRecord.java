@@ -17,7 +17,7 @@ import org.triplea.java.Postconditions;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class ApiKeyUserData {
+public class UserWithRoleRecord {
 
   public static final String ROLE_COLUMN = "role";
   public static final String USERNAME_COLUMN = "username";
@@ -28,28 +28,28 @@ public class ApiKeyUserData {
   private String role;
 
   /** Returns a JDBI row mapper used to convert a ResultSet into an instance of this bean object. */
-  public static RowMapper<ApiKeyUserData> buildResultMapper() {
+  public static RowMapper<UserWithRoleRecord> buildResultMapper() {
     return (rs, ctx) -> {
-      final ApiKeyUserData userData =
-          ApiKeyUserData.builder()
+      final var userWithRoleRecord =
+          UserWithRoleRecord.builder()
               .userId(rs.getInt(USER_ID_COLUMN) == 0 ? null : rs.getInt(USER_ID_COLUMN))
               .role(rs.getString(ROLE_COLUMN))
               .username(rs.getString(USERNAME_COLUMN))
               .build();
 
-      Postconditions.assertState(userData.role != null);
+      Postconditions.assertState(userWithRoleRecord.role != null);
 
-      if (userData.role.equals(UserRole.HOST)) {
-        Postconditions.assertState(userData.username == null);
-        Postconditions.assertState(userData.userId == null);
-      } else if (userData.role.equals(UserRole.ANONYMOUS)) {
-        Postconditions.assertState(userData.userId == null);
-        Postconditions.assertState(userData.username != null);
+      if (userWithRoleRecord.role.equals(UserRole.HOST)) {
+        Postconditions.assertState(userWithRoleRecord.username == null);
+        Postconditions.assertState(userWithRoleRecord.userId == null);
+      } else if (userWithRoleRecord.role.equals(UserRole.ANONYMOUS)) {
+        Postconditions.assertState(userWithRoleRecord.userId == null);
+        Postconditions.assertState(userWithRoleRecord.username != null);
       } else {
-        Postconditions.assertState(userData.userId != null);
-        Postconditions.assertState(userData.username != null);
+        Postconditions.assertState(userWithRoleRecord.userId != null);
+        Postconditions.assertState(userWithRoleRecord.username != null);
       }
-      return userData;
+      return userWithRoleRecord;
     };
   }
 }

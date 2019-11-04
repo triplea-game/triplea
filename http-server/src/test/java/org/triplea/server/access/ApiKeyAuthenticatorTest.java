@@ -13,22 +13,26 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
-import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 import org.triplea.server.TestData;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyAuthenticatorTest {
   private static final ApiKey API_KEY = TestData.API_KEY;
 
-  private static final ApiKeyUserData PLAYER_DATA =
-      ApiKeyUserData.builder().username("player-name").role(UserRole.PLAYER).userId(100).build();
+  private static final UserWithRoleRecord PLAYER_DATA =
+      UserWithRoleRecord.builder()
+          .username("player-name")
+          .role(UserRole.PLAYER)
+          .userId(100)
+          .build();
 
-  private static final ApiKeyUserData HOST_DATA =
-      ApiKeyUserData.builder().role(UserRole.HOST).build();
+  private static final UserWithRoleRecord HOST_RECORD =
+      UserWithRoleRecord.builder().role(UserRole.HOST).build();
 
-  private static final ApiKeyUserData ANONYMOUS_USER_DATA =
-      ApiKeyUserData.builder().username("anonymous-user-name").role(UserRole.ANONYMOUS).build();
+  private static final UserWithRoleRecord ANONYMOUS_USER_RECORD =
+      UserWithRoleRecord.builder().username("anonymous-user-name").role(UserRole.ANONYMOUS).build();
 
   @Mock private LobbyApiKeyDaoWrapper apiKeyDao;
 
@@ -54,33 +58,35 @@ class ApiKeyAuthenticatorTest {
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private static void verify(
-      final Optional<AuthenticatedUser> result, final ApiKeyUserData userData) {
+      final Optional<AuthenticatedUser> result, final UserWithRoleRecord userWithRoleRecord) {
     assertThat(
         result,
         isPresentAndIs(
             AuthenticatedUser.builder()
                 .apiKey(API_KEY)
-                .userId(userData.getUserId())
-                .name(userData.getUsername())
-                .userRole(userData.getRole())
+                .userId(userWithRoleRecord.getUserId())
+                .name(userWithRoleRecord.getUsername())
+                .userRole(userWithRoleRecord.getRole())
                 .build()));
   }
 
+  // TODO: Project#12 When host keys are split from user keys, we should never get a host
+  // record from lobby api keys.
   @Test
   void hostKeyFound() {
-    when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.of(HOST_DATA));
+    when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.of(HOST_RECORD));
 
     final Optional<AuthenticatedUser> result = authenticator.authenticate(API_KEY.getValue());
 
-    verify(result, HOST_DATA);
+    verify(result, HOST_RECORD);
   }
 
   @Test
   void anonymousUserKeyFound() {
-    when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.of(ANONYMOUS_USER_DATA));
+    when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.of(ANONYMOUS_USER_RECORD));
 
     final Optional<AuthenticatedUser> result = authenticator.authenticate(API_KEY.getValue());
 
-    verify(result, ANONYMOUS_USER_DATA);
+    verify(result, ANONYMOUS_USER_RECORD);
   }
 }

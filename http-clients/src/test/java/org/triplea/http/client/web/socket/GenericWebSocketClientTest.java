@@ -79,7 +79,8 @@ class GenericWebSocketClientTest {
     genericWebSocketClient.send(EXAMPLE_CLIENT_MESSAGE);
 
     // small delay to allow async message send to complete
-    Thread.sleep(10);
+    // TODO: Project#12 use awaitility here
+    Thread.sleep(20);
 
     verify(webSocketClient).sendMessage(gson.toJson(EXAMPLE_CLIENT_MESSAGE));
   }
