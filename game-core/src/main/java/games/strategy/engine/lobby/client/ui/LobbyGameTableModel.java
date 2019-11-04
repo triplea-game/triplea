@@ -77,7 +77,7 @@ class LobbyGameTableModel extends AbstractTableModel {
                 new GamePollerTask(
                     lobbyGameBroadcaster,
                     gameListingSupplier(),
-                    () -> httpLobbyClient.getGameListingClient().fetchGameListing(),
+                    httpLobbyClient.getGameListingClient()::fetchGameListing,
                     errorMessageReporter));
     httpLobbyClient.addConnectionLostListener(msg -> gamePoller.cancel());
 
