@@ -2,6 +2,7 @@ package games.strategy.engine.lobby.client.login;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IClientMessenger;
@@ -9,7 +10,9 @@ import games.strategy.net.MacFinder;
 import java.awt.Window;
 import java.io.IOException;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.HttpLobbyClient;
@@ -32,16 +35,56 @@ public class LobbyLogin {
   }
 
   /**
-   * Attempt to login to the LobbyServer.
-   *
-   * <p>If we could not login, return null.
+   * Show a login prompt to user, allow them to enter playername+password credentials, create
+   * account or request temporary password. If successful, do the login and render the lobby frame.
    */
-  public Optional<LobbyClient> login() {
+  public void promptLogin() {
     if (lobbyServerProperties.getServerErrorMessage().isPresent()) {
       showError("Could not connect to server", lobbyServerProperties.getServerErrorMessage().get());
-      return Optional.empty();
+      return;
     }
-    return loginToServer();
+
+    loginToServer()
+        .ifPresent(
+            lobbyClient -> {
+              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
+              GameRunner.hideMainFrame();
+              lobbyFrame.setVisible(true);
+
+              if (lobbyClient.isPasswordChangeRequired()) {
+                try {
+                  final boolean passwordChanged =
+                      ChangePasswordPanel.doPasswordChange(
+                          lobbyFrame,
+                          lobbyClient.getHttpLobbyClient(),
+                          ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
+
+                  if (passwordChanged) {
+                    DialogBuilder.builder()
+                        .parent(lobbyFrame)
+                        .title("Success")
+                        .infoMessage("Password successfully updated!")
+                        .showDialog();
+                  } else {
+                    notifyTempPasswordInvalid(lobbyFrame, null);
+                  }
+                } catch (final HttpInteractionException e) {
+                  notifyTempPasswordInvalid(lobbyFrame, e);
+                }
+              }
+            });
+  }
+
+  private static void notifyTempPasswordInvalid(
+      final LobbyFrame lobbyFrame, final @Nullable Exception exception) {
+    DialogBuilder.builder()
+        .parent(lobbyFrame)
+        .title("Password Not Updated")
+        .errorMessage(
+            "Password not updated, your temporary password is expired.\n"
+                + "Use the account menu to reset your password."
+                + Optional.ofNullable(exception).map(e -> "\nError: " + e.getMessage()).orElse(""))
+        .showDialog();
   }
 
   private Optional<LobbyClient> login(final LoginPanel panel) {
@@ -84,6 +127,7 @@ public class LobbyLogin {
     JOptionPane.showMessageDialog(parentWindow, message, title, JOptionPane.ERROR_MESSAGE);
   }
 
+  // TODO: Project#12 re-order methods to depth-first ordering
   private Optional<LobbyClient> loginToServer() {
     final LoginPanel loginPanel = new LoginPanel();
     final LoginPanel.ReturnValue returnValue = loginPanel.show(parentWindow);

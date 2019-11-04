@@ -1,31 +1,25 @@
 package games.strategy.engine.framework.startup.mc;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
-import games.strategy.engine.lobby.client.login.ChangePasswordPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
-import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
-import org.triplea.http.client.HttpInteractionException;
-import org.triplea.swing.DialogBuilder;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
@@ -111,48 +105,7 @@ public class SetupPanelModel implements ServerSetupModel {
             .fetchLobbyServerProperties()
             .orElseThrow(LobbyAddressFetchException::new);
 
-    new LobbyLogin(ui, lobbyServerProperties)
-        .login()
-        .ifPresent(
-            lobbyClient -> {
-              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
-              GameRunner.hideMainFrame();
-              lobbyFrame.setVisible(true);
-
-              if (lobbyClient.isPasswordChangeRequired()) {
-                try {
-                  final boolean passwordChanged =
-                      ChangePasswordPanel.doPasswordChange(
-                          lobbyFrame,
-                          lobbyClient.getHttpLobbyClient(),
-                          ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
-
-                  if (passwordChanged) {
-                    DialogBuilder.builder()
-                        .parent(lobbyFrame)
-                        .title("Success")
-                        .infoMessage("Password successfully updated!")
-                        .showDialog();
-                  } else {
-                    notifyTempPasswordInvalid(lobbyFrame, null);
-                  }
-                } catch (final HttpInteractionException e) {
-                  notifyTempPasswordInvalid(lobbyFrame, e);
-                }
-              }
-            });
-  }
-
-  private static void notifyTempPasswordInvalid(
-      final LobbyFrame lobbyFrame, final @Nullable Exception exception) {
-    DialogBuilder.builder()
-        .parent(lobbyFrame)
-        .title("Password Not Updated")
-        .errorMessage(
-            "Password not updated, your temporary password is expired.\n"
-                + "Use the account menu to reset your password."
-                + Optional.ofNullable(exception).map(e -> "\nError: " + e.getMessage()).orElse(""))
-        .showDialog();
+    new LobbyLogin(ui, lobbyServerProperties).promptLogin();
   }
 
   private static final class LobbyAddressFetchException extends RuntimeException {
