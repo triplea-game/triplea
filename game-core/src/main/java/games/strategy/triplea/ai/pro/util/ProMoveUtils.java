@@ -229,7 +229,7 @@ public final class ProMoveUtils {
     final GameData data = ProData.getData();
     final GameMap map = data.getMap();
 
-    final HashMap<Territory, ArrayList<Move>> movesMap = new HashMap<>();
+    final var movesMap = new HashMap<Territory, ArrayList<Move>>();
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
 
@@ -238,15 +238,12 @@ public final class ProMoveUtils {
       for (final Unit transport : amphibAttackMap.keySet()) {
         int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
         Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
-        ArrayList<Move> moves = movesMap.get(transportTerritory);
-        if (moves == null) {
-          moves = new ArrayList<>();
-          movesMap.put(transportTerritory, moves);
-        }
+        ArrayList<Move> moves = movesMap.computeIfAbsent(transportTerritory, k -> new ArrayList<Move>());
 
         // Check if units are already loaded or not
-        final ArrayList<Unit> loadedUnits = new ArrayList<>();
-        final ArrayList<Unit> remainingUnitsToLoad = new ArrayList<>();
+        final var loadedUnits = new ArrayList<Unit>();
+        final var remainingUnitsToLoad = new ArrayList<Unit>();
+
         if (TransportTracker.isTransporting(transport)) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
@@ -258,7 +255,7 @@ public final class ProMoveUtils {
 
           // Load adjacent units if no enemies present in transport territory
           if (Matches.territoryHasEnemyUnits(player, data).negate().test(transportTerritory)) {
-            final List<Unit> unitsToRemove = new ArrayList<>();
+            final var unitsToRemove = new ArrayList<Unit>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
               if (map.getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit))
                   == 1) {
@@ -338,7 +335,7 @@ public final class ProMoveUtils {
               }
             }
             if (territoryToMoveTo != null) {
-              final ArrayList<Unit> unitsToMove = new ArrayList<>();
+              final var unitsToMove = new ArrayList<Unit>();
               unitsToMove.add(transport);
               unitsToMove.addAll(loadedUnits);
               final Route route = new Route(transportTerritory, territoryToMoveTo);
