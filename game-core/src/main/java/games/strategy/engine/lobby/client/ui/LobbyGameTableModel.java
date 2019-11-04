@@ -79,6 +79,7 @@ class LobbyGameTableModel extends AbstractTableModel {
                     gameListingSupplier(),
                     () -> httpLobbyClient.getGameListingClient().fetchGameListing(),
                     errorMessageReporter));
+    httpLobbyClient.addConnectionLostListener(msg -> gamePoller.cancel());
 
     try {
       final Map<String, GameDescription> games =
