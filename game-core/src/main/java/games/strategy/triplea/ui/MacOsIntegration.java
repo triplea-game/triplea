@@ -19,6 +19,11 @@ public final class MacOsIntegration {
     Desktop.getDesktop().setAboutHandler(aboutEvent -> handler.run());
   }
 
+  /** Resets the about handler to the default one for the application. */
+  public static void clearAboutHandler() {
+    Desktop.getDesktop().setAboutHandler(null);
+  }
+
   /** Sets the specified open URI handler to the application. */
   public static void setOpenUriHandler(final Consumer<URI> handler) {
     checkNotNull(handler);

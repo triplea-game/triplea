@@ -30,6 +30,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
@@ -880,6 +881,11 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
       ((ClientGame) game).shutDown();
       // an ugly hack, we need a better way to get the main frame
       new Thread(GameRunner::clientLeftGame).start();
+    }
+    if (SystemProperties.isMac()) {
+      // When leaving a game, reset the about handler to the default one, rather
+      // than the map-specific one set by HelpMenu.
+      MacOsIntegration.clearAboutHandler();
     }
   }
 
