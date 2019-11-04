@@ -21,6 +21,7 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
+import lombok.Getter;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
@@ -33,27 +34,30 @@ import org.triplea.swing.SwingAction;
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
 
-  private final LobbyClient client;
+  @Getter private final LobbyClient lobbyClient;
 
-  public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
+  public LobbyFrame(
+      final LobbyClient lobbyClient, final LobbyServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(JFrameBuilder.getGameIcon());
-    this.client = client;
+    this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat =
-        new Chat(new MessengersChatTransmitter(LobbyConstants.LOBBY_CHAT, client.getMessengers()));
+        new Chat(
+            new MessengersChatTransmitter(LobbyConstants.LOBBY_CHAT, lobbyClient.getMessengers()));
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
-    chatPlayers.addActionFactory(this::newAdminActions);
+    chatPlayers.addActionFactory(this::newModeratorActions);
 
     final LobbyGameTableModel tableModel =
         new LobbyGameTableModel(
-            client.isModerator(), client.getHttpLobbyClient(), this::reportErrorMessage);
-    final LobbyGamePanel gamePanel = new LobbyGamePanel(client, lobbyServerProperties, tableModel);
+            lobbyClient.isModerator(), lobbyClient.getHttpLobbyClient(), this::reportErrorMessage);
+    final LobbyGamePanel gamePanel =
+        new LobbyGamePanel(lobbyClient, lobbyServerProperties, tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -71,7 +75,7 @@ public class LobbyFrame extends JFrame {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    this.client.getMessengers().addErrorListener((reason) -> connectionToServerLost());
+    this.lobbyClient.getMessengers().addErrorListener((reason) -> connectionToServerLost());
     addWindowListener(
         new WindowAdapter() {
           @Override
@@ -93,15 +97,18 @@ public class LobbyFrame extends JFrame {
         .showDialog();
   }
 
-  private List<Action> newAdminActions(final ChatParticipant clickedOn) {
-    if (!client.isModerator()) {
+  private List<Action> newModeratorActions(final ChatParticipant clickedOn) {
+    if (!lobbyClient.isModerator()) {
       return Collections.emptyList();
     }
-    if (clickedOn.getPlayerName().equals(client.getMessengers().getLocalNode().getPlayerName())) {
+    if (clickedOn
+        .getPlayerName()
+        .equals(lobbyClient.getMessengers().getLocalNode().getPlayerName())) {
       return Collections.emptyList();
     }
     final IModeratorController controller =
-        (IModeratorController) client.getMessengers().getRemote(IModeratorController.REMOTE_NAME);
+        (IModeratorController)
+            lobbyClient.getMessengers().getRemote(IModeratorController.REMOTE_NAME);
     final List<Action> actions = new ArrayList<>();
     actions.add(
         SwingAction.of(
@@ -138,17 +145,13 @@ public class LobbyFrame extends JFrame {
     return selectionOption == JOptionPane.OK_OPTION;
   }
 
-  public LobbyClient getLobbyClient() {
-    return client;
-  }
-
   public void shutdown() {
     setVisible(false);
     dispose();
     new Thread(
             () -> {
               GameRunner.showMainFrame();
-              client.getMessengers().shutDown();
+              lobbyClient.getMessengers().shutDown();
               GameRunner.exitGameIfFinished();
             })
         .start();
