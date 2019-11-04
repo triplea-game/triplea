@@ -1,5 +1,6 @@
 package org.triplea.http.client.web.socket;
 
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import com.google.gson.Gson;
@@ -75,13 +76,9 @@ class GenericWebSocketClientTest {
   }
 
   @Test
-  void send() throws Exception {
+  void send() {
     genericWebSocketClient.send(EXAMPLE_CLIENT_MESSAGE);
 
-    // small delay to allow async message send to complete
-    // TODO: Project#12 use awaitility here
-    Thread.sleep(20);
-
-    verify(webSocketClient).sendMessage(gson.toJson(EXAMPLE_CLIENT_MESSAGE));
+    verify(webSocketClient, timeout(150)).sendMessage(gson.toJson(EXAMPLE_CLIENT_MESSAGE));
   }
 }
