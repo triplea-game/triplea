@@ -7,6 +7,7 @@ configurations {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
@@ -25,6 +26,7 @@ dependencies {
     testImplementation "org.jdbi:jdbi3-core:$jdbiVersion"
     testImplementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     testImplementation "org.mindrot:jbcrypt:$jbcryptVersion"
+    testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
     testImplementation project(":test-common")
     testImplementation project(':domain-data')
     testImplementation project(':game-core')

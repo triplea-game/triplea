@@ -43,7 +43,7 @@ dependencies {
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
-    testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersoin"
+    testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
     testImplementation project(":test-common")
 }
 
