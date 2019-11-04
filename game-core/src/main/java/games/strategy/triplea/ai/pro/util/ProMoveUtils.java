@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,57 @@ import org.triplea.util.Tuple;
 /** Pro AI move utilities. */
 public final class ProMoveUtils {
   private ProMoveUtils() {}
+
+  private static class Move {
+    private final ArrayList<Unit> units;
+    private final Route route;
+    private final ArrayList<Unit> transportsToLoad;
+
+    Move(final ArrayList<Unit> units, final Route route, final ArrayList<Unit> transportsToLoad) {
+      this.units = units;
+      this.route = route;
+      this.transportsToLoad = transportsToLoad;
+    }
+
+    Move(final ArrayList<Unit> units, final Route route) {
+      this(units, route, null);
+    }
+
+    Move(final Unit unit, final Route route, final Unit transportToLoad) {
+      this(mutableSingletonList(unit), route, mutableSingletonList(transportToLoad));
+    }
+
+    private static ArrayList<Unit> mutableSingletonList(final Unit unit) {
+      return new ArrayList<>(Collections.singletonList(unit));
+    }
+
+    boolean isTransportLoad() {
+      return this.transportsToLoad != null;
+    }
+
+    boolean mergeWith(final Move other) {
+      if (other != null
+          && other.isTransportLoad() == isTransportLoad()
+          && route.equals(other.route)) {
+        // Merge units and transports.
+        units.addAll(other.units);
+        if (isTransportLoad()) {
+          transportsToLoad.addAll(other.transportsToLoad);
+        }
+        return true;
+      }
+      return false;
+    }
+
+    void addTo(
+        final List<Collection<Unit>> moveUnits,
+        final List<Route> moveRoutes,
+        final List<Collection<Unit>> transportsToLoad) {
+      moveUnits.add(units);
+      moveRoutes.add(route);
+      transportsToLoad.add(this.transportsToLoad);
+    }
+  }
 
   /**
    * Calculates normal movement routes (e.g. land, air, sea attack routes, not including amphibious,
@@ -177,6 +229,7 @@ public final class ProMoveUtils {
     final GameData data = ProData.getData();
     final GameMap map = data.getMap();
 
+    final HashMap<Territory, ArrayList<Move>> movesMap = new HashMap<>();
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
 
@@ -185,10 +238,15 @@ public final class ProMoveUtils {
       for (final Unit transport : amphibAttackMap.keySet()) {
         int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
         Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
+        ArrayList<Move> moves = movesMap.get(transportTerritory);
+        if (moves == null) {
+          moves = new ArrayList<>();
+          movesMap.put(transportTerritory, moves);
+        }
 
         // Check if units are already loaded or not
-        final List<Unit> loadedUnits = new ArrayList<>();
-        final List<Unit> remainingUnitsToLoad = new ArrayList<>();
+        final ArrayList<Unit> loadedUnits = new ArrayList<>();
+        final ArrayList<Unit> remainingUnitsToLoad = new ArrayList<>();
         if (TransportTracker.isTransporting(transport)) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
@@ -204,12 +262,9 @@ public final class ProMoveUtils {
             for (final Unit amphibUnit : remainingUnitsToLoad) {
               if (map.getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit))
                   == 1) {
-                moveUnits.add(Collections.singletonList(amphibUnit));
-                transportsToLoad.add(Collections.singletonList(transport));
                 final Route route =
                     new Route(ProData.unitTerritoryMap.get(amphibUnit), transportTerritory);
-                moveRoutes.add(route);
-                unitsToRemove.add(amphibUnit);
+                moves.add(new Move(amphibUnit, route, transport));
                 loadedUnits.add(amphibUnit);
               }
             }
@@ -283,13 +338,11 @@ public final class ProMoveUtils {
               }
             }
             if (territoryToMoveTo != null) {
-              final List<Unit> unitsToMove = new ArrayList<>();
+              final ArrayList<Unit> unitsToMove = new ArrayList<>();
               unitsToMove.add(transport);
               unitsToMove.addAll(loadedUnits);
-              moveUnits.add(unitsToMove);
-              transportsToLoad.add(null);
               final Route route = new Route(transportTerritory, territoryToMoveTo);
-              moveRoutes.add(route);
+              moves.add(new Move(unitsToMove, route));
               transportTerritory = territoryToMoveTo;
             }
           }
@@ -311,11 +364,46 @@ public final class ProMoveUtils {
 
         // Unload transport
         if (!loadedUnits.isEmpty() && !t.isWater()) {
-          moveUnits.add(loadedUnits);
-          transportsToLoad.add(null);
           final Route route = new Route(transportTerritory, t);
-          moveRoutes.add(route);
+          moves.add(new Move(loadedUnits, route));
         }
+      }
+    }
+
+    // Re-order and batch the moves. That is, move all the units together, then
+    // move all the transports together, then unload them all.
+    for (final ArrayList<Move> moves : movesMap.values()) {
+      // First, add all the transport loads.
+      int i = 0;
+      for (final Move move : moves) {
+        if (move != null && move.isTransportLoad()) {
+          // Find all others with the same route to merge with.
+          mergeMoves(move, moves, i + 1);
+          move.addTo(moveUnits, moveRoutes, transportsToLoad);
+          moves.set(i, null);
+        }
+        i++;
+      }
+
+      // Then, add all the transport and unload moves, merging moves together.
+      // Since we process the moves in order, no special logic is needed to make
+      // sure transports move before unloading.
+      i = 0;
+      for (final Move move : moves) {
+        if (move != null) {
+          mergeMoves(move, moves, i + 1);
+          move.addTo(moveUnits, moveRoutes, transportsToLoad);
+        }
+        i++;
+      }
+    }
+  }
+
+  private static void mergeMoves(
+      final Move move, final ArrayList<Move> moves, final int startIndex) {
+    for (int i = startIndex; i < moves.size(); i++) {
+      if (move.mergeWith(moves.get(i))) {
+        moves.set(i, null);
       }
     }
   }
