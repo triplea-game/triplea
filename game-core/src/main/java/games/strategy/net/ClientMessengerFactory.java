@@ -112,26 +112,4 @@ public final class ClientMessengerFactory {
           return response;
         });
   }
-
-  /** Creates a messenger suitable for lobby watchers (bots). */
-  public static IClientMessenger newLobbyWatcherMessenger(
-      final String host, final int port, final String hostedByName) throws IOException {
-
-    final IConnectionLogin login =
-        challenge -> {
-          final Map<String, String> response = new HashMap<>();
-          response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-          response.put(
-              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-          response.put(LobbyLoginResponseKeys.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
-          return response;
-        };
-
-    return new ClientMessenger(
-        host,
-        port,
-        IServerMessenger.getRealName(hostedByName) + "_" + LobbyConstants.LOBBY_WATCHER_NAME,
-        MacFinder.getHashedMacAddress(),
-        login);
-  }
 }
