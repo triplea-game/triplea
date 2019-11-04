@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
 
 @Builder
@@ -17,8 +18,18 @@ import org.triplea.domain.data.PlayerName;
 @ToString
 public class ChatParticipant implements Serializable {
   private static final long serialVersionUID = 7103177780407531008L;
+
   @NonNull private final PlayerName playerName;
+  /**
+   * Identifier attached to players when joining chat so that front-end can pass values to backend
+   * to identify players, specifically useful example for moderator actions.
+   */
+  // TODO: Project#12 make playerChatId @Nonnull
+  private final PlayerChatId playerChatId;
+  /** True if the player has moderator privileges. */
   private final boolean isModerator;
+
+  /** Status is custom text set by players, eg: "AFK" or "Looking for a game". */
   @Setter @Nullable private String status;
 
   public String getStatus() {
