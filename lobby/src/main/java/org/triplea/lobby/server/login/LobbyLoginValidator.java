@@ -140,9 +140,9 @@ public final class LobbyLoginValidator implements ILoginValidator {
       }
       final String hostName =
           username.substring(0, username.indexOf(LobbyConstants.LOBBY_WATCHER_NAME));
-      return PlayerNameValidation.serverSideValidate(hostName);
+      return PlayerNameValidation.validate(hostName);
     } else {
-      return PlayerNameValidation.serverSideValidate(username);
+      return PlayerNameValidation.validate(username);
     }
   }
 

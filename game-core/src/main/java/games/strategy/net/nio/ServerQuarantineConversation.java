@@ -105,7 +105,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                             remoteName,
                             remoteMac,
                             channel.socket().getRemoteSocketAddress()))
-                    .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
+                    .orElseGet(() -> PlayerNameValidation.validate(remoteName));
             if (error != null && !error.equals(CHANGE_PASSWORD)) {
               step = Step.ACK_ERROR;
               send(error);
