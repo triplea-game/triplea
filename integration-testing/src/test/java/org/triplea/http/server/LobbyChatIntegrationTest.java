@@ -21,7 +21,6 @@ import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 import org.triplea.server.http.DropwizardTest;
-import org.triplea.test.common.Integration;
 
 /**
  * End-to-end test where we go through a chat sequence exercising all chat features. Runs through
