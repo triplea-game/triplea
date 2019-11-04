@@ -5,7 +5,6 @@ import games.strategy.engine.lobby.PlayerNameValidation;
 import java.util.Collection;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.triplea.lobby.common.LobbyConstants;
 
 /** Utility class that will assign a name to a newly logging in player. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,16 +21,14 @@ public final class PlayerNameAssigner {
    */
   public static String assignName(
       final String desiredName, final String mac, final Collection<String> loggedInNames) {
-    Preconditions.checkArgument(PlayerNameValidation.serverSideValidate(desiredName) == null);
+    Preconditions.checkArgument(PlayerNameValidation.validate(desiredName) == null);
     Preconditions.checkNotNull(mac);
     Preconditions.checkNotNull(loggedInNames);
 
     String currentName = desiredName;
 
-    if (!isBotName(desiredName)) {
-      if (currentName.length() > 50) {
-        currentName = currentName.substring(0, 50);
-      }
+    if (currentName.length() > 50) {
+      currentName = currentName.substring(0, 50);
     }
 
     final String originalName = currentName;
@@ -39,9 +36,5 @@ public final class PlayerNameAssigner {
       currentName = originalName + " (" + i + ")";
     }
     return currentName;
-  }
-
-  private static boolean isBotName(final String desiredName) {
-    return desiredName.startsWith("Bot") && desiredName.endsWith(LobbyConstants.LOBBY_WATCHER_NAME);
   }
 }
