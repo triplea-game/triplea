@@ -45,28 +45,25 @@ class PlayerNameValidationTest {
                   not(emptyString()));
             });
 
-    Arrays.asList(LobbyConstants.LOBBY_WATCHER_NAME, LobbyConstants.ADMIN_USERNAME)
-        .forEach(
-            invalidNamePart -> {
-              assertThat(
-                  "user names cannot contain anything from the forbidden name list",
-                  PlayerNameValidation.isValid(invalidNamePart),
-                  is(false));
-              assertThat(
-                  "verify we are doing a contains match to make sure "
-                      + "user name does not contain anything forbidden.",
-                  PlayerNameValidation.isValid("xyz" + invalidNamePart + "abc"),
-                  is(false));
+    final String invalidNamePart = LobbyConstants.ADMIN_USERNAME;
+    assertThat(
+        "user names cannot contain anything from the forbidden name list",
+        PlayerNameValidation.isValid(invalidNamePart),
+        is(false));
+    assertThat(
+        "verify we are doing a contains match to make sure "
+            + "user name does not contain anything forbidden.",
+        PlayerNameValidation.isValid("xyz" + invalidNamePart + "abc"),
+        is(false));
 
-              assertThat(
-                  "case insensitive on our matches.",
-                  PlayerNameValidation.isValid(invalidNamePart.toUpperCase()),
-                  is(false));
-              assertThat(
-                  "case insensitive on our matches.",
-                  PlayerNameValidation.isValid(invalidNamePart.toLowerCase()),
-                  is(false));
-            });
+    assertThat(
+        "case insensitive on our matches.",
+        PlayerNameValidation.isValid(invalidNamePart.toUpperCase()),
+        is(false));
+    assertThat(
+        "case insensitive on our matches.",
+        PlayerNameValidation.isValid(invalidNamePart.toLowerCase()),
+        is(false));
   }
 
   @Test
