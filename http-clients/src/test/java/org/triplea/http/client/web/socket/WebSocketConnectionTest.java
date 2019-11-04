@@ -2,6 +2,7 @@ package org.triplea.http.client.web.socket;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,15 +81,13 @@ class WebSocketConnectionTest {
     }
 
     @Test
-    void close() throws Exception {
+    void close() {
       when(webSocketClient.getConnection()).thenReturn(webSocket);
       when(webSocketClient.isOpen()).thenReturn(true);
 
       webSocketConnection.close();
 
-      // small delay to allow async 'close' to complete
-      Thread.sleep(10);
-      verify(webSocket).close();
+      verify(webSocket, timeout(150)).close();
     }
 
     @Test
