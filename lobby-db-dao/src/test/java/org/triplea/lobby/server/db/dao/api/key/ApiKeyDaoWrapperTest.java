@@ -23,7 +23,6 @@ import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.lobby.server.db.data.UserRoleLookup;
-import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyDaoWrapperTest {

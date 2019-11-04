@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.data.UserRole;
-import org.triplea.lobby.server.db.data.UserWithRoleRecord;
+import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.server.TestData;
 
 @ExtendWith(MockitoExtension.class)

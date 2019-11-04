@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.db.data;
+package org.triplea.lobby.server.db.dao.api.key;
 
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.triplea.java.Postconditions;
+import org.triplea.lobby.server.db.data.UserRole;
 
 /** Maps ResultSet data when querying for a users API key. */
 @Builder

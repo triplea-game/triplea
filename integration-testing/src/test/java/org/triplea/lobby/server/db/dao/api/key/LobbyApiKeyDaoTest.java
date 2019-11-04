@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.db.dao.DaoTest;
 import org.triplea.lobby.server.db.data.UserRole;
-import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 @DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
 class LobbyApiKeyDaoTest extends DaoTest {

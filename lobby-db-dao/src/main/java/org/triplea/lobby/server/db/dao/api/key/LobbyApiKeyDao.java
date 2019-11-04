@@ -4,7 +4,6 @@ import java.util.Optional;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 /**
  * Dao for interacting with api_key table. Api_key table stores keys that are generated on login.
