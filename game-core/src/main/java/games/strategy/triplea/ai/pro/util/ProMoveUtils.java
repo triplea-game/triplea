@@ -245,6 +245,7 @@ public final class ProMoveUtils {
         final var loadedUnits = new ArrayList<Unit>();
         final var remainingUnitsToLoad = new ArrayList<Unit>();
 
+
         if (TransportTracker.isTransporting(transport)) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
@@ -406,6 +407,26 @@ public final class ProMoveUtils {
    * @param moves The list of candidate moves. ArrayList since elements are accessed by index.
    * @param startIndex The starting index in the moves list to evaluate moves for merging.
    */
+=======
+        }
+        i++;
+      }
+
+      // Then, add all the transport and unload moves, merging moves together.
+      // Since we process the moves in order, no special logic is needed to make
+      // sure transports move before unloading.
+      i = 0;
+      for (final Move move : moves) {
+        if (move != null) {
+          mergeMoves(move, moves, i + 1);
+          move.addTo(moveUnits, moveRoutes, transportsToLoad);
+        }
+        i++;
+      }
+    }
+  }
+
+>>>>>>> a006fbdf0db91a3eff19a698f0aa9281395d5f1e
   private static void mergeMoves(
       final Move move, final ArrayList<Move> moves, final int startIndex) {
     for (int i = startIndex; i < moves.size(); i++) {
