@@ -69,7 +69,7 @@ public class UnitScroller {
       "Press 'L' key or click this button to toggle flags";
 
   private Collection<Unit> skippedUnits = new HashSet<>();
-  private Collection<Unit> sleepingUnits = new HashSet<>();
+  private final Collection<Unit> sleepingUnits = new HashSet<>();
   private Territory lastFocusedTerritory;
 
   private final GameData gameData;
@@ -163,8 +163,10 @@ public class UnitScroller {
     SwingUtilities.invokeLater(
         () -> {
           selectUnitImagePanel.removeAll();
-          selectUnitImagePanel.add(
-              avatarPanelFactory.buildPanel(matchedUnits, currentPlayerSupplier.get()));
+          if (currentPlayerSupplier.get() != null) {
+            selectUnitImagePanel.add(
+                avatarPanelFactory.buildPanel(matchedUnits, currentPlayerSupplier.get()));
+          }
           selectUnitImagePanel.revalidate();
           selectUnitImagePanel.repaint();
         });
