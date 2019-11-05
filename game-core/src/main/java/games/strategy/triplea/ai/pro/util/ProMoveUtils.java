@@ -30,17 +30,17 @@ public final class ProMoveUtils {
   private ProMoveUtils() {}
 
   private static class Move {
-    private final ArrayList<Unit> units;
+    private final List<Unit> units;
     private final Route route;
-    private final ArrayList<Unit> transportsToLoad;
+    private final List<Unit> transportsToLoad;
 
-    Move(final ArrayList<Unit> units, final Route route, final ArrayList<Unit> transportsToLoad) {
+    Move(final List<Unit> units, final Route route, final List<Unit> transportsToLoad) {
       this.units = units;
       this.route = route;
       this.transportsToLoad = transportsToLoad;
     }
 
-    Move(final ArrayList<Unit> units, final Route route) {
+    Move(final List<Unit> units, final Route route) {
       this(units, route, null);
     }
 
@@ -48,7 +48,7 @@ public final class ProMoveUtils {
       this(mutableSingletonList(unit), route, mutableSingletonList(transportToLoad));
     }
 
-    private static ArrayList<Unit> mutableSingletonList(final Unit unit) {
+    private static List<Unit> mutableSingletonList(final Unit unit) {
       return new ArrayList<>(Collections.singletonList(unit));
     }
 
@@ -126,7 +126,7 @@ public final class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<>();
+        final var unitList = new ArrayList<Unit>();
         unitList.add(u);
         moveUnits.add(unitList);
         if (Matches.unitIsLandTransport().test(u)) {
@@ -238,7 +238,8 @@ public final class ProMoveUtils {
       for (final Unit transport : amphibAttackMap.keySet()) {
         int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
         Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
-        ArrayList<Move> moves = movesMap.computeIfAbsent(transportTerritory, k -> new ArrayList<Move>());
+        final List<Move> moves =
+            movesMap.computeIfAbsent(transportTerritory, k -> new ArrayList<Move>());
 
         // Check if units are already loaded or not
         final var loadedUnits = new ArrayList<Unit>();
@@ -257,10 +258,9 @@ public final class ProMoveUtils {
           if (Matches.territoryHasEnemyUnits(player, data).negate().test(transportTerritory)) {
             final var unitsToRemove = new ArrayList<Unit>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
-              if (map.getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit))
-                  == 1) {
-                final Route route =
-                    new Route(ProData.unitTerritoryMap.get(amphibUnit), transportTerritory);
+              final Territory unitTerritory = ProData.unitTerritoryMap.get(amphibUnit);
+              if (map.getDistance(transportTerritory, unitTerritory) == 1) {
+                final Route route = new Route(unitTerritory, transportTerritory);
                 moves.add(new Move(amphibUnit, route, transport));
                 loadedUnits.add(amphibUnit);
               }
@@ -369,7 +369,7 @@ public final class ProMoveUtils {
 
     // Re-order and batch the moves. That is, move all the units together, then
     // move all the transports together, then unload them all.
-    for (final ArrayList<Move> moves : movesMap.values()) {
+    for (final var moves : movesMap.values()) {
       // First, add all the transport loads.
       int i = 0;
       for (final Move move : moves) {
@@ -396,6 +396,16 @@ public final class ProMoveUtils {
     }
   }
 
+  /**
+   * Merges move with subsequent moves in the list.
+   *
+   * <p>Merged moves are set to null in the list, to mark them as merged. This is done rather than
+   * removing them, to avoid O(n^2) complexity.
+   *
+   * @param move The move to merge other eligible moves into.
+   * @param moves The list of candidate moves. ArrayList since elements are accessed by index.
+   * @param startIndex The starting index in the moves list to evaluate moves for merging.
+   */
   private static void mergeMoves(
       final Move move, final ArrayList<Move> moves, final int startIndex) {
     for (int i = startIndex; i < moves.size(); i++) {
@@ -435,7 +445,7 @@ public final class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<>();
+        final var unitList = new ArrayList<Unit>();
         unitList.add(u);
         moveUnits.add(unitList);
 
@@ -487,7 +497,7 @@ public final class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<>();
+        final var unitList = new ArrayList<Unit>();
         unitList.add(u);
         moveUnits.add(unitList);
 
