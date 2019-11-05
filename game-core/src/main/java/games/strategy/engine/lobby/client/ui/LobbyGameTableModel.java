@@ -142,6 +142,10 @@ class LobbyGameTableModel extends AbstractTableModel {
     return gameList.get(i).getSecond();
   }
 
+  String getGameIdForRow(final int i) {
+    return gameList.get(i).getFirst();
+  }
+
   private void updateGame(final String gameId, final GameDescription description) {
     SwingUtilities.invokeLater(
         () -> {

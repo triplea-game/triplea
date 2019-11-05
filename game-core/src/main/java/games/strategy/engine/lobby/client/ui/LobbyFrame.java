@@ -1,34 +1,32 @@
 package games.strategy.engine.lobby.client.ui;
 
-import com.google.common.collect.ImmutableList;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPlayerPanel;
-import games.strategy.engine.chat.MessengersChatTransmitter;
+import games.strategy.engine.chat.ChatTransmitter;
+import games.strategy.engine.chat.LobbyChatTransmitter;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
+import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
+import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.swing.DialogBuilder;
-import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /** The top-level frame window for the lobby client UI. */
 public class LobbyFrame extends JFrame {
@@ -43,9 +41,8 @@ public class LobbyFrame extends JFrame {
     setIconImage(JFrameBuilder.getGameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
-    final Chat chat =
-        new Chat(
-            new MessengersChatTransmitter(LobbyConstants.LOBBY_CHAT, lobbyClient.getMessengers()));
+    final ChatTransmitter chatTransmitter = new LobbyChatTransmitter(lobbyClient);
+    final Chat chat = new Chat(chatTransmitter);
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
@@ -75,11 +72,19 @@ public class LobbyFrame extends JFrame {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    this.lobbyClient.getMessengers().addErrorListener((reason) -> connectionToServerLost());
+    lobbyClient
+        .getHttpLobbyClient()
+        .getLobbyChatClient()
+        .addConnectionLostListener(
+            errMsg -> {
+              SwingComponents.showError(this, "Disconnected", errMsg);
+              dispose();
+            });
     addWindowListener(
         new WindowAdapter() {
           @Override
           public void windowClosing(final WindowEvent e) {
+            chatTransmitter.disconnect();
             tableModel.shutdown();
             shutdown();
           }
@@ -101,48 +106,27 @@ public class LobbyFrame extends JFrame {
     if (!lobbyClient.isModerator()) {
       return Collections.emptyList();
     }
-    if (clickedOn
-        .getPlayerName()
-        .equals(lobbyClient.getMessengers().getLocalNode().getPlayerName())) {
+
+    if (clickedOn.getPlayerName().equals(lobbyClient.getPlayerName())) {
       return Collections.emptyList();
     }
-    final IModeratorController controller =
-        (IModeratorController)
-            lobbyClient.getMessengers().getRemote(IModeratorController.REMOTE_NAME);
-    final List<Action> actions = new ArrayList<>();
-    actions.add(
-        SwingAction.of(
-            "Boot " + clickedOn.getPlayerName(),
-            e -> {
-              if (!confirm("Boot " + clickedOn.getPlayerName())) {
-                return;
-              }
-              controller.boot(clickedOn.getPlayerName());
-            }));
-    actions.add(
-        SwingAction.of(
-            "Ban Player",
-            e ->
-                TimespanDialog.prompt(
-                    this,
-                    "Select Timespan",
-                    "Please consult other admins before banning longer than 1 day. \n"
-                        + "And please remember to report this ban.",
-                    date -> {
-                      controller.banUser(clickedOn.getPlayerName(), date.toInstant());
-                      controller.boot(clickedOn.getPlayerName());
-                    })));
-    return ImmutableList.copyOf(actions);
-  }
 
-  private boolean confirm(final String question) {
-    final int selectionOption =
-        JOptionPane.showConfirmDialog(
-            JOptionPane.getFrameForComponent(this),
-            question,
-            "Question",
-            JOptionPane.OK_CANCEL_OPTION);
-    return selectionOption == JOptionPane.OK_OPTION;
+    final var moderatorLobbyClient = lobbyClient.getHttpLobbyClient().getModeratorLobbyClient();
+
+    return List.of(
+        DisconnectPlayerModeratorAction.builder()
+            .parent(this)
+            .moderatorLobbyClient(moderatorLobbyClient)
+            .playerChatId(clickedOn.getPlayerChatId())
+            .playerName(clickedOn.getPlayerName())
+            .build()
+            .toSwingAction(),
+        BanPlayerModeratorAction.builder()
+            .parent(this)
+            .moderatorLobbyClient(moderatorLobbyClient)
+            .playerChatIdToBan(clickedOn.getPlayerChatId())
+            .build()
+            .toSwingAction());
   }
 
   public void shutdown() {
@@ -151,17 +135,8 @@ public class LobbyFrame extends JFrame {
     new Thread(
             () -> {
               GameRunner.showMainFrame();
-              lobbyClient.getMessengers().shutDown();
               GameRunner.exitGameIfFinished();
             })
         .start();
-  }
-
-  private void connectionToServerLost() {
-    EventThreadJOptionPane.showMessageDialog(
-        LobbyFrame.this,
-        "Connection to Server Lost.  Please close this instance and reconnect to the lobby.",
-        "Connection Lost",
-        JOptionPane.ERROR_MESSAGE);
   }
 }
