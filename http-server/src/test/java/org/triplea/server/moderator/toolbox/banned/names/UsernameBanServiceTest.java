@@ -19,16 +19,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.UsernameBanDao;
-import org.triplea.lobby.server.db.data.UsernameBanDaoData;
+import org.triplea.lobby.server.db.dao.username.ban.UsernameBanDao;
+import org.triplea.lobby.server.db.dao.username.ban.UsernameBanRecord;
 
 @ExtendWith(MockitoExtension.class)
 class UsernameBanServiceTest {
 
   private static final String USERNAME = "You haul like an ale.";
   private static final int MODERATOR_ID = 42352;
-  private static final UsernameBanDaoData bannedUserNameDaoData =
-      UsernameBanDaoData.builder()
+  private static final UsernameBanRecord USERNAME_BAN_RECORD =
+      UsernameBanRecord.builder()
           .dateCreated(Instant.now())
           .username("Golden, big mainlands quietly trade a stormy, warm skull.")
           .build();
@@ -96,11 +96,11 @@ class UsernameBanServiceTest {
   @Test
   void getBannedUserNames() {
     when(bannedUsernamesDao.getBannedUserNames())
-        .thenReturn(Collections.singletonList(bannedUserNameDaoData));
+        .thenReturn(Collections.singletonList(USERNAME_BAN_RECORD));
 
     final List<UsernameBanData> results = usernameBanService.getBannedUserNames();
     assertThat(results, hasSize(1));
-    assertThat(results.get(0).getBanDate(), is(bannedUserNameDaoData.getDateCreated()));
-    assertThat(results.get(0).getBannedName(), is(bannedUserNameDaoData.getUsername()));
+    assertThat(results.get(0).getBanDate(), is(USERNAME_BAN_RECORD.getDateCreated()));
+    assertThat(results.get(0).getBannedName(), is(USERNAME_BAN_RECORD.getUsername()));
   }
 }

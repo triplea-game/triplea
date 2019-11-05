@@ -1,13 +1,12 @@
-package org.triplea.lobby.server.db.dao;
+package org.triplea.lobby.server.db.dao.username.ban;
 
-import static org.triplea.lobby.server.db.data.UsernameBanDaoData.DATE_CREATED_COLUMN;
-import static org.triplea.lobby.server.db.data.UsernameBanDaoData.USERNAME_COLUMN;
+import static org.triplea.lobby.server.db.dao.username.ban.UsernameBanRecord.DATE_CREATED_COLUMN;
+import static org.triplea.lobby.server.db.dao.username.ban.UsernameBanRecord.USERNAME_COLUMN;
 
 import java.util.List;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.triplea.lobby.server.db.data.UsernameBanDaoData;
 
 /** Interface with the banned_names table, these are exact match names not allowed in the lobby. */
 public interface UsernameBanDao {
@@ -20,7 +19,7 @@ public interface UsernameBanDao {
           + "\n"
           + "from banned_usernames\n"
           + "order by username")
-  List<UsernameBanDaoData> getBannedUserNames();
+  List<UsernameBanRecord> getBannedUserNames();
 
   @SqlUpdate(
       "insert into banned_usernames(username)\n"

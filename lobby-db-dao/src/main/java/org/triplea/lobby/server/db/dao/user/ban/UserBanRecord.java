@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.db.data;
+package org.triplea.lobby.server.db.dao.user.ban;
 
 import java.time.Instant;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import org.triplea.lobby.server.db.TimestampMapper;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class UserBanDaoData {
+public class UserBanRecord {
   public static final String PUBLIC_ID_COLUMN = "public_id";
   public static final String USERNAME_COLUMN = "username";
   public static final String SYSTEM_ID_COLUMN = "system_id";
@@ -33,9 +33,9 @@ public class UserBanDaoData {
   private Instant dateCreated;
 
   /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
-  public static RowMapper<UserBanDaoData> buildResultMapper() {
+  public static RowMapper<UserBanRecord> buildResultMapper() {
     return (rs, ctx) ->
-        UserBanDaoData.builder()
+        UserBanRecord.builder()
             .publicBanId(rs.getString(PUBLIC_ID_COLUMN))
             .username(rs.getString(USERNAME_COLUMN))
             .systemId(rs.getString(SYSTEM_ID_COLUMN))

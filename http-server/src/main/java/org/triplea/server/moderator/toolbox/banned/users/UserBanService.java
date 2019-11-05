@@ -8,7 +8,7 @@ import lombok.Builder;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.UserBanDao;
+import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
 
 /**
  * Service layer for managing user bans, get bans, add and remove. User bans are done by MAC and IP

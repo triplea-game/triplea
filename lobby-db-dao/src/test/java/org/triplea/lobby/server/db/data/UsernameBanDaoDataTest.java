@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.lobby.server.db.dao.username.ban.UsernameBanRecord;
 
 @ExtendWith(MockitoExtension.class)
 class UsernameBanDaoDataTest {
@@ -25,11 +26,11 @@ class UsernameBanDaoDataTest {
 
   @Test
   void buildResultMapper() throws Exception {
-    when(resultSet.getTimestamp(eq(UsernameBanDaoData.DATE_CREATED_COLUMN), any(Calendar.class)))
+    when(resultSet.getTimestamp(eq(UsernameBanRecord.DATE_CREATED_COLUMN), any(Calendar.class)))
         .thenReturn(timestamp);
-    when(resultSet.getString(UsernameBanDaoData.USERNAME_COLUMN)).thenReturn(USERNAME);
+    when(resultSet.getString(UsernameBanRecord.USERNAME_COLUMN)).thenReturn(USERNAME);
 
-    final UsernameBanDaoData result = UsernameBanDaoData.buildResultMapper().map(resultSet, null);
+    final UsernameBanRecord result = UsernameBanRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUsername(), is(USERNAME));
     assertThat(result.getDateCreated(), is(NOW));
