@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.db.data;
+package org.triplea.lobby.server.db.dao.api.key;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.lobby.server.db.data.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 class UserWithRoleRecordTest {

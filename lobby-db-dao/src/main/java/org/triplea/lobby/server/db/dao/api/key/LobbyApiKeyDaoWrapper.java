@@ -18,7 +18,6 @@ import org.triplea.java.Postconditions;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
 import org.triplea.lobby.server.db.data.UserRole;
-import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 
 /** Wrapper to abstract away DB details of how API key is stored and to provide convenience APIs. */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

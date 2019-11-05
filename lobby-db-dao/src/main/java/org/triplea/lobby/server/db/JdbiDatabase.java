@@ -10,11 +10,11 @@ import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.lobby.server.db.dao.access.log.AccessLogRecord;
+import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.lobby.server.db.data.ModeratorAuditHistoryDaoData;
 import org.triplea.lobby.server.db.data.ModeratorUserDaoData;
 import org.triplea.lobby.server.db.data.UserBanDaoData;
 import org.triplea.lobby.server.db.data.UserRoleLookup;
-import org.triplea.lobby.server.db.data.UserWithRoleRecord;
 import org.triplea.lobby.server.db.data.UsernameBanDaoData;
 
 /** Utility to get connections to the Postgres lobby database. */
