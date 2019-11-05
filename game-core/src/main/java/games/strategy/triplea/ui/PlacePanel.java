@@ -123,14 +123,18 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       }
       // Note: This doesn't use getCurrentPlayer() as that may not be updated yet.
       final PlayerId player = step.getPlayerId();
-      final boolean isFirstTurn = (player == null || !player.equals(lastPlayer));
-      if (isFirstTurn) {
+      if (player == null) {
+        return;
+      }
+      final boolean isNewPlayerTurn = !player.equals(lastPlayer);
+      if (isNewPlayerTurn) {
         postProductionStep = false;
       }
+      final Collection<Unit> playerUnits = player.getUnits();
       // If we're past the production step (even if player didn't produce anything) or
       // there are units that are available to place, show the panel (set unitsToPlace).
-      showUnitsToPlace = (postProductionStep || (player != null && !player.getUnits().isEmpty()));
-      unitsToPlace = showUnitsToPlace ? UnitSeparator.categorize(player.getUnits()) : null;
+      showUnitsToPlace = (postProductionStep || !playerUnits.isEmpty());
+      unitsToPlace = showUnitsToPlace ? UnitSeparator.categorize(playerUnits) : null;
       if (GameStep.isPurchaseOrBidStep(step.getName())) {
         postProductionStep = true;
       }
