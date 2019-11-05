@@ -21,9 +21,11 @@ dependencies {
     testImplementation "io.github.openfeign:feign-gson:$openFeignVersion"
     testImplementation "javax.activation:activation:$javaxActivationVersion"
     testImplementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.jdbi:jdbi3-core:$jdbiVersion"
     testImplementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
     testImplementation "org.mindrot:jbcrypt:$jbcryptVersion"
+    testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
     testImplementation project(":test-common")
     testImplementation project(':domain-data')
     testImplementation project(':game-core')
