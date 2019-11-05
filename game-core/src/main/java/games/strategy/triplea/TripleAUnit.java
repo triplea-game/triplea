@@ -110,8 +110,7 @@ public class TripleAUnit extends Unit {
    * method if possible.
    */
   public List<Unit> getTransporting() {
-    final boolean isTransport = UnitAttachment.get(getType()).getTransportCapacity() > 0;
-    if (isTransport) {
+    if (Matches.unitCanTransport().test(this) || Matches.unitIsCarrier().test(this)) {
       // we don't store the units we are transporting
       // rather we look at the transported by property of units
       for (final Territory t : getData().getMap()) {
