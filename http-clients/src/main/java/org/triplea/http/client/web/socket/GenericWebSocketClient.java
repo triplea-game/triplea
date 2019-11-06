@@ -70,7 +70,10 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
 
   /** Non-blocking close of the websocket connection. */
   public void close() {
-    client.close();
+    CompletableFutureUtils.logExceptionWhenComplete(
+        CompletableFuture.runAsync(client::close, threadPool),
+        e -> log.log(Level.WARNING, "Failed to close client", e));
+    threadPool.shutdown();
   }
 
   // TODO: test that this is called on error

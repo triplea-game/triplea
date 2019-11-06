@@ -13,7 +13,6 @@ import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.triplea.java.Interruptibles;
-import org.triplea.java.Postconditions;
 
 /**
  * Component to manage a websocket connection. Responsible for:
@@ -71,16 +70,8 @@ class WebSocketConnection {
 
   /** Does an async close of the current websocket connection. */
   void close() {
-    if (client.isOpen()) {
-      new Thread(
-              () -> {
-                if (client.isOpen()) {
-                  client.getConnection().close();
-                }
-              })
-          .start();
-    }
     closed = true;
+    client.close();
   }
 
   void connect() {
@@ -92,8 +83,6 @@ class WebSocketConnection {
 
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
-    Postconditions.assertState(Thread.currentThread().isInterrupted() || client.isOpen());
-    // if we aborted waiting for the connection, current thread will be interrupted, do a no-op.
     client.send(message);
   }
 }
