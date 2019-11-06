@@ -1,12 +1,9 @@
 package org.triplea.http.client.web.socket;
 
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -58,7 +55,6 @@ class WebSocketConnectionTest {
   @Nested
   class SendMessageAndConnect {
     @Mock private WebSocketClient webSocketClient;
-    @Mock private WebSocket webSocket;
 
     private WebSocketConnection webSocketConnection;
 
@@ -79,18 +75,13 @@ class WebSocketConnectionTest {
 
     @Test
     void close() {
-      when(webSocketClient.getConnection()).thenReturn(webSocket);
-      when(webSocketClient.isOpen()).thenReturn(true);
-
       webSocketConnection.close();
 
-      verify(webSocket, timeout(150)).close();
+      verify(webSocketClient).close();
     }
 
     @Test
     void sendMessageWaitsForConnection() {
-      when(webSocketClient.isOpen()).thenReturn(true);
-
       webSocketConnection.sendMessage(MESSAGE);
 
       verify(webSocketClient).send(MESSAGE);
