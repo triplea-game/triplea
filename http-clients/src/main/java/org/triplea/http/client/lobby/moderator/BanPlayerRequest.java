@@ -16,7 +16,7 @@ import org.triplea.domain.data.PlayerChatId;
 @Getter
 public class BanPlayerRequest {
   private String playerChatId;
-  private int banMinutes;
+  private long banMinutes;
 
   public PlayerChatId getPlayerChatId() {
     return PlayerChatId.of(playerChatId);

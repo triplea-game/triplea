@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.user.account.login.authorizer.BCryptHashVerifier;
 import org.triplea.server.user.account.login.authorizer.anonymous.AnonymousLoginFactory;
 import org.triplea.server.user.account.login.authorizer.registered.RegisteredLoginFactory;
@@ -19,7 +20,10 @@ public class LoginControllerFactory {
         .loginModule(
             LoginModule.builder()
                 .userJdbiDao(userJdbiDao)
-                .apiKeyGenerator(ApiKeyGenerator.builder().build())
+                .apiKeyGenerator(
+                    ApiKeyGenerator.builder()
+                        .apiKeyDaoWrapper(new LobbyApiKeyDaoWrapper(jdbi))
+                        .build())
                 .anonymousLogin(AnonymousLoginFactory.build(jdbi))
                 .tempPasswordLogin(
                     TempPasswordLogin.builder()

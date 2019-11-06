@@ -259,10 +259,6 @@ final class LoginPanel extends JPanel {
     }
   }
 
-  boolean isAnonymousLogin() {
-    return anonymousLogin.isSelected();
-  }
-
   String getUserName() {
     return username.getText();
   }
