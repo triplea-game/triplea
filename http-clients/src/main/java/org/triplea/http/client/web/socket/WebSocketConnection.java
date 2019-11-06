@@ -18,9 +18,8 @@ import org.triplea.java.Interruptibles;
  * Component to manage a websocket connection. Responsible for:
  *
  * <ul>
- *   <li>initiating the connection (async)
- *   <li>blocking send message requests until the connection to server has been established and then
- *       sends messages async
+ *   <li>initiating the connection (blocking)
+ *   <li>sending message requests after the connection to server has been established (async)
  *   <li>triggering listener callbacks when messages are received from server
  *   <li>closing the websocket connection (async)
  * </ul>
@@ -74,6 +73,11 @@ class WebSocketConnection {
     client.close();
   }
 
+  /**
+   * Initiates a websocket connection. Must be called before {@link #sendMessage(String)}. This
+   * method blocks until the connection has either successfully been established, or the connection
+   * failed.
+   */
   void connect() {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
@@ -81,6 +85,12 @@ class WebSocketConnection {
         () -> client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
   }
 
+  /**
+   * Sends a message asynchronously.
+   *
+   * @throws IllegalStateException If the connection hasn't been opened yet. {@link #connect()}
+   *     needs to be called first.
+   */
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
     client.send(message);
