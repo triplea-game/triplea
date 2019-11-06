@@ -9,7 +9,8 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.lobby.server.db.data.UsernameBanDaoData;
+import org.triplea.lobby.server.db.dao.username.ban.UsernameBanDao;
+import org.triplea.lobby.server.db.dao.username.ban.UsernameBanRecord;
 
 class BannedUserNamesDaoTest extends DaoTest {
   private final UsernameBanDao bannedUserNamesDao = DaoTest.newDao(UsernameBanDao.class);
@@ -17,7 +18,7 @@ class BannedUserNamesDaoTest extends DaoTest {
   @DataSet(cleanBefore = true, value = "banned_names/two_rows.yml")
   @Test
   void getBannedUserNames() {
-    final List<UsernameBanDaoData> data = bannedUserNamesDao.getBannedUserNames();
+    final List<UsernameBanRecord> data = bannedUserNamesDao.getBannedUserNames();
 
     assertThat(data, hasSize(2));
 

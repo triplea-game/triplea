@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.UserBanDao;
+import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
 import org.triplea.server.http.AppConfig;
 
 /** Factory class, instantiates {@code BannedUsersController}. */
