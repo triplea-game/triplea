@@ -13,6 +13,7 @@ import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.Interruptibles.Result;
 
 /**
  * Component to manage a websocket connection. Responsible for:
@@ -77,12 +78,18 @@ class WebSocketConnection {
    * Initiates a websocket connection. Must be called before {@link #sendMessage(String)}. This
    * method blocks until the connection has either successfully been established, or the connection
    * failed.
+   *
+   * @throws RuntimeException If the connection fails
    */
   void connect() {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
-    Interruptibles.await(
-        () -> client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    final Result<Boolean> result =
+        Interruptibles.awaitResult(
+            () -> client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    if (!result.completed || !result.result.orElse(false)) {
+      throw new RuntimeException("Failed to connect to a websocket at " + client.getURI());
+    }
   }
 
   /**

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -70,9 +71,30 @@ class WebSocketConnectionTest {
 
     @Test
     void connect() throws Exception {
+      when(webSocketClient.connectBlocking(anyLong(), any())).thenReturn(true);
       webSocketConnection.connect();
 
       verify(webSocketClient).connectBlocking(anyLong(), any());
+    }
+
+    @Test
+    void connectFails() {
+      webSocketConnection.setClient(
+          new WebSocketClient(URI.create("wss://server.invalid")) {
+            @Override
+            public void onOpen(final ServerHandshake handshake) {}
+
+            @Override
+            public void onMessage(final String message) {}
+
+            @Override
+            public void onClose(final int code, final String reason, final boolean remote) {}
+
+            @Override
+            public void onError(final Exception ex) {}
+          });
+
+      assertThrows(RuntimeException.class, webSocketConnection::connect);
     }
 
     @Test
