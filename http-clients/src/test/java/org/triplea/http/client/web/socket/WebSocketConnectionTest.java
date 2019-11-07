@@ -2,6 +2,7 @@ package org.triplea.http.client.web.socket;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,7 +72,7 @@ class WebSocketConnectionTest {
     void connect() throws Exception {
       webSocketConnection.connect();
 
-      verify(webSocketClient).connectBlocking(any(), any());
+      verify(webSocketClient).connectBlocking(anyLong(), any());
     }
 
     @Test
@@ -83,6 +84,7 @@ class WebSocketConnectionTest {
 
     @Test
     void sendMessage() {
+      when(webSocketClient.isOpen()).thenReturn(true);
       webSocketConnection.sendMessage(MESSAGE);
 
       verify(webSocketClient).send(MESSAGE);
