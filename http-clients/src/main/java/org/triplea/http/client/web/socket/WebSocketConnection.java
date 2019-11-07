@@ -26,7 +26,7 @@ import org.triplea.java.Interruptibles;
  */
 @Log
 class WebSocketConnection {
-  @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
+  private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
   private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
 
   private boolean closed = false;
@@ -93,6 +93,7 @@ class WebSocketConnection {
    */
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
+    Preconditions.checkState(client.isOpen());
     client.send(message);
   }
 }

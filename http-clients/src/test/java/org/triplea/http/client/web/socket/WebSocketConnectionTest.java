@@ -1,9 +1,12 @@
 package org.triplea.http.client.web.socket;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
 import org.java_websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -68,9 +71,7 @@ class WebSocketConnectionTest {
     void connect() throws Exception {
       webSocketConnection.connect();
 
-      verify(webSocketClient)
-          .connectBlocking(
-              WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+      verify(webSocketClient).connectBlocking(any(), any());
     }
 
     @Test
@@ -81,10 +82,19 @@ class WebSocketConnectionTest {
     }
 
     @Test
-    void sendMessageWaitsForConnection() {
+    void sendMessage() {
       webSocketConnection.sendMessage(MESSAGE);
 
       verify(webSocketClient).send(MESSAGE);
+    }
+
+    @Test
+    void sendMessageFailsIfConnectionNotOpened() {
+      when(webSocketClient.isOpen()).thenReturn(false);
+
+      assertThrows(IllegalStateException.class, () -> webSocketConnection.sendMessage(MESSAGE));
+
+      verify(webSocketClient, times(0)).send(MESSAGE);
     }
   }
 }
