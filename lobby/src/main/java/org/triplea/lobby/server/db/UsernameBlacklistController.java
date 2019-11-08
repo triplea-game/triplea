@@ -19,7 +19,7 @@ class UsernameBlacklistController implements UsernameBlacklistDao {
   /** This implementation has the side effect of removing any usernames whose ban has expired. */
   @Override
   public boolean isUsernameBanned(final String username) {
-    final String sql = "select 1 from banned_usernames where lower(username) = lower(?)";
+    final String sql = "select 1 from banned_username where lower(username) = lower(?)";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);

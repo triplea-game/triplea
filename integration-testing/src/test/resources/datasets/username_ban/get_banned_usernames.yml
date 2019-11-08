@@ -1,0 +1,5 @@
+banned_username:
+  - username: username1
+    date_created: 2001-01-01 23:59:59
+  - username: username2
+    date_created: 2000-01-01 23:59:59

@@ -37,10 +37,18 @@ public class UserBanService {
   }
 
   boolean removeUserBan(final int moderatorId, final String banId) {
-    final String unbanName = bannedUserDao.lookupUserNameByBanId(banId);
+    final String unbanName = bannedUserDao.lookupUsernameByBanId(banId).orElse(null);
     if (bannedUserDao.removeBan(banId) != 1) {
       return false;
     }
+    if (unbanName == null) {
+      throw new AssertionError(
+          "Consistency error, unbanned "
+              + banId
+              + ", but "
+              + "there was no matching name for that ban.");
+    }
+
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USER_BAN)

@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.db.data;
+package org.triplea.lobby.server.db.dao.user.ban;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -15,10 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.lobby.server.db.dao.user.ban.UserBanRecord;
 
 @ExtendWith(MockitoExtension.class)
-class UserBanDaoDataTest {
+class UserBanRecordTest {
   private static final Instant NOW = Instant.now();
   private static final Timestamp timestamp = Timestamp.from(NOW);
 

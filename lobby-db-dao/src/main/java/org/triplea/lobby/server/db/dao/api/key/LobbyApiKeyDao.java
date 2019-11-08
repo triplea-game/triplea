@@ -1,6 +1,7 @@
 package org.triplea.lobby.server.db.dao.api.key;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -13,14 +14,18 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
  */
 interface LobbyApiKeyDao {
   @SqlUpdate(
-      "insert into api_key(lobby_user_id, username, key, ip, user_role_id) "
-          + "values (:userId, :username, :apiKey, :ip::inet, :userRoleId)")
+      "insert into lobby_api_key("
+          + "   username, lobby_user_id, user_role_id, player_chat_id, key, system_id, ip) "
+          + "values "
+          + "(:username, :userId, :userRoleId, :playerChatId, :apiKey, :systemId, :ip::inet)")
   int storeKey(
-      @Bind("userId") Integer userId,
       @Bind("username") String username,
+      @Nullable @Bind("userId") Integer userId,
+      @Bind("userRoleId") int userRoleId,
+      @Bind("playerChatId") String playerChatId,
       @Bind("apiKey") String key,
-      @Bind("ip") String ipAddress,
-      @Bind("userRoleId") int userRoleId);
+      @Bind("systemId") String systemId,
+      @Bind("ip") String ipAddress);
 
   @SqlQuery(
       "select lu.id, "
@@ -28,12 +33,12 @@ interface LobbyApiKeyDao {
           + UserWithRoleRecord.USERNAME_COLUMN
           + ", ur.name as "
           + UserWithRoleRecord.ROLE_COLUMN
-          + " from api_key ak "
+          + " from lobby_api_key ak "
           + " join user_role ur on ur.id = ak.user_role_id "
           + " left join lobby_user lu on lu.id = ak.lobby_user_id "
           + " where ak.key = :apiKey")
   Optional<UserWithRoleRecord> lookupByApiKey(@Bind("apiKey") String apiKey);
 
-  @SqlUpdate("delete from api_key where date_created < (now() - '7 days'::interval)")
+  @SqlUpdate("delete from lobby_api_key where date_created < (now() - '7 days'::interval)")
   void deleteOldKeys();
 }
