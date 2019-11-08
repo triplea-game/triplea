@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,57 +27,6 @@ import org.triplea.util.Tuple;
 /** Pro AI move utilities. */
 public final class ProMoveUtils {
   private ProMoveUtils() {}
-
-  private static class Move {
-    private final List<Unit> units;
-    private final Route route;
-    private final List<Unit> transportsToLoad;
-
-    Move(final List<Unit> units, final Route route, final List<Unit> transportsToLoad) {
-      this.units = units;
-      this.route = route;
-      this.transportsToLoad = transportsToLoad;
-    }
-
-    Move(final List<Unit> units, final Route route) {
-      this(units, route, null);
-    }
-
-    Move(final Unit unit, final Route route, final Unit transportToLoad) {
-      this(mutableSingletonList(unit), route, mutableSingletonList(transportToLoad));
-    }
-
-    private static List<Unit> mutableSingletonList(final Unit unit) {
-      return new ArrayList<>(Collections.singletonList(unit));
-    }
-
-    boolean isTransportLoad() {
-      return this.transportsToLoad != null;
-    }
-
-    boolean mergeWith(final Move other) {
-      if (other != null
-          && other.isTransportLoad() == isTransportLoad()
-          && route.equals(other.route)) {
-        // Merge units and transports.
-        units.addAll(other.units);
-        if (isTransportLoad()) {
-          transportsToLoad.addAll(other.transportsToLoad);
-        }
-        return true;
-      }
-      return false;
-    }
-
-    void addTo(
-        final List<Collection<Unit>> moveUnits,
-        final List<Route> moveRoutes,
-        final List<Collection<Unit>> transportsToLoad) {
-      moveUnits.add(units);
-      moveRoutes.add(route);
-      transportsToLoad.add(this.transportsToLoad);
-    }
-  }
 
   /**
    * Calculates normal movement routes (e.g. land, air, sea attack routes, not including amphibious,
@@ -229,7 +177,8 @@ public final class ProMoveUtils {
     final GameData data = ProData.getData();
     final GameMap map = data.getMap();
 
-    final var movesMap = new HashMap<Territory, ArrayList<Move>>();
+    final MoveBatcher moves = new MoveBatcher();
+
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
 
@@ -238,8 +187,7 @@ public final class ProMoveUtils {
       for (final Unit transport : amphibAttackMap.keySet()) {
         int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
         Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
-        final List<Move> moves =
-            movesMap.computeIfAbsent(transportTerritory, k -> new ArrayList<Move>());
+        moves.newSequence();
 
         // Check if units are already loaded or not
         final var loadedUnits = new ArrayList<Unit>();
@@ -261,7 +209,8 @@ public final class ProMoveUtils {
               final Territory unitTerritory = ProData.unitTerritoryMap.get(amphibUnit);
               if (map.getDistance(transportTerritory, unitTerritory) == 1) {
                 final Route route = new Route(unitTerritory, transportTerritory);
-                moves.add(new Move(amphibUnit, route, transport));
+                moves.addTransportLoad(amphibUnit, route, transport);
+                unitsToRemove.add(amphibUnit);
                 loadedUnits.add(amphibUnit);
               }
             }
@@ -338,8 +287,7 @@ public final class ProMoveUtils {
               final var unitsToMove = new ArrayList<Unit>();
               unitsToMove.add(transport);
               unitsToMove.addAll(loadedUnits);
-              final Route route = new Route(transportTerritory, territoryToMoveTo);
-              moves.add(new Move(unitsToMove, route));
+              moves.addMove(unitsToMove, new Route(transportTerritory, territoryToMoveTo));
               transportTerritory = territoryToMoveTo;
             }
           }
@@ -362,57 +310,12 @@ public final class ProMoveUtils {
         // Unload transport
         if (!loadedUnits.isEmpty() && !t.isWater()) {
           final Route route = new Route(transportTerritory, t);
-          moves.add(new Move(loadedUnits, route));
+          moves.addMove(loadedUnits, route);
         }
       }
     }
 
-    // Re-order and batch the moves. That is, move all the units together, then
-    // move all the transports together, then unload them all.
-    for (final var moves : movesMap.values()) {
-      // First, add all the transport loads.
-      int i = 0;
-      for (final Move move : moves) {
-        if (move != null && move.isTransportLoad()) {
-          // Find all others with the same route to merge with.
-          mergeMoves(move, moves, i + 1);
-          move.addTo(moveUnits, moveRoutes, transportsToLoad);
-          moves.set(i, null);
-        }
-        i++;
-      }
-
-      // Then, add all the transport and unload moves, merging moves together.
-      // Since we process the moves in order, no special logic is needed to make
-      // sure transports move before unloading.
-      i = 0;
-      for (final Move move : moves) {
-        if (move != null) {
-          mergeMoves(move, moves, i + 1);
-          move.addTo(moveUnits, moveRoutes, transportsToLoad);
-        }
-        i++;
-      }
-    }
-  }
-
-  /**
-   * Merges move with subsequent moves in the list.
-   *
-   * <p>Merged moves are set to null in the list, to mark them as merged. This is done rather than
-   * removing them, to avoid O(n^2) complexity.
-   *
-   * @param move The move to merge other eligible moves into.
-   * @param moves The list of candidate moves. ArrayList since elements are accessed by index.
-   * @param startIndex The starting index in the moves list to evaluate moves for merging.
-   */
-  private static void mergeMoves(
-      final Move move, final ArrayList<Move> moves, final int startIndex) {
-    for (int i = startIndex; i < moves.size(); i++) {
-      if (move.mergeWith(moves.get(i))) {
-        moves.set(i, null);
-      }
-    }
+    moves.batchAndEmit(moveUnits, moveRoutes, transportsToLoad);
   }
 
   /**
