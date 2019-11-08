@@ -3,14 +3,17 @@ package org.triplea.http.client.web.socket;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.net.URI;
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 class WebSocketConnectionTest {
-  private static final URI LOCALHOST_URI = URI.create("http://localhost");
+  private static final URI INVALID_URI = URI.create("wss://server.invalid");
   private static final String MESSAGE = "message";
   private static final String REASON = "reason";
 
@@ -33,7 +36,7 @@ class WebSocketConnectionTest {
 
     @BeforeEach
     void setup() {
-      webSocketConnection = new WebSocketConnection(LOCALHOST_URI);
+      webSocketConnection = new WebSocketConnection(INVALID_URI);
       webSocketConnection.addListener(webSocketConnectionListener);
     }
 
@@ -59,13 +62,15 @@ class WebSocketConnectionTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   class SendMessageAndConnect {
-    @Mock private WebSocketClient webSocketClient;
+    private WebSocketClient webSocketClient;
 
     private WebSocketConnection webSocketConnection;
 
     @BeforeEach
     void setup() {
-      webSocketConnection = new WebSocketConnection(LOCALHOST_URI);
+      webSocketConnection = new WebSocketConnection(INVALID_URI);
+      // Invoke constructor of abstract class
+      webSocketClient = mock(WebSocketClient.class, withSettings().useConstructor(INVALID_URI));
       webSocketConnection.setClient(webSocketClient);
     }
 
@@ -78,22 +83,9 @@ class WebSocketConnectionTest {
     }
 
     @Test
-    void connectFails() {
-      webSocketConnection.setClient(
-          new WebSocketClient(URI.create("wss://server.invalid")) {
-            @Override
-            public void onOpen(final ServerHandshake handshake) {}
-
-            @Override
-            public void onMessage(final String message) {}
-
-            @Override
-            public void onClose(final int code, final String reason, final boolean remote) {}
-
-            @Override
-            public void onError(final Exception ex) {}
-          });
-
+    @DisplayName("Verify connect fails with exception when connecting to a non-existent endpoint")
+    void connectFails() throws Exception {
+      doCallRealMethod().when(webSocketClient).connectBlocking(anyLong(), any());
       assertThrows(RuntimeException.class, webSocketConnection::connect);
     }
 
@@ -118,7 +110,7 @@ class WebSocketConnectionTest {
 
       assertThrows(IllegalStateException.class, () -> webSocketConnection.sendMessage(MESSAGE));
 
-      verify(webSocketClient, times(0)).send(MESSAGE);
+      verify(webSocketClient, never()).send(MESSAGE);
     }
   }
 }
