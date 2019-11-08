@@ -79,16 +79,16 @@ class WebSocketConnection {
    * method blocks until the connection has either successfully been established, or the connection
    * failed.
    *
-   * @throws RuntimeException If the connection fails
+   * @throws CouldNotConnect If the connection fails
    */
   void connect() {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
-    final Result<Boolean> result =
+    final Result<Boolean> connectionAttempt =
         Interruptibles.awaitResult(
             () -> client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
-    if (!result.completed || !result.result.orElse(false)) {
-      throw new RuntimeException("Failed to connect to a websocket at " + client.getURI());
+    if (!connectionAttempt.completed || !connectionAttempt.result.orElse(false)) {
+      throw new CouldNotConnect(client.getURI());
     }
   }
 
@@ -102,5 +102,17 @@ class WebSocketConnection {
     Preconditions.checkState(!closed);
     Preconditions.checkState(client.isOpen());
     client.send(message);
+  }
+
+  /** Exception indicating connection to server failed. */
+  @VisibleForTesting
+  static final class CouldNotConnect extends RuntimeException {
+    private static final long serialVersionUID = -5403199291005160495L;
+
+    private static final String ERROR_MESSAGE = "Error, could not connect to server at %s";
+
+    CouldNotConnect(final URI uri) {
+      super(String.format(ERROR_MESSAGE, uri));
+    }
   }
 }

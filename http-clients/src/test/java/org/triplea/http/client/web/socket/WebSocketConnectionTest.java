@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.web.socket.WebSocketConnection.CouldNotConnect;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 class WebSocketConnectionTest {
@@ -106,7 +107,7 @@ class WebSocketConnectionTest {
       doCallRealMethod().when(webSocketClient).setSocketFactory(any());
       webSocketClient.setSocketFactory(factory);
 
-      assertThrows(RuntimeException.class, webSocketConnection::connect);
+      assertThrows(CouldNotConnect.class, webSocketConnection::connect);
       verify(webSocketClient).onError(any());
     }
 
