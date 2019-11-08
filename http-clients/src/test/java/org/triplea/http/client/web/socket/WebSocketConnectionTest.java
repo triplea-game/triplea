@@ -10,7 +10,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import java.io.IOException;
 import java.net.URI;
+import javax.net.SocketFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -82,11 +84,30 @@ class WebSocketConnectionTest {
       verify(webSocketClient).connectBlocking(anyLong(), any());
     }
 
+    /**
+     * This method aims to test if a failing connection is handled correctly. In order to keep this
+     * test fast (~5 times faster), the actual IO operations are mocked. A drawback of this approach
+     * is that it makes a lot of assumptions about the call hierarchy of {@link WebSocketClient}, so
+     * this test needs to be updated if those calls ever change.
+     */
     @Test
-    @DisplayName("Verify connect fails with exception when connecting to a non-existent endpoint")
+    @DisplayName("Verify connect fails with exception when connecting to an invalid endpoint")
     void connectFails() throws Exception {
+      // To simulate a failing connection we need to allow
+      // the mock to call some of its methods first
       doCallRealMethod().when(webSocketClient).connectBlocking(anyLong(), any());
+      doCallRealMethod().when(webSocketClient).connect();
+      doCallRealMethod().when(webSocketClient).run();
+
+      // Inject SocketFactory that throws an exception when creating a socket
+      // which triggers the asynchronous error mechanism.
+      final SocketFactory factory = mock(SocketFactory.class);
+      when(factory.createSocket()).thenThrow(new IOException("Test Connection Failure"));
+      doCallRealMethod().when(webSocketClient).setSocketFactory(any());
+      webSocketClient.setSocketFactory(factory);
+
       assertThrows(RuntimeException.class, webSocketConnection::connect);
+      verify(webSocketClient).onError(any());
     }
 
     @Test
