@@ -3,7 +3,6 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.system.HttpProxy;
 import java.io.File;
 import java.io.FileOutputStream;
