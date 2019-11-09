@@ -5,80 +5,48 @@ import games.strategy.triplea.UrlConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import lombok.extern.java.Log;
+import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.util.Version;
 
-@Log
-class EngineVersionProperties {
-  private static final String TRIPLEA_VERSION_LINK =
-      "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
-  private final Version latestVersionOut;
-  private final String link;
-  private final String changelogLink;
+@UtilityClass
+class OutOfDateDialog {
 
-  EngineVersionProperties() {
-    this(getProperties());
-  }
-
-  private EngineVersionProperties(final Properties props) {
-    latestVersionOut =
-        new Version(props.getProperty("LATEST", ClientContext.engineVersion().toString()));
-    link = props.getProperty("LINK", UrlConstants.DOWNLOAD_WEBSITE);
-    changelogLink = props.getProperty("CHANGELOG", UrlConstants.RELEASE_NOTES);
-  }
-
-  private static Properties getProperties() {
-    final Properties props = new Properties();
-    try {
-      props.load(new URL(TRIPLEA_VERSION_LINK).openStream());
-    } catch (final IOException e) {
-      log.info("Failed to get TripleA latest version file, check internet connection, error: " + e);
-    }
-    return props;
-  }
-
-  public Version getLatestVersionOut() {
-    return latestVersionOut;
-  }
-
-  private String getOutOfDateMessage() {
+  // TODO: METHOD-ORDERING re-order methods to depth-first ordering
+  private static String getOutOfDateMessage(final Version latestVersionOut) {
     return "<html>"
         + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
         + "<br />Your current version: "
         + ClientContext.engineVersion()
         + "<br />Latest version available for download: "
-        + getLatestVersionOut()
+        + latestVersionOut
         + "<br /><br />Click to download: <a class=\"external\" href=\""
-        + link
+        + UrlConstants.DOWNLOAD_WEBSITE
         + "\">"
-        + link
+        + UrlConstants.DOWNLOAD_WEBSITE
         + "</a>"
         + "</html>";
   }
 
-  private String getOutOfDateReleaseUpdates() {
+  private static String getOutOfDateReleaseUpdates() {
     return "<html><body>"
         + "Link to full Change Log:<br /><a class=\"external\" href=\""
-        + changelogLink
+        + UrlConstants.RELEASE_NOTES
         + "\">"
-        + changelogLink
+        + UrlConstants.RELEASE_NOTES
         + "</a><br />"
         + "</body></html>";
   }
 
-  Component getOutOfDateComponent() {
+  static Component getOutOfDateComponent(final Version latestVersionOut) {
     final JPanel panel = new JPanel(new BorderLayout());
-    final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage());
+    final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage(latestVersionOut));
     intro.setEditable(false);
     intro.setOpaque(false);
     intro.setBorder(BorderFactory.createEmptyBorder());
