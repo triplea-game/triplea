@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -10,7 +11,9 @@ import static org.mockito.Mockito.when;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.Channels;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.http.HttpEntity;
@@ -69,7 +72,24 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
     }
 
     private void downloadToFile() throws Exception {
-      new ContentReader(() -> client).downloadToFile(URI, file);
+      downloadToFile(file);
+    }
+
+    /**
+     * Downloads the resource at the specified URI to the specified file.
+     *
+     * @param file The file that will receive the resource; must not be {@code null}.
+     * @throws IOException If an error occurs during the download.
+     */
+    void downloadToFile(final File file) throws IOException {
+      checkNotNull(file);
+
+      try (FileOutputStream os = new FileOutputStream(file)) {
+        new ContentReader(() -> client)
+            .downloadInternal(
+                ContentReaderTest.URI,
+                is -> os.getChannel().transferFrom(Channels.newChannel(is), 0L, Long.MAX_VALUE));
+      }
     }
 
     private byte[] fileContent() throws Exception {

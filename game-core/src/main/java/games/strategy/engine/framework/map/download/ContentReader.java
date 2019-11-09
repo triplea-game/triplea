@@ -5,11 +5,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.system.HttpProxy;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.Channels;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -30,7 +27,7 @@ public final class ContentReader {
 
   /**
    * Downloads the resource at the specified URI, applies the given Function to it and returns the
-   * result.
+   * result. A function is applied in order to ensure that the download stream is closed.
    *
    * @param uri The resource URI; must not be {@code null}.
    * @param action The action to perform using the give InputStream; must not be {@code null}.
@@ -41,15 +38,14 @@ public final class ContentReader {
     checkNotNull(action);
 
     try {
-      return Optional.of(downloadInternal(uri, action::apply));
+      return Optional.of(downloadInternal(uri, action));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Error while downloading file", e);
       return Optional.empty();
     }
   }
 
-  @VisibleForTesting
-  static <T> T download(
+  private static <T> T download(
       final String uri,
       final ThrowingFunction<InputStream, T, IOException> action,
       final CloseableHttpClient client)
@@ -74,23 +70,6 @@ public final class ContentReader {
   }
 
   /**
-   * Downloads the resource at the specified URI to the specified file.
-   *
-   * @param uri The resource URI; must not be {@code null}.
-   * @param file The file that will receive the resource; must not be {@code null}.
-   * @throws IOException If an error occurs during the download.
-   */
-  void downloadToFile(final String uri, final File file) throws IOException {
-    checkNotNull(uri);
-    checkNotNull(file);
-
-    try (FileOutputStream os = new FileOutputStream(file)) {
-      downloadInternal(
-          uri, is -> os.getChannel().transferFrom(Channels.newChannel(is), 0L, Long.MAX_VALUE));
-    }
-  }
-
-  /**
    * Downloads the resource at the specified URI using the configured httpClientFactory.
    *
    * @see #download(String, ThrowingFunction)
@@ -98,7 +77,8 @@ public final class ContentReader {
    * @param action The action to perform using the give InputStream; must not be {@code null}.
    * @throws IOException If an error occurs during the download.
    */
-  private <T> T downloadInternal(
+  @VisibleForTesting
+  <T> T downloadInternal(
       final String uri, final ThrowingFunction<InputStream, T, IOException> action)
       throws IOException {
     try (CloseableHttpClient client = httpClientFactory.get()) {
