@@ -1,14 +1,18 @@
 package org.triplea.http.client.web.socket;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
+import java.io.IOException;
 import java.net.URI;
-import java.util.concurrent.Executors;
-import org.java_websocket.WebSocket;
+import javax.net.SocketFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,10 +21,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.web.socket.WebSocketConnection.CouldNotConnect;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 class WebSocketConnectionTest {
-  private static final URI LOCALHOST_URI = URI.create("http://localhost");
+  private static final URI INVALID_URI = URI.create("wss://server.invalid");
   private static final String MESSAGE = "message";
   private static final String REASON = "reason";
 
@@ -34,7 +39,7 @@ class WebSocketConnectionTest {
 
     @BeforeEach
     void setup() {
-      webSocketConnection = new WebSocketConnection(LOCALHOST_URI);
+      webSocketConnection = new WebSocketConnection(INVALID_URI);
       webSocketConnection.addListener(webSocketConnectionListener);
     }
 
@@ -60,60 +65,74 @@ class WebSocketConnectionTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   class SendMessageAndConnect {
-    @Mock private WebSocketClient webSocketClient;
-    @Mock private WebSocket webSocket;
-    @Mock private WebSocketConnector webSocketConnector;
+    private WebSocketClient webSocketClient;
 
     private WebSocketConnection webSocketConnection;
 
     @BeforeEach
     void setup() {
-      webSocketConnection = new WebSocketConnection(LOCALHOST_URI);
+      webSocketConnection = new WebSocketConnection(INVALID_URI);
+      // Invoke constructor of abstract class
+      webSocketClient = mock(WebSocketClient.class, withSettings().useConstructor(INVALID_URI));
       webSocketConnection.setClient(webSocketClient);
-      webSocketConnection.setWebSocketConnector(webSocketConnector);
     }
 
     @Test
-    void connect() {
+    void connect() throws Exception {
+      when(webSocketClient.connectBlocking(anyLong(), any())).thenReturn(true);
       webSocketConnection.connect();
 
-      verify(webSocketConnector).initiateConnection();
+      verify(webSocketClient).connectBlocking(anyLong(), any());
+    }
+
+    /**
+     * This method aims to test if a failing connection is handled correctly. In order to keep this
+     * test fast (~5 times faster), the actual IO operations are mocked. A drawback of this approach
+     * is that it makes a lot of assumptions about the call hierarchy of {@link WebSocketClient}, so
+     * this test needs to be updated if those calls ever change.
+     */
+    @Test
+    @DisplayName("Verify connect fails with exception when connecting to an invalid endpoint")
+    void connectFails() throws Exception {
+      // To simulate a failing connection we need to allow
+      // the mock to call some of its methods first
+      doCallRealMethod().when(webSocketClient).connectBlocking(anyLong(), any());
+      doCallRealMethod().when(webSocketClient).connect();
+      doCallRealMethod().when(webSocketClient).run();
+
+      // Inject SocketFactory that throws an exception when creating a socket
+      // which triggers the asynchronous error mechanism.
+      final SocketFactory factory = mock(SocketFactory.class);
+      when(factory.createSocket()).thenThrow(new IOException("Test Connection Failure"));
+      doCallRealMethod().when(webSocketClient).setSocketFactory(any());
+      webSocketClient.setSocketFactory(factory);
+
+      assertThrows(CouldNotConnect.class, webSocketConnection::connect);
+      verify(webSocketClient).onError(any());
     }
 
     @Test
     void close() {
-      when(webSocketClient.getConnection()).thenReturn(webSocket);
-      when(webSocketClient.isOpen()).thenReturn(true);
-
       webSocketConnection.close();
 
-      verify(webSocket, timeout(150)).close();
+      verify(webSocketClient).close();
     }
 
     @Test
-    void sendMessageWaitsForConnection() {
+    void sendMessage() {
       when(webSocketClient.isOpen()).thenReturn(true);
-
       webSocketConnection.sendMessage(MESSAGE);
 
-      verify(webSocketConnector).waitUntilConnectionIsOpen();
       verify(webSocketClient).send(MESSAGE);
     }
 
     @Test
-    @DisplayName("Check if thread becomes interrupted, we will not send a message")
-    void sendMessageIsNoOpIfThreadIsInterrupted() throws Exception {
-      // use a new thread to do this check so that we can set the current
-      // thread as interrupted.
-      Executors.newSingleThreadExecutor()
-          .submit(
-              () -> {
-                Thread.currentThread().interrupt();
-                webSocketConnection.sendMessage(MESSAGE);
+    void sendMessageFailsIfConnectionNotOpened() {
+      when(webSocketClient.isOpen()).thenReturn(false);
 
-                verify(webSocketClient, never()).send(anyString());
-              })
-          .get();
+      assertThrows(IllegalStateException.class, () -> webSocketConnection.sendMessage(MESSAGE));
+
+      verify(webSocketClient, never()).send(MESSAGE);
     }
   }
 }

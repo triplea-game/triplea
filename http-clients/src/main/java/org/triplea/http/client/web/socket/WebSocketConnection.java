@@ -5,33 +5,30 @@ import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.triplea.java.Postconditions;
+import org.triplea.java.Interruptibles;
+import org.triplea.java.Interruptibles.Result;
 
 /**
  * Component to manage a websocket connection. Responsible for:
  *
  * <ul>
- *   <li>initiating the connection (async)
- *   <li>blocking send message requests until the connection to server has been established and then
- *       sends messages async
+ *   <li>initiating the connection (blocking)
+ *   <li>sending message requests after the connection to server has been established (async)
  *   <li>triggering listener callbacks when messages are received from server
  *   <li>closing the websocket connection (async)
  * </ul>
  */
 @Log
 class WebSocketConnection {
+  private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
   private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
-
-  @Setter(
-      value = AccessLevel.PACKAGE,
-      onMethod_ = {@VisibleForTesting})
-  private WebSocketConnector webSocketConnector;
 
   private boolean closed = false;
 
@@ -64,7 +61,6 @@ class WebSocketConnection {
             listeners.forEach(listener -> listener.handleError(exception));
           }
         };
-    webSocketConnector = new WebSocketConnector(client);
   }
 
   void addListener(final WebSocketConnectionListener listener) {
@@ -74,31 +70,49 @@ class WebSocketConnection {
 
   /** Does an async close of the current websocket connection. */
   void close() {
-    if (client.isOpen()) {
-      new Thread(
-              () -> {
-                if (client.isOpen()) {
-                  client.getConnection().close();
-                }
-              })
-          .start();
-    }
     closed = true;
+    client.close();
   }
 
+  /**
+   * Initiates a websocket connection. Must be called before {@link #sendMessage(String)}. This
+   * method blocks until the connection has either successfully been established, or the connection
+   * failed.
+   *
+   * @throws CouldNotConnect If the connection fails
+   */
   void connect() {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
-    webSocketConnector.initiateConnection();
+    final Result<Boolean> connectionAttempt =
+        Interruptibles.awaitResult(
+            () -> client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    if (!connectionAttempt.completed || !connectionAttempt.result.orElse(false)) {
+      throw new CouldNotConnect(client.getURI());
+    }
   }
 
+  /**
+   * Sends a message asynchronously.
+   *
+   * @throws IllegalStateException If the connection hasn't been opened yet. {@link #connect()}
+   *     needs to be called first.
+   */
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
-    webSocketConnector.waitUntilConnectionIsOpen();
-    Postconditions.assertState(Thread.currentThread().isInterrupted() || client.isOpen());
-    // if we aborted waiting for the connection, current thread will be interrupted, do a no-op.
-    if (!Thread.currentThread().isInterrupted()) {
-      client.send(message);
+    Preconditions.checkState(client.isOpen());
+    client.send(message);
+  }
+
+  /** Exception indicating connection to server failed. */
+  @VisibleForTesting
+  static final class CouldNotConnect extends RuntimeException {
+    private static final long serialVersionUID = -5403199291005160495L;
+
+    private static final String ERROR_MESSAGE = "Error, could not connect to server at %s";
+
+    CouldNotConnect(final URI uri) {
+      super(String.format(ERROR_MESSAGE, uri));
     }
   }
 }
