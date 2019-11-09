@@ -3,6 +3,7 @@ package org.triplea.lobby.server.db.dao.api.key;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.mockito.Mockito.when;
 
@@ -18,24 +19,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.SystemId;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.lobby.server.db.data.UserRoleLookup;
 
 @ExtendWith(MockitoExtension.class)
-class ApiKeyDaoWrapperTest {
+class LobbyApiKeyDaoWrapperTest {
 
   private static final ApiKey API_KEY = ApiKey.of("api-key");
   private static final String HASHED_KEY = "Dead, rainy shores proud swashbuckler";
   private static final PlayerName PLAYER_NAME = PlayerName.of("The_captain");
+  private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
+  private static final SystemId SYSTEM_ID = SystemId.of("system-id");
+  private static final int ANONYMOUS_ROLE_ID = 123;
 
-  private static final int USER_ID = 5;
-
-  private static final int ANONYMOUS_USER_ROLE_ID = 10;
-  private static final int HOST_USER_ROLE_ID = 20;
-  private static final int REGISTERED_USER_ROLE_ID = 30;
+  private static final UserRoleLookup USER_ROLE_LOOKUP =
+      UserRoleLookup.builder().userId(10).userRoleId(20).build();
 
   private static final InetAddress IP;
 
@@ -47,7 +50,11 @@ class ApiKeyDaoWrapperTest {
     }
   }
 
-  @Mock private LobbyApiKeyDao apiKeyDao;
+  @SuppressWarnings("unused")
+  @Mock
+  private GameHostingApiKeyDao gameHostApiKeyDao;
+
+  @Mock private LobbyApiKeyDao lobbyApiKeyDao;
   @Mock private UserJdbiDao userJdbiDao;
   @Mock private UserRoleDao userRoleDao;
   @Mock private Supplier<ApiKey> keyMaker;
@@ -73,7 +80,7 @@ class ApiKeyDaoWrapperTest {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private void givenKeyLookupResult(final Optional<UserWithRoleRecord> dataResult) {
       when(keyHashingFunction.apply(API_KEY)).thenReturn(HASHED_KEY);
-      when(apiKeyDao.lookupByApiKey(HASHED_KEY)).thenReturn(dataResult);
+      when(lobbyApiKeyDao.lookupByApiKey(HASHED_KEY)).thenReturn(dataResult);
     }
 
     @Test
@@ -88,64 +95,47 @@ class ApiKeyDaoWrapperTest {
 
   @Nested
   class NewKey {
-
     @Test
-    void newKeyForGameHosts() {
-      givenNewKey();
-      when(userRoleDao.lookupRoleId(UserRole.HOST)).thenReturn(HOST_USER_ROLE_ID);
-      when(apiKeyDao.storeKey(null, null, HASHED_KEY, IP.getHostAddress(), HOST_USER_ROLE_ID))
-          .thenReturn(1);
-
-      final ApiKey result = wrapper.newGameHostKey(IP);
-
-      assertThat(result, sameInstance(API_KEY));
-    }
-
-    void givenNewKey() {
+    void anonymousUserNewKey() {
       when(keyMaker.get()).thenReturn(API_KEY);
       when(keyHashingFunction.apply(API_KEY)).thenReturn(HASHED_KEY);
-    }
-
-    @Test
-    void newKeyForAnonymousUsers() {
-      givenNewKey();
       when(userJdbiDao.lookupUserIdAndRoleIdByUserName(PLAYER_NAME.getValue()))
           .thenReturn(Optional.empty());
-      when(userRoleDao.lookupRoleId(UserRole.ANONYMOUS)).thenReturn(ANONYMOUS_USER_ROLE_ID);
-      when(apiKeyDao.storeKey(
-              null,
+      when(userRoleDao.lookupRoleId(UserRole.ANONYMOUS)).thenReturn(ANONYMOUS_ROLE_ID);
+      when(lobbyApiKeyDao.storeKey(
               PLAYER_NAME.getValue(),
+              null,
+              ANONYMOUS_ROLE_ID,
+              PLAYER_CHAT_ID.getValue(),
               HASHED_KEY,
-              IP.getHostAddress(),
-              ANONYMOUS_USER_ROLE_ID))
+              SYSTEM_ID.getValue(),
+              IP.getHostAddress()))
           .thenReturn(1);
 
-      final ApiKey result = wrapper.newKey(PLAYER_NAME, IP);
+      final ApiKey result = wrapper.newKey(PLAYER_NAME, IP, SYSTEM_ID, PLAYER_CHAT_ID);
 
-      assertThat(result, sameInstance(API_KEY));
+      assertThat(result, is(API_KEY));
     }
 
     @Test
-    void newKeyForRegisteredUser() {
-      givenNewKey();
+    void registeredUserKey() {
+      when(keyMaker.get()).thenReturn(API_KEY);
+      when(keyHashingFunction.apply(API_KEY)).thenReturn(HASHED_KEY);
       when(userJdbiDao.lookupUserIdAndRoleIdByUserName(PLAYER_NAME.getValue()))
-          .thenReturn(
-              Optional.of(
-                  UserRoleLookup.builder()
-                      .userId(USER_ID)
-                      .userRoleId(REGISTERED_USER_ROLE_ID)
-                      .build()));
-      when(apiKeyDao.storeKey(
-              USER_ID,
+          .thenReturn(Optional.of(USER_ROLE_LOOKUP));
+      when(lobbyApiKeyDao.storeKey(
               PLAYER_NAME.getValue(),
+              USER_ROLE_LOOKUP.getUserId(),
+              USER_ROLE_LOOKUP.getUserRoleId(),
+              PLAYER_CHAT_ID.getValue(),
               HASHED_KEY,
-              IP.getHostAddress(),
-              REGISTERED_USER_ROLE_ID))
+              SYSTEM_ID.getValue(),
+              IP.getHostAddress()))
           .thenReturn(1);
 
-      final ApiKey result = wrapper.newKey(PLAYER_NAME, IP);
+      final ApiKey result = wrapper.newKey(PLAYER_NAME, IP, SYSTEM_ID, PLAYER_CHAT_ID);
 
-      assertThat(result, sameInstance(API_KEY));
+      assertThat(result, is(API_KEY));
     }
   }
 }

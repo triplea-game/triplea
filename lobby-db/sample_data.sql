@@ -1,7 +1,9 @@
 delete
 from moderator_action_history;
 delete
-from api_key;
+from lobby_api_key;
+delete
+from game_hosting_api_key;
 delete
 from lobby_user;
 delete

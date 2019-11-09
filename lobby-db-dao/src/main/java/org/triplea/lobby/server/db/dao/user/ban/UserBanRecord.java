@@ -25,6 +25,19 @@ public class UserBanRecord {
   public static final String BAN_EXPIRY_COLUMN = "ban_expiry";
   public static final String DATE_CREATED_COLUMN = "date_created";
 
+  static final String SELECT_CLAUSE =
+      PUBLIC_ID_COLUMN
+          + ", "
+          + USERNAME_COLUMN
+          + ", "
+          + SYSTEM_ID_COLUMN
+          + ", "
+          + IP_COLUMN
+          + ", "
+          + BAN_EXPIRY_COLUMN
+          + ", "
+          + DATE_CREATED_COLUMN;
+
   private String publicBanId;
   private String username;
   private String systemId;

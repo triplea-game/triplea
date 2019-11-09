@@ -18,7 +18,10 @@ class ApiKeyGenerator implements Function<LoginRecord, ApiKey> {
   public ApiKey apply(final LoginRecord loginRecord) {
     try {
       return apiKeyDaoWrapper.newKey(
-          loginRecord.getPlayerName(), InetAddress.getByName(loginRecord.getIp()));
+          loginRecord.getPlayerName(),
+          InetAddress.getByName(loginRecord.getIp()),
+          loginRecord.getSystemId(),
+          loginRecord.getPlayerChatId());
     } catch (final UnknownHostException e) {
       throw new IllegalStateException(
           "Unexpected exception for IP address: " + loginRecord.getIp(), e);

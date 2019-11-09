@@ -17,16 +17,16 @@ public interface UsernameBanDao {
           + ", "
           + DATE_CREATED_COLUMN
           + "\n"
-          + "from banned_usernames\n"
-          + "order by username")
+          + "from banned_username\n"
+          + "order by username asc")
   List<UsernameBanRecord> getBannedUserNames();
 
   @SqlUpdate(
-      "insert into banned_usernames(username)\n"
+      "insert into banned_username(username)\n"
           + "values(:nameToBan)\n"
           + "on conflict(username) do nothing")
   int addBannedUserName(@Bind("nameToBan") String nameToBan);
 
-  @SqlUpdate("delete from banned_usernames where username = :nameToRemove")
+  @SqlUpdate("delete from banned_username where username = :nameToRemove")
   int removeBannedUserName(@Bind("nameToRemove") String nameToRemove);
 }

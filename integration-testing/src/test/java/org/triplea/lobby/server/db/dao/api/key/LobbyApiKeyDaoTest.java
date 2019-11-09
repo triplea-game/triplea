@@ -25,8 +25,6 @@ class LobbyApiKeyDaoTest extends DaoTest {
           .build();
   private static final UserWithRoleRecord EXPECTED_ANONYMOUS_DATA =
       UserWithRoleRecord.builder().username("some-other-name").role(UserRole.ANONYMOUS).build();
-  private static final UserWithRoleRecord EXPECTED_HOST_DATA =
-      UserWithRoleRecord.builder().role(UserRole.HOST).build();
 
   private final LobbyApiKeyDao lobbyApiKeyDao = DaoTest.newDao(LobbyApiKeyDao.class);
 
@@ -50,48 +48,30 @@ class LobbyApiKeyDaoTest extends DaoTest {
   }
 
   @Test
-  void hostUser() {
-    final Optional<UserWithRoleRecord> result = lobbyApiKeyDao.lookupByApiKey("zapi-key3");
-
-    assertThat(result, isPresentAndIs(EXPECTED_HOST_DATA));
-  }
-
-  @Test
+  @DataSet(cleanBefore = true, value = "lobby_api_key/store_key_before.yml")
   @ExpectedDataSet(
-      value = "lobby_api_key/post_store_registered.yml",
+      value = "lobby_api_key/store_key_after.yml",
       orderBy = "key",
       ignoreCols = {"id", "date_created"})
-  void storeKeyRegisteredUser() {
+  void storeKey() {
     // name of the registered user and role_id do not have to strictly match what is in the
     // lobby_user table, but we would expect it to match as we find user role id and user id by
     // lookup from lobby_user table by username.
     assertThat(
-        lobbyApiKeyDao.storeKey(50, "registered-user-name", "registered-user-key", "127.0.0.1", 1),
+        lobbyApiKeyDao.storeKey(
+            "registered-user-name",
+            50,
+            1,
+            "player-chat-id",
+            "registered-user-key",
+            "system-id",
+            "127.0.0.1"),
         is(1));
   }
 
   @Test
-  @ExpectedDataSet(
-      value = "lobby_api_key/post_store_anonymous.yml",
-      orderBy = "key",
-      ignoreCols = {"id", "date_created"})
-  void storeKeyAnonymousUser() {
-    assertThat(
-        lobbyApiKeyDao.storeKey(null, "anonymous-user-name", "anonymous-user-key", "127.0.0.1", 3),
-        is(1));
-  }
-
-  @Test
-  @ExpectedDataSet(
-      value = "lobby_api_key/post_store_host.yml",
-      orderBy = "key",
-      ignoreCols = {"id", "date_created"})
-  void storeKeyHostUser() {
-    assertThat(lobbyApiKeyDao.storeKey(null, null, "host-user-key", "127.0.0.1", 4), is(1));
-  }
-
-  @Test
-  @ExpectedDataSet(value = "lobby_api_key/post_delete.yml", orderBy = "key")
+  @DataSet(cleanBefore = true, value = "lobby_api_key/delete_old_keys_before.yml")
+  @ExpectedDataSet(value = "lobby_api_key/delete_old_keys_after.yml", orderBy = "key")
   void deleteOldKeys() {
     lobbyApiKeyDao.deleteOldKeys();
   }

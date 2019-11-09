@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Nested;
@@ -105,7 +106,7 @@ class UserBanServiceTest {
     @Test
     void removeUserBanSuccessCase() {
       when(bannedUserDao.removeBan(BAN_ID)).thenReturn(1);
-      when(bannedUserDao.lookupUserNameByBanId(BAN_ID)).thenReturn(USERNAME);
+      when(bannedUserDao.lookupUsernameByBanId(BAN_ID)).thenReturn(Optional.of(USERNAME));
 
       final boolean result = bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID);
 

@@ -9,7 +9,7 @@ import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 public final class GameHostingControllerFactory {
 
   public static GameHostingController buildController(final Jdbi jdbi) {
-    final LobbyApiKeyDaoWrapper wrapper = new LobbyApiKeyDaoWrapper(jdbi);
-    return GameHostingController.builder().apiKeySupplier(wrapper::newGameHostKey).build();
+    final LobbyApiKeyDaoWrapper apiKeyDaoWrapper = new LobbyApiKeyDaoWrapper(jdbi);
+    return GameHostingController.builder().apiKeySupplier(apiKeyDaoWrapper::newGameHostKey).build();
   }
 }
