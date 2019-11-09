@@ -29,6 +29,19 @@ public final class ContentReader {
   private final Supplier<CloseableHttpClient> httpClientFactory;
 
   /**
+   * Downloads the resource at the specified URI
+   *
+   * @param uri The resource URI; must not be {@code null}.
+   * @throws IOException If an error occurs during the download.
+   */
+  public InputStream download(final String uri) throws IOException {
+    checkNotNull(uri);
+    try (CloseableHttpClient client = httpClientFactory.get()) {
+      return readInputStream(uri, client);
+    }
+  }
+
+  /**
    * Downloads the resource at the specified URI, applies the given Function to it and returns the
    * result.
    *
@@ -48,12 +61,19 @@ public final class ContentReader {
     }
   }
 
+  // TODO: METHOD-ORDERING re-order methods to depth-first ordering
   @VisibleForTesting
   static <T> T download(
       final String uri,
       final ThrowingFunction<InputStream, T, IOException> action,
       final CloseableHttpClient client)
       throws IOException {
+    return action.apply(readInputStream(uri, client));
+  }
+
+  static InputStream readInputStream(final String uri, final CloseableHttpClient client)
+      throws IOException {
+
     final HttpGet request = new HttpGet(uri);
     HttpProxy.addProxy(request);
 
@@ -67,9 +87,7 @@ public final class ContentReader {
           Optional.ofNullable(response.getEntity())
               .orElseThrow(() -> new IOException("Entity is missing"));
 
-      try (InputStream stream = entity.getContent()) {
-        return action.apply(stream);
-      }
+      return entity.getContent();
     }
   }
 
