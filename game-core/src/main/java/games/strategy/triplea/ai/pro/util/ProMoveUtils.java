@@ -460,9 +460,6 @@ public final class ProMoveUtils {
 
     // Move units
     for (int i = 0; i < moveRoutes.size(); i++) {
-      if (!ProData.isSimulation) {
-        ProUtils.pause();
-      }
       if (moveRoutes.get(i) == null
           || moveRoutes.get(i).getEnd() == null
           || moveRoutes.get(i).getStart() == null) {
@@ -493,6 +490,9 @@ public final class ProMoveUtils {
                 + moveRoutes.get(i)
                 + " because: "
                 + result);
+      }
+      if (!ProData.isSimulation) {
+        ProUtils.pause();
       }
     }
   }
