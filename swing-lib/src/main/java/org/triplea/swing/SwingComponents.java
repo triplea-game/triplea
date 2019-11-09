@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -33,6 +34,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -41,9 +43,14 @@ import javax.swing.ListModel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.HyperlinkEvent;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Wrapper/utility class to give Swing components a nicer API. This class is to help extract pure UI
@@ -464,5 +471,44 @@ public final class SwingComponents {
   public static void showError(
       final Component parentWindow, final String title, final String message) {
     JOptionPane.showMessageDialog(parentWindow, message, title, JOptionPane.ERROR_MESSAGE);
+  }
+
+  /** Displays a pop-up dialog with clickable HTML links. */
+  public static void showDialogWithLinks(final DialogWithLinksParams params) {
+    final JEditorPane editorPane = new JEditorPane("text/html", params.dialogText);
+    editorPane.setEditable(false);
+    editorPane.setOpaque(false);
+    editorPane.setBorder(new EmptyBorder(10, 0, 20, 0));
+    editorPane.addHyperlinkListener(
+        e -> {
+          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+            OpenFileUtility.openUrl(e.getURL().toString());
+          }
+        });
+
+    final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
+
+    // parentComponent == null to avoid pop-up from appearing behind other windows
+    final Component parentComponent = null;
+    JOptionPane.showMessageDialog(
+        parentComponent,
+        messageToShow,
+        params.title,
+        Optional.ofNullable(params.dialogType).orElse(DialogWithLinksTypes.INFO).optionPaneFlag);
+  }
+
+  @Builder
+  public static class DialogWithLinksParams {
+    @Nonnull private final String title;
+    @Nonnull private final String dialogText;
+    private DialogWithLinksTypes dialogType;
+  }
+
+  @AllArgsConstructor
+  public enum DialogWithLinksTypes {
+    INFO(JOptionPane.INFORMATION_MESSAGE),
+    ERROR(JOptionPane.ERROR_MESSAGE);
+
+    private final int optionPaneFlag;
   }
 }
