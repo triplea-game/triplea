@@ -8,9 +8,9 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.Messengers;
-import games.strategy.sound.ISound;
 import java.io.File;
 import javax.annotation.Nullable;
+import org.triplea.sound.ISound;
 
 /**
  * Represents a running game.

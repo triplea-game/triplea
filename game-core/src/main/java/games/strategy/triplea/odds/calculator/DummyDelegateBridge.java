@@ -13,12 +13,12 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.PlainRandomSource;
-import games.strategy.sound.HeadlessSoundChannel;
-import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.List;
 import java.util.Properties;
+import org.triplea.sound.HeadlessSoundChannel;
+import org.triplea.sound.ISound;
 
 /** Delegate bridge implementation with minimum valid behavior. */
 public class DummyDelegateBridge implements IDelegateBridge {

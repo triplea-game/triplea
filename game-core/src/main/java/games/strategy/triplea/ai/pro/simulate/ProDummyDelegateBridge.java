@@ -11,11 +11,11 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
-import games.strategy.sound.HeadlessSoundChannel;
-import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Properties;
+import org.triplea.sound.HeadlessSoundChannel;
+import org.triplea.sound.ISound;
 
 /**
  * Dummy implementation of {@link IDelegateBridge} used during a battle simulation to capture all

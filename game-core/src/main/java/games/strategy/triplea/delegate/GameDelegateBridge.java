@@ -8,8 +8,8 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.ISound;
 import java.util.Properties;
+import org.triplea.sound.ISound;
 
 /** TripleA implementation of DelegateBridge. */
 public class GameDelegateBridge implements IDelegateBridge {

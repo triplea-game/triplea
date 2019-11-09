@@ -9,10 +9,6 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.player.Player;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.DefaultSoundChannel;
-import games.strategy.sound.ISound;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.TripleADisplay;
@@ -24,6 +20,10 @@ import java.time.ZoneId;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.triplea.sound.ClipPlayer;
+import org.triplea.sound.DefaultSoundChannel;
+import org.triplea.sound.ISound;
+import org.triplea.sound.SoundPath;
 
 /**
  * Headed and default implementation of {@link LaunchAction}. Ideally replaceable with any other

@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.Util;
@@ -18,6 +17,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.triplea.thread.LockUtil;
 
 /** Responsible for rendering a single map tile. */
 public class Tile {

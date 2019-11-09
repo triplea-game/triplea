@@ -11,7 +11,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
@@ -32,6 +31,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.SoundPath;
 
 /** Responsible allowing players to perform politicalActions. */
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate {

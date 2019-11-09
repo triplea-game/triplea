@@ -7,8 +7,8 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.ISound;
 import java.util.Properties;
+import org.triplea.sound.ISound;
 
 /**
  * A class that communicates with the Delegate. DelegateBridge coordinates communication between the
