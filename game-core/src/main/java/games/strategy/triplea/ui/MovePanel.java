@@ -1600,23 +1600,40 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   @Override
   public Map<KeyStroke, Runnable> get() {
     final Map<KeyStroke, Runnable> bindings = new HashMap<>();
+
     bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_SPACE),
+        unitScrollerAction(unitScroller::skipCurrentUnits));
     bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S), unitScroller::sleepCurrentUnits);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S),
+        unitScrollerAction(unitScroller::sleepCurrentUnits));
     bindings.put(
         KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_C),
-        unitScroller::centerOnCurrentMovableUnit);
+        unitScrollerAction(unitScroller::centerOnCurrentMovableUnit));
     bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_N), unitScroller::centerOnNextMovableUnit);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_N),
+        unitScrollerAction(unitScroller::centerOnNextMovableUnit));
     bindings.put(
         KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_M),
-        unitScroller::centerOnPreviousMovableUnit);
+        unitScrollerAction(unitScroller::centerOnPreviousMovableUnit));
     bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_F), this::highlightMovableUnits);
     bindings.put(
         KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_U),
-        () -> undoableMovesPanel.undoMoves(getMap().getHighlightedUnits()));
+        unitScrollerAction(() -> undoableMovesPanel.undoMoves(getMap().getHighlightedUnits())));
     return bindings;
+  }
+
+  /**
+   * Creates an action that only fires when the move panel is visible. Note, the move panel is
+   * considered visible if it is part of a tabbed pane and even if it's not the currently selected
+   * tab.
+   */
+  private Runnable unitScrollerAction(final Runnable scrollerAction) {
+    return () -> {
+      if (this.isVisible()) {
+        scrollerAction.run();
+      }
+    };
   }
 
   @Override
