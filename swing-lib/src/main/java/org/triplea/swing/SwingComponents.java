@@ -22,7 +22,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
