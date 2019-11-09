@@ -12,12 +12,12 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.sound.ISound;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
+import org.triplea.sound.ISound;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).

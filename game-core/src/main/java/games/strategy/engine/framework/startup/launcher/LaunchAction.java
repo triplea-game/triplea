@@ -9,9 +9,9 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.player.Player;
-import games.strategy.sound.ISound;
 import java.io.File;
 import java.util.Set;
+import org.triplea.sound.ISound;
 
 /**
  * Abstraction to allow decoupling the UI framework (namely swing) from the launching code. Ideally

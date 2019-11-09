@@ -8,10 +8,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import games.strategy.security.CredentialManager;
-import games.strategy.security.CredentialManagerException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.security.CredentialManager;
+import org.triplea.security.CredentialManagerException;
 
 final class ProtectedStringClientSettingTest {
   private final ProtectedStringClientSetting clientSetting =

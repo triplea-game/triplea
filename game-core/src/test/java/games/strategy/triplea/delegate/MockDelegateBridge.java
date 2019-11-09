@@ -16,10 +16,10 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.player.Player;
-import games.strategy.sound.ISound;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
+import org.triplea.sound.ISound;
 
 final class MockDelegateBridge {
   private MockDelegateBridge() {}

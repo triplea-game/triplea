@@ -10,8 +10,6 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.player.Player;
-import games.strategy.sound.HeadlessSoundChannel;
-import games.strategy.sound.ISound;
 import games.strategy.triplea.ui.HeadlessUiContext;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
@@ -21,6 +19,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.game.startup.ServerSetupModel;
+import org.triplea.sound.HeadlessSoundChannel;
+import org.triplea.sound.ISound;
 
 /** Setup panel model for headless server. */
 @Log

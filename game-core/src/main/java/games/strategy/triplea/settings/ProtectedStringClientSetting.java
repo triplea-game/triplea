@@ -1,9 +1,9 @@
 package games.strategy.triplea.settings;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.security.CredentialManager;
-import games.strategy.security.CredentialManagerException;
 import org.triplea.java.function.ThrowingBiFunction;
+import org.triplea.security.CredentialManager;
+import org.triplea.security.CredentialManagerException;
 
 /** ClientSetting to store encrypted versions of potentially sensitive Strings. */
 final class ProtectedStringClientSetting extends ClientSetting<char[]> {

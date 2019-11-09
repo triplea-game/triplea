@@ -7,7 +7,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.UserActionAttachment;
@@ -21,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.SoundPath;
 
 /** Contains validation and logic to change game data for UserActionAttachments. */
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {

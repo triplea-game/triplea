@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
@@ -29,6 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.sound.ClipPlayer;
 
 /** A place to find images and map data for a ui. */
 @Log

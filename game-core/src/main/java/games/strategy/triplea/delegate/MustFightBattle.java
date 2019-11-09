@@ -13,8 +13,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.sound.SoundPath;
-import games.strategy.sound.SoundUtils;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
@@ -39,6 +37,8 @@ import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.SoundPath;
+import org.triplea.sound.SoundUtils;
 import org.triplea.util.Tuple;
 
 /** Handles logic for battles in which fighting actually occurs. */

@@ -5,8 +5,6 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import java.awt.GridBagConstraints;
@@ -29,6 +27,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import org.triplea.sound.ClipPlayer;
+import org.triplea.sound.SoundPath;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 

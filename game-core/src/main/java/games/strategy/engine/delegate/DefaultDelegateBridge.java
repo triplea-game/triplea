@@ -15,8 +15,8 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
-import games.strategy.sound.ISound;
 import java.util.Properties;
+import org.triplea.sound.ISound;
 
 /** Default implementation of DelegateBridge. */
 public class DefaultDelegateBridge implements IDelegateBridge {

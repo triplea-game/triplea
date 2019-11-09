@@ -8,8 +8,6 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -54,6 +52,8 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ClipPlayer;
+import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
 
 /**

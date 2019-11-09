@@ -13,8 +13,6 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.HeadlessSoundChannel;
-import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -28,6 +26,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import org.triplea.sound.HeadlessSoundChannel;
+import org.triplea.sound.ISound;
 import org.triplea.util.Tuple;
 
 /** Class used to avoid making actual data changes when checking objectives. */

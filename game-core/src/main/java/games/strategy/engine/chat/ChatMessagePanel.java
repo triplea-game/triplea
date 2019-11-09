@@ -1,8 +1,6 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -32,6 +30,8 @@ import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.TimeManager;
+import org.triplea.sound.ClipPlayer;
+import org.triplea.sound.SoundPath;
 import org.triplea.swing.SwingAction;
 
 /**

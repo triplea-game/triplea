@@ -7,7 +7,6 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -28,6 +27,7 @@ import java.util.stream.StreamSupport;
 import javax.swing.JOptionPane;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.sound.SoundPath;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.util.LocalizeHtml;
 
