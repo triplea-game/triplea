@@ -8,7 +8,6 @@ import games.strategy.engine.chat.ChatTransmitter;
 import games.strategy.engine.chat.LobbyChatTransmitter;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
@@ -23,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JFrameBuilder;
@@ -34,8 +34,7 @@ public class LobbyFrame extends JFrame {
 
   @Getter private final LobbyClient lobbyClient;
 
-  public LobbyFrame(
-      final LobbyClient lobbyClient, final LobbyServerProperties lobbyServerProperties) {
+  public LobbyFrame(final LobbyClient lobbyClient, final ServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(JFrameBuilder.getGameIcon());

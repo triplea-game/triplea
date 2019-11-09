@@ -3,12 +3,12 @@ package org.triplea.test.smoke;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.mc.ClientModel;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.IClientMessenger;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
+import org.triplea.live.servers.ServerProperties;
 
 /**
  * A simple application to test connectivity to a running bot and lobby. Failure is indicted by
@@ -26,7 +26,7 @@ public final class ClientConnect {
     log.info("Connecting to lobby...");
     final IClientMessenger messenger =
         ClientMessengerFactory.newAnonymousUserMessenger(
-            LobbyServerProperties.builder().host("localhost").port(3304).httpsPort(5432).build(),
+            ServerProperties.builder().host("localhost").port(3304).httpsPort(5432).build(),
             "test-user");
     Thread.sleep(500L);
     log.info("Connection to lobby SUCCESSFUL, closing connection");
