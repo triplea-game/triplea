@@ -1,93 +1,71 @@
+# Ansible Variables
+
+## Shared Variables
+
+Variables that are needed across multiple roles will be defined in `group_vars/all.yml`
+Roles should otherwise try to be as self contained as possible.
+
+## Naming & Conventions
+
+Variables will be prefixed by the role where they are used. For example a role named "foo" will
+variables like `foo_home`, `foo_version`. In role `tasks/main.yml`, we should try to refer only
+to variables defined in the defaults for that role, ie: `defaults/main.yml`
+
+### Example
+If we have a shared database password, in `group_vars/all.yml` we might have (in a real example
+this would be encrypted):
+```yaml
+db_password: 123
+```
+
+In role foo, referencing this shared value, `defaults/main.yml` would assign this value with:
+```yaml
+foo_db_password: "{{ db_password }}"
+```
+Then in any tasks or templates for role 'foo', we would use the role specific variable,
+ie: `{{ foo_db_password }}`
+
+## Variable Locations
+- do not use `vars` folder
+- define shared variables and environment specific overrides in `group_vars`
+- all other variables should be defined in `defaults/main.yml`
+
+
+# Running Ansible
+
 ## Ansible Public Key
 
-When creating a new linode, add this public key to your account and then select for it to be added
-to the new linode. This key is used by ansible to gain server access.
+Ansible needs to communicate to target servers via ssh. Locally we have a private key
+that is encrypted and decrypted when ansible runs (decryption is via ansible vault).
+To enable this, we need the ansible public key to be deployed to the target server under
+the root users 'authorized_keys' file.
+
+The installation of a public key to root user can be done during linode creation from the
+lindoe web UI. Add this public key to your linode account profile (via the linode website):
 
 > ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBdU9dU02UR5MCutULVgpdT1mN6wjJOKL8sW1/ZZkdym ansible-public-key
 
-### Running
+Then, when creating a new linode, select that public key and it will added to the root user
+'authorized_keys' file.
 
-Will need to create a 'vault_password' file containing the ansible vault passowrd:
+
+## Vault Password
+
+To run ansible, you will need to create a file named 'vault_password' 
+and add to that file the ansible vault passowrd (project admins/maintainers will have this).
 
 ```
 cd infrastructure/
-# create file 'vault_password' containing the ansible vault password
+touch vault_password
+# edit 'vault_password' and add the ansible vault password
 ```
 
-Encrypting a file looks like this:
-```
-ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed25519
-```
+## Executing a Deployment
 
-### Creating Secrets
-
-* Create a file "vault_password" and place vault_password in the file
-* Create a file 'secret' and place the secret to encrypt in the file
-```
-ansible-vault encrypt_string --vault-password-file vault_password "$(cat secret)" --name 'the_secret'
-```
+Assuming a vault password file is created, run: `./run_deployment <VERSION> [prerelease|production]`
 
 
-# Executing a Deployment
-
-- Use linode console and SSH to the infrastructure machine as root
-- Install your public ssh key in: `/home/ansible/.ssh/authorized_keys`
-- SSH to the infrastructure machine as user ansible
-- Run: `./run_deployment <VERSION> [prerelease|production]`
-
-
-# Local Development
-
-## Installation
-
-### (1) Install Vagrant, VirtualBox and Ansible
-
-```bash
-sudo apt install -y virtualbox vagrant ansible
-```
-
-### (2) Launch Vagrant virtual machine
-```bash
-cd ~/triplea/infrastructure
-vagrant up
-```
-
-*Note*, you may need to do some chowning to be able to run virtualbox as non-root:
-```bash
-sudo chown $USER:$USER -R ~/.vagrant.d/
-sudo chown $USER:$USER -R ~/triplea/infrastructure/.vagrant/
-```
-
-## Run Ansible
-
-```bash
-./run_ansible
-```
-
-## Check Results
-
-```bash
-cd ~/triplea/infrastructure
-vagrant ssh
-
-## check apps are running
-ps -ef | grep java
-
-## check logs
-journalctl -f -u triplea-lobby
-
-## log in to database and verify DB and tables exist
-sudo -u postgres psql
-```
-
-## Clean / Destroy Virtual Servers
-
-```bash
-vagrant destroy -f
-```
-
-
-# PreRelease and Production Deployments
+## PreRelease and Production Deployments
 
 - Executed as part of travis pipeline build after release artifacts are generated
 and deployed to github releases.
@@ -98,10 +76,36 @@ and deployed to github releases.
 - Production deployment occurs on every build, ansible is idempotent by design,
   this allows us to ensure updates, update/add/change servers from inventory files
 
-## Ansible-vault / Secrets
+
+# Creating Secrets
+
+### Encrypting variables
+
+Encrypted variables can be placed in a `defaults/main.yml` file and will be decrypted
+by ansible when ansible is run. To encrypt a variable:
+
+1. Create a file named: 'vault_password' and place the vault_password in that file
+1. Create a file named: 'secret' and place the secret value to be encrypted in that file
+```
+VARIABLE_NAME="name_of_the_secret_variable"
+ansible-vault encrypt_string --vault-password-file vault_password "$(cat secret)" --name "$VARIABLE_NAME"
+```
 
 [Ansible-Vault Docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 
+Warnings:
+ - use files to store passwords/secrets so that the password is not in your shell history
+ - take care to not commit into git any passwords or secrets, files containing secrets should
+   be added to .gitignore to help prevent this.
+ - if any secret is exposed, we would need to rotate password and re-encrypt variables
+
+
+### Ansible Vault File Encryption
+
+For reference, encrypting a file looks like this:
+```
+ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed25519
+```
 
 
 # TODO

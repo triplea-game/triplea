@@ -1,12 +1,9 @@
 package games.strategy.net;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
-import java.util.function.BiFunction;
 import javax.annotation.Nullable;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 
 /** Implementation of {@link IServerMessenger} for a local game server. */
@@ -88,8 +85,4 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public boolean isPlayerBanned(final String ip, final String mac) {
     return false;
   }
-
-  @Override
-  public void setApiKeyGenerator(
-      final BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator) {}
 }

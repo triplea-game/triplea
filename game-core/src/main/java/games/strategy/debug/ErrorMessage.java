@@ -3,7 +3,6 @@ package games.strategy.debug;
 import com.google.common.base.Preconditions;
 import games.strategy.debug.error.reporting.StackTraceReportView;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import java.awt.Dialog;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
@@ -16,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import org.triplea.http.client.error.report.ErrorReportClient;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -145,7 +145,7 @@ public enum ErrorMessage {
   private static ErrorReportClient serviceClient() {
     return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
         .fetchLobbyServerProperties()
-        .map(LobbyServerProperties::getHttpsServerUri)
+        .map(ServerProperties::getUri)
         .map(ErrorReportClient::newClient)
         .orElse(null);
   }

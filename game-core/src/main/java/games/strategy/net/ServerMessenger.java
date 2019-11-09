@@ -8,7 +8,6 @@ import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -24,13 +23,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiFunction;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 
 /** A Messenger that can have many clients connected to it. */
@@ -50,9 +47,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Getter(onMethod_ = {@Override})
   @Setter(onMethod_ = {@Override})
   private ILoginValidator loginValidator;
-
-  @Setter(onMethod_ = {@Override})
-  private BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator;
 
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
@@ -285,11 +279,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
             }
             final ServerQuarantineConversation conversation =
                 new ServerQuarantineConversation(
-                    loginValidator,
-                    socketChannel,
-                    nioSocket,
-                    ServerMessenger.this,
-                    apiKeyGenerator);
+                    loginValidator, socketChannel, nioSocket, ServerMessenger.this);
             nioSocket.add(socketChannel, conversation);
           } else if (!key.isValid()) {
             key.cancel();

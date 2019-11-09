@@ -2,11 +2,8 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.net.InetAddress;
 import java.util.Set;
-import java.util.function.BiFunction;
 import javax.annotation.Nullable;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 
 /** A server messenger. Additional methods for accepting new connections. */
@@ -51,6 +48,4 @@ public interface IServerMessenger extends IMessenger {
     final int spaceIndex = name.indexOf(' ');
     return (spaceIndex != -1) ? name.substring(0, spaceIndex) : name;
   }
-
-  void setApiKeyGenerator(BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator);
 }
