@@ -42,7 +42,7 @@ public class UserBanService {
       return false;
     }
     if (unbanName == null) {
-      throw new AssertionError(
+      throw new IllegalStateException(
           "Consistency error, unbanned "
               + banId
               + ", but "
