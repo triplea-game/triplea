@@ -6,6 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -43,6 +45,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.JTextComponent;
 import org.triplea.awt.OpenFileUtility;
 
 /**
@@ -457,8 +460,30 @@ public final class SwingComponents {
   private static void addKeyBinding(
       final JComponent component, final KeyStroke keyStroke, final Runnable action) {
     final String keyBindingIdentifier = UUID.randomUUID().toString();
+
+    final AtomicBoolean enabled = new AtomicBoolean(true);
+
+    // Disable keybindings if focus is on a text component. We do not want to fire
+    // keybindings while user is typing (chatting).
+    KeyboardFocusManager.getCurrentKeyboardFocusManager()
+        .addPropertyChangeListener(
+            "focusOwner",
+            evt ->
+                enabled.set(
+                    evt.getNewValue() == null
+                        || !JTextComponent.class.isAssignableFrom(evt.getNewValue().getClass())));
+
     component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, keyBindingIdentifier);
-    component.getActionMap().put(keyBindingIdentifier, SwingAction.of(e -> action.run()));
+    component
+        .getActionMap()
+        .put(
+            keyBindingIdentifier,
+            SwingAction.of(
+                e -> {
+                  if (enabled.get()) {
+                    action.run();
+                  }
+                }));
   }
 
   public static void showError(
