@@ -54,7 +54,7 @@ public final class ContentReader {
     checkNotNull(action);
 
     try {
-      return Optional.of(downloadInternal(uri, action::apply));
+      return Optional.of(downloadInternal(uri, action));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Error while downloading file", e);
       return Optional.empty();
@@ -62,8 +62,7 @@ public final class ContentReader {
   }
 
   // TODO: METHOD-ORDERING re-order methods to depth-first ordering
-  @VisibleForTesting
-  static <T> T download(
+  private static <T> T download(
       final String uri,
       final ThrowingFunction<InputStream, T, IOException> action,
       final CloseableHttpClient client)
@@ -71,7 +70,7 @@ public final class ContentReader {
     return action.apply(readInputStream(uri, client));
   }
 
-  static InputStream readInputStream(final String uri, final CloseableHttpClient client)
+  private static InputStream readInputStream(final String uri, final CloseableHttpClient client)
       throws IOException {
 
     final HttpGet request = new HttpGet(uri);
