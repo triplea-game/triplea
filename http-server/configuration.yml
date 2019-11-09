@@ -1,16 +1,20 @@
-githubRepo: triplea
-githubApiToken: ${GITHUB_API_TOKEN}
+## This is the dropwizard configuration for local development and tests.
+## Keep this configuration in sync with the prerelease/production configuration.
+## The deployed configuration is in 'infrastructure/ansible/.../configuration.yml.j2'
+
+githubRepo: test
+githubApiToken: test
 # if we are using any stubbing, we'll assert that this value is false.
-# this is to help guarantee that we do not accidently use test configuration in prod.
-prod: true
-logRequestAndResponses: false
-logSqlStatements: false
-bcryptSalt: ${BCRYPT_SALT}
+# this is to help guarantee that we do not accidentally use test configuration in prod.
+prod: false
+logRequestAndResponses: true
+logSqlStatements: true
+bcryptSalt: $2a$10$IhIXWg4HkQRWrZqjj9kV0u
 
 database:
   driverClass: org.postgresql.Driver
   user: lobby_user
-  password: ${POSTGRES_PASSWORD}
+  password: postgres
   url: jdbc:postgresql://localhost:5432/lobby_db
   properties:
     charSet: UTF-8

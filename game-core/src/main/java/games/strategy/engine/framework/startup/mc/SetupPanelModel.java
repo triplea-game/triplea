@@ -8,8 +8,6 @@ import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
-import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -20,6 +18,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
+import org.triplea.live.servers.LiveServersFetcher;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
@@ -100,19 +99,6 @@ public class SetupPanelModel implements ServerSetupModel {
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void login() {
-    final LobbyServerProperties lobbyServerProperties =
-        LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
-            .fetchLobbyServerProperties()
-            .orElseThrow(LobbyAddressFetchException::new);
-
-    new LobbyLogin(ui, lobbyServerProperties).promptLogin();
-  }
-
-  private static final class LobbyAddressFetchException extends RuntimeException {
-    private static final long serialVersionUID = -301010780022774627L;
-
-    LobbyAddressFetchException() {
-      super("Failed to fetch lobby address, check network connection.");
-    }
+    new LobbyLogin(ui, new LiveServersFetcher().serverForCurrentVersion()).promptLogin();
   }
 }

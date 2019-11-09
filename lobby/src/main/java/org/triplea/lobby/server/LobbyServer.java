@@ -7,9 +7,7 @@ import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import java.io.IOException;
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.server.api.key.ApiKeyGeneratorFactory;
 import org.triplea.lobby.server.config.LobbyConfiguration;
-import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.login.LobbyLoginValidatorFactory;
 
 /**
@@ -40,8 +38,6 @@ final class LobbyServer {
     final Messengers messengers = new Messengers(server);
 
     server.setLoginValidator(LobbyLoginValidatorFactory.newLobbyLoginValidator(lobbyConfiguration));
-    server.setApiKeyGenerator(
-        ApiKeyGeneratorFactory.newApiKeyGenerator(JdbiDatabase.newConnection()));
 
     final ModeratorController moderatorController =
         new ModeratorController(server, messengers, lobbyConfiguration.getDatabaseDao());

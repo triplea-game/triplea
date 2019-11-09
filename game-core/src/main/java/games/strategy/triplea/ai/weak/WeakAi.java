@@ -265,7 +265,6 @@ public class WeakAi extends AbstractAi {
       final List<Collection<Unit>> transportsToLoad,
       final IMoveDelegate moveDel) {
     for (int i = 0; i < moveRoutes.size(); i++) {
-      pause();
       if (moveRoutes.get(i) == null
           || moveRoutes.get(i).getEnd() == null
           || moveRoutes.get(i).getStart() == null
@@ -278,6 +277,7 @@ public class WeakAi extends AbstractAi {
       } else {
         moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
       }
+      pause();
     }
   }
 

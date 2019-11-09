@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.client.login;
+package org.triplea.live.servers;
 
 import com.google.common.base.Strings;
 import java.net.URI;
@@ -27,7 +27,7 @@ import org.triplea.java.ArgChecker;
 @Getter
 @EqualsAndHashCode
 @ToString
-public final class LobbyServerProperties {
+public final class ServerProperties {
 
   /** The host address of the lobby, typically an IP address. */
   @Nonnull private final String host;
@@ -52,7 +52,7 @@ public final class LobbyServerProperties {
   }
 
   /** Convenience method to get the URI of the lobby https server. */
-  public URI getHttpsServerUri() {
+  public URI getUri() {
     ArgChecker.checkNotEmpty(host);
     try {
       return new URIBuilder()
@@ -66,5 +66,9 @@ public final class LobbyServerProperties {
     } catch (final URISyntaxException e) {
       throw new RuntimeException("Error with lobby properties: " + this, e);
     }
+  }
+
+  public boolean isInactive() {
+    return serverErrorMessage != null;
   }
 }

@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.util.Version;
 
 class LobbyPropertyFileParserTest {
@@ -59,7 +60,7 @@ class LobbyPropertyFileParserTest {
 
     final InputStream stream = newYaml(testProps);
 
-    final LobbyServerProperties result =
+    final ServerProperties result =
         LobbyPropertyFileParser.parse(stream, new Version(TestData.clientCurrentVersion));
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
@@ -84,7 +85,7 @@ class LobbyPropertyFileParserTest {
   void checkVersionSelection() {
     final InputStream stream = newYaml(testDataSet());
 
-    final LobbyServerProperties result =
+    final ServerProperties result =
         LobbyPropertyFileParser.parse(stream, new Version(TestData.clientCurrentVersion));
 
     assertThat(result.getHost(), is(TestData.hostOther));

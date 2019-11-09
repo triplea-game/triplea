@@ -23,7 +23,6 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -44,6 +43,7 @@ import javax.swing.filechooser.FileFilter;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
@@ -230,15 +230,15 @@ public final class GameRunner {
       final String playerName,
       final String comments,
       final String password,
-      final LobbyServerProperties lobbyServerProperties) {
+      final ServerProperties serverProperties) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     commands.add("-D" + TRIPLEA_SERVER + "=true");
     commands.add("-D" + TRIPLEA_PORT + "=" + port);
     commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
-    commands.add("-D" + LOBBY_HOST + "=" + lobbyServerProperties.getHost());
-    commands.add("-D" + LOBBY_PORT + "=" + lobbyServerProperties.getPort());
-    commands.add("-D" + LOBBY_HTTPS_PORT + "=" + lobbyServerProperties.getHttpsPort());
+    commands.add("-D" + LOBBY_HOST + "=" + serverProperties.getHost());
+    commands.add("-D" + LOBBY_PORT + "=" + serverProperties.getPort());
+    commands.add("-D" + LOBBY_HTTPS_PORT + "=" + serverProperties.getHttpsPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     if (password != null && password.length() > 0) {
       commands.add("-D" + SERVER_PASSWORD + "=" + password);

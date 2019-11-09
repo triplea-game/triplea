@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.util.Version;
 
 /**
@@ -25,13 +26,12 @@ final class LobbyPropertyFileParser {
 
   private LobbyPropertyFileParser() {}
 
-  public static LobbyServerProperties parse(
-      final InputStream stream, final Version currentVersion) {
+  public static ServerProperties parse(final InputStream stream, final Version currentVersion) {
     final Load load = new Load(new LoadSettingsBuilder().build());
     final Map<?, ?> yamlProps =
         matchCurrentVersion((List<?>) load.loadFromInputStream(stream), currentVersion);
 
-    return LobbyServerProperties.builder()
+    return ServerProperties.builder()
         .host((String) yamlProps.get(YAML_HOST))
         .port((Integer) yamlProps.get(YAML_PORT))
         .serverMessage((String) yamlProps.get(YAML_MESSAGE))

@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.OptionalUtils;
 import org.triplea.java.function.ThrowingFunction;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.util.Version;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,8 +30,8 @@ class LobbyServerPropertiesFetcherTest {
   @Mock
   private BiFunction<
           String,
-          ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
-          Optional<LobbyServerProperties>>
+          ThrowingFunction<InputStream, ServerProperties, IOException>,
+          Optional<ServerProperties>>
       mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
@@ -48,7 +49,7 @@ class LobbyServerPropertiesFetcherTest {
       when(mockFileDownloader.apply(eq(TestData.url), any()))
           .thenReturn(Optional.of(TestData.lobbyServerProperties));
 
-      final Optional<LobbyServerProperties> result =
+      final Optional<ServerProperties> result =
           testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> null);
 
       assertThat(result, isPresentAndIs(TestData.lobbyServerProperties));
@@ -58,7 +59,7 @@ class LobbyServerPropertiesFetcherTest {
     void throwsOnDownloadFailure() {
       when(mockFileDownloader.apply(eq(TestData.url), any())).thenReturn(Optional.empty());
 
-      final Optional<LobbyServerProperties> result =
+      final Optional<ServerProperties> result =
           testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> null);
 
       assertThat(result, isEmpty());
@@ -73,7 +74,7 @@ class LobbyServerPropertiesFetcherTest {
 
     @Mock private GameSetting<Integer> testLobbyHttpsPort;
 
-    private Optional<LobbyServerProperties> result;
+    private Optional<ServerProperties> result;
 
     private void givenTestLobbyHostIsNotSet() {
       when(testLobbyHostSetting.isSet()).thenReturn(false);
@@ -154,7 +155,7 @@ class LobbyServerPropertiesFetcherTest {
   private interface TestData {
     Version version = new Version("0.0.0.0");
     String url = "someUrl";
-    LobbyServerProperties lobbyServerProperties =
-        LobbyServerProperties.builder().host("host").port(123).httpsPort(333).build();
+    ServerProperties lobbyServerProperties =
+        ServerProperties.builder().host("host").port(123).httpsPort(333).build();
   }
 }

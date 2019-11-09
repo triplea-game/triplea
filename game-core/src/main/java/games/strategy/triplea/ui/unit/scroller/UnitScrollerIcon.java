@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 class UnitScrollerIcon implements Supplier<Icon> {
 
   static final UnitScrollerIcon CENTER_ON_UNIT = new UnitScrollerIcon("unit_center.png");
-  static final UnitScrollerIcon UNIT_HIGHLIGHT = new UnitScrollerIcon("lantern.png");
+  static final UnitScrollerIcon UNIT_HIGHLIGHT = new UnitScrollerIcon("highlight.png");
   static final UnitScrollerIcon UNIT_FLAGS = new UnitScrollerIcon("flag.png");
 
   static final UnitScrollerIcon LEFT_ARROW = new UnitScrollerIcon("left_arrow.png");

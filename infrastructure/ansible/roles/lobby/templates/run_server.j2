@@ -1,4 +1,0 @@
-#!/bin/bash
-
-cd $(dirname $0)
-java -server -Xmx{{ lobby_jvm_starting_memory }} -Xms{{ lobby_jvm_max_memory }} -jar {{ lobby_jar }}

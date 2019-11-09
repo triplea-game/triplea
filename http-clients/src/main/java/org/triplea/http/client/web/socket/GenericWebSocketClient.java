@@ -18,7 +18,9 @@ import org.triplea.java.concurrency.CompletableFutureUtils;
  * around a concept of uniform incoming and outgoing messages (eg: an envelope). This class handles
  * the details of the underlying connection and provides methods to open/close the connection.
  * Furthermore, this class provides a listener API to be notified of incoming message events, a send
- * API, and it automatically converts incoming and outgoing messages to JSON string.
+ * API, and it automatically converts incoming and outgoing messages to JSON string. In particular
+ * this class makes sure that all operations are non-blocking, but keep their initial dispatch
+ * order.
  *
  * @param <IncomingT> Message type we expect to receive from the server.
  * @param <OutgoingT> Message type we send to the server.
@@ -49,7 +51,9 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
     this.messageListener = messageListener;
     client = webSocketClient;
     client.addListener(this);
-    client.connect();
+    CompletableFutureUtils.logExceptionWhenComplete(
+        CompletableFuture.runAsync(client::connect, threadPool),
+        e -> log.log(Level.WARNING, "Failed to open connection with server", e));
   }
 
   /**
@@ -59,7 +63,6 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
    * @param message The data object to send to the server.
    */
   public void send(final OutgoingT message) {
-    // TODO: Project#12 time the sendMessage action on large messages to see what we gain
     // we get by doing the send on a new thread.
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(() -> client.sendMessage(gson.toJson(message)), threadPool),
@@ -68,7 +71,10 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
 
   /** Non-blocking close of the websocket connection. */
   public void close() {
-    client.close();
+    CompletableFutureUtils.logExceptionWhenComplete(
+        CompletableFuture.runAsync(client::close, threadPool),
+        e -> log.log(Level.WARNING, "Failed to close client", e));
+    threadPool.shutdown();
   }
 
   // TODO: test that this is called on error
