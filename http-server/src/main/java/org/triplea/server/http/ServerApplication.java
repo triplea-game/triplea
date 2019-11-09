@@ -56,8 +56,7 @@ import org.triplea.server.user.account.update.UpdateAccountControllerFactory;
  */
 public class ServerApplication extends Application<AppConfig> {
 
-  private static final String[] DEFAULT_ARGS =
-      new String[] {"server", "configuration.yml"};
+  private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};
   private ServerEndpointConfig chatSocketConfiguration;
 
   /**
