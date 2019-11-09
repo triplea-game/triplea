@@ -3,14 +3,10 @@ package games.strategy.debug.error.reporting;
 import feign.FeignException;
 import games.strategy.triplea.UrlConstants;
 import java.net.URI;
-import javax.swing.JEditorPane;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.HyperlinkEvent;
-import org.triplea.awt.OpenFileUtility;
-import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.SwingComponents;
+import org.triplea.swing.SwingComponents.DialogWithLinksParams;
+import org.triplea.swing.SwingComponents.DialogWithLinksTypes;
 
 /**
  * This controller is responsible for showing success/failure confirmation dialogs after an error
@@ -24,28 +20,16 @@ final class ConfirmationDialogController {
   }
 
   private static void doShowFailureConfirmation(final FeignException response) {
-    final JEditorPane editorPane =
-        new JEditorPane(
-            "text/html",
-            "Failure uploading report, please try again or <a href='"
-                + UrlConstants.GITHUB_ISSUES
-                + "'>contact support</a>.<br/><br/>"
-                + response.getMessage());
-    editorPane.setEditable(false);
-    editorPane.setOpaque(false);
-    editorPane.setBorder(new EmptyBorder(10, 0, 20, 0));
-    editorPane.addHyperlinkListener(
-        e -> {
-          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-            OpenFileUtility.openUrl(e.getURL().toString());
-          }
-        });
-
-    final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
-
-    // parentComponent == null to avoid pop-up from appearing behind other windows
-    JOptionPane.showMessageDialog(
-        null, messageToShow, "Report Upload Failed", JOptionPane.ERROR_MESSAGE);
+    SwingComponents.showDialogWithLinks(
+        DialogWithLinksParams.builder()
+            .title("Report Upload Failed")
+            .dialogType(DialogWithLinksTypes.ERROR)
+            .dialogText(
+                "Failure uploading report, please try again or <a href='"
+                    + UrlConstants.GITHUB_ISSUES
+                    + "'>contact support</a>.<br/><br/>"
+                    + response.getMessage())
+            .build());
   }
 
   static void showSuccessConfirmation(final URI reportLinkCreated) {
@@ -53,25 +37,14 @@ final class ConfirmationDialogController {
   }
 
   private static void doShowSuccessConfirmation(final URI reportLinkCreated) {
-    final JEditorPane editorPane =
-        new JEditorPane(
-            "text/html",
-            String.format(
-                "Upload success, report created:<br/><br/><a href='%s'>%s</a>",
-                reportLinkCreated, reportLinkCreated));
-    editorPane.setEditable(false);
-    editorPane.setOpaque(false);
-    editorPane.addHyperlinkListener(
-        e -> {
-          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-            OpenFileUtility.openUrl(e.getURL().toString());
-          }
-        });
-
-    final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
-
-    // parentComponent == null to avoid pop-up from appearing behind other windows
-    JOptionPane.showMessageDialog(
-        null, messageToShow, "Report Uploaded Successfully", JOptionPane.INFORMATION_MESSAGE);
+    SwingComponents.showDialogWithLinks(
+        DialogWithLinksParams.builder()
+            .title("Report Uploaded Successfully")
+            .dialogType(DialogWithLinksTypes.INFO)
+            .dialogText(
+                String.format(
+                    "Upload success, report created:<br/><br/><a href='%s'>%s</a>",
+                    reportLinkCreated, reportLinkCreated))
+            .build());
   }
 }
