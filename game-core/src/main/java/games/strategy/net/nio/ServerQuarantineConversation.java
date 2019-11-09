@@ -8,17 +8,14 @@ import games.strategy.net.Node;
 import games.strategy.net.PlayerNameAssigner;
 import games.strategy.net.ServerMessenger;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 
 /** Server-side implementation of {@link QuarantineConversation}. */
@@ -55,19 +52,16 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private String remoteMac;
   private Map<String, String> challenge;
   private final ServerMessenger serverMessenger;
-  private final BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator;
 
   public ServerQuarantineConversation(
       final ILoginValidator validator,
       final SocketChannel channel,
       final NioSocket socket,
-      final ServerMessenger serverMessenger,
-      final BiFunction<PlayerName, InetAddress, ApiKey> apiKeyGenerator) {
+      final ServerMessenger serverMessenger) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
     this.serverMessenger = serverMessenger;
-    this.apiKeyGenerator = apiKeyGenerator;
   }
 
   public String getRemoteName() {
@@ -94,7 +88,6 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) serializable;
           String error = null;
-          String apiKey = null;
 
           if (validator != null) {
             error =
@@ -113,14 +106,6 @@ public class ServerQuarantineConversation extends QuarantineConversation {
             } else {
               send(null);
             }
-            apiKey =
-                Optional.ofNullable(apiKeyGenerator)
-                    .map(
-                        keyGenerator ->
-                            keyGenerator.apply(
-                                PlayerName.of(remoteName), channel.socket().getInetAddress()))
-                    .map(ApiKey::getValue)
-                    .orElse(null);
           } else {
             send(null);
           }
@@ -136,7 +121,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           // send the node its assigned name, our name, an error message that could contain a magic
           // string informing client they should reset their password, and last an API key that can
           // be used for further http server interaction.
-          send(new String[] {remoteName, serverMessenger.getLocalNode().getName(), error, apiKey});
+          send(new String[] {remoteName, serverMessenger.getLocalNode().getName(), error});
 
           // send the node its and our address as we see it
           send(
