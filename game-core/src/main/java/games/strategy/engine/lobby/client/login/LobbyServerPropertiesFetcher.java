@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import javax.annotation.Nullable;
 import org.triplea.java.function.ThrowingFunction;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.util.Version;
 
 /** Fetches the lobby server properties from the remote Source of Truth. */
@@ -21,16 +22,16 @@ public final class LobbyServerPropertiesFetcher {
 
   private final BiFunction<
           String,
-          ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
-          Optional<LobbyServerProperties>>
+          ThrowingFunction<InputStream, ServerProperties, IOException>,
+          Optional<ServerProperties>>
       fileDownloader;
-  @Nullable private LobbyServerProperties lobbyServerProperties;
+  @Nullable private ServerProperties lobbyServerProperties;
 
   LobbyServerPropertiesFetcher(
       final BiFunction<
               String,
-              ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
-              Optional<LobbyServerProperties>>
+              ThrowingFunction<InputStream, ServerProperties, IOException>,
+              Optional<ServerProperties>>
           fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
@@ -49,40 +50,40 @@ public final class LobbyServerPropertiesFetcher {
    * @return LobbyServerProperties as fetched and parsed from github hosted remote URL. Otherwise
    *     backup values from client config.
    */
-  public Optional<LobbyServerProperties> fetchLobbyServerProperties() {
+  public Optional<ServerProperties> fetchLobbyServerProperties() {
     if (lobbyServerProperties == null) {
-      final Optional<LobbyServerProperties> props = fetchProperties();
+      final Optional<ServerProperties> props = fetchProperties();
       props.ifPresent(lobbyProps -> lobbyServerProperties = lobbyProps);
     }
     return Optional.ofNullable(lobbyServerProperties);
   }
 
-  private Optional<LobbyServerProperties> fetchProperties() {
-    final Optional<LobbyServerProperties> userOverride = getTestOverrideProperties();
+  private Optional<ServerProperties> fetchProperties() {
+    final Optional<ServerProperties> userOverride = getTestOverrideProperties();
     if (userOverride.isPresent()) {
       return userOverride;
     }
 
-    final Optional<LobbyServerProperties> fromHostedFile = getRemoteProperties();
+    final Optional<ServerProperties> fromHostedFile = getRemoteProperties();
     if (fromHostedFile.isPresent()) {
       return fromHostedFile;
     }
     return getLastUsedProperties();
   }
 
-  private static Optional<LobbyServerProperties> getTestOverrideProperties() {
+  private static Optional<ServerProperties> getTestOverrideProperties() {
     return getTestOverrideProperties(
         ClientSetting.testLobbyHost, ClientSetting.testLobbyPort, ClientSetting.testLobbyHttpsPort);
   }
 
   @VisibleForTesting
-  static Optional<LobbyServerProperties> getTestOverrideProperties(
+  static Optional<ServerProperties> getTestOverrideProperties(
       final GameSetting<String> testLobbyHostSetting,
       final GameSetting<Integer> testLobbyPortSetting,
       final GameSetting<Integer> testLobbyHttpsPort) {
     if (testLobbyHostSetting.isSet()) {
       return Optional.of(
-          LobbyServerProperties.builder()
+          ServerProperties.builder()
               .host(testLobbyHostSetting.getValueOrThrow())
               .port(testLobbyPortSetting.getValue().orElse(TEST_LOBBY_DEFAULT_PORT))
               .httpsPort(testLobbyHttpsPort.getValue().orElse(TEST_LOBBY_DEFAULT_HTTPS_PORT))
@@ -92,8 +93,8 @@ public final class LobbyServerPropertiesFetcher {
     return Optional.empty();
   }
 
-  private Optional<LobbyServerProperties> getRemoteProperties() {
-    final Optional<LobbyServerProperties> lobbyProps =
+  private Optional<ServerProperties> getRemoteProperties() {
+    final Optional<ServerProperties> lobbyProps =
         downloadAndParseRemoteFile(
             UrlConstants.LOBBY_PROPS,
             ClientContext.engineVersion(),
@@ -108,10 +109,10 @@ public final class LobbyServerPropertiesFetcher {
     return lobbyProps;
   }
 
-  private static Optional<LobbyServerProperties> getLastUsedProperties() {
+  private static Optional<ServerProperties> getLastUsedProperties() {
     if (ClientSetting.lobbyLastUsedHost.isSet()) {
       return Optional.of(
-          LobbyServerProperties.builder()
+          ServerProperties.builder()
               .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
               .port(ClientSetting.lobbyLastUsedPort.getValue().orElse(TEST_LOBBY_DEFAULT_PORT))
               .httpsPort(
@@ -134,10 +135,10 @@ public final class LobbyServerPropertiesFetcher {
    *     empty optional if there were any errors downloading the properties file.
    */
   @VisibleForTesting
-  Optional<LobbyServerProperties> downloadAndParseRemoteFile(
+  Optional<ServerProperties> downloadAndParseRemoteFile(
       final String lobbyPropFileUrl,
       final Version currentVersion,
-      final BiFunction<InputStream, Version, LobbyServerProperties> propertyParser) {
+      final BiFunction<InputStream, Version, ServerProperties> propertyParser) {
     return fileDownloader.apply(
         lobbyPropFileUrl, inputStream -> propertyParser.apply(inputStream, currentVersion));
   }

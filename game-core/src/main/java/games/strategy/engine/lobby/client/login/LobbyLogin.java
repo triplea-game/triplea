@@ -18,6 +18,7 @@ import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
+import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -31,14 +32,14 @@ import org.triplea.swing.SwingComponents;
 public class LobbyLogin {
   private static final String CONNECTING_TO_LOBBY = "Connecting to lobby...";
   private final Window parentWindow;
-  private final LobbyServerProperties lobbyServerProperties;
+  private final ServerProperties serverProperties;
 
   private final LobbyLoginClient lobbyLoginClient;
 
-  public LobbyLogin(final Window parent, final LobbyServerProperties lobbyServerProperties) {
+  public LobbyLogin(final Window parent, final ServerProperties serverProperties) {
     parentWindow = parent;
-    this.lobbyServerProperties = lobbyServerProperties;
-    lobbyLoginClient = LobbyLoginClient.newClient(lobbyServerProperties.getHttpsServerUri());
+    this.serverProperties = serverProperties;
+    lobbyLoginClient = LobbyLoginClient.newClient(serverProperties.getUri());
   }
 
   /**
@@ -47,14 +48,14 @@ public class LobbyLogin {
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void promptLogin() {
-    if (lobbyServerProperties.getServerErrorMessage().isPresent()) {
-      showError("Could not connect to server", lobbyServerProperties.getServerErrorMessage().get());
+    if (serverProperties.isInactive()) {
+      showError("Could not connect to server", serverProperties.getServerErrorMessage().get());
       return;
     }
     loginToServer()
         .ifPresent(
             lobbyClient -> {
-              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
+              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, serverProperties);
               GameRunner.hideMainFrame();
               lobbyFrame.setVisible(true);
 
@@ -108,8 +109,7 @@ public class LobbyLogin {
             LobbyClient.builder()
                 .httpLobbyClient(
                     HttpLobbyClient.newClient(
-                        lobbyServerProperties.getHttpsServerUri(),
-                        ApiKey.of(loginResponse.getApiKey())))
+                        serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())))
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .moderator(loginResponse.isModerator())
@@ -195,7 +195,7 @@ public class LobbyLogin {
 
       return Optional.of(
           HttpLobbyClient.newClient(
-              lobbyServerProperties.getHttpsServerUri(), ApiKey.of(loginResponse.getApiKey())));
+              serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();
@@ -231,7 +231,7 @@ public class LobbyLogin {
               .runInBackgroundAndReturn(
                   "Sending forgot password request...",
                   () ->
-                      ForgotPasswordClient.newClient(lobbyServerProperties.getHttpsServerUri())
+                      ForgotPasswordClient.newClient(serverProperties.getUri())
                           .sendForgotPasswordRequest(
                               ForgotPasswordRequest.builder()
                                   .username(panel.getUserName())
