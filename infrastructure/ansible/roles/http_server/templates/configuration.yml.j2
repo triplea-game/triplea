@@ -1,17 +1,17 @@
-githubRepo: test
-githubApiToken: ${GITHUB_API_TOKEN:-test}
+githubRepo: triplea
+githubApiToken: ${GITHUB_API_TOKEN}
 # if we are using any stubbing, we'll assert that this value is false.
 # this is to help guarantee that we do not accidently use test configuration in prod.
-prod: false
-logRequestAndResponses: true
-logSqlStatements: true
-bcryptSalt: $2a$10$IhIXWg4HkQRWrZqjj9kV0u
+prod: true
+logRequestAndResponses: false
+logSqlStatements: false
+bcryptSalt: {{ http_server_bcrypt_salt }}
 
 database:
   driverClass: org.postgresql.Driver
-  user: lobby_user
-  password: ${POSTGRES_PASSWORD:-postgres}
-  url: jdbc:postgresql://localhost:5432/lobby_db
+  user: {{ http_server_db_user }}
+  password: {{ http_server_db_user }}
+  url: jdbc:postgresql://localhost:5432/{{ http_server_db_name }}
   properties:
     charSet: UTF-8
   # the maximum amount of time to wait on an empty pool before throwing an exception

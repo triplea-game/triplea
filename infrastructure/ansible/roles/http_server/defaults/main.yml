@@ -1,25 +1,23 @@
 http_server_user: http_server
+http_server_port: "8080"
+http_server_home_folder: "/home/{{ http_server_user }}"
+http_server_run_file: "{{ http_server_home_folder }}/run_server"
 
-http_server_folder: "/home/{{ http_server_user }}"
-
+## application level parameters
 http_server_jar: "triplea-http-server-{{ lookup('env', 'VERSION') }}.jar"
 
-http_server_port: "8080"
-
+http_server_postgres_host: "127.0.0.1"
+http_server_postgres_port: "5432"
 http_server_postgres_password: "{{ lobby_db_password }}"
 
-http_server_postgres_host: "127.0.0.1"
-
-http_server_postgres_port: "5432"
-
 http_server_error_report_github_org: "triplea-game"
-
 http_server_error_report_github_repo: "test"
-
 http_server_error_report_github_token: "test"
 
-http_server_config_file: configuration-prerelease.yml
-
-http_server_db_user: "{{ lobby_db_user}}"
-
+http_server_db_user: "{{ lobby_db_user }}"
 http_server_db_password: "{{ lobby_db_password }}"
+http_server_db_name: "{{ lobby_db_name }}"
+
+
+## TODO: encrypt all of the below variables
+http_server_bcrypt_salt: $2a$10$IhIXWg4HkQRWrZqjj9kV0u
