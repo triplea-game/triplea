@@ -3,7 +3,6 @@ package games.strategy.net.nio;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Preconditions;
-import games.strategy.io.IoUtils;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 import java.io.IOException;
@@ -12,6 +11,7 @@ import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.triplea.io.IoUtils;
 
 /** Encodes data to be written by a writer. */
 @Log

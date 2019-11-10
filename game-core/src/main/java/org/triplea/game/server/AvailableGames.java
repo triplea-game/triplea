@@ -3,7 +3,6 @@ package org.triplea.game.server;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
-import games.strategy.io.FileUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.extern.java.Log;
+import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
 
 /**

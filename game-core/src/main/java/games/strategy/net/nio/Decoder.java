@@ -1,6 +1,5 @@
 package games.strategy.net.nio;
 
-import games.strategy.io.IoUtils;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
@@ -11,6 +10,7 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.io.IoUtils;
 
 /** A thread to Decode messages from a reader. */
 @Log

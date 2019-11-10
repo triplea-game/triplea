@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.io.IoUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.io.IoUtils;
 
 class SerializationTest {
   private GameData gameDataSource;

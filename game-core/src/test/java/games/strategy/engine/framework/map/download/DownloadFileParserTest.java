@@ -3,11 +3,11 @@ package games.strategy.engine.framework.map.download;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import games.strategy.io.IoUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.triplea.io.IoUtils;
 
 class DownloadFileParserTest {
   private static final String GAME_NAME = "myGame";

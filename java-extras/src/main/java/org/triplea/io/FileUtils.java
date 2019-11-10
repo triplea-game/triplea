@@ -1,4 +1,4 @@
-package games.strategy.io;
+package org.triplea.io;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

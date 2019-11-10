@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.io.FileUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,6 +39,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.triplea.io.FileUtils;
 
 /** A pbem dice roller that reads its configuration from a properties file. */
 @Log

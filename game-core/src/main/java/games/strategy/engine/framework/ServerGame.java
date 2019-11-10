@@ -34,7 +34,6 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.RandomStats;
-import games.strategy.io.IoUtils;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
@@ -52,6 +51,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.ExitStatus;
 

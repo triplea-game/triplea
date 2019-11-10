@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.pro.logging;
 
-import games.strategy.io.IoUtils;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,6 +11,7 @@ import java.util.prefs.Preferences;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
+import org.triplea.io.IoUtils;
 
 /** Class to manage log settings. */
 @Getter

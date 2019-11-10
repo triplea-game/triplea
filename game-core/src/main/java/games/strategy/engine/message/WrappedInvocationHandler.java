@@ -1,4 +1,4 @@
-package games.strategy.triplea.util;
+package games.strategy.engine.message;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

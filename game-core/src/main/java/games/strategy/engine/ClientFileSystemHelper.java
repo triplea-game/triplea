@@ -2,7 +2,6 @@ package games.strategy.engine;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.io.FileUtils;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import java.io.File;
@@ -13,6 +12,7 @@ import java.security.CodeSource;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.game.ApplicationContext;
+import org.triplea.io.FileUtils;
 import org.triplea.util.Services;
 
 /** Provides methods to work with common file locations in a client installation. */

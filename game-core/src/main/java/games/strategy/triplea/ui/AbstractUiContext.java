@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.LocalPlayers;
-import games.strategy.io.FileUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import java.awt.Window;
@@ -21,6 +20,7 @@ import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
+import org.triplea.io.FileUtils;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 
 /**

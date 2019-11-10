@@ -5,10 +5,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.io.IoUtils;
 import java.io.OutputStream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.io.IoUtils;
 
 final class GameDataManagerTest {
   @Nested

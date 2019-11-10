@@ -2,7 +2,6 @@ package games.strategy.engine.data.properties;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
-import games.strategy.io.IoUtils;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +16,7 @@ import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import lombok.extern.java.Log;
+import org.triplea.io.IoUtils;
 
 /**
  * Properties of the current game. <br>
