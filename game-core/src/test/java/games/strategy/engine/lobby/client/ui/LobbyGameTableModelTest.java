@@ -109,6 +109,7 @@ final class LobbyGameTableModelTest {
       assertThat(testObj.getValueAt(0, commentColumnIndex), is(gameDescription1.getComment()));
     }
 
+    @Disabled // Test is non-deterministic and sometimes fails
     @Test
     void updateGameAddsIfDoesNotExist() {
       testObj
