@@ -617,7 +617,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public String move(
       final Collection<Unit> units,
       final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded,
+      final Map<Unit, Unit> unitsToTransports,
       final Map<Unit, Collection<Unit>> newDependents) {
     final GameData data = getData();
 
@@ -629,7 +629,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             units,
             route,
             player,
-            transportsThatCanBeLoaded,
+            unitsToTransports,
             newDependents,
             GameStepPropertiesHelper.isNonCombatMove(data, false),
             movesToUndo,
@@ -699,7 +699,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     tempMovePerformer = new MovePerformer();
     tempMovePerformer.initialize(this);
     tempMovePerformer.moveUnits(
-        units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
+        units, route, player, unitsToTransports, newDependents, currentMove);
     tempMovePerformer = null;
     return null;
   }

@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +73,7 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
-      final Collection<Unit> transportsToLoad,
+      final Map<Unit, Unit> unitsToTransports,
       final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves,
@@ -98,7 +97,7 @@ public class MoveValidator {
     if (validateNonEnemyUnitsOnPath(data, units, route, player, result).getError() != null) {
       return result;
     }
-    if (validateBasic(data, units, route, player, transportsToLoad, newDependents, result)
+    if (validateBasic(data, units, route, player, unitsToTransports, newDependents, result)
             .getError()
         != null) {
       return result;
@@ -108,7 +107,7 @@ public class MoveValidator {
       return result;
     }
     if (validateTransport(
-                isNonCombat, data, undoableMoves, units, route, player, transportsToLoad, result)
+                isNonCombat, data, undoableMoves, units, route, player, unitsToTransports, result)
             .getError()
         != null) {
       return result;
@@ -289,9 +288,7 @@ public class MoveValidator {
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
     final Collection<Unit> unitsWithoutDependents =
-        (units == null)
-            ? Collections.singleton(null)
-            : findNonDependentUnits(units, route, newDependents);
+        (units == null) ? List.of(null) : findNonDependentUnits(units, route, newDependents);
     for (final Unit unit : unitsWithoutDependents) {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();
@@ -693,14 +690,14 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
-      final Collection<Unit> transportsToLoad,
+      final Map<Unit, Unit> unitToTransport,
       final Map<Unit, Collection<Unit>> newDependents,
       final MoveValidationResult result) {
     final boolean isEditMode = getEditMode(data);
     // make sure transports in the destination
     if (route.getEnd() != null
-        && !route.getEnd().getUnitCollection().containsAll(transportsToLoad)
-        && !units.containsAll(transportsToLoad)) {
+        && !route.getEnd().getUnitCollection().containsAll(unitToTransport.values())
+        && !units.containsAll(unitToTransport.values())) {
       return result.setErrorReturnResult("Transports not found in route end");
     }
     if (!isEditMode) {
@@ -1160,7 +1157,7 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
-      final Collection<Unit> transportsToLoad,
+      final Map<Unit, Unit> unitsToTransports,
       final MoveValidationResult result) {
     final boolean isEditMode = getEditMode(data);
     if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
@@ -1171,8 +1168,8 @@ public class MoveValidator {
     }
     // If there are non-sea transports return
     final boolean seaOrNoTransportsPresent =
-        transportsToLoad.isEmpty()
-            || transportsToLoad.stream()
+        unitsToTransports.isEmpty()
+            || unitsToTransports.values().stream()
                 .anyMatch(Matches.unitIsSea().and(Matches.unitCanTransport()));
     if (!seaOrNoTransportsPresent) {
       return result;
@@ -1322,8 +1319,6 @@ public class MoveValidator {
               .didAllThesePlayersJustGoToWarThisTurn(player, route.getEnd().getUnits(), data)) {
         return result.setErrorReturnResult("Cannot load when enemy sea units are present");
       }
-      final Map<Unit, Unit> unitsToTransports =
-          TransportUtils.mapTransports(route, land, transportsToLoad);
       if (!isEditMode) {
         for (final Unit baseUnit : land) {
           final TripleAUnit unit = (TripleAUnit) baseUnit;
@@ -1343,7 +1338,7 @@ public class MoveValidator {
               transport, route.getEnd())) {
             Territory alreadyUnloadedTo =
                 getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-            for (final Unit transportToLoad : transportsToLoad) {
+            for (final Unit transportToLoad : unitsToTransports.values()) {
               final TripleAUnit trn = (TripleAUnit) transportToLoad;
               if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(
                   trn, route.getEnd())) {
@@ -1669,7 +1664,7 @@ public class MoveValidator {
             .and(Matches.unitCanLandOnCarrier());
     final Collection<Unit> alliedAir = CollectionUtils.getMatches(startUnits, friendlyNotOwnedAir);
     if (alliedAir.isEmpty()) {
-      return Collections.emptyMap();
+      return Map.of();
     }
     // remove air that can be carried by allied
     final Predicate<Unit> friendlyNotOwnedCarrier =
@@ -1683,7 +1678,7 @@ public class MoveValidator {
       alliedAir.removeAll(carrying);
     }
     if (alliedAir.isEmpty()) {
-      return Collections.emptyMap();
+      return Map.of();
     }
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>();
     // get air that must be carried by our carriers

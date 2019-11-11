@@ -8,11 +8,10 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.util.TransportUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -116,22 +115,34 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public String move(final Collection<Unit> units, final Route route) {
-    return move(units, route, Collections.emptyList());
+    return move(units, route, Map.of());
+  }
+
+  public String move(
+      final Collection<Unit> units, final Route route, final Collection<Unit> transports) {
+    final Map<Unit, Unit> unitsToTransports =
+        TransportUtils.mapTransports(route, units, transports);
+    if (unitsToTransports.size() != units.size()) {
+      return "Error: Only mapped "
+          + unitsToTransports.size()
+          + " of "
+          + units.size()
+          + " units to transports.";
+    }
+    return move(units, route, unitsToTransports);
   }
 
   @Override
   public String move(
-      final Collection<Unit> units,
-      final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded) {
-    return move(units, route, transportsThatCanBeLoaded, new HashMap<>());
+      final Collection<Unit> units, final Route route, final Map<Unit, Unit> unitsToTransports) {
+    return move(units, route, unitsToTransports, Map.of());
   }
 
   @Override
   public abstract String move(
       Collection<Unit> units,
       Route route,
-      Collection<Unit> transportsThatCanBeLoaded,
+      Map<Unit, Unit> unitsToTransports,
       Map<Unit, Collection<Unit>> newDependents);
 
   public static MoveValidationResult validateMove(
@@ -139,7 +150,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
-      final Collection<Unit> transportsToLoad,
+      final Map<Unit, Unit> unitsToTransports,
       final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves,
@@ -148,7 +159,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
       return SpecialMoveDelegate.validateMove(units, route, player, data);
     }
     return MoveValidator.validateMove(
-        units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
+        units, route, player, unitsToTransports, newDependents, isNonCombat, undoableMoves, data);
   }
 
   @Override

@@ -15,13 +15,13 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class MoveValidatorTest extends AbstractDelegateTestCase {
@@ -117,7 +117,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     List<Unit> toMove = berlin.getUnitCollection().getMatches(Matches.unitCanMove());
     MoveValidationResult results =
         MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, twwGameData);
+            toMove, r, germans, Map.of(), Map.of(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add germanTrain to units which fails since it requires germainRail
@@ -125,7 +125,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     toMove = berlin.getUnitCollection().getMatches(Matches.unitCanMove());
     results =
         MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, twwGameData);
+            toMove, r, germans, Map.of(), Map.of(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Add germanRail to only destination so it fails
@@ -133,21 +133,21 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     addTo(easternGermany, germanRail);
     results =
         MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, twwGameData);
+            toMove, r, germans, Map.of(), Map.of(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Add germanRail to start so move succeeds
     addTo(berlin, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, twwGameData);
+            toMove, r, germans, Map.of(), Map.of(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Remove germanRail from destination so move fails
     GameDataTestUtil.removeFrom(easternGermany, germanRail);
     results =
         MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, twwGameData);
+            toMove, r, germans, Map.of(), Map.of(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Add allied owned germanRail to destination so move succeeds
@@ -155,7 +155,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, japan));
     results =
         MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, twwGameData);
+            toMove, r, germans, Map.of(), Map.of(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
   }
 
@@ -175,84 +175,42 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     addTo(berlin, GameDataTestUtil.truck(twwGameData).create(1, germans));
     MoveValidationResult results =
         MoveValidator.validateMove(
-            berlin.getUnitCollection(),
-            r,
-            germans,
-            Collections.emptyList(),
-            new HashMap<>(),
-            true,
-            null,
-            twwGameData);
+            berlin.getUnitCollection(), r, germans, Map.of(), Map.of(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry for truck to transport
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            berlin.getUnitCollection(),
-            r,
-            germans,
-            Collections.emptyList(),
-            new HashMap<>(),
-            true,
-            null,
-            twwGameData);
+            berlin.getUnitCollection(), r, germans, Map.of(), Map.of(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry and the truck can't transport both
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            berlin.getUnitCollection(),
-            r,
-            germans,
-            Collections.emptyList(),
-            new HashMap<>(),
-            true,
-            null,
-            twwGameData);
+            berlin.getUnitCollection(), r, germans, Map.of(), Map.of(), true, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Add a large truck (has capacity for 2 infantry) to transport second infantry
     addTo(berlin, GameDataTestUtil.largeTruck(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            berlin.getUnitCollection(),
-            r,
-            germans,
-            Collections.emptyList(),
-            new HashMap<>(),
-            true,
-            null,
-            twwGameData);
+            berlin.getUnitCollection(), r, germans, Map.of(), Map.of(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry that the large truck can also transport
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            berlin.getUnitCollection(),
-            r,
-            germans,
-            Collections.emptyList(),
-            new HashMap<>(),
-            true,
-            null,
-            twwGameData);
+            berlin.getUnitCollection(), r, germans, Map.of(), Map.of(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry that can't be transported
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            berlin.getUnitCollection(),
-            r,
-            germans,
-            Collections.emptyList(),
-            new HashMap<>(),
-            true,
-            null,
-            twwGameData);
+            berlin.getUnitCollection(), r, germans, Map.of(), Map.of(), true, null, twwGameData);
     assertFalse(results.isMoveValid());
   }
 
@@ -274,8 +232,8 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             northernGermany.getUnitCollection(),
             r,
             germans,
-            transport,
-            new HashMap<>(),
+            TransportUtils.mapTransports(r, northernGermany.getUnitCollection(), transport),
+            Map.of(),
             false,
             null,
             twwGameData);
@@ -289,8 +247,8 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             northernGermany.getUnitCollection(),
             r,
             germans,
-            transport,
-            new HashMap<>(),
+            TransportUtils.mapTransports(r, northernGermany.getUnitCollection(), transport),
+            Map.of(),
             false,
             null,
             twwGameData);
@@ -303,8 +261,8 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             northernGermany.getUnitCollection(),
             r,
             germans,
-            transport,
-            new HashMap<>(),
+            TransportUtils.mapTransports(r, northernGermany.getUnitCollection(), transport),
+            Map.of(),
             false,
             null,
             twwGameData);

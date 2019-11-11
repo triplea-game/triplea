@@ -162,7 +162,7 @@ public final class ProMoveUtils {
    *
    * @param moveUnits Receives the unit groups to move.
    * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
-   * @param transportsToLoad Receives the transport groups for each unit group in {@code moveUnits}.
+   * @param unitsToTransports Receives the maps from units to transports to load.
    * @param attackMap Specifies the territories to be attacked. Will be updated to reflect any
    *     transports unloading in a specific territory.
    */
@@ -170,7 +170,7 @@ public final class ProMoveUtils {
       final PlayerId player,
       final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad,
+      final List<Map<Unit, Unit>> unitsToTransports,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
@@ -315,7 +315,7 @@ public final class ProMoveUtils {
       }
     }
 
-    moves.batchAndEmit(moveUnits, moveRoutes, transportsToLoad);
+    moves.batchAndEmit(moveUnits, moveRoutes, unitsToTransports);
   }
 
   /**
@@ -434,7 +434,7 @@ public final class ProMoveUtils {
   public static void doMove(
       final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad,
+      final List<Map<Unit, Unit>> transportsToLoad,
       final IMoveDelegate moveDel) {
 
     final GameData data = ProData.getData();

@@ -168,7 +168,7 @@ public class ProCombatMoveAi {
 
     moveUnits.clear();
     moveRoutes.clear();
-    final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
+    final var transportsToLoad = new ArrayList<Map<Unit, Unit>>();
     ProMoveUtils.calculateAmphibRoutes(
         player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
     ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);

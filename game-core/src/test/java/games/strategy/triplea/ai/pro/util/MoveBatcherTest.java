@@ -6,7 +6,9 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.common.collect.Maps;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -14,8 +16,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class MoveBatcherTest {
@@ -43,10 +45,6 @@ public class MoveBatcherTest {
     return new ArrayList<Unit>(List.of(units));
   }
 
-  private static HashSet<Unit> unitSet(final Unit... units) {
-    return new HashSet<Unit>(List.of(units));
-  }
-
   @Test
   public void testMoveUnitsWithMultipleTransports() {
     final MoveBatcher moves = new MoveBatcher();
@@ -65,24 +63,26 @@ public class MoveBatcherTest {
 
     final List<Collection<Unit>> moveUnits = new ArrayList<>();
     final List<Route> moveRoutes = new ArrayList<>();
-    final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
-    moves.batchAndEmit(moveUnits, moveRoutes, transportsToLoad);
+    final List<Map<Unit, Unit>> unitsToTransports = new ArrayList<>();
+    moves.batchAndEmit(moveUnits, moveRoutes, unitsToTransports);
 
     assertEquals(3, moveUnits.size());
     assertEquals(3, moveRoutes.size());
-    assertEquals(3, transportsToLoad.size());
+    assertEquals(3, unitsToTransports.size());
 
     assertEquals(unitList(inf1, tank1, tank2, inf2), moveUnits.get(0));
     assertEquals(brazilToSz18, moveRoutes.get(0));
-    assertEquals(unitSet(transport1, transport2), transportsToLoad.get(0));
+    final var expected =
+        Map.of(inf1, transport1, tank1, transport1, inf2, transport2, tank2, transport2);
+    assertTrue(Maps.difference(expected, unitsToTransports.get(0)).areEqual());
 
     assertEquals(unitList(transport1, tank1, inf1, transport2, inf2, tank2), moveUnits.get(1));
     assertEquals(sz18ToSz12, moveRoutes.get(1));
-    assertEquals(null, transportsToLoad.get(1));
+    assertEquals(null, unitsToTransports.get(1));
 
     assertEquals(unitList(tank1, inf1, inf2, tank2), moveUnits.get(2));
     assertEquals(sz12ToAlgeria, moveRoutes.get(2));
-    assertEquals(null, transportsToLoad.get(2));
+    assertEquals(null, unitsToTransports.get(2));
   }
 
   @Test
@@ -103,27 +103,28 @@ public class MoveBatcherTest {
 
     final List<Collection<Unit>> moveUnits = new ArrayList<>();
     final List<Route> moveRoutes = new ArrayList<>();
-    final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
-    moves.batchAndEmit(moveUnits, moveRoutes, transportsToLoad);
+    final List<Map<Unit, Unit>> unitsToTransports = new ArrayList<>();
+    moves.batchAndEmit(moveUnits, moveRoutes, unitsToTransports);
 
     assertEquals(4, moveUnits.size());
     assertEquals(4, moveRoutes.size());
-    assertEquals(4, transportsToLoad.size());
+    assertEquals(4, unitsToTransports.size());
 
     assertEquals(unitList(transport1, transport2), moveUnits.get(0));
     assertEquals(sz19ToSz18, moveRoutes.get(0));
-    assertEquals(null, transportsToLoad.get(0));
+    assertEquals(null, unitsToTransports.get(0));
 
     assertEquals(unitList(tank1, inf1, inf2), moveUnits.get(1));
     assertEquals(brazilToSz18, moveRoutes.get(1));
-    assertEquals(unitSet(transport1, transport2), transportsToLoad.get(1));
+    final var expected = Map.of(tank1, transport1, inf1, transport2, inf2, transport2);
+    assertTrue(Maps.difference(expected, unitsToTransports.get(1)).areEqual());
 
     assertEquals(unitList(transport1, tank1, transport2, inf1, inf2), moveUnits.get(2));
     assertEquals(sz18ToSz12, moveRoutes.get(2));
-    assertEquals(null, transportsToLoad.get(2));
+    assertEquals(null, unitsToTransports.get(2));
 
     assertEquals(unitList(tank1, inf1, inf2), moveUnits.get(3));
     assertEquals(sz12ToAlgeria, moveRoutes.get(3));
-    assertEquals(null, transportsToLoad.get(3));
+    assertEquals(null, unitsToTransports.get(3));
   }
 }

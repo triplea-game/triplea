@@ -85,8 +85,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -1428,14 +1428,7 @@ class WW2V3Year41Test {
     assertFalse(paratroopers.isEmpty());
     final MoveValidationResult results =
         MoveValidator.validateMove(
-            paratroopers,
-            r,
-            germans,
-            Collections.emptyList(),
-            new HashMap<>(),
-            false,
-            null,
-            gameData);
+            paratroopers, r, germans, Map.of(), Map.of(), false, null, gameData);
     assertFalse(results.isMoveValid());
   }
 
@@ -1456,8 +1449,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, gameData);
+        MoveValidator.validateMove(toMove, r, germans, Map.of(), Map.of(), false, null, gameData);
     assertFalse(results.isMoveValid());
   }
 
@@ -1478,8 +1470,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        MoveValidator.validateMove(
-            toMove, r, germans, Collections.emptyList(), new HashMap<>(), false, null, gameData);
+        MoveValidator.validateMove(toMove, r, germans, Map.of(), Map.of(), false, null, gameData);
     assertFalse(results.isMoveValid());
   }
 

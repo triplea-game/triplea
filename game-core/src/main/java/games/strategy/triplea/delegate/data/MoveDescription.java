@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.data;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,17 +12,17 @@ import java.util.Map.Entry;
 public class MoveDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = 2199608152808948043L;
   private final Route route;
-  private final Collection<Unit> transportsThatCanBeLoaded;
+  private final Map<Unit, Unit> unitsToTransports;
   private final Map<Unit, Collection<Unit>> dependentUnits;
 
   public MoveDescription(
       final Collection<Unit> units,
       final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded,
+      final Map<Unit, Unit> unitsToTransports,
       final Map<Unit, Collection<Unit>> dependentUnits) {
     super(units);
     this.route = route;
-    this.transportsThatCanBeLoaded = transportsThatCanBeLoaded;
+    this.unitsToTransports = unitsToTransports;
     if (dependentUnits != null && !dependentUnits.isEmpty()) {
       this.dependentUnits = new HashMap<>();
       for (final Entry<Unit, Collection<Unit>> entry : dependentUnits.entrySet()) {
@@ -35,10 +34,7 @@ public class MoveDescription extends AbstractMoveDescription {
   }
 
   public MoveDescription(final Collection<Unit> units, final Route route) {
-    super(units);
-    this.route = route;
-    transportsThatCanBeLoaded = null;
-    dependentUnits = null;
+    this(units, route, null, null);
   }
 
   public Route getRoute() {
@@ -50,11 +46,11 @@ public class MoveDescription extends AbstractMoveDescription {
     return "Move message route:" + route + " units:" + getUnits();
   }
 
-  public Collection<Unit> getTransportsThatCanBeLoaded() {
-    if (transportsThatCanBeLoaded == null) {
-      return Collections.emptyList();
+  public Map<Unit, Unit> getUnitsToTransports() {
+    if (unitsToTransports == null) {
+      return Map.of();
     }
-    return transportsThatCanBeLoaded;
+    return unitsToTransports;
   }
 
   public Map<Unit, Collection<Unit>> getDependentUnits() {

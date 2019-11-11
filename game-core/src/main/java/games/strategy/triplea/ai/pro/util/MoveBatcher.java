@@ -5,8 +5,9 @@ import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * MoveBatcher implements an algorithm that batches AI moves together, reducing the number of
@@ -16,12 +17,15 @@ public class MoveBatcher {
   private static class Move {
     private final ArrayList<Unit> units;
     private final Route route;
-    private final HashSet<Unit> transportsToLoad;
+    private final HashMap<Unit, Unit> unitsToTransports;
 
-    Move(final ArrayList<Unit> units, final Route route, final HashSet<Unit> transportsToLoad) {
+    private Move(
+        final ArrayList<Unit> units,
+        final Route route,
+        final HashMap<Unit, Unit> unitsToTransports) {
       this.units = units;
       this.route = route;
-      this.transportsToLoad = transportsToLoad;
+      this.unitsToTransports = unitsToTransports;
     }
 
     Move(final ArrayList<Unit> units, final Route route) {
@@ -29,7 +33,10 @@ public class MoveBatcher {
     }
 
     Move(final Unit unit, final Route route, final Unit transportToLoad) {
-      this(mutableSingletonList(unit), route, new HashSet<Unit>(List.of(transportToLoad)));
+      this(
+          mutableSingletonList(unit),
+          route,
+          new HashMap<Unit, Unit>(Map.of(unit, transportToLoad)));
     }
 
     private static ArrayList<Unit> mutableSingletonList(final Unit unit) {
@@ -37,7 +44,7 @@ public class MoveBatcher {
     }
 
     boolean isTransportLoad() {
-      return this.transportsToLoad != null;
+      return this.unitsToTransports != null;
     }
 
     boolean canMergeWith(final Move other) {
@@ -49,7 +56,7 @@ public class MoveBatcher {
         // Merge units and transports.
         units.addAll(other.units);
         if (isTransportLoad()) {
-          transportsToLoad.addAll(other.transportsToLoad);
+          unitsToTransports.putAll(other.unitsToTransports);
         }
         return true;
       }
@@ -59,10 +66,10 @@ public class MoveBatcher {
     void addTo(
         final List<Collection<Unit>> moveUnits,
         final List<Route> moveRoutes,
-        final List<Collection<Unit>> transportsToLoad) {
+        final List<Map<Unit, Unit>> unitsToTransports) {
       moveUnits.add(units);
       moveRoutes.add(route);
-      transportsToLoad.add(this.transportsToLoad);
+      unitsToTransports.add(this.unitsToTransports);
     }
   }
 
@@ -111,18 +118,18 @@ public class MoveBatcher {
    *
    * @param moveUnits The units to move.
    * @param moveRoutes The routes to move along
-   * @param transportsToLoad The transports to be loaded.
+   * @param unitsToTransports The map from units to transports to be loaded.
    */
   public void batchAndEmit(
       final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad) {
+      final List<Map<Unit, Unit>> unitsToTransports) {
     int i = 0;
     for (final var sequence : moveSequences) {
       if (!sequence.isEmpty()) {
         mergeSequences(sequence, moveSequences.subList(i + 1, moveSequences.size()));
         for (final Move move : sequence) {
-          move.addTo(moveUnits, moveRoutes, transportsToLoad);
+          move.addTo(moveUnits, moveRoutes, unitsToTransports);
         }
       }
       i++;
