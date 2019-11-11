@@ -156,6 +156,10 @@ public class MovePerformer implements Serializable {
             // Reset Optional
             arrivingUnits = new ArrayList<>();
             final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);
+            final Map<Unit, Unit> transporting =
+                route.isLoad()
+                    ? unitsToTransports
+                    : TransportUtils.mapTransports(route, arrived, null);
             // If we have paratrooper land units being carried by air units, they should be dropped
             // off in the last
             // territory. This means they are still dependent during the middle steps of the route.
@@ -176,7 +180,7 @@ public class MovePerformer implements Serializable {
             // markFuelCostResourceChange must be done before we load/unload units
             change.add(Route.getFuelChanges(units, route, id, data));
 
-            markTransportsMovement(arrived, unitsToTransports, route);
+            markTransportsMovement(arrived, transporting, route);
             if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
               boolean ignoreBattle = false;
               // could it be a bombing raid
