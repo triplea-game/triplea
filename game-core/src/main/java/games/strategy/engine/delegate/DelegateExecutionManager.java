@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.message.MessengerException;
-import games.strategy.triplea.util.WrappedInvocationHandler;
+import games.strategy.engine.message.WrappedInvocationHandler;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

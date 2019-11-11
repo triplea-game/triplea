@@ -3,7 +3,6 @@ package tools.image;
 import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -53,6 +52,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
+import org.triplea.io.FileUtils;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;

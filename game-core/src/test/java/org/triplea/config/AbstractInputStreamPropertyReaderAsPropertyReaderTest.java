@@ -1,10 +1,10 @@
 package org.triplea.config;
 
-import games.strategy.io.IoUtils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
+import org.triplea.io.IoUtils;
 
 final class AbstractInputStreamPropertyReaderAsPropertyReaderTest
     extends AbstractPropertyReaderTestCase {

@@ -3,7 +3,6 @@ package org.triplea.sound;
 import com.google.common.base.Splitter;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
@@ -32,6 +31,7 @@ import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import lombok.extern.java.Log;
+import org.triplea.io.FileUtils;
 import org.triplea.java.UrlStreams;
 
 /**

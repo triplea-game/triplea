@@ -1,4 +1,4 @@
-package games.strategy.triplea.util;
+package games.strategy.engine.message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

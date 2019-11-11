@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.io.IoUtils;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.io.IOException;
@@ -13,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.io.IoUtils;
 
 class ChangeTripleATest {
   private GameData gameData;

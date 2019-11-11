@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
-import games.strategy.io.IoUtils;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.io.ByteArrayInputStream;
@@ -32,6 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.io.IoUtils;
 import org.triplea.java.function.ThrowingConsumer;
 import org.triplea.java.function.ThrowingFunction;
 

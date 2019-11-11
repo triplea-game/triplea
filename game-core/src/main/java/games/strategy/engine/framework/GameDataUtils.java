@@ -3,12 +3,12 @@ package games.strategy.engine.framework;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
 import games.strategy.engine.history.History;
-import games.strategy.io.IoUtils;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.io.IoUtils;
 
 /** A collection of useful methods for working with instances of {@link GameData}. */
 @Log

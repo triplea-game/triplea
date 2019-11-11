@@ -3,7 +3,6 @@ package games.strategy.engine.framework.ui;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +19,7 @@ import java.util.zip.ZipFile;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import lombok.extern.java.Log;
+import org.triplea.io.FileUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 

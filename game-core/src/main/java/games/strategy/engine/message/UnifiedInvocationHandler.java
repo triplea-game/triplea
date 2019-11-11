@@ -1,7 +1,6 @@
 package games.strategy.engine.message;
 
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-import games.strategy.triplea.util.WrappedInvocationHandler;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
