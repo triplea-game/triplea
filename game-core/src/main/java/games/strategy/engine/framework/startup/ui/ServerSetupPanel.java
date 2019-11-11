@@ -1,8 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
-import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
+import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
 import games.strategy.engine.data.PlayerId;
@@ -74,7 +72,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     this.gameSelectorModel = gameSelectorModel;
     this.model.setRemoteModelListener(this);
 
-    if (System.getProperty(LOBBY_HOST) != null) {
+    if (System.getProperty(LOBBY_URI) != null) {
       createLobbyWatcher();
     }
 
@@ -84,12 +82,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   private void createLobbyWatcher() {
-    final URI lobbyUri =
-        URI.create(
-            HttpLobbyClient.PROTOCOL
-                + System.getProperty(LOBBY_HOST)
-                + ":"
-                + System.getProperty(LOBBY_HTTPS_PORT));
+    final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
 
     final GameHostingResponse gameHostingResponse =
         GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
@@ -134,9 +127,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
                   .build()
                   .run();
 
-              System.clearProperty(LOBBY_HOST);
-              System.clearProperty(LOBBY_PORT);
-              System.clearProperty(LOBBY_HTTPS_PORT);
+              System.clearProperty(LOBBY_URI);
               System.clearProperty(TRIPLEA_NAME);
             });
   }

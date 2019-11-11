@@ -1,0 +1,2 @@
+A file with some example text
+and a second line

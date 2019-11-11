@@ -5,6 +5,7 @@ import feign.FeignException;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.triplea.UrlConstants;
 import java.awt.Window;
 import java.io.IOException;
 import java.util.Optional;
@@ -21,6 +22,8 @@ import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.SwingComponents.DialogWithLinksParams;
+import org.triplea.swing.SwingComponents.DialogWithLinksTypes;
 
 /**
  * The client side of the lobby authentication protocol.
@@ -49,7 +52,15 @@ public class LobbyLogin {
    */
   public void promptLogin() {
     if (serverProperties.isInactive()) {
-      showError("Could not connect to server", serverProperties.getServerErrorMessage().get());
+      SwingComponents.showDialogWithLinks(
+          DialogWithLinksParams.builder()
+              .title("Lobby Not Available")
+              .dialogText(
+                  String.format(
+                      "Your version of TripleA is too old, please download the latest: <a>%s</a>",
+                      UrlConstants.DOWNLOAD_WEBSITE))
+              .dialogType(DialogWithLinksTypes.ERROR)
+              .build());
       return;
     }
     loginToServer()

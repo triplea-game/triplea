@@ -44,7 +44,7 @@ class OutOfDateDialog {
         + "</body></html>";
   }
 
-  static Component getOutOfDateComponent(final Version latestVersionOut) {
+  static Component showOutOfDateComponent(final Version latestVersionOut) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage(latestVersionOut));
     intro.setEditable(false);

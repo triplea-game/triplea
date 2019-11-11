@@ -1,7 +1,6 @@
 package org.triplea.game.server;
 
-import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
+import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
 import feign.FeignException;
@@ -74,34 +73,26 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
         .build()
         .run();
 
-    System.clearProperty(LOBBY_HOST);
-    System.clearProperty(LOBBY_HTTPS_PORT);
+    System.clearProperty(LOBBY_URI);
     System.clearProperty(TRIPLEA_NAME);
   }
 
   private URI lobbyUriFromSystemProps() {
-    return URI.create(
-        HttpLobbyClient.PROTOCOL
-            + System.getProperty(LOBBY_HOST)
-            + ":"
-            + System.getProperty(LOBBY_HTTPS_PORT));
+    return URI.create(System.getProperty(LOBBY_URI));
   }
 
   private static class CouldNotConnectToLobby extends RuntimeException {
     private static final long serialVersionUID = -5946931858867131622L;
 
     CouldNotConnectToLobby() {
-      super(
-          String.format(
-              "Unable to connect to lobby at: %s, port: %s",
-              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_HTTPS_PORT)));
+      super(String.format("Unable to connect to lobby at: %s", System.getProperty(LOBBY_URI)));
     }
 
     CouldNotConnectToLobby(final FeignException e) {
       super(
           String.format(
-              "Unable to connect to lobby at: %s, port: %s, communication error: %s",
-              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_HTTPS_PORT), e.getMessage()),
+              "Unable to connect to lobby at: %s, communication error: %s",
+              System.getProperty(LOBBY_URI), e.getMessage()),
           e);
     }
   }

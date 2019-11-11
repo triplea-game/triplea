@@ -4,12 +4,11 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.booleanR
 import static games.strategy.triplea.settings.SelectionComponentFactory.filePath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
+import static games.strategy.triplea.settings.SelectionComponentFactory.lobbyOverrideSelection;
 import static games.strategy.triplea.settings.SelectionComponentFactory.proxySettings;
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
-import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.engine.lobby.client.login.LobbyServerPropertiesFetcher;
 import java.util.Collection;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
@@ -225,37 +224,10 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
-  TEST_LOBBY_HOST_BINDING(
-      "Lobby Host Override",
-      SettingType.TESTING,
-      "Overrides the IP address or hostname used to connect to the lobby. "
-          + "Useful for connecting to a test lobby.") {
+  LOBBY_URI_OVERRIDE_BINDING("Lobby URI Override", SettingType.TESTING, "Overrides the lobby URI") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return textField(ClientSetting.testLobbyHost);
-    }
-  },
-
-  TEST_LOBBY_PORT_BINDING(
-      "Lobby Port Override",
-      SettingType.TESTING,
-      "Specifies the port for connecting to a test lobby.\n"
-          + "Set to 0 for no override, defaults to: "
-          + LobbyServerPropertiesFetcher.TEST_LOBBY_DEFAULT_PORT) {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.testLobbyPort, 1, 65535, true);
-    }
-  },
-
-  TEST_HTTPS_LOBBY_PORT(
-      "HTTPS Lobby Port",
-      SettingType.TESTING,
-      "Specifies port for connecting to a test HTTPS lobby, defaults to: "
-          + LobbyServerPropertiesFetcher.TEST_LOBBY_DEFAULT_HTTPS_PORT) {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.testLobbyHttpsPort, 1, 65535, true);
+      return lobbyOverrideSelection();
     }
   },
 

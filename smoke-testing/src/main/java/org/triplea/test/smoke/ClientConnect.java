@@ -5,10 +5,12 @@ import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.IClientMessenger;
+import java.net.URI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
-import org.triplea.live.servers.ServerProperties;
+import org.triplea.http.client.lobby.login.LobbyLoginClient;
+import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 
 /**
  * A simple application to test connectivity to a running bot and lobby. Failure is indicted by
@@ -22,15 +24,19 @@ public final class ClientConnect {
     connectToBot();
   }
 
-  private static void connectToLobby() throws Exception {
+  private static void connectToLobby() {
     log.info("Connecting to lobby...");
-    final IClientMessenger messenger =
-        ClientMessengerFactory.newAnonymousUserMessenger(
-            ServerProperties.builder().host("localhost").port(3304).httpsPort(5432).build(),
-            "test-user");
-    Thread.sleep(500L);
+
+    final LobbyLoginClient lobbyLoginClient =
+        LobbyLoginClient.newClient(URI.create("http://localhost:8080"));
+
+    final LobbyLoginResponse lobbyLoginResponse = lobbyLoginClient.login("test-user", null);
+
+    if (lobbyLoginResponse.getFailReason() != null) {
+      throw new IllegalStateException(
+          "Failed to connect to lobby: " + lobbyLoginResponse.getFailReason());
+    }
     log.info("Connection to lobby SUCCESSFUL, closing connection");
-    messenger.shutDown();
   }
 
   private static void connectToBot() throws Exception {

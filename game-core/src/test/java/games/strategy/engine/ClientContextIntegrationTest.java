@@ -15,10 +15,12 @@ import org.triplea.test.common.Integration;
 class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test
-  void verifyClientContext() {
-    assertThat(ClientContext.downloadCoordinator(), notNullValue());
+  void canRetrieveCurrentEngineVersion() {
     assertThat(ClientContext.engineVersion(), notNullValue());
+  }
 
+  @Test
+  void downloadListOfAvailableMaps() {
     final List<DownloadFileDescription> list = ClientContext.getMapDownloadList();
 
     assertThat(list, notNullValue());

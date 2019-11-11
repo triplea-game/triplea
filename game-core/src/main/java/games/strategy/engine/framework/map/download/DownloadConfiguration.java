@@ -1,24 +1,20 @@
 package games.strategy.engine.framework.map.download;
 // TODO: move to package games.strategy.engine.framework.map.download.client
 
-import java.util.function.Supplier;
-import org.apache.http.impl.client.CloseableHttpClient;
+import lombok.experimental.UtilityClass;
 import org.apache.http.impl.client.HttpClients;
 
 /** Provides methods to download files via HTTP. */
+@UtilityClass
 public final class DownloadConfiguration {
-
   private static final ContentReader contentReader;
   private static final DownloadLengthReader downloadLengthReader;
 
   static {
-    final Supplier<CloseableHttpClient> httpClientSupplier =
-        () -> HttpClients.custom().disableCookieManagement().build();
-    contentReader = new ContentReader(httpClientSupplier);
-    downloadLengthReader = new DownloadLengthReader(httpClientSupplier);
+    contentReader = new ContentReader(ContentDownloader::new);
+    downloadLengthReader =
+        new DownloadLengthReader(() -> HttpClients.custom().disableCookieManagement().build());
   }
-
-  private DownloadConfiguration() {}
 
   public static ContentReader contentReader() {
     return contentReader;

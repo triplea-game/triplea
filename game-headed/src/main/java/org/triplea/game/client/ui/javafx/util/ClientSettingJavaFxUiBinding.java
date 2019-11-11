@@ -4,7 +4,6 @@ import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFac
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.folderPath;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.intValueRange;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.proxySettings;
-import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.textField;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.toggleButton;
 
 import games.strategy.triplea.settings.ClientSetting;
@@ -132,19 +131,7 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
     }
   },
 
-  TEST_LOBBY_HOST_BINDING(SettingType.TESTING) {
-    @Override
-    public SelectionComponent<Region> newSelectionComponent() {
-      return textField(ClientSetting.testLobbyHost);
-    }
-  },
-
-  TEST_LOBBY_PORT_BINDING(SettingType.TESTING) {
-    @Override
-    public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.testLobbyPort, 1, 65535, true);
-    }
-  },
+  // TODO: add lobby host URI override test setting
 
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(SettingType.GAME) {
     @Override
