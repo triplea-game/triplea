@@ -595,7 +595,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             }
           }
           final Map<Unit, Unit> unitsToTransports =
-              TransportUtils.mapTransports(route, units, transports);
+              transports == null ? null : TransportUtils.mapTransports(route, units, transports);
           final MoveDescription message =
               new MoveDescription(units, route, unitsToTransports, dependentUnits);
           setMoveMessage(message);
