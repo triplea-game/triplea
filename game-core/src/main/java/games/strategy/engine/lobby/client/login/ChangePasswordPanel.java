@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
@@ -169,11 +168,9 @@ public final class ChangePasswordPanel extends JPanel {
       final AllowCancelMode allowCancelMode) {
     return new ChangePasswordPanel(allowCancelMode)
         .show(lobbyFrame)
-        .map(RsaAuthenticator::hashPasswordWithSalt)
         .map(
             pass -> {
               lobbyClient.getUserAccountClient().changePassword(pass);
-
               return true;
             })
         .orElse(false);
