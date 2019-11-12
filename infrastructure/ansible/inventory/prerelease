@@ -1,14 +1,13 @@
-[lobbyDatabaseHosts]
-prerelease.triplea-game.org ansible_hostname=lobbyHost
+[postgresHosts]
+prerelease.triplea-game.org
 
-[lobbyHosts]
-prerelease.triplea-game.org ansible_hostname=lobbyHost
+[dropwizardHosts]
+prerelease.triplea-game.org
 
 [botHosts]
-prerelease.triplea-game.org ansible_hostname=lobbyHost
+prerelease.triplea-game.org
 
 [prerelease:children]
-lobbyDatabaseHosts
-lobbyHosts
+postgresHosts
+dropwizardHosts
 botHosts
-
