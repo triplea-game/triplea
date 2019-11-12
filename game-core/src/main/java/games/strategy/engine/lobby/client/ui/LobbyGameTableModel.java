@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -27,6 +27,8 @@ import org.triplea.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
+
+  private static final int GAME_POLLER_FREQUENCY_SECONDS = 3;
 
   enum Column {
     Host,
@@ -45,7 +47,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   private final transient Timer gamePoller;
 
   // these must only be accessed in the swing event thread
-  private final List<Tuple<String, GameDescription>> gameList = new ArrayList<>();
+  private final List<Tuple<String, GameDescription>> gameList = new CopyOnWriteArrayList<>();
   private final LobbyGameUpdateListener lobbyGameBroadcaster =
       new LobbyGameUpdateListener() {
         @Override
@@ -72,7 +74,8 @@ class LobbyGameTableModel extends AbstractTableModel {
     // a minimum.
     gamePoller =
         Timers.fixedRateTimer()
-            .period(3, TimeUnit.SECONDS)
+            .period(GAME_POLLER_FREQUENCY_SECONDS, TimeUnit.SECONDS)
+            .delay(GAME_POLLER_FREQUENCY_SECONDS, TimeUnit.SECONDS)
             .task(
                 new GamePollerTask(
                     lobbyGameBroadcaster,

@@ -13,11 +13,13 @@ import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.HttpLobbyClient;
@@ -29,6 +31,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
 @SuppressWarnings("InnerClassMayBeStatic")
+@Execution(ExecutionMode.SAME_THREAD)
 final class LobbyGameTableModelTest {
 
   private static final String id0 = "id0";
@@ -81,6 +84,11 @@ final class LobbyGameTableModelTest {
       waitForSwingThreads();
     }
 
+    @AfterEach
+    void tearDown() {
+      testObj.shutdown();
+    }
+
     private void waitForSwingThreads() {
       // add a no-op action to the end of the swing event queue, and then wait for it
       Interruptibles.await(() -> SwingAction.invokeAndWait(Runnables.doNothing()));
@@ -122,7 +130,6 @@ final class LobbyGameTableModelTest {
       assertThat(testObj.getRowCount(), is(2));
     }
 
-    @Disabled // Test is non-deterministic and sometimes fails
     @Test
     void removeGame() {
       testObj.getLobbyGameBroadcaster().gameRemoved(fakeGame.getFirst());
