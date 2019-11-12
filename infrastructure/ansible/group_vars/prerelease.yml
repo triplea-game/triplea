@@ -1,2 +1,1 @@
-bot_lobby_address: prerelease.triplea-game.org
-http_server_error_report_github_token: "{{ lookup('env', 'GITHUB_API_TOKEN') }}"
+lobby_address: prerelease.triplea-game.org

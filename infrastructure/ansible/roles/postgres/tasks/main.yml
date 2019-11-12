@@ -1,0 +1,30 @@
+- name: Ensure latest bash and ssl
+  become: true
+  apt:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - bash
+      - openssl
+      - libssl-dev
+      - libssl-doc
+
+- name: Install PostgreSQL
+  become: true
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - postgresql
+      - postgresql-contrib
+      - libpq-dev
+      - python-psycopg2
+      - python3-psycopg2
+
+- name: Ensure the PostgreSQL service is running
+  service:
+    name: postgresql
+    state: started
+    enabled: yes

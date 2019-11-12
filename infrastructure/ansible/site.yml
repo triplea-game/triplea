@@ -4,8 +4,8 @@
 #
 
 - hosts:
-    - lobbyDatabaseHosts
-    - lobbyHosts
+    - postgresHosts
+    - dropwizardHosts
     - botHosts
   gather_facts: no
   serial: 100%
@@ -16,24 +16,23 @@
     - firewall
     - security
 
-- hosts: lobbyDatabaseHosts
+- hosts: postgresHosts
   gather_facts: no
   serial: 100%
   strategy: free
   tags: lobbyDb
   roles:
-    - lobby_database
+    - postgres
     - flyway
 
-- hosts: lobbyHosts
+- hosts: dropwizardHosts
   gather_facts: no
   serial: 100%
   strategy: free
   roles:
     - java
-    - lobby
     - nginx
-    - http_server
+    - dropwizard
 
 - hosts: botHosts
   gather_facts: no

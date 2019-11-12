@@ -8,8 +8,9 @@ bot_maps_folder: "{{ bot_folder }}/maps"
 
 bot_lobby_host: "{{ bot_lobby_address }}"
 
-bot_lobby_port: "3304"
-
 bot_max_memory: "168m"
 
 bot_name: "BotServer"
+
+bot_lobby_address: "{{ lobby_address }}"
+
