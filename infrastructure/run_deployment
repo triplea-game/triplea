@@ -44,18 +44,16 @@ ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.
 
 function main() {
 
-downloadLobbyJar
+  downloadHttpServerJar
 
-downloadHttpServerJar
+  downloadBotJar
 
-downloadBotJar
+  downloadMigrations
 
-downloadMigrations
-
-ansible-playbook -D -v \
-    --vault-password-file "$VAULT_PASSWORD_FILE" \
-   ansible/site.yml \
-   -i "ansible/inventory/$INVENTORY_FILE"
+  ansible-playbook -D -v \
+      --vault-password-file "$VAULT_PASSWORD_FILE" \
+     ansible/site.yml \
+     -i "ansible/inventory/$INVENTORY_FILE"
 }
 
 function downloadLobbyJar() {
