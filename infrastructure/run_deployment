@@ -41,40 +41,17 @@ fi
 ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
 
 
-
 function main() {
+  downloadHttpServerJar
 
-downloadLobbyJar
+  downloadBotJar
 
-downloadHttpServerJar
+  downloadMigrations
 
-downloadBotJar
-
-downloadMigrations
-
-ansible-playbook -D -v \
-    --vault-password-file "$VAULT_PASSWORD_FILE" \
-   ansible/site.yml \
-   -i "ansible/inventory/$INVENTORY_FILE"
-}
-
-function downloadLobbyJar() {
-  # Download lobby zip file and copy to ansible roles
-  LOBBY_ZIP="triplea-lobby-$VERSION.zip"
-  rm -f $LOBBY_ZIP
-  LOBBY_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$LOBBY_ZIP"
-  wget $LOBBY_DL_LOCATION
-  if [ ! -f "$LOBBY_ZIP" ]; then
-    echo "ERROR: failed to download lobby zip from: $LOBBY_DL_LOCATION"
-    exit 1
-  fi
-
-  rm -rf lobby/
-  unzip $LOBBY_ZIP -d lobby
-  rm $LOBBY_ZIP
-
-  mkdir -p ansible/roles/lobby/files/
-  mv lobby/bin/triplea-lobby-$VERSION.jar ansible/roles/lobby/files/
+  ansible-playbook -D -v \
+      --vault-password-file "$VAULT_PASSWORD_FILE" \
+     ansible/site.yml \
+     -i "ansible/inventory/$INVENTORY_FILE"
 }
 
 function downloadHttpServerJar() {
