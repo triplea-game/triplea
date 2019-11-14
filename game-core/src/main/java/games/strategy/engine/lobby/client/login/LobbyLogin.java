@@ -57,8 +57,9 @@ public class LobbyLogin {
               .title("Lobby Not Available")
               .dialogText(
                   String.format(
-                      "Your version of TripleA is too old, please download the latest: <a>%s</a>",
-                      UrlConstants.DOWNLOAD_WEBSITE))
+                      "Your version of TripleA is too old, please download the latest:"
+                          + "<br><a href=%s>%s</a>",
+                      UrlConstants.DOWNLOAD_WEBSITE, UrlConstants.DOWNLOAD_WEBSITE))
               .dialogType(DialogWithLinksTypes.ERROR)
               .build());
       return;
