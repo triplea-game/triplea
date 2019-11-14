@@ -7,14 +7,9 @@ import org.apache.http.impl.client.HttpClients;
 /** Provides methods to download files via HTTP. */
 @UtilityClass
 public final class DownloadConfiguration {
-  private static final ContentReader contentReader;
-  private static final DownloadLengthReader downloadLengthReader;
-
-  static {
-    contentReader = new ContentReader(ContentDownloader::new);
-    downloadLengthReader =
-        new DownloadLengthReader(() -> HttpClients.custom().disableCookieManagement().build());
-  }
+  private static final ContentReader contentReader = new ContentReader(ContentDownloader::new);
+  private static final DownloadLengthReader downloadLengthReader =
+      new DownloadLengthReader(() -> HttpClients.custom().disableCookieManagement().build());
 
   public static ContentReader contentReader() {
     return contentReader;
