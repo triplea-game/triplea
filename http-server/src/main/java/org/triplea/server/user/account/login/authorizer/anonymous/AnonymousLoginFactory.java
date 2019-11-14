@@ -6,11 +6,16 @@ import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.server.lobby.chat.event.processing.Chatters;
 
 @UtilityClass
 public class AnonymousLoginFactory {
 
-  public static Function<PlayerName, Optional<String>> build(final Jdbi jdbi) {
-    return AnonymousLogin.builder().userJdbiDao(jdbi.onDemand(UserJdbiDao.class)).build();
+  public static Function<PlayerName, Optional<String>> build(
+      final Jdbi jdbi, final Chatters chatters) {
+    return AnonymousLogin.builder()
+        .chatters(chatters)
+        .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
+        .build();
   }
 }
