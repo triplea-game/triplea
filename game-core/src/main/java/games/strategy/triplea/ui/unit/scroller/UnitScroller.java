@@ -49,6 +49,8 @@ public class UnitScroller {
     NON_COMBAT
   }
 
+  private static final int HORIZONTAL_BUTTON_GAP = 15;
+
   private static final String PREVIOUS_UNITS_TOOLTIP =
       "Press 'm' or click this button to center the screen on the 'previous' units with "
           + "movement left";
@@ -185,12 +187,13 @@ public class UnitScroller {
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 
     final JButton centerOnUnit = new JButton(UnitScrollerIcon.CENTER_ON_UNIT.get());
+    centerOnUnit.setSize(20, 20);
     centerOnUnit.setToolTipText(CENTER_UNITS_TOOLTIP);
     centerOnUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     centerOnUnit.addActionListener(e -> centerOnCurrentMovableUnit());
     topPanel.add(centerOnUnit);
 
-    topPanel.add(Box.createHorizontalStrut(30));
+    topPanel.add(Box.createHorizontalStrut(HORIZONTAL_BUTTON_GAP));
 
     final JButton highlightMovableToggle = new JButton(UnitScrollerIcon.UNIT_HIGHLIGHT.get());
     highlightMovableToggle.setVisible(
@@ -199,7 +202,7 @@ public class UnitScroller {
     highlightMovableToggle.setToolTipText(HIGHLIGHT_MOVABLE_TOOLTIP);
 
     topPanel.add(highlightMovableToggle);
-    topPanel.add(Box.createHorizontalStrut(30));
+    topPanel.add(Box.createHorizontalStrut(HORIZONTAL_BUTTON_GAP));
 
     final JButton flagToggle = new JButton(UnitScrollerIcon.UNIT_FLAGS.get());
     flagToggle.addActionListener(e -> toggleFlags.run());
@@ -212,24 +215,29 @@ public class UnitScroller {
     territoryNameLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     panel.add(territoryNameLabel);
 
-    final JPanel centerPanel = new JPanel();
-    centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
-
     final JButton prevUnit = new JButton(UnitScrollerIcon.LEFT_ARROW.get());
     prevUnit.setToolTipText(PREVIOUS_UNITS_TOOLTIP);
     prevUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     prevUnit.addActionListener(e -> centerOnPreviousMovableUnit());
-    centerPanel.add(prevUnit);
-    centerPanel.add(selectUnitImagePanel);
 
     final JButton nextUnit = new JButton(UnitScrollerIcon.RIGHT_ARROW.get());
+    nextUnit.setSize(20, 0);
     nextUnit.setToolTipText(NEXT_UNITS_TOOLTIP);
     nextUnit.addActionListener(e -> centerOnNextMovableUnit());
-    centerPanel.add(nextUnit, BorderLayout.EAST);
-    centerPanel.add(Box.createHorizontalStrut(10));
 
+    final JPanel centerPanel =
+        new JPanelBuilder()
+            .boxLayoutHorizontal()
+            .add(Box.createHorizontalGlue())
+            .add(prevUnit)
+            .add(selectUnitImagePanel)
+            .add(nextUnit)
+            .add(Box.createHorizontalGlue())
+            .add(Box.createHorizontalStrut(2))
+            .build();
     panel.add(centerPanel);
-    panel.add(Box.createVerticalStrut(5));
+
+    panel.add(Box.createVerticalStrut(2));
 
     final JButton skipButton = new JButton(UnitScrollerIcon.UNIT_SKIP.get());
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
@@ -243,17 +251,15 @@ public class UnitScroller {
         new JPanelBuilder()
             .boxLayoutHorizontal()
             .add(skipButton)
-            .addHorizontalStrut(30)
+            .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(sleepButton)
             .build();
     skipAndSleepPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
     panel.add(skipAndSleepPanel, BorderLayout.SOUTH);
-    panel.add(Box.createVerticalStrut(3));
-
+    panel.add(Box.createVerticalStrut(1));
     panel.add(SwingComponents.leftBox(movesLeftLabel));
-
-    panel.add(Box.createVerticalStrut(5));
+    panel.add(Box.createVerticalStrut(3));
     return panel;
   }
 

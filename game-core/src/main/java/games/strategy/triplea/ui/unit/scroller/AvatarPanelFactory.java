@@ -7,30 +7,30 @@ import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.ui.OverlayIcon;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Draws the unit avatar panel for the unit scroller. The avatar panel contains representative
  * images of the units contained in the 'current' territory.
  */
 class AvatarPanelFactory {
-  static final int MAX_UNITS_IN_AVATAR_STACK = 4;
+  static final int MAX_UNITS_IN_AVATAR_STACK = 3;
 
   private static final int TYPICAL_UNIT_IMAGE_SIZE = 40;
 
   /** Height difference between overlapping images. */
-  private static final int HEIGHT_OFFSET = 10;
+  private static final int HEIGHT_OFFSET = 12;
 
-  private static final int WIDTH_OFFSET = 15;
+  private static final int WIDTH_OFFSET = 12;
 
   private final UnitImageFactory unitImageFactory;
   private final FlagIconImageFactory flagIconImageFactory;
@@ -40,26 +40,22 @@ class AvatarPanelFactory {
     flagIconImageFactory = mapPanel.getUiContext().getFlagImageFactory();
   }
 
-  JLabel buildPanel(final List<Unit> units, final PlayerId currentPlayer) {
-    final Icon flaggedUnitIcon;
+  JPanel buildPanel(final List<Unit> units, final PlayerId currentPlayer) {
+    final Icon unitIcon;
+    final Icon flagIcon;
     if (units.isEmpty()) {
-      flaggedUnitIcon = new ImageIcon(createEmptyUnitStackImage());
+      unitIcon = new ImageIcon(createEmptyUnitStackImage());
+      flagIcon = new ImageIcon(createEmptyUnitStackImage());
     } else {
       final Unit firstUnit = units.iterator().next();
       final UnitCategory unitCategory = new UnitCategory(firstUnit.getType(), currentPlayer);
-      final ImageIcon unitIcon =
-          new ImageIcon(createUnitStackImage(unitImageFactory, currentPlayer, units));
-      final ImageIcon flagIcon =
-          new ImageIcon(flagIconImageFactory.getSmallFlag(unitCategory.getOwner()));
-      // overlay flag onto upper-right of icon
-      flaggedUnitIcon =
-          new OverlayIcon(
-              unitIcon, flagIcon, unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
+      unitIcon = new ImageIcon(createUnitStackImage(unitImageFactory, currentPlayer, units));
+      flagIcon = new ImageIcon(flagIconImageFactory.getSmallFlag(unitCategory.getOwner()));
     }
-    final JLabel unitImage =
-        new JLabel(" x" + units.size(), flaggedUnitIcon, SwingConstants.CENTER);
-    unitImage.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    return unitImage;
+
+    final JLabel unitImage = new JLabel(unitIcon, SwingConstants.CENTER);
+    final JLabel unitCount = new JLabel("x" + units.size(), flagIcon, SwingConstants.CENTER);
+    return new JPanelBuilder().borderLayout().addCenter(unitImage).addSouth(unitCount).build();
   }
 
   private static Image createEmptyUnitStackImage() {
