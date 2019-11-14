@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import com.google.gson.Gson;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
@@ -18,7 +19,11 @@ class ServerMessageEnvelopeTest {
 
   private static final PlayerName PLAYER_NAME = PlayerName.of("player");
   private static final ChatParticipant CHAT_PARTICIPANT =
-      ChatParticipant.builder().playerName(PLAYER_NAME).isModerator(true).build();
+      ChatParticipant.builder()
+          .playerName(PLAYER_NAME)
+          .isModerator(true)
+          .playerChatId(PlayerChatId.of("player-chat-id"))
+          .build();
 
   private final StatusUpdate statusUpdate = new StatusUpdate(PLAYER_NAME, STATUS);
   private final PlayerLeft playerLeft = new PlayerLeft(PLAYER_NAME);

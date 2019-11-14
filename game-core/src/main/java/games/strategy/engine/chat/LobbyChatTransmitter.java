@@ -28,7 +28,7 @@ public class LobbyChatTransmitter implements ChatTransmitter {
     lobbyChatClient.addPlayerJoinedListener(chatClient::participantAdded);
     lobbyChatClient.addChatMessageListener(chatClient::messageReceived);
     lobbyChatClient.addConnectedListener(chatClient::connected);
-
+    lobbyChatClient.addChatEventListener(chatClient::eventReceived);
     lobbyChatClient.addPlayerSlappedListener(
         slapEvent -> {
           if (slapEvent.getSlapped().equals(localPlayerName)) {

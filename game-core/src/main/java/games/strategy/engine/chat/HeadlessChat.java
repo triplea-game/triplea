@@ -3,6 +3,7 @@ package games.strategy.engine.chat;
 import com.google.common.base.Ascii;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.game.chat.ChatModel;
+import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
 import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.java.TimeManager;
 
@@ -34,8 +35,8 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
   }
 
   @Override
-  public void eventReceived(final String eventText) {
-    allText.append(eventText);
+  public void eventReceived(final ChatEvent eventText) {
+    allText.append(eventText.getMessage());
   }
 
   @Override

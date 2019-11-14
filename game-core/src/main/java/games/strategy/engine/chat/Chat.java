@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
 import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 
@@ -74,6 +75,11 @@ public class Chat implements ChatClient {
     }
     chatHistory.add(chatMessage);
     chatMessageListeners.forEach(listener -> listener.messageReceived(chatMessage));
+  }
+
+  @Override
+  public void eventReceived(final ChatEvent chatEvent) {
+    chatMessageListeners.forEach(listener -> listener.eventReceived(chatEvent));
   }
 
   @Override
