@@ -4,10 +4,11 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.Files;
+import java.nio.channels.Channels;
 import java.util.Optional;
 import java.util.logging.Level;
 import lombok.AllArgsConstructor;
@@ -62,6 +63,9 @@ public final class ContentReader {
     checkNotNull(uri);
     checkNotNull(file);
 
-    downloadAndApplyAction(uri, is -> Files.copy(is, file.toPath()));
+    try (FileOutputStream os = new FileOutputStream(file)) {
+      downloadAndApplyAction(
+          uri, is -> os.getChannel().transferFrom(Channels.newChannel(is), 0L, Long.MAX_VALUE));
+    }
   }
 }
