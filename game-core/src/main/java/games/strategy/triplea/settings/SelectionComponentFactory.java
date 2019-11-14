@@ -426,7 +426,6 @@ final class SelectionComponentFactory {
 
     final JTextField uriField = new JTextFieldBuilder().build();
 
-
     final JRadioButton remoteServer = new JRadioButton("Remote Server");
 
     final boolean useOverride = ClientSetting.lobbyUseLocalhostOverride.getSetting();
