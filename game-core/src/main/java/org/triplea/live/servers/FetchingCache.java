@@ -13,7 +13,6 @@ import java.util.function.Function;
 import lombok.Builder;
 import org.triplea.java.function.ThrowingSupplier;
 
-// TODO: test-client setting override
 @Builder
 class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
   /** Static cache so that cached value is shared across all instances. */
