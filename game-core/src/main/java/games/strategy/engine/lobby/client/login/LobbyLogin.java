@@ -129,7 +129,7 @@ public class LobbyLogin {
   }
 
   private void showError(final String title, final String message) {
-    SwingComponents.showError(parentWindow, message, title);
+    SwingComponents.showError(parentWindow, title, message);
   }
 
   private Optional<LobbyClient> loginToServer() {
@@ -192,7 +192,6 @@ public class LobbyLogin {
       if (loginResponse.getFailReason() != null) {
         throw new LoginFailure(loginResponse.getFailReason());
       }
-
       return Optional.of(
           HttpLobbyClient.newClient(
               serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())));
