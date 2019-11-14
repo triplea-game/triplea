@@ -6,13 +6,13 @@ import javax.swing.JFrame;
 import lombok.Builder;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
-import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
+import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.swing.SwingAction;
 
 @Builder
 public class DisconnectPlayerModeratorAction {
   @Nonnull private final JFrame parent;
-  @Nonnull private final ModeratorLobbyClient moderatorLobbyClient;
+  @Nonnull private final ModeratorChatClient moderatorLobbyClient;
   @Nonnull private final PlayerName playerName;
   @Nonnull private final PlayerChatId playerChatId;
 

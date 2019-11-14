@@ -6,12 +6,12 @@ import javax.swing.JFrame;
 import lombok.Builder;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
-import org.triplea.http.client.lobby.moderator.ModeratorLobbyClient;
+import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.swing.SwingAction;
 
 @Builder
 public class BanPlayerModeratorAction {
-  @Nonnull private final ModeratorLobbyClient moderatorLobbyClient;
+  @Nonnull private final ModeratorChatClient moderatorLobbyClient;
   @Nonnull private final JFrame parent;
   @Nonnull private final PlayerChatId playerChatIdToBan;
 
