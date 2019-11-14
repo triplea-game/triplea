@@ -31,10 +31,9 @@ public class ServerYamlParser implements Function<InputStream, LiveServers> {
     }
 
     final String latest =
-        (String)
-            Optional.ofNullable(yamlProps.get("latest"))
-                .orElseThrow(
-                    () -> new IllegalArgumentException("No 'latest' property found: " + yamlProps));
+        Optional.ofNullable((String) yamlProps.get("latest"))
+            .orElseThrow(
+                () -> new IllegalArgumentException("No 'latest' property found: " + yamlProps));
 
     final List<ServerProperties> serverProperties =
         ((List<Map<String, String>>) yamlProps.get("servers"))
