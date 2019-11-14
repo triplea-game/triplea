@@ -426,18 +426,16 @@ final class SelectionComponentFactory {
 
     final JTextField uriField = new JTextFieldBuilder().build();
 
-    final JRadioButton remoteServer = new JRadioButton("Remote Server");
-    remoteServer.setSelected(
-        ClientSetting.lobbyUseLocalhostOverride
-            .getValue()
-            .map(useLocalhost -> !useLocalhost)
-            .orElse(true));
 
-    uriField.setEnabled(!ClientSetting.lobbyUseLocalhostOverride.getValue().orElse(false));
+    final JRadioButton remoteServer = new JRadioButton("Remote Server");
+
+    final boolean useOverride = ClientSetting.lobbyUseLocalhostOverride.getSetting();
+    remoteServer.setSelected(!useOverride);
+    uriField.setEnabled(!useOverride);
     uriField.setText(ClientSetting.lobbyUriOverride.getValue().map(URI::toString).orElse(""));
 
     final JRadioButton localhostServer = new JRadioButton("Local Server");
-    localhostServer.setSelected(ClientSetting.lobbyUseLocalhostOverride.getValue().orElse(false));
+    localhostServer.setSelected(useOverride);
     localhostServer.addActionListener(
         e -> {
           uriField.setText(localhost);

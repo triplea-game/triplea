@@ -73,7 +73,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    * When set to true, lobby URI is hardcoded to localhost (http). Takes precedence over {@code
    * lobbyOverrideUri}
    */
-  public static final ClientSetting<Boolean> lobbyUseLocalhostOverride =
+  public static final BooleanClientSetting lobbyUseLocalhostOverride =
       new BooleanClientSetting("USE_LOCALHOST_LOBBY_OVERRIDE");
   /** For testing, sets lobby URI to an arbitrary value. */
   public static final ClientSetting<URI> lobbyUriOverride =
