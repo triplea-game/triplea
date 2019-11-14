@@ -20,7 +20,9 @@ public class MessageSender implements BiConsumer<Session, ServerMessageEnvelope>
                 Interruptibles.await(
                     () -> {
                       try {
-                        session.getAsyncRemote().sendText(gson.toJson(message)).get();
+                        if (session.isOpen()) {
+                          session.getAsyncRemote().sendText(gson.toJson(message)).get();
+                        }
                       } catch (final ExecutionException e) {
                         log.warn("Failed to send message: " + message.getMessageType(), e);
                       }
