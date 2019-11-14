@@ -1,16 +1,14 @@
 package org.triplea.test.common;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.io.IOUtils;
 
 @UtilityClass
 public class TestDataFileReader {
@@ -35,8 +33,7 @@ public class TestDataFileReader {
 
   private Optional<String> readFromProjectRoot(final String filePath) {
     try {
-      final File f = new File(filePath);
-      final List<String> lines = IOUtils.readLines(new FileInputStream(f), Charsets.UTF_8);
+      final List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
       return Optional.of(String.join("\n", lines));
     } catch (final IOException e) {
       return Optional.empty();
@@ -47,7 +44,7 @@ public class TestDataFileReader {
   private Optional<String> readFromResources(final String filePath) {
     final ClassLoader classLoader = TestDataFileReader.class.getClassLoader();
     try (InputStream inputStream = classLoader.getResourceAsStream(filePath)) {
-      return Optional.of(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
+      return Optional.of(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
     } catch (final NullPointerException | IOException e) {
       return Optional.empty();
     }
