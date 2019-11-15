@@ -18,6 +18,11 @@ if: tag is blank
 #   https://sormuras.github.io/blog/2017-12-08-install-jdk-on-travis.html
 # Java12 does not have this issue, we do not download the Java11 script
 # for that JVM or else we would be overriding Java12 with Java11.  
+#
+# Additional note: The export commands seem to not apply when extracted
+# to a script and seemingly only work when located in the main travis config
+# here.
+#
 
 jobs:
   include:
@@ -25,12 +30,9 @@ jobs:
       env: DESCRIPTION="static verification"
       jdk: openjdk11
       before_install:
-        - cd ~
-        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
-        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
-        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - ./.travis/install_java_11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5
         - export PATH=${JAVA_HOME}/bin:$PATH
-        - cd -
         - java --version
       install: skip
       script:
@@ -42,12 +44,9 @@ jobs:
       jdk: openjdk11
       addons: {postgresql: "10"}
       before_install:
-        - cd ~
-        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
-        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
-        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - ./.travis/install_java_11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5
         - export PATH=${JAVA_HOME}/bin:$PATH
-        - cd -
         - java --version
       install: skip
       script:
@@ -63,12 +62,9 @@ jobs:
       jdk: openjdk11
       env: DESCRIPTION="JDK11 unitTests and Test Coverage"
       before_install:
-        - cd ~
-        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
-        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
-        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - ./.travis/install_java_11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5
         - export PATH=${JAVA_HOME}/bin:$PATH
-        - cd -
         - java --version
       install: skip
       script:
@@ -79,12 +75,9 @@ jobs:
       env: DESCRIPTION="Smoke Test"
       addons: {postgresql: "10"}
       before_install:
-        - cd ~
-        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
-        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
-        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - ./.travis/install_java_11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5
         - export PATH=${JAVA_HOME}/bin:$PATH
-        - cd -
         - java --version
       install: skip
       script:
@@ -94,12 +87,9 @@ jobs:
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       install: skip
       before_install:
-        - cd ~
-        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
-        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
-        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - ./.travis/install_java_11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5
         - export PATH=${JAVA_HOME}/bin:$PATH
-        - cd -
         - java --version
       script:
         - ./.travis/setup_gpg
