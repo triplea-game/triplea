@@ -3,13 +3,18 @@ package org.triplea.live.servers;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.mockito.Mockito.when;
 import static org.triplea.test.common.StringToInputStream.asInputStream;
 
+import com.google.common.cache.Cache;
 import games.strategy.engine.framework.map.download.CloseableDownloader;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import java.io.InputStream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestDataFileReader;
 
@@ -18,38 +23,42 @@ import org.triplea.test.common.TestDataFileReader;
  * file system) and verifies we can extract data from it.
  */
 @Integration
+@ExtendWith(MockitoExtension.class)
 class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
+
+  @Mock private CloseableDownloader closeableDownloader;
+
+
+  @BeforeEach
+  void setup() {
+    // clear cache
+    FetchingCache.liveServersCache = null;
+  }
 
   @Test
   @DisplayName("End-to-end test parsing a sample configuration file")
   void verifyConfiguration() {
-    final LiveServersFetcher liveServersFetcher =
-        new LiveServersFetcher(() -> givenYaml("live.servers.yaml.examples/servers_example.yaml"));
+    givenInputStreamFromFile("live.servers.yaml.examples/servers_example.yaml");
+
+    final LiveServersFetcher liveServersFetcher = new LiveServersFetcher(() -> closeableDownloader);
 
     assertThat(liveServersFetcher.latestVersion(), isPresent());
     assertThat(liveServersFetcher.lobbyUriForCurrentVersion(), isPresent());
     assertThat(liveServersFetcher.serverForCurrentVersion(), notNullValue());
   }
 
-  private CloseableDownloader givenYaml(final String source) {
-    return new CloseableDownloader() {
-      @Override
-      public InputStream getStream() {
-        return asInputStream(TestDataFileReader.readContents(source));
-      }
-
-      @Override
-      public void close() {
-        // no-op
-      }
-    };
+  private void givenInputStreamFromFile(final String file) {
+    when(closeableDownloader.getStream())
+        .thenReturn(asInputStream(TestDataFileReader.readContents(file)));
   }
 
   @Test
   @DisplayName("End-to-end test parsing the current servers.yml file")
   void verifyCurrentConfiguration() {
-    final LiveServersFetcher liveServersFetcher =
-        new LiveServersFetcher(() -> givenYaml("servers.yml"));
+    givenInputStreamFromFile("servers.yml");
+
+    final LiveServersFetcher liveServersFetcher = new LiveServersFetcher(() -> closeableDownloader);
+
     assertThat(liveServersFetcher.latestVersion(), isPresent());
     assertThat(liveServersFetcher.lobbyUriForCurrentVersion(), isPresent());
     assertThat(liveServersFetcher.serverForCurrentVersion(), notNullValue());
