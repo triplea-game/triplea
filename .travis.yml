@@ -6,41 +6,86 @@ if: tag is blank
 # Note: Travis generally does not allocate more than 5 VMs at once.
 # Avoid running more than 5 jobs in parallel. Try to keep the jobs
 # balanced so that they each take about the same amount of time.
+
+# Note: We download Java 11.0.5 for a few reasons:
+# - jcenter no longer allows https TLS1.0 connection (this is seen as
+#   a gradle failed to download plugin error)
+# - Travis has Java 11.0.2 baked in to it, 11.0.2 does not have a
+#   recent patch (2019-10) to allow Java 11 to use a compatible version
+#   of TLS.
+# To overcome this situation, we emulate the travis 'install-jdk' script
+# and install a latest Java 11. For reference:
+#   https://sormuras.github.io/blog/2017-12-08-install-jdk-on-travis.html
+# Java12 does not have this issue, we do not download the Java11 script
+# for that JVM or else we would be overriding Java12 with Java11.  
+
 jobs:
   include:
     - stage: verify
       env: DESCRIPTION="static verification"
       jdk: openjdk11
+      before_install:
+        - cd ~
+        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
+        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
+        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - export PATH=${JAVA_HOME}/bin:$PATH
+        - cd -
+        - java --version
       install: skip
       script:
         ## shellcheck all shell scripts
         - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
-        - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain
+        - ./gradlew --no-daemon --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain
     - stage: verify
-      env: DESCRIPTION=integTest
+      env: DESCRIPTION="JDK11 integTest"
       jdk: openjdk11
       addons: {postgresql: "10"}
+      before_install:
+        - cd ~
+        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
+        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
+        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - export PATH=${JAVA_HOME}/bin:$PATH
+        - cd -
+        - java --version
       install: skip
       script:
         - ./.travis/setup_database &
-        - ./gradlew --parallel integTest
+        - ./gradlew --no-daemon --parallel integTest
     - stage: verify
       env: DESCRIPTION="JDK12 unitTests"
       jdk: openjdk12
       install: skip
       script:
-        - ./gradlew --parallel test
+        - ./gradlew --no-daemon --parallel test
     - stage: verify
       jdk: openjdk11
       env: DESCRIPTION="JDK11 unitTests and Test Coverage"
+      before_install:
+        - cd ~
+        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
+        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
+        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - export PATH=${JAVA_HOME}/bin:$PATH
+        - cd -
+        - java --version
       install: skip
       script:
-        - ./gradlew --parallel test jacocoTestReport
+        - ./gradlew --no-daemon --parallel test jacocoTestReport
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: verify
       jdk: openjdk11
       env: DESCRIPTION="Smoke Test"
       addons: {postgresql: "10"}
+      before_install:
+        - cd ~
+        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
+        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
+        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - export PATH=${JAVA_HOME}/bin:$PATH
+        - cd -
+        - java --version
       install: skip
       script:
         - ./.travis/setup_database
@@ -48,6 +93,14 @@ jobs:
     - stage: deploy
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       install: skip
+      before_install:
+        - cd ~
+        - wget "https://github.com/triplea-game/assets/raw/master/jdk-11.0.5_linux-x64_bin.tar.gz"
+        - tar -xzf jdk-11.0.5_linux-x64_bin.tar.gz
+        - export JAVA_HOME="$(pwd)/jdk-11.0.5"
+        - export PATH=${JAVA_HOME}/bin:$PATH
+        - cd -
+        - java --version
       script:
         - ./.travis/setup_gpg
         ## Update product version to include build number.
