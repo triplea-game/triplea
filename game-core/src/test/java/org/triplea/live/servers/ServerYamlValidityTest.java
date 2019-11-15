@@ -41,6 +41,15 @@ class ServerYamlValidityTest {
   }
 
   @Test
+  void atLeastOneActiveServerIsConfigured() {
+    assertThat(countActiveServers() > 0, is(true));
+  }
+
+  private long countActiveServers() {
+    return liveServers.getServers().stream().filter(props -> !props.isInactive()).count();
+  }
+
+  @Test
   void uriValuesDoNotEndInSlash() {
     liveServers.getServers().stream()
         .map(ServerProperties::getUri)
