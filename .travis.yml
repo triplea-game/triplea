@@ -31,7 +31,7 @@ jobs:
       jdk: openjdk11
       before_install:
         - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5+10
         - export PATH=${JAVA_HOME}/bin:$PATH
         - java --version
       install: skip
@@ -45,7 +45,7 @@ jobs:
       addons: {postgresql: "10"}
       before_install:
         - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5+10
         - export PATH=${JAVA_HOME}/bin:$PATH
         - java --version
       install: skip
@@ -63,7 +63,7 @@ jobs:
       env: DESCRIPTION="JDK11 unitTests and Test Coverage"
       before_install:
         - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5+10
         - export PATH=${JAVA_HOME}/bin:$PATH
         - java --version
       install: skip
@@ -76,7 +76,7 @@ jobs:
       addons: {postgresql: "10"}
       before_install:
         - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5+10
         - export PATH=${JAVA_HOME}/bin:$PATH
         - java --version
       install: skip
@@ -88,7 +88,7 @@ jobs:
       install: skip
       before_install:
         - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5+10
         - export PATH=${JAVA_HOME}/bin:$PATH
         - java --version
       script:
