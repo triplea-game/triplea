@@ -10,12 +10,14 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.InputStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestDataFileReader;
 
 /**
  * End-to-end to Parses an example servers.yml file and the current servers.yaml file (from local
  * file system) and verifies we can extract data from it.
  */
+@Integration
 class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test
