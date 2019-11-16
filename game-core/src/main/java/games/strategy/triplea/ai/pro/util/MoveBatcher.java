@@ -36,7 +36,7 @@ public class MoveBatcher {
       this(
           mutableSingletonList(unit),
           route,
-          new HashMap<Unit, Unit>(Map.of(unit, transportToLoad)));
+          new HashMap<>(Map.of(unit, transportToLoad)));
     }
 
     private static ArrayList<Unit> mutableSingletonList(final Unit unit) {
@@ -73,14 +73,14 @@ public class MoveBatcher {
     }
   }
 
-  private final ArrayList<ArrayList<Move>> moveSequences = new ArrayList<ArrayList<Move>>();
+  private final ArrayList<ArrayList<Move>> moveSequences = new ArrayList<>();
 
   /**
    * Starts a new sequence. This must be called before calling any add*() methods. A sequence
    * indicates a logical dependency relationship between the moves in that sequence.
    */
   public void newSequence() {
-    moveSequences.add(new ArrayList<Move>());
+    moveSequences.add(new ArrayList<>());
   }
 
   /**

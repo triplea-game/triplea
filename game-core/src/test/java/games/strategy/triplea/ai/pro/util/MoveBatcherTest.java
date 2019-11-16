@@ -42,7 +42,7 @@ public class MoveBatcherTest {
   public MoveBatcherTest() throws Exception {}
 
   private static ArrayList<Unit> unitList(final Unit... units) {
-    return new ArrayList<Unit>(List.of(units));
+    return new ArrayList<>(List.of(units));
   }
 
   @Test
