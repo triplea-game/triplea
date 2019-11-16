@@ -47,9 +47,10 @@ public interface KeyBindingSupplier extends Supplier<Map<KeyStroke, Runnable>> {
   }
 
   static KeyStroke fromKeyEventCode(final int code, final ModifierKey modifierKey) {
-    Preconditions.checkArgument(
-        !KeyEvent.getKeyText(code).toUpperCase().contains("UNKNOWN"),
-        "Be sure to use a constant from 'KeyEvent', unknown key constant: " + code);
-    return KeyStroke.getKeyStroke(code, modifierKey.modifierMask);
+    final KeyStroke result = KeyStroke.getKeyStroke(code, modifierKey.modifierMask);
+    if (result.toString().contains("UNKNOWN")) {
+      throw new IllegalArgumentException("Be sure to use a constant from 'KeyEvent', unknown key constant: " + code);
+    }
+    return result;
   }
 }
