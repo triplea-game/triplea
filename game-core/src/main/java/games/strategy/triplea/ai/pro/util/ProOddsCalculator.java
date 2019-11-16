@@ -60,7 +60,7 @@ public class ProOddsCalculator {
     if (strengthDifference < 45) {
       return new ProBattleResult(0, -999, false, new ArrayList<>(), defendingUnits, 1);
     }
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   /**
@@ -97,7 +97,7 @@ public class ProOddsCalculator {
           new ArrayList<>(),
           1);
     }
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   public ProBattleResult calculateBattleResultsNoSubmerge(
@@ -128,7 +128,7 @@ public class ProOddsCalculator {
     if (result != null) {
       return result;
     }
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge);
   }
 
   private static ProBattleResult checkIfNoAttackersOrDefenders(
@@ -167,26 +167,33 @@ public class ProOddsCalculator {
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
   }
 
-  public ProBattleResult callBattleCalculator(
+  public ProBattleResult callBattleCalcWithRetreatAir(
       final Territory t,
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final Set<Unit> bombardingUnits) {
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, true);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, true, true);
   }
 
-  private ProBattleResult callBattleCalculator(
+  public ProBattleResult callBattleCalc(
+      final Territory t,
+      final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits,
+      final Set<Unit> bombardingUnits) {
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, true);
+  }
+
+  private ProBattleResult callBattleCalc(
       final Territory t,
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final Set<Unit> bombardingUnits,
       final boolean checkSubmerge) {
-    return callBattleCalculator(
-        t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge, false);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge, false);
   }
 
   /** Simulates the specified battle. */
-  public ProBattleResult callBattleCalculator(
+  private ProBattleResult callBattleCalc(
       final Territory t,
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,

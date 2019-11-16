@@ -70,7 +70,7 @@ public final class ProSimulateTurnUtils {
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
 
         final ProBattleResult result =
-            calc.callBattleCalculator(t, attackers, defenders, bombardingUnits);
+            calc.callBattleCalc(t, attackers, defenders, bombardingUnits);
         final List<Unit> remainingAttackers = result.getAverageAttackersRemaining();
         final List<Unit> remainingDefenders = result.getAverageDefendersRemaining();
         ProLogger.debug("remainingAttackers=" + remainingAttackers);
