@@ -16,7 +16,8 @@ import org.triplea.http.client.lobby.chat.ChatParticipant;
 public class Chatters {
   @AllArgsConstructor
   @Getter
-  private static class ChatterSession {
+  @VisibleForTesting
+  static class ChatterSession {
     private final ChatParticipant chatParticipant;
     private final Session session;
   }
@@ -38,5 +39,12 @@ public class Chatters {
     return participants.values().stream()
         .map(ChatterSession::getChatParticipant)
         .collect(Collectors.toSet());
+  }
+
+  public boolean hasPlayer(final PlayerName playerName) {
+    return participants.values().stream()
+        .map(ChatterSession::getChatParticipant)
+        .map(ChatParticipant::getPlayerName)
+        .anyMatch(playerName::equals);
   }
 }

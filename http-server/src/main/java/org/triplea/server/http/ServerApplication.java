@@ -122,7 +122,7 @@ public class ServerApplication extends Application<AppConfig> {
 
     final Chatters chatters = new Chatters();
 
-    endPointControllers(configuration, jdbi)
+    endPointControllers(configuration, jdbi, chatters)
         .forEach(controller -> environment.jersey().register(controller));
 
     // Inject beans into websocket endpoint
@@ -159,7 +159,8 @@ public class ServerApplication extends Application<AppConfig> {
     return ImmutableList.of(new IllegalArgumentMapper());
   }
 
-  private List<Object> endPointControllers(final AppConfig appConfig, final Jdbi jdbi) {
+  private List<Object> endPointControllers(
+      final AppConfig appConfig, final Jdbi jdbi, final Chatters chatters) {
     return ImmutableList.of(
         AccessLogControllerFactory.buildController(appConfig, jdbi),
         BadWordControllerFactory.buildController(jdbi),
@@ -168,7 +169,7 @@ public class ServerApplication extends Application<AppConfig> {
         ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
         GameHostingControllerFactory.buildController(jdbi),
         GameListingControllerFactory.buildController(jdbi),
-        LoginControllerFactory.buildController(jdbi),
+        LoginControllerFactory.buildController(jdbi, chatters),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
         UserBanControllerFactory.buildController(appConfig, jdbi),
         ErrorReportControllerFactory.buildController(appConfig, jdbi),

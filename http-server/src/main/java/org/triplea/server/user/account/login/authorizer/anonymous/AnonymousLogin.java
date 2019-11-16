@@ -5,11 +5,14 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import lombok.NonNull;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.server.lobby.chat.event.processing.Chatters;
 
 @Builder
 class AnonymousLogin implements Function<PlayerName, Optional<String>> {
+  @NonNull private final Chatters chatters;
   @Nonnull private final UserJdbiDao userJdbiDao;
 
   // TODO: Project#12 bad-words check
@@ -18,8 +21,8 @@ class AnonymousLogin implements Function<PlayerName, Optional<String>> {
   @Override
   public Optional<String> apply(final PlayerName playerName) {
     Preconditions.checkNotNull(playerName);
-    // TODO: Project#12 check if chat has playerName
-    return userJdbiDao.lookupUserIdByName(playerName.getValue()).isEmpty()
+    return (!chatters.hasPlayer(playerName)
+            && userJdbiDao.lookupUserIdByName(playerName.getValue()).isEmpty())
         ? Optional.empty()
         : Optional.of("Name is already in use, please choose another");
   }
