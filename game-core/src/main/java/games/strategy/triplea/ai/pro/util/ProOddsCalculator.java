@@ -136,8 +136,6 @@ public class ProOddsCalculator {
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final boolean checkSubmerge) {
-    final GameData data = ProData.getData();
-
     final boolean hasNoDefenders =
         defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure());
     final boolean isLandAndCanOnlyBeAttackedByAir =
@@ -152,14 +150,21 @@ public class ProOddsCalculator {
               defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, true));
       final double tuv = TuvUtils.getTuv(mainCombatDefenders, ProData.unitValueMap);
       return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, new ArrayList<>(), 0);
-    } else if (checkSubmerge
-        && Properties.getSubRetreatBeforeBattle(data)
-        && !defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitCanEvade())
-        && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
+    } else if (canSubmergeBeforeBattle(attackingUnits, defendingUnits, checkSubmerge)) {
       return new ProBattleResult();
     }
     return null;
+  }
+
+  private static boolean canSubmergeBeforeBattle(
+      final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits,
+      final boolean checkSubmerge) {
+    final GameData data = ProData.getData();
+    return checkSubmerge
+        && Properties.getSubRetreatBeforeBattle(data)
+        && defendingUnits.stream().allMatch(Matches.unitCanEvade())
+        && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
   }
 
   public ProBattleResult callBattleCalculator(
@@ -249,11 +254,7 @@ public class ProOddsCalculator {
     }
 
     // Remove TUV and add to remaining units for defenders that can submerge before battle
-    if (tuvSwing > 0
-        && checkSubmerge
-        && Properties.getSubRetreatBeforeBattle(data)
-        && defendingUnits.stream().anyMatch(Matches.unitCanEvade())
-        && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
+    if (tuvSwing > 0 && canSubmergeBeforeBattle(attackingUnits, defendingUnits, checkSubmerge)) {
       final List<Unit> defendingSubsKilled =
           CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade());
       defendingSubsKilled.removeAll(averageDefendersRemaining);
