@@ -1,8 +1,6 @@
 package games.strategy.triplea.ui;
 
-import com.google.common.base.Preconditions;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.Map;
 import java.util.function.Supplier;
 import javax.swing.KeyStroke;
@@ -47,9 +45,11 @@ public interface KeyBindingSupplier extends Supplier<Map<KeyStroke, Runnable>> {
   }
 
   static KeyStroke fromKeyEventCode(final int code, final ModifierKey modifierKey) {
-    Preconditions.checkArgument(
-        !KeyEvent.getKeyText(code).toUpperCase().contains("UNKNOWN"),
-        "Be sure to use a constant from 'KeyEvent', unknown key constant: " + code);
-    return KeyStroke.getKeyStroke(code, modifierKey.modifierMask);
+    final KeyStroke result = KeyStroke.getKeyStroke(code, modifierKey.modifierMask);
+    if (result.toString().contains("UNKNOWN")) {
+      throw new IllegalArgumentException(
+          "Be sure to use a constant from 'KeyEvent', unknown key constant: " + code);
+    }
+    return result;
   }
 }
