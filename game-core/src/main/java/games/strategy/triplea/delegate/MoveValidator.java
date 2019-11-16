@@ -1167,11 +1167,11 @@ public class MoveValidator {
       return result;
     }
     // If there are non-sea transports return
-    final boolean seaOrNoTransportsPresent =
-        unitsToTransports.isEmpty()
-            || unitsToTransports.values().stream()
-                .anyMatch(Matches.unitIsSea().and(Matches.unitCanTransport()));
-    if (!seaOrNoTransportsPresent) {
+    final boolean loadingNonSeaTransportsOnly =
+        !unitsToTransports.isEmpty()
+            && unitsToTransports.values().stream()
+                .noneMatch(Matches.unitIsSea().and(Matches.unitCanTransport()));
+    if (loadingNonSeaTransportsOnly) {
       return result;
     }
     final Territory routeEnd = route.getEnd();

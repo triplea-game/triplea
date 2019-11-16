@@ -4,10 +4,10 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * MoveBatcher implements an algorithm that batches AI moves together, reducing the number of
@@ -17,12 +17,12 @@ public class MoveBatcher {
   private static class Move {
     private final ArrayList<Unit> units;
     private final Route route;
-    private final HashMap<Unit, Unit> unitsToTransports;
+    private final @Nullable HashMap<Unit, Unit> unitsToTransports;
 
     private Move(
         final ArrayList<Unit> units,
         final Route route,
-        final HashMap<Unit, Unit> unitsToTransports) {
+        final @Nullable HashMap<Unit, Unit> unitsToTransports) {
       this.units = units;
       this.route = route;
       this.unitsToTransports = unitsToTransports;
@@ -33,14 +33,10 @@ public class MoveBatcher {
     }
 
     Move(final Unit unit, final Route route, final Unit transportToLoad) {
-      this(mutableSingletonList(unit), route, new HashMap<>(Map.of(unit, transportToLoad)));
+      this(new ArrayList<>(List.of(unit)), route, new HashMap<>(Map.of(unit, transportToLoad)));
     }
 
-    private static ArrayList<Unit> mutableSingletonList(final Unit unit) {
-      return new ArrayList<>(Collections.singletonList(unit));
-    }
-
-    boolean isTransportLoad() {
+    private boolean isTransportLoad() {
       return this.unitsToTransports != null;
     }
 
@@ -81,7 +77,7 @@ public class MoveBatcher {
   }
 
   /**
-   * Adds a transport load move. Ownership of the params is transferred to this object.
+   * Adds a transport load move.
    *
    * @param unit The unit to move.
    * @param route The route to move on.
@@ -92,7 +88,7 @@ public class MoveBatcher {
   }
 
   /**
-   * Adds a move for the specified units. Ownership of the params is transferred to this object.
+   * Adds a move for the specified units. The units list must not be changed after adding the move.
    *
    * @param units The units to move. Note that type is ArrayList explicitly to prevent an
    *     unmodifiable List.of() being passed.
@@ -112,6 +108,9 @@ public class MoveBatcher {
 
   /**
    * Emits the accumulated moves to the passed output params.
+   *
+   * <p>TODO: #5416 Refactor the IMoveDelegate and ProMoveUtils code to use a List of Move objects,
+   * instead of these parallel lists.
    *
    * @param moveUnits The units to move.
    * @param moveRoutes The routes to move along
