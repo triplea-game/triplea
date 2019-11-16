@@ -33,10 +33,7 @@ public class MoveBatcher {
     }
 
     Move(final Unit unit, final Route route, final Unit transportToLoad) {
-      this(
-          mutableSingletonList(unit),
-          route,
-          new HashMap<>(Map.of(unit, transportToLoad)));
+      this(mutableSingletonList(unit), route, new HashMap<>(Map.of(unit, transportToLoad)));
     }
 
     private static ArrayList<Unit> mutableSingletonList(final Unit unit) {
@@ -155,7 +152,8 @@ public class MoveBatcher {
       }
       for (int j = 0; j < sequence.size(); j++) {
         if (!sequence.get(j).mergeWith(otherSequence.get(j))) {
-          throw new RuntimeException("Unexpected");
+          throw new IlegalStateException(
+              "Could not merge move despite checking canMergeWith() earlier.");
         }
       }
       otherSequence.clear();
