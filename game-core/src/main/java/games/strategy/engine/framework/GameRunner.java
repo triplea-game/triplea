@@ -3,9 +3,7 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
-import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
+import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
@@ -29,6 +27,7 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +42,6 @@ import javax.swing.filechooser.FileFilter;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
-import org.triplea.live.servers.ServerProperties;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
@@ -230,15 +228,13 @@ public final class GameRunner {
       final String playerName,
       final String comments,
       final String password,
-      final ServerProperties serverProperties) {
+      final URI lobbyUri) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     commands.add("-D" + TRIPLEA_SERVER + "=true");
     commands.add("-D" + TRIPLEA_PORT + "=" + port);
     commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
-    commands.add("-D" + LOBBY_HOST + "=" + serverProperties.getHost());
-    commands.add("-D" + LOBBY_PORT + "=" + serverProperties.getPort());
-    commands.add("-D" + LOBBY_HTTPS_PORT + "=" + serverProperties.getHttpsPort());
+    commands.add("-D" + LOBBY_URI + "=" + lobbyUri);
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     if (password != null && password.length() > 0) {
       commands.add("-D" + SERVER_PASSWORD + "=" + password);

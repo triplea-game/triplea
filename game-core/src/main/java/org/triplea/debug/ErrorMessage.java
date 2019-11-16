@@ -1,11 +1,11 @@
 package org.triplea.debug;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
 import java.awt.Dialog;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import org.triplea.debug.error.reporting.StackTraceReportView;
 import org.triplea.http.client.error.report.ErrorReportClient;
-import org.triplea.live.servers.ServerProperties;
+import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -120,34 +120,29 @@ public enum ErrorMessage {
     }
   }
 
-  private void setUploadRecord(final LogRecord record) {
-
-    final ErrorReportClient serviceClient = serviceClient();
-
-    if (serviceClient == null) {
-      // if no internet connection, do not show 'upload button' as it will not work anyways.
-      INSTANCE.uploadButton.setVisible(false);
-    } else {
-      INSTANCE.uploadButton.setVisible(true);
-
-      // replace button upload action to use the new log record object
-      if (INSTANCE.uploadButton.getActionListeners().length > 0) {
-        INSTANCE.uploadButton.removeActionListener(INSTANCE.uploadButton.getActionListeners()[0]);
-      }
-      INSTANCE.uploadButton.addActionListener(
-          e -> {
-            hide();
-            StackTraceReportView.showWindow(windowReference, serviceClient, record);
-          });
-    }
+  private void setUploadRecord(final LogRecord logRecord) {
+    new LiveServersFetcher()
+        .lobbyUriForCurrentVersion()
+        .ifPresentOrElse(
+            uri -> activateUploadErrorReportButton(uri, logRecord),
+            // if no internet connection, do not show 'upload button' as it will not work anyways.
+            () -> INSTANCE.uploadButton.setVisible(false));
   }
 
-  private static ErrorReportClient serviceClient() {
-    return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
-        .fetchLobbyServerProperties()
-        .map(ServerProperties::getUri)
-        .map(ErrorReportClient::newClient)
-        .orElse(null);
+  private void activateUploadErrorReportButton(final URI lobbyUri, final LogRecord logRecord) {
+    INSTANCE.uploadButton.setVisible(true);
+
+    final ErrorReportClient errorReportClient = ErrorReportClient.newClient(lobbyUri);
+
+    // replace button upload action to use the new log record object
+    if (INSTANCE.uploadButton.getActionListeners().length > 0) {
+      INSTANCE.uploadButton.removeActionListener(INSTANCE.uploadButton.getActionListeners()[0]);
+    }
+    INSTANCE.uploadButton.addActionListener(
+        e -> {
+          hide();
+          StackTraceReportView.showWindow(windowReference, errorReportClient, logRecord);
+        });
   }
 
   private void hide() {

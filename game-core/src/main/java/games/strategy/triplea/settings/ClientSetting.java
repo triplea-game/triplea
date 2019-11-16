@@ -9,6 +9,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
@@ -65,12 +66,19 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
-  public static final ClientSetting<String> lobbyLastUsedHost =
-      new StringClientSetting("LOBBY_LAST_USED_HOST");
-  public static final ClientSetting<Integer> lobbyLastUsedPort =
-      new IntegerClientSetting("LOBBY_LAST_USED_PORT");
-  public static final ClientSetting<Integer> lobbyLastUsedHttpsPort =
-      new IntegerClientSetting("LOBBY_LAST_USED_HTTPS_PORT");
+  /** Fallback URI in case github is not available when fetching the live lobby URI. */
+  public static final ClientSetting<URI> lobbyLastUsedUri =
+      new UriClientSetting("LAST_USED_LOBBY_URI");
+  /**
+   * When set to true, lobby URI is hardcoded to localhost (http). Takes precedence over {@code
+   * lobbyOverrideUri}
+   */
+  public static final BooleanClientSetting lobbyUseLocalhostOverride =
+      new BooleanClientSetting("USE_LOCALHOST_LOBBY_OVERRIDE");
+  /** For testing, sets lobby URI to an arbitrary value. */
+  public static final ClientSetting<URI> lobbyUriOverride =
+      new UriClientSetting("LOBBY_URI_OVERRIDE");
+
   public static final ClientSetting<char[]> lobbyLoginName =
       new ProtectedStringClientSetting("LOBBY_LOGIN_NAME");
   public static final ClientSetting<char[]> lobbySavedPassword =
@@ -118,12 +126,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE");
   public static final BooleanClientSetting soundEnabled =
       new BooleanClientSetting("SOUND_ENABLED", true);
-  public static final ClientSetting<String> testLobbyHost =
-      new StringClientSetting("TEST_LOBBY_HOST");
-  public static final ClientSetting<Integer> testLobbyPort =
-      new IntegerClientSetting("TEST_LOBBY_PORT");
-  public static final ClientSetting<Integer> testLobbyHttpsPort =
-      new IntegerClientSetting("TEST_LOBBY_HTTPS_PORT");
   public static final ClientSetting<Boolean> firstTimeThisVersion =
       new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
   public static final ClientSetting<String> lastCheckForEngineUpdate =

@@ -67,16 +67,7 @@ REM
 REM The default value is the hostname for the TripleA community's public lobby.
 REM Under normal circumstances, you will not have to change this variable.
 REM
-SET LOBBY_HOST=lobby.triplea-game.org
-
-REM
-REM The port on which the lobby to which the bot will connect listens for
-REM connections.
-REM
-REM The default value is the port for the TripleA community's public lobby.
-REM Under normal circumstances, you will not have to change this variable.
-REM
-SET LOBBY_HTTPS_PORT=8080
+SET LOBBY_URI=https://lobby.triplea-game.org
 
 REM
 REM The password used to secure remote maintenance of your bot.  A lobby
@@ -104,8 +95,7 @@ java^
  -Djava.awt.headless=true^
  -jar bin\triplea-game-headless-@version@-all.jar^
  -Ptriplea.lobby.game.supportPassword=%LOBBY_SUPPORT_PASSWORD%^
- -Ptriplea.lobby.host=%LOBBY_HOST%^
- -Ptriplea.lobby.https.port=%LOBBY_HTTPS_PORT%^
+ -Ptriplea.lobby.uri=%LOBBY_URI%^
  -Ptriplea.map.folder="%MAPS_FOLDER%"^
  -Ptriplea.name=%BOT_NAME%^
  -Ptriplea.port=%BOT_PORT%^

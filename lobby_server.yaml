@@ -1,3 +1,5 @@
+# Obsolete file, delete this once 1.9.x has been closed
+# Instead see 'servers.yml'
 - version: 1.9.0.0
   host: lobby.triplea-game.org
   port: 3304

@@ -15,11 +15,11 @@ set -eux
 
 readonly VERSION=$(sed 's/version\s*=\s*//' game-core/src/main/resources/META-INF/triplea/product.properties)
 
-readonly LOBBY_JAR_PATH="lobby/build/libs/triplea-lobby-${VERSION}.jar"
+readonly HTTP_SERVER_JAR_PATH="http-server/build/libs/triplea-http-server-${VERSION}.jar"
 readonly BOT_JAR_PATH="game-headless/build/libs/triplea-game-headless-${VERSION}.jar"
 readonly SMOKE_TEST_JAR_PATH="smoke-testing/build/libs/triplea-smoke-testing-${VERSION}.jar"
 
-readonly LOBBY_OUTPUT="lobby-output"
+readonly HTTP_SERVER_OUTPUT="server-output"
 readonly BOT_OUTPUT="bot-output"
 
 
@@ -47,8 +47,8 @@ function printLogs() {
   echo "-----------"
   echo "PRINTING LOGS"
   echo "-----------"
-  echo "Lobby log:"
-  cat "$LOBBY_OUTPUT"
+  echo "Http Server log:"
+  cat "$HTTP_SERVER_OUTPUT"
   echo "-----------"
   echo "Bot log:"
   cat "$BOT_OUTPUT"
@@ -57,13 +57,13 @@ function printLogs() {
 
 function buildJars() {
   ./gradlew --parallel \
-     :lobby:shadowJar \
+     :http-server:shadowJar \
      :game-headless:shadowJar \
      :smoke-testing:shadowJar 
 }
 
 function startLobby() {
-  java -jar "$LOBBY_JAR_PATH" > "$LOBBY_OUTPUT" 2>&1 &
+  java -jar "$HTTP_SERVER_JAR_PATH" server ./http-server/configuration.yml > "$HTTP_SERVER_OUTPUT" 2>&1 &
   echo $!
 }
 
@@ -72,9 +72,7 @@ function startBot() {
     -Dtriplea.game=Bot01_game \
     -Dtriplea.port=4000 \
     -Dtriplea.name=Bot01Testing \
-    -Dtriplea.lobby.host=localhost \
-    -Dtriplea.lobby.port=3304 \
-    -Dtriplea.lobby.https.port=8080 \
+    -Dtriplea.lobby.uri="http://localhost:8080" \
     -Dtriplea.lobby.game.supportPassword= \
     -Dtriplea.map.folder=~/triplea/downloadedMaps/ \
     -jar "$BOT_JAR_PATH" > "$BOT_OUTPUT" 2>&1 &
@@ -82,7 +80,7 @@ function startBot() {
 }
 
 function checkAppsStarted() {
-  nc -z localhost 3304 \
+  nc -z localhost 8080 \
      || (echo "Error!! Lobby is not listening on port 3304! Check logs:" \
             && exit 1)
   nc -z localhost 4000 \
@@ -99,7 +97,7 @@ function checkLogsForErrors() {
   # If we find any, echo an error message and exit 1
   # Otherwise, print a confirmation message
   echo "Checking lobby logs for errors..."
-  (grep "SEVERE" "$LOBBY_OUTPUT" \
+  (grep "SEVERE" "$HTTP_SERVER_OUTPUT" \
        && echo "Error!! Found errors in lobby log") \
      && exit 1 \
      || echo "No errors found in lobby logs"

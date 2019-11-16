@@ -2,8 +2,7 @@ package org.triplea.game.server;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
+import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
@@ -106,7 +105,7 @@ public class HeadlessGameServer {
   }
 
   public static synchronized boolean headless() {
-    return getInstance() != null
+    return instance != null
         || Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
   }
 
@@ -192,7 +191,6 @@ public class HeadlessGameServer {
 
   /** Updates current 'HeadlessGameServer.game' instance to be set to the given parameter. */
   public static synchronized void setServerGame(final ServerGame serverGame) {
-    final HeadlessGameServer instance = getInstance();
     if (instance != null) {
       instance.game = serverGame;
       if (serverGame != null) {
@@ -527,11 +525,8 @@ public class HeadlessGameServer {
             + TRIPLEA_NAME
             + "=<PLAYER_NAME>\n"
             + "   "
-            + LOBBY_HOST
-            + "=<LOBBY_HOST>\n"
-            + "   "
-            + LOBBY_HTTPS_PORT
-            + "=<LOBBY_HTTPS_PORT>\n"
+            + LOBBY_URI
+            + "=<LOBBY_URI>\n"
             + "   "
             + LOBBY_GAME_SUPPORT_PASSWORD
             + "=<password for remote actions, such as remote stop game>\n"
@@ -564,14 +559,8 @@ public class HeadlessGameServer {
       printUsage = true;
     }
 
-    if (System.getProperty(LOBBY_HOST, "").isEmpty()) {
-      log.warning("Invalid or missing argument: " + LOBBY_HOST + " must be set");
-      printUsage = true;
-    }
-
-    if (isInvalidPortNumber(System.getProperty(LOBBY_HTTPS_PORT, "0"))) {
-      log.warning(
-          "Invalid or missing argument: " + LOBBY_HTTPS_PORT + " must be greater than zero");
+    if (System.getProperty(LOBBY_URI, "").isEmpty()) {
+      log.warning("Invalid or missing argument: " + LOBBY_URI + " must be set");
       printUsage = true;
     }
 

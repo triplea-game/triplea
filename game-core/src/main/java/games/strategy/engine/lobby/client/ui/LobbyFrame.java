@@ -34,7 +34,7 @@ public class LobbyFrame extends JFrame {
 
   @Getter private final LobbyClient lobbyClient;
 
-  public LobbyFrame(final LobbyClient lobbyClient, final ServerProperties lobbyServerProperties) {
+  public LobbyFrame(final LobbyClient lobbyClient, final ServerProperties serverProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(JFrameBuilder.getGameIcon());
@@ -43,7 +43,7 @@ public class LobbyFrame extends JFrame {
     final ChatTransmitter chatTransmitter = new LobbyChatTransmitter(lobbyClient);
     final Chat chat = new Chat(chatTransmitter);
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
-    lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
+    chatMessagePanel.addServerMessage(serverProperties.getMessage());
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
@@ -53,7 +53,7 @@ public class LobbyFrame extends JFrame {
         new LobbyGameTableModel(
             lobbyClient.isModerator(), lobbyClient.getHttpLobbyClient(), this::reportErrorMessage);
     final LobbyGamePanel gamePanel =
-        new LobbyGamePanel(lobbyClient, lobbyServerProperties, tableModel);
+        new LobbyGamePanel(lobbyClient, serverProperties.getUri(), tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
