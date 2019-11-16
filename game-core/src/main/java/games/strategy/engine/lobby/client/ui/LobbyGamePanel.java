@@ -41,7 +41,6 @@ class LobbyGamePanel extends JPanel {
 
     final JButton hostGame = new JButton("Host Game");
     joinGame = new JButton("Join Game");
-    final JButton bootGame = new JButton("Boot Game");
 
     gameTable = new LobbyGameTable(gameTableModel);
     // only allow one row to be selected
@@ -95,15 +94,11 @@ class LobbyGamePanel extends JPanel {
     final JToolBar toolBar = new JToolBar();
     toolBar.add(hostGame);
     toolBar.add(joinGame);
-    if (lobbyClient.isModerator()) {
-      toolBar.add(bootGame);
-    }
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
 
     hostGame.addActionListener(e -> hostGame(lobbyUri));
     joinGame.addActionListener(e -> joinGame());
-    bootGame.addActionListener(e -> bootGame());
     gameTable
         .getSelectionModel()
         .addListSelectionListener(
