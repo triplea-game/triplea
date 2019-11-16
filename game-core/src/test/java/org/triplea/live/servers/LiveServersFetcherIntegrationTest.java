@@ -6,7 +6,6 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.triplea.test.common.StringToInputStream.asInputStream;
 
-import com.google.common.cache.Cache;
 import games.strategy.engine.framework.map.download.CloseableDownloader;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +26,6 @@ import org.triplea.test.common.TestDataFileReader;
 class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
 
   @Mock private CloseableDownloader closeableDownloader;
-
 
   @BeforeEach
   void setup() {
