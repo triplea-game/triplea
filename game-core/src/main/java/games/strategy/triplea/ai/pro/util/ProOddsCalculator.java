@@ -128,7 +128,7 @@ public class ProOddsCalculator {
     if (result != null) {
       return result;
     }
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge);
   }
 
   private static ProBattleResult checkIfNoAttackersOrDefenders(
@@ -167,7 +167,17 @@ public class ProOddsCalculator {
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final Set<Unit> bombardingUnits) {
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, false);
+    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, true);
+  }
+
+  private ProBattleResult callBattleCalculator(
+      final Territory t,
+      final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits,
+      final Set<Unit> bombardingUnits,
+      final boolean checkSubmerge) {
+    return callBattleCalculator(
+        t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge, false);
   }
 
   /** Simulates the specified battle. */
@@ -176,6 +186,7 @@ public class ProOddsCalculator {
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final Set<Unit> bombardingUnits,
+      final boolean checkSubmerge,
       final boolean retreatWhenOnlyAirLeft) {
     final GameData data = ProData.getData();
 
@@ -217,7 +228,9 @@ public class ProOddsCalculator {
     double tuvSwing =
         results.getAverageTuvSwing(
             attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
-    if (Matches.territoryIsNeutralButNotWater().test(t)) { // Set TUV swing for neutrals
+
+    // Set TUV swing for neutrals
+    if (Matches.territoryIsNeutralButNotWater().test(t)) {
       final double attackingUnitValue = TuvUtils.getTuv(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
           results
@@ -225,13 +238,28 @@ public class ProOddsCalculator {
               .getFirst();
       tuvSwing = remainingUnitValue - attackingUnitValue;
     }
+
+    // Add TUV swing for transported units
     final List<Unit> defendingTransportedUnits =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsBeingTransported());
-    if (t.isWater()
-        && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
+    if (t.isWater() && !defendingTransportedUnits.isEmpty()) {
       final double transportedUnitValue =
           TuvUtils.getTuv(defendingTransportedUnits, ProData.unitValueMap);
       tuvSwing += transportedUnitValue * winPercentage / 100;
+    }
+
+    // Remove TUV and add to remaining units for defenders that can submerge before battle
+    if (tuvSwing > 0
+        && checkSubmerge
+        && Properties.getSubRetreatBeforeBattle(data)
+        && defendingUnits.stream().anyMatch(Matches.unitCanEvade())
+        && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
+      final List<Unit> defendingSubsKilled =
+          CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade());
+      defendingSubsKilled.removeAll(averageDefendersRemaining);
+      averageDefendersRemaining.addAll(defendingSubsKilled);
+      final int subTuv = TuvUtils.getTuv(defendingSubsKilled, ProData.unitValueMap);
+      tuvSwing = Math.max(0, tuvSwing - subTuv);
     }
 
     // Create battle result object

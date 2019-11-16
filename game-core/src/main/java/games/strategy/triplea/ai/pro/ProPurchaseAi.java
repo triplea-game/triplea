@@ -1540,7 +1540,7 @@ class ProPurchaseAi {
             // If it can be held then break
             if (!hasOnlyRetreatingSubs
                 && (result.getTuvSwing() < -1
-                    || result.getWinPercentage() < ProData.winPercentage)) {
+                    || result.getWinPercentage() < (100.0 - ProData.winPercentage))) {
               break;
             }
 
@@ -1619,7 +1619,8 @@ class ProPurchaseAi {
         }
 
         // Check to see if its worth trying to defend the territory
-        if (result.getTuvSwing() < 0 || result.getWinPercentage() < ProData.winPercentage) {
+        if (result.getTuvSwing() < 0
+            || result.getWinPercentage() < (100.0 - ProData.winPercentage)) {
           resourceTracker.confirmTempPurchases();
           ProLogger.trace(
               t
@@ -1627,8 +1628,8 @@ class ProPurchaseAi {
                   + unitsToPlace
                   + ", TUVSwing="
                   + result.getTuvSwing()
-                  + ", hasLandUnitRemaining="
-                  + result.isHasLandUnitRemaining());
+                  + ", win%="
+                  + result.getWinPercentage());
           addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
         } else {
           resourceTracker.clearTempPurchases();

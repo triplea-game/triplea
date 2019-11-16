@@ -229,6 +229,7 @@ public class ProTerritoryManager {
                       new ArrayList<>(combinedUnits),
                       defenders,
                       patd.getMaxBombardUnits(),
+                      true,
                       true);
 
               // Check allied result with strafe
