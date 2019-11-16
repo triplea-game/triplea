@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Frame;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -22,7 +21,7 @@ public final class BanDurationDialog extends JDialog {
 
   private final JSpinner durationSpinner =
       new JSpinner(new SpinnerNumberModel(1, 1, MAX_DURATION, 1));
-  private final JComboBox<TimeUnit> timeUnitComboBox = new JComboBox<>(TimeUnit.values());
+  private final JComboBox<BanTimeUnit> timeUnitComboBox = new JComboBox<>(BanTimeUnit.values());
   private Result result = Result.CANCEL;
 
   private BanDurationDialog(final Frame owner, final String title, final String message) {
