@@ -10,6 +10,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageFactory;
+import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
 import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
@@ -75,7 +76,7 @@ public class LobbyChatClient {
   }
 
   public void addChatMessageListener(final Consumer<ChatMessage> messageListener) {
-    inboundChat.addMessageListener(messageListener);
+    inboundChat.addChatMessageListener(messageListener);
   }
 
   public void addConnectedListener(final Consumer<Collection<ChatParticipant>> connectedListener) {
@@ -86,12 +87,10 @@ public class LobbyChatClient {
     inboundChat.addPlayerSlappedListener(playerSlappedListener);
   }
 
-  // TODO: Project#12 test-me
-  public void addChatEventListener(final Consumer<String> chatEventListener) {
+  public void addChatEventListener(final Consumer<ChatEvent> chatEventListener) {
     inboundChat.addChatEventListener(chatEventListener);
   }
 
-  // TODO: Project#12 test-me
   public void addConnectionLostListener(final Consumer<String> connectionClosedListener) {
     inboundChat.addConnectionLostListener(connectionClosedListener);
   }

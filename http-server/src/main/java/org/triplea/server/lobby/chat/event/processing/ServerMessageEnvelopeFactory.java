@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
 import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.events.server.PlayerJoined;
 import org.triplea.http.client.lobby.chat.events.server.PlayerLeft;
@@ -17,7 +18,8 @@ import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 public class ServerMessageEnvelopeFactory {
 
   public ServerMessageEnvelope newEventMessage(final String eventMessage) {
-    return ServerMessageEnvelope.packageMessage(ServerMessageType.CHAT_EVENT, eventMessage);
+    return ServerMessageEnvelope.packageMessage(
+        ServerMessageType.CHAT_EVENT, new ChatEvent(eventMessage));
   }
 
   ServerMessageEnvelope newChatMessage(final ChatMessage chatMessage) {

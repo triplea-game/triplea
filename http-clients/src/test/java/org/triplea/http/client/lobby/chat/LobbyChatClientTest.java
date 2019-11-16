@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageFactory;
+import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
+import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
+import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,5 +93,77 @@ class LobbyChatClientTest {
     lobbyChatClient.updateStatus(STATUS);
 
     verify(webSocketClient).send(clientEnvelope);
+  }
+
+  @Test
+  void addPlayerStatusListener() {
+    final Consumer<StatusUpdate> listener = data -> {};
+
+    lobbyChatClient.addPlayerStatusListener(listener);
+
+    verify(inboundChat).addPlayerStatusListener(listener);
+  }
+
+  @Test
+  void addPlayerLeftListene() {
+    final Consumer<PlayerName> listener = data -> {};
+
+    lobbyChatClient.addPlayerLeftListener(listener);
+
+    verify(inboundChat).addPlayerLeftListener(listener);
+  }
+
+  @Test
+  void addPlayerJoinedListener() {
+    final Consumer<ChatParticipant> listener = data -> {};
+
+    lobbyChatClient.addPlayerJoinedListener(listener);
+
+    verify(inboundChat).addPlayerJoinedListener(listener);
+  }
+
+  @Test
+  void addChatMessageListener() {
+    final Consumer<ChatMessage> listener = data -> {};
+
+    lobbyChatClient.addChatMessageListener(listener);
+
+    verify(inboundChat).addChatMessageListener(listener);
+  }
+
+  @Test
+  void addConnectedListener() {
+    final Consumer<Collection<ChatParticipant>> listener = data -> {};
+
+    lobbyChatClient.addConnectedListener(listener);
+
+    verify(inboundChat).addConnectedListener(listener);
+  }
+
+  @Test
+  void addPlayerSlappedListener() {
+    final Consumer<PlayerSlapped> listener = data -> {};
+
+    lobbyChatClient.addPlayerSlappedListener(listener);
+
+    verify(inboundChat).addPlayerSlappedListener(listener);
+  }
+
+  @Test
+  void addChatEventListener() {
+    final Consumer<ChatEvent> listener = data -> {};
+
+    lobbyChatClient.addChatEventListener(listener);
+
+    verify(inboundChat).addChatEventListener(listener);
+  }
+
+  @Test
+  void addConnectionLostListener() {
+    final Consumer<String> listener = data -> {};
+
+    lobbyChatClient.addConnectionLostListener(listener);
+
+    verify(inboundChat).addConnectionLostListener(listener);
   }
 }

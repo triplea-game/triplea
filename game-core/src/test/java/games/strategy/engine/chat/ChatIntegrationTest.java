@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
 import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.test.common.Integration;
 
@@ -202,7 +203,7 @@ final class ChatIntegrationTest {
     public void slap(final String message) {}
 
     @Override
-    public void eventReceived(final String eventText) {}
+    public void eventReceived(final ChatEvent event) {}
 
     @Override
     public void messageReceived(final ChatMessage chatMessage) {

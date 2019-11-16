@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
+import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
 import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
@@ -48,7 +49,7 @@ class InboundChat {
     inboundEventHandler.addPlayerSlappedListener(playerSlappedListener);
   }
 
-  void addMessageListener(final Consumer<ChatMessage> messageListener) {
+  void addChatMessageListener(final Consumer<ChatMessage> messageListener) {
     inboundEventHandler.addMessageListener(messageListener);
   }
 
@@ -56,7 +57,7 @@ class InboundChat {
     inboundEventHandler.addConnectedListener(connectedListener);
   }
 
-  void addChatEventListener(final Consumer<String> chatEventListener) {
+  void addChatEventListener(final Consumer<ChatEvent> chatEventListener) {
     inboundEventHandler.addChatEventListener(chatEventListener);
   }
 

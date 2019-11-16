@@ -61,9 +61,9 @@ public class ServerMessageEnvelope {
     return gson.fromJson(payload, String.class);
   }
 
-  public String toChatEvent() {
+  public ChatEvent toChatEvent() {
     Preconditions.checkState(messageType == ServerMessageType.CHAT_EVENT);
-    return gson.fromJson(payload, String.class);
+    return gson.fromJson(payload, ChatEvent.class);
   }
 
   /** Message type is used by client to know what kind of JSOn message has been received. */
