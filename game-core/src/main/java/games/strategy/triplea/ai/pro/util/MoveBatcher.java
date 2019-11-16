@@ -144,14 +144,14 @@ public class MoveBatcher {
       final ArrayList<Move> sequence, final List<ArrayList<Move>> sequences) {
     for (final var otherSequence : sequences) {
       boolean merge = (otherSequence.size() == sequence.size());
-      for (int j = 0; merge && j < sequence.size(); j++) {
-        merge = sequence.get(j).canMergeWith(otherSequence.get(j));
+      for (int i = 0; merge && i < sequence.size(); i++) {
+        merge = sequence.get(i).canMergeWith(otherSequence.get(i));
       }
       if (!merge) {
         continue;
       }
-      for (int j = 0; j < sequence.size(); j++) {
-        if (!sequence.get(j).mergeWith(otherSequence.get(j))) {
+      for (int i = 0; i < sequence.size(); i++) {
+        if (!sequence.get(i).mergeWith(otherSequence.get(i))) {
           throw new IllegalStateException(
               "Could not merge move despite checking canMergeWith() earlier.");
         }
