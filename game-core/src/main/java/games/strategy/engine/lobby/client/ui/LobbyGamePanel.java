@@ -214,7 +214,7 @@ class LobbyGamePanel extends JPanel {
     }
 
     final String gameId = gameTableModel.getGameIdForRow(selectedIndex);
-    lobbyClient.getHttpLobbyClient().getModeratorLobbyClient().disconnectGame(gameId);
+    lobbyClient.getHttpLobbyClient().getGameListingClient().bootGame(gameId);
     JOptionPane.showMessageDialog(
         null, "The game you selected has been disconnected from the lobby.");
   }
