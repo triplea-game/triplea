@@ -152,7 +152,7 @@ public class MoveBatcher {
       }
       for (int j = 0; j < sequence.size(); j++) {
         if (!sequence.get(j).mergeWith(otherSequence.get(j))) {
-          throw new IlegalStateException(
+          throw new IllegalStateException(
               "Could not merge move despite checking canMergeWith() earlier.");
         }
       }
