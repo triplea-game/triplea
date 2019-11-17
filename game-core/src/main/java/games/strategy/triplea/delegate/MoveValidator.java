@@ -289,7 +289,9 @@ public class MoveValidator {
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
     final Collection<Unit> unitsWithoutDependents =
-        (units == null) ? Collections.singleton(null) : findNonDependentUnits(units, route, newDependents);
+        (units == null)
+            ? Collections.singleton(null)
+            : findNonDependentUnits(units, route, newDependents);
     for (final Unit unit : unitsWithoutDependents) {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();
