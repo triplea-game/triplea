@@ -1,12 +1,12 @@
 package games.strategy.triplea.ui.history;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.PlacementDescription;
 import games.strategy.triplea.ui.DicePanel;
 import games.strategy.triplea.ui.MapPanel;

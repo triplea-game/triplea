@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -32,14 +33,10 @@ public final class ProMoveUtils {
    * Calculates normal movement routes (e.g. land, air, sea attack routes, not including amphibious,
    * bombardment, or strategic bombing raid attack routes).
    *
-   * @param moveUnits Receives the unit groups to move.
-   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
    * @param attackMap Specifies the territories to be attacked.
    */
-  public static void calculateMoveRoutes(
+  public static List<MoveDescription> calculateMoveRoutes(
       final PlayerId player,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
@@ -55,6 +52,7 @@ public final class ProMoveUtils {
             .flatMap(e -> Stream.concat(Stream.of(e.getKey()), e.getValue().stream()))
             .collect(Collectors.toSet());
 
+    final var moves = new ArrayList<MoveDescription>();
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
 
@@ -76,7 +74,6 @@ public final class ProMoveUtils {
         // Add unit to move list
         final var unitList = new ArrayList<Unit>();
         unitList.add(u);
-        moveUnits.add(unitList);
         if (Matches.unitIsLandTransport().test(u)) {
           lastLandTransport = Tuple.of(startTerritory, u);
         }
@@ -152,25 +149,20 @@ public final class ProMoveUtils {
                   + ", units="
                   + unitList);
         }
-        moveRoutes.add(route);
+        moves.add(new MoveDescription(unitList, route));
       }
     }
+    return moves;
   }
 
   /**
    * Calculates amphibious movement routes.
    *
-   * @param moveUnits Receives the unit groups to move.
-   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
-   * @param unitsToTransports Receives the maps from units to transports to load.
    * @param attackMap Specifies the territories to be attacked. Will be updated to reflect any
    *     transports unloading in a specific territory.
    */
-  public static void calculateAmphibRoutes(
+  public static List<MoveDescription> calculateAmphibRoutes(
       final PlayerId player,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final List<Map<Unit, Unit>> unitsToTransports,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
@@ -315,24 +307,21 @@ public final class ProMoveUtils {
       }
     }
 
-    moves.batchAndEmit(moveUnits, moveRoutes, unitsToTransports);
+    return moves.batchMoves();
   }
 
   /**
    * Calculates bombardment movement routes.
    *
-   * @param moveUnits Receives the unit groups to move.
-   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
    * @param attackMap Specifies the territories to be attacked.
    */
-  public static void calculateBombardMoveRoutes(
-      final PlayerId player,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final Map<Territory, ProTerritory> attackMap) {
+  public static List<MoveDescription> calculateBombardMoveRoutes(
+      final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ProData.getData();
     final GameMap map = data.getMap();
+
+    final var moves = new ArrayList<MoveDescription>();
 
     // Loop through all territories to attack
     for (final ProTerritory t : attackMap.values()) {
@@ -350,7 +339,6 @@ public final class ProMoveUtils {
         // Add unit to move list
         final var unitList = new ArrayList<Unit>();
         unitList.add(u);
-        moveUnits.add(unitList);
 
         // Determine route and add to move list
         Route route = null;
@@ -366,9 +354,11 @@ public final class ProMoveUtils {
                   u,
                   player);
         }
-        moveRoutes.add(route);
+        moves.add(new MoveDescription(unitList, route));
       }
     }
+
+    return moves;
   }
 
   /**
@@ -378,14 +368,13 @@ public final class ProMoveUtils {
    * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
    * @param attackMap Specifies the territories to be attacked.
    */
-  public static void calculateBombingRoutes(
-      final PlayerId player,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final Map<Territory, ProTerritory> attackMap) {
+  public static List<MoveDescription> calculateBombingRoutes(
+      final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ProData.getData();
     final GameMap map = data.getMap();
+
+    final var moves = new ArrayList<MoveDescription>();
 
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
@@ -402,7 +391,6 @@ public final class ProMoveUtils {
         // Add unit to move list
         final var unitList = new ArrayList<Unit>();
         unitList.add(u);
-        moveUnits.add(unitList);
 
         // Determine route and add to move list
         Route route = null;
@@ -415,77 +403,70 @@ public final class ProMoveUtils {
                   u,
                   player);
         }
-        moveRoutes.add(route);
+        moves.add(new MoveDescription(unitList, route));
       }
     }
-  }
-
-  public static void doMove(
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final IMoveDelegate moveDel) {
-    doMove(moveUnits, moveRoutes, null, moveDel);
+    return moves;
   }
 
   /**
    * Moves the specified groups of units along the specified routes, possibly using the specified
    * transports.
    */
-  public static void doMove(
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final List<Map<Unit, Unit>> transportsToLoad,
-      final IMoveDelegate moveDel) {
+  public static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
 
     final GameData data = ProData.getData();
 
     // Group non-amphib units of the same type moving on the same route
-    if (transportsToLoad == null) {
-      for (int i = 0; i < moveRoutes.size(); i++) {
-        final Route r = moveRoutes.get(i);
-        for (int j = i + 1; j < moveRoutes.size(); j++) {
-          final Route r2 = moveRoutes.get(j);
-          if (r.equals(r2)) {
-            moveUnits.get(j).addAll(moveUnits.get(i));
-            moveUnits.remove(i);
-            moveRoutes.remove(i);
-            i--;
-            break;
-          }
+    // TODO: Use MoveBatcher here - or ideally at the time the moves are being generated.
+    for (int i = 0; i < moves.size(); i++) {
+      final Route r = moves.get(i).getRoute();
+      if (!moves.get(i).getUnitsToTransports().isEmpty()) {
+        continue;
+      }
+      for (int j = i + 1; j < moves.size(); j++) {
+        if (!moves.get(j).getUnitsToTransports().isEmpty()) {
+          continue;
+        }
+        final Route r2 = moves.get(j).getRoute();
+        if (r.equals(r2)) {
+          final var mergedUnits = new ArrayList<Unit>();
+          mergedUnits.addAll(moves.get(j).getUnits());
+          mergedUnits.addAll(moves.get(i).getUnits());
+          moves.set(i, new MoveDescription(mergedUnits, r));
+          moves.remove(i);
+          i--;
+          break;
         }
       }
     }
 
     // Move units
-    for (int i = 0; i < moveRoutes.size(); i++) {
-      if (moveRoutes.get(i) == null
-          || moveRoutes.get(i).getEnd() == null
-          || moveRoutes.get(i).getStart() == null) {
+    for (final MoveDescription move : moves) {
+      // TODO: Validate this when MoveDescription is constructed.
+      if (move.getRoute() == null
+          || move.getRoute().getEnd() == null
+          || move.getRoute().getStart() == null) {
         ProLogger.warn(
             data.getSequence().getRound()
                 + "-"
                 + data.getSequence().getStep().getName()
                 + ": route not valid "
-                + moveRoutes.get(i)
+                + move.getRoute()
                 + " units: "
-                + moveUnits.get(i));
+                + move.getUnits());
         continue;
       }
-      final String result;
-      if (transportsToLoad == null || transportsToLoad.get(i) == null) {
-        result = moveDel.move(moveUnits.get(i), moveRoutes.get(i));
-      } else {
-        result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
-      }
+      final String result = moveDel.performMove(move);
       if (result != null) {
         ProLogger.warn(
             data.getSequence().getRound()
                 + "-"
                 + data.getSequence().getStep().getName()
                 + ": could not move "
-                + moveUnits.get(i)
+                + move.getUnits()
                 + " over "
-                + moveRoutes.get(i)
+                + move.getRoute()
                 + " because: "
                 + result);
       }

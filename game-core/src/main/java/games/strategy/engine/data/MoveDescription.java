@@ -1,7 +1,5 @@
-package games.strategy.triplea.delegate.data;
+package games.strategy.engine.data;
 
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +21,13 @@ public class MoveDescription extends AbstractMoveDescription {
       final Map<Unit, Collection<Unit>> dependentUnits) {
     super(units);
     this.route = route;
+    if (this.route == null) {
+      throw new NullPointerException();
+    }
     this.unitsToTransports = unitsToTransports;
+    if (this.unitsToTransports == null) {
+      throw new NullPointerException();
+    }
     if (!dependentUnits.isEmpty()) {
       this.dependentUnits = new HashMap<>();
       for (final Entry<Unit, Collection<Unit>> entry : dependentUnits.entrySet()) {

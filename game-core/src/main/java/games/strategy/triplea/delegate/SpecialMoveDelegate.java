@@ -4,6 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -21,7 +22,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
@@ -90,15 +90,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public String move(
-      final Collection<Unit> units,
-      final Route route,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents) {
+  public String performMove(final MoveDescription move) {
     if (!allowAirborne(player, getData())) {
       return "No Airborne Movement Allowed Yet";
     }
     final GameData data = getData();
+    final Collection<Unit> units = move.getUnits();
+    final Route route = move.getRoute();
     // there reason we use this, is because if we are in edit mode, we may have a different unit
     // owner than the current
     // player.
@@ -167,8 +165,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     bridge.addChange(fillLaunchCapacity);
     tempMovePerformer = new MovePerformer();
     tempMovePerformer.initialize(this);
-    tempMovePerformer.moveUnits(
-        units, route, player, unitsToTransports, newDependents, currentMove);
+    tempMovePerformer.moveUnits(move, player, currentMove);
     tempMovePerformer = null;
     return null;
   }

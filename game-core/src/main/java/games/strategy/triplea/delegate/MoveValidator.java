@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
@@ -26,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -70,14 +72,15 @@ public class MoveValidator {
 
   /** Validates the specified move. */
   public static MoveValidationResult validateMove(
-      final Collection<Unit> units,
-      final Route route,
+      final MoveDescription move,
       final PlayerId player,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves,
       final GameData data) {
+    final Collection<Unit> units = move.getUnits();
+    final Route route = move.getRoute();
+    final Map<Unit, Unit> unitsToTransports = move.getUnitsToTransports();
+    final Map<Unit, Collection<Unit>> newDependents = move.getDependentUnits();
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
@@ -288,7 +291,9 @@ public class MoveValidator {
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
     final Collection<Unit> unitsWithoutDependents =
-        (units == null) ? List.of(null) : findNonDependentUnits(units, route, newDependents);
+        (units == null)
+            ? Collections.singleton(null)
+            : findNonDependentUnits(units, route, newDependents);
     for (final Unit unit : unitsWithoutDependents) {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();

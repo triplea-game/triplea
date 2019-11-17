@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.data;
 
+import games.strategy.engine.data.AbstractMoveDescription;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
