@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.triplea.java.Interruptibles;
@@ -25,7 +24,6 @@ import org.triplea.java.Interruptibles.Result;
  *   <li>closing the websocket connection (async)
  * </ul>
  */
-@Log
 class WebSocketConnection {
   private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
   private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
