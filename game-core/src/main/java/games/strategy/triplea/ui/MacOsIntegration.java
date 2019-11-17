@@ -6,10 +6,8 @@ import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 import java.util.function.Consumer;
-import lombok.extern.java.Log;
 
 /** Utility class to add macOS integration. */
-@Log
 public final class MacOsIntegration {
   private MacOsIntegration() {}
 
