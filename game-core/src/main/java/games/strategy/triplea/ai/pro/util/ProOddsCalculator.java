@@ -60,7 +60,7 @@ public class ProOddsCalculator {
     if (strengthDifference < 45) {
       return new ProBattleResult(0, -999, false, new ArrayList<>(), defendingUnits, 1);
     }
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   /**
@@ -97,7 +97,7 @@ public class ProOddsCalculator {
           new ArrayList<>(),
           1);
     }
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
   public ProBattleResult calculateBattleResultsNoSubmerge(
@@ -128,7 +128,7 @@ public class ProOddsCalculator {
     if (result != null) {
       return result;
     }
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge);
   }
 
   private static ProBattleResult checkIfNoAttackersOrDefenders(
@@ -136,8 +136,6 @@ public class ProOddsCalculator {
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final boolean checkSubmerge) {
-    final GameData data = ProData.getData();
-
     final boolean hasNoDefenders =
         defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure());
     final boolean isLandAndCanOnlyBeAttackedByAir =
@@ -152,30 +150,55 @@ public class ProOddsCalculator {
               defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, true));
       final double tuv = TuvUtils.getTuv(mainCombatDefenders, ProData.unitValueMap);
       return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, new ArrayList<>(), 0);
-    } else if (checkSubmerge
-        && Properties.getSubRetreatBeforeBattle(data)
-        && !defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitCanEvade())
-        && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
+    } else if (canSubmergeBeforeBattle(attackingUnits, defendingUnits, checkSubmerge)) {
       return new ProBattleResult();
     }
     return null;
   }
 
-  public ProBattleResult callBattleCalculator(
+  private static boolean canSubmergeBeforeBattle(
+      final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits,
+      final boolean checkSubmerge) {
+    final GameData data = ProData.getData();
+    return checkSubmerge
+        && Properties.getSubRetreatBeforeBattle(data)
+        && defendingUnits.stream().allMatch(Matches.unitCanEvade())
+        && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+  }
+
+  public ProBattleResult callBattleCalcWithRetreatAir(
       final Territory t,
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final Set<Unit> bombardingUnits) {
-    return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, false);
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, true, true);
   }
 
-  /** Simulates the specified battle. */
-  public ProBattleResult callBattleCalculator(
+  public ProBattleResult callBattleCalc(
+      final Territory t,
+      final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits,
+      final Set<Unit> bombardingUnits) {
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, true);
+  }
+
+  private ProBattleResult callBattleCalc(
       final Territory t,
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final Set<Unit> bombardingUnits,
+      final boolean checkSubmerge) {
+    return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge, false);
+  }
+
+  /** Simulates the specified battle. */
+  private ProBattleResult callBattleCalc(
+      final Territory t,
+      final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits,
+      final Set<Unit> bombardingUnits,
+      final boolean checkSubmerge,
       final boolean retreatWhenOnlyAirLeft) {
     final GameData data = ProData.getData();
 
@@ -217,7 +240,9 @@ public class ProOddsCalculator {
     double tuvSwing =
         results.getAverageTuvSwing(
             attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
-    if (Matches.territoryIsNeutralButNotWater().test(t)) { // Set TUV swing for neutrals
+
+    // Set TUV swing for neutrals
+    if (Matches.territoryIsNeutralButNotWater().test(t)) {
       final double attackingUnitValue = TuvUtils.getTuv(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
           results
@@ -225,13 +250,24 @@ public class ProOddsCalculator {
               .getFirst();
       tuvSwing = remainingUnitValue - attackingUnitValue;
     }
+
+    // Add TUV swing for transported units
     final List<Unit> defendingTransportedUnits =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsBeingTransported());
-    if (t.isWater()
-        && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
+    if (t.isWater() && !defendingTransportedUnits.isEmpty()) {
       final double transportedUnitValue =
           TuvUtils.getTuv(defendingTransportedUnits, ProData.unitValueMap);
       tuvSwing += transportedUnitValue * winPercentage / 100;
+    }
+
+    // Remove TUV and add to remaining units for defenders that can submerge before battle
+    if (tuvSwing > 0 && canSubmergeBeforeBattle(attackingUnits, defendingUnits, checkSubmerge)) {
+      final List<Unit> defendingSubsKilled =
+          CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade());
+      defendingSubsKilled.removeAll(averageDefendersRemaining);
+      averageDefendersRemaining.addAll(defendingSubsKilled);
+      final int subTuv = TuvUtils.getTuv(defendingSubsKilled, ProData.unitValueMap);
+      tuvSwing = Math.max(0, tuvSwing - subTuv);
     }
 
     // Create battle result object

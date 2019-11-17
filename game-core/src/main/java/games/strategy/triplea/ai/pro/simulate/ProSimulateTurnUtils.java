@@ -68,16 +68,20 @@ public final class ProSimulateTurnUtils {
         ProLogger.debug("attackers=" + attackers);
         ProLogger.debug("defenders=" + defenders);
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
+
         final ProBattleResult result =
-            calc.callBattleCalculator(t, attackers, defenders, bombardingUnits);
-        final List<Unit> remainingUnits = result.getAverageAttackersRemaining();
-        ProLogger.debug("remainingUnits=" + remainingUnits);
+            calc.callBattleCalc(t, attackers, defenders, bombardingUnits);
+        final List<Unit> remainingAttackers = result.getAverageAttackersRemaining();
+        final List<Unit> remainingDefenders = result.getAverageDefendersRemaining();
+        ProLogger.debug("remainingAttackers=" + remainingAttackers);
+        ProLogger.debug("remainingDefenders=" + remainingDefenders);
 
         // Make updates to data
         final List<Unit> attackersToRemove = new ArrayList<>(attackers);
-        attackersToRemove.removeAll(remainingUnits);
+        attackersToRemove.removeAll(remainingAttackers);
         final List<Unit> defendersToRemove =
             CollectionUtils.getMatches(defenders, Matches.unitIsInfrastructure().negate());
+        defendersToRemove.removeAll(remainingDefenders);
         final List<Unit> infrastructureToChangeOwner =
             CollectionUtils.getMatches(defenders, Matches.unitIsInfrastructure());
         ProLogger.debug("attackersToRemove=" + attackersToRemove);

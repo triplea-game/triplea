@@ -224,12 +224,8 @@ public class ProTerritoryManager {
               final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
               combinedUnits.addAll(patd.getMaxAmphibUnits());
               final ProBattleResult strafeResult =
-                  calc.callBattleCalculator(
-                      t,
-                      new ArrayList<>(combinedUnits),
-                      defenders,
-                      patd.getMaxBombardUnits(),
-                      true);
+                  calc.callBattleCalcWithRetreatAir(
+                      t, new ArrayList<>(combinedUnits), defenders, patd.getMaxBombardUnits());
 
               // Check allied result with strafe
               final Set<Unit> enemyDefendersAfterStrafe =
