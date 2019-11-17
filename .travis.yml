@@ -38,6 +38,7 @@ jobs:
       script:
         ## shellcheck all shell scripts
         - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
+        - .travis/check-links || travis_terminate 1;
         - ./gradlew --no-daemon --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain
     - stage: verify
       env: DESCRIPTION="JDK11 integTest"
