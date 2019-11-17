@@ -5,8 +5,9 @@ CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 git remote -v
 
 gitRepo="https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea"
+set -x
 git remote set-url origin "$gitRepo"
-git checkout -b "$CURRENT_BRANCH" 
+git checkout "$CURRENT_BRANCH" 
 git pull --rebase origin "$CURRENT_BRANCH"
 
 function main() {
