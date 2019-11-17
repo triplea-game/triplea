@@ -2,6 +2,7 @@ package org.triplea.server.lobby.chat.event.processing;
 
 import java.util.List;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
@@ -14,6 +15,7 @@ import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope.ServerMessageType;
 import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
 
+@Log
 @UtilityClass
 public class ServerMessageEnvelopeFactory {
 
