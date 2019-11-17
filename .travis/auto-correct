@@ -1,0 +1,56 @@
+#!/bin/bash
+
+CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
+
+
+function main() {
+  runSpotless
+  removeUnusedLombokLogAnnotations
+}
+
+function runSpotless() {
+  ./gradlew spotlessApply
+  commitIfNeeded "Formatting - run spotlessApply"
+}
+  
+
+function removeUnusedLombokLogAnnotations() {
+  find . -print0 -type f -name "*.java" \
+    | xargs --null grep -lE "@Log|@slf4j" \
+    | while read -r file; do \
+        grep -q "log." "$file" \
+        || (
+          sed -i '/^import lombok.extern.java.Log;/d' "$file";
+          sed -i '/^import lombok.extern.slf4j.Slf4j;/d' "$file";
+          sed -i '/@Log/d' "$file"
+          sed -i '/@Slf4j/d' "$file"
+        )
+        done
+  commitIfNeeded "Remove unused lombok log annotations"
+}
+
+function commit() {
+  local -r message="$1"
+  git config --global user.email "tripleabuilderbot@gmail.com"
+  git config --global user.name "tripleabuilderbot"
+
+  local -r gitRepo="https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea"
+  git remote set-url origin "$gitRepo"
+  git checkout "$CURRENT_BRANCH" 
+  git commit . -m "$message"
+  git push origin "$CURRENT_BRANCH"
+}
+
+function commitIfNeeded() {
+  local -r message="$1"
+  
+  git add .
+  local -r fileCount=$(git diff --cached --numstat | wc -l)
+
+  if [ "$fileCount" -gt 0 ]; then
+    commit "$message"
+  fi
+}
+
+main
+
