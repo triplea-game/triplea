@@ -3,8 +3,11 @@ package games.strategy.triplea.settings;
 import javax.annotation.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 
+@Execution(ExecutionMode.SAME_THREAD)
 final class ClientSettingAsGameSettingTest extends AbstractGameSettingTestCase {
   @Override
   protected GameSetting<Integer> newGameSetting(
