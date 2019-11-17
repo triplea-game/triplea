@@ -299,9 +299,11 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                   final Collection<Unit> loadedAirTransports =
                       getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
                   selectedUnits.addAll(loadedAirTransports);
+                  final Map<Unit, Unit> unitsToTransports =
+                      TransportUtils.mapTransportsToLoad(loadedAirTransports, airTransportsToLoad);
                   final MoveDescription message =
                       new MoveDescription(
-                          loadedAirTransports, route, airTransportsToLoad, dependentUnits);
+                          loadedAirTransports, route, unitsToTransports, dependentUnits);
                   setMoveMessage(message);
                 }
               }
@@ -592,8 +594,10 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               return;
             }
           }
+          final Map<Unit, Unit> unitsToTransports =
+              transports == null ? null : TransportUtils.mapTransports(route, units, transports);
           final MoveDescription message =
-              new MoveDescription(units, route, transports, dependentUnits);
+              new MoveDescription(units, route, unitsToTransports, dependentUnits);
           setMoveMessage(message);
           setFirstSelectedTerritory(null);
           setSelectedEndpointTerritory(null);
@@ -1061,14 +1065,15 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     }
     getMap().hideMouseCursor();
     // TODO kev check for already loaded airTransports
-    Collection<Unit> transportsToLoad = Collections.emptyList();
+    Map<Unit, Unit> unitsToTransports = Map.of();
     if (MoveValidator.isLoad(units, dependentUnits, route, getData(), getCurrentPlayer())) {
-      transportsToLoad =
+      final Collection<Unit> transportsToLoad =
           route
               .getEnd()
               .getUnitCollection()
               .getMatches(
                   Matches.unitIsTransport().and(Matches.alliedUnit(getCurrentPlayer(), getData())));
+      unitsToTransports = TransportUtils.mapTransports(route, units, transportsToLoad);
     }
     List<Unit> best = new ArrayList<>(units);
     // if the player selects a land unit and other units when the
@@ -1094,7 +1099,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               bestWithDependents,
               route,
               getCurrentPlayer(),
-              transportsToLoad,
+              unitsToTransports,
               dependentUnits,
               nonCombat,
               getUndoableMoves(),
@@ -1116,7 +1121,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                 bestWithDependents,
                 route,
                 getCurrentPlayer(),
-                transportsToLoad,
+                unitsToTransports,
                 dependentUnits,
                 nonCombat,
                 getUndoableMoves(),
@@ -1131,7 +1136,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                 bestWithDependents,
                 route,
                 getCurrentPlayer(),
-                transportsToLoad,
+                unitsToTransports,
                 dependentUnits,
                 nonCombat,
                 getUndoableMoves(),

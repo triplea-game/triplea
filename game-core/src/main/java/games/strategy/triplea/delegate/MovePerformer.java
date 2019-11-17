@@ -73,12 +73,12 @@ public class MovePerformer implements Serializable {
       final Collection<Unit> units,
       final Route route,
       final PlayerId id,
-      final Collection<Unit> transportsToLoad,
+      final Map<Unit, Unit> unitsToTransports,
       final Map<Unit, Collection<Unit>> newDependents,
       final UndoableMove currentMove) {
     this.currentMove = currentMove;
     this.newDependents = newDependents;
-    populateStack(units, route, id, transportsToLoad);
+    populateStack(units, route, id, unitsToTransports);
     executionStack.execute(bridge);
   }
 
@@ -91,7 +91,7 @@ public class MovePerformer implements Serializable {
       final Collection<Unit> units,
       final Route route,
       final PlayerId id,
-      final Collection<Unit> transportsToLoad) {
+      final Map<Unit, Unit> unitsToTransports) {
     final IExecutable preAaFire =
         new IExecutable() {
           private static final long serialVersionUID = -7945930782650355037L;
@@ -157,7 +157,9 @@ public class MovePerformer implements Serializable {
             arrivingUnits = new ArrayList<>();
             final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);
             final Map<Unit, Unit> transporting =
-                TransportUtils.mapTransports(route, arrived, transportsToLoad);
+                route.isLoad()
+                    ? unitsToTransports
+                    : TransportUtils.mapTransports(route, arrived, null);
             // If we have paratrooper land units being carried by air units, they should be dropped
             // off in the last
             // territory. This means they are still dependent during the middle steps of the route.

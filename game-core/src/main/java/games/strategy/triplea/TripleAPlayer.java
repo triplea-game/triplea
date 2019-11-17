@@ -346,7 +346,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         moveDel.move(
             moveDescription.getUnits(),
             moveDescription.getRoute(),
-            moveDescription.getTransportsThatCanBeLoaded(),
+            moveDescription.getUnitsToTransports(),
             moveDescription.getDependentUnits());
     if (error != null) {
       ui.notifyError(error);

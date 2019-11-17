@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
@@ -461,26 +462,24 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     gameData.performChange(ChangeFactory.addUnits(japan, infantry.create(3, japanese)));
     // Perform the first load
     final Route load = new Route(japan, japanSeaZone);
-    String results =
-        delegate.move(
-            CollectionUtils.getNMatches(japan.getUnits(), 1, Matches.unitIsOfType(infantry)),
-            load,
-            CollectionUtils.getMatches(japanSeaZone.getUnits(), Matches.unitIsOfType(transport)));
+    final List<Unit> transports =
+        CollectionUtils.getMatches(japanSeaZone.getUnits(), Matches.unitIsOfType(transport));
+    final List<Unit> infantry1 =
+        CollectionUtils.getNMatches(japan.getUnits(), 1, Matches.unitIsOfType(infantry));
+    String results = delegate.move(infantry1, load, Map.of(infantry1.get(0), transports.get(0)));
     assertNull(results);
+    assertEquals(
+        infantry1,
+        CollectionUtils.getNMatches(japanSeaZone.getUnits(), 1, Matches.unitIsOfType(infantry)));
     // Perform the first unload
     final Route unload = new Route(japanSeaZone, manchuria);
-    results =
-        delegate.move(
-            CollectionUtils.getNMatches(japanSeaZone.getUnits(), 1, Matches.unitIsOfType(infantry)),
-            unload);
+    results = delegate.move(infantry1, unload);
     assertNull(results);
     // Load another trn
     final Route route2 = new Route(japan, japanSeaZone);
-    results =
-        delegate.move(
-            CollectionUtils.getNMatches(japan.getUnits(), 1, Matches.unitIsOfType(infantry)),
-            route2,
-            CollectionUtils.getMatches(japanSeaZone.getUnits(), Matches.unitIsOfType(transport)));
+    final List<Unit> infantry2 =
+        CollectionUtils.getNMatches(japan.getUnits(), 1, Matches.unitIsOfType(infantry));
+    results = delegate.move(infantry2, route2, Map.of(infantry2.get(0), transports.get(1)));
     assertNull(results);
     // Move remaining units
     final Route route3 = new Route(japanSeaZone, sfeSeaZone);

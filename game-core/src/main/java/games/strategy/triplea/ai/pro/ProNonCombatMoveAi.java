@@ -218,7 +218,7 @@ class ProNonCombatMoveAi {
     // Calculate amphib move routes and perform moves
     moveUnits.clear();
     moveRoutes.clear();
-    final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
+    final var transportsToLoad = new ArrayList<Map<Unit, Unit>>();
     ProMoveUtils.calculateAmphibRoutes(
         player, moveUnits, moveRoutes, transportsToLoad, moveMap, false);
     ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
@@ -2527,14 +2527,7 @@ class ProNonCombatMoveAi {
                       player);
           final MoveValidationResult mvr =
               MoveValidator.validateMove(
-                  Collections.singletonList(u),
-                  r,
-                  player,
-                  new ArrayList<>(),
-                  new HashMap<>(),
-                  true,
-                  null,
-                  data);
+                  Collections.singletonList(u), r, player, Map.of(), Map.of(), true, null, data);
           if (!mvr.isMoveValid()) {
             continue;
           }

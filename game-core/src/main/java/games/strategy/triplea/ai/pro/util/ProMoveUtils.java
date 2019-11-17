@@ -74,7 +74,7 @@ public final class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<>();
+        final var unitList = new ArrayList<Unit>();
         unitList.add(u);
         moveUnits.add(unitList);
         if (Matches.unitIsLandTransport().test(u)) {
@@ -162,7 +162,7 @@ public final class ProMoveUtils {
    *
    * @param moveUnits Receives the unit groups to move.
    * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
-   * @param transportsToLoad Receives the transport groups for each unit group in {@code moveUnits}.
+   * @param unitsToTransports Receives the maps from units to transports to load.
    * @param attackMap Specifies the territories to be attacked. Will be updated to reflect any
    *     transports unloading in a specific territory.
    */
@@ -170,12 +170,14 @@ public final class ProMoveUtils {
       final PlayerId player,
       final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad,
+      final List<Map<Unit, Unit>> unitsToTransports,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
     final GameData data = ProData.getData();
     final GameMap map = data.getMap();
+
+    final MoveBatcher moves = new MoveBatcher();
 
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
@@ -185,10 +187,12 @@ public final class ProMoveUtils {
       for (final Unit transport : amphibAttackMap.keySet()) {
         int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
         Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
+        moves.newSequence();
 
         // Check if units are already loaded or not
-        final List<Unit> loadedUnits = new ArrayList<>();
-        final List<Unit> remainingUnitsToLoad = new ArrayList<>();
+        final var loadedUnits = new ArrayList<Unit>();
+        final var remainingUnitsToLoad = new ArrayList<Unit>();
+
         if (TransportTracker.isTransporting(transport)) {
           loadedUnits.addAll(amphibAttackMap.get(transport));
         } else {
@@ -200,15 +204,12 @@ public final class ProMoveUtils {
 
           // Load adjacent units if no enemies present in transport territory
           if (Matches.territoryHasEnemyUnits(player, data).negate().test(transportTerritory)) {
-            final List<Unit> unitsToRemove = new ArrayList<>();
+            final var unitsToRemove = new ArrayList<Unit>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
-              if (map.getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit))
-                  == 1) {
-                moveUnits.add(Collections.singletonList(amphibUnit));
-                transportsToLoad.add(Collections.singletonList(transport));
-                final Route route =
-                    new Route(ProData.unitTerritoryMap.get(amphibUnit), transportTerritory);
-                moveRoutes.add(route);
+              final Territory unitTerritory = ProData.unitTerritoryMap.get(amphibUnit);
+              if (map.getDistance(transportTerritory, unitTerritory) == 1) {
+                final Route route = new Route(unitTerritory, transportTerritory);
+                moves.addTransportLoad(amphibUnit, route, transport);
                 unitsToRemove.add(amphibUnit);
                 loadedUnits.add(amphibUnit);
               }
@@ -283,13 +284,10 @@ public final class ProMoveUtils {
               }
             }
             if (territoryToMoveTo != null) {
-              final List<Unit> unitsToMove = new ArrayList<>();
+              final var unitsToMove = new ArrayList<Unit>();
               unitsToMove.add(transport);
               unitsToMove.addAll(loadedUnits);
-              moveUnits.add(unitsToMove);
-              transportsToLoad.add(null);
-              final Route route = new Route(transportTerritory, territoryToMoveTo);
-              moveRoutes.add(route);
+              moves.addMove(unitsToMove, new Route(transportTerritory, territoryToMoveTo));
               transportTerritory = territoryToMoveTo;
             }
           }
@@ -311,13 +309,13 @@ public final class ProMoveUtils {
 
         // Unload transport
         if (!loadedUnits.isEmpty() && !t.isWater()) {
-          moveUnits.add(loadedUnits);
-          transportsToLoad.add(null);
           final Route route = new Route(transportTerritory, t);
-          moveRoutes.add(route);
+          moves.addMove(loadedUnits, route);
         }
       }
     }
+
+    moves.batchAndEmit(moveUnits, moveRoutes, unitsToTransports);
   }
 
   /**
@@ -350,7 +348,7 @@ public final class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<>();
+        final var unitList = new ArrayList<Unit>();
         unitList.add(u);
         moveUnits.add(unitList);
 
@@ -402,7 +400,7 @@ public final class ProMoveUtils {
         }
 
         // Add unit to move list
-        final List<Unit> unitList = new ArrayList<>();
+        final var unitList = new ArrayList<Unit>();
         unitList.add(u);
         moveUnits.add(unitList);
 
@@ -436,7 +434,7 @@ public final class ProMoveUtils {
   public static void doMove(
       final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad,
+      final List<Map<Unit, Unit>> transportsToLoad,
       final IMoveDelegate moveDel) {
 
     final GameData data = ProData.getData();

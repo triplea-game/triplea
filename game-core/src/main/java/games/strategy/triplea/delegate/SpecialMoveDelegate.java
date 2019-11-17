@@ -93,7 +93,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public String move(
       final Collection<Unit> units,
       final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded,
+      final Map<Unit, Unit> unitsToTransports,
       final Map<Unit, Collection<Unit>> newDependents) {
     if (!allowAirborne(player, getData())) {
       return "No Airborne Movement Allowed Yet";
@@ -168,7 +168,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     tempMovePerformer = new MovePerformer();
     tempMovePerformer.initialize(this);
     tempMovePerformer.moveUnits(
-        units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
+        units, route, player, unitsToTransports, newDependents, currentMove);
     tempMovePerformer = null;
     return null;
   }

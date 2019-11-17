@@ -122,28 +122,28 @@ public class WeakAi extends AbstractAi {
       final IMoveDelegate moveDel, final PlayerId player, final GameData data) {
     final List<Collection<Unit>> moveUnits = new ArrayList<>();
     final List<Route> moveRoutes = new ArrayList<>();
-    final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
+    final var unitsToTransport = new ArrayList<Map<Unit, Unit>>();
     // load the transports first
     // they may be able to move farther
-    populateTransportLoad(data, moveUnits, moveRoutes, transportsToLoad, player);
-    doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
+    populateTransportLoad(data, moveUnits, moveRoutes, unitsToTransport, player);
+    doMove(moveUnits, moveRoutes, unitsToTransport, moveDel);
     moveRoutes.clear();
     moveUnits.clear();
-    transportsToLoad.clear();
+    unitsToTransport.clear();
     // do the rest of the moves
     populateNonCombat(data, moveUnits, moveRoutes, player);
     populateNonCombatSea(true, data, moveUnits, moveRoutes, player);
     doMove(moveUnits, moveRoutes, null, moveDel);
     moveUnits.clear();
     moveRoutes.clear();
-    transportsToLoad.clear();
+    unitsToTransport.clear();
     // load the transports again if we can
     // they may be able to move farther
-    populateTransportLoad(data, moveUnits, moveRoutes, transportsToLoad, player);
-    doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
+    populateTransportLoad(data, moveUnits, moveRoutes, unitsToTransport, player);
+    doMove(moveUnits, moveRoutes, unitsToTransport, moveDel);
     moveRoutes.clear();
     moveUnits.clear();
-    transportsToLoad.clear();
+    unitsToTransport.clear();
     // unload the transports that can be unloaded
     populateTransportUnloadNonCom(data, moveUnits, moveRoutes, player);
     doMove(moveUnits, moveRoutes, null, moveDel);
@@ -153,11 +153,11 @@ public class WeakAi extends AbstractAi {
       final IMoveDelegate moveDel, final PlayerId player, final GameData data) {
     final List<Collection<Unit>> moveUnits = new ArrayList<>();
     final List<Route> moveRoutes = new ArrayList<>();
-    final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
+    final var unitsToTransports = new ArrayList<Map<Unit, Unit>>();
     // load the transports first
     // they may be able to take part in a battle
-    populateTransportLoad(data, moveUnits, moveRoutes, transportsToLoad, player);
-    doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
+    populateTransportLoad(data, moveUnits, moveRoutes, unitsToTransports, player);
+    doMove(moveUnits, moveRoutes, unitsToTransports, moveDel);
     moveRoutes.clear();
     moveUnits.clear();
     // we want to move loaded transports before we try to fight our battles
@@ -170,7 +170,7 @@ public class WeakAi extends AbstractAi {
     doMove(moveUnits, moveRoutes, null, moveDel);
     moveUnits.clear();
     moveRoutes.clear();
-    transportsToLoad.clear();
+    unitsToTransports.clear();
     // fight
     populateCombatMove(data, moveUnits, moveRoutes, player);
     populateCombatMoveSea(data, moveUnits, moveRoutes, player);
@@ -181,7 +181,7 @@ public class WeakAi extends AbstractAi {
       final GameData data,
       final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad,
+      final List<Map<Unit, Unit>> unitsToTransports,
       final PlayerId player) {
     if (!isAmphibAttack(player, data)) {
       return;
@@ -199,6 +199,7 @@ public class WeakAi extends AbstractAi {
         continue;
       }
       final List<Unit> units = new ArrayList<>();
+      final Map<Unit, Unit> transportMap = new HashMap<>();
       for (final Unit transport :
           neighbor.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player))) {
         int free = TransportTracker.getAvailableCapacity(transport);
@@ -216,6 +217,7 @@ public class WeakAi extends AbstractAi {
             iter.remove();
             free -= ua.getTransportCost();
             units.add(current);
+            transportMap.put(current, transport);
           }
         }
       }
@@ -223,7 +225,7 @@ public class WeakAi extends AbstractAi {
         final Route route = new Route(capitol, neighbor);
         moveUnits.add(units);
         moveRoutes.add(route);
-        transportsToLoad.add(neighbor.getUnitCollection().getMatches(Matches.unitIsTransport()));
+        unitsToTransports.add(transportMap);
       }
     }
   }
@@ -262,7 +264,7 @@ public class WeakAi extends AbstractAi {
   private static void doMove(
       final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes,
-      final List<Collection<Unit>> transportsToLoad,
+      final List<Map<Unit, Unit>> unitsToTransports,
       final IMoveDelegate moveDel) {
     for (int i = 0; i < moveRoutes.size(); i++) {
       if (moveRoutes.get(i) == null
@@ -272,10 +274,10 @@ public class WeakAi extends AbstractAi {
         continue;
       }
 
-      if (transportsToLoad == null) {
+      if (unitsToTransports == null) {
         moveDel.move(moveUnits.get(i), moveRoutes.get(i));
       } else {
-        moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
+        moveDel.move(moveUnits.get(i), moveRoutes.get(i), unitsToTransports.get(i));
       }
       pause();
     }

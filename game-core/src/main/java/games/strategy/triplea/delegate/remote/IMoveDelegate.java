@@ -16,17 +16,17 @@ public interface IMoveDelegate
    *
    * @param units - the units to move.
    * @param route - the route to move along
-   * @param transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
+   * @param unitsToTransports - mapping from units to transports to load, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded);
+  String move(Collection<Unit> units, Route route, Map<Unit, Unit> unitsToTransports);
 
   /**
    * Moves the specified units along the specified route accounting for dependents.
    *
    * @param units - the units to move.
    * @param route - the route to move along
-   * @param transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
+   * @param unitsToTransports - mapping from units to transports to load, must be non null
    * @param newDependents - units that will be made into new dependents if this move is successful,
    *     must be non null
    * @return an error message if the move can't be made, null otherwise
@@ -34,7 +34,7 @@ public interface IMoveDelegate
   String move(
       Collection<Unit> units,
       Route route,
-      Collection<Unit> transportsThatCanBeLoaded,
+      Map<Unit, Unit> unitsToTransports,
       Map<Unit, Collection<Unit>> newDependents);
 
   /**
