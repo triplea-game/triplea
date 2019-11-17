@@ -2,6 +2,7 @@
 
 CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 
+git remote -v
 
 function main() {
   runSpotless
@@ -15,8 +16,7 @@ function runSpotless() {
   
 
 function removeUnusedLombokLogAnnotations() {
-  find . -print0 -type f -name "*.java" \
-    | xargs --null grep -lE "@Log|@slf4j" \
+  find . -type f -name "*.java" -exec grep -lE "@Log|@Slf4j" {} + \
     | while read -r file; do \
         grep -q "log." "$file" \
         || (
