@@ -34,6 +34,7 @@ public final class ProMoveUtils {
    * bombardment, or strategic bombing raid attack routes).
    *
    * @param attackMap Specifies the territories to be attacked.
+   * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateMoveRoutes(
       final PlayerId player,
@@ -160,6 +161,7 @@ public final class ProMoveUtils {
    *
    * @param attackMap Specifies the territories to be attacked. Will be updated to reflect any
    *     transports unloading in a specific territory.
+   * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateAmphibRoutes(
       final PlayerId player,
@@ -314,6 +316,7 @@ public final class ProMoveUtils {
    * Calculates bombardment movement routes.
    *
    * @param attackMap Specifies the territories to be attacked.
+   * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombardMoveRoutes(
       final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
@@ -364,9 +367,8 @@ public final class ProMoveUtils {
   /**
    * Calculates strategic bombing raid movement routes.
    *
-   * @param moveUnits Receives the unit groups to move.
-   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
    * @param attackMap Specifies the territories to be attacked.
+   * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombingRoutes(
       final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
@@ -414,7 +416,6 @@ public final class ProMoveUtils {
    * transports.
    */
   public static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
-
     final GameData data = ProData.getData();
 
     // Group non-amphib units of the same type moving on the same route

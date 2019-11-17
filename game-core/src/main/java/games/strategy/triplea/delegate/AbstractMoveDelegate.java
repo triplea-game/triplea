@@ -113,7 +113,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public abstract String performMove(final MoveDescription move);
+  public abstract String performMove(MoveDescription move);
 
   public static MoveValidationResult validateMove(
       final MoveType moveType,
