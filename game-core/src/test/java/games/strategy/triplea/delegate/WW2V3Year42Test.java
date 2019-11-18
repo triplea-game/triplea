@@ -55,8 +55,7 @@ class WW2V3Year42Test {
     final Route sz13To12 = new Route(sz13, sz12);
     final List<Unit> transports = sz13.getUnitCollection().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
-    final String error = moveDelegate.move(transports, sz13To12);
-    assertNull(error);
+    move(transports, sz13To12);
   }
 
   @Test
