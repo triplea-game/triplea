@@ -20,7 +20,6 @@ import org.triplea.java.collections.IntegerMap;
 
 class PlaceDelegateTest extends AbstractDelegateTestCase {
   private PlaceDelegate delegate;
-  private IDelegateBridge bridge;
 
   private Collection<Unit> getInfantry(final int count, final PlayerId player) {
     return gameData
@@ -31,7 +30,7 @@ class PlaceDelegateTest extends AbstractDelegateTestCase {
 
   @BeforeEach
   void setupPlaceDelegate() {
-    bridge = newDelegateBridge(british);
+    final IDelegateBridge bridge = newDelegateBridge(british);
     delegate = new PlaceDelegate();
     delegate.initialize("place");
     delegate.setDelegateBridgeAndPlayer(bridge);
