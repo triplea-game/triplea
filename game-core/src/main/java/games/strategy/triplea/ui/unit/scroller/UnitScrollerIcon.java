@@ -13,14 +13,14 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class UnitScrollerIcon implements Supplier<Icon> {
 
-  static final UnitScrollerIcon CENTER_ON_UNIT = new UnitScrollerIcon("unit_center.png");
+  static final UnitScrollerIcon CENTER_ON_UNIT = new UnitScrollerIcon("center.png");
   static final UnitScrollerIcon UNIT_HIGHLIGHT = new UnitScrollerIcon("highlight.png");
   static final UnitScrollerIcon UNIT_FLAGS = new UnitScrollerIcon("flag.png");
 
   static final UnitScrollerIcon LEFT_ARROW = new UnitScrollerIcon("left_arrow.png");
   static final UnitScrollerIcon RIGHT_ARROW = new UnitScrollerIcon("right_arrow.png");
-  static final UnitScrollerIcon UNIT_SKIP = new UnitScrollerIcon("unit_skip.png");
-  static final UnitScrollerIcon UNIT_SLEEP = new UnitScrollerIcon("unit_sleep.png");
+  static final UnitScrollerIcon UNIT_SKIP = new UnitScrollerIcon("skip.png");
+  static final UnitScrollerIcon UNIT_SLEEP = new UnitScrollerIcon("station.png");
 
   private static final File IMAGE_PATH = new File(ResourceLoader.RESOURCE_FOLDER, "unit_scroller");
 
