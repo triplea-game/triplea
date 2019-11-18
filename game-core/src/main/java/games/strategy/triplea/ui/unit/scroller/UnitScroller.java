@@ -64,6 +64,9 @@ public class UnitScroller {
   private static final String SKIP_UNITS_TOOLTIP =
       "Press 'space' or click this button to skip the current units and not move them during the "
           + "current move phase";
+  private static final String WAKE_ALL_TOOLTIP =
+      "Press 'w' or click this button to activate all skipped or stationed units";
+
 
   private static final String HIGHLIGHT_MOVABLE_TOOLTIP =
       "Press 'F' key or click this button to highlight movable units";
@@ -243,16 +246,22 @@ public class UnitScroller {
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
     skipButton.addActionListener(e -> skipCurrentUnits());
 
-    final JButton sleepButton = new JButton(UnitScrollerIcon.STATION.get());
-    sleepButton.setToolTipText(STATION_UNITS_TOOLTIP);
-    sleepButton.addActionListener(e -> sleepCurrentUnits());
+    final JButton stationButton = new JButton(UnitScrollerIcon.STATION.get());
+    stationButton.setToolTipText(STATION_UNITS_TOOLTIP);
+    stationButton.addActionListener(e -> sleepCurrentUnits());
+
+    final JButton wakeAllButton = new JButton(UnitScrollerIcon.WAKE_ALL.get());
+    wakeAllButton.setToolTipText(WAKE_ALL_TOOLTIP);
+    wakeAllButton.addActionListener(e -> wakeAllUnits());
 
     final JPanel skipAndSleepPanel =
         new JPanelBuilder()
             .boxLayoutHorizontal()
             .add(skipButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
-            .add(sleepButton)
+            .add(stationButton)
+            .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
+            .add(wakeAllButton)
             .build();
     skipAndSleepPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
@@ -313,6 +322,13 @@ public class UnitScroller {
       updateMovesLeftLabel();
     }
     centerOnNextMovableUnit();
+  }
+
+  private void wakeAllUnits() {
+    sleepingUnits.clear();
+    skippedUnits.clear();
+    updateMovesLeftLabel();
+    centerOnCurrentMovableUnit();
   }
 
   public void centerOnNextMovableUnit() {
