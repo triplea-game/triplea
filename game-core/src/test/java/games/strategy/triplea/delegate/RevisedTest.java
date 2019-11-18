@@ -58,6 +58,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -283,7 +284,7 @@ class RevisedTest {
             new Route(sz5, karelia));
     assertNull(results);
     moveDelegate.end();
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final IDelegate battle = gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(gameData);
@@ -849,8 +850,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber());
     addTo(germany, bombers);
     battle.addAttackChange(
@@ -879,8 +879,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(2, british);
     addTo(germany, bombers);
     battle.addAttackChange(
@@ -917,8 +916,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(7, british);
     addTo(germany, bombers);
     battle.addAttackChange(
@@ -947,8 +945,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
         gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
@@ -1522,8 +1519,7 @@ class RevisedTest {
         new Route(sz6, uk));
     // fight the battle
     moveDelegate(gameData).end();
-    final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz6);
+    final IBattle battle = AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz6);
     // everything hits, this will kill both transports
     whenGetRandom(bridge).thenAnswer(withValues(0, 0)).thenAnswer(withValues(0, 0));
     battle.fight(bridge);
