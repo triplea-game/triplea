@@ -2,7 +2,9 @@ name: Auto-Formatting
 
 on:
   pull_request:
-    types: edited
+    types:
+     - edited
+     - opened
 
 jobs:
   build:
