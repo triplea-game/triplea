@@ -54,7 +54,6 @@ public abstract class AbstractDelegateTestCase {
   protected Territory eastMediteranean;
   protected Territory congoSeaZone;
   protected Territory northAtlantic;
-  protected Territory redAtlantic;
   protected Territory westAfricaSea;
   protected Territory indianOcean;
   protected Territory westAfricaSeaZone;
