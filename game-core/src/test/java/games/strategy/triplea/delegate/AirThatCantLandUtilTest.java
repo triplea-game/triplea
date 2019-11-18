@@ -15,6 +15,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -37,22 +38,17 @@ class AirThatCantLandUtilTest {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
-  private static void fight(
-      final BattleDelegate battle, final Territory territory, final boolean bombing) {
+  private static void fight(final IBattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :
         battle.getBattles().getBattles().entrySet()) {
-      if (entry.getKey().isBombingRun() == bombing) {
+      if (!entry.getKey().isBombingRun()) {
         if (entry.getValue().contains(territory)) {
-          battle.fightBattle(territory, bombing, entry.getKey());
+          battle.fightBattle(territory, false, entry.getKey());
           return;
         }
       }
     }
-    throw new IllegalStateException(
-        "Could not find "
-            + (bombing ? "bombing" : "normal")
-            + " battle in: "
-            + territory.getName());
+    throw new IllegalStateException("Could not find  battle in: " + territory.getName());
   }
 
   @Test
@@ -314,7 +310,7 @@ class AirThatCantLandUtilTest {
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0, 0));
-    fight(battle, sz9, false);
+    fight(battle, sz9);
     battle.end();
     // Get the total number of units that should be left after the planes retreat
     final int expectedCountCanada = eastCanada.getUnitCollection().size();
