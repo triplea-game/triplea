@@ -67,7 +67,6 @@ public class UnitScroller {
   private static final String WAKE_ALL_TOOLTIP =
       "Press 'w' or click this button to activate all skipped or stationed units";
 
-
   private static final String HIGHLIGHT_MOVABLE_TOOLTIP =
       "Press 'F' key or click this button to highlight movable units";
   private static final String FLAG_TOGGLE_BUTTON_TOOLTIP =
