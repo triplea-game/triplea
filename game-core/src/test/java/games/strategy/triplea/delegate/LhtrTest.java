@@ -148,8 +148,7 @@ class LhtrTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
         gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
@@ -186,8 +185,7 @@ class LhtrTest {
     final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
     gameData.performChange(change);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
         gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
