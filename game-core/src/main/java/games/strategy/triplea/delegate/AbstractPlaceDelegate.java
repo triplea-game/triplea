@@ -577,11 +577,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return error;
     }
     // can we place it
-    error = canUnitsBePlaced(at, units, player);
-    if (error != null) {
-      return error;
-    }
-    return null;
+    return canUnitsBePlaced(at, units, player);
   }
 
   /** Make sure the player has enough in hand to place the units. */
