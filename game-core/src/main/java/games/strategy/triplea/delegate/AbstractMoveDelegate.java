@@ -112,6 +112,10 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
         : units.iterator().next().getOwner();
   }
 
+  public String move(final Collection<Unit> units, final Route route) {
+    return performMove(new MoveDescription(units, route));
+  }
+
   @Override
   public abstract String performMove(MoveDescription move);
 

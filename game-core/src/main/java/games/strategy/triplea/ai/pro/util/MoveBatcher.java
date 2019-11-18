@@ -13,7 +13,7 @@ import java.util.Map;
  * distinct moves the AI does (and thus the visual delay) by combining moves together.
  */
 public class MoveBatcher {
-  // TODO: Merge/replace with MoveDescription.
+  // TODO: #5499 Merge/replace with MoveDescription.
   private static class Move {
     private final ArrayList<Unit> units;
     private final Route route;

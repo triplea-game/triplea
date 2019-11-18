@@ -419,7 +419,7 @@ public final class ProMoveUtils {
     final GameData data = ProData.getData();
 
     // Group non-amphib units of the same type moving on the same route
-    // TODO: Use MoveBatcher here - or ideally at the time the moves are being generated.
+    // TODO: #5499 Use MoveBatcher here - or ideally at the time the moves are being generated.
     for (int i = 0; i < moves.size(); i++) {
       final Route r = moves.get(i).getRoute();
       if (!moves.get(i).getUnitsToTransports().isEmpty()) {
@@ -444,10 +444,8 @@ public final class ProMoveUtils {
 
     // Move units
     for (final MoveDescription move : moves) {
-      // TODO: Validate this when MoveDescription is constructed.
-      if (move.getRoute() == null
-          || move.getRoute().getEnd() == null
-          || move.getRoute().getStart() == null) {
+      // TODO: #5499 Validate this when MoveDescription is constructed.
+      if (move.getRoute().getEnd() == null || move.getRoute().getStart() == null) {
         ProLogger.warn(
             data.getSequence().getRound()
                 + "-"

@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.load;
+import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
@@ -176,8 +178,7 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(unitedStates, sz5, sz4, sz10, sz16, sz27, newBritain);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
@@ -186,9 +187,7 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
-    // assertError( results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
@@ -197,8 +196,7 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
@@ -207,8 +205,7 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(sz5, sz7, sz8, sz20);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
@@ -227,10 +224,7 @@ class PacificTest extends AbstractDelegateTestCase {
     assertEquals(2, bonin.getUnitCollection().size());
     assertEquals(1, sz24.getUnitCollection().size());
     // validate movement
-    final String results =
-        delegate.move(
-            GameDataTestUtil.getUnits(map, route.getStart()), route, route.getEnd().getUnits());
-    assertValid(results);
+    load(GameDataTestUtil.getUnits(map, route.getStart()), route);
     // verify unit counts after move
     assertEquals(1, bonin.getUnitCollection().size());
     assertEquals(2, sz24.getUnitCollection().size());
