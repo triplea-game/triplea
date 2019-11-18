@@ -1,7 +1,16 @@
 name: Auto-Formatting
 
+on:
+  pull_request:
+    types: opened
+    jobs:
+      rebase:
+        - uses: actions/checkout@master
+        - name: Automatic Rebase
+          uses: cirrus-actions/rebase@master
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,4 +21,9 @@ jobs:
       with:
         java-version: 11
     - name: Run unit tests
-      run: ./gradlew --parallel testJava
+      run: ./gradlew --parallel test
+    - name: send coverage report to codecov
+      uses: actions/code-cov-action@v1.0.3
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+
