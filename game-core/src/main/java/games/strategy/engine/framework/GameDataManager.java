@@ -67,7 +67,7 @@ public final class GameDataManager {
                 + " . Trying to load game created with: "
                 + readVersion
                 + "\nTo download the latest version of TripleA, Please visit "
-                + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE;
+                + UrlConstants.DOWNLOAD_WEBSITE;
         throw new IOException(error);
       }
 
