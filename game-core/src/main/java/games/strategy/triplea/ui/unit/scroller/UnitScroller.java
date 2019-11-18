@@ -58,9 +58,9 @@ public class UnitScroller {
       "Press 'n' or click this button to center the screen on the 'next' units with movement left";
   private static final String CENTER_UNITS_TOOLTIP =
       "Press 'c' or click this button to center the screen on current units.";
-  private static final String SLEEP_UNITS_TOOLTIP =
-      "Press 's' or click this button to sleep the current units, they will be automatically "
-          + "skipped until you move them.";
+  private static final String STATION_UNITS_TOOLTIP =
+      "Press 's' or click this button to station the current units, they will be automatically "
+          + "skipped until you move or wake them.";
   private static final String SKIP_UNITS_TOOLTIP =
       "Press 'space' or click this button to skip the current units and not move them during the "
           + "current move phase";
@@ -239,12 +239,12 @@ public class UnitScroller {
 
     panel.add(Box.createVerticalStrut(2));
 
-    final JButton skipButton = new JButton(UnitScrollerIcon.UNIT_SKIP.get());
+    final JButton skipButton = new JButton(UnitScrollerIcon.SKIP.get());
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
     skipButton.addActionListener(e -> skipCurrentUnits());
 
-    final JButton sleepButton = new JButton(UnitScrollerIcon.UNIT_SLEEP.get());
-    sleepButton.setToolTipText(SLEEP_UNITS_TOOLTIP);
+    final JButton sleepButton = new JButton(UnitScrollerIcon.STATION.get());
+    sleepButton.setToolTipText(STATION_UNITS_TOOLTIP);
     sleepButton.addActionListener(e -> sleepCurrentUnits());
 
     final JPanel skipAndSleepPanel =
