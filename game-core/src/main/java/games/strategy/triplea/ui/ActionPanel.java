@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Properties;
+import java.awt.Dimension;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -44,6 +45,7 @@ public abstract class ActionPanel extends JPanel {
     this.map = map;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
+    setMinimumSize(new Dimension(240, 0));
   }
 
   protected final boolean isWW2V2() {
