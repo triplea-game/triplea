@@ -38,7 +38,6 @@ class CreateIssueStrategyTest {
     createIssueStrategy =
         CreateIssueStrategy.builder()
             .githubIssueClient(githubIssueClient)
-            .isProduction(false)
             .responseAdapter(value -> null)
             .errorReportingDao(errorReportingDao)
             .build();
@@ -57,7 +56,6 @@ class CreateIssueStrategyTest {
     createIssueStrategy =
         CreateIssueStrategy.builder()
             .githubIssueClient(githubIssueClient)
-            .isProduction(true)
             .responseAdapter(responseAdapter)
             .errorReportingDao(errorReportingDao)
             .build();
