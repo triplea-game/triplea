@@ -142,7 +142,8 @@ class RevisedTest {
     advanceToStep(bridge, "NonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    move(sz1.getUnits(), new Route(sz1, sz11, sz9));
+    final String error = moveDelegate(gameData).move(sz1.getUnits(), new Route(sz1, sz11, sz9));
+    assertNotNull(error);
   }
 
   @Test

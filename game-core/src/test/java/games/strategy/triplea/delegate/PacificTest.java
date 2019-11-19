@@ -82,8 +82,9 @@ class PacificTest extends AbstractDelegateTestCase {
     bridge = newDelegateBridge(americans);
     advanceToStep(bridge, "japaneseCombatMove");
     delegate = new MoveDelegate();
-    delegate.initialize("MoveDelegate", "MoveDelegate");
+    delegate.initialize("move", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
+    gameData.addDelegate(delegate);
     delegate.start();
   }
 
@@ -212,10 +213,12 @@ class PacificTest extends AbstractDelegateTestCase {
   void testJapaneseDestroyerTransport() {
     bridge = newDelegateBridge(japanese);
     delegate = new MoveDelegate();
-    delegate.initialize("MoveDelegate", "MoveDelegate");
+    delegate.initialize("move", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
+    gameData.addDelegate(delegate);
     advanceToStep(bridge, "japaneseNonCombatMove");
     delegate.start();
+
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     final Route route = new Route(bonin, sz24);
