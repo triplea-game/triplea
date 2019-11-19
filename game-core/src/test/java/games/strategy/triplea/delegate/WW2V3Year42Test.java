@@ -46,7 +46,6 @@ class WW2V3Year42Test {
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
     final PlayerId germans = germans(gameData);
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);

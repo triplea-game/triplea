@@ -29,7 +29,6 @@ public class MoveBatcherTest {
   private final Route sz19ToSz18 = new Route(sz19, sz18);
   private final Route sz18ToSz12 = new Route(sz18, sz12);
   private final Route sz12ToAlgeria = new Route(sz12, algeria);
-  private final Route algeriaToSz18 = new Route(sz12, algeria);
   private final Unit inf1 = infantry(gameData).create(americans(gameData));
   private final Unit inf2 = infantry(gameData).create(americans(gameData));
   private final Unit tank1 = armour(gameData).create(americans(gameData));
