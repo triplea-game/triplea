@@ -24,7 +24,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -79,7 +78,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       // get all possible triggers based on this match.
       final Set<TriggerAttachment> toFirePossible =
           TriggerAttachment.collectForAllTriggersMatching(
-              new HashSet<>(Collections.singleton(player)), technologyDelegateTriggerMatch);
+              new HashSet<>(Set.of(player)), technologyDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final Map<ICondition, Boolean> testedConditions =
@@ -268,9 +267,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final Collection<TechAdvance> advances;
     if (isRevisedModel) {
       if (techHits > 0) {
-        advances = Collections.singletonList(techToRollFor.getTechs().get(0));
+        advances = List.of(techToRollFor.getTechs().get(0));
       } else {
-        advances = Collections.emptyList();
+        advances = List.of();
       }
     } else {
       advances = getTechAdvances(techHits);
@@ -377,13 +376,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       available = getAvailableAdvances();
     }
     if (available.isEmpty()) {
-      return Collections.emptyList();
+      return List.of();
     }
     if (hits >= available.size()) {
       return available;
     }
     if (hits == 0) {
-      return Collections.emptyList();
+      return List.of();
     }
     final Collection<TechAdvance> newAdvances = new ArrayList<>(hits);
     final String annotation = player.getName() + " rolling to see what tech advances are acquired";

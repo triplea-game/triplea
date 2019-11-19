@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,7 +23,7 @@ class ExecutionStackTest {
   void testStackIsProcessedInRightOrder() {
     final List<Integer> orderCheck = new ArrayList<>();
     executionStack.push(
-        Arrays.asList((stack, bridge) -> orderCheck.add(4), (stack, bridge) -> orderCheck.add(3)));
+        List.of((stack, bridge) -> orderCheck.add(4), (stack, bridge) -> orderCheck.add(3)));
     executionStack.push(
         (stack, bridge) -> {
           // Prevent infinite loop
@@ -64,7 +63,7 @@ class ExecutionStackTest {
     executionStack.execute(null);
     assertThat(executionStack.isEmpty(), is(true));
 
-    executionStack.push(Arrays.asList(mock, mock));
+    executionStack.push(List.of(mock, mock));
     assertThat(executionStack.isEmpty(), is(false));
     executionStack.execute(null);
     assertThat(executionStack.isEmpty(), is(true));

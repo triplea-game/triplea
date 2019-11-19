@@ -1,11 +1,11 @@
 package org.triplea.server.moderator.toolbox.banned.names;
 
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -87,10 +87,10 @@ class UsernameBanControllerTest {
 
   @Test
   void getBannedUserNames() {
-    when(bannedNamesService.getBannedUserNames()).thenReturn(singletonList(USERNAME_BAN_DATA));
+    when(bannedNamesService.getBannedUserNames()).thenReturn(List.of(USERNAME_BAN_DATA));
 
     final Response response = bannedUsernamesController.getBannedUsernames();
 
-    ControllerTestUtil.verifyResponse(response, singletonList(USERNAME_BAN_DATA));
+    ControllerTestUtil.verifyResponse(response, List.of(USERNAME_BAN_DATA));
   }
 }

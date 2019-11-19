@@ -8,7 +8,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import feign.gson.GsonDecoder;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -53,7 +53,7 @@ final class JsonDecoder {
         "Unexpected JSON {[epoch second].[epoch nano]} timestamp format, value was: "
             + json.getAsJsonPrimitive().getAsString()
             + ", and was split into: "
-            + Arrays.asList(split));
+            + List.of(split));
     return new long[] {Long.parseLong(split[0]), Long.parseLong(split[1])};
   }
 }

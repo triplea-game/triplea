@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +34,7 @@ class BannedUsersTabModelTest {
 
   @Test
   void fetchTableData() {
-    when(toolboxUserBanClient.getUserBans())
-        .thenReturn(Collections.singletonList(BANNED_USER_DATA));
+    when(toolboxUserBanClient.getUserBans()).thenReturn(List.of(BANNED_USER_DATA));
 
     final List<List<String>> tableData = bannedUsersTabModel.fetchTableData();
 

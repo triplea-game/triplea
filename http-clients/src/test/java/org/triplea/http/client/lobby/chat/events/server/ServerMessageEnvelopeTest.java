@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import com.google.gson.Gson;
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
@@ -31,8 +31,7 @@ class ServerMessageEnvelopeTest {
   private final ChatMessage chatMessage = new ChatMessage(PLAYER_NAME, MESSAGE);
   private final PlayerSlapped playerSlapped =
       new PlayerSlapped(PLAYER_NAME, PlayerName.of("slapped"));
-  private final PlayerListing playerListing =
-      new PlayerListing(Collections.singletonList(CHAT_PARTICIPANT));
+  private final PlayerListing playerListing = new PlayerListing(List.of(CHAT_PARTICIPANT));
 
   @Test
   void toPlayerStatusChange() {

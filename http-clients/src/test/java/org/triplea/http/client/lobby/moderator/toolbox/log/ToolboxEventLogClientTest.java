@@ -11,7 +11,6 @@ import static org.triplea.http.client.HttpClientTesting.PAGING_PARAMS;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
@@ -39,9 +38,7 @@ class ToolboxEventLogClientTest extends WireMockTest {
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(toJson(PAGING_PARAMS)))
             .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withBody(toJson(Collections.singletonList(MODERATOR_EVENT)))));
+                WireMock.aResponse().withStatus(200).withBody(toJson(List.of(MODERATOR_EVENT)))));
 
     final List<ModeratorEvent> results = newClient(server).lookupModeratorEvents(PAGING_PARAMS);
 

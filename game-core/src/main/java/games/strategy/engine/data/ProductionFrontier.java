@@ -15,7 +15,7 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
   private List<ProductionRule> cachedRules;
 
   public ProductionFrontier(final String name, final GameData data) {
-    this(name, data, Collections.emptyList());
+    this(name, data, List.of());
   }
 
   public ProductionFrontier(

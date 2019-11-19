@@ -6,9 +6,8 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -147,7 +146,7 @@ class LobbyGamePanel extends JPanel {
 
     final JPopupMenu menu = new JPopupMenu();
 
-    Arrays.asList(
+    List.of(
             SwingAction.of("Join Game", this::joinGame),
             SwingAction.of("Host Game", () -> hostGame(lobbyUri)))
         .forEach(menu::add);
@@ -166,7 +165,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Collection<Action> getGeneralAdminGamesListContextActions() {
-    return Collections.singletonList(SwingAction.of("Boot Game", e -> bootGame()));
+    return List.of(SwingAction.of("Boot Game", e -> bootGame()));
   }
 
   private void joinGame() {

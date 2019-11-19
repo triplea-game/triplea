@@ -30,7 +30,6 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -264,7 +263,7 @@ class DiceRollTest {
     final IDelegateBridge bridge = newDelegateBridge(americans);
     whenGetRandom(bridge).thenAnswer(withValues(1));
     final IBattle battle = mock(IBattle.class);
-    when(battle.getAmphibiousLandAttackers()).thenReturn(Collections.emptyList());
+    when(battle.getAmphibiousLandAttackers()).thenReturn(List.of());
     when(battle.isAmphibious()).thenReturn(true);
     final DiceRoll roll =
         DiceRoll.rollDice(

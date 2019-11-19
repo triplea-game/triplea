@@ -1,7 +1,5 @@
 package games.strategy.engine.lobby.client.ui;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -9,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import feign.FeignException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -67,10 +64,10 @@ class GamePollerTaskTest {
   /** No games in model, listing returns 1 game, should be found as new. */
   @Test
   void newGame() {
-    when(localGameListingFetcher.get()).thenReturn(Collections.emptyMap());
+    when(localGameListingFetcher.get()).thenReturn(Map.of());
     when(lobbyGameListingFetcher.get())
         .thenReturn(
-            asList(
+            List.of(
                 LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_0).build(),
                 LobbyGameListing.builder().gameId(ID_1).lobbyGame(GAME_1).build()));
 
@@ -84,7 +81,7 @@ class GamePollerTaskTest {
   @Test
   void removedGame() {
     when(localGameListingFetcher.get()).thenReturn(Map.of(ID_0, GAME_0, ID_1, GAME_1));
-    when(lobbyGameListingFetcher.get()).thenReturn(Collections.emptyList());
+    when(lobbyGameListingFetcher.get()).thenReturn(List.of());
 
     gamePollerTask.run();
 
@@ -97,8 +94,7 @@ class GamePollerTaskTest {
   void gameUpdated() {
     when(localGameListingFetcher.get()).thenReturn(Map.of(ID_0, GAME_0));
     when(lobbyGameListingFetcher.get())
-        .thenReturn(
-            singletonList(LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_1).build()));
+        .thenReturn(List.of(LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_1).build()));
 
     gamePollerTask.run();
 
@@ -113,8 +109,7 @@ class GamePollerTaskTest {
     final LobbyGame gameEqualToGame0 = GAME_0.withComments(GAME_0.getComments());
     when(lobbyGameListingFetcher.get())
         .thenReturn(
-            singletonList(
-                LobbyGameListing.builder().gameId(ID_0).lobbyGame(gameEqualToGame0).build()));
+            List.of(LobbyGameListing.builder().gameId(ID_0).lobbyGame(gameEqualToGame0).build()));
 
     gamePollerTask.run();
 
@@ -127,7 +122,7 @@ class GamePollerTaskTest {
         .thenReturn(Map.of(ID_0, GAME_0, ID_1, GAME_1, ID_2, GAME_2));
     when(lobbyGameListingFetcher.get())
         .thenReturn(
-            asList(
+            List.of(
                 // id0 is not updated
                 LobbyGameListing.builder().gameId(ID_0).lobbyGame(GAME_0).build(),
                 // id1 is updated
@@ -157,10 +152,8 @@ class GamePollerTaskTest {
 
     @Test
     void reportsErrorAfterFirstSuccess() {
-      when(localGameListingFetcher.get()).thenReturn(Collections.emptyMap());
-      when(lobbyGameListingFetcher.get())
-          .thenReturn(Collections.emptyList())
-          .thenThrow(feignException);
+      when(localGameListingFetcher.get()).thenReturn(Map.of());
+      when(lobbyGameListingFetcher.get()).thenReturn(List.of()).thenThrow(feignException);
 
       gamePollerTask.run();
       gamePollerTask.run();
@@ -170,9 +163,9 @@ class GamePollerTaskTest {
 
     @Test
     void reportsErrorOnlyOnce() {
-      when(localGameListingFetcher.get()).thenReturn(Collections.emptyMap());
+      when(localGameListingFetcher.get()).thenReturn(Map.of());
       when(lobbyGameListingFetcher.get())
-          .thenReturn(Collections.emptyList())
+          .thenReturn(List.of())
           .thenThrow(feignException)
           .thenThrow(feignException);
 
@@ -185,11 +178,11 @@ class GamePollerTaskTest {
 
     @Test
     void reportsErrorAfterRecoveryAndSubsequentError() {
-      when(localGameListingFetcher.get()).thenReturn(Collections.emptyMap());
+      when(localGameListingFetcher.get()).thenReturn(Map.of());
       when(lobbyGameListingFetcher.get())
-          .thenReturn(Collections.emptyList())
+          .thenReturn(List.of())
           .thenThrow(feignException)
-          .thenReturn(Collections.emptyList())
+          .thenReturn(List.of())
           .thenThrow(feignException);
 
       gamePollerTask.run();

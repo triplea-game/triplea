@@ -12,7 +12,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.TestDelegate;
-import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -43,8 +43,7 @@ final class XmlGameElementMapperTest {
     void shouldReturnDelegateWhenNamePresentInAuxiliaryMap() {
       final String typeName = "TestDelegate";
       final XmlGameElementMapper xmlGameElementMapper =
-          new XmlGameElementMapper(
-              Collections.singletonMap(typeName, TestDelegate::new), Collections.emptyMap());
+          new XmlGameElementMapper(Map.of(typeName, TestDelegate::new), Map.of());
 
       final Optional<IDelegate> result = xmlGameElementMapper.newDelegate(typeName);
 
@@ -83,8 +82,7 @@ final class XmlGameElementMapperTest {
     void shouldReturnAttachmentWhenNamePresentInAuxiliaryMap() {
       final String typeName = "TestAttachment";
       final XmlGameElementMapper xmlGameElementMapper =
-          new XmlGameElementMapper(
-              Collections.emptyMap(), Collections.singletonMap(typeName, TestAttachment::new));
+          new XmlGameElementMapper(Map.of(), Map.of(typeName, TestAttachment::new));
 
       final Optional<IAttachment> result =
           xmlGameElementMapper.newAttachment(typeName, "", null, null);

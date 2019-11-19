@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Component;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JComboBox;
 import javax.swing.text.JTextComponent;
@@ -78,7 +78,7 @@ class JComboBoxBuilderTest {
     void shouldSetSelectedItem() {
       final JComboBox<String> comboBox =
           JComboBoxBuilder.builder(String.class)
-              .items(Arrays.asList("A", "B", "C"))
+              .items(List.of("A", "B", "C"))
               .selectedItem("B")
               .build();
 
@@ -92,7 +92,7 @@ class JComboBoxBuilderTest {
     void shouldSetSelectedItemWhenNonNull() {
       final JComboBox<String> comboBox =
           JComboBoxBuilder.builder(String.class)
-              .items(Arrays.asList("A", "B", "C"))
+              .items(List.of("A", "B", "C"))
               .nullableSelectedItem("B")
               .build();
 
@@ -103,7 +103,7 @@ class JComboBoxBuilderTest {
     void shouldNotSetSelectedItemWhenNull() {
       final JComboBox<String> comboBox =
           JComboBoxBuilder.builder(String.class)
-              .items(Arrays.asList("A", "B", "C"))
+              .items(List.of("A", "B", "C"))
               .nullableSelectedItem(null)
               .build();
 

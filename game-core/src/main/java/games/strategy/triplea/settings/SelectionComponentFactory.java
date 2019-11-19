@@ -12,7 +12,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -585,7 +584,7 @@ final class SelectionComponentFactory {
     return new SelectionComponent<>() {
 
       private final List<IEmailSender.EmailProviderSetting> knownProviders =
-          Arrays.asList(
+          List.of(
               new IEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
               new IEmailSender.EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
 

@@ -16,7 +16,6 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import java.awt.Color;
 import java.awt.Component;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -161,7 +160,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           continue;
         }
         sectionsSorters.add(sorter.get(1) + ";" + key.get(1));
-        sectionsUnsorted.put(key.get(1), Arrays.asList(value.split(";")));
+        sectionsUnsorted.put(key.get(1), List.of(value.split(";")));
       }
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
       for (final String section : sectionsSorters) {

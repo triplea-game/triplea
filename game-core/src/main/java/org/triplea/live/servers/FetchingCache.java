@@ -7,7 +7,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.Builder;
@@ -39,7 +39,7 @@ class FetchingCache implements ThrowingSupplier<LiveServers, IOException> {
     return LiveServers.builder()
         .latestEngineVersion(ClientContext.engineVersion())
         .servers(
-            Collections.singletonList(
+            List.of(
                 ServerProperties.builder()
                     .message("Override server")
                     .minEngineVersion(ClientContext.engineVersion())

@@ -533,7 +533,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void removeFromNonCombatLandings(
       final Collection<Unit> units, final IDelegateBridge bridge) {
     for (final Unit transport : CollectionUtils.getMatches(units, Matches.unitIsTransport())) {
-      final Collection<Unit> lost = getTransportDependents(Collections.singleton(transport));
+      final Collection<Unit> lost = getTransportDependents(Set.of(transport));
       if (lost.isEmpty()) {
         continue;
       }
@@ -1049,7 +1049,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (headless
         || (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir()))
         || Properties.getRetreatingUnitsRemainInPlace(gameData)) {
-      return Collections.singleton(battleSite);
+      return Set.of(battleSite);
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat
     // there
@@ -2305,7 +2305,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // their landing site,
     // or be scrapped if they can't find one.
     if (attackingUnits.stream().anyMatch(Matches.unitIsAir())) {
-      queryRetreat(false, RetreatType.PLANES, bridge, Collections.singleton(battleSite));
+      queryRetreat(false, RetreatType.PLANES, bridge, Set.of(battleSite));
     }
   }
 

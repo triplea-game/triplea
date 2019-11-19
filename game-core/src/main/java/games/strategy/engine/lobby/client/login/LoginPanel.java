@@ -9,7 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -252,7 +252,7 @@ final class LoginPanel extends JPanel {
   }
 
   private void updateComponents() {
-    Arrays.asList(rememberPassword, passwordLabel, password)
+    List.of(rememberPassword, passwordLabel, password)
         .forEach(component -> component.setEnabled(!anonymousLogin.isSelected()));
     if (anonymousLogin.isSelected()) {
       password.setText("");

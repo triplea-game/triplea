@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.data.MoveValidationResult;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -129,7 +128,7 @@ public final class AirMovementValidator {
     // TODO: consider each carrier unit separately with movement costs
     final int maxMovementLeftForAllOwnedCarriers =
         maxMovementLeftForAllOwnedCarriers(player, data).intValue();
-    final List<Territory> landingSpots = new ArrayList<>(Collections.singleton(routeEnd));
+    final List<Territory> landingSpots = new ArrayList<>(Set.of(routeEnd));
     landingSpots.addAll(
         data.getMap()
             .getNeighbors(

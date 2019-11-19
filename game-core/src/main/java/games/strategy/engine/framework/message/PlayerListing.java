@@ -6,7 +6,6 @@ import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.NetworkData;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -69,8 +68,7 @@ public class PlayerListing implements Serializable {
         Optional.ofNullable(playersAllowedToBeDisabled).map(HashSet::new).orElseGet(HashSet::new);
 
     this.playerNamesAndAlliancesInTurnOrder =
-        Optional.ofNullable(playerNamesAndAlliancesInTurnOrder).orElse(Collections.emptyMap())
-            .entrySet().stream()
+        Optional.ofNullable(playerNamesAndAlliancesInTurnOrder).orElse(Map.of()).entrySet().stream()
             .collect(
                 Collectors.toMap(
                     Entry::getKey,

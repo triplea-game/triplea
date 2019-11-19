@@ -10,7 +10,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,7 @@ public abstract class TechAdvance extends NamedAttachable {
   public static final String TECH_PROPERTY_DESTROYER_BOMBARD = "destroyerBombard";
   public static final List<String> ALL_PREDEFINED_TECHNOLOGY_NAMES =
       Collections.unmodifiableList(
-          Arrays.asList(
+          List.of(
               TECH_NAME_SUPER_SUBS,
               TECH_NAME_JET_POWER,
               TECH_NAME_IMPROVED_SHIPYARDS,

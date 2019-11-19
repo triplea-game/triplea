@@ -224,7 +224,7 @@ public final class ProTransportUtils {
   public static List<Unit> findBestUnitsToLandTransport(
       final Unit unit, final Territory t, final List<Unit> usedUnits) {
     if (usedUnits.contains(unit)) {
-      return Collections.emptyList();
+      return List.of();
     }
     final PlayerId player = unit.getOwner();
     final List<Unit> units =
@@ -237,7 +237,7 @@ public final class ProTransportUtils {
     if (Matches.unitIsLandTransport().negate().test(unit)
         || !TechAttachment.isMechanizedInfantry(player)
         || units.isEmpty()) {
-      return Collections.singletonList(unit);
+      return List.of(unit);
     }
     final List<Unit> results = new ArrayList<>();
     results.add(unit);

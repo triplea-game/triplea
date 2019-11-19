@@ -1,32 +1,27 @@
 package org.triplea.java;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ArgCheckerTest {
 
-  @Nested
-  final class CheckNotEmptyTest {
-    @Test
-    void notEmptyArgCases() {
-      ArgChecker.checkNotEmpty("not empty");
-      ArgChecker.checkNotEmpty("a");
-      ArgChecker.checkNotEmpty(" - ");
-    }
+  @ParameterizedTest
+  @ValueSource(strings = {"not empty", "a", " - "})
+  void notEmptyArgCases(final String notEmpty) {
+    ArgChecker.checkNotEmpty(notEmpty);
+  }
 
-    @Test
-    void emptyArgCases() {
-      asList("", null, "  ", "\n", "\t", "  \n")
-          .forEach(
-              emptyArg ->
-                  assertThrows(
-                      IllegalArgumentException.class,
-                      () -> ArgChecker.checkNotEmpty(emptyArg),
-                      "expecting empty arg to trigger arg check to throw illegal arg exception: "
-                          + emptyArg));
-    }
+  @Test
+  void nullArgCase() {
+    assertThrows(NullPointerException.class, () -> ArgChecker.checkNotEmpty(null));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", "  ", "\n", "\t", "  \n"})
+  void emptyArgCases(final String emptyArg) {
+    assertThrows(IllegalArgumentException.class, () -> ArgChecker.checkNotEmpty(emptyArg));
   }
 }

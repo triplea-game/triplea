@@ -35,7 +35,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1052,7 +1051,7 @@ class ProPurchaseAi {
       for (final Iterator<Unit> it = unplacedUnits.iterator(); it.hasNext(); ) {
         final Unit u = it.next();
         if (remainingUnitProduction > 0
-            && ProPurchaseUtils.canUnitsBePlaced(Collections.singletonList(u), player, t, isBid)) {
+            && ProPurchaseUtils.canUnitsBePlaced(List.of(u), player, t, isBid)) {
           remainingUnitProduction--;
           unitsToPlace.add(u);
           it.remove();
@@ -2565,10 +2564,7 @@ class ProPurchaseAi {
       final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
       final String message =
-          del.placeUnits(
-              new ArrayList<>(Collections.singletonList(unit)),
-              t,
-              IAbstractPlaceDelegate.BidMode.NOT_BID);
+          del.placeUnits(new ArrayList<>(List.of(unit)), t, IAbstractPlaceDelegate.BidMode.NOT_BID);
       if (message != null) {
         ProLogger.warn(message);
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);

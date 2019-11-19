@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,7 +76,7 @@ class UserWithRoleRecordTest {
 
   @SuppressWarnings("unused")
   private static List<Arguments> mustHaveUserName() {
-    return Arrays.asList(
+    return List.of(
         Arguments.of(0, UserRole.ANONYMOUS), //
         Arguments.of(USER_ID, UserRole.PLAYER), //
         Arguments.of(USER_ID, UserRole.MODERATOR), //

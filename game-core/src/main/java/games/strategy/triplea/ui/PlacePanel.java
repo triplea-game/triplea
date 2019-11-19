@@ -23,7 +23,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -59,7 +60,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             return;
           }
           final UnitChooser chooser =
-              new UnitChooser(units, Collections.emptyMap(), false, getMap().getUiContext());
+              new UnitChooser(units, Map.of(), false, getMap().getUiContext());
           final String messageText = "Place units in " + territory.getName();
           if (maxUnits[0] >= 0) {
             chooser.setMaxAndShowMaxButton(maxUnits[0]);
@@ -234,10 +235,10 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
               && !territory
                   .getUnitCollection()
                   .anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
-            return Collections.emptyList();
+            return List.of();
           }
         } else {
-          return Collections.emptyList();
+          return List.of();
         }
       }
       // get the units that can be placed on this territory.
@@ -257,7 +258,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         units = CollectionUtils.getMatches(units, Matches.unitIsNotSea());
       }
       if (units.isEmpty()) {
-        return Collections.emptyList();
+        return List.of();
       }
       final IAbstractPlaceDelegate placeDel =
           (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
@@ -268,7 +269,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             production.getErrorMessage(),
             "No units",
             JOptionPane.INFORMATION_MESSAGE);
-        return Collections.emptyList();
+        return List.of();
       }
       maxUnits[0] = production.getMaxUnits();
       return production.getUnits();

@@ -73,7 +73,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       throw new IllegalArgumentException("Map already contains " + t1.getName());
     }
     territories.add(t1);
-    connections.put(t1, Collections.emptySet());
+    connections.put(t1, Set.of());
     territoryLookup.put(t1.getName(), t1);
   }
 
@@ -130,7 +130,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return getNeighbors(territory);
     }
     return connections
-        .getOrDefault(territory, Collections.emptySet())
+        .getOrDefault(territory, Set.of())
         .parallelStream()
         .filter(cond)
         .collect(Collectors.toSet());
@@ -152,7 +152,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Territory territory, final int distance, final Predicate<Territory> cond) {
     Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
-      return Collections.emptySet();
+      return Set.of();
     }
     final Set<Territory> neighbors = getNeighbors(territory, cond);
     if (distance == 1) {
@@ -204,7 +204,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Territory territory, final int distance, final Predicate<Territory> cond) {
     Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
-      return Collections.emptySet();
+      return Set.of();
     }
     final Set<Territory> neighbors = new HashSet<>(getNeighbors(territory));
     if (distance == 1) {
@@ -266,7 +266,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
         movementLeft.compareTo(BigDecimal.ZERO) >= 0,
         "MovementLeft must be non-negative: " + movementLeft);
     if (movementLeft.compareTo(BigDecimal.ZERO) == 0) {
-      return Collections.emptySet();
+      return Set.of();
     }
     final Set<Territory> neighbors = getNeighbors(territory, cond);
     if (movementLeft.compareTo(BigDecimal.ONE) <= 0) {
@@ -353,7 +353,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       return 0;
     }
-    return getDistance(0, new HashSet<>(), Collections.singleton(t1), t2, cond);
+    return getDistance(0, new HashSet<>(), Set.of(t1), t2, cond);
   }
 
   /**

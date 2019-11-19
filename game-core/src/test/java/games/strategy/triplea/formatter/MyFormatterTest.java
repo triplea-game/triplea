@@ -7,9 +7,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +31,7 @@ final class MyFormatterTest {
 
     @Test
     void shouldReturnEmptyStringWhenUnitsIsEmpty() {
-      assertThat(MyFormatter.unitsToText(Collections.emptyList()), is(""));
+      assertThat(MyFormatter.unitsToText(List.of()), is(""));
     }
 
     @Test
@@ -42,7 +41,7 @@ final class MyFormatterTest {
       final UnitType unitType1 = newUnitType("unitType1");
       final UnitType unitType2 = newUnitType("unitType2");
       final Collection<Unit> units =
-          Arrays.asList(
+          List.of(
               newUnit(unitType1, playerId1),
               newUnit(unitType2, playerId1),
               newUnit(unitType1, playerId2),
@@ -63,7 +62,7 @@ final class MyFormatterTest {
       final PlayerId playerId = newPlayerId("playerId");
       final UnitType unitType = newUnitType("unitType");
       final Collection<Unit> units =
-          Arrays.asList(newUnit(unitType, playerId), newUnit(unitType, playerId));
+          List.of(newUnit(unitType, playerId), newUnit(unitType, playerId));
 
       assertThat(MyFormatter.unitsToText(units), is("2 unitTypes owned by the playerId"));
     }

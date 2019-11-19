@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -68,8 +67,7 @@ class UserBanServiceTest {
 
   @Test
   void getBannedUsers() {
-    when(bannedUserDao.lookupBans())
-        .thenReturn(Arrays.asList(USER_BAN_RECORD_1, USER_BAN_RECORD_2));
+    when(bannedUserDao.lookupBans()).thenReturn(List.of(USER_BAN_RECORD_1, USER_BAN_RECORD_2));
 
     final List<UserBanData> result = bannedUsersService.getBannedUsers();
 

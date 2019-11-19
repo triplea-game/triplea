@@ -15,7 +15,7 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
   private List<RepairRule> cachedRules;
 
   public RepairFrontier(final String name, final GameData data) {
-    this(name, data, Collections.emptyList());
+    this(name, data, List.of());
   }
 
   public RepairFrontier(final String name, final GameData data, final List<RepairRule> rules) {

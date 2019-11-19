@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.event.log;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +17,14 @@ class EventLogTabModel {
   private final ToolboxEventLogClient toolboxEventLogClient;
 
   static List<String> fetchTableHeaders() {
-    return Arrays.asList("Date", "Moderator", "Action", "Target");
+    return List.of("Date", "Moderator", "Action", "Target");
   }
 
   List<List<String>> fetchTableData(final PagingParams pagingParams) {
     return toolboxEventLogClient.lookupModeratorEvents(pagingParams).stream()
         .map(
             event ->
-                Arrays.asList(
+                List.of(
                     event.getDate().toString(),
                     event.getModeratorName(),
                     event.getModeratorAction(),

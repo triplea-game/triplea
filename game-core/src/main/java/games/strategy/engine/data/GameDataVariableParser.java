@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ class GameDataVariableParser {
 
   Map<String, List<String>> parseVariables(final Element root) throws GameParseException {
     final Element variableList = nodeFinder.getOptionalSingleChild("variableList", root);
-    return variableList != null ? parseVariableElement(variableList) : Collections.emptyMap();
+    return variableList != null ? parseVariableElement(variableList) : Map.of();
   }
 
   private Map<String, List<String>> parseVariableElement(final Element root) {

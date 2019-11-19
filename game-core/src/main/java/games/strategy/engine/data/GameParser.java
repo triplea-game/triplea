@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1244,7 +1243,7 @@ public final class GameParser {
     for (final Element current : getChildren("attachment", root)) {
       final String foreach = current.getAttribute("foreach");
       if (foreach.isEmpty()) {
-        parseAttachment(current, variables, Collections.emptyMap());
+        parseAttachment(current, variables, Map.of());
       } else {
         final List<String> nestedForeach = Splitter.on("^").splitToList(foreach);
         if (nestedForeach.isEmpty() || nestedForeach.size() > 2) {
@@ -1256,7 +1255,7 @@ public final class GameParser {
         final List<String> foreachVariables2 =
             nestedForeach.size() == 2
                 ? Splitter.on(":").splitToList(nestedForeach.get(1))
-                : Collections.emptyList();
+                : List.of();
         validateForeachVariables(foreachVariables1, variables, foreach);
         validateForeachVariables(foreachVariables2, variables, foreach);
         final int length1 = variables.get(foreachVariables1.get(0)).size();

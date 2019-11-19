@@ -15,6 +15,7 @@ public class ArgChecker {
    * @param arg The value to validate.
    */
   public static void checkNotEmpty(final String arg) {
+    Preconditions.checkNotNull(arg);
     Preconditions.checkArgument(!Strings.nullToEmpty(arg).trim().isEmpty());
   }
 }

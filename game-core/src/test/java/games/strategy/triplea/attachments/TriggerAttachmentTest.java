@@ -41,7 +41,6 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.NotificationMessages;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -116,7 +115,7 @@ class TriggerAttachmentTest {
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment(
               "triggerAttachment", new PlayerId("somePlayerName", gameData), gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final String notificationMessageKey = "BlackIce";
       final String notificationMessage =
@@ -146,7 +145,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final ProductionRuleList productionRuleList = gameData.getProductionRuleList();
       productionRuleList.addProductionRule(new ProductionRule("rule1", gameData));
@@ -156,7 +155,7 @@ class TriggerAttachmentTest {
 
       final ProductionFrontierList productionFrontierList = gameData.getProductionFrontierList();
       productionFrontierList.addProductionFrontier(
-          new ProductionFrontier("frontier", gameData, Collections.singletonList(productionRule2)));
+          new ProductionFrontier("frontier", gameData, List.of(productionRule2)));
 
       final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
       final MutableProperty<?> productionRuleProperty = propertyMap.get("productionRule");
@@ -182,7 +181,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final PlayerId playerId = new PlayerId("somePlayer", gameData);
       playerId.addAttachment("rulesAttachment", new RulesAttachment(null, null, gameData));
@@ -204,7 +203,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final RelationshipType relationshipType =
           new RelationshipType("someRelationshipType", gameData);
@@ -230,7 +229,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final String territoryName = "Sea Zone 9";
       final Territory territory = new Territory(territoryName, gameData);
@@ -255,7 +254,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final String territoryEffectName = "someTerritoryEffect";
       final TerritoryEffect territoryEffect = new TerritoryEffect(territoryEffectName, gameData);
@@ -283,7 +282,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final UnitType unitType = new UnitType("someUnit", gameData);
       gameData.getUnitTypeList().addUnitType(unitType);
@@ -305,7 +304,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final PlayerId playerKeoland = new PlayerId("Keoland", gameData);
       final PlayerId playerFuryondy = new PlayerId("Furyondy", gameData);
@@ -348,7 +347,7 @@ class TriggerAttachmentTest {
 
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", playerId, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
       gameTechnologyFrontier.addAdvance(
@@ -376,7 +375,7 @@ class TriggerAttachmentTest {
 
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", playerId, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
       gameTechnologyFrontier.addAdvance(
@@ -408,7 +407,7 @@ class TriggerAttachmentTest {
 
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", playerId, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       triggerAttachment
           .getPropertyMap()
@@ -434,7 +433,7 @@ class TriggerAttachmentTest {
 
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", playerId, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       triggerAttachment
           .getPropertyMap()
@@ -452,7 +451,7 @@ class TriggerAttachmentTest {
 
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final PlayerId playerChina = new PlayerId("China", gameData);
       final PlayerId playerRussia = new PlayerId("Russia", gameData);
@@ -488,7 +487,7 @@ class TriggerAttachmentTest {
 
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", playerId, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       gameData.getUnitTypeList().addUnitType(new UnitType("brigantine", gameData));
       gameData.getUnitTypeList().addUnitType(new UnitType("sellsword", gameData));
@@ -510,7 +509,7 @@ class TriggerAttachmentTest {
       final PlayerId player = new PlayerId("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final Territory territoryCorusk = addTerritory("Corusk Pass");
       final Territory territoryHraak = addTerritory("Hraak Pass");
@@ -559,7 +558,7 @@ class TriggerAttachmentTest {
       final PlayerId player = new PlayerId("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       addUnitType("conscript");
       addUnitType("sellsword");
@@ -584,7 +583,7 @@ class TriggerAttachmentTest {
       final PlayerId player = new PlayerId("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       gameData.getResourceList().addResource(new Resource(Constants.PUS, gameData));
 
@@ -627,8 +626,7 @@ class TriggerAttachmentTest {
 
       final TriggerAttachment activateTriggerTriggerAttachment =
           new TriggerAttachment("activateTrigger", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers =
-          Collections.singleton(activateTriggerTriggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(activateTriggerTriggerAttachment);
 
       activateTriggerTriggerAttachment
           .getPropertyMap()
@@ -638,7 +636,7 @@ class TriggerAttachmentTest {
                   "%s:1:false:false:false:false", triggerToBeFiredTriggerAttachment.getName()));
 
       TriggerAttachment.triggerActivateTriggerOther(
-          Collections.emptyMap(), satisfiedTriggers, bridge, defaultFireTriggerParams);
+          Map.of(), satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -649,7 +647,7 @@ class TriggerAttachmentTest {
       final PlayerId player = new PlayerId("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final String notificationMessageKey = "IndomitableCenterVictory";
       final String notificationMessage =

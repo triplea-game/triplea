@@ -21,10 +21,10 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.Action;
@@ -336,9 +336,7 @@ class ProductionPanel extends JPanel {
 
       final JLabel name = new JLabel("  ");
       name.setFont(
-          name.getFont()
-              .deriveFont(
-                  Collections.singletonMap(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
+          name.getFont().deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
       final JLabel info = new JLabel("  ");
       final Color defaultForegroundLabelColor = name.getForeground();
       Optional<ImageIcon> icon = Optional.empty();

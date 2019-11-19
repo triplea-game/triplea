@@ -10,7 +10,6 @@ import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWi
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
@@ -54,7 +53,7 @@ class ToolboxUsernameBanClientTest extends WireMockTest {
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(toJson(Collections.singletonList(BANNED_USERNAME_DATA)))));
+                    .withBody(toJson(List.of(BANNED_USERNAME_DATA)))));
 
     final List<UsernameBanData> results = newClient(server).getUsernameBans();
 

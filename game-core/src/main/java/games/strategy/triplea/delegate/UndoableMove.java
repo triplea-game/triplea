@@ -13,7 +13,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.ui.MovePanel;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -109,8 +108,7 @@ public class UndoableMove extends AbstractUndoableMove {
           // moved out. Undoing
           // this last move, the route used to move into the battle zone will be null
           if (routeUnitUsedToMove != null) {
-            final Change change =
-                battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null);
+            final Change change = battle.addAttackChange(routeUnitUsedToMove, Set.of(unit), null);
             bridge.addChange(change);
           }
         } else {
@@ -130,7 +128,7 @@ public class UndoableMove extends AbstractUndoableMove {
                     Matches.unitIsOfTypes(
                         UnitAttachment.getAllowedBombingTargetsIntersection(
                             CollectionUtils.getMatches(
-                                Collections.singleton(unit), Matches.unitIsStrategicBomber()),
+                                Set.of(unit), Matches.unitIsStrategicBomber()),
                             data)));
             if (enemyTargets.size() > 1
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
@@ -139,18 +137,17 @@ public class UndoableMove extends AbstractUndoableMove {
                 target =
                     bridge
                         .getRemotePlayer(bridge.getPlayerId())
-                        .whatShouldBomberBomb(end, enemyTargets, Collections.singletonList(unit));
+                        .whatShouldBomberBomb(end, enemyTargets, List.of(unit));
               }
             } else if (!enemyTargets.isEmpty()) {
               target = enemyTargets.iterator().next();
             }
             if (target != null) {
               targets = new HashMap<>();
-              targets.put(target, new HashSet<>(Collections.singleton(unit)));
+              targets.put(target, new HashSet<>(Set.of(unit)));
             }
           }
-          final Change change =
-              battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);
+          final Change change = battle.addAttackChange(routeUnitUsedToMove, Set.of(unit), targets);
           bridge.addChange(change);
         }
       }

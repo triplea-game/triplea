@@ -13,8 +13,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.Runnables;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -38,8 +37,7 @@ final class SaveFunctionTest {
 
       final SaveFunction.SaveResult result =
           SaveFunction.saveSettings(
-              Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
-              Runnables.doNothing());
+              List.of(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
       assertThat(
           "There will always be a message back to the user",
@@ -92,8 +90,7 @@ final class SaveFunctionTest {
 
       final SaveFunction.SaveResult result =
           SaveFunction.saveSettings(
-              Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
-              Runnables.doNothing());
+              List.of(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
       assertThat(result.message, is(not(emptyString())));
       assertThat(result.dialogType, is(JOptionPane.WARNING_MESSAGE));
@@ -105,8 +102,7 @@ final class SaveFunctionTest {
 
       final SaveFunction.SaveResult result =
           SaveFunction.saveSettings(
-              Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
-              Runnables.doNothing());
+              List.of(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
       assertThat(result.message, is(not(emptyString())));
       assertThat(
@@ -120,8 +116,7 @@ final class SaveFunctionTest {
       whenSelectionComponentSave(
           mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
 
-      SaveFunction.saveSettings(
-          Collections.singletonList(mockSelectionComponent), flushSettingsAction);
+      SaveFunction.saveSettings(List.of(mockSelectionComponent), flushSettingsAction);
 
       verify(flushSettingsAction).run();
       verify(mockSetting).setValue(TestData.fakeValue);
@@ -133,8 +128,7 @@ final class SaveFunctionTest {
           mockSelectionComponent,
           context -> context.reportError(mockSetting, "failed", TestData.fakeValue));
 
-      SaveFunction.saveSettings(
-          Collections.singletonList(mockSelectionComponent), flushSettingsAction);
+      SaveFunction.saveSettings(List.of(mockSelectionComponent), flushSettingsAction);
 
       verify(flushSettingsAction, never()).run();
       verify(mockSetting, never()).setValue(TestData.fakeValue);

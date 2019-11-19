@@ -13,7 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
-import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.hamcrest.Description;
@@ -133,7 +133,7 @@ final class MatchesTest {
       territory
           .getUnitCollection()
           .addAll(
-              Arrays.asList(
+              List.of(
                   newLandUnitFor(player),
                   newLandUnitFor(enemyPlayer),
                   newAirUnitFor(enemyPlayer),
@@ -147,7 +147,7 @@ final class MatchesTest {
       territory
           .getUnitCollection()
           .addAll(
-              Arrays.asList(
+              List.of(
                   newSeaUnitFor(player),
                   newSeaUnitFor(enemyPlayer),
                   newAirUnitFor(enemyPlayer),

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +48,7 @@ class EventLogTabModelTest {
   @Test
   void getEventLogTableData() {
     when(toolboxEventLogClient.lookupModeratorEvents(PAGING_PARAMS))
-        .thenReturn(Arrays.asList(EVENT_1, EVENT_2));
+        .thenReturn(List.of(EVENT_1, EVENT_2));
 
     final List<List<String>> tableData = eventLogTabModel.fetchTableData(PAGING_PARAMS);
 

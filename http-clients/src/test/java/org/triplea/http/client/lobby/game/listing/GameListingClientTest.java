@@ -11,7 +11,6 @@ import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
@@ -39,7 +38,7 @@ class GameListingClientTest extends WireMockTest {
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
-                    .withBody(toJson(Collections.singletonList(LOBBY_GAME_LISTING)))));
+                    .withBody(toJson(List.of(LOBBY_GAME_LISTING)))));
 
     final List<LobbyGameListing> results = newClient(server).fetchGameListing();
 

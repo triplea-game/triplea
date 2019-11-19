@@ -6,8 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -110,7 +109,7 @@ class MessagingServiceTest {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
           .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
-          .thenReturn(Collections.emptyList());
+          .thenReturn(List.of());
       when(session.getUserProperties()).thenReturn(userPropertiesMap);
 
       messagingService.handleMessage(session, JSON_MESSAGE);
@@ -131,7 +130,7 @@ class MessagingServiceTest {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
           .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
-          .thenReturn(Arrays.asList(responses));
+          .thenReturn(List.of(responses));
     }
 
     @Test
