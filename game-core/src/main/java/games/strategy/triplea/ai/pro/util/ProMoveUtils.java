@@ -420,24 +420,22 @@ public final class ProMoveUtils {
 
     // Group non-amphib units of the same type moving on the same route
     // TODO: #5499 Use MoveBatcher here - or ideally at the time the moves are being generated.
-    for (int i = 0; i < moves.size(); i++) {
-      final Route r = moves.get(i).getRoute();
-      if (!moves.get(i).getUnitsToTransports().isEmpty()) {
-        continue;
-      }
-      for (int j = i + 1; j < moves.size(); j++) {
-        if (!moves.get(j).getUnitsToTransports().isEmpty()) {
-          continue;
-        }
-        final Route r2 = moves.get(j).getRoute();
-        if (r.equals(r2)) {
-          final var mergedUnits = new ArrayList<Unit>();
-          mergedUnits.addAll(moves.get(j).getUnits());
-          mergedUnits.addAll(moves.get(i).getUnits());
-          moves.set(i, new MoveDescription(mergedUnits, r));
-          moves.remove(i);
-          i--;
-          break;
+    final boolean noTransportLoads =
+        moves.stream().allMatch(move -> move.getUnitsToTransports().isEmpty());
+    if (noTransportLoads) {
+      for (int i = 0; i < moves.size(); i++) {
+        final Route r = moves.get(i).getRoute();
+        for (int j = i + 1; j < moves.size(); j++) {
+          final Route r2 = moves.get(j).getRoute();
+          if (r.equals(r2)) {
+            final var mergedUnits = new ArrayList<Unit>();
+            mergedUnits.addAll(moves.get(j).getUnits());
+            mergedUnits.addAll(moves.get(i).getUnits());
+            moves.set(i, new MoveDescription(mergedUnits, r));
+            moves.remove(i);
+            i--;
+            break;
+          }
         }
       }
     }
