@@ -27,11 +27,12 @@ fi
 
 cd $(dirname $0)
 
-java -server -Xmx{{ bot_max_memory }} -Djava.awt.headless=true \
+java -server \
+    -Xmx{{ bot_max_memory }} \
+    -Djava.awt.headless=true \
     -jar {{ bot_jar }} \
     -Ptriplea.game= \
     -Ptriplea.port=${BOT_PORT} \
     -Ptriplea.name={{ bot_name }}-${BOT_NUMBER} \
-    -Ptriplea.lobby.host={{ bot_lobby_host }} \
-    -Ptriplea.lobby.port={{ bot_lobby_port }} \
+    -Ptriplea.lobby.uri={{ bot_lobby_uri }} \
     -Ptriplea.map.folder={{ bot_maps_folder }}
