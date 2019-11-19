@@ -40,11 +40,22 @@ fi
 
 ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
 
+BOT_JAR="triplea-game-headless-$VERSION.jar"
+BOT_JAR_PATH="ansible/roles/bot/files/$BOT_JAR"
+HTTP_SERVER_JAR="triplea-http-server-$VERSION.jar"
+HTTP_SERVER_JAR_PATH="ansible/roles/http_server/files/$HTTP_SERVER_JAR"
+
+
+set -x
 
 function main() {
-  downloadHttpServerJar
+  if [ ! -e "$HTTP_SERVER_JAR_PATH" ]; then
+    downloadHttpServerJar
+  fi
 
-  downloadBotJar
+  if [ ! -e "$BOT_JAR_PATH" ]; then
+      downloadBotJar
+  fi
 
   downloadMigrations
 
@@ -56,53 +67,48 @@ function main() {
 
 function downloadHttpServerJar() {
   HTTP_SERVER_ZIP="triplea-http-server-$VERSION.zip"
-  rm -f $HTTP_SERVER_ZIP
+  rm -f "$HTTP_SERVER_ZIP"
   HTTP_SERVER_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$HTTP_SERVER_ZIP"
-  wget $HTTP_SERVER_DL_LOCATION
+  wget "$HTTP_SERVER_DL_LOCATION"
   if [ ! -f "$HTTP_SERVER_ZIP" ]; then
     echo "ERROR: failed to download http server zip from: $HTTP_SERVER_ZIP"
     exit 1
   fi
 
-  rm -rf lobby/
-  unzip $HTTP_SERVER_ZIP -d http-server
-  rm $HTTP_SERVER_ZIP
+  unzip "$HTTP_SERVER_ZIP" -d http-server
+  rm "$HTTP_SERVER_ZIP"
 
   mkdir -p ansible/roles/http_server/files/
-  mv http-server/configuration-prerelease.yml \
-     http-server/configuration-production.yml \
-     http-server/bin/triplea-http-server-$VERSION.jar \
-       ansible/roles/http_server/files/
+  mv "http-server/bin/$HTTP_SERVER_JAR" "$HTTP_SERVER_JAR_PATH"
 }
 
 function downloadBotJar() {
-  BOT_ZIP="triplea-game-headless-$VERSION.zip"
-  rm -f $BOT_ZIP
-  BOT_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$BOT_ZIP"
+  local -r botZip="triplea-game-headless-$VERSION.zip"
+  rm -f "$botZip"
+  BOT_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$botZip"
   wget $BOT_DL_LOCATION
-  if [ ! -f "$BOT_ZIP" ]; then
+  if [ ! -f "$botZip" ]; then
     echo "ERROR: failed to download bot zip from: $BOT_DL_LOCATION"
   fi
   rm -rf bot/
-  unzip $BOT_ZIP -d bot
-  rm $BOT_ZIP
+  unzip "$botZip" -d bot
+  rm "$botZip"
   mkdir -p ansible/roles/bot/files/
-  mv bot/bin/triplea-game-headless-$VERSION.jar ansible/roles/bot/files/
+  mv "bot/bin/$BOT_JAR" "$BOT_JAR_PATH"
 }
 
-
 function downloadMigrations() {
-  local migrationsZip="migrations.zip"
-  rm -f $migrationsZip
+  local -r migrationsZip="migrations.zip"
+
+  rm -f "$migrationsZip"
   local migrationsDlLocation="https://github.com/triplea-game/triplea/releases/download/$VERSION/migrations.zip"
-  wget $migrationsDlLocation
+  wget "$migrationsDlLocation"
   if [ ! -f "$migrationsZip" ]; then
     echo "ERROR: failed to download migrations zip from: $migrationsDlLocation"
   fi
   
-  rm $BOT_ZIP
   mkdir -p ansible/roles/flyway/files/
-  mv $migrationsZip ansible/roles/flyway/files/
+  mv "$migrationsZip" ansible/roles/flyway/files/
 }
 
 main
