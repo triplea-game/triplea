@@ -1674,7 +1674,7 @@ public class ProCombatMoveAi {
                     final double strengthDifference =
                         ProBattleUtils.estimateStrengthDifference(
                             territoryToMoveTransport, attackers, defenders);
-                    if (strengthDifference < minStrengthDifference) {
+                    if (strengthDifference <= minStrengthDifference) {
                       minStrengthDifference = strengthDifference;
                       minUnloadFromTerritory = territoryToMoveTransport;
                     }
