@@ -93,16 +93,6 @@ class LoginModuleTest {
     assertThat(result.getApiKey(), is(API_KEY.getValue()));
   }
 
-  private void givenApiKeyGenerationForAnonymous() {
-    // TODO: Project#12 verify anonymous record recorded
-    when(apiKeyGenerator.apply(any(LoginRecord.class))).thenReturn(API_KEY);
-  }
-
-  private void givenApiKeyGenerationForRegistered() {
-    // TODO: Project#12 verify registered user record recorded
-    when(apiKeyGenerator.apply(any(LoginRecord.class))).thenReturn(API_KEY);
-  }
-
   @Nested
   class AnonymousLogin {
     @Test
@@ -122,7 +112,7 @@ class LoginModuleTest {
     void loginSuccess() {
       when(anonymousLogin.apply(PlayerName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
           .thenReturn(Optional.empty());
-      givenApiKeyGenerationForAnonymous();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
 
       final LobbyLoginResponse result =
           loginModule.doLogin(ANONYMOUS_LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
@@ -152,7 +142,7 @@ class LoginModuleTest {
       when(registeredLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(UserRole.PLAYER));
-      givenApiKeyGenerationForRegistered();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
 
       final LobbyLoginResponse result =
           loginModule.doLogin(LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
@@ -170,7 +160,7 @@ class LoginModuleTest {
       when(tempPasswordLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(UserRole.PLAYER));
-      givenApiKeyGenerationForRegistered();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
 
       final LobbyLoginResponse result =
           loginModule.doLogin(LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
@@ -199,7 +189,7 @@ class LoginModuleTest {
       when(registeredLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(userRole));
-      givenApiKeyGenerationForRegistered();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
     }
 
     @ParameterizedTest

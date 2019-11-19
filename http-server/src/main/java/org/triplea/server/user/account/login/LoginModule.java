@@ -41,14 +41,16 @@ class LoginModule {
 
     if (hasPassword && registeredLogin.test(loginRequest)) {
       final ApiKey apiKey =
-          recordRegisteredLoginAndGenerateApiKey(loginRequest, playerSystemId, ip);
+          recordRegisteredLoginAndGenerateApiKey(
+              loginRequest, playerSystemId, PlayerChatId.newId(), ip);
       return LobbyLoginResponse.builder()
           .apiKey(apiKey.getValue())
           .moderator(isModerator(loginRequest.getName()))
           .build();
     } else if (hasPassword && tempPasswordLogin.test(loginRequest)) {
       final ApiKey apiKey =
-          recordRegisteredLoginAndGenerateApiKey(loginRequest, playerSystemId, ip);
+          recordRegisteredLoginAndGenerateApiKey(
+              loginRequest, playerSystemId, PlayerChatId.newId(), ip);
       return LobbyLoginResponse.builder()
           .apiKey(apiKey.getValue())
           .passwordChangeRequired(true)
@@ -65,20 +67,27 @@ class LoginModule {
         return LobbyLoginResponse.builder().failReason(errorMessage.get()).build();
       } else {
         final ApiKey apiKey =
-            recordAnonymousLoginAndGenerateApiKey(loginRequest, playerSystemId, ip);
+            recordAnonymousLoginAndGenerateApiKey(
+                loginRequest, playerSystemId, PlayerChatId.newId(), ip);
         return LobbyLoginResponse.builder().apiKey(apiKey.getValue()).build();
       }
     }
   }
 
   private ApiKey recordRegisteredLoginAndGenerateApiKey(
-      final LoginRequest loginRequest, final SystemId systemId, final String ip) {
-    return recordLoginAndGenerateApiKey(loginRequest, systemId, ip, true);
+      final LoginRequest loginRequest,
+      final SystemId systemId,
+      final PlayerChatId playerChatId,
+      final String ip) {
+    return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, true);
   }
 
   private ApiKey recordAnonymousLoginAndGenerateApiKey(
-      final LoginRequest loginRequest, final SystemId systemId, final String ip) {
-    return recordLoginAndGenerateApiKey(loginRequest, systemId, ip, false);
+      final LoginRequest loginRequest,
+      final SystemId systemId,
+      final PlayerChatId playerChatId,
+      final String ip) {
+    return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, false);
   }
 
   // TODO: Project#12 also update access log
@@ -86,13 +95,14 @@ class LoginModule {
   private ApiKey recordLoginAndGenerateApiKey(
       final LoginRequest loginRequest,
       final SystemId systemId,
+      final PlayerChatId playerchatId,
       final String ip,
       final boolean isRegistered) {
     return apiKeyGenerator.apply(
         LoginRecord.builder()
             .playerName(PlayerName.of(loginRequest.getName()))
             .systemId(systemId)
-            .playerChatId(PlayerChatId.newId())
+            .playerChatId(playerchatId)
             .ip(ip)
             .build());
   }

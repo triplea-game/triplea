@@ -101,7 +101,7 @@ lobby_api_key:
     username: "mod"
     lobby_user_id: 5000
     user_role_id: 1
-    player_chat_id: chat-id1
+    player_chat_id: moderator-chat-id
     system_id: system-id1
     ip: "127.0.0.1"
     # key = sha512(test1)
@@ -109,6 +109,6 @@ lobby_api_key:
     username: "chatter"
     lobby_user_id: 5000
     user_role_id: 3
-    player_chat_id: chat-id2
+    player_chat_id: chatter-chat-id
     system_id: system-id2
     ip: "127.0.0.1"

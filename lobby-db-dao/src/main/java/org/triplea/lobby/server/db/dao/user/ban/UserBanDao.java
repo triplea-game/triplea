@@ -39,5 +39,5 @@ public interface UserBanDao {
       @Bind("username") String username,
       @Bind("systemId") String systemId,
       @Bind("ip") String ip,
-      @Bind("banMinutes") int banMinutes);
+      @Bind("banMinutes") long banMinutes);
 }

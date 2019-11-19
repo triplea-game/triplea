@@ -36,6 +36,7 @@ import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
 import org.triplea.server.lobby.chat.ChatSocketController;
 import org.triplea.server.lobby.chat.MessagingServiceFactory;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
+import org.triplea.server.lobby.chat.moderation.ModeratorChatControllerFactory;
 import org.triplea.server.lobby.game.ConnectivityControllerFactory;
 import org.triplea.server.lobby.game.hosting.GameHostingControllerFactory;
 import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
@@ -166,8 +167,9 @@ public class ServerApplication extends Application<AppConfig> {
         GameHostingControllerFactory.buildController(jdbi),
         GameListingControllerFactory.buildController(jdbi),
         LoginControllerFactory.buildController(jdbi, chatters),
+        ModeratorChatControllerFactory.buildController(jdbi, chatters),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
-        UserBanControllerFactory.buildController(appConfig, jdbi),
+        UserBanControllerFactory.buildController(appConfig, jdbi, chatters),
         ErrorReportControllerFactory.buildController(appConfig, jdbi),
         ModeratorAuditHistoryControllerFactory.buildController(appConfig, jdbi),
         ModeratorsControllerFactory.buildController(appConfig, jdbi),

@@ -27,12 +27,11 @@ class MessageBroadcasterTest {
 
   @Test
   void accept() {
-    when(session0.getOpenSessions()).thenReturn(Set.of(session0, session1, session2));
     when(session0.isOpen()).thenReturn(true);
     when(session1.isOpen()).thenReturn(true);
     when(session2.isOpen()).thenReturn(false);
 
-    messageBroadcaster.accept(session0, serverEventEnvelope);
+    messageBroadcaster.accept(Set.of(session0, session1, session2), serverEventEnvelope);
 
     verify(singleMessageSender).accept(session0, serverEventEnvelope);
     verify(singleMessageSender).accept(session1, serverEventEnvelope);

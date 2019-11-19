@@ -1,12 +1,15 @@
 package org.triplea.server.lobby.chat;
 
+import static java.util.Collections.singleton;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
@@ -57,7 +61,7 @@ class MessagingServiceTest {
   @Mock private LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private ChatEventProcessor eventProcessing;
   @Mock private BiConsumer<Session, ServerMessageEnvelope> messageSender;
-  @Mock private BiConsumer<Session, ServerMessageEnvelope> messageBroadcaster;
+  @Mock private BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
 
   private MessagingService messagingService;
 
@@ -120,9 +124,11 @@ class MessagingServiceTest {
     @Test
     void broadCastResponse() {
       givenServerResponse(ServerResponse.broadcast(serverEventEnvelope));
+      when(session.getOpenSessions()).thenReturn(singleton(session));
+
       messagingService.handleMessage(session, JSON_MESSAGE);
 
-      verify(messageBroadcaster).accept(session, serverEventEnvelope);
+      verify(messageBroadcaster).accept(singleton(session), serverEventEnvelope);
       verify(messageSender, never()).accept(any(), any());
     }
 
@@ -148,10 +154,11 @@ class MessagingServiceTest {
       givenServerResponse(
           ServerResponse.broadcast(serverEventEnvelope),
           ServerResponse.backToClient(serverEventEnvelope));
+      when(session.getOpenSessions()).thenReturn(singleton(session));
 
       messagingService.handleMessage(session, JSON_MESSAGE);
 
-      verify(messageBroadcaster).accept(session, serverEventEnvelope);
+      verify(messageBroadcaster).accept(singleton(session), serverEventEnvelope);
       verify(messageSender).accept(session, serverEventEnvelope);
     }
   }
@@ -170,10 +177,11 @@ class MessagingServiceTest {
     @Test
     void disconnect() {
       when(eventProcessing.disconnect(session)).thenReturn(Optional.of(serverEventEnvelope));
+      when(session.getOpenSessions()).thenReturn(singleton(session));
 
       messagingService.handleDisconnect(session);
 
-      verify(messageBroadcaster).accept(session, serverEventEnvelope);
+      verify(messageBroadcaster).accept(singleton(session), serverEventEnvelope);
     }
 
     @Test
