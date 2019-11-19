@@ -98,10 +98,6 @@ public class ServerApplication extends Application<AppConfig> {
 
   @Override
   public void run(final AppConfig configuration, final Environment environment) {
-    if (configuration.isProd()) {
-      configuration.verifyProdEnvironmentVariables();
-    }
-
     if (configuration.isLogRequestAndResponses()) {
       environment
           .jersey()

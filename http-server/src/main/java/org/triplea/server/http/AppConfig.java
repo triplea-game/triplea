@@ -1,7 +1,5 @@
 package org.triplea.server.http;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
@@ -60,23 +58,4 @@ public class AppConfig extends Configuration {
 
   @Valid @NotNull @JsonProperty @Getter
   private final DataSourceFactory database = new DataSourceFactory();
-
-  /**
-   * Ensures that we have defined all values needed for running in production. To allow environment
-   * variables to be defaulted, we have to configure drop wizard to allow empty environment variable
-   * values. This opens up a vulnerability where in production we could incorrectly define, or
-   * forget to define an environment variable value. In that case we'd launch with an incorrect or
-   * incomplete configuration and might not know until that functionality is exercised.
-   */
-  void verifyProdEnvironmentVariables() {
-    checkState(prod);
-
-    checkEnvVariable(githubApiToken, "GITHUB_API_TOKEN");
-    checkEnvVariable(System.getenv("POSTGRES_PASSWORD"), "POSTGRES_PASSWORD");
-  }
-
-  private void checkEnvVariable(final String value, final String envVariableName) {
-    checkState(
-        value != null && !value.isEmpty(), envVariableName + " environment variable must be set");
-  }
 }
