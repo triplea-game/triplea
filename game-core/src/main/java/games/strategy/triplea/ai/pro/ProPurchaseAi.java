@@ -2338,11 +2338,16 @@ class ProPurchaseAi {
     }
   }
 
+  /**
+   * Determine efficiency value for upgrading to the given purchase option. If the strategic value
+   * of the territory is low then favor high movement units as its far from the enemy otherwise
+   * favor high defense.
+   */
   private static double findUpgradeUnitEfficiency(
       final ProPurchaseOption ppo, final double strategicValue) {
-    return strategicValue >= 1
-        ? ppo.getAttackEfficiency() * ppo.getDefenseEfficiency() * ppo.getCost() / ppo.getQuantity()
-        : ppo.getAttackEfficiency() * ppo.getMovement() * ppo.getCost() / ppo.getQuantity();
+    final double multiplier =
+        (strategicValue >= 1) ? ppo.getDefenseEfficiency() : ppo.getMovement();
+    return ppo.getAttackEfficiency() * multiplier * ppo.getCost() / ppo.getQuantity();
   }
 
   private IntegerMap<ProductionRule> populateProductionRuleMap(
