@@ -1,7 +1,7 @@
 - name: create service user
   become: true
   user:
-    name: "{{ dropwizard_user }}"
+    name: "{{ http_server_user }}"
     create_home: yes
     system: yes
 
@@ -9,7 +9,7 @@
   become: true
   copy:
     src: "{{ http_server_jar }}"
-    dest: "{{ http_server_folder }}/{{ http_server_jar }}"
+    dest: "{{ http_server_home_folder }}/{{ http_server_jar }}"
     owner: "{{ http_server_user }}"
     group: "{{ http_server_user }}"
 
@@ -17,8 +17,17 @@
   become: true
   template:
     src: run_server.j2
-    dest: "{{ dropwizard_home_folder }}/run_server"
+    dest: "{{ http_server_run_file }}"
     mode: "755"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+- name: deploy server config file
+  become: true
+  template:
+    src: configuration.yml.j2
+    dest: "{{ http_server_home_folder}}/configuration.yml"
+    mode: "644"
     owner: "{{ http_server_user }}"
     group: "{{ http_server_user }}"
 
@@ -28,15 +37,6 @@
     src: http_server.service.j2
     dest: /lib/systemd/system/http_server.service
     mode: "644"
-
-- name: deploy run_server script
-  become: true
-  template:
-    src: run_server.j2
-    dest: "{{ http_server_folder }}/run_server"
-    mode: "755"
-    owner: "{{ http_server_user }}"
-    group: "{{ http_server_user }}"
 
 - name: reload systemd
   become: true
