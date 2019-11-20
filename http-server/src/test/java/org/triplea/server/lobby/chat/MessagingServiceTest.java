@@ -1,6 +1,5 @@
 package org.triplea.server.lobby.chat;
 
-import static java.util.Collections.singleton;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -8,8 +7,10 @@ import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import javax.websocket.Session;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,7 @@ class MessagingServiceTest {
       UserWithRoleRecord.builder()
           .role(UserRole.MODERATOR)
           .username("player-name-moderator")
+          .playerChatId("chat-id")
           .build();
 
   private static final ChatParticipant CHAT_PARTICIPANT =
@@ -121,11 +123,11 @@ class MessagingServiceTest {
     @Test
     void broadCastResponse() {
       givenServerResponse(ServerResponse.broadcast(serverEventEnvelope));
-      when(session.getOpenSessions()).thenReturn(singleton(session));
+      when(session.getOpenSessions()).thenReturn(Set.of(session));
 
       messagingService.handleMessage(session, JSON_MESSAGE);
 
-      verify(messageBroadcaster).accept(singleton(session), serverEventEnvelope);
+      verify(messageBroadcaster).accept(Set.of(session), serverEventEnvelope);
       verify(messageSender, never()).accept(any(), any());
     }
 
@@ -151,11 +153,11 @@ class MessagingServiceTest {
       givenServerResponse(
           ServerResponse.broadcast(serverEventEnvelope),
           ServerResponse.backToClient(serverEventEnvelope));
-      when(session.getOpenSessions()).thenReturn(singleton(session));
+      when(session.getOpenSessions()).thenReturn(Set.of(session));
 
       messagingService.handleMessage(session, JSON_MESSAGE);
 
-      verify(messageBroadcaster).accept(singleton(session), serverEventEnvelope);
+      verify(messageBroadcaster).accept(Set.of(session), serverEventEnvelope);
       verify(messageSender).accept(session, serverEventEnvelope);
     }
   }
@@ -174,11 +176,11 @@ class MessagingServiceTest {
     @Test
     void disconnect() {
       when(eventProcessing.disconnect(session)).thenReturn(Optional.of(serverEventEnvelope));
-      when(session.getOpenSessions()).thenReturn(singleton(session));
+      when(session.getOpenSessions()).thenReturn(Set.of(session));
 
       messagingService.handleDisconnect(session);
 
-      verify(messageBroadcaster).accept(singleton(session), serverEventEnvelope);
+      verify(messageBroadcaster).accept(Set.of(session), serverEventEnvelope);
     }
 
     @Test

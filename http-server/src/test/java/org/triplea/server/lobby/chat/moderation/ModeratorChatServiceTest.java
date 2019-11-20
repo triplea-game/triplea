@@ -1,6 +1,5 @@
 package org.triplea.server.lobby.chat.moderation;
 
-import static java.util.Collections.singleton;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
@@ -14,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -81,7 +81,7 @@ class ModeratorChatServiceTest {
         "Verify ban sequence, player is disconnected, chatters notified, audit log updated")
     void banPlayer() {
       givenPlayerLookup(PLAYER_ID_LOOKUP);
-      givenOpenChatterSessions(singleton(session));
+      givenOpenChatterSessions(Set.of(session));
 
       moderatorChatService.banPlayer(MODERATOR_ID, BAN_PLAYER_REQUEST);
 
@@ -118,7 +118,7 @@ class ModeratorChatServiceTest {
     private void verifyEveryoneElseIsNotifiedOfPlayerBan() {
       final ArgumentCaptor<ServerMessageEnvelope> serverMessageCaptor =
           ArgumentCaptor.forClass(ServerMessageEnvelope.class);
-      verify(messageBroadcaster).accept(eq(singleton(session)), serverMessageCaptor.capture());
+      verify(messageBroadcaster).accept(eq(Set.of(session)), serverMessageCaptor.capture());
       assertThat(
           "Make sure message type sent to all players is a chat_event",
           serverMessageCaptor.getValue().getMessageType(),
@@ -162,7 +162,7 @@ class ModeratorChatServiceTest {
     void playerDisconnect() {
       when(lobbyApiKeyDaoWrapper.lookupPlayerByChatId(PLAYER_CHAT_ID))
           .thenReturn(Optional.of(PLAYER_ID_LOOKUP));
-      when(chatters.fetchOpenSessions()).thenReturn(singleton(session));
+      when(chatters.fetchOpenSessions()).thenReturn(Set.of(session));
 
       moderatorChatService.disconnectPlayer(MODERATOR_ID, PLAYER_CHAT_ID);
 
@@ -185,7 +185,7 @@ class ModeratorChatServiceTest {
     private void verifyChattersAreNotified() {
       final ArgumentCaptor<ServerMessageEnvelope> eventMessageCaptor =
           ArgumentCaptor.forClass(ServerMessageEnvelope.class);
-      verify(messageBroadcaster).accept(eq(singleton(session)), eventMessageCaptor.capture());
+      verify(messageBroadcaster).accept(eq(Set.of(session)), eventMessageCaptor.capture());
       assertThat(
           "Message type is chat event",
           eventMessageCaptor.getValue().getMessageType(),
