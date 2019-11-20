@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
+class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> {
   private GameData gameData;
   private PlayerId attacker = null;
   private PlayerId defender = null;
@@ -39,11 +39,11 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
-  OddsCalculator(final GameData data) {
+  BattleCalculator(final GameData data) {
     this(data, false);
   }
 
-  OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
+  BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     gameData =
         data == null
             ? null

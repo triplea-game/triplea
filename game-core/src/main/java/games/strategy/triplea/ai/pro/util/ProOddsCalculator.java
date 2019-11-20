@@ -10,7 +10,7 @@ import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.AggregateResults;
-import games.strategy.triplea.odds.calculator.IOddsCalculator;
+import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,10 @@ import org.triplea.java.collections.CollectionUtils;
 /** Pro AI odds calculator. */
 public class ProOddsCalculator {
 
-  private final IOddsCalculator calc;
+  private final IBattleCalculator calc;
   private boolean isCanceled = false;
 
-  public ProOddsCalculator(final IOddsCalculator calc) {
+  public ProOddsCalculator(final IBattleCalculator calc) {
     this.calc = calc;
   }
 

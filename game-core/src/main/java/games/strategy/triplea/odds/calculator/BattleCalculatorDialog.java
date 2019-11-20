@@ -22,14 +22,14 @@ import org.triplea.swing.SwingComponents;
  * A dialog that allows the user to set up an arbitrary battle and calculate the attacker's odds of
  * successfully winning the battle. Also known as the Battle Calculator.
  */
-public class OddsCalculatorDialog extends JDialog {
+public class BattleCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
   private static Point lastPosition;
-  private static final List<OddsCalculatorDialog> instances = new ArrayList<>();
-  private final OddsCalculatorPanel panel;
+  private static final List<BattleCalculatorDialog> instances = new ArrayList<>();
+  private final BattleCalculatorPanel panel;
 
-  OddsCalculatorDialog(final OddsCalculatorPanel panel, final JFrame parent) {
-    super(parent, "Odds Calculator");
+  BattleCalculatorDialog(final BattleCalculatorPanel panel, final JFrame parent) {
+    super(parent, "Battle Calculator");
     this.panel = panel;
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(panel, BorderLayout.CENTER);
@@ -46,9 +46,9 @@ public class OddsCalculatorDialog extends JDialog {
     // gets cloned when showing history with a different History instance that doesn't correspond to
     // what's
     // shown.
-    final OddsCalculatorPanel panel =
-        new OddsCalculatorPanel(taFrame.getGame().getData(), history, taFrame.getUiContext(), t);
-    final OddsCalculatorDialog dialog = new OddsCalculatorDialog(panel, taFrame);
+    final BattleCalculatorPanel panel =
+        new BattleCalculatorPanel(taFrame.getGame().getData(), history, taFrame.getUiContext(), t);
+    final BattleCalculatorDialog dialog = new BattleCalculatorDialog(panel, taFrame);
     dialog.pack();
 
     dialog.addWindowListener(
@@ -99,7 +99,7 @@ public class OddsCalculatorDialog extends JDialog {
     if (instances.isEmpty()) {
       return;
     }
-    final OddsCalculatorPanel currentPanel = instances.get(instances.size() - 1).panel;
+    final BattleCalculatorPanel currentPanel = instances.get(instances.size() - 1).panel;
     currentPanel.addAttackingUnits(
         t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(currentPanel.getAttacker())));
   }
@@ -108,7 +108,7 @@ public class OddsCalculatorDialog extends JDialog {
     if (instances.isEmpty()) {
       return;
     }
-    final OddsCalculatorDialog currentDialog = instances.get(instances.size() - 1);
+    final BattleCalculatorDialog currentDialog = instances.get(instances.size() - 1);
     currentDialog.panel.addDefendingUnits(
         t.getUnitCollection()
             .getMatches(Matches.alliedUnit(currentDialog.panel.getDefender(), t.getData())));

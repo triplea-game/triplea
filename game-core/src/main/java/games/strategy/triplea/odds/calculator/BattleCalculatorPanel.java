@@ -9,8 +9,8 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.CasualtySelector;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -58,7 +58,7 @@ import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
 
 @Log
-class OddsCalculatorPanel extends JPanel {
+class BattleCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
   private static final String NO_EFFECTS = "*None*";
   private final JLabel attackerWin = new JLabel();
@@ -84,7 +84,7 @@ class OddsCalculatorPanel extends JPanel {
       new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final IOddsCalculator calculator;
+  private final IBattleCalculator calculator;
   private final PlayerUnitsPanel attackingUnitsPanel;
   private final PlayerUnitsPanel defendingUnitsPanel;
   private final JComboBox<PlayerId> attackerCombo;
@@ -103,7 +103,7 @@ class OddsCalculatorPanel extends JPanel {
   private final Territory location;
   private final JList<String> territoryEffectsJList;
 
-  OddsCalculatorPanel(
+  BattleCalculatorPanel(
       final GameData data,
       final History history,
       final UiContext uiContext,
@@ -998,7 +998,7 @@ class OddsCalculatorPanel extends JPanel {
         e -> {
           attackerOrderOfLosses = null;
           defenderOrderOfLosses = null;
-          final Window parent = SwingUtilities.getWindowAncestor(OddsCalculatorPanel.this);
+          final Window parent = SwingUtilities.getWindowAncestor(BattleCalculatorPanel.this);
           if (parent != null) {
             parent.setVisible(false);
           }
@@ -1048,7 +1048,7 @@ class OddsCalculatorPanel extends JPanel {
                   data);
           if (JOptionPane.OK_OPTION
               == JOptionPane.showConfirmDialog(
-                  OddsCalculatorPanel.this,
+                  BattleCalculatorPanel.this,
                   oolPanel,
                   "Create Order Of Losses for each side",
                   JOptionPane.OK_CANCEL_OPTION,
@@ -1126,7 +1126,7 @@ class OddsCalculatorPanel extends JPanel {
       setAttackingUnits(null);
     }
     calculator =
-        new ConcurrentOddsCalculator(
+        new ConcurrentBattleCalculator(
             "BtlCalc Panel",
             () ->
                 SwingUtilities.invokeLater(
@@ -1271,7 +1271,7 @@ class OddsCalculatorPanel extends JPanel {
                     });
               }
             },
-            "Odds calc thread")
+            "Battle calculator thread")
         .start();
     // the runnable setting the dialog visible must run after this code executes, since this code is
     // running on the
@@ -1423,8 +1423,8 @@ class OddsCalculatorPanel extends JPanel {
           "TUV: "
               + TuvUtils.getTuv(
                   defenders, getDefender(), TuvUtils.getCostsForTuv(getDefender(), data), data));
-      final int attackHitPoints = BattleCalculator.getTotalHitpointsLeft(attackers);
-      final int defenseHitPoints = BattleCalculator.getTotalHitpointsLeft(defenders);
+      final int attackHitPoints = CasualtySelector.getTotalHitpointsLeft(attackers);
+      final int defenseHitPoints = CasualtySelector.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();

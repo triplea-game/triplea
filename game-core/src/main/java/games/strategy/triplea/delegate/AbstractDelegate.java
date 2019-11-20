@@ -33,7 +33,7 @@ public abstract class AbstractDelegate implements IDelegate {
    */
   @Override
   public void start() {
-    BattleCalculator.clearOolCache();
+    CasualtySelector.clearOolCache();
   }
 
   /**

@@ -6,7 +6,7 @@ import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
-import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
+import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -74,7 +74,7 @@ final class GameMenu extends JMenu {
     addMenuItemWithHotkey(
         SwingAction.of(
             "Battle Calculator",
-            e -> OddsCalculatorDialog.show(frame, null, gameData.getHistory())),
+            e -> BattleCalculatorDialog.show(frame, null, gameData.getHistory())),
         KeyEvent.VK_B);
   }
 

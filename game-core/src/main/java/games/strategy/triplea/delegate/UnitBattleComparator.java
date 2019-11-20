@@ -84,10 +84,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final boolean multiHpCanRepair1 = multiHitpointCanRepair.contains(u1.getType());
     final boolean multiHpCanRepair2 = multiHitpointCanRepair.contains(u2.getType());
     if (!ignorePrimaryPower) {
-      int power1 =
-          8 * BattleCalculator.getUnitPowerForSorting(u1, defending, gameData, territoryEffects);
-      int power2 =
-          8 * BattleCalculator.getUnitPowerForSorting(u2, defending, gameData, territoryEffects);
+      int power1 = 8 * getUnitPowerForSorting(u1, defending, gameData, territoryEffects);
+      int power2 = 8 * getUnitPowerForSorting(u2, defending, gameData, territoryEffects);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1 += 4;
@@ -122,10 +120,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
     }
     {
-      int power1reverse =
-          8 * BattleCalculator.getUnitPowerForSorting(u1, !defending, gameData, territoryEffects);
-      int power2reverse =
-          8 * BattleCalculator.getUnitPowerForSorting(u2, !defending, gameData, territoryEffects);
+      int power1reverse = 8 * getUnitPowerForSorting(u1, !defending, gameData, territoryEffects);
+      int power2reverse = 8 * getUnitPowerForSorting(u2, !defending, gameData, territoryEffects);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1reverse += 4;
@@ -173,5 +169,45 @@ public class UnitBattleComparator implements Comparator<Unit> {
       return -1;
     }
     return ua1.getMovement(u1.getOwner()) - ua2.getMovement(u2.getOwner());
+  }
+
+  /**
+   * This returns the exact Power that a unit has according to what DiceRoll.rollDiceLowLuck() would
+   * give it. As such, it needs to exactly match DiceRoll, otherwise this method will become
+   * useless. It does NOT take into account SUPPORT. It DOES take into account ROLLS. It needs to be
+   * updated to take into account isMarine.
+   */
+  private static int getUnitPowerForSorting(
+      final Unit current,
+      final boolean defending,
+      final GameData data,
+      final Collection<TerritoryEffect> territoryEffects) {
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
+    final UnitAttachment ua = UnitAttachment.get(current.getType());
+    final int rolls =
+        defending ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
+    int strengthWithoutSupport = 0;
+    // Find the strength the unit has without support
+    // lhtr heavy bombers take best of n dice for both attack and defense
+    if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
+      strengthWithoutSupport =
+          defending ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
+      strengthWithoutSupport +=
+          TerritoryEffectHelper.getTerritoryCombatBonus(
+              current.getType(), territoryEffects, defending);
+      // just add one like LL if we are LHTR bombers
+      strengthWithoutSupport =
+          Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
+    } else {
+      for (int i = 0; i < rolls; i++) {
+        final int tempStrength =
+            defending ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
+        strengthWithoutSupport +=
+            TerritoryEffectHelper.getTerritoryCombatBonus(
+                current.getType(), territoryEffects, defending);
+        strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());
+      }
+    }
+    return strengthWithoutSupport;
   }
 }
