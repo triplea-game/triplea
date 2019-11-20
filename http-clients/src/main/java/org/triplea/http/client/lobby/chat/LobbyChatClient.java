@@ -89,7 +89,11 @@ public class LobbyChatClient {
     inboundChat.addChatEventListener(chatEventListener);
   }
 
-  public void addConnectionLostListener(final Consumer<String> connectionClosedListener) {
-    inboundChat.addConnectionLostListener(connectionClosedListener);
+  public void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
+    inboundChat.addConnectionClosedListener(connectionClosedListener);
+  }
+
+  public void addConnectionLostListener(final Consumer<String> connectionLostListener) {
+    inboundChat.addConnectionLostListener(connectionLostListener);
   }
 }

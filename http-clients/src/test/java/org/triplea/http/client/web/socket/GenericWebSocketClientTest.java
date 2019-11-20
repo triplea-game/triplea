@@ -1,18 +1,26 @@
 package org.triplea.http.client.web.socket;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import com.google.gson.Gson;
+import java.net.URI;
 import java.util.function.Consumer;
 import lombok.ToString;
 import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
 class GenericWebSocketClientTest {
   private static final String REASON = "reason";
@@ -42,6 +50,7 @@ class GenericWebSocketClientTest {
 
   @Mock private Consumer<ExampleServerMessage> messageListener;
   @Mock private Consumer<String> connectionLostListener;
+  @Mock private Consumer<String> connectionClosedListener;
   @Mock private WebSocketConnection webSocketClient;
 
   private GenericWebSocketClient<ExampleServerMessage, ExampleOutgoingMessage>
@@ -55,7 +64,8 @@ class GenericWebSocketClientTest {
             messageListener,
             webSocketClient,
             "test-client connect error message");
-    genericWebSocketClient.addConnectionClosedListener(connectionLostListener);
+    genericWebSocketClient.addConnectionLostListener(connectionLostListener);
+    genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
   }
 
   @Test
@@ -66,10 +76,25 @@ class GenericWebSocketClientTest {
   }
 
   @Test
-  void connectionClosed() {
+  @DisplayName(
+      "Verify connection closed by socket triggers calls to connection lost and closed listeners")
+  void connectionLost() {
     genericWebSocketClient.connectionClosed(REASON);
 
     verify(connectionLostListener).accept(REASON);
+    verify(connectionClosedListener).accept(REASON);
+  }
+
+  @Test
+  @DisplayName("Verify client close removes connection lost listeners")
+  void connectionClosed() {
+    // this call is expected to remove connection lost listeners
+    genericWebSocketClient.close();
+    genericWebSocketClient.connectionClosed(REASON);
+
+    verify(webSocketClient, timeout(500)).close();
+    verify(connectionClosedListener).accept(REASON);
+    verify(connectionLostListener, never()).accept(any());
   }
 
   @Test
@@ -84,5 +109,24 @@ class GenericWebSocketClientTest {
     genericWebSocketClient.send(EXAMPLE_CLIENT_MESSAGE);
 
     verify(webSocketClient, timeout(150)).sendMessage(gson.toJson(EXAMPLE_CLIENT_MESSAGE));
+  }
+
+  @Nested
+  class SwapUri {
+    @Test
+    @DisplayName("Verify 'https' protocol when present is swapped to 'wss'")
+    void swapHttpsProtocol() {
+      final URI inputUri = URI.create("https://uri.com");
+      final URI updated = GenericWebSocketClient.swapHttpsToWssProtocol(inputUri);
+      assertThat(updated, is(URI.create("wss://uri.com")));
+    }
+
+    @Test
+    @DisplayName("Verify swap is a no-op with 'http' protocol")
+    void swapHttpProtocol() {
+      final URI inputUri = URI.create("http://uri.com");
+      final URI updated = GenericWebSocketClient.swapHttpsToWssProtocol(inputUri);
+      assertThat(updated, is(inputUri));
+    }
   }
 }

@@ -166,4 +166,13 @@ class LobbyChatClientTest {
 
     verify(inboundChat).addConnectionLostListener(listener);
   }
+
+  @Test
+  void addConnectionClosedListener() {
+    final Consumer<String> listener = data -> {};
+
+    lobbyChatClient.addConnectionClosedListener(listener);
+
+    verify(inboundChat).addConnectionClosedListener(listener);
+  }
 }
