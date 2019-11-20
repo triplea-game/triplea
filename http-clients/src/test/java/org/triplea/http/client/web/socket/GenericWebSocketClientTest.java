@@ -64,7 +64,8 @@ class GenericWebSocketClientTest {
             webSocketClient,
             "test-client connect error message");
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
-    genericWebSocketClient.addConnectionLostListener(connectionLostListener);    genericWebSocketClient.addConnectionClosedListener(connectionLostListener);
+    genericWebSocketClient.addConnectionLostListener(connectionLostListener);
+    genericWebSocketClient.addConnectionClosedListener(connectionLostListener);
   }
 
   @Test
