@@ -120,6 +120,13 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
   public void connectionClosed(final String reason) {
     connectionClosedListeners.forEach(
         connectionLostListener -> connectionLostListener.accept(reason));
+    // note, if client closed the connection, '#close' would have been
+    // called first, removing the connection lost listeners. Then when the
+    // socket becomes closed, this method will be invoked automatically
+    // and the call to connectino lost listeners will be a no-op.
+    // On the other hand if the server closes the connection, then this
+    // method will be invoked and we'll expect to have a non-empty set of
+    // connectListListeners.
     connectionLostListeners.forEach(
         connectionLostListener -> connectionLostListener.accept(reason));
   }

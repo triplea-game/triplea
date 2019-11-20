@@ -50,6 +50,7 @@ class GenericWebSocketClientTest {
 
   @Mock private Consumer<ExampleServerMessage> messageListener;
   @Mock private Consumer<String> connectionLostListener;
+  @Mock private Consumer<String> connectionClosedListener;
   @Mock private WebSocketConnection webSocketClient;
 
   private GenericWebSocketClient<ExampleServerMessage, ExampleOutgoingMessage>
@@ -63,9 +64,8 @@ class GenericWebSocketClientTest {
             messageListener,
             webSocketClient,
             "test-client connect error message");
-    genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
     genericWebSocketClient.addConnectionLostListener(connectionLostListener);
-    genericWebSocketClient.addConnectionClosedListener(connectionLostListener);
+    genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
   }
 
   @Test
@@ -88,6 +88,7 @@ class GenericWebSocketClientTest {
   @Test
   @DisplayName("Verify client close removes connection lost listeners")
   void connectionClosed() {
+    // this call is expected to remove connection lost listeners
     genericWebSocketClient.close();
     genericWebSocketClient.connectionClosed(REASON);
 
