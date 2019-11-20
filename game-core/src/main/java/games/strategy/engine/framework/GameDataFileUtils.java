@@ -3,8 +3,8 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.apache.commons.io.IOCase;
 
 /** A collection of utilities for working with game data files. */
@@ -51,7 +51,7 @@ public final class GameDataFileUtils {
     // files.
     final String macOsAlternativeExtension = "tsvg.gz";
 
-    return Arrays.asList(getExtension(), legacyExtension, macOsAlternativeExtension);
+    return List.of(getExtension(), legacyExtension, macOsAlternativeExtension);
   }
 
   /**

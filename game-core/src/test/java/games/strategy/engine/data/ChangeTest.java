@@ -13,7 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.io.IoUtils;
@@ -319,7 +319,7 @@ class ChangeTest {
     compositeChange.add(new CompositeChange());
     assertTrue(compositeChange.isEmpty());
     final Territory can = gameData.getMap().getTerritory("canada");
-    final Collection<Unit> units = Collections.emptyList();
+    final Collection<Unit> units = List.of();
     compositeChange.add(ChangeFactory.removeUnits(can, units));
     assertFalse(compositeChange.isEmpty());
   }

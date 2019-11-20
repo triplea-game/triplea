@@ -70,9 +70,7 @@ import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -439,7 +437,7 @@ class RevisedTest {
     assertEquals(2, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    final String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
+    final String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
     assertNull(error, error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
@@ -473,7 +471,7 @@ class RevisedTest {
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     // load the transport
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
     assertNull(error, error);
     final Route sz5ToNorway = new Route(sz5, norway);
     // move the infantry in two steps
@@ -518,11 +516,9 @@ class RevisedTest {
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     // load the transports
     // in two moves
-    String error =
-        moveDelegate.move(infantry.subList(0, 1), eeToSz5, Collections.singletonList(transport));
+    String error = moveDelegate.move(infantry.subList(0, 1), eeToSz5, List.of(transport));
     assertNull(error, error);
-    error =
-        moveDelegate.move(infantry.subList(1, 2), eeToSz5, Collections.singletonList(transport));
+    error = moveDelegate.move(infantry.subList(1, 2), eeToSz5, List.of(transport));
     assertNull(error, error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
@@ -559,7 +555,7 @@ class RevisedTest {
     assertEquals(1, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
     assertNull(error, error);
     // try to unload
     final Route sz5ToEee = new Route(sz5, eastEurope);
@@ -586,7 +582,7 @@ class RevisedTest {
     assertEquals(2, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
@@ -635,7 +631,7 @@ class RevisedTest {
     assertEquals(2, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
+    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
@@ -986,7 +982,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
                 defender + FIRE,
@@ -1017,7 +1013,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
                 defender + FIRE,
@@ -1048,7 +1044,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1106,7 +1102,7 @@ class RevisedTest {
      * going to the scrap heap.
      */
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1177,7 +1173,7 @@ class RevisedTest {
      * going to the scrap heap.
      */
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1234,7 +1230,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1302,7 +1298,7 @@ class RevisedTest {
      * on the battle board until step 6, allowing them to fire back before going to the scrap heap.
      */
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1360,7 +1356,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1384,7 +1380,7 @@ class RevisedTest {
         invocation -> {
           final Collection<Unit> selectFrom = invocation.getArgument(0);
           return new CasualtyDetails(
-              Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
+              List.of(selectFrom.iterator().next()), new ArrayList<>(), false);
         });
     whenGetRandom(bridge)
         .thenAnswer(withValues(0))

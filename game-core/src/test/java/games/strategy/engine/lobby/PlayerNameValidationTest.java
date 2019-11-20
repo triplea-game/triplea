@@ -7,15 +7,14 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 
 import com.google.common.base.Strings;
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.common.LobbyConstants;
 
 class PlayerNameValidationTest {
   @Test
   void usernameValidationWithInvalidNames() {
-    Arrays.asList(
-            null,
+    List.of(
             "",
             "a",
             "ab", // still too short
@@ -68,7 +67,7 @@ class PlayerNameValidationTest {
 
   @Test
   void usernameValidationWithValidNames() {
-    Arrays.asList("abc", Strings.repeat("a", PlayerNameValidation.MAX_LENGTH), "a12", "a--")
+    List.of("abc", Strings.repeat("a", PlayerNameValidation.MAX_LENGTH), "a12", "a--")
         .forEach(
             validName -> {
               assertThat(

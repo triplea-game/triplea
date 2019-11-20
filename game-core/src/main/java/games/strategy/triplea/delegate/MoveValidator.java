@@ -24,7 +24,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1836,7 +1835,7 @@ public class MoveValidator {
     final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
     final List<Predicate<Territory>> prioritizedMovePreferences =
         new ArrayList<>(
-            Arrays.asList(
+            List.of(
                 hasRequiredUnitsToMove.and(notEnemyOwned).and(noEnemyUnits),
                 hasRequiredUnitsToMove.and(noEnemyUnits),
                 hasRequiredUnitsToMove.and(noAa),

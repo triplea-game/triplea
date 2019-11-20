@@ -1343,7 +1343,7 @@ class OddsCalculatorPanel extends JPanel {
   }
 
   private void setAttackingUnits(final List<Unit> initialUnits) {
-    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(Collections::emptyList);
+    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(List::of);
     attackingUnitsPanel.init(
         getAttacker(),
         CollectionUtils.getMatches(
@@ -1360,7 +1360,7 @@ class OddsCalculatorPanel extends JPanel {
   }
 
   private void setDefendingUnits(final List<Unit> initialUnits) {
-    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(Collections::emptyList);
+    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(List::of);
     defendingUnitsPanel.init(
         getDefender(),
         CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand(), 1, false)),

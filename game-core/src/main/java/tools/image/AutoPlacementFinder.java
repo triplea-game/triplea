@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -374,8 +373,7 @@ public final class AutoPlacementFinder {
         } else {
           x--;
         }
-        isPlacement(
-            countryPolygons, Collections.emptySet(), placementRects, placementPoints, place, x, y);
+        isPlacement(countryPolygons, Set.of(), placementRects, placementPoints, place, x, y);
       }
       for (int j = 0; j < Math.abs(step); j++) {
         if (step > 0) {
@@ -383,8 +381,7 @@ public final class AutoPlacementFinder {
         } else {
           y--;
         }
-        isPlacement(
-            countryPolygons, Collections.emptySet(), placementRects, placementPoints, place, x, y);
+        isPlacement(countryPolygons, Set.of(), placementRects, placementPoints, place, x, y);
       }
       step = -step;
       if (step > 0) {

@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -275,7 +276,7 @@ public class UnitScroller {
   public void centerOnCurrentMovableUnit() {
     if (lastFocusedTerritory != null && !getMovableUnits(lastFocusedTerritory).isEmpty()) {
       mapPanel.setUnitHighlight(
-          Collections.singleton(
+          Set.of(
               UnitScrollerModel.getMoveableUnits(
                   lastFocusedTerritory,
                   movePhaseSupplier.get(),
@@ -297,7 +298,7 @@ public class UnitScroller {
 
   private List<Unit> getMovableUnits(final Territory territory) {
     if (territory == null) {
-      return Collections.emptyList();
+      return List.of();
     }
     return UnitScrollerModel.getMoveableUnits(
         territory, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
@@ -395,7 +396,7 @@ public class UnitScroller {
       if (!matchedUnits.isEmpty()) {
         drawUnitAvatarPane(t);
         newFocusedTerritory = t;
-        mapPanel.setUnitHighlight(Collections.singleton(matchedUnits));
+        mapPanel.setUnitHighlight(Set.of(matchedUnits));
         break;
       }
       // make sure to cycle through the front half of territories

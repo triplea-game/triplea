@@ -8,7 +8,6 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -96,7 +95,7 @@ final class HmacSha512Authenticator {
     final byte[] nonce = decodeOptionalProperty(challenge, ChallengePropertyNames.NONCE);
     final byte[] salt = decodeOptionalProperty(challenge, ChallengePropertyNames.SALT);
     if (nonce == null || salt == null) {
-      return Collections.emptyMap();
+      return Map.of();
     }
 
     try {

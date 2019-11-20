@@ -685,7 +685,7 @@ public class WeakAi extends AbstractAi {
                 moveUnits.add(CollectionUtils.difference(units, unitsAlreadyMoved));
                 unitsAlreadyMoved.addAll(units);
               } else {
-                moveUnits.add(Collections.singleton(unit));
+                moveUnits.add(Set.of(unit));
               }
               unitsAlreadyMoved.add(unit);
               taken = true;

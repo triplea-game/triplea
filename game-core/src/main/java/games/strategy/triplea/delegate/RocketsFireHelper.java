@@ -22,7 +22,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -542,16 +541,14 @@ public class RocketsFireHelper implements Serializable {
     if (attackFrom != null) {
       if (!rockets.isEmpty()) {
         // TODO: only a certain number fired...
-        final Change change =
-            ChangeFactory.markNoMovementChange(Collections.singleton(rockets.iterator().next()));
+        final Change change = ChangeFactory.markNoMovementChange(Set.of(rockets.iterator().next()));
         bridge.addChange(change);
       } else {
         throw new IllegalStateException("No rockets?" + attackFrom.getUnits());
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)
-    final Collection<Unit> targetUnitCol =
-        taUnit == null ? enemyTargetsTotal : Collections.singleton(taUnit);
+    final Collection<Unit> targetUnitCol = taUnit == null ? enemyTargetsTotal : Set.of(taUnit);
     if (targetUnitCol.stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
       final List<Unit> unitsCanDie =
           CollectionUtils.getMatches(targetUnitCol, Matches.unitCanDieFromReachingMaxDamage());

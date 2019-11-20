@@ -16,7 +16,6 @@ import java.awt.Insets;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,7 @@ final class UnitChooser extends JPanel {
       final Map<Unit, Collection<Unit>> dependent,
       final boolean allowTwoHit,
       final UiContext uiContext) {
-    this(units, Collections.emptyList(), dependent, allowTwoHit, uiContext);
+    this(units, List.of(), dependent, allowTwoHit, uiContext);
   }
 
   private UnitChooser(

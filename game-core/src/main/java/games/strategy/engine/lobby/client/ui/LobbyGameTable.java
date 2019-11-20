@@ -2,7 +2,7 @@ package games.strategy.engine.lobby.client.ui;
 
 import java.awt.Component;
 import java.awt.Font;
-import java.util.Collections;
+import java.util.List;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
@@ -21,8 +21,7 @@ class LobbyGameTable extends JTable {
     final TableRowSorter<LobbyGameTableModel> tableSorter = new TableRowSorter<>(gameTableModel);
     // by default, sort by host
     final int hostColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host);
-    tableSorter.setSortKeys(
-        Collections.singletonList(new RowSorter.SortKey(hostColumn, SortOrder.DESCENDING)));
+    tableSorter.setSortKeys(List.of(new RowSorter.SortKey(hostColumn, SortOrder.DESCENDING)));
     setRowSorter(tableSorter);
   }
 

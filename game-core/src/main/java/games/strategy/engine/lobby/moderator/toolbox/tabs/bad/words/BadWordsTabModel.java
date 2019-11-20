@@ -1,7 +1,5 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.bad.words;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -15,7 +13,7 @@ class BadWordsTabModel {
   @Nonnull private final ToolboxBadWordsClient toolboxBadWordsClient;
 
   static List<String> fetchTableHeaders() {
-    return Arrays.asList("Bad Word", "");
+    return List.of("Bad Word", "");
   }
 
   /**
@@ -25,10 +23,10 @@ class BadWordsTabModel {
   List<List<String>> fetchTableData() {
     try {
       return toolboxBadWordsClient.getBadWords().stream()
-          .map(word -> Arrays.asList(word, BadWordsTabActions.REMOVE_BUTTON_TEXT))
+          .map(word -> List.of(word, BadWordsTabActions.REMOVE_BUTTON_TEXT))
           .collect(Collectors.toList());
     } catch (final RuntimeException e) {
-      return Collections.emptyList();
+      return List.of();
     }
   }
 

@@ -20,8 +20,8 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -48,7 +48,7 @@ class TechAbilityAttachmentTest {
     final TechnologyFrontier fron = mock(TechnologyFrontier.class);
     when(data.getTechnologyFrontier()).thenReturn(fron);
     final TechAdvance advance = mock(TechAdvance.class);
-    when(fron.getTechs()).thenReturn(Arrays.asList(advance, advance, advance, advance));
+    when(fron.getTechs()).thenReturn(List.of(advance, advance, advance, advance));
     when(advance.hasTech(any())).thenReturn(Boolean.TRUE);
     when(advance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME))
         .thenReturn(attachment, null, attachment, attachment);

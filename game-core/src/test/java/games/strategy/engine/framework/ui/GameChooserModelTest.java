@@ -4,8 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Set;
 import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +25,7 @@ class GameChooserModelTest {
           when(entry2.compareTo(entry1)).thenReturn(1);
           when(entry1.compareTo(entry3)).thenReturn(-1);
           when(entry3.compareTo(entry1)).thenReturn(1);
-          final GameChooserModel model =
-              new GameChooserModel(new HashSet<>(Arrays.asList(entry1, entry2, entry3)));
+          final GameChooserModel model = new GameChooserModel(Set.of(entry1, entry2, entry3));
           assertEquals(entry1, model.get(0));
           assertEquals(entry2, model.get(1));
           assertEquals(entry3, model.get(2));

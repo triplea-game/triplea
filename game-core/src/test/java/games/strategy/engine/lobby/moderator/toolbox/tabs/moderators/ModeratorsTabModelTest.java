@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ class ModeratorsTabModelTest {
     void superModerator() {
       when(toolboxModeratorManagementClient.isCurrentUserSuperMod()).thenReturn(true);
       when(toolboxModeratorManagementClient.fetchModeratorList())
-          .thenReturn(Arrays.asList(MODERATOR_INFO, MODERATOR_INFO_WITH_NULL));
+          .thenReturn(List.of(MODERATOR_INFO, MODERATOR_INFO_WITH_NULL));
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
@@ -85,7 +84,7 @@ class ModeratorsTabModelTest {
     void moderator() {
       when(toolboxModeratorManagementClient.isCurrentUserSuperMod()).thenReturn(false);
       when(toolboxModeratorManagementClient.fetchModeratorList())
-          .thenReturn(Arrays.asList(MODERATOR_INFO, MODERATOR_INFO_WITH_NULL));
+          .thenReturn(List.of(MODERATOR_INFO, MODERATOR_INFO_WITH_NULL));
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 

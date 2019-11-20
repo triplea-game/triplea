@@ -21,9 +21,9 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.data.BattleRecords;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -75,7 +75,7 @@ public class ChangeFactory {
 
   public static Change changeOwner(
       final Unit unit, final PlayerId owner, final Territory location) {
-    return new PlayerOwnerChange(Collections.singleton(unit), owner, location);
+    return new PlayerOwnerChange(Set.of(unit), owner, location);
   }
 
   public static Change addUnits(final Territory territory, final Collection<Unit> units) {
@@ -96,7 +96,7 @@ public class ChangeFactory {
 
   public static Change moveUnits(
       final Territory start, final Territory end, final Collection<Unit> units) {
-    return new CompositeChange(Arrays.asList(removeUnits(start, units), addUnits(end, units)));
+    return new CompositeChange(List.of(removeUnits(start, units), addUnits(end, units)));
   }
 
   public static Change changeProductionFrontier(

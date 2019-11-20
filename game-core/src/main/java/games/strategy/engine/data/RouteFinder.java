@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -24,7 +25,7 @@ class RouteFinder {
   private final PlayerId player;
 
   RouteFinder(final GameMap map, final Predicate<Territory> condition) {
-    this(map, condition, Collections.emptySet(), null);
+    this(map, condition, Set.of(), null);
   }
 
   RouteFinder(

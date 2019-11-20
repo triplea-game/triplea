@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.logic;
 
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public final class MapScrollUtil {
     result.add(new AffineTransform());
     if (isInfiniteX && isInfiniteY) {
       result.addAll(
-          Arrays.asList(
+          List.of(
               AffineTransform.getTranslateInstance(-mapWidth, -mapHeight),
               AffineTransform.getTranslateInstance(-mapWidth, +mapHeight),
               AffineTransform.getTranslateInstance(+mapWidth, -mapHeight),
@@ -43,13 +42,13 @@ public final class MapScrollUtil {
     }
     if (isInfiniteX) {
       result.addAll(
-          Arrays.asList(
+          List.of(
               AffineTransform.getTranslateInstance(-mapWidth, 0),
               AffineTransform.getTranslateInstance(+mapWidth, 0)));
     }
     if (isInfiniteY) {
       result.addAll(
-          Arrays.asList(
+          List.of(
               AffineTransform.getTranslateInstance(0, -mapHeight),
               AffineTransform.getTranslateInstance(0, +mapHeight)));
     }

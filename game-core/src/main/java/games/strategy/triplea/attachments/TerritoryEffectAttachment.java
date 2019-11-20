@@ -11,7 +11,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -81,7 +80,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
           "combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType"
               + thisErrorMsg());
     }
-    final Iterator<String> iter = Arrays.asList(s).iterator();
+    final Iterator<String> iter = List.of(s).iterator();
     final int effect = getInt(iter.next());
     while (iter.hasNext()) {
       final String unitTypeToProduce = iter.next();
@@ -107,7 +106,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
       throw new GameParseException(
           "movementCostModifier must have a count and at least one unitType" + thisErrorMsg());
     }
-    final Iterator<String> iter = Arrays.asList(s).iterator();
+    final Iterator<String> iter = List.of(s).iterator();
     final BigDecimal effect = getBigDecimal(iter.next());
     while (iter.hasNext()) {
       final String unitTypeToProduce = iter.next();

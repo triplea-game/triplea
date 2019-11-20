@@ -362,20 +362,18 @@ public class AirBattle extends AbstractBattle {
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData)) {
               while (target == null) {
                 target =
-                    getRemote(bridge)
-                        .whatShouldBomberBomb(
-                            battleSite, enemyTargets, Collections.singletonList(unit));
+                    getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, List.of(unit));
               }
             } else {
               target = enemyTargets.iterator().next();
             }
             if (target != null) {
               targets = new HashMap<>();
-              targets.put(target, new HashSet<>(Collections.singleton(unit)));
+              targets.put(target, new HashSet<>(Set.of(unit)));
             }
             battleTracker.addBattle(
                 new RouteScripted(battleSite),
-                Collections.singleton(unit),
+                Set.of(unit),
                 true,
                 attacker,
                 bridge,
@@ -477,7 +475,7 @@ public class AirBattle extends AbstractBattle {
     // move during non combat to their landing site, or be scrapped if they can't find one.
     // retreat planes
     if (!attackingUnits.isEmpty()) {
-      queryRetreat(false, bridge, Collections.singleton(battleSite));
+      queryRetreat(false, bridge, Set.of(battleSite));
     }
   }
 
@@ -486,7 +484,7 @@ public class AirBattle extends AbstractBattle {
     // move during non combat to their landing site, or be scrapped if they can't find one.
     // retreat planes
     if (!defendingUnits.isEmpty()) {
-      queryRetreat(true, bridge, Collections.singleton(battleSite));
+      queryRetreat(true, bridge, Set.of(battleSite));
     }
   }
 
@@ -563,12 +561,12 @@ public class AirBattle extends AbstractBattle {
             null,
             null,
             null,
-            Collections.emptyMap(),
+            Map.of(),
             attacker,
             defender,
             isAmphibious(),
             getBattleType(),
-            Collections.emptySet());
+            Set.of());
     bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
@@ -936,7 +934,7 @@ public class AirBattle extends AbstractBattle {
             hitPlayer,
             details.getKilled(),
             details.getDamaged(),
-            Collections.emptyMap());
+            Map.of());
     // execute in a separate thread to allow either player to click continue first.
     final Thread t =
         new Thread(

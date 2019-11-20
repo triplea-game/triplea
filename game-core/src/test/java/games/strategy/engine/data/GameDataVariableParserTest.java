@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkState;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -13,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -53,7 +50,7 @@ class GameDataVariableParserTest {
 
     final Map<String, List<String>> result = parser.parseVariables(xmlSample);
 
-    assertThat(result, hasEntry("$key$", singletonList("value")));
+    assertThat(result, hasEntry("$key$", List.of("value")));
     assertThat(result.keySet(), hasSize(1));
   }
 
@@ -63,10 +60,10 @@ class GameDataVariableParserTest {
 
     final Map<String, List<String>> result = parser.parseVariables(xmlSample);
 
-    assertThat(result, hasEntry("$key1$", asList("value1", "value2")));
-    assertThat(result, hasEntry("$key2$", asList("value3", "value4")));
-    assertThat(result, hasEntry("$no-values$", Collections.emptyList()));
-    assertThat(result, hasEntry("$empty-value$", singletonList("")));
+    assertThat(result, hasEntry("$key1$", List.of("value1", "value2")));
+    assertThat(result, hasEntry("$key2$", List.of("value3", "value4")));
+    assertThat(result, hasEntry("$no-values$", List.of()));
+    assertThat(result, hasEntry("$empty-value$", List.of("")));
     assertThat(result.keySet(), hasSize(4));
   }
 
@@ -76,9 +73,9 @@ class GameDataVariableParserTest {
 
     final Map<String, List<String>> result = parser.parseVariables(xmlSample);
 
-    assertThat(result, hasEntry("$nested$", singletonList("nested-value")));
-    assertThat(result, hasEntry("$contains-nested$", singletonList("nested-value")));
-    assertThat(result, hasEntry("$many-nested$", asList("nested-value", "nested-value")));
+    assertThat(result, hasEntry("$nested$", List.of("nested-value")));
+    assertThat(result, hasEntry("$contains-nested$", List.of("nested-value")));
+    assertThat(result, hasEntry("$many-nested$", List.of("nested-value", "nested-value")));
     assertThat(result.keySet(), hasSize(3));
   }
 }

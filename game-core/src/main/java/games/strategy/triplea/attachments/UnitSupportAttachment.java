@@ -12,7 +12,6 @@ import games.strategy.triplea.Constants;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -360,7 +359,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     rule.setImpArtTech(true);
     rule.setNumber(first ? 0 : 1);
     rule.setSide("offence");
-    rule.addUnitTypes(first ? Collections.singleton(type) : getTargets(data));
+    rule.addUnitTypes(first ? Set.of(type) : getTargets(data));
     if (!first) {
       rule.setPlayers(new ArrayList<>(data.getPlayerList().getPlayers()));
     }
@@ -406,7 +405,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     boolean first = true;
     for (final UnitSupportAttachment rule : get(data)) {
       if (rule.getBonusType().isOldArtilleryRule()) {
-        rule.addUnitTypes(Collections.singleton(type));
+        rule.addUnitTypes(Set.of(type));
         first = false;
       }
     }

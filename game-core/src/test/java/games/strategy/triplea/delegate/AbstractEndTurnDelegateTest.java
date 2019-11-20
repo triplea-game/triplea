@@ -12,8 +12,9 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
@@ -37,7 +38,7 @@ final class AbstractEndTurnDelegateTest {
     private final GameData gameData = new GameData();
     private final Comparator<Territory> comparator =
         AbstractEndTurnDelegate.getSingleNeighborBlockadesThenHighestToLowestProduction(
-            Collections.emptyList(), gameData.getMap());
+            List.of(), gameData.getMap());
     private final Territory territory = new Territory("territoryName", gameData);
 
     @Test
@@ -71,8 +72,7 @@ final class AbstractEndTurnDelegateTest {
   final class GetSingleBlockadeThenHighestToLowestBlockadeDamageTest {
     private final GameData gameData = new GameData();
     private final Comparator<Territory> comparator =
-        AbstractEndTurnDelegate.getSingleBlockadeThenHighestToLowestBlockadeDamage(
-            Collections.emptyMap());
+        AbstractEndTurnDelegate.getSingleBlockadeThenHighestToLowestBlockadeDamage(Map.of());
     private final Territory territory = new Territory("territoryName", gameData);
 
     @Test

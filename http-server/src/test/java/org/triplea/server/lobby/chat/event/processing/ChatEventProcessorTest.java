@@ -2,7 +2,6 @@ package org.triplea.server.lobby.chat.event.processing;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -73,8 +72,7 @@ class ChatEventProcessorTest {
           responses.get(0),
           is(
               ServerResponse.backToClient(
-                  ServerMessageEnvelopeFactory.newPlayerListing(
-                      singletonList(CHAT_PARTICIPANT_0)))));
+                  ServerMessageEnvelopeFactory.newPlayerListing(List.of(CHAT_PARTICIPANT_0)))));
 
       assertThat(
           "Second message is player joined",

@@ -5,7 +5,6 @@ import games.strategy.engine.data.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -84,7 +83,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   public Collection<Unit> getUnresolvedUnits(final String warning) {
     final int index = unresolvedUnitWarnings.indexOf(warning);
     if (index == -1) {
-      return Collections.emptyList();
+      return List.of();
     }
     return ImmutableList.copyOf(unresolvedUnitsList.get(index));
   }

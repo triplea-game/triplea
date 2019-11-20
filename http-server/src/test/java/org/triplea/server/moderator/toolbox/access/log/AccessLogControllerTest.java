@@ -2,7 +2,7 @@ package org.triplea.server.moderator.toolbox.access.log;
 
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +26,10 @@ class AccessLogControllerTest {
 
   @Test
   void fetchAccessLog() {
-    when(accessLogService.fetchAccessLog(PAGING_PARAMS))
-        .thenReturn(Collections.singletonList(accessLogData));
+    when(accessLogService.fetchAccessLog(PAGING_PARAMS)).thenReturn(List.of(accessLogData));
 
     final Response response = accessLogController.fetchAccessLog(PAGING_PARAMS);
 
-    ControllerTestUtil.verifyResponse(response, Collections.singletonList(accessLogData));
+    ControllerTestUtil.verifyResponse(response, List.of(accessLogData));
   }
 }

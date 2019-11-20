@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.Pager;
 import java.awt.Component;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -157,7 +156,7 @@ class AccessLogTabActions {
                             () -> {
                               dialog.dispose();
                               final String selectedDuration =
-                                  getSelection(Arrays.asList(oneHour, oneDay, oneWeek, threeWeeks));
+                                  getSelection(List.of(oneHour, oneDay, oneWeek, threeWeeks));
                               confirmBan(selectedDuration, banData);
                             })
                         .build())

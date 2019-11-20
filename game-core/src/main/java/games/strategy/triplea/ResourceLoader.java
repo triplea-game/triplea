@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -119,7 +118,7 @@ public class ResourceLoader implements Closeable {
     final File userMapsFolder = ClientFileSystemHelper.getUserMapsFolder();
     final String dirName = File.separator + mapName;
     final String normalizedMapName = File.separator + normalizeMapName(mapName) + "-master";
-    return Arrays.asList(
+    return List.of(
         new File(userMapsFolder, dirName + File.separator + "map"),
         new File(userMapsFolder, dirName),
         new File(userMapsFolder, normalizedMapName + File.separator + "map"),
@@ -141,7 +140,7 @@ public class ResourceLoader implements Closeable {
 
     final File userMapsFolder = ClientFileSystemHelper.getUserMapsFolder();
     final String normalizedMapName = normalizeMapName(mapName);
-    return Arrays.asList(
+    return List.of(
         new File(userMapsFolder, mapName + ".zip"),
         new File(userMapsFolder, normalizedMapName + "-master.zip"),
         new File(userMapsFolder, normalizedMapName + ".zip"));

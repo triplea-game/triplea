@@ -373,10 +373,9 @@ public class Route implements Serializable, Iterable<Territory> {
     for (final Unit unit : units) {
       final PlayerId player = unit.getOwner();
       final ResourceCollection cost = new ResourceCollection(data);
-      cost.add(getMovementFuelCostCharge(Collections.singleton(unit), toRoute, player, data));
+      cost.add(getMovementFuelCostCharge(Set.of(unit), toRoute, player, data));
       cost.add(
-          getFuelCostsAndUnitsChargedFlatFuelCost(
-                  Collections.singleton(unit), returnRoute, player, data, true)
+          getFuelCostsAndUnitsChargedFlatFuelCost(Set.of(unit), returnRoute, player, data, true)
               .getFirst());
       if (map.containsKey(player)) {
         map.get(player).add(cost);

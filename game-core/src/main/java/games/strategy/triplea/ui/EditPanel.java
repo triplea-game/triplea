@@ -222,7 +222,7 @@ class EditPanel extends ActionPanel {
         if (!isActive() || currentAction != null) {
           return;
         }
-        getMap().setUnitHighlight(Collections.singleton(Collections.unmodifiableList(units)));
+        getMap().setUnitHighlight(Set.of(Collections.unmodifiableList(units)));
       };
 
   private final MapSelectionListener mapSelectionListener =

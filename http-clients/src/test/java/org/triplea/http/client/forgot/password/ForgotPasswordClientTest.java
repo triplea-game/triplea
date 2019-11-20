@@ -1,12 +1,12 @@
 package org.triplea.http.client.forgot.password;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.gson.Gson;
 import java.net.URI;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
@@ -26,7 +26,7 @@ class ForgotPasswordClientTest extends WireMockTest {
             HttpClientTesting.ServiceCallArgs.<ForgotPasswordResponse>builder()
                 .wireMockServer(server)
                 .expectedRequestPath(ForgotPasswordClient.FORGOT_PASSWORD_PATH)
-                .expectedBodyContents(asList(REQUEST.getUsername(), REQUEST.getEmail()))
+                .expectedBodyContents(List.of(REQUEST.getUsername(), REQUEST.getEmail()))
                 .serverReturnValue(new Gson().toJson(SUCCESS_RESPONSE))
                 .serviceCall(ForgotPasswordClientTest::doServiceCall)
                 .build());

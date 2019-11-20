@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -81,9 +80,7 @@ public class AllianceTracker implements Serializable {
 
   public Collection<String> getAlliancesPlayerIsIn(final PlayerId player) {
     final Collection<String> alliancesPlayerIsIn = alliances.get(player);
-    return !alliancesPlayerIsIn.isEmpty()
-        ? alliancesPlayerIsIn
-        : Collections.singleton(player.getName());
+    return !alliancesPlayerIsIn.isEmpty() ? alliancesPlayerIsIn : Set.of(player.getName());
   }
 
   Set<PlayerId> getAllies(final PlayerId currentPlayer) {

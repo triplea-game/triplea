@@ -16,7 +16,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,9 +114,9 @@ abstract class AbstractBattle implements IBattle {
   /** Figure out what units a transport is transporting and has to unloaded. */
   Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (headless) {
-      return Collections.emptyList();
+      return List.of();
     } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
-      return Collections.emptyList();
+      return List.of();
     }
     return ImmutableList.copyOf(
         targets.stream()

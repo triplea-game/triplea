@@ -8,9 +8,9 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
@@ -53,7 +53,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           currentAction = selectUnitsAction;
           setWidgetActivation();
           final UnitChooser unitChooser =
-              new UnitChooser(unitChoices, Collections.emptyMap(), false, getMap().getUiContext());
+              new UnitChooser(unitChoices, Map.of(), false, getMap().getUiContext());
           unitChooser.setMaxAndShowMaxButton(unitsPerPick);
           if (JOptionPane.OK_OPTION
               == EventThreadJOptionPane.showConfirmDialog(

@@ -17,7 +17,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -172,7 +171,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         if (!allConditionsNeededSoFar.contains(subCondition)) {
           allConditionsNeededSoFar.addAll(
               getAllConditionsRecursive(
-                  new HashSet<>(Collections.singleton(subCondition)), allConditionsNeededSoFar));
+                  new HashSet<>(Set.of(subCondition)), allConditionsNeededSoFar));
         }
       }
     }

@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -40,7 +39,7 @@ public final class ToolboxTabModelTestUtil {
       assertThat(
           String.format(
               "Mismatch at column %s, rowData: %s, expectedData: %s",
-              i, rowData, Arrays.asList(expectedData)),
+              i, rowData, List.of(expectedData)),
           rowData.get(i),
           is(expectedData[i]));
     }

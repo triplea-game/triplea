@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.banned.users;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -14,14 +13,14 @@ class BannedUsersTabModel {
   private final ToolboxUserBanClient toolboxUserBanClient;
 
   static List<String> fetchTableHeaders() {
-    return Arrays.asList("Ban ID", "Username", "Date Banned", "IP", "Hashed Mac", "Ban Expiry", "");
+    return List.of("Ban ID", "Username", "Date Banned", "IP", "Hashed Mac", "Ban Expiry", "");
   }
 
   List<List<String>> fetchTableData() {
     return toolboxUserBanClient.getUserBans().stream()
         .map(
             userBan ->
-                Arrays.asList(
+                List.of(
                     userBan.getBanId(),
                     userBan.getUsername(),
                     String.valueOf(userBan.getBanDate()),

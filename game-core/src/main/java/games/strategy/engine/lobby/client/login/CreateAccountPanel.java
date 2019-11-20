@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
@@ -237,7 +238,7 @@ public final class CreateAccountPanel extends JPanel {
           }
         });
 
-    Arrays.asList(passwordField, passwordConfirmField, emailField)
+    List.of(passwordField, passwordConfirmField, emailField)
         .forEach(
             inputField ->
                 new KeyTypeValidator()

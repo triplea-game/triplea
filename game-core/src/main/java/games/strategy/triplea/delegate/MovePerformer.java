@@ -105,7 +105,7 @@ public class MovePerformer implements Serializable {
                 final Route routeUnitUsedToMove =
                     moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
                 if (battle != null) {
-                  battle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+                  battle.removeAttack(routeUnitUsedToMove, Set.of(unit));
                 }
               }
             }
@@ -384,7 +384,7 @@ public class MovePerformer implements Serializable {
     if (GameStepPropertiesHelper.isCombatMove(data)
         && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route))) {
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsLand())) {
-        change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
+        change.add(ChangeFactory.markNoMovementChange(Set.of(unit)));
       }
     }
     if (routeEnd != null
@@ -398,7 +398,7 @@ public class MovePerformer implements Serializable {
       // can't keep moving them if there is an enemy destroyer there
       for (final Unit unit :
           CollectionUtils.getMatches(units, Matches.unitCanMoveThroughEnemies())) {
-        change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
+        change.add(ChangeFactory.markNoMovementChange(Set.of(unit)));
       }
     }
     return change;
@@ -501,7 +501,7 @@ public class MovePerformer implements Serializable {
         currentMove.unload(unit);
         bridge.addChange(change1);
         // set noMovement
-        final Change change2 = ChangeFactory.markNoMovementChange(Collections.singleton(unit));
+        final Change change2 = ChangeFactory.markNoMovementChange(Set.of(unit));
         currentMove.addChange(change2);
         bridge.addChange(change2);
       }

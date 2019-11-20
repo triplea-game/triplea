@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResponse;
 
-import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,11 +44,11 @@ class ModeratorsControllerTest {
 
   @Test
   void getModerators() {
-    when(moderatorsService.fetchModerators()).thenReturn(Collections.singletonList(MODERATOR_INFO));
+    when(moderatorsService.fetchModerators()).thenReturn(List.of(MODERATOR_INFO));
 
     final Response response = moderatorsController.getModerators();
 
-    verifyResponse(response, Collections.singletonList(MODERATOR_INFO));
+    verifyResponse(response, List.of(MODERATOR_INFO));
   }
 
   @Test

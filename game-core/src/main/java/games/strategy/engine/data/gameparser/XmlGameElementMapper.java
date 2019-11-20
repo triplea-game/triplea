@@ -66,7 +66,7 @@ public final class XmlGameElementMapper {
   private final ImmutableMap<String, AttachmentFactory> attachmentFactoriesByTypeName;
 
   public XmlGameElementMapper() {
-    this(Collections.emptyMap(), Collections.emptyMap());
+    this(Map.of(), Collections.emptyMap());
   }
 
   @VisibleForTesting

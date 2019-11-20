@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
@@ -30,8 +30,7 @@ class ServerMessageEnvelopeFactoryTest {
   private final ChatMessage chatMessage = new ChatMessage(PLAYER_NAME, MESSAGE);
   private final PlayerSlapped playerSlapped =
       PlayerSlapped.builder().slapper(PLAYER_NAME).slapped(PlayerName.of("slapped")).build();
-  private final PlayerListing playerListing =
-      new PlayerListing(Collections.singletonList(CHAT_PARTICIPANT));
+  private final PlayerListing playerListing = new PlayerListing(List.of(CHAT_PARTICIPANT));
 
   @Test
   void newChatMessage() {
@@ -91,7 +90,7 @@ class ServerMessageEnvelopeFactoryTest {
   @Test
   void newPlayerListing() {
     final ServerMessageEnvelope serverEventEnvelope =
-        ServerMessageEnvelopeFactory.newPlayerListing(Collections.singletonList(CHAT_PARTICIPANT));
+        ServerMessageEnvelopeFactory.newPlayerListing(List.of(CHAT_PARTICIPANT));
 
     assertThat(
         serverEventEnvelope.getMessageType(),

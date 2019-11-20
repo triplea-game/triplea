@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +31,7 @@ public class RouteScripted extends Route {
   @Override
   public List<Territory> getSteps() {
     if (numberOfSteps() <= 0) {
-      return Collections.singletonList(getStart());
+      return List.of(getStart());
     }
     return super.getSteps();
   }

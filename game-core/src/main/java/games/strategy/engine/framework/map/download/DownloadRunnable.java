@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
@@ -25,7 +24,7 @@ public class DownloadRunnable {
   public static List<DownloadFileDescription> download(final String url) {
     return DownloadConfiguration.contentReader()
         .download(url, DownloadFileParser::parse)
-        .orElseGet(Collections::emptyList);
+        .orElseGet(List::of);
   }
 
   /**
@@ -37,7 +36,7 @@ public class DownloadRunnable {
       return DownloadFileParser.parse(inputStream);
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to read file at: " + path.toAbsolutePath(), e);
-      return Collections.emptyList();
+      return List.of();
     }
   }
 }

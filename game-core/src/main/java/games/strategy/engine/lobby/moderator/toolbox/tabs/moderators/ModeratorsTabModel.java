@@ -2,7 +2,6 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs.moderators;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,11 +9,11 @@ import lombok.Getter;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 
 class ModeratorsTabModel {
-  @VisibleForTesting static final List<String> HEADERS = Arrays.asList("Name", "Last Login");
+  @VisibleForTesting static final List<String> HEADERS = List.of("Name", "Last Login");
 
   @VisibleForTesting
   static final List<String> SUPER_MOD_HEADERS =
-      Arrays.asList("Name", "Last Login", "Remove Mod", "Add Super-Mod");
+      List.of("Name", "Last Login", "Remove Mod", "Add Super-Mod");
 
   @VisibleForTesting static final String REMOVE_MOD_BUTTON_TEXT = "Remove Mod";
   @VisibleForTesting static final String ADD_SUPER_MOD_BUTTON = "Add Super-Mod";
@@ -37,14 +36,14 @@ class ModeratorsTabModel {
         .map(
             modInfo ->
                 isSuperMod
-                    ? Arrays.asList(
+                    ? List.of(
                         modInfo.getName(),
                         Optional.ofNullable(modInfo.getLastLogin())
                             .map(Instant::toString)
                             .orElse(""),
                         REMOVE_MOD_BUTTON_TEXT,
                         ADD_SUPER_MOD_BUTTON)
-                    : Arrays.asList(
+                    : List.of(
                         modInfo.getName(),
                         Optional.ofNullable(modInfo.getLastLogin())
                             .map(Instant::toString)

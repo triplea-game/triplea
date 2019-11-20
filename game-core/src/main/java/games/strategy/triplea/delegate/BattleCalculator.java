@@ -602,7 +602,7 @@ public class BattleCalculator {
     final Player tripleaPlayer =
         player.isNull() ? new WeakAi(player.getName()) : bridge.getRemotePlayer(player);
     final Map<Unit, Collection<Unit>> dependents =
-        headLess ? Collections.emptyMap() : getDependents(targetsToPickFrom);
+        headLess ? Map.of() : getDependents(targetsToPickFrom);
     if (isEditMode && !headLess) {
       final CasualtyDetails editSelection =
           tripleaPlayer.selectCasualties(
@@ -628,7 +628,7 @@ public class BattleCalculator {
       return editSelection;
     }
     if (dice.getHits() == 0) {
-      return new CasualtyDetails(Collections.emptyList(), Collections.emptyList(), true);
+      return new CasualtyDetails(List.of(), List.of(), true);
     }
     int hitsRemaining = dice.getHits();
     if (isTransportCasualtiesRestricted(data)) {
@@ -643,7 +643,7 @@ public class BattleCalculator {
         }
         killed.add(iter.next());
       }
-      return new CasualtyDetails(killed, Collections.emptyList(), true);
+      return new CasualtyDetails(killed, List.of(), true);
     }
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do
     // it here.
@@ -987,9 +987,7 @@ public class BattleCalculator {
         }
         unitTypes.add(u.getType());
         // Find unit power
-        int power =
-            DiceRoll.getTotalPower(
-                Collections.singletonMap(u, originalUnitPowerAndRollsMap.get(u)), data);
+        int power = DiceRoll.getTotalPower(Map.of(u, originalUnitPowerAndRollsMap.get(u)), data);
         // Add any support power that it provides to other units
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {

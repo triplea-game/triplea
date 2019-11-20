@@ -21,7 +21,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
   void testNotUnique() {
     final Route route = new Route(egypt, eastAfrica);
     final Unit unit = armour.create(british);
-    final List<Unit> units = Arrays.asList(unit, unit);
+    final List<Unit> units = List.of(unit, unit);
     final String results = delegate.move(units, route);
     assertError(results);
   }

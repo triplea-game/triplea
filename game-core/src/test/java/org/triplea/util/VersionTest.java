@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
+import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class VersionTest {
 
   @Test
   void compareTo_ShouldReturnNegativeIntegerWhenFirstIsLessThanSecond() {
-    Arrays.asList(
+    List.of(
             Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
             Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
             Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)))
@@ -36,7 +36,7 @@ class VersionTest {
 
   @Test
   void compareTo_ShouldReturnZeroWhenFirstIsEqualToSecond() {
-    Arrays.asList(
+    List.of(
             Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
             Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
             Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)))
@@ -45,7 +45,7 @@ class VersionTest {
 
   @Test
   void compareTo_ShouldReturnPositiveIntegerWhenFirstIsGreaterThanSecond() {
-    Arrays.asList(
+    List.of(
             Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
             Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),
             Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)))
@@ -85,7 +85,7 @@ class VersionTest {
   final class IsCompatibleWithEngineVersionTest {
     @Test
     void shouldReturnTrueWhenOtherVersionIsCompatible() {
-      Arrays.asList(
+      List.of(
               Tuple.of(new Version(1, 2, 3), "equal versions should be compatible"),
               Tuple.of(new Version(1, 2, 0), "smaller point version should be compatible"),
               Tuple.of(new Version(1, 3, 5), "larger minor version should be compatible"))
@@ -98,7 +98,7 @@ class VersionTest {
 
     @Test
     void shouldReturnFalseWhenOtherVersionIsNotCompatible() {
-      Arrays.asList(
+      List.of(
               Tuple.of(new Version(0, 0, 3), "smaller major version should not be compatible"),
               Tuple.of(new Version(2, 9, 3), "larger major version should not be compatible"))
           .forEach(
@@ -113,7 +113,7 @@ class VersionTest {
   final class IsCompatibleWithMapMinimumEngineVersionTest {
     @Test
     void shouldReturnTrueWhenOtherVersionIsCompatible() {
-      Arrays.asList(
+      List.of(
               Tuple.of(new Version(1, 2, 3), "equal versions should be compatible"),
               Tuple.of(new Version(0, 9, 0), "smaller major version should be compatible"),
               Tuple.of(new Version(1, 2, 0), "smaller point version should be compatible"),
@@ -129,7 +129,7 @@ class VersionTest {
 
     @Test
     void shouldReturnFalseWhenOtherVersionIsNotCompatible() {
-      Arrays.asList(
+      List.of(
               Tuple.of(new Version(1, 9, 3), "larger minor version should not be compatible"),
               Tuple.of(new Version(9, 2, 3), "larger major version should not be compatible"))
           .forEach(
