@@ -29,6 +29,14 @@
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
 
+- name: allow ports
+  become: true
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items: "{{ bot_ports }}"
+
 - name: reload systemd
   become: true
   systemd:

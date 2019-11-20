@@ -11,3 +11,9 @@ bot_lobby_uri: "{{ lobby_uri }}"
 bot_max_memory: "168m"
 
 bot_name: "BotServer"
+
+bot_ports:
+  - 4001
+  - 4002
+  - 4003
+  - 4004
