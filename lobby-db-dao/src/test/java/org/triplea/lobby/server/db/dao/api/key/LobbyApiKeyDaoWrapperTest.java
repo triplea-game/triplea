@@ -2,6 +2,7 @@ package org.triplea.lobby.server.db.dao.api.key;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
@@ -36,6 +37,8 @@ class LobbyApiKeyDaoWrapperTest {
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
   private static final SystemId SYSTEM_ID = SystemId.of("system-id");
   private static final int ANONYMOUS_ROLE_ID = 123;
+  private static final PlayerIdLookup PLAYER_ID_LOOKUP =
+      PlayerIdLookup.builder().playerName(PLAYER_NAME).systemId(SYSTEM_ID).ip("ip").build();
 
   private static final UserRoleLookup USER_ROLE_LOOKUP =
       UserRoleLookup.builder().userId(10).userRoleId(20).build();
@@ -137,5 +140,15 @@ class LobbyApiKeyDaoWrapperTest {
 
       assertThat(result, is(API_KEY));
     }
+  }
+
+  @Test
+  void lookupByPlayerChatId() {
+    when(lobbyApiKeyDao.lookupByPlayerChatId(PLAYER_CHAT_ID.getValue()))
+        .thenReturn(Optional.of(PLAYER_ID_LOOKUP));
+
+    final Optional<PlayerIdLookup> result = wrapper.lookupPlayerByChatId(PLAYER_CHAT_ID);
+
+    assertThat(result, isPresentAndIs(PLAYER_ID_LOOKUP));
   }
 }
