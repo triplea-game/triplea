@@ -4,16 +4,21 @@
     name: nginx
     state: present
 
-- name: create keys
-  become: true
-  shell: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/cert.key -out /etc/nginx/cert.crt -batch
-
 - name: deploy nginx sites_enabled configuation
-  become: yes
+  become: true
   template:
     src: etc_nginx_sites_enabled_default.j2
     dest: /etc/nginx/sites-enabled/default
 
+- name: allow ports
+  become: true
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items: "{{ nginx_allowed_ports }}"
+
 - name:  relaunch nginx
-  become: yes
+  become: true
   shell: systemctl restart nginx
+
