@@ -50,7 +50,11 @@ class GenericWebSocketClientTest {
   @BeforeEach
   void setup() {
     genericWebSocketClient =
-        new GenericWebSocketClient<>(ExampleServerMessage.class, messageListener, webSocketClient);
+        new GenericWebSocketClient<>(
+            ExampleServerMessage.class,
+            messageListener,
+            webSocketClient,
+            "test-client connect error message");
     genericWebSocketClient.addConnectionClosedListener(connectionLostListener);
   }
 

@@ -30,7 +30,8 @@ class InboundChat {
         new GenericWebSocketClient<>(
             chatWebsocketUri,
             ServerMessageEnvelope.class,
-            inboundEventHandler::handleServerMessage);
+            inboundEventHandler::handleServerMessage,
+            "Failed to connect to chat.");
   }
 
   void addPlayerStatusListener(final Consumer<StatusUpdate> playerStatusListener) {
