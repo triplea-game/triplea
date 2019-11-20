@@ -61,7 +61,11 @@ class InboundChat {
     inboundEventHandler.addChatEventListener(chatEventListener);
   }
 
+  void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
+    webSocketClient.addConnectionClosedListener(connectionClosedListener);
+  }
+
   void addConnectionLostListener(final Consumer<String> connectionLostListener) {
-    webSocketClient.addConnectionClosedListener(connectionLostListener);
+    webSocketClient.addConnectionLostListener(connectionLostListener);
   }
 }

@@ -33,13 +33,19 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
   private final WebSocketConnection client;
   private final Class<IncomingT> incomingMessageType;
   private final Consumer<IncomingT> messageListener;
+  /** These are called if connection is disconnected (by server). */
   private final Collection<Consumer<String>> connectionLostListeners = new ArrayList<>();
+  /** These are called whenever connection is closed, whether by us or server. */
+  private final Collection<Consumer<String>> connectionClosedListeners = new ArrayList<>();
 
   public GenericWebSocketClient(
       final URI lobbyUri,
       final Class<IncomingT> incomingMessageType,
       final Consumer<IncomingT> messageListener) {
-    this(incomingMessageType, messageListener, new WebSocketConnection(lobbyUri));
+    this(
+        incomingMessageType,
+        messageListener,
+        new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)));
   }
 
   @VisibleForTesting
@@ -53,7 +59,14 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
     client.addListener(this);
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(client::connect, threadPool),
-        e -> log.log(Level.WARNING, "Failed to open connection with server", e));
+        e -> log.log(Level.SEVERE, "Failed to open connection with server", e));
+  }
+
+  @VisibleForTesting
+  static URI swapHttpsToWssProtocol(final URI uri) {
+    return uri.getScheme().equals("https")
+        ? URI.create(uri.toString().replace("https", "wss"))
+        : uri;
   }
 
   /**
@@ -69,17 +82,23 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
         e -> log.log(Level.WARNING, "Failed to send message to server", e));
   }
 
-  /** Non-blocking close of the websocket connection. */
+  /**
+   * Removes connection lost listeners and starts a non-blocking close of the websocket connection.
+   */
   public void close() {
+    connectionLostListeners.clear();
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(client::close, threadPool),
         e -> log.log(Level.WARNING, "Failed to close client", e));
     threadPool.shutdown();
   }
 
-  // TODO: test that this is called on error
   public void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
-    connectionLostListeners.add(connectionClosedListener);
+    connectionClosedListeners.add(connectionClosedListener);
+  }
+
+  public void addConnectionLostListener(final Consumer<String> connectionLostListener) {
+    connectionLostListeners.add(connectionLostListener);
   }
 
   @Override
@@ -90,6 +109,8 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
 
   @Override
   public void connectionClosed(final String reason) {
+    connectionClosedListeners.forEach(
+        connectionLostListener -> connectionLostListener.accept(reason));
     connectionLostListeners.forEach(
         connectionLostListener -> connectionLostListener.accept(reason));
   }
