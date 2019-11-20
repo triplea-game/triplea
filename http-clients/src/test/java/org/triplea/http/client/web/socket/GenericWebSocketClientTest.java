@@ -87,8 +87,8 @@ class GenericWebSocketClientTest {
     genericWebSocketClient.close();
     genericWebSocketClient.connectionClosed(REASON);
 
-    verify(webSocketClient).close();
-    verify(connectionClosedListener, timeout(500)).accept(REASON);
+    verify(webSocketClient, timeout(500)).close();
+    verify(connectionClosedListener).accept(REASON);
     verify(connectionLostListener, never()).accept(any());
   }
 
