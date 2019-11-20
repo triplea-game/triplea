@@ -7,9 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -20,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
