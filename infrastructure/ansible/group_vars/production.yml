@@ -1,4 +1,1 @@
-bot_lobby_address: production.triplea-game.org
-http_server_error_report_github_repo: "triplea"
-http_server_error_report_github_token: "{{ lookup('env', 'GITHUB_API_TOKEN') }}"
-http_server_config_file: configuration-production.yml
+lobby_uri: "https://production.triplea-game.org"

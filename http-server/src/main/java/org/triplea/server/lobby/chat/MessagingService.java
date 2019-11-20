@@ -1,7 +1,7 @@
 package org.triplea.server.lobby.chat;
 
 import com.google.gson.JsonSyntaxException;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -25,7 +25,7 @@ class MessagingService {
   /** Sends to a single session. */
   @Nonnull private final BiConsumer<Session, ServerMessageEnvelope> messageSender;
   /** Sends to all connected sessions. */
-  @Nonnull private final BiConsumer<Session, ServerMessageEnvelope> messageBroadcaster;
+  @Nonnull private final BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
 
   @Nonnull private final Function<UserWithRoleRecord, ChatParticipant> chatParticipantAdapter;
 
@@ -59,7 +59,7 @@ class MessagingService {
             responses -> sendMessages(session, responses), () -> logRequestIgnoredWarning(session));
   }
 
-  private void sendMessages(final Session session, final List<ServerResponse> responses) {
+  private void sendMessages(final Session session, final Collection<ServerResponse> responses) {
     if (responses.isEmpty()) {
       logRequestIgnoredWarning(session);
     }
@@ -67,7 +67,7 @@ class MessagingService {
     responses.forEach(
         response -> {
           if (response.isBroadcast()) {
-            messageBroadcaster.accept(session, response.getServerEventEnvelope());
+            messageBroadcaster.accept(session.getOpenSessions(), response.getServerEventEnvelope());
           } else {
             messageSender.accept(session, response.getServerEventEnvelope());
           }
@@ -88,6 +88,6 @@ class MessagingService {
   void handleDisconnect(final Session session) {
     chatEventProcessor
         .disconnect(session)
-        .ifPresent(envelope -> messageBroadcaster.accept(session, envelope));
+        .ifPresent(envelope -> messageBroadcaster.accept(session.getOpenSessions(), envelope));
   }
 }

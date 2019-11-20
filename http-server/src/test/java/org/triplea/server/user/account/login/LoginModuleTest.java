@@ -9,9 +9,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
@@ -50,6 +51,7 @@ class LoginModuleTest {
   @Mock private Predicate<LoginRequest> tempPasswordLogin;
   @Mock private Function<PlayerName, Optional<String>> anonymousLogin;
   @Mock private Function<LoginRecord, ApiKey> apiKeyGenerator;
+  @Mock private Consumer<LoginRecord> accessLogUpdater;
   @Mock private UserJdbiDao userJdbiDao;
 
   private LoginModule loginModule;
@@ -62,13 +64,14 @@ class LoginModuleTest {
             .tempPasswordLogin(tempPasswordLogin)
             .anonymousLogin(anonymousLogin)
             .apiKeyGenerator(apiKeyGenerator)
+            .accessLogUpdater(accessLogUpdater)
             .userJdbiDao(userJdbiDao)
             .build();
   }
 
   @SuppressWarnings("unused")
   static List<Arguments> rejectLoginOnBadArgs() {
-    return Arrays.asList(
+    return List.of(
         Arguments.of(LoginRequest.builder().password("no-name").build(), "system-id-string", IP),
         Arguments.of(LOGIN_REQUEST, null, IP));
   }
@@ -87,21 +90,12 @@ class LoginModuleTest {
     assertThat(result.getApiKey(), nullValue());
     verify(userJdbiDao, never()).lookupUserRoleByUserName(any());
     verify(apiKeyGenerator, never()).apply(any());
+    verify(accessLogUpdater, never()).accept(any());
   }
 
   private static void assertSuccessLogin(final LobbyLoginResponse result) {
     assertThat(result.getFailReason(), nullValue());
     assertThat(result.getApiKey(), is(API_KEY.getValue()));
-  }
-
-  private void givenApiKeyGenerationForAnonymous() {
-    // TODO: Project#12 verify anonymous record recorded
-    when(apiKeyGenerator.apply(any(LoginRecord.class))).thenReturn(API_KEY);
-  }
-
-  private void givenApiKeyGenerationForRegistered() {
-    // TODO: Project#12 verify registered user record recorded
-    when(apiKeyGenerator.apply(any(LoginRecord.class))).thenReturn(API_KEY);
   }
 
   @Nested
@@ -117,13 +111,14 @@ class LoginModuleTest {
       assertFailedLogin(result);
       verify(registeredLogin, never()).test(any());
       verify(tempPasswordLogin, never()).test(any());
+      verify(accessLogUpdater, never()).accept(any());
     }
 
     @Test
     void loginSuccess() {
       when(anonymousLogin.apply(PlayerName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
           .thenReturn(Optional.empty());
-      givenApiKeyGenerationForAnonymous();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
 
       final LobbyLoginResponse result =
           loginModule.doLogin(ANONYMOUS_LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
@@ -133,6 +128,10 @@ class LoginModuleTest {
       verify(registeredLogin, never()).test(any());
       verify(tempPasswordLogin, never()).test(any());
       verify(userJdbiDao, never()).lookupUserRoleByUserName(any());
+      final ArgumentCaptor<LoginRecord> loginRecordArgumentCaptor =
+          ArgumentCaptor.forClass(LoginRecord.class);
+      verify(accessLogUpdater).accept(loginRecordArgumentCaptor.capture());
+      assertThat(loginRecordArgumentCaptor.getValue().isRegistered(), is(false));
     }
   }
 
@@ -146,6 +145,7 @@ class LoginModuleTest {
       assertFailedLogin(result);
 
       verify(anonymousLogin, never()).apply(any());
+      verify(accessLogUpdater, never()).accept(any());
     }
 
     @Test
@@ -153,7 +153,7 @@ class LoginModuleTest {
       when(registeredLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(UserRole.PLAYER));
-      givenApiKeyGenerationForRegistered();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
 
       final LobbyLoginResponse result =
           loginModule.doLogin(LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
@@ -161,6 +161,10 @@ class LoginModuleTest {
       assertSuccessLogin(result);
       assertThat(result.isPasswordChangeRequired(), is(false));
       verify(anonymousLogin, never()).apply(any());
+      final ArgumentCaptor<LoginRecord> loginRecordArgumentCaptor =
+          ArgumentCaptor.forClass(LoginRecord.class);
+      verify(accessLogUpdater).accept(loginRecordArgumentCaptor.capture());
+      assertThat(loginRecordArgumentCaptor.getValue().isRegistered(), is(true));
     }
   }
 
@@ -171,7 +175,7 @@ class LoginModuleTest {
       when(tempPasswordLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(UserRole.PLAYER));
-      givenApiKeyGenerationForRegistered();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
 
       final LobbyLoginResponse result =
           loginModule.doLogin(LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
@@ -179,6 +183,7 @@ class LoginModuleTest {
       assertSuccessLogin(result);
       assertThat(result.isPasswordChangeRequired(), is(true));
       verify(anonymousLogin, never()).apply(any());
+      verify(accessLogUpdater).accept(any());
     }
   }
 
@@ -200,7 +205,7 @@ class LoginModuleTest {
       when(registeredLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(userRole));
-      givenApiKeyGenerationForRegistered();
+      when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
     }
 
     @ParameterizedTest

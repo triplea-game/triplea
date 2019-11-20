@@ -7,8 +7,6 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,12 +62,12 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newDownloadWithUrl("url3");
     final MapDownloadList testObj =
-        new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+        new MapDownloadList(List.of(download1, download2, download3), strategy);
 
     final List<DownloadFileDescription> available =
-        testObj.getAvailableExcluding(Arrays.asList(download1, download3));
+        testObj.getAvailableExcluding(List.of(download1, download3));
 
-    assertThat(available, is(Collections.singletonList(download2)));
+    assertThat(available, is(List.of(download2)));
   }
 
   private static DownloadFileDescription newDownloadWithUrl(final String url) {
@@ -119,12 +117,12 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newDownloadWithUrl("url3");
     final MapDownloadList testObj =
-        new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+        new MapDownloadList(List.of(download1, download2, download3), strategy);
 
     final List<DownloadFileDescription> outOfDate =
-        testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
+        testObj.getOutOfDateExcluding(List.of(download1, download3));
 
-    assertThat(outOfDate, is(Collections.singletonList(download2)));
+    assertThat(outOfDate, is(List.of(download2)));
   }
 
   @Test

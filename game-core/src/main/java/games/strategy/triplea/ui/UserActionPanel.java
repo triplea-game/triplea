@@ -13,7 +13,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -41,7 +40,7 @@ public class UserActionPanel extends ActionPanel {
   private UserActionAttachment choice = null;
   private final TripleAFrame parent;
   private boolean firstRun = true;
-  private List<UserActionAttachment> validUserActions = Collections.emptyList();
+  private List<UserActionAttachment> validUserActions = List.of();
 
   /**
    * Fires up a JDialog showing valid actions, choosing an action will release this model and
@@ -229,7 +228,7 @@ public class UserActionPanel extends ActionPanel {
           ae -> {
             selectUserActionButton.setEnabled(false);
             doneButton.setEnabled(false);
-            validUserActions = Collections.emptyList();
+            validUserActions = List.of();
             choice = uaa;
             parent.setVisible(false);
             release();

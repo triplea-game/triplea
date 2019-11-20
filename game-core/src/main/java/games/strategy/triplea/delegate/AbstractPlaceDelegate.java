@@ -22,7 +22,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -271,8 +270,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       bridge
           .getDisplayChannelBroadcaster()
           .reportMessageToPlayers(
-              Collections.singletonList(player),
-              Collections.emptyList(),
+              List.of(player),
+              List.of(),
               "Not enough unit production territories available",
               "Unit Placement Canceled");
     }
@@ -1519,7 +1518,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
       if (!doNotCountNeighbors && to.isWater()) {
         for (final Territory current :
-            getAllProducers(to, player, Collections.singletonList(unitWhichRequiresUnits), true)) {
+            getAllProducers(to, player, List.of(unitWhichRequiresUnits), true)) {
           final Collection<Unit> unitsAtStartOfTurnInCurrent =
               unitsAtStartOfStepInTerritory(current);
           if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)

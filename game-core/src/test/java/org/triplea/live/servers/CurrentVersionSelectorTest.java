@@ -1,6 +1,5 @@
 package org.triplea.live.servers;
 
-import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,7 +50,7 @@ class CurrentVersionSelectorTest {
             currentVersionSelector.apply(
                 LiveServers.builder()
                     .latestEngineVersion(new Version("10.0"))
-                    .servers(emptyList())
+                    .servers(List.of())
                     .build()));
   }
 

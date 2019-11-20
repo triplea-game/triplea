@@ -6,7 +6,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import com.google.common.base.Strings;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,8 +14,7 @@ class PlayerNameTest {
 
   @SuppressWarnings("unused")
   static List<String> usernameValidationWithInvalidNames() {
-    return Arrays.asList(
-        null,
+    return List.of(
         "",
         "a",
         "ab", // still too short
@@ -51,7 +49,7 @@ class PlayerNameTest {
 
   @SuppressWarnings("unused")
   private static List<String> usernameValidationWithValidNames() {
-    return Arrays.asList("abc", Strings.repeat("a", PlayerName.MAX_LENGTH), "a12", "a--");
+    return List.of("abc", Strings.repeat("a", PlayerName.MAX_LENGTH), "a12", "a--");
   }
 
   @ParameterizedTest

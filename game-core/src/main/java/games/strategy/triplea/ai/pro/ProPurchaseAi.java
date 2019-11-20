@@ -35,7 +35,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1052,7 +1051,7 @@ class ProPurchaseAi {
       for (final Iterator<Unit> it = unplacedUnits.iterator(); it.hasNext(); ) {
         final Unit u = it.next();
         if (remainingUnitProduction > 0
-            && ProPurchaseUtils.canUnitsBePlaced(Collections.singletonList(u), player, t, isBid)) {
+            && ProPurchaseUtils.canUnitsBePlaced(List.of(u), player, t, isBid)) {
           remainingUnitProduction--;
           unitsToPlace.add(u);
           it.remove();
@@ -2269,37 +2268,34 @@ class ProPurchaseAi {
           break;
         }
 
-        // Determine best long range attack option (prefer air units)
-        ProPurchaseOption bestAttackOption = null;
-        double maxAttackEfficiency =
-            minPurchaseOption.getAttackEfficiency()
-                * minPurchaseOption.getMovement()
-                * minPurchaseOption.getCost()
-                / minPurchaseOption.getQuantity();
+        // Determine best upgrade option (prefer air units)
+        // TODO: ensure map has carriers or air unit has range to reach enemy land mass
+        ProPurchaseOption bestUpgradeOption = null;
+        double maxEfficiency =
+            findUpgradeUnitEfficiency(minPurchaseOption, placeTerritory.getStrategicValue());
         for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
           if (ppo.getCost() > minPurchaseOption.getCost()
               && (ppo.isAir()
                   || placeTerritory.getStrategicValue() >= 0.25
                   || ppo.getTransportCost() <= minPurchaseOption.getTransportCost())) {
-            double attackEfficiency =
-                ppo.getAttackEfficiency() * ppo.getMovement() * ppo.getCost() / ppo.getQuantity();
+            double efficiency = findUpgradeUnitEfficiency(ppo, placeTerritory.getStrategicValue());
             if (ppo.isAir()) {
-              attackEfficiency *= 10;
+              efficiency *= 10;
             }
             if (ppo.getCarrierCost() > 0) {
               final int unusedLocalCarrierCapacity =
                   ProTransportUtils.getUnusedLocalCarrierCapacity(
                       player, t, placeTerritory.getPlaceUnits());
               final int neededFighters = unusedLocalCarrierCapacity / ppo.getCarrierCost();
-              attackEfficiency *= (1 + neededFighters);
+              efficiency *= (1 + neededFighters);
             }
-            if (attackEfficiency > maxAttackEfficiency) {
-              bestAttackOption = ppo;
-              maxAttackEfficiency = attackEfficiency;
+            if (efficiency > maxEfficiency) {
+              bestUpgradeOption = ppo;
+              maxEfficiency = efficiency;
             }
           }
         }
-        if (bestAttackOption == null) {
+        if (bestUpgradeOption == null) {
           airAndLandPurchaseOptions.remove(minPurchaseOption);
           continue;
         }
@@ -2327,16 +2323,30 @@ class ProPurchaseAi {
         placeTerritory.getPlaceUnits().removeAll(unitsToRemove);
         ProLogger.trace(t + ", removedUnits=" + unitsToRemove);
         for (int i = 0; i < unitsToRemove.size(); i++) {
-          if (resourceTracker.hasEnough(bestAttackOption)) {
-            resourceTracker.purchase(bestAttackOption);
+          if (resourceTracker.hasEnough(bestUpgradeOption)) {
+            resourceTracker.purchase(bestUpgradeOption);
             final List<Unit> newUnit =
-                bestAttackOption.getUnitType().create(bestAttackOption.getQuantity(), player, true);
+                bestUpgradeOption
+                    .getUnitType()
+                    .create(bestUpgradeOption.getQuantity(), player, true);
             placeTerritory.getPlaceUnits().addAll(newUnit);
             ProLogger.trace(t + ", addedUnit=" + newUnit);
           }
         }
       }
     }
+  }
+
+  /**
+   * Determine efficiency value for upgrading to the given purchase option. If the strategic value
+   * of the territory is low then favor high movement units as its far from the enemy otherwise
+   * favor high defense.
+   */
+  private static double findUpgradeUnitEfficiency(
+      final ProPurchaseOption ppo, final double strategicValue) {
+    final double multiplier =
+        (strategicValue >= 1) ? ppo.getDefenseEfficiency() : ppo.getMovement();
+    return ppo.getAttackEfficiency() * multiplier * ppo.getCost() / ppo.getQuantity();
   }
 
   private IntegerMap<ProductionRule> populateProductionRuleMap(
@@ -2565,10 +2575,7 @@ class ProPurchaseAi {
       final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
       final String message =
-          del.placeUnits(
-              new ArrayList<>(Collections.singletonList(unit)),
-              t,
-              IAbstractPlaceDelegate.BidMode.NOT_BID);
+          del.placeUnits(new ArrayList<>(List.of(unit)), t, IAbstractPlaceDelegate.BidMode.NOT_BID);
       if (message != null) {
         ProLogger.warn(message);
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);

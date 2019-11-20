@@ -411,12 +411,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             null,
             null,
             null,
-            Collections.emptyMap(),
+            Map.of(),
             attacker,
             defender,
             isAmphibious(),
             getBattleType(),
-            Collections.emptySet());
+            Set.of());
     bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
@@ -435,7 +435,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
 
     FireAa() {
-      validAttackingUnitsForThisRoll = Collections.emptyList();
+      validAttackingUnitsForThisRoll = List.of();
       determineAttackers = true;
     }
 
@@ -662,7 +662,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             attacker,
             new ArrayList<>(casualties.getKilled()),
             new ArrayList<>(casualties.getDamaged()),
-            Collections.emptyMap());
+            Map.of());
     final Thread t =
         new Thread(
             () -> {

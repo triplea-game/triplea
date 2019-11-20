@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -55,7 +54,7 @@ public class TripleAUnit extends Unit {
   // the transport that is currently transporting us
   private TripleAUnit transportedBy = null;
   // the units we have unloaded this turn
-  private List<Unit> unloaded = Collections.emptyList();
+  private List<Unit> unloaded = List.of();
   // was this unit loaded this turn?
   private boolean wasLoadedThisTurn = false;
   // the territory this unit was unloaded to this turn
@@ -120,7 +119,7 @@ public class TripleAUnit extends Unit {
         }
       }
     }
-    return Collections.emptyList();
+    return List.of();
   }
 
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
@@ -136,7 +135,7 @@ public class TripleAUnit extends Unit {
 
   private void setUnloaded(final List<Unit> unloaded) {
     if (unloaded == null || unloaded.isEmpty()) {
-      this.unloaded = Collections.emptyList();
+      this.unloaded = List.of();
     } else {
       this.unloaded = new ArrayList<>(unloaded);
     }

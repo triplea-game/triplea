@@ -6,10 +6,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import javax.websocket.Session;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,7 @@ class MessagingServiceTest {
       UserWithRoleRecord.builder()
           .role(UserRole.MODERATOR)
           .username("player-name-moderator")
+          .playerChatId("chat-id")
           .build();
 
   private static final ChatParticipant CHAT_PARTICIPANT =
@@ -58,7 +60,7 @@ class MessagingServiceTest {
   @Mock private LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private ChatEventProcessor eventProcessing;
   @Mock private BiConsumer<Session, ServerMessageEnvelope> messageSender;
-  @Mock private BiConsumer<Session, ServerMessageEnvelope> messageBroadcaster;
+  @Mock private BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
 
   private MessagingService messagingService;
 
@@ -110,7 +112,7 @@ class MessagingServiceTest {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
           .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
-          .thenReturn(Collections.emptyList());
+          .thenReturn(List.of());
       when(session.getUserProperties()).thenReturn(userPropertiesMap);
 
       messagingService.handleMessage(session, JSON_MESSAGE);
@@ -121,9 +123,11 @@ class MessagingServiceTest {
     @Test
     void broadCastResponse() {
       givenServerResponse(ServerResponse.broadcast(serverEventEnvelope));
+      when(session.getOpenSessions()).thenReturn(Set.of(session));
+
       messagingService.handleMessage(session, JSON_MESSAGE);
 
-      verify(messageBroadcaster).accept(session, serverEventEnvelope);
+      verify(messageBroadcaster).accept(Set.of(session), serverEventEnvelope);
       verify(messageSender, never()).accept(any(), any());
     }
 
@@ -131,7 +135,7 @@ class MessagingServiceTest {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
           .thenReturn(Optional.of(MODERATOR_DATA));
       when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
-          .thenReturn(Arrays.asList(responses));
+          .thenReturn(List.of(responses));
     }
 
     @Test
@@ -149,10 +153,11 @@ class MessagingServiceTest {
       givenServerResponse(
           ServerResponse.broadcast(serverEventEnvelope),
           ServerResponse.backToClient(serverEventEnvelope));
+      when(session.getOpenSessions()).thenReturn(Set.of(session));
 
       messagingService.handleMessage(session, JSON_MESSAGE);
 
-      verify(messageBroadcaster).accept(session, serverEventEnvelope);
+      verify(messageBroadcaster).accept(Set.of(session), serverEventEnvelope);
       verify(messageSender).accept(session, serverEventEnvelope);
     }
   }
@@ -171,10 +176,11 @@ class MessagingServiceTest {
     @Test
     void disconnect() {
       when(eventProcessing.disconnect(session)).thenReturn(Optional.of(serverEventEnvelope));
+      when(session.getOpenSessions()).thenReturn(Set.of(session));
 
       messagingService.handleDisconnect(session);
 
-      verify(messageBroadcaster).accept(session, serverEventEnvelope);
+      verify(messageBroadcaster).accept(Set.of(session), serverEventEnvelope);
     }
 
     @Test

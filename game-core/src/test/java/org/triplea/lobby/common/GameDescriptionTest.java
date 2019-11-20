@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import games.strategy.net.Node;
 import java.net.InetAddress;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.game.server.HeadlessGameServer;
@@ -34,7 +34,7 @@ final class GameDescriptionTest {
 
     @Test
     void isBotShouldReturnFalseWhen() throws Exception {
-      Arrays.asList(
+      List.of(
               // host name must have correct prefix
               GameDescription.builder()
                   .comment(HeadlessGameServer.BOT_GAME_HOST_COMMENT)

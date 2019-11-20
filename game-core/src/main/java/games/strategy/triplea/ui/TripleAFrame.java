@@ -524,9 +524,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     territoryInfo.setPreferredSize(new Dimension(0, 0));
     resourceBar = new ResourceBar(data, uiContext);
     message.setFont(
-        message
-            .getFont()
-            .deriveFont(Collections.singletonMap(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
+        message.getFont().deriveFont(Map.of(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
     status.setPreferredSize(new Dimension(0, 0));
     status.setText("");
 
@@ -807,9 +805,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
         this,
         hotkey,
-        () ->
-            tabsPanel.setSelectedIndex(
-                Arrays.asList(tabsPanel.getComponents()).indexOf(component)));
+        () -> tabsPanel.setSelectedIndex(List.of(tabsPanel.getComponents()).indexOf(component)));
   }
 
   public LocalPlayers getLocalPlayers() {
@@ -1633,8 +1629,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                 Math.min(
                     BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()),
                     possible.size());
-            final UnitChooser chooser =
-                new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
+            final UnitChooser chooser = new UnitChooser(possible, Map.of(), false, uiContext);
             chooser.setMaxAndShowMaxButton(maxAllowed);
             chooser.addChangeListener(
                 field -> {
@@ -1780,8 +1775,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
           panelChooser.add(new JLabel(" "));
           final int maxAllowed =
               Math.min(AirBattle.getMaxInterceptionCount(current, possible), possible.size());
-          final UnitChooser chooser =
-              new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
+          final UnitChooser chooser = new UnitChooser(possible, Map.of(), false, uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
           panelChooser.add(chooser);
           final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
@@ -2447,8 +2441,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
         () ->
             SwingAction.invokeAndWait(
                 () -> {
-                  final UnitChooser chooser =
-                      new UnitChooser(fighters, Collections.emptyMap(), false, uiContext);
+                  final UnitChooser chooser = new UnitChooser(fighters, Map.of(), false, uiContext);
                   final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
                   final int availHeight = screenResolution.height - 120;
                   final int availWidth = screenResolution.width - 40;

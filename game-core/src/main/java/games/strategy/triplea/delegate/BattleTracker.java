@@ -998,7 +998,7 @@ public class BattleTracker implements Serializable {
                 changes.add(translate);
               }
             }
-            changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
+            changes.add(ChangeFactory.removeUnits(territory, Set.of(u)));
             changes.add(ChangeFactory.addUnits(territory, toAdd));
             changes.add(ChangeFactory.markNoMovementChange(toAdd));
             bridge
@@ -1197,7 +1197,7 @@ public class BattleTracker implements Serializable {
   public Collection<IBattle> getDependentOn(final IBattle blocked) {
     final Collection<IBattle> dependent = dependencies.get(blocked);
     if (dependent == null) {
-      return Collections.emptyList();
+      return List.of();
     }
     return CollectionUtils.getMatches(dependent, Matches.battleIsEmpty().negate());
   }

@@ -51,4 +51,27 @@ class TempPasswordDaoTest extends DaoTest {
     assertThat(tempPasswordDao.insertTempPassword(USERNAME, EMAIL, NEW_PASSWORD), is(true));
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(NEW_PASSWORD));
   }
+
+  @DataSet(cleanBefore = true, value = "temp_password/invalidate_password.yml")
+  @Test
+  void invalidateTempPasswordsForMissingNameDoesNothing() {
+    // verify that before we do any invalidation that indeed our known user has a temp password
+    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
+
+    // invalidate password for some other user
+    tempPasswordDao.invalidateTempPasswords("DNE");
+
+    // expect the temp password for the known user to still exist
+    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
+  }
+
+  @DataSet(cleanBefore = true, value = "temp_password/invalidate_password.yml")
+  @Test
+  void invalidatePassword() {
+    tempPasswordDao.invalidateTempPasswords(USERNAME);
+    assertThat(
+        "With password invalidated, fetching temp password should return empty",
+        tempPasswordDao.fetchTempPassword(USERNAME),
+        isEmpty());
+  }
 }

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -74,7 +73,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
     addTokenHeader(post, token);
     post.setEntity(
         new UrlEncodedFormEntity(
-            Collections.singletonList(
+            List.of(
                 new BasicNameValuePair(
                     "content", text + ((path != null) ? uploadSaveGame(client, token, path) : ""))),
             StandardCharsets.UTF_8));
@@ -163,8 +162,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
     final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/users/" + userId + "/tokens");
     post.setEntity(
-        new UrlEncodedFormEntity(
-            Collections.singletonList(newPasswordParameter()), StandardCharsets.UTF_8));
+        new UrlEncodedFormEntity(List.of(newPasswordParameter()), StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = EntityUtils.toString(response.getEntity());

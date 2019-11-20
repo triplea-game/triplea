@@ -1,5 +1,6 @@
 package org.triplea.server.lobby.chat;
 
+import java.util.Collection;
 import java.util.function.BiConsumer;
 import javax.websocket.Session;
 import lombok.AllArgsConstructor;
@@ -8,15 +9,15 @@ import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
 
 @Slf4j
 @AllArgsConstructor
-public class MessageBroadcaster implements BiConsumer<Session, ServerMessageEnvelope> {
+public class MessageBroadcaster implements BiConsumer<Collection<Session>, ServerMessageEnvelope> {
 
   private final BiConsumer<Session, ServerMessageEnvelope> messageSender;
 
   @Override
-  public void accept(final Session session, final ServerMessageEnvelope serverEventEnvelope) {
+  public void accept(
+      final Collection<Session> sessions, final ServerMessageEnvelope serverEventEnvelope) {
     log.info("Broadcasting: {}", serverEventEnvelope);
-    session
-        .getOpenSessions()
+    sessions
         .parallelStream()
         .filter(Session::isOpen)
         .forEach(s -> messageSender.accept(s, serverEventEnvelope));

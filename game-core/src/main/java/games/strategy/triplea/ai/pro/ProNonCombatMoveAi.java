@@ -1563,11 +1563,7 @@ class ProNonCombatMoveAi {
             final Route route =
                 data.getMap()
                     .getRouteForUnits(
-                        currentTerritory,
-                        patd.getTerritory(),
-                        match,
-                        Collections.singletonList(transport),
-                        player);
+                        currentTerritory, patd.getTerritory(), match, List.of(transport), player);
             if (route == null) {
               break;
             }
@@ -2527,7 +2523,7 @@ class ProNonCombatMoveAi {
                       player);
           final MoveValidationResult mvr =
               MoveValidator.validateMove(
-                  Collections.singletonList(u), r, player, Map.of(), Map.of(), true, null, data);
+                  List.of(u), r, player, Map.of(), Map.of(), true, null, data);
           if (!mvr.isMoveValid()) {
             continue;
           }

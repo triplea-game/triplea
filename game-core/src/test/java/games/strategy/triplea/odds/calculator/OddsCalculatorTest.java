@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,7 @@ class OddsCalculatorTest {
     final PlayerId russians = GameDataTestUtil.russians(gameData);
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(100, russians);
-    final List<Unit> bombardingUnits = Collections.emptyList();
+    final List<Unit> bombardingUnits = List.of();
     final IOddsCalculator calculator = new OddsCalculator(gameData);
     final AggregateResults results =
         calculator.setCalculateDataAndCalculate(
@@ -66,7 +65,7 @@ class OddsCalculatorTest {
     final List<Unit> defendingUnits = GameDataTestUtil.fighter(gameData).create(1, british, false);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(1, germans, false);
     attackingUnits.addAll(GameDataTestUtil.bomber(gameData).create(1, germans, false));
-    final List<Unit> bombardingUnits = Collections.emptyList();
+    final List<Unit> bombardingUnits = List.of();
     final IOddsCalculator calculator = new OddsCalculator(gameData);
     calculator.setKeepOneAttackingLandUnit(true);
     final AggregateResults results =
@@ -98,7 +97,7 @@ class OddsCalculatorTest {
             sz1,
             attacking,
             defending,
-            Collections.emptyList(),
+            List.of(),
             TerritoryEffectHelper.getEffects(sz1),
             1);
     calculator.shutdown();
@@ -122,7 +121,7 @@ class OddsCalculatorTest {
             sz1,
             attacking,
             defending,
-            Collections.emptyList(),
+            List.of(),
             TerritoryEffectHelper.getEffects(sz1),
             1);
     calculator.shutdown();

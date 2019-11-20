@@ -4,7 +4,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,7 @@ class BadWordsTabModelTest {
 
   private static final String BAD_WORD = "Die loudly like a rough kraken.";
   private static final List<String> badWords =
-      Arrays.asList(
+      List.of(
           "O, gar.",
           "How dead. You rob like a sail.",
           "When the freebooter stutters for jamaica, all waves view warm, mighty swabbies.");

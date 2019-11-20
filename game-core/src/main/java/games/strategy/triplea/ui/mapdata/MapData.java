@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -372,7 +371,7 @@ public class MapData implements Closeable {
   public boolean ignoreTransformingUnit(final String unitName) {
     if (ignoreTransformingUnits == null) {
       final String property = mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_IGNORE, "");
-      ignoreTransformingUnits = new HashSet<>(Arrays.asList(property.split(",")));
+      ignoreTransformingUnits = new HashSet<>(List.of(property.split(",")));
     }
     return ignoreTransformingUnits.contains(unitName);
   }
@@ -380,7 +379,7 @@ public class MapData implements Closeable {
   public boolean shouldDrawUnit(final String unitName) {
     if (undrawnUnits == null) {
       final String property = mapProperties.getProperty(PROPERTY_DONT_DRAW_UNITS, "");
-      undrawnUnits = new HashSet<>(Arrays.asList(property.split(",")));
+      undrawnUnits = new HashSet<>(List.of(property.split(",")));
     }
     return !undrawnUnits.contains(unitName);
   }
@@ -388,7 +387,7 @@ public class MapData implements Closeable {
   public boolean shouldDrawTerritoryName(final String territoryName) {
     if (undrawnTerritoriesNames == null) {
       final String property = mapProperties.getProperty(PROPERTY_DONT_DRAW_TERRITORY_NAMES, "");
-      undrawnTerritoriesNames = new HashSet<>(Arrays.asList(property.split(",")));
+      undrawnTerritoriesNames = new HashSet<>(List.of(property.split(",")));
     }
     return !undrawnTerritoriesNames.contains(territoryName);
   }
@@ -830,7 +829,7 @@ public class MapData implements Closeable {
 
   public List<Point> getTerritoryEffectPoints(final Territory territory) {
     if (territoryEffects.get(territory.getName()) == null) {
-      return Collections.singletonList(getCenter(territory));
+      return List.of(getCenter(territory));
     }
     return territoryEffects.get(territory.getName());
   }

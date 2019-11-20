@@ -16,7 +16,6 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,7 +73,7 @@ class ProScrambleAi {
             Comparator.<Unit>comparingDouble(
                     o ->
                         ProBattleUtils.estimateStrength(
-                            scrambleTo, Collections.singletonList(o), new ArrayList<>(), false))
+                            scrambleTo, List.of(o), new ArrayList<>(), false))
                 .reversed());
         canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
       }

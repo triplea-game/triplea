@@ -36,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -271,8 +272,7 @@ final class ExportMenu extends JMenu {
       // tokens or # techs, etc.
       final Iterable<IStat> stats =
           Iterables.concat(
-              Arrays.asList(statPanel.getStats()),
-              Arrays.asList(statPanel.getStatsExtended(gameData)));
+              List.of(statPanel.getStats()), List.of(statPanel.getStatsExtended(gameData)));
       for (final IStat stat : stats) {
         for (final PlayerId player : players) {
           writer.append(stat.getName()).append(' ');

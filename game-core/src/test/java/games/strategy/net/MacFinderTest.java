@@ -5,10 +5,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 final class MacFinderTest {
   @Nested
   final class GetHashedMacAddressForBytesTest {
@@ -36,16 +38,16 @@ final class MacFinderTest {
       assertThat(MacFinder.isValidHashedMacAddress("$1$MH$ABCDWXYZabcdwxyz0189./"), is(true));
     }
 
-    @Test
-    void shouldReturnFalseWhenNotValidMd5CryptedValue() {
-      Arrays.asList(
-              "$1$MH$ABCDWXYZabcdwxyz0189.",
-              "$1$MH$ABCDWXYZabcdwxyz0189./1",
-              "1$MH$ABCDWXYZabcdwxyz0189./1",
-              "$1$MH$ABCDWXYZabcdwxyz0189._")
-          .forEach(
-              hashedMacAddress ->
-                  assertThat(MacFinder.isValidHashedMacAddress(hashedMacAddress), is(false)));
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+          "$1$MH$ABCDWXYZabcdwxyz0189.",
+          "$1$MH$ABCDWXYZabcdwxyz0189./1",
+          "1$MH$ABCDWXYZabcdwxyz0189./1",
+          "$1$MH$ABCDWXYZabcdwxyz0189._"
+        })
+    void shouldReturnFalseWhenNotValidMd5CryptedValue(final String hashedMacAddress) {
+      assertThat(MacFinder.isValidHashedMacAddress(hashedMacAddress), is(false));
     }
 
     @Test

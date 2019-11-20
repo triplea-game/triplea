@@ -10,7 +10,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.util.Arrays;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,7 +34,7 @@ class JPanelBuilderTest {
 
     assertThat(
         "Panel children should contain the label we added.",
-        Arrays.asList(panel.getComponents()),
+        List.of(panel.getComponents()),
         contains(label));
   }
 

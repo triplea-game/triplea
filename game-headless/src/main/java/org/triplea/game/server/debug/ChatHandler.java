@@ -1,7 +1,6 @@
 package org.triplea.game.server.debug;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -72,6 +71,6 @@ public final class ChatHandler extends Handler {
   }
 
   private List<String> formatChatMessage(final LogRecord record) {
-    return Arrays.asList(getFormatter().format(record).trim().split("\\n"));
+    return List.of(getFormatter().format(record).trim().split("\\n"));
   }
 }

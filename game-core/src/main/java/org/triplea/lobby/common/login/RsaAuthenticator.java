@@ -12,7 +12,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import javax.crypto.BadPaddingException;
@@ -47,7 +46,7 @@ public final class RsaAuthenticator {
    *     sends the lobby client.
    */
   public Map<String, String> newChallenge() {
-    return Collections.singletonMap(
+    return Map.of(
         LobbyLoginChallengeKeys.RSA_PUBLIC_KEY,
         Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
   }

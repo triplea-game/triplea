@@ -6,9 +6,8 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
@@ -62,13 +61,13 @@ public final class LookAndFeel {
   }
 
   private static Collection<UIManager.LookAndFeelInfo> getSystemLookAndFeels() {
-    return Arrays.asList(UIManager.getInstalledLookAndFeels());
+    return List.of(UIManager.getInstalledLookAndFeels());
   }
 
   private static Collection<UIManager.LookAndFeelInfo> getSubstanceLookAndFeels() {
     return getSubstanceLookAndFeelManager()
         .map(SubstanceLookAndFeelManager::getInstalledLookAndFeels)
-        .orElseGet(Collections::emptyList);
+        .orElseGet(List::of);
   }
 
   public static String getDefaultLookAndFeelClassName() {

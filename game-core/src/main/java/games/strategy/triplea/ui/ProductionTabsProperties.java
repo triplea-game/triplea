@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -78,7 +77,7 @@ class ProductionTabsProperties {
     for (int i = 1; i <= numberOfTabs; i++) {
       final String tabName = properties.getProperty(TAB_NAME + "." + i);
       final List<String> tabValues =
-          Arrays.asList(properties.getProperty(TAB_UNITS + "." + i).split(":"));
+          List.of(properties.getProperty(TAB_UNITS + "." + i).split(":"));
       final List<Rule> ruleList = new ArrayList<>();
       for (final Rule rule : rules) {
         if (tabValues.contains(

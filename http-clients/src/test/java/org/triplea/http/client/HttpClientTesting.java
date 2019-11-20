@@ -22,7 +22,6 @@ import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import feign.FeignException;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -187,7 +186,7 @@ public final class HttpClientTesting {
       final String expectedRequestPath,
       final RequestType requestType,
       final Function<URI, T> serviceCall) {
-    Arrays.asList(
+    List.of(
             // caution, one of the wiremock faults is known to cause a hang in windows, so to avoid
             // that problem do not use the full available list of of wiremock faults
             Fault.EMPTY_RESPONSE, Fault.RANDOM_DATA_THEN_CLOSE)

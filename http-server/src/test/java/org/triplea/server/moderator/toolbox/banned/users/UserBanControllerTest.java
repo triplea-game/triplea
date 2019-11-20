@@ -5,7 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResponse;
 
-import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,11 +40,11 @@ class UserBanControllerTest {
 
   @Test
   void getUserBans() {
-    when(bannedUsersService.getBannedUsers()).thenReturn(Collections.singletonList(bannedUserData));
+    when(bannedUsersService.getBannedUsers()).thenReturn(List.of(bannedUserData));
 
     final Response response = bannedUsersController.getUserBans();
 
-    verifyResponse(response, Collections.singletonList(bannedUserData));
+    verifyResponse(response, List.of(bannedUserData));
   }
 
   @Nested

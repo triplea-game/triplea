@@ -41,25 +41,31 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
   public GenericWebSocketClient(
       final URI lobbyUri,
       final Class<IncomingT> incomingMessageType,
-      final Consumer<IncomingT> messageListener) {
+      final Consumer<IncomingT> messageListener,
+      final String connectionErrorMessage) {
     this(
         incomingMessageType,
         messageListener,
-        new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)));
+        new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)),
+        connectionErrorMessage);
   }
 
   @VisibleForTesting
   GenericWebSocketClient(
       final Class<IncomingT> incomingMessageType,
       final Consumer<IncomingT> messageListener,
-      final WebSocketConnection webSocketClient) {
+      final WebSocketConnection webSocketClient,
+      final String connectionErrorMessage) {
     this.incomingMessageType = incomingMessageType;
     this.messageListener = messageListener;
     client = webSocketClient;
     client.addListener(this);
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(client::connect, threadPool),
-        e -> log.log(Level.SEVERE, "Failed to open connection with server", e));
+        e -> {
+          log.log(Level.INFO, connectionErrorMessage, e);
+          log.warning(connectionErrorMessage);
+        });
   }
 
   @VisibleForTesting
@@ -79,7 +85,10 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
     // we get by doing the send on a new thread.
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(() -> client.sendMessage(gson.toJson(message)), threadPool),
-        e -> log.log(Level.WARNING, "Failed to send message to server", e));
+        e -> {
+          log.log(Level.INFO, "Failed to send message to server", e);
+          log.warning("Failed to send message to server");
+        });
   }
 
   /**

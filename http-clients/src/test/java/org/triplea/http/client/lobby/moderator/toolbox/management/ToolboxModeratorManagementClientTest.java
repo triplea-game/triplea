@@ -10,7 +10,6 @@ import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWi
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,7 @@ class ToolboxModeratorManagementClientTest extends WireMockTest {
         WireMock.get(ToolboxModeratorManagementClient.FETCH_MODERATORS_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withBody(toJson(Collections.singletonList(MODERATOR_INFO)))));
+                WireMock.aResponse().withStatus(200).withBody(toJson(List.of(MODERATOR_INFO)))));
 
     final List<ModeratorInfo> results = newClient(server).fetchModeratorList();
 

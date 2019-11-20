@@ -19,7 +19,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -200,8 +199,7 @@ class DummyPlayerTest {
     @Test
     void testSelectCasualties_noLand_fewEntriesInLossOrder() {
       final DummyPlayer player =
-          new DummyPlayer(
-              null, false, "", Collections.singletonList(unitPool.get(0)), false, 0, 0, false);
+          new DummyPlayer(null, false, "", List.of(unitPool.get(0)), false, 0, 0, false);
       final CasualtyDetails details =
           player.selectCasualties(
               unitPool,

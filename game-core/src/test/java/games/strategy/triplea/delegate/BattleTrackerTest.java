@@ -15,8 +15,8 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +53,7 @@ class BattleTrackerTest {
 
     // need at least one attacker for there to be considered a battle.
     final Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), playerId, mockGameData);
-    final List<Unit> attackers = Collections.singletonList(unit);
+    final List<Unit> attackers = List.of(unit);
 
     when(mockDelegateBridge.getData()).thenReturn(mockGameData);
     when(mockGameData.getProperties()).thenReturn(mockGameProperties);
@@ -70,7 +70,7 @@ class BattleTrackerTest {
         route, attackers, true, playerId, mockDelegateBridge, null, null, null, false);
 
     testObj.fightAirRaidsAndStrategicBombing(
-        mockDelegateBridge, () -> Collections.singleton(territory), mockGetBattleFunction);
+        mockDelegateBridge, () -> Set.of(territory), mockGetBattleFunction);
 
     verify(mockBattle).fight(mockDelegateBridge);
   }

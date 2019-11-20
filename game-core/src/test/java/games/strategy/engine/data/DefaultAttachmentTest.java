@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ final class DefaultAttachmentTest {
 
       @Override
       public Map<String, MutableProperty<?>> getPropertyMap() {
-        return Collections.emptyMap();
+        return Map.of();
       }
 
       @Override

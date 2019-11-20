@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -478,8 +477,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       if (previousSelection.equalsIgnoreCase("Client")) {
         previousSelection = playerTypes[0];
       }
-      if (!previousSelection.equals("no_one")
-          && Arrays.asList(playerTypes).contains(previousSelection)) {
+      if (!previousSelection.equals("no_one") && List.of(playerTypes).contains(previousSelection)) {
         type.setSelectedItem(previousSelection);
         model.setLocalPlayerType(
             nameLabel.getText(), PlayerType.fromLabel((String) type.getSelectedItem()));

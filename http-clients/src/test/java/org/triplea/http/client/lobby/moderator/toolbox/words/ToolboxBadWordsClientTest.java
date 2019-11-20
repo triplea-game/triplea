@@ -8,7 +8,6 @@ import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWi
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
@@ -17,7 +16,7 @@ import ru.lanwen.wiremock.ext.WiremockResolver;
 
 class ToolboxBadWordsClientTest extends WireMockTest {
   private static final String BAD_WORD = "Damn yer bilge rat, feed the corsair.";
-  private static final List<String> badWords = Arrays.asList("one", "two", "three");
+  private static final List<String> badWords = List.of("one", "two", "three");
 
   private static ToolboxBadWordsClient newClient(final WireMockServer wireMockServer) {
     return newClient(wireMockServer, ToolboxBadWordsClient::newClient);

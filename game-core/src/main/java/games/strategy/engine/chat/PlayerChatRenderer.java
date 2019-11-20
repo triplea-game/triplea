@@ -9,7 +9,6 @@ import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -64,7 +63,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final boolean cellHasFocus) {
     final ChatParticipant chatParticipant = (ChatParticipant) value;
     final List<Icon> icons =
-        iconMap.getOrDefault(chatParticipant.getPlayerName().getValue(), Collections.emptyList());
+        iconMap.getOrDefault(chatParticipant.getPlayerName().getValue(), List.of());
     if (icons.isEmpty()) {
       super.getListCellRendererComponent(
           list,
@@ -82,8 +81,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   private String getNodeLabelWithPlayers(final PlayerName playerName) {
-    final Set<String> playerNames =
-        playerMap.getOrDefault(playerName.getValue(), Collections.emptySet());
+    final Set<String> playerNames = playerMap.getOrDefault(playerName.getValue(), Set.of());
     return playerName
         + (playerNames.isEmpty()
             ? ""

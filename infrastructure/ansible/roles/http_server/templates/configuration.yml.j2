@@ -10,8 +10,8 @@ bcryptSalt: {{ http_server_bcrypt_salt }}
 database:
   driverClass: org.postgresql.Driver
   user: {{ http_server_db_user }}
-  password: {{ http_server_db_user }}
-  url: jdbc:postgresql://localhost:5432/{{ http_server_db_name }}
+  password: {{ http_server_db_password }}
+  url: jdbc:postgresql://{{ http_server_db_host }}:{{ http_server_db_port }}/{{ http_server_db_name }}
   properties:
     charSet: UTF-8
   # the maximum amount of time to wait on an empty pool before throwing an exception

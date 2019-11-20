@@ -9,9 +9,8 @@ import static org.triplea.java.collections.CollectionUtils.getMatches;
 import static org.triplea.java.collections.CollectionUtils.getNMatches;
 import static org.triplea.java.collections.CollectionUtils.haveEqualSizeAndEquivalentElements;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,13 +24,13 @@ final class CollectionUtilsTest {
   final class CountMatchesTest {
     @Test
     void shouldReturnCountOfMatches() {
-      assertEquals(0, countMatches(Collections.emptyList(), IS_ZERO));
+      assertEquals(0, countMatches(List.of(), IS_ZERO));
 
-      assertEquals(1, countMatches(Collections.singletonList(0), IS_ZERO));
-      assertEquals(1, countMatches(Arrays.asList(-1, 0, 1), IS_ZERO));
+      assertEquals(1, countMatches(List.of(0), IS_ZERO));
+      assertEquals(1, countMatches(List.of(-1, 0, 1), IS_ZERO));
 
-      assertEquals(2, countMatches(Arrays.asList(0, 0), IS_ZERO));
-      assertEquals(2, countMatches(Arrays.asList(-1, 0, 1, 0), IS_ZERO));
+      assertEquals(2, countMatches(List.of(0, 0), IS_ZERO));
+      assertEquals(2, countMatches(List.of(-1, 0, 1, 0), IS_ZERO));
     }
   }
 
@@ -39,13 +38,12 @@ final class CollectionUtilsTest {
   final class GetMatchesTest {
     @Test
     void shouldFilterOutNonMatchingElementsAndReturnAllMatches() {
-      final Collection<Integer> input = Arrays.asList(-1, 0, 1);
+      final Collection<Integer> input = List.of(-1, 0, 1);
 
-      assertEquals(
-          Collections.emptyList(), getMatches(Collections.emptyList(), ALWAYS), "empty collection");
-      assertEquals(Collections.emptyList(), getMatches(input, NEVER), "none match");
-      assertEquals(Arrays.asList(-1, 1), getMatches(input, IS_ZERO.negate()), "some match");
-      assertEquals(Arrays.asList(-1, 0, 1), getMatches(input, ALWAYS), "all match");
+      assertEquals(List.of(), getMatches(List.of(), ALWAYS), "empty collection");
+      assertEquals(List.of(), getMatches(input, NEVER), "none match");
+      assertEquals(List.of(-1, 1), getMatches(input, IS_ZERO.negate()), "some match");
+      assertEquals(List.of(-1, 0, 1), getMatches(input, ALWAYS), "all match");
     }
   }
 
@@ -53,36 +51,23 @@ final class CollectionUtilsTest {
   final class GetNMatchesTest {
     @Test
     void shouldFilterOutNonMatchingElementsAndReturnMaxMatches() {
-      final Collection<Integer> input = Arrays.asList(-1, 0, 1);
+      final Collection<Integer> input = List.of(-1, 0, 1);
 
+      assertEquals(List.of(), getNMatches(List.of(), 999, ALWAYS), "empty collection");
+      assertEquals(List.of(), getNMatches(input, 0, NEVER), "max = 0");
+      assertEquals(List.of(), getNMatches(input, input.size(), NEVER), "none match");
       assertEquals(
-          Collections.emptyList(),
-          getNMatches(Collections.emptyList(), 999, ALWAYS),
-          "empty collection");
-      assertEquals(Collections.emptyList(), getNMatches(input, 0, NEVER), "max = 0");
-      assertEquals(Collections.emptyList(), getNMatches(input, input.size(), NEVER), "none match");
+          List.of(0), getNMatches(List.of(-1, 0, 0, 1), 1, IS_ZERO), "some match; max < count");
       assertEquals(
-          Collections.singletonList(0),
-          getNMatches(Arrays.asList(-1, 0, 0, 1), 1, IS_ZERO),
-          "some match; max < count");
+          List.of(0, 0), getNMatches(List.of(-1, 0, 0, 1), 2, IS_ZERO), "some match; max = count");
       assertEquals(
-          Arrays.asList(0, 0),
-          getNMatches(Arrays.asList(-1, 0, 0, 1), 2, IS_ZERO),
-          "some match; max = count");
+          List.of(0, 0), getNMatches(List.of(-1, 0, 0, 1), 3, IS_ZERO), "some match; max > count");
       assertEquals(
-          Arrays.asList(0, 0),
-          getNMatches(Arrays.asList(-1, 0, 0, 1), 3, IS_ZERO),
-          "some match; max > count");
+          List.of(-1, 0), getNMatches(input, input.size() - 1, ALWAYS), "all match; max < count");
       assertEquals(
-          Arrays.asList(-1, 0),
-          getNMatches(input, input.size() - 1, ALWAYS),
-          "all match; max < count");
+          List.of(-1, 0, 1), getNMatches(input, input.size(), ALWAYS), "all match; max = count");
       assertEquals(
-          Arrays.asList(-1, 0, 1),
-          getNMatches(input, input.size(), ALWAYS),
-          "all match; max = count");
-      assertEquals(
-          Arrays.asList(-1, 0, 1),
+          List.of(-1, 0, 1),
           getNMatches(input, input.size() + 1, ALWAYS),
           "all match; max > count");
     }
@@ -90,7 +75,7 @@ final class CollectionUtilsTest {
     @Test
     void shouldThrowExceptionWhenMaxIsNegative() {
       assertThrows(
-          IllegalArgumentException.class, () -> getNMatches(Arrays.asList(-1, 0, 1), -1, ALWAYS));
+          IllegalArgumentException.class, () -> getNMatches(List.of(-1, 0, 1), -1, ALWAYS));
     }
   }
 
@@ -98,33 +83,23 @@ final class CollectionUtilsTest {
   final class HaveEqualSizeAndEquivalentElementsTest {
     @Test
     void shouldReturnTrueWhenCollectionsAreEqual() {
-      assertThat(
-          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3)),
-          is(true));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 3)), is(true));
     }
 
     @Test
     void shouldReturnTrueWhenCollectionsAreNotEqualButHaveSameSizeAndEquivalentElements() {
-      assertThat(
-          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 1), Arrays.asList(2, 1, 2)),
-          is(true));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 1), List.of(2, 1, 2)), is(true));
     }
 
     @Test
     void shouldReturnFalseWhenCollectionsHaveEquivalentElementsButDifferentSize() {
-      assertThat(
-          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2), Arrays.asList(1, 2, 2)),
-          is(false));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2), List.of(1, 2, 2)), is(false));
     }
 
     @Test
     void shouldReturnFalseWhenCollectionsHaveSameSizeButElementsAreNotEquivalent() {
-      assertThat(
-          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 2)),
-          is(false));
-      assertThat(
-          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 2), Arrays.asList(1, 2, 3)),
-          is(false));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 2)), is(false));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 2), List.of(1, 2, 3)), is(false));
     }
   }
 }

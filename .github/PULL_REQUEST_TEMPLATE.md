@@ -17,7 +17,7 @@
 [] Feature Removal
 [] Code Cleanup or refactor
 [] Configuration Change
-[] Bug fix:  <!-- Link to bug issue or forum post here -->
+[] Problem fix:  <!-- Link to bug issue or forum post here -->
 [] Other:   <!-- Please specify -->
 
 

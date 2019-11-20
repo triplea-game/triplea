@@ -50,7 +50,6 @@ class GenericWebSocketClientTest {
 
   @Mock private Consumer<ExampleServerMessage> messageListener;
   @Mock private Consumer<String> connectionLostListener;
-  @Mock private Consumer<String> connectionClosedListener;
   @Mock private WebSocketConnection webSocketClient;
 
   private GenericWebSocketClient<ExampleServerMessage, ExampleOutgoingMessage>
@@ -59,9 +58,13 @@ class GenericWebSocketClientTest {
   @BeforeEach
   void setup() {
     genericWebSocketClient =
-        new GenericWebSocketClient<>(ExampleServerMessage.class, messageListener, webSocketClient);
+        new GenericWebSocketClient<>(
+            ExampleServerMessage.class,
+            messageListener,
+            webSocketClient,
+            "test-client connect error message");
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
-    genericWebSocketClient.addConnectionLostListener(connectionLostListener);
+    genericWebSocketClient.addConnectionLostListener(connectionLostListener);    genericWebSocketClient.addConnectionClosedListener(connectionLostListener);
   }
 
   @Test

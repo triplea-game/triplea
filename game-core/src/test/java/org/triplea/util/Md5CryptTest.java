@@ -11,7 +11,7 @@ import static org.triplea.util.Md5Crypt.hashPassword;
 import static org.triplea.util.Md5Crypt.isLegalHashedValue;
 import static org.triplea.util.Md5Crypt.newSalt;
 
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +34,7 @@ final class Md5CryptTest {
   final class HashTest {
     @Test
     void shouldReturnHashedValue() {
-      Arrays.asList(
+      List.of(
               Triple.of("", "ll5ESPtE", "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"),
               Triple.of("value", "Eim8FgMk", "$1$Eim8FgMk$TYixIMiLc1BA6XHJBw66y0"),
               Triple.of("the quick brown fox", "XlnQ6h98", "$1$XlnQ6h98$iIDgBB73DNCK/RwmzU0kv."),
@@ -99,7 +99,7 @@ final class Md5CryptTest {
   final class IsLegalHashedValueTest {
     @Test
     void shouldReturnTrueWhenHashedValueIsLegal() {
-      Arrays.asList(
+      List.of(
               "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0",
               "$1$Eim8FgMk$Y7Rv7y5WCc7rARI/g7xgH1",
               "$1$XlnQ6h98$iIDgBB73DNCK/RwmzU0kv.",
@@ -123,7 +123,7 @@ final class Md5CryptTest {
 
     @Test
     void shouldReturnFalseWhenHashedValueIsIlegal() {
-      Arrays.asList(
+      List.of(
               "1$A$KnCRC85Rudn6P3cpfe3LR/",
               "$$AB$4jo772pXjQ9qCwNdBde3d1",
               "$1ABC$3tP1DHUbEbG4bd67/3fFu/",

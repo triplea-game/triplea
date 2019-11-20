@@ -10,9 +10,8 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -103,7 +102,7 @@ final class UserActionPanelTest {
   final class CanSpendResourcesOnUserActionsTest {
     @Test
     void shouldReturnFalseWhenNoUserActionsPresent() {
-      final Collection<UserActionAttachment> userActions = Collections.emptyList();
+      final Collection<UserActionAttachment> userActions = List.of();
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
@@ -113,7 +112,7 @@ final class UserActionPanelTest {
     @Test
     void shouldReturnFalseWhenNoUserActionHasCost() {
       final Collection<UserActionAttachment> userActions =
-          Arrays.asList(newUserActionWithCost(0), newUserActionWithCost(0));
+          List.of(newUserActionWithCost(0), newUserActionWithCost(0));
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
@@ -123,7 +122,7 @@ final class UserActionPanelTest {
     @Test
     void shouldReturnTrueWhenAtLeastOneUserActionHasCost() {
       final Collection<UserActionAttachment> userActions =
-          Arrays.asList(newUserActionWithCost(0), newUserActionWithCost(5));
+          List.of(newUserActionWithCost(0), newUserActionWithCost(5));
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 

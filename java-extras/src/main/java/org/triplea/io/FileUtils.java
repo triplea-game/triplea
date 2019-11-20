@@ -3,10 +3,9 @@ package org.triplea.io;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
 
 /** A collection of useful methods related to files. */
 public final class FileUtils {
@@ -23,10 +22,6 @@ public final class FileUtils {
    */
   public static Collection<File> listFiles(final File directory) {
     checkNotNull(directory);
-
-    final @Nullable File[] files = directory.listFiles();
-    return files != null
-        ? Collections.unmodifiableList(Arrays.asList(files))
-        : Collections.emptyList();
+    return Optional.ofNullable(directory.listFiles()).map(List::of).orElseGet(List::of);
   }
 }

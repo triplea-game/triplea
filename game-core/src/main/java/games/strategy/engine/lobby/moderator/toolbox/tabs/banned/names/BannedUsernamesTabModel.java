@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.banned.names;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -17,14 +16,12 @@ class BannedUsernamesTabModel {
   @Nonnull private final ToolboxUsernameBanClient toolboxUsernameBanClient;
 
   static List<String> fetchTableHeaders() {
-    return Arrays.asList("Username", "Date Banned", "");
+    return List.of("Username", "Date Banned", "");
   }
 
   List<List<String>> fetchTableData() {
     return toolboxUsernameBanClient.getUsernameBans().stream()
-        .map(
-            banData ->
-                Arrays.asList(banData.getBannedName(), banData.getBanDate().toString(), "Remove"))
+        .map(banData -> List.of(banData.getBannedName(), banData.getBanDate().toString(), "Remove"))
         .collect(Collectors.toList());
   }
 

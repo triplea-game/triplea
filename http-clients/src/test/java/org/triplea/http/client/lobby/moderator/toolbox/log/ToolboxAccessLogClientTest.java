@@ -9,7 +9,6 @@ import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Test;
@@ -39,9 +38,7 @@ class ToolboxAccessLogClientTest extends WireMockTest {
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(toJson(HttpClientTesting.PAGING_PARAMS)))
             .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withBody(toJson(Collections.singletonList(ACCESS_LOG_DATA)))));
+                WireMock.aResponse().withStatus(200).withBody(toJson(List.of(ACCESS_LOG_DATA)))));
 
     final List<AccessLogData> results =
         newClient(server).getAccessLog(HttpClientTesting.PAGING_PARAMS);

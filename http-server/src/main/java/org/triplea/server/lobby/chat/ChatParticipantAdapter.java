@@ -15,7 +15,7 @@ public class ChatParticipantAdapter implements Function<UserWithRoleRecord, Chat
         .isModerator(
             userWithRoleRecord.getRole().equals(UserRole.ADMIN)
                 || userWithRoleRecord.getRole().equals(UserRole.MODERATOR))
-        .playerChatId(PlayerChatId.newId())
+        .playerChatId(PlayerChatId.of(userWithRoleRecord.getPlayerChatId()))
         .build();
   }
 }

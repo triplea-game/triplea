@@ -16,7 +16,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.Action;
@@ -122,11 +121,11 @@ public class LobbyFrame extends JFrame {
 
   private List<Action> newModeratorActions(final ChatParticipant clickedOn) {
     if (!lobbyClient.isModerator()) {
-      return Collections.emptyList();
+      return List.of();
     }
 
     if (clickedOn.getPlayerName().equals(lobbyClient.getPlayerName())) {
-      return Collections.emptyList();
+      return List.of();
     }
 
     final var moderatorLobbyClient = lobbyClient.getHttpLobbyClient().getModeratorLobbyClient();

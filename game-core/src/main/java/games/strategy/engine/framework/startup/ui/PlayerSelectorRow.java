@@ -9,7 +9,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +79,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     if (previousSelection.equalsIgnoreCase("Client")) {
       previousSelection = PlayerType.HUMAN_PLAYER.name();
     }
-    if (Arrays.asList(PlayerType.playerTypes()).contains(previousSelection)) {
+    if (List.of(PlayerType.playerTypes()).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
     } else {
       setDefaultPlayerType();

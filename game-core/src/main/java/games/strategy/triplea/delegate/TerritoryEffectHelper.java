@@ -11,7 +11,6 @@ import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -86,7 +85,7 @@ public final class TerritoryEffectHelper {
   }
 
   public static BigDecimal getMovementCost(final Territory t, final Unit unit) {
-    return getMaxMovementCost(t, Collections.singleton(unit));
+    return getMaxMovementCost(t, Set.of(unit));
   }
 
   /**

@@ -2,6 +2,7 @@ package org.triplea.server.user.account.login;
 
 import com.google.common.base.Strings;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -20,6 +21,7 @@ class LoginModule {
   @Nonnull private Predicate<LoginRequest> registeredLogin;
   @Nonnull private Predicate<LoginRequest> tempPasswordLogin;
   @Nonnull private Function<PlayerName, Optional<String>> anonymousLogin;
+  @Nonnull private Consumer<LoginRecord> accessLogUpdater;
   @Nonnull private final Function<LoginRecord, ApiKey> apiKeyGenerator;
   @Nonnull private final UserJdbiDao userJdbiDao;
 
@@ -41,14 +43,16 @@ class LoginModule {
 
     if (hasPassword && registeredLogin.test(loginRequest)) {
       final ApiKey apiKey =
-          recordRegisteredLoginAndGenerateApiKey(loginRequest, playerSystemId, ip);
+          recordRegisteredLoginAndGenerateApiKey(
+              loginRequest, playerSystemId, PlayerChatId.newId(), ip);
       return LobbyLoginResponse.builder()
           .apiKey(apiKey.getValue())
           .moderator(isModerator(loginRequest.getName()))
           .build();
     } else if (hasPassword && tempPasswordLogin.test(loginRequest)) {
       final ApiKey apiKey =
-          recordRegisteredLoginAndGenerateApiKey(loginRequest, playerSystemId, ip);
+          recordRegisteredLoginAndGenerateApiKey(
+              loginRequest, playerSystemId, PlayerChatId.newId(), ip);
       return LobbyLoginResponse.builder()
           .apiKey(apiKey.getValue())
           .passwordChangeRequired(true)
@@ -65,20 +69,27 @@ class LoginModule {
         return LobbyLoginResponse.builder().failReason(errorMessage.get()).build();
       } else {
         final ApiKey apiKey =
-            recordAnonymousLoginAndGenerateApiKey(loginRequest, playerSystemId, ip);
+            recordAnonymousLoginAndGenerateApiKey(
+                loginRequest, playerSystemId, PlayerChatId.newId(), ip);
         return LobbyLoginResponse.builder().apiKey(apiKey.getValue()).build();
       }
     }
   }
 
   private ApiKey recordRegisteredLoginAndGenerateApiKey(
-      final LoginRequest loginRequest, final SystemId systemId, final String ip) {
-    return recordLoginAndGenerateApiKey(loginRequest, systemId, ip, true);
+      final LoginRequest loginRequest,
+      final SystemId systemId,
+      final PlayerChatId playerChatId,
+      final String ip) {
+    return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, true);
   }
 
   private ApiKey recordAnonymousLoginAndGenerateApiKey(
-      final LoginRequest loginRequest, final SystemId systemId, final String ip) {
-    return recordLoginAndGenerateApiKey(loginRequest, systemId, ip, false);
+      final LoginRequest loginRequest,
+      final SystemId systemId,
+      final PlayerChatId playerChatId,
+      final String ip) {
+    return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, false);
   }
 
   // TODO: Project#12 also update access log
@@ -86,15 +97,19 @@ class LoginModule {
   private ApiKey recordLoginAndGenerateApiKey(
       final LoginRequest loginRequest,
       final SystemId systemId,
+      final PlayerChatId playerchatId,
       final String ip,
       final boolean isRegistered) {
-    return apiKeyGenerator.apply(
+    final var loginRecord =
         LoginRecord.builder()
             .playerName(PlayerName.of(loginRequest.getName()))
             .systemId(systemId)
-            .playerChatId(PlayerChatId.newId())
+            .playerChatId(playerchatId)
             .ip(ip)
-            .build());
+            .registered(isRegistered)
+            .build();
+    accessLogUpdater.accept(loginRecord);
+    return apiKeyGenerator.apply(loginRecord);
   }
 
   private boolean isModerator(final String username) {

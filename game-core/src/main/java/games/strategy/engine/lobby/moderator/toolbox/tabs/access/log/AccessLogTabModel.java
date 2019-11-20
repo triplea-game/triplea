@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.access.log;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +16,14 @@ class AccessLogTabModel {
   private final ToolboxUsernameBanClient toolboxUsernameBanClient;
 
   static List<String> fetchTableHeaders() {
-    return Arrays.asList("Access Date", "Username", "IP", "System Id", "Registered", "", "");
+    return List.of("Access Date", "Username", "IP", "System Id", "Registered", "", "");
   }
 
   List<List<String>> fetchTableData(final PagingParams pagingParams) {
     return toolboxAccessLogClient.getAccessLog(pagingParams).stream()
         .map(
             accessLogData ->
-                Arrays.asList(
+                List.of(
                     accessLogData.getAccessDate().toString(),
                     accessLogData.getUsername(),
                     accessLogData.getIp(),
