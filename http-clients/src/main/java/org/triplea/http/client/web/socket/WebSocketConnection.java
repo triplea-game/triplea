@@ -13,6 +13,8 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.Interruptibles.Result;
+import org.triplea.java.timer.ScheduledTimer;
+import org.triplea.java.timer.Timers;
 
 /**
  * Component to manage a websocket connection. Responsible for:
@@ -38,6 +40,8 @@ class WebSocketConnection {
       onMethod_ = {@VisibleForTesting})
   private WebSocketClient client;
 
+  private final ScheduledTimer pingSender;
+
   WebSocketConnection(final URI serverUri) {
     client =
         new WebSocketClient(serverUri) {
@@ -51,6 +55,7 @@ class WebSocketConnection {
 
           @Override
           public void onClose(final int code, final String reason, final boolean remote) {
+            pingSender.cancel();
             listeners.forEach(listener -> listener.connectionClosed(reason));
           }
 
@@ -59,6 +64,16 @@ class WebSocketConnection {
             listeners.forEach(listener -> listener.handleError(exception));
           }
         };
+    pingSender =
+        Timers.fixedRateTimer("websocket-ping-sender")
+            .period(45, TimeUnit.SECONDS)
+            .delay(45, TimeUnit.SECONDS)
+            .task(
+                () -> {
+                  if (client.isOpen()) {
+                    client.sendPing();
+                  }
+                });
   }
 
   void addListener(final WebSocketConnectionListener listener) {
@@ -88,6 +103,7 @@ class WebSocketConnection {
     if (!connectionAttempt.completed || !connectionAttempt.result.orElse(false)) {
       throw new CouldNotConnect(client.getURI());
     }
+    pingSender.start();
   }
 
   /**
