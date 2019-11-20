@@ -328,7 +328,7 @@ class AaInMoveUtil implements Serializable {
       final Territory territory,
       final String currentTypeAa) {
     final CasualtyDetails casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
             false,
             validTargetedUnitsForThisRoll,
             allFriendlyUnits,

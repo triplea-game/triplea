@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
+import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
@@ -61,19 +61,19 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     setBorder(new EmptyBorder(5, 5, 0, 0));
 
     showOdds.addActionListener(
-        e -> OddsCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
+        e -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
         frame,
         'B',
-        () -> OddsCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
+        () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
 
-    addAttackers.addActionListener(e -> OddsCalculatorDialog.addAttackers(currentTerritory));
+    addAttackers.addActionListener(e -> BattleCalculatorDialog.addAttackers(currentTerritory));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
-        frame, 'A', () -> OddsCalculatorDialog.addAttackers(currentTerritory));
+        frame, 'A', () -> BattleCalculatorDialog.addAttackers(currentTerritory));
 
-    addDefenders.addActionListener(e -> OddsCalculatorDialog.addDefenders(currentTerritory));
+    addDefenders.addActionListener(e -> BattleCalculatorDialog.addDefenders(currentTerritory));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
-        frame, 'D', () -> OddsCalculatorDialog.addDefenders(currentTerritory));
+        frame, 'D', () -> BattleCalculatorDialog.addDefenders(currentTerritory));
   }
 
   public void setGameData(final GameData data) {

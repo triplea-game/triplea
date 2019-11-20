@@ -617,11 +617,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!headless) {
       // take the casualties with least movement first
       if (isAmphibious()) {
-        BattleCalculator.sortAmphib(attackingUnits, amphibiousLandAttackers);
+        CasualtySelector.sortAmphib(attackingUnits, amphibiousLandAttackers);
       } else {
-        BattleCalculator.sortPreBattle(attackingUnits);
+        CasualtySelector.sortPreBattle(attackingUnits);
       }
-      BattleCalculator.sortPreBattle(defendingUnits);
+      CasualtySelector.sortPreBattle(defendingUnits);
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
     }
     // push on stack in opposite order of execution

@@ -199,7 +199,7 @@ public class Fire implements IExecutable {
           extraHits = transportsOnly.size();
         }
         message =
-            BattleCalculator.selectCasualties(
+            CasualtySelector.selectCasualties(
                 hitPlayer,
                 transportsOnly,
                 allEnemyUnitsNotIncludingWaitingToDie,
@@ -224,7 +224,7 @@ public class Fire implements IExecutable {
         confirmOwnCasualties = true;
       } else { // less than possible number
         message =
-            BattleCalculator.selectCasualties(
+            CasualtySelector.selectCasualties(
                 hitPlayer,
                 nonTransports,
                 allEnemyUnitsNotIncludingWaitingToDie,
@@ -255,7 +255,7 @@ public class Fire implements IExecutable {
       } else { // Choose casualties
         final CasualtyDetails message;
         message =
-            BattleCalculator.selectCasualties(
+            CasualtySelector.selectCasualties(
                 hitPlayer,
                 attackableUnits,
                 allEnemyUnitsNotIncludingWaitingToDie,

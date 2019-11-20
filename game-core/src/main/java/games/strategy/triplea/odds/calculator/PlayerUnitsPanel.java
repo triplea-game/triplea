@@ -222,7 +222,7 @@ public class PlayerUnitsPanel extends JPanel {
                 isLand,
                 player,
                 1,
-                OddsCalculatorPanel.hasMaxRounds(isLand, data),
+                BattleCalculatorPanel.hasMaxRounds(isLand, data),
                 false));
 
     return unitTypes;

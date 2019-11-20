@@ -80,7 +80,7 @@ class BattleCalculatorTest {
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     whenGetRandom(bridge).thenAnswer(withValues(0));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -111,7 +111,7 @@ class BattleCalculatorTest {
     whenGetRandom(bridge).thenAnswer(withValues(0));
     TripleAUnit.get(planes.get(0)).setAlreadyMoved(BigDecimal.ONE);
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -155,7 +155,7 @@ class BattleCalculatorTest {
             territory("Germany", data),
             true);
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -205,7 +205,7 @@ class BattleCalculatorTest {
             true);
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -255,7 +255,7 @@ class BattleCalculatorTest {
             territory("Germany", data),
             true);
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -305,7 +305,7 @@ class BattleCalculatorTest {
             territory("Germany", data),
             true);
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -357,7 +357,7 @@ class BattleCalculatorTest {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -413,7 +413,7 @@ class BattleCalculatorTest {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -464,7 +464,7 @@ class BattleCalculatorTest {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,

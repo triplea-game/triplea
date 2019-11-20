@@ -7,7 +7,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.CasualtySelector;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -210,7 +210,7 @@ public class BattleDisplay extends JPanel {
     final Map<Unit, Collection<Unit>> dependentsMap;
     gameData.acquireReadLock();
     try {
-      dependentsMap = BattleCalculator.getDependents(killedUnits);
+      dependentsMap = CasualtySelector.getDependents(killedUnits);
     } finally {
       gameData.releaseReadLock();
     }

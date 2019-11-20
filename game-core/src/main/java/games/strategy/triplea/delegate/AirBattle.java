@@ -116,8 +116,8 @@ public class AirBattle extends AbstractBattle {
     }
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Air Battle in " + battleSite, battleSite);
-    BattleCalculator.sortPreBattle(attackingUnits);
-    BattleCalculator.sortPreBattle(defendingUnits);
+    CasualtySelector.sortPreBattle(attackingUnits);
+    CasualtySelector.sortPreBattle(defendingUnits);
     steps = determineStepStrings(true);
     showBattle(bridge);
     pushFightLoopOnStack(true);
@@ -702,7 +702,7 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               details =
-                  BattleCalculator.selectCasualties(
+                  CasualtySelector.selectCasualties(
                       defender,
                       defendingUnits,
                       defendingUnits,
@@ -766,7 +766,7 @@ public class AirBattle extends AbstractBattle {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               details =
-                  BattleCalculator.selectCasualties(
+                  CasualtySelector.selectCasualties(
                       attacker,
                       attackingUnits,
                       attackingUnits,

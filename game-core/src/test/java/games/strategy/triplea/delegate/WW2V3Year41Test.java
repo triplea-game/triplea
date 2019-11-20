@@ -182,7 +182,7 @@ class WW2V3Year41Test {
             territory("Germany", gameData),
             true);
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -239,7 +239,7 @@ class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -299,7 +299,7 @@ class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,

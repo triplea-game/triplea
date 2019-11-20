@@ -36,8 +36,8 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.odds.calculator.ConcurrentOddsCalculator;
-import games.strategy.triplea.odds.calculator.IOddsCalculator;
+import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
+import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +53,7 @@ import org.triplea.util.Tuple;
 public class ProAi extends AbstractAi {
 
   // Odds calculator
-  private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAi");
+  private static final IBattleCalculator concurrentCalc = new ConcurrentBattleCalculator("ProAi");
   protected ProOddsCalculator calc;
 
   // Phases
