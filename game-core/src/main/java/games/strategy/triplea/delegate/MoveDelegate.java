@@ -94,7 +94,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final Set<TriggerAttachment> toFirePossible =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Set.of(player)), moveCombatDelegateAllTriggerMatch);
+                Set.of(player), moveCombatDelegateAllTriggerMatch);
         if (!toFirePossible.isEmpty()) {
 
           // collect conditions and test them for ALL triggers, both those that we will fire before
@@ -103,7 +103,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
           final Set<TriggerAttachment> toFireBeforeBonus =
               TriggerAttachment.collectForAllTriggersMatching(
-                  new HashSet<>(Set.of(player)), moveCombatDelegateBeforeBonusTriggerMatch);
+                  Set.of(player), moveCombatDelegateBeforeBonusTriggerMatch);
           if (!toFireBeforeBonus.isEmpty()) {
 
             // get all triggers that are satisfied based on the tested conditions.
@@ -156,7 +156,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final Set<TriggerAttachment> toFireAfterBonus =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Set.of(player)), moveCombatDelegateAfterBonusTriggerMatch);
+                Set.of(player), moveCombatDelegateAfterBonusTriggerMatch);
         if (!toFireAfterBonus.isEmpty()) {
 
           // get all triggers that are satisfied based on the tested conditions.

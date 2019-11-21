@@ -105,7 +105,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // get all possible triggers based on this match.
       final Set<TriggerAttachment> toFirePossible =
           TriggerAttachment.collectForAllTriggersMatching(
-              new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);
+              Set.copyOf(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final Map<ICondition, Boolean> testedConditions =
