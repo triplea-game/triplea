@@ -2,7 +2,6 @@ package org.triplea.server.access;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ class AuthenticatedUserTest {
   private static final int USER_ID = 10;
 
   private static final List<String> rolesWithUserNames =
-      Arrays.asList(UserRole.ADMIN, UserRole.MODERATOR, UserRole.PLAYER, UserRole.ANONYMOUS);
+      List.of(UserRole.ADMIN, UserRole.MODERATOR, UserRole.PLAYER, UserRole.ANONYMOUS);
 
   @Nested
   class GetName {

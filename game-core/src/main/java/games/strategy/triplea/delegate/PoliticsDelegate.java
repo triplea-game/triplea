@@ -23,7 +23,6 @@ import games.strategy.triplea.ui.PoliticsText;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // get all possible triggers based on this match.
       final Set<TriggerAttachment> toFirePossible =
           TriggerAttachment.collectForAllTriggersMatching(
-              new HashSet<>(Collections.singleton(player)), politicsDelegateTriggerMatch);
+              new HashSet<>(Set.of(player)), politicsDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final Map<ICondition, Boolean> testedConditions =

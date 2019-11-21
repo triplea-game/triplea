@@ -6,7 +6,6 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +38,7 @@ class AccessLogServiceTest {
   @Test
   void fetchAccessLog() {
     when(accessLogDao.fetchAccessLogRows(PAGING_PARAMS.getRowNumber(), PAGING_PARAMS.getPageSize()))
-        .thenReturn(Collections.singletonList(ACCESS_LOG_DAO_DATA));
+        .thenReturn(List.of(ACCESS_LOG_DAO_DATA));
 
     final List<AccessLogData> results = accessLogService.fetchAccessLog(PAGING_PARAMS);
 

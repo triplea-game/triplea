@@ -1556,11 +1556,7 @@ class ProNonCombatMoveAi {
             final Route route =
                 data.getMap()
                     .getRouteForUnits(
-                        currentTerritory,
-                        patd.getTerritory(),
-                        match,
-                        Collections.singletonList(transport),
-                        player);
+                        currentTerritory, patd.getTerritory(), match, List.of(transport), player);
             if (route == null) {
               break;
             }

@@ -49,6 +49,10 @@ public interface ModeratorAuditHistoryDao {
     REMOVE_MODERATOR,
 
     ADD_SUPER_MOD,
+
+    DISCONNECT_USER,
+
+    DISCONNECT_GAME,
   }
 
   /** Parameters needed when adding an audit record. */

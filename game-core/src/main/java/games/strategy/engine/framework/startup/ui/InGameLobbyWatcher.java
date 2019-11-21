@@ -12,7 +12,6 @@ import games.strategy.net.Node;
 import java.time.Instant;
 import java.util.Observer;
 import java.util.Optional;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -21,7 +20,8 @@ import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.java.Timers;
+import org.triplea.java.timer.ScheduledTimer;
+import org.triplea.java.timer.Timers;
 import org.triplea.lobby.common.GameDescription;
 
 /**
@@ -44,7 +44,7 @@ public class InGameLobbyWatcher {
 
   private final IServerMessenger serverMessenger;
 
-  private final Timer keepAliveTimer;
+  private final ScheduledTimer keepAliveTimer;
 
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
@@ -120,7 +120,7 @@ public class InGameLobbyWatcher {
     // Period time is chosen to less than half the keep-alive cut-off time. In case a keep-alive
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
     keepAliveTimer =
-        Timers.fixedRateTimer()
+        Timers.fixedRateTimer("lobby-watcher-keep-alive")
             .period((GameListingClient.KEEP_ALIVE_SECONDS / 2) - 1, TimeUnit.SECONDS)
             .task(
                 LobbyWatcherKeepAliveTask.builder()
@@ -130,7 +130,8 @@ public class InGameLobbyWatcher {
                     .connectionReEstablishedReporter(reconnectionReporter)
                     .keepAliveSender(gameListingClient::sendKeepAlive)
                     .gamePoster(() -> gameListingClient.postGame(gameDescription.toLobbyGame()))
-                    .build());
+                    .build())
+            .start();
 
     connectionChangeListener =
         new IConnectionChangeListener() {

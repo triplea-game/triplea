@@ -1,3 +1,0 @@
-# Placeholder for value-overrides set in inventory variables.
-# Any values will be added to the firewall list of allowed incoming ports.
-ufw_allowed_ports: [ ]

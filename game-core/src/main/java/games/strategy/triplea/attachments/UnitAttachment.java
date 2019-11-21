@@ -1021,10 +1021,10 @@ public class UnitAttachment extends DefaultAttachment {
 
   public boolean canInvadeFrom(final Unit transport) {
     return canInvadeOnlyFrom == null
-        || Arrays.asList(canInvadeOnlyFrom).isEmpty()
+        || List.of(canInvadeOnlyFrom).isEmpty()
         || canInvadeOnlyFrom[0].isEmpty()
         || canInvadeOnlyFrom[0].equals("all")
-        || Arrays.asList(canInvadeOnlyFrom).contains(transport.getType().getName());
+        || List.of(canInvadeOnlyFrom).contains(transport.getType().getName());
   }
 
   private void resetCanInvadeOnlyFrom() {
@@ -3474,7 +3474,7 @@ public class UnitAttachment extends DefaultAttachment {
         && Properties.getUnitPlacementRestrictions(getData())) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnits()) {
-        totalUnitsListed.addAll(Arrays.asList(list));
+        totalUnitsListed.addAll(List.of(list));
       }
       if (totalUnitsListed.size() > 4) {
         tuples.add(Tuple.of("Has Placement Requirements", ""));
@@ -3486,7 +3486,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (getRequiresUnitsToMove() != null && !getRequiresUnitsToMove().isEmpty()) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnitsToMove()) {
-        totalUnitsListed.addAll(Arrays.asList(list));
+        totalUnitsListed.addAll(List.of(list));
       }
       if (totalUnitsListed.size() > 4) {
         tuples.add(Tuple.of("Has Movement Requirements", ""));

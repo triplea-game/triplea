@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -234,10 +233,7 @@ public final class ProMoveUtils {
                 Integer.MIN_VALUE; // Used to move to farthest away loading territory first
             for (final Territory neighbor : neighbors) {
               if (MoveValidator.validateCanal(
-                      new Route(transportTerritory, neighbor),
-                      Collections.singletonList(transport),
-                      player,
-                      data)
+                      new Route(transportTerritory, neighbor), List.of(transport), player, data)
                   != null) {
                 continue;
               }

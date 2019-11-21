@@ -1,12 +1,12 @@
 package games.strategy.engine.framework.startup.ui;
 
-import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.player.Player;
+import java.util.List;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.Test;
@@ -17,12 +17,12 @@ class PlayerTypeTest {
   void playerTypes() {
     assertThat(
         "Ensure we do not have an example invisible player type in the selection list",
-        asList(PlayerType.playerTypes()),
+        List.of(PlayerType.playerTypes()),
         Matchers.not(IsCollectionContaining.hasItem(PlayerType.CLIENT_PLAYER.getLabel())));
 
     assertThat(
         "Ensure we have a visible player type in the selection list",
-        asList(PlayerType.playerTypes()),
+        List.of(PlayerType.playerTypes()),
         IsCollectionContaining.hasItem(PlayerType.HUMAN_PLAYER.getLabel()));
   }
 

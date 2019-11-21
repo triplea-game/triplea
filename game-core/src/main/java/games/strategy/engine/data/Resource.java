@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /** A measurement of value used by players to purchase units. */
@@ -11,7 +10,7 @@ public class Resource extends NamedAttachable {
   private final List<PlayerId> players;
 
   public Resource(final String resourceName, final GameData data) {
-    this(resourceName, data, Collections.emptyList());
+    this(resourceName, data, List.of());
   }
 
   public Resource(final String resourceName, final GameData data, final List<PlayerId> players) {

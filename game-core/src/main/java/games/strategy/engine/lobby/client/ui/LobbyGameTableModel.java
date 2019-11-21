@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -20,7 +19,8 @@ import javax.swing.table.AbstractTableModel;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
-import org.triplea.java.Timers;
+import org.triplea.java.timer.ScheduledTimer;
+import org.triplea.java.timer.Timers;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.LobbyGameUpdateListener;
 import org.triplea.util.Tuple;
@@ -44,7 +44,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private final boolean admin;
-  private final transient Timer gamePoller;
+  private final transient ScheduledTimer gamePoller;
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<String, GameDescription>> gameList = new CopyOnWriteArrayList<>();
@@ -73,7 +73,7 @@ class LobbyGameTableModel extends AbstractTableModel {
     // delay when games are updated, yet still as infrequent as possible to keep server load to
     // a minimum.
     gamePoller =
-        Timers.fixedRateTimer()
+        Timers.fixedRateTimer("game-poller")
             .period(GAME_POLLER_FREQUENCY_SECONDS, TimeUnit.SECONDS)
             .delay(GAME_POLLER_FREQUENCY_SECONDS, TimeUnit.SECONDS)
             .task(
@@ -81,8 +81,9 @@ class LobbyGameTableModel extends AbstractTableModel {
                     lobbyGameBroadcaster,
                     gameListingSupplier(),
                     httpLobbyClient.getGameListingClient()::fetchGameListing,
-                    errorMessageReporter));
-    httpLobbyClient.addConnectionLostListener(msg -> gamePoller.cancel());
+                    errorMessageReporter))
+            .start();
+    httpLobbyClient.addConnectionClosedListener(msg -> gamePoller.cancel());
 
     try {
       final Map<String, GameDescription> games =

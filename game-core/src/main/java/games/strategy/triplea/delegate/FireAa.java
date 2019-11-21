@@ -180,7 +180,7 @@ public class FireAa implements IExecutable {
                 + BattleStepStrings.SELECT_PREFIX
                 + currentTypeAa
                 + BattleStepStrings.CASUALTIES_SUFFIX);
-    return BattleCalculator.getAaCasualties(
+    return CasualtySelector.getAaCasualties(
         !defending,
         validAttackingUnitsForThisRoll,
         attackableUnits,

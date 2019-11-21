@@ -3,6 +3,7 @@
 *-console.log
 ansible/*.retry
 **/*.jar
+ansible/roles/flyway/files/
 
 vault_password
 secret

@@ -6,7 +6,6 @@ import static org.hamcrest.core.Is.is;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @DataSet(cleanBefore = true, value = "bad_words/select.yml")
 class BadWordsDaoTest extends DaoTest {
-  private static final List<String> expectedBadWords = Arrays.asList("aaa", "one", "two", "zzz");
+  private static final List<String> expectedBadWords = List.of("aaa", "one", "two", "zzz");
 
   private final BadWordsDao badWordsDao = DaoTest.newDao(BadWordsDao.class);
 
@@ -41,7 +40,7 @@ class BadWordsDaoTest extends DaoTest {
 
   @SuppressWarnings("unused")
   private static List<String> badWordContains() {
-    final List<String> badWords = new ArrayList<>(Arrays.asList("zzZz", "_two_"));
+    final List<String> badWords = new ArrayList<>(List.of("zzZz", "_two_"));
     badWords.addAll(expectedBadWords);
     return badWords;
   }
@@ -54,7 +53,7 @@ class BadWordsDaoTest extends DaoTest {
 
   @SuppressWarnings("unused")
   private static List<String> notBadWordContains() {
-    return Arrays.asList("zz", "", null, "some word not containing any bad words");
+    return List.of("zz", "", "some word not containing any bad words");
   }
 
   @ParameterizedTest

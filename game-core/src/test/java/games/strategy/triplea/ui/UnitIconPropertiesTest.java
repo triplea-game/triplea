@@ -13,7 +13,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.ui.UnitIconProperties.MalformedUnitIconDescriptorException;
 import games.strategy.triplea.ui.UnitIconProperties.UnitIconDescriptor;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import javax.annotation.Nullable;
@@ -56,7 +56,7 @@ final class UnitIconPropertiesTest {
 
     private ICondition givenCondition(final String name, final boolean satisfied) {
       final ICondition condition = mock(ICondition.class);
-      when(condition.getConditions()).thenReturn(Collections.emptyList());
+      when(condition.getConditions()).thenReturn(List.of());
       when(condition.getName()).thenReturn(name);
       when(condition.isSatisfied(any(), any())).thenReturn(satisfied);
       return condition;

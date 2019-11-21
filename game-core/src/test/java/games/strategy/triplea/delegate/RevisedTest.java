@@ -59,6 +59,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -71,9 +72,7 @@ import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -279,7 +278,7 @@ class RevisedTest {
         CollectionUtils.getNMatches(sz5.getUnits(), 1, Matches.unitIsOfType(infantryType)),
         new Route(sz5, karelia));
     moveDelegate.end();
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final IDelegate battle = gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(gameData);
@@ -864,8 +863,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber());
     addTo(germany, bombers);
     battle.addAttackChange(
@@ -894,8 +892,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(2, british);
     addTo(germany, bombers);
     battle.addAttackChange(
@@ -932,8 +929,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(7, british);
     addTo(germany, bombers);
     battle.addAttackChange(
@@ -962,8 +958,7 @@ class RevisedTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
         gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
@@ -1004,7 +999,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
                 defender + FIRE,
@@ -1035,7 +1030,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
                 defender + FIRE,
@@ -1066,7 +1061,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1124,7 +1119,7 @@ class RevisedTest {
      * going to the scrap heap.
      */
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1195,7 +1190,7 @@ class RevisedTest {
      * going to the scrap heap.
      */
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1252,7 +1247,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1320,7 +1315,7 @@ class RevisedTest {
      * on the battle board until step 6, allowing them to fire back before going to the scrap heap.
      */
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1378,7 +1373,7 @@ class RevisedTest {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 defender + SUBS_FIRE,
@@ -1402,7 +1397,7 @@ class RevisedTest {
         invocation -> {
           final Collection<Unit> selectFrom = invocation.getArgument(0);
           return new CasualtyDetails(
-              Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
+              List.of(selectFrom.iterator().next()), new ArrayList<>(), false);
         });
     whenGetRandom(bridge)
         .thenAnswer(withValues(0))
@@ -1537,8 +1532,7 @@ class RevisedTest {
         new Route(sz6, uk));
     // fight the battle
     moveDelegate(gameData).end();
-    final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz6);
+    final IBattle battle = AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz6);
     // everything hits, this will kill both transports
     whenGetRandom(bridge).thenAnswer(withValues(0, 0)).thenAnswer(withValues(0, 0));
     battle.fight(bridge);

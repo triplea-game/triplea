@@ -225,12 +225,12 @@ class AaInMoveUtil implements Serializable {
     final boolean alwaysOnAa = isAlwaysOnAaEnabled();
     // Just the attacked territory will have AA firing
     if (!alwaysOnAa && isAaTerritoryRestricted()) {
-      return Collections.emptyList();
+      return List.of();
     }
     final GameData data = getData();
     // No AA in nonCombat unless 'Always on AA'
     if (GameStepPropertiesHelper.isNonCombatMove(data, false) && !alwaysOnAa) {
-      return Collections.emptyList();
+      return List.of();
     }
     // can't rely on player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
@@ -328,7 +328,7 @@ class AaInMoveUtil implements Serializable {
       final Territory territory,
       final String currentTypeAa) {
     final CasualtyDetails casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
             false,
             validTargetedUnitsForThisRoll,
             allFriendlyUnits,

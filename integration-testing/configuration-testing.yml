@@ -10,7 +10,7 @@ bcryptSalt: $2a$10$IhIXWg4HkQRWrZqjj9kV0u
 database:
   driverClass: org.postgresql.Driver
   user: lobby_user
-  password: ${POSTGRES_PASSWORD:-postgres}
+  password: postgres
   url: jdbc:postgresql://localhost:5432/lobby_db
   properties:
     charSet: UTF-8

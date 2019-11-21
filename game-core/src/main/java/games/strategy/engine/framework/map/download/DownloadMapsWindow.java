@@ -15,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -135,7 +134,7 @@ public class DownloadMapsWindow extends JFrame {
   public static void showDownloadMapsWindow() {
     checkState(SwingUtilities.isEventDispatchThread());
 
-    showDownloadMapsWindowAndDownload(Collections.emptyList());
+    showDownloadMapsWindowAndDownload(List.of());
   }
 
   /**
@@ -151,7 +150,7 @@ public class DownloadMapsWindow extends JFrame {
     checkState(SwingUtilities.isEventDispatchThread());
     checkNotNull(mapName);
 
-    showDownloadMapsWindowAndDownload(Collections.singletonList(mapName));
+    showDownloadMapsWindowAndDownload(List.of(mapName));
   }
 
   /**

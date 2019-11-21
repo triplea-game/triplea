@@ -47,7 +47,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     super(data, map);
     this.frame = frame;
     disableCancelButton();
-    undoableMoves = Collections.emptyList();
+    undoableMoves = List.of();
   }
 
   @Override
@@ -247,7 +247,7 @@ abstract class AbstractMovePanel extends ActionPanel {
   }
 
   protected List<Component> getAdditionalButtons() {
-    return Collections.emptyList();
+    return List.of();
   }
 
   protected abstract boolean setCancelButton();

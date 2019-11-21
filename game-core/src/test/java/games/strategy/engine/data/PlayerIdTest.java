@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
+import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,7 @@ final class PlayerIdTest {
   final class GetPlayerTypeTest {
     @Test
     void shouldReturnType() {
-      Arrays.asList(
-              Tuple.of("AI", "Hard (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))
+      List.of(Tuple.of("AI", "Hard (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))
           .forEach(
               idAndName -> {
                 playerId.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
@@ -36,7 +35,7 @@ final class PlayerIdTest {
   final class IsAiTest {
     @Test
     void shouldReturnTrueWhenTypeIsAi() {
-      Arrays.asList("AI:Hard (AI)", "ai:hard (ai)")
+      List.of("AI:Hard (AI)", "ai:hard (ai)")
           .forEach(
               encodedType -> {
                 playerId.setWhoAmI(encodedType);
@@ -47,7 +46,7 @@ final class PlayerIdTest {
 
     @Test
     void shouldReturnFalseWhenTypeIsNotAi() {
-      Arrays.asList("Human:Patton", "null:Bot")
+      List.of("Human:Patton", "null:Bot")
           .forEach(
               encodedType -> {
                 playerId.setWhoAmI(encodedType);
@@ -61,7 +60,7 @@ final class PlayerIdTest {
   final class SetWhoAmITest {
     @Test
     void shouldSetWhoAmIWhenEncodedTypeIsLegal() {
-      Arrays.asList(
+      List.of(
               "AI:Hard (AI)",
               "ai:Hard (AI)",
               "Human:Patton",

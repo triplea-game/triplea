@@ -7,7 +7,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.NonNull;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;
@@ -25,12 +24,6 @@ public class CreateIssueStrategy
 
   @Nonnull private final Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Nonnull private final GithubIssueClient githubIssueClient;
-  /**
-   * The 'production' flag is to help us verify we are not in a 'test' mode and will not return
-   * stubbed values while in production.
-   */
-  @NonNull private final Boolean isProduction;
-
   @Nonnull private final ErrorReportingDao errorReportingDao;
 
   @Override

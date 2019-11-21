@@ -83,9 +83,7 @@ import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import org.junit.jupiter.api.BeforeEach;
@@ -184,7 +182,7 @@ class WW2V3Year41Test {
             territory("Germany", gameData),
             true);
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -241,7 +239,7 @@ class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -301,7 +299,7 @@ class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -364,7 +362,7 @@ class WW2V3Year41Test {
     addTo(british(gameData), transport(gameData).create(1, british(gameData)), gameData);
     final String error =
         del.placeUnits(
-            Collections.emptyList(),
+            List.of(),
             territory("United Kingdom", gameData),
             IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertNull(error);
@@ -1006,7 +1004,7 @@ class WW2V3Year41Test {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_SUBMERGE,
                 defender + SUBS_SUBMERGE,
                 attacker + SUBS_FIRE,
@@ -1048,7 +1046,7 @@ class WW2V3Year41Test {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 defender + SUBS_SUBMERGE,
                 defender + SUBS_FIRE,
                 attacker + SELECT_SUB_CASUALTIES,
@@ -1096,7 +1094,7 @@ class WW2V3Year41Test {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_SUBMERGE,
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
@@ -1145,7 +1143,7 @@ class WW2V3Year41Test {
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
-        Arrays.asList(
+        List.of(
                 attacker + SUBS_FIRE,
                 defender + SELECT_SUB_CASUALTIES,
                 attacker + FIRE,
@@ -1163,7 +1161,7 @@ class WW2V3Year41Test {
         invocation -> {
           final Collection<Unit> selectFrom = invocation.getArgument(0);
           return new CasualtyDetails(
-              Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
+              List.of(selectFrom.iterator().next()), new ArrayList<>(), false);
         });
     // attacking subs sneak attack and hit
     // no chance to return fire
@@ -1741,7 +1739,7 @@ class WW2V3Year41Test {
     repairs.put(repair, 1);
     String error =
         del.purchaseRepair(
-            Collections.singletonMap(
+            Map.of(
                 CollectionUtils.getMatches(germany.getUnits(), Matches.unitCanBeDamaged())
                     .iterator()
                     .next(),
@@ -1771,7 +1769,7 @@ class WW2V3Year41Test {
     repairs.put(repair, 2);
     error =
         del.purchaseRepair(
-            Collections.singletonMap(
+            Map.of(
                 CollectionUtils.getMatches(germany.getUnits(), Matches.unitCanBeDamaged())
                     .iterator()
                     .next(),
@@ -1801,7 +1799,7 @@ class WW2V3Year41Test {
     repairs.put(repair, 2);
     final String error =
         del.purchaseRepair(
-            Collections.singletonMap(
+            Map.of(
                 CollectionUtils.getMatches(germany.getUnits(), Matches.unitCanBeDamaged())
                     .iterator()
                     .next(),

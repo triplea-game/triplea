@@ -7,7 +7,6 @@ class AbstractMoveExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = -4072966724295569322L;
 
   Serializable superState;
-  // add other variables here
   List<UndoableMove> movesToUndo;
   MovePerformer tempMovePerformer;
 }

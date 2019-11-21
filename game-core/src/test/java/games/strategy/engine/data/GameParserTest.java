@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ final class GameParserTest {
   final class DecapitalizeTest {
     @Test
     void shouldReturnValueWithFirstCharacterDecapitalized() {
-      Arrays.asList(
+      List.of(
               Tuple.of("", ""),
               Tuple.of("N", "n"),
               Tuple.of("name", "name"),

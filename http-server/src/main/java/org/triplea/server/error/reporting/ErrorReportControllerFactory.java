@@ -31,7 +31,6 @@ public final class ErrorReportControllerFactory {
             CreateIssueStrategy.builder()
                 .githubIssueClient(githubIssueClient)
                 .responseAdapter(new ErrorReportResponseConverter())
-                .isProduction(configuration.isProd())
                 .errorReportingDao(jdbi.onDemand(ErrorReportingDao.class))
                 .build())
         .build();

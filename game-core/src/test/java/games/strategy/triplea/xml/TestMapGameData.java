@@ -8,7 +8,7 @@ import games.strategy.triplea.delegate.TestDelegate;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.Map;
 
 /** The available maps for use during testing. */
 public enum TestMapGameData {
@@ -64,8 +64,8 @@ public enum TestMapGameData {
           "game name",
           is,
           new XmlGameElementMapper(
-              Collections.singletonMap("TestDelegate", TestDelegate::new),
-              Collections.singletonMap("TestAttachment", TestAttachment::new)));
+              Map.of("TestDelegate", TestDelegate::new),
+              Map.of("TestAttachment", TestAttachment::new)));
     }
   }
 }

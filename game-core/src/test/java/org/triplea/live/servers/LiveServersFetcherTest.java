@@ -2,7 +2,6 @@ package org.triplea.live.servers;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +49,7 @@ class LiveServersFetcherTest {
           .thenReturn(
               LiveServers.builder()
                   .latestEngineVersion(new Version("10.0"))
-                  .servers(emptyList())
+                  .servers(List.of())
                   .build());
 
       final Optional<Version> version = liveServersFetcher.latestVersion();

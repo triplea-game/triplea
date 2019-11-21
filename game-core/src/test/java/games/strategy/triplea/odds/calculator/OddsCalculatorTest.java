@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,8 +36,8 @@ class OddsCalculatorTest {
     final PlayerId russians = GameDataTestUtil.russians(gameData);
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(100, russians);
-    final List<Unit> bombardingUnits = Collections.emptyList();
-    final IOddsCalculator calculator = new OddsCalculator(gameData);
+    final List<Unit> bombardingUnits = List.of();
+    final IBattleCalculator calculator = new BattleCalculator(gameData);
     final AggregateResults results =
         calculator.setCalculateDataAndCalculate(
             russians,
@@ -66,8 +65,8 @@ class OddsCalculatorTest {
     final List<Unit> defendingUnits = GameDataTestUtil.fighter(gameData).create(1, british, false);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(1, germans, false);
     attackingUnits.addAll(GameDataTestUtil.bomber(gameData).create(1, germans, false));
-    final List<Unit> bombardingUnits = Collections.emptyList();
-    final IOddsCalculator calculator = new OddsCalculator(gameData);
+    final List<Unit> bombardingUnits = List.of();
+    final IBattleCalculator calculator = new BattleCalculator(gameData);
     calculator.setKeepOneAttackingLandUnit(true);
     final AggregateResults results =
         calculator.setCalculateDataAndCalculate(
@@ -89,7 +88,7 @@ class OddsCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = transport(gameData).create(2, americans(gameData));
     final List<Unit> defending = submarine(gameData).create(2, germans(gameData));
-    final IOddsCalculator calculator = new OddsCalculator(gameData);
+    final IBattleCalculator calculator = new BattleCalculator(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
         calculator.setCalculateDataAndCalculate(
@@ -98,7 +97,7 @@ class OddsCalculatorTest {
             sz1,
             attacking,
             defending,
-            Collections.emptyList(),
+            List.of(),
             TerritoryEffectHelper.getEffects(sz1),
             1);
     calculator.shutdown();
@@ -113,7 +112,7 @@ class OddsCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = submarine(gameData).create(2, americans(gameData));
     final List<Unit> defending = transport(gameData).create(2, germans(gameData));
-    final IOddsCalculator calculator = new OddsCalculator(gameData);
+    final IBattleCalculator calculator = new BattleCalculator(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
         calculator.setCalculateDataAndCalculate(
@@ -122,7 +121,7 @@ class OddsCalculatorTest {
             sz1,
             attacking,
             defending,
-            Collections.emptyList(),
+            List.of(),
             TerritoryEffectHelper.getEffects(sz1),
             1);
     calculator.shutdown();

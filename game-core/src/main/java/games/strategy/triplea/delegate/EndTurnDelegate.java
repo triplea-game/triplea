@@ -27,7 +27,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.ObjectiveDummyDelegateBridge;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -368,7 +367,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
               .and(TriggerAttachment.resourceMatch());
       triggers.addAll(
           TriggerAttachment.collectForAllTriggersMatching(
-              new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch));
+              new HashSet<>(Set.of(player)), endTurnDelegateTriggerMatch));
       allConditionsNeeded.addAll(
           AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(triggers), null));
     }

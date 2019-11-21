@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import junit.framework.AssertionFailedError;
+import lombok.experimental.UtilityClass;
 import org.junit.jupiter.api.Assertions;
 import org.triplea.java.collections.IntegerMap;
 
-/** A utility class for GameData test classes. */
+@UtilityClass
 public final class GameDataTestUtil {
-  private GameDataTestUtil() {}
 
   /**
    * Get the german PlayerId for the given GameData object.
@@ -169,11 +169,6 @@ public final class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
   }
 
-  /** Returns a tacBomber UnitType object for the specified GameData object. */
-  static UnitType tacBomber(final GameData data) {
-    return unitType("tactical_bomber", data);
-  }
-
   /** Returns a fighter UnitType object for the specified GameData object. */
   public static UnitType fighter(final GameData data) {
     return unitType(Constants.UNIT_TYPE_FIGHTER, data);
@@ -293,11 +288,6 @@ public final class GameDataTestUtil {
   /** Returns a americanStrategicBomber UnitType object for the specified GameData object. */
   public static UnitType americanStrategicBomber(final GameData data) {
     return unitType("americanStrategicBomber", data);
-  }
-
-  /** Returns a factory_upgrade UnitType object for the specified GameData object. */
-  public static UnitType factoryUpgrade(final GameData data) {
-    return unitType("factory_upgrade", data);
   }
 
   /**

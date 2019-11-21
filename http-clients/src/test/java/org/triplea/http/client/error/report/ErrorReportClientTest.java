@@ -1,12 +1,12 @@
 package org.triplea.http.client.error.report;
 
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.gson.Gson;
 import java.net.URI;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
@@ -26,7 +26,7 @@ class ErrorReportClientTest extends WireMockTest {
             HttpClientTesting.ServiceCallArgs.<ErrorReportResponse>builder()
                 .wireMockServer(server)
                 .expectedRequestPath(ErrorReportClient.ERROR_REPORT_PATH)
-                .expectedBodyContents(singletonList(MESSAGE_FROM_USER))
+                .expectedBodyContents(List.of(MESSAGE_FROM_USER))
                 .serverReturnValue(new Gson().toJson(SUCCESS_RESPONSE))
                 .serviceCall(ErrorReportClientTest::doServiceCall)
                 .build());

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -eu
+
+URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
+green="\e[32m"
+end="\e[0m"
+
+if [ -z "$URI_FILE" ]; then
+  echo "Error could not find file 'UrlConstants.java'"
+  exit 1
+fi
+
+
+
+function checkUri() {
+  local -r uri="$1"
+  curl -s --head "$uri" | head -n 1  | grep -qE  "HTTP/2 200|(200|302) (OK|Found)" \
+    || reportBrokenUri "$uri"
+}
+
+function reportBrokenUri() {
+  FAILURE=1 
+  local -r red="\e[38;5;196m"
+  local -r blue="\e[38;5;75m"
+  echo -en "Error: ${red}$uri${end} ${blue}"
+  curl -s --head "$uri" | head -n 1 | sed 's|HTTP/[12][.01]?||'
+  echo -en "${end}"
+}
+
+FAILURE=0
+
+while read -r uri; do
+  checkUri "$uri";
+done < <(sed 's/^.*"\(.*\)".*$/\1/' "$URI_FILE" | grep "http")
+
+if [ "$FAILURE" == 0 ]; then
+  echo -e "${green}Links are valid${end}"
+fi
+exit "$FAILURE"
+

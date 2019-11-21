@@ -2,4 +2,4 @@ ansible_ssh_user: vagrant
 ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
 ansible_host: 127.0.0.1
 ansible_python_interpreter: /usr/bin/python3
-bot_lobby_address: 127.0.0.1
+lobby_uri: "http://localhost:8080"

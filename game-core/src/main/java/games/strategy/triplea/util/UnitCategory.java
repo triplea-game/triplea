@@ -8,7 +8,6 @@ import games.strategy.triplea.attachments.UnitTypeComparator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +45,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   public UnitCategory(final UnitType type, final PlayerId owner) {
     this.type = type;
-    dependents = Collections.emptyList();
+    dependents = List.of();
     movement = new BigDecimal(-1);
     transportCost = -1;
     this.owner = owner;

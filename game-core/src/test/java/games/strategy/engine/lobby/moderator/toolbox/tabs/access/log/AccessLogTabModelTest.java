@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.access.log;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.verify;
@@ -62,7 +61,7 @@ class AccessLogTabModelTest {
   @Test
   void fetchData() {
     when(toolboxAccessLogClient.getAccessLog(PAGING_PARAMS))
-        .thenReturn(asList(ACCESS_LOG_DATA_1, ACCESS_LOG_DATA_2));
+        .thenReturn(List.of(ACCESS_LOG_DATA_1, ACCESS_LOG_DATA_2));
 
     final List<List<String>> tableData = accessLogTabModel.fetchTableData(PAGING_PARAMS);
 

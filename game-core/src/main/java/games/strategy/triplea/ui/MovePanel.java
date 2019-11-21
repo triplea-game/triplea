@@ -348,7 +348,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                   null,
                   null);
           if (option != JOptionPane.OK_OPTION) {
-            return Collections.emptyList();
+            return List.of();
           }
           return chooser.getSelected(true);
         }
@@ -426,8 +426,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             final List<Unit> initialUnits, final Territory t, final MouseDetails me) {
           final Collection<Unit> unitsToRemove = new ArrayList<>(selectedUnits.size());
           // we have right clicked on a unit stack in a different territory
-          final List<Unit> units =
-              getFirstSelectedTerritory().equals(t) ? initialUnits : Collections.emptyList();
+          final List<Unit> units = getFirstSelectedTerritory().equals(t) ? initialUnits : List.of();
           // remove the dependent units so we don't have to micromanage them
           final List<Unit> unitsWithoutDependents = new ArrayList<>(selectedUnits);
           for (final Unit unit : selectedUnits) {
@@ -595,7 +594,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             }
           }
           final Map<Unit, Unit> unitsToTransports =
-              transports == null ? null : TransportUtils.mapTransports(route, units, transports);
+              transports == null
+                  ? Map.of()
+                  : TransportUtils.mapTransports(route, units, transports);
           final MoveDescription message =
               new MoveDescription(units, route, unitsToTransports, dependentUnits);
           setMoveMessage(message);
@@ -621,10 +622,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           final boolean isCorrectTerritory =
               (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
           if (someOwned && isCorrectTerritory) {
-            getMap()
-                .setUnitHighlight(Collections.singletonList(Collections.unmodifiableList(units)));
+            getMap().setUnitHighlight(List.of(Collections.unmodifiableList(units)));
           } else {
-            getMap().setUnitHighlight(Collections.emptySet());
+            getMap().setUnitHighlight(Set.of());
           }
         }
       };
@@ -675,7 +675,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     super(data, map, frame);
     undoableMovesPanel = new UndoableMovesPanel(this);
     mouseCurrentTerritory = null;
-    unitsThatCanMoveOnRoute = Collections.emptyList();
+    unitsThatCanMoveOnRoute = List.of();
     currentCursorImage = null;
 
     unitScroller = new UnitScroller(getData(), getMap());
@@ -774,7 +774,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             candidateTransports, Matches.transportCannotUnload(route.getEnd()));
     candidateTransports.removeAll(incapableTransports);
     if (candidateTransports.size() == 0) {
-      return Collections.emptyList();
+      return List.of();
     }
 
     // Just one transport, don't bother to ask
@@ -834,7 +834,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               while (unitIter.hasNext()) {
                 final Unit unit = unitIter.next();
                 final Collection<UnitCategory> unitCategory =
-                    UnitSeparator.categorize(Collections.singleton(unit));
+                    UnitSeparator.categorize(Set.of(unit));
 
                 // Is one of the transported units of the same type we want to unload?
                 if (!Collections.disjoint(transCategories, unitCategory)) {
@@ -878,7 +878,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             null,
             null);
     if (option != JOptionPane.OK_OPTION) {
-      return Collections.emptyList();
+      return List.of();
     }
     final Collection<Unit> chosenTransports =
         CollectionUtils.getMatches(chooser.getSelected(), Matches.unitIsTransport());
@@ -1192,10 +1192,10 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   private Collection<Unit> getTransportsToLoad(
       final Route route, final Collection<Unit> unitsToLoad, final boolean disablePrompts) {
     if (!route.isLoad()) {
-      return Collections.emptyList();
+      return List.of();
     }
     if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
-      return Collections.emptyList();
+      return List.of();
     }
     final Collection<Unit> endOwnedUnits = route.getEnd().getUnits();
     final PlayerId unitOwner = getUnitOwner(unitsToLoad);
@@ -1224,7 +1224,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
     // nothing to choose
     if (candidateTransports.isEmpty()) {
-      return Collections.emptyList();
+      return List.of();
     }
 
     // sort transports in preferred load order
@@ -1357,7 +1357,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             null,
             null);
     if (option != JOptionPane.OK_OPTION) {
-      return Collections.emptyList();
+      return List.of();
     }
     return chooser.getSelected(false);
   }
@@ -1531,7 +1531,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             null,
             null);
     if (option != JOptionPane.OK_OPTION) {
-      return Collections.emptyList();
+      return List.of();
     }
     return chooser.getSelected(true);
   }
@@ -1541,7 +1541,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     getMap().removeMapSelectionListener(mapSelectionListener);
     getMap().removeUnitSelectionListener(unitSelectionListener);
     getMap().removeMouseOverUnitListener(mouseOverUnitListener);
-    getMap().setUnitHighlight(Collections.emptySet());
+    getMap().setUnitHighlight(Set.of());
     selectedUnits.clear();
     updateRouteAndMouseShadowUnits(null);
     forced = null;

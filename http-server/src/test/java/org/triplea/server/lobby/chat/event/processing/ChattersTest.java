@@ -6,20 +6,31 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import javax.websocket.CloseReason;
 import javax.websocket.Session;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.server.lobby.chat.event.processing.Chatters.ChatterSession;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
 class ChattersTest {
 
@@ -27,7 +38,6 @@ class ChattersTest {
       ChatParticipant.builder().playerName(PlayerName.of("player-name")).build();
   private static final ChatParticipant CHAT_PARTICIPANT_2 =
       ChatParticipant.builder().playerName(PlayerName.of("player-name2")).build();
-
   private static final String ID = "id";
 
   private final Chatters chatters = new Chatters();
@@ -89,5 +99,78 @@ class ChattersTest {
     // two chatters added, both should exist
     assertThat(chatters.hasPlayer(CHAT_PARTICIPANT.getPlayerName()), is(true));
     assertThat(chatters.hasPlayer(CHAT_PARTICIPANT_2.getPlayerName()), is(true));
+  }
+
+  @Nested
+  class FetchAnyOpenSession {
+    @Test
+    void noSessions() {
+      assertThat(chatters.fetchOpenSessions(), empty());
+    }
+
+    @Test
+    void fetchSession() {
+      when(session.getId()).thenReturn(ID);
+      chatters.put(session, CHAT_PARTICIPANT);
+      when(session.isOpen()).thenReturn(true);
+      when(session.getOpenSessions()).thenReturn(Set.of(session, session2));
+
+      assertThat(chatters.fetchOpenSessions(), hasItems(session, session2));
+    }
+
+    @Test
+    void fetchOnlyOpenSessions() {
+      when(session.getId()).thenReturn(ID);
+      chatters.put(session, CHAT_PARTICIPANT);
+      when(session.isOpen()).thenReturn(false);
+
+      assertThat(chatters.fetchOpenSessions(), empty());
+    }
+  }
+
+  @Nested
+  class DisconnectPlayerSessions {
+    @Test
+    void noOpIfPlayerNotConnected() {
+      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getPlayerName(), "disconnect message");
+    }
+
+    @Test
+    void singleSessionDisconnected() throws Exception {
+      when(session.getId()).thenReturn(ID);
+      chatters.put(session, CHAT_PARTICIPANT);
+
+      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getPlayerName(), "disconnect message");
+
+      verify(session).close(any(CloseReason.class));
+    }
+
+    @Test
+    @DisplayName("Players can have multiple sessions, verify they are all closed")
+    void allSameNamePlayersAreDisconnected() throws Exception {
+      final ChatParticipant participant1 = givenChatParticipant(session);
+      final ChatParticipant participant2 = givenChatParticipant(session2);
+      assertThat(
+          "verify test data assumption",
+          participant1.getPlayerName(),
+          is(participant2.getPlayerName()));
+
+      chatters.disconnectPlayerSessions(participant1.getPlayerName(), "disconnect message");
+
+      verify(session).close(any(CloseReason.class));
+      verify(session2).close(any(CloseReason.class));
+    }
+
+    private ChatParticipant givenChatParticipant(final Session chatterSession) {
+      final var chatParticipant =
+          ChatParticipant.builder()
+              .playerChatId(PlayerChatId.newId())
+              .playerName(PlayerName.of("player-name"))
+              .build();
+
+      when(chatterSession.getId()).thenReturn(UUID.randomUUID().toString());
+      chatters.put(chatterSession, chatParticipant);
+      return chatParticipant;
+    }
   }
 }

@@ -187,7 +187,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       endBeforeRolling(bridge);
       return;
     }
-    BattleCalculator.sortPreBattle(attackingUnits);
+    CasualtySelector.sortPreBattle(attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property
     // isAAforBombingThisUnitOnly
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
@@ -411,12 +411,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             null,
             null,
             null,
-            Collections.emptyMap(),
+            Map.of(),
             attacker,
             defender,
             isAmphibious(),
             getBattleType(),
-            Collections.emptySet());
+            Set.of());
     bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
@@ -435,7 +435,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
 
     FireAa() {
-      validAttackingUnitsForThisRoll = Collections.emptyList();
+      validAttackingUnitsForThisRoll = List.of();
       determineAttackers = true;
     }
 
@@ -604,7 +604,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
-      return BattleCalculator.selectCasualties(
+      return CasualtySelector.selectCasualties(
           attacker,
           validAttackingUnitsForThisRoll,
           attackingUnits,
@@ -623,7 +623,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           allowMultipleHitsPerUnit);
     }
     final CasualtyDetails casualties =
-        BattleCalculator.getAaCasualties(
+        CasualtySelector.getAaCasualties(
             false,
             validAttackingUnitsForThisRoll,
             attackingUnits,
@@ -662,7 +662,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             attacker,
             new ArrayList<>(casualties.getKilled()),
             new ArrayList<>(casualties.getDamaged()),
-            Collections.emptyMap());
+            Map.of());
     final Thread t =
         new Thread(
             () -> {

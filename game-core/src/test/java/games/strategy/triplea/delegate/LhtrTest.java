@@ -24,8 +24,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +67,7 @@ class LhtrTest {
         easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
     final TripleAUnit carrier = new TripleAUnit(carrirType, germans, gameData);
-    gameData.performChange(ChangeFactory.addUnits(germans, Collections.singleton(carrier)));
+    gameData.performChange(ChangeFactory.addUnits(germans, Set.of(carrier)));
     // end the move phase
     delegate.end();
     // make sure the fighter is still there
@@ -148,8 +148,7 @@ class LhtrTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
         gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
@@ -183,11 +182,10 @@ class LhtrTest {
     final PlayerId british = GameDataTestUtil.british(gameData);
     // add a unit
     final Unit bomber = GameDataTestUtil.bomber(gameData).create(british);
-    final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
+    final Change change = ChangeFactory.addUnits(uk, Set.of(bomber));
     gameData.performChange(change);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle =
-        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
         gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),

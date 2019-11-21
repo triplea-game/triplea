@@ -28,10 +28,3 @@
     port: ssh
     proto: tcp
 
-- name: allow ports
-  become: true
-  ufw:
-    rule: allow
-    port: "{{ item }}"
-    proto: tcp
-  with_items: "{{ ufw_allowed_ports }}"

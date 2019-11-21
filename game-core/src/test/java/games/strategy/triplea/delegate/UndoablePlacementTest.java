@@ -8,7 +8,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +24,7 @@ final class UndoablePlacementTest {
         new CompositeChange(),
         producerTerritory,
         placeTerritory,
-        Collections.singletonList(
-            new Unit(new UnitType(UNIT_TYPE_NAME, gameData), null, gameData)));
+        List.of(new Unit(new UnitType(UNIT_TYPE_NAME, gameData), null, gameData)));
   }
 
   @Nested

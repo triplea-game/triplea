@@ -14,8 +14,6 @@ import org.triplea.http.client.lobby.user.account.UserAccountClient;
 /** Holder class for the various http clients that access lobby resources. */
 @Getter
 public class HttpLobbyClient {
-  public static final String PROTOCOL = "http://";
-
   private final ConnectivityCheckClient connectivityCheckClient;
   private final GameListingClient gameListingClient;
   private final HttpModeratorToolboxClient httpModeratorToolboxClient;
@@ -36,7 +34,11 @@ public class HttpLobbyClient {
     return new HttpLobbyClient(lobbyUri, apiKey);
   }
 
-  public void addConnectionLostListener(final Consumer<String> connectionClosedListener) {
+  /**
+   * Connection closed listener is invoked whenever the underlying connection is closed, whether by
+   * ur or remote server.
+   */
+  public void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
     lobbyChatClient.addConnectionLostListener(connectionClosedListener);
   }
 }

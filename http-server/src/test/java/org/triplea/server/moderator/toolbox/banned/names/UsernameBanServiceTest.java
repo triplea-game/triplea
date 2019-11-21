@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -95,8 +94,7 @@ class UsernameBanServiceTest {
 
   @Test
   void getBannedUserNames() {
-    when(bannedUsernamesDao.getBannedUserNames())
-        .thenReturn(Collections.singletonList(USERNAME_BAN_RECORD));
+    when(bannedUsernamesDao.getBannedUserNames()).thenReturn(List.of(USERNAME_BAN_RECORD));
 
     final List<UsernameBanData> results = usernameBanService.getBannedUserNames();
     assertThat(results, hasSize(1));

@@ -51,7 +51,6 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -99,7 +98,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final UiContext uiContext;
   private final ExecutorService executor =
       Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-  @Getter private Collection<Collection<Unit>> highlightedUnits = Collections.emptyList();
+  @Getter private Collection<Collection<Unit>> highlightedUnits = List.of();
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
 
@@ -107,20 +106,20 @@ public class MapPanel extends ImageScrollerLargeView {
       new TerritoryListener() {
         @Override
         public void unitsChanged(final Territory territory) {
-          updateCountries(Collections.singleton(territory));
+          updateCountries(Set.of(territory));
           SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
 
         @Override
         public void ownerChanged(final Territory territory) {
           smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
-          updateCountries(Collections.singleton(territory));
+          updateCountries(Set.of(territory));
           SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
 
         @Override
         public void attachmentChanged(final Territory territory) {
-          updateCountries(Collections.singleton(territory));
+          updateCountries(Set.of(territory));
           SwingUtilities.invokeLater(MapPanel.this::repaint);
         }
       };
@@ -194,7 +193,7 @@ public class MapPanel extends ImageScrollerLargeView {
           public void mouseExited(final MouseEvent e) {
             if (unitsChanged(null)) {
               currentUnits = null;
-              notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()));
+              notifyMouseEnterUnit(List.of(), getTerritory(e.getX(), e.getY()));
             }
           }
 
@@ -223,7 +222,7 @@ public class MapPanel extends ImageScrollerLargeView {
             if (!unitSelectionListeners.isEmpty()) {
               Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
               if (tuple == null) {
-                tuple = Tuple.of(getTerritory(x, y), Collections.emptyList());
+                tuple = Tuple.of(getTerritory(x, y), List.of());
               }
               notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
             }
@@ -319,7 +318,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (unitsChanged(tuple)) {
       currentUnits = tuple;
       if (tuple == null) {
-        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y));
+        notifyMouseEnterUnit(List.of(), getTerritory(x, y));
       } else {
         notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst());
       }

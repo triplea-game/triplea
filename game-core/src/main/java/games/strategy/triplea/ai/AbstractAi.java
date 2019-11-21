@@ -28,7 +28,6 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -233,7 +232,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     }
     // would we normally be allies?
     final List<String> allies =
-        Arrays.asList(
+        List.of(
             Constants.PLAYER_NAME_AMERICANS,
             Constants.PLAYER_NAME_AUSTRALIANS,
             Constants.PLAYER_NAME_BRITISH,
@@ -246,7 +245,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       return true;
     }
     final List<String> axis =
-        Arrays.asList(
+        List.of(
             Constants.PLAYER_NAME_GERMANS,
             Constants.PLAYER_NAME_ITALIANS,
             Constants.PLAYER_NAME_JAPANESE,

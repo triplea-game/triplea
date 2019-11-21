@@ -36,7 +36,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -917,9 +916,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           for (final Unit u : scrambling) {
             change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
             change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
-            change.add(
-                Route.getFuelChanges(
-                    Collections.singleton(u), new Route(t, to), u.getOwner(), data));
+            change.add(Route.getFuelChanges(Set.of(u), new Route(t, to), u.getOwner(), data));
           }
           // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
           change.add(ChangeFactory.moveUnits(t, to, scrambling));
@@ -1123,13 +1120,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                         "Select territory for air units to land. (Current territory is "
                             + t.getName()
                             + "): "
-                            + MyFormatter.unitsToText(Collections.singletonList(u)));
+                            + MyFormatter.unitsToText(List.of(u)));
           } else if (possible.size() == 1) {
             landingTerr = possible.iterator().next();
           }
           if (landingTerr == null || landingTerr.equals(t)) {
-            carrierCostOfCurrentTerr +=
-                AirMovementValidator.carrierCost(Collections.singletonList(u));
+            carrierCostOfCurrentTerr += AirMovementValidator.carrierCost(List.of(u));
             historyText = "Scrambled unit stays in territory " + t.getName();
           } else {
             historyText =
@@ -1144,10 +1140,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   + landingTerr.getName();
         }
         if (landingTerr != null && !landingTerr.equals(t)) {
-          change.add(ChangeFactory.moveUnits(t, landingTerr, Collections.singletonList(u)));
+          change.add(ChangeFactory.moveUnits(t, landingTerr, List.of(u)));
           change.add(
-              Route.getFuelChanges(
-                  Collections.singleton(u), new Route(t, landingTerr), u.getOwner(), data));
+              Route.getFuelChanges(Set.of(u), new Route(t, landingTerr), u.getOwner(), data));
         }
         change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.ORIGINATED_FROM));
         change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_SCRAMBLED));
@@ -1621,8 +1616,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
     }
     final String title =
-        "Kamikaze Suicide Attack attacks "
-            + MyFormatter.unitsToText(Collections.singleton(unitUnderFire));
+        "Kamikaze Suicide Attack attacks " + MyFormatter.unitsToText(Set.of(unitUnderFire));
     final String dice = " scoring " + hits + " hits.  Rolls: " + MyFormatter.asDice(rolls);
     bridge.getHistoryWriter().startEvent(title + dice, unitUnderFire);
     if (hits > 0) {
@@ -1630,7 +1624,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final int currentHits = unitUnderFire.getHits();
       if (ua.getHitPoints() <= currentHits + hits) {
         // TODO: kill dependents
-        change.add(ChangeFactory.removeUnits(location, Collections.singleton(unitUnderFire)));
+        change.add(ChangeFactory.removeUnits(location, Set.of(unitUnderFire)));
       } else {
         final IntegerMap<Unit> hitMap = new IntegerMap<>();
         hitMap.put(unitUnderFire, hits);
@@ -1687,7 +1681,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
     final int maxDistance = UnitAttachment.get(strandedAir.getType()).getMaxScrambleDistance();
     if (maxDistance <= 0) {
-      return Collections.singletonList(currentTerr);
+      return List.of(currentTerr);
     }
     final boolean areNeutralsPassableByAir =
         (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));

@@ -20,7 +20,6 @@ import java.awt.CardLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -284,7 +283,7 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
    */
   @Override
   public Map<KeyStroke, Runnable> get() {
-    return Collections.singletonMap(
+    return Map.of(
         KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK),
         () -> Optional.ofNullable(actionPanel).ifPresent(ActionPanel::performDone));
   }

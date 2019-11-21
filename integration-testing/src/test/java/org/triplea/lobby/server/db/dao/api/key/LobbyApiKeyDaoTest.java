@@ -9,6 +9,8 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.SystemId;
 import org.triplea.lobby.server.db.dao.DaoTest;
 import org.triplea.lobby.server.db.data.UserRole;
 
@@ -22,9 +24,14 @@ class LobbyApiKeyDaoTest extends DaoTest {
           .userId(USER_ID)
           .username("registered-user")
           .role(UserRole.MODERATOR)
+          .playerChatId("chat-id0")
           .build();
   private static final UserWithRoleRecord EXPECTED_ANONYMOUS_DATA =
-      UserWithRoleRecord.builder().username("some-other-name").role(UserRole.ANONYMOUS).build();
+      UserWithRoleRecord.builder()
+          .username("some-other-name")
+          .role(UserRole.ANONYMOUS)
+          .playerChatId("chat-id1")
+          .build();
 
   private final LobbyApiKeyDao lobbyApiKeyDao = DaoTest.newDao(LobbyApiKeyDao.class);
 
@@ -74,5 +81,19 @@ class LobbyApiKeyDaoTest extends DaoTest {
   @ExpectedDataSet(value = "lobby_api_key/delete_old_keys_after.yml", orderBy = "key")
   void deleteOldKeys() {
     lobbyApiKeyDao.deleteOldKeys();
+  }
+
+  @Test
+  void lookupByPlayerChatId() {
+    final Optional<PlayerIdLookup> playerIdLookup = lobbyApiKeyDao.lookupByPlayerChatId("chat-id0");
+
+    assertThat(
+        playerIdLookup,
+        isPresentAndIs(
+            PlayerIdLookup.builder()
+                .playerName(PlayerName.of("registered-user"))
+                .systemId(SystemId.of("system-id0"))
+                .ip("127.0.0.1")
+                .build()));
   }
 }

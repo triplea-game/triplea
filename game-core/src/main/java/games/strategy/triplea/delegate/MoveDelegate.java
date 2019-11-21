@@ -95,7 +95,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final Set<TriggerAttachment> toFirePossible =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Collections.singleton(player)), moveCombatDelegateAllTriggerMatch);
+                new HashSet<>(Set.of(player)), moveCombatDelegateAllTriggerMatch);
         if (!toFirePossible.isEmpty()) {
 
           // collect conditions and test them for ALL triggers, both those that we will fire before
@@ -104,8 +104,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
           final Set<TriggerAttachment> toFireBeforeBonus =
               TriggerAttachment.collectForAllTriggersMatching(
-                  new HashSet<>(Collections.singleton(player)),
-                  moveCombatDelegateBeforeBonusTriggerMatch);
+                  new HashSet<>(Set.of(player)), moveCombatDelegateBeforeBonusTriggerMatch);
           if (!toFireBeforeBonus.isEmpty()) {
 
             // get all triggers that are satisfied based on the tested conditions.
@@ -158,8 +157,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final Set<TriggerAttachment> toFireAfterBonus =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Collections.singleton(player)),
-                moveCombatDelegateAfterBonusTriggerMatch);
+                new HashSet<>(Set.of(player)), moveCombatDelegateAfterBonusTriggerMatch);
         if (!toFireAfterBonus.isEmpty()) {
 
           // get all triggers that are satisfied based on the tested conditions.
@@ -515,7 +513,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     for (final Unit carrier : damagedCarriers) {
       final CompositeChange change =
           TransportTracker.clearTransportedByForAlliedAirOnCarrier(
-              Collections.singleton(carrier), fullyRepaired.get(carrier), carrier.getOwner(), data);
+              Set.of(carrier), fullyRepaired.get(carrier), carrier.getOwner(), data);
       if (!change.isEmpty()) {
         clearAlliedAir.add(change);
       }

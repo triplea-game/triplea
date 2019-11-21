@@ -3,13 +3,13 @@ package org.triplea.server.moderator.toolbox.banned.users;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -20,11 +20,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanRecord;
+import org.triplea.server.lobby.chat.event.processing.Chatters;
 
 @ExtendWith(MockitoExtension.class)
 class UserBanServiceTest {
@@ -63,13 +65,13 @@ class UserBanServiceTest {
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
   @Mock private UserBanDao bannedUserDao;
   @Mock private Supplier<String> publicIdSupplier;
+  @Mock private Chatters chatters;
 
   @InjectMocks private UserBanService bannedUsersService;
 
   @Test
   void getBannedUsers() {
-    when(bannedUserDao.lookupBans())
-        .thenReturn(Arrays.asList(USER_BAN_RECORD_1, USER_BAN_RECORD_2));
+    when(bannedUserDao.lookupBans()).thenReturn(List.of(USER_BAN_RECORD_1, USER_BAN_RECORD_2));
 
     final List<UserBanData> result = bannedUsersService.getBannedUsers();
 
@@ -151,9 +153,12 @@ class UserBanServiceTest {
           .addAuditRecord(
               ModeratorAuditHistoryDao.AuditArgs.builder()
                   .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
-                  .actionTarget(USERNAME)
+                  .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getHoursToBan() + " hours")
                   .moderatorUserId(MODERATOR_ID)
                   .build());
+
+      verify(chatters)
+          .disconnectPlayerSessions(eq(PlayerName.of(USER_BAN_PARAMS.getUsername())), any());
     }
   }
 }

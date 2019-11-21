@@ -11,7 +11,7 @@ import java.util.Collection;
  * Interface to ensure different implementations of the odds calculator all have the same public
  * methods.
  */
-public interface IOddsCalculator {
+public interface IBattleCalculator {
   void setGameData(GameData data);
 
   void setCalculateData(

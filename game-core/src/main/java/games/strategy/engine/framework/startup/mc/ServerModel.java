@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -575,7 +574,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   private Map<String, PlayerType> getLocalPlayerTypes() {
     if (data == null) {
-      return Collections.emptyMap();
+      return Map.of();
     }
 
     final Map<String, PlayerType> localPlayerMappings = new HashMap<>();

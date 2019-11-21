@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -92,14 +91,14 @@ class RouteFinderTest {
         routeFinder.findRouteByDistance(territories.get(0), territories.get(0));
     assertTrue(optRoute.isPresent());
     final Route route = optRoute.get();
-    assertEquals(Collections.singletonList(territories.get(0)), route.getAllTerritories());
+    assertEquals(List.of(territories.get(0)), route.getAllTerritories());
   }
 
   @Test
   void testNoRouteOnInvalidGraph() {
     final GameMap map = mock(GameMap.class);
     when(map.getNeighborsValidatingCanals(eq(territories.get(0)), any(), any(), any()))
-        .thenReturn(Collections.singleton(territories.get(1)));
+        .thenReturn(Set.of(territories.get(1)));
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByDistance(
@@ -163,14 +162,14 @@ class RouteFinderTest {
         routeFinder.findRouteByCost(territories.get(0), territories.get(0));
     assertTrue(optRoute.isPresent());
     final Route route = optRoute.get();
-    assertEquals(Collections.singletonList(territories.get(0)), route.getAllTerritories());
+    assertEquals(List.of(territories.get(0)), route.getAllTerritories());
   }
 
   @Test
   void testNoRouteByCostOnInvalidGraph() {
     final GameMap map = mock(GameMap.class);
     when(map.getNeighborsValidatingCanals(eq(territories.get(0)), any(), any(), any()))
-        .thenReturn(Collections.singleton(territories.get(1)));
+        .thenReturn(Set.of(territories.get(1)));
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
     final Optional<Route> optRoute =
         routeFinder.findRouteByCost(territories.get(0), territories.get(territories.size() - 1));

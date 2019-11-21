@@ -43,10 +43,10 @@ import org.triplea.util.Tuple;
  * all over the place.
  */
 @Log
-public class BattleCalculator {
+public class CasualtySelector {
   private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
-  private BattleCalculator() {}
+  private CasualtySelector() {}
 
   public static void clearOolCache() {
     oolCache.clear();
@@ -602,7 +602,7 @@ public class BattleCalculator {
     final Player tripleaPlayer =
         player.isNull() ? new WeakAi(player.getName()) : bridge.getRemotePlayer(player);
     final Map<Unit, Collection<Unit>> dependents =
-        headLess ? Collections.emptyMap() : getDependents(targetsToPickFrom);
+        headLess ? Map.of() : getDependents(targetsToPickFrom);
     if (isEditMode && !headLess) {
       final CasualtyDetails editSelection =
           tripleaPlayer.selectCasualties(
@@ -628,7 +628,7 @@ public class BattleCalculator {
       return editSelection;
     }
     if (dice.getHits() == 0) {
-      return new CasualtyDetails(Collections.emptyList(), Collections.emptyList(), true);
+      return new CasualtyDetails(List.of(), List.of(), true);
     }
     int hitsRemaining = dice.getHits();
     if (isTransportCasualtiesRestricted(data)) {
@@ -643,7 +643,7 @@ public class BattleCalculator {
         }
         killed.add(iter.next());
       }
-      return new CasualtyDetails(killed, Collections.emptyList(), true);
+      return new CasualtyDetails(killed, List.of(), true);
     }
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do
     // it here.
@@ -987,9 +987,7 @@ public class BattleCalculator {
         }
         unitTypes.add(u.getType());
         // Find unit power
-        int power =
-            DiceRoll.getTotalPower(
-                Collections.singletonMap(u, originalUnitPowerAndRollsMap.get(u)), data);
+        int power = DiceRoll.getTotalPower(Map.of(u, originalUnitPowerAndRollsMap.get(u)), data);
         // Add any support power that it provides to other units
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {
@@ -1191,45 +1189,5 @@ public class BattleCalculator {
   /** Indicates the attacker can retreat non-amphibious units. */
   private static boolean isPartialAmphibiousRetreat(final GameData data) {
     return Properties.getPartialAmphibiousRetreat(data);
-  }
-
-  /**
-   * This returns the exact Power that a unit has according to what DiceRoll.rollDiceLowLuck() would
-   * give it. As such, it needs to exactly match DiceRoll, otherwise this method will become
-   * useless. It does NOT take into account SUPPORT. It DOES take into account ROLLS. It needs to be
-   * updated to take into account isMarine.
-   */
-  public static int getUnitPowerForSorting(
-      final Unit current,
-      final boolean defending,
-      final GameData data,
-      final Collection<TerritoryEffect> territoryEffects) {
-    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
-    final UnitAttachment ua = UnitAttachment.get(current.getType());
-    final int rolls =
-        defending ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
-    int strengthWithoutSupport = 0;
-    // Find the strength the unit has without support
-    // lhtr heavy bombers take best of n dice for both attack and defense
-    if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-      strengthWithoutSupport =
-          defending ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
-      strengthWithoutSupport +=
-          TerritoryEffectHelper.getTerritoryCombatBonus(
-              current.getType(), territoryEffects, defending);
-      // just add one like LL if we are LHTR bombers
-      strengthWithoutSupport =
-          Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
-    } else {
-      for (int i = 0; i < rolls; i++) {
-        final int tempStrength =
-            defending ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
-        strengthWithoutSupport +=
-            TerritoryEffectHelper.getTerritoryCombatBonus(
-                current.getType(), territoryEffects, defending);
-        strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());
-      }
-    }
-    return strengthWithoutSupport;
   }
 }

@@ -31,8 +31,8 @@
   strategy: free
   roles:
     - java
+    - http_server
     - nginx
-    - dropwizard
 
 - hosts: botHosts
   gather_facts: no

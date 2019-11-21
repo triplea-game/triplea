@@ -126,4 +126,8 @@ public class LobbyApiKeyDaoWrapper {
             ipAddress.getHostAddress());
     Postconditions.assertState(rowsInserted == 1);
   }
+
+  public Optional<PlayerIdLookup> lookupPlayerByChatId(final PlayerChatId playerChatId) {
+    return apiKeyDao.lookupByPlayerChatId(playerChatId.getValue());
+  }
 }

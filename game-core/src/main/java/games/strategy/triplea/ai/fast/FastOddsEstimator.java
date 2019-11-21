@@ -8,12 +8,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.odds.calculator.AggregateResults;
-import games.strategy.triplea.odds.calculator.IOddsCalculator;
+import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-class FastOddsEstimator implements IOddsCalculator {
+class FastOddsEstimator implements IBattleCalculator {
 
   private Territory location = null;
   private Collection<Unit> attackingUnits = new ArrayList<>();

@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
+import com.google.common.base.Strings;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
@@ -15,8 +16,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -71,13 +72,30 @@ public class LobbyFrame extends JFrame {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
+    // show an error if connection is lost
     lobbyClient
         .getHttpLobbyClient()
         .getLobbyChatClient()
         .addConnectionLostListener(
-            errMsg -> {
-              SwingComponents.showError(this, "Disconnected", errMsg);
+            disconnectMessage -> {
+              SwingComponents.showError(
+                  this,
+                  "Disconnected from Chat",
+                  Optional.ofNullable(Strings.emptyToNull(disconnectMessage))
+                      .orElse("Disconnected from chat"));
+              tableModel.shutdown();
               dispose();
+              shutdown();
+            });
+    // shutdown cleanly if client initiates the disconnect
+    lobbyClient
+        .getHttpLobbyClient()
+        .getLobbyChatClient()
+        .addConnectionClosedListener(
+            errMsg -> {
+              tableModel.shutdown();
+              dispose();
+              shutdown();
             });
     addWindowListener(
         new WindowAdapter() {
@@ -103,11 +121,11 @@ public class LobbyFrame extends JFrame {
 
   private List<Action> newModeratorActions(final ChatParticipant clickedOn) {
     if (!lobbyClient.isModerator()) {
-      return Collections.emptyList();
+      return List.of();
     }
 
     if (clickedOn.getPlayerName().equals(lobbyClient.getPlayerName())) {
-      return Collections.emptyList();
+      return List.of();
     }
 
     final var moderatorLobbyClient = lobbyClient.getHttpLobbyClient().getModeratorLobbyClient();

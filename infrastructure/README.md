@@ -108,16 +108,11 @@ ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed255
 ```
 
 
-# TODO
+# Https Certificate Installation
 
-## [ ] Execute 'run_deployment' for prerelease from travis after successful merge
-- will need to install sshpass on the travis machine
-- will need to set ansible password on travis as env variable
-- will need to add sshpass+ssh command to execute 'run_deployment'
+Currently done manually.
 
-## [ ] certbot from letsencrypt
-
-Draft so far of what this needs, need to get this fully working and then converted to an ansible role:
+## certbot from letsencrypt
 
 ```bash
 sudo apt-get update
@@ -127,5 +122,36 @@ sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
 sudo apt-get install certbot python-certbot-nginx 
 
-sudo certbot --test-cert --nginx -m tripleabuilderbot@gmail.com --agree-tos
+sudo certbot --nginx -m tripleabuilderbot@gmail.com --agree-tos
 ```
+
+Create CAA DNS records
+
+![Screenshot from 2019-11-19 13-06-13](https://user-images.githubusercontent.com/12397753/69196411-48980e00-0ae3-11ea-9130-61e1fd5368b3.png)
+
+
+Everything that goes well, should look like:
+```
+Congratulations! You have successfully enabled
+https://prerelease.triplea-game.org
+
+You should test your configuration at:
+https://www.ssllabs.com/ssltest/analyze.html?d=prerelease.triplea-game.org
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/prerelease.triplea-game.org/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/prerelease.triplea-game.org/privkey.pem
+   Your cert will expire on 2020-02-17. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot again
+   with the "certonly" option. To non-interactively renew *all* of
+   your certificates, run "certbot renew"
+ - Your account credentials have been saved in your Certbot
+   configuration directory at /etc/letsencrypt. You should make a
+   secure backup of this folder now. This configuration directory will
+   also contain certificates and private keys obtained by Certbot so
+   making regular backups of this folder is ideal.
+``````
+

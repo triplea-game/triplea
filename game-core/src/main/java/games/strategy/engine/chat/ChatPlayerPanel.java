@@ -10,9 +10,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +86,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
       chat.addStatusUpdateListener(statusUpdateListener);
     } else {
       // empty our player list
-      updatePlayerList(Collections.emptyList());
+      updatePlayerList(List.of());
     }
     repaint();
   }
@@ -164,7 +162,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
         clickedOn -> {
           // you can't slap or ignore yourself
           if (clickedOn.getPlayerName().equals(chat.getLocalPlayerName())) {
-            return Collections.emptyList();
+            return List.of();
           }
           final boolean isIgnored = chat.isIgnored(clickedOn.getPlayerName());
           final Action ignore =
@@ -178,7 +176,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
               SwingAction.of(
                   "Slap " + clickedOn.getPlayerName(),
                   e -> chat.sendSlap(clickedOn.getPlayerName()));
-          return Arrays.asList(slap, ignore);
+          return List.of(slap, ignore);
         });
   }
 

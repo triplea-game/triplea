@@ -22,7 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -204,7 +203,7 @@ public class DiceRoll implements Externalizable {
     // Check that there are valid AA and targets to roll for
     final int totalAaAttacks = getTotalAaAttacks(unitPowerAndRollsMap, validTargets);
     if (totalAaAttacks <= 0) {
-      return new DiceRoll(Collections.emptyList(), 0, 0);
+      return new DiceRoll(List.of(), 0, 0);
     }
 
     // Determine dice sides (doesn't handle the possibility of different dice sides within the same
@@ -433,9 +432,7 @@ public class DiceRoll implements Externalizable {
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap) {
     units.sort(
         Comparator.comparing(
-            unit ->
-                getMaxAaAttackAndDiceSides(
-                    Collections.singleton(unit), data, defending, unitPowerAndRollsMap),
+            unit -> getMaxAaAttackAndDiceSides(Set.of(unit), data, defending, unitPowerAndRollsMap),
             Comparator.<Tuple<Integer, Integer>, Boolean>comparing(tuple -> tuple.getFirst() == 0)
                 .thenComparingDouble(tuple -> -tuple.getFirst() / (float) tuple.getSecond())));
   }
@@ -904,7 +901,7 @@ public class DiceRoll implements Externalizable {
 
     final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
-      return new DiceRoll(Collections.emptyList(), 0, 0);
+      return new DiceRoll(List.of(), 0, 0);
     }
 
     // Roll dice for the fractional part of the dice

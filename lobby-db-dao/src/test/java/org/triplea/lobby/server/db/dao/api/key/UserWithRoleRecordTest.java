@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,30 +23,35 @@ class UserWithRoleRecordTest {
   private static final String ROLE = UserRole.PLAYER;
   private static final int USER_ID = 55;
   private static final String NAME = "player-name";
+  private static final String CHAT_ID = "chat-id";
 
   @Mock private ResultSet resultSet;
 
   @Test
   void buildResultMapper() throws Exception {
-    givenResults(USER_ID, ROLE, NAME);
+    givenResults(USER_ID, CHAT_ID, ROLE, NAME);
 
     final UserWithRoleRecord result = UserWithRoleRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUserId(), is(USER_ID));
     assertThat(result.getRole(), is(UserRole.PLAYER));
     assertThat(result.getUsername(), is(NAME));
+    assertThat(result.getPlayerChatId(), is(CHAT_ID));
   }
 
-  private void givenResults(final int userId, final String role, final String name)
+  @SuppressWarnings("SameParameterValue")
+  private void givenResults(
+      final int userId, final String chatId, final String role, final String name)
       throws Exception {
     when(resultSet.getInt(UserWithRoleRecord.USER_ID_COLUMN)).thenReturn(userId);
+    when(resultSet.getString(UserWithRoleRecord.PLAYER_CHAT_ID_COLUMN)).thenReturn(chatId);
     when(resultSet.getString(UserWithRoleRecord.ROLE_COLUMN)).thenReturn(role);
     when(resultSet.getString(UserWithRoleRecord.USERNAME_COLUMN)).thenReturn(name);
   }
 
   @Test
   void zeroUserIdIsMappedToNull() throws Exception {
-    givenResults(0, UserRole.HOST, null);
+    givenResults(0, CHAT_ID, UserRole.HOST, null);
 
     final UserWithRoleRecord result = UserWithRoleRecord.buildResultMapper().map(resultSet, null);
 
@@ -57,7 +61,7 @@ class UserWithRoleRecordTest {
   @ParameterizedTest
   @ValueSource(strings = {UserRole.PLAYER, UserRole.MODERATOR, UserRole.MODERATOR})
   void assertInvalidStatesRolesThatMustHaveUserId(final String userRole) throws Exception {
-    givenResults(0, userRole, NAME);
+    givenResults(0, CHAT_ID, userRole, NAME);
 
     assertPostconditionFailure();
   }
@@ -70,14 +74,14 @@ class UserWithRoleRecordTest {
   @ParameterizedTest
   @ValueSource(strings = {UserRole.ANONYMOUS, UserRole.HOST})
   void assertInvalidStatesRolesThatMustNotHaveUserId(final String userRole) throws Exception {
-    givenResults(USER_ID, userRole, NAME);
+    givenResults(USER_ID, CHAT_ID, userRole, NAME);
 
     assertPostconditionFailure();
   }
 
   @SuppressWarnings("unused")
   private static List<Arguments> mustHaveUserName() {
-    return Arrays.asList(
+    return List.of(
         Arguments.of(0, UserRole.ANONYMOUS), //
         Arguments.of(USER_ID, UserRole.PLAYER), //
         Arguments.of(USER_ID, UserRole.MODERATOR), //
@@ -88,14 +92,14 @@ class UserWithRoleRecordTest {
   @MethodSource("mustHaveUserName")
   void assertInvalidStatesRolesThatMustHaveName(final int userId, final String roleName)
       throws Exception {
-    givenResults(userId, roleName, null);
+    givenResults(userId, CHAT_ID, roleName, null);
 
     assertPostconditionFailure();
   }
 
   @Test
   void assertInvalidStatesHostRoleMayNotHaveName() throws Exception {
-    givenResults(0, UserRole.HOST, NAME);
+    givenResults(0, CHAT_ID, UserRole.HOST, NAME);
 
     assertPostconditionFailure();
   }

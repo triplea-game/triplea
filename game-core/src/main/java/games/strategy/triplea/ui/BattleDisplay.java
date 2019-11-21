@@ -7,7 +7,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.CasualtySelector;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -37,10 +37,10 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
@@ -138,7 +138,7 @@ public class BattleDisplay extends JPanel {
             battleLocation,
             territoryEffects,
             isAmphibious,
-            Collections.emptySet(),
+            Set.of(),
             this.mapPanel.getUiContext());
     attackerModel =
         new BattleModel(
@@ -210,7 +210,7 @@ public class BattleDisplay extends JPanel {
     final Map<Unit, Collection<Unit>> dependentsMap;
     gameData.acquireReadLock();
     try {
-      dependentsMap = BattleCalculator.getDependents(killedUnits);
+      dependentsMap = CasualtySelector.getDependents(killedUnits);
     } finally {
       gameData.releaseReadLock();
     }
@@ -878,7 +878,7 @@ public class BattleDisplay extends JPanel {
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
       final boolean isAirPreBattleOrPreRaid = battleType.isAirPreBattleOrPreRaid();
       if (isAirPreBattleOrPreRaid) {
-        unitPowerAndRollsMap = Collections.emptyMap();
+        unitPowerAndRollsMap = Map.of();
       } else {
         gameData.acquireReadLock();
         try {

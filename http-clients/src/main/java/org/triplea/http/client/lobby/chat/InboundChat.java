@@ -30,7 +30,8 @@ class InboundChat {
         new GenericWebSocketClient<>(
             chatWebsocketUri,
             ServerMessageEnvelope.class,
-            inboundEventHandler::handleServerMessage);
+            inboundEventHandler::handleServerMessage,
+            "Failed to connect to chat.");
   }
 
   void addPlayerStatusListener(final Consumer<StatusUpdate> playerStatusListener) {
@@ -61,7 +62,11 @@ class InboundChat {
     inboundEventHandler.addChatEventListener(chatEventListener);
   }
 
+  void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
+    webSocketClient.addConnectionClosedListener(connectionClosedListener);
+  }
+
   void addConnectionLostListener(final Consumer<String> connectionLostListener) {
-    webSocketClient.addConnectionClosedListener(connectionLostListener);
+    webSocketClient.addConnectionLostListener(connectionLostListener);
   }
 }

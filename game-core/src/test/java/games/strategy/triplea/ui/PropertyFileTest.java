@@ -9,7 +9,7 @@ import games.strategy.triplea.ResourceLoader;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,7 @@ class PropertyFileTest {
 
   @Test
   void testConstructor() throws Exception {
-    Files.write(file.toPath(), Arrays.asList("abc=def", "123: 456"));
+    Files.write(file.toPath(), List.of("abc=def", "123: 456"));
     final PropertyFile instance = new PropertyFile(file.getAbsolutePath(), mock) {};
     assertEquals("def", instance.properties.getProperty("abc"));
     assertEquals("456", instance.properties.getProperty("123"));

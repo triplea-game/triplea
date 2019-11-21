@@ -41,7 +41,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
 
   protected AbstractUndoableMovesPanel(final AbstractMovePanel movePanel) {
     this.movePanel = movePanel;
-    moves = Collections.emptyList();
+    moves = List.of();
   }
 
   void setMoves(final List<AbstractUndoableMove> undoableMoves) {

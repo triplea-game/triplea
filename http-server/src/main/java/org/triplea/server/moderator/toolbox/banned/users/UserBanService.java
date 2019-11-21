@@ -5,10 +5,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
+import org.triplea.server.lobby.chat.event.processing.Chatters;
 
 /**
  * Service layer for managing user bans, get bans, add and remove. User bans are done by MAC and IP
@@ -20,6 +22,7 @@ public class UserBanService {
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
   @Nonnull private final UserBanDao bannedUserDao;
   @Nonnull private final Supplier<String> publicIdSupplier;
+  @Nonnull private final Chatters chatters;
 
   List<UserBanData> getBannedUsers() {
     return bannedUserDao.lookupBans().stream()
@@ -69,11 +72,16 @@ public class UserBanService {
       return false;
     }
 
+    chatters.disconnectPlayerSessions(
+        PlayerName.of(banUserParams.getUsername()),
+        "You have been banned for " + banUserParams.getHoursToBan() + " hours");
+
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorUserId(moderatorId)
             .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
-            .actionTarget(banUserParams.getUsername())
+            .actionTarget(
+                banUserParams.getUsername() + " " + banUserParams.getHoursToBan() + " hours")
             .build());
     return true;
   }

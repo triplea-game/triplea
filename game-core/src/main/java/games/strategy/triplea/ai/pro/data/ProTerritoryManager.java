@@ -428,7 +428,7 @@ public class ProTerritoryManager {
                 Comparator.<Unit>comparingDouble(
                         o ->
                             ProBattleUtils.estimateStrength(
-                                to, Collections.singletonList(o), new ArrayList<>(), false))
+                                to, List.of(o), new ArrayList<>(), false))
                     .reversed());
             canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
           }
@@ -1235,7 +1235,7 @@ public class ProTerritoryManager {
             for (final Territory possibleNeighborTerritory : possibleNeighborTerritories) {
               if (MoveValidator.validateCanal(
                       new Route(currentTerritory, possibleNeighborTerritory),
-                      Collections.singletonList(myTransportUnit),
+                      List.of(myTransportUnit),
                       player,
                       data)
                   == null) {

@@ -25,7 +25,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -56,7 +55,7 @@ public class HeadlessGameServer {
   private ServerGame game = null;
   private boolean shutDown = false;
   private final List<Runnable> shutdownListeners =
-      Arrays.asList(
+      List.of(
           lobbyWatcherResetupThread::shutdown,
           () -> Optional.ofNullable(game).ifPresent(ServerGame::stopGame),
           () ->

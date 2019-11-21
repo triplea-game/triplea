@@ -12,7 +12,7 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.CasualtySelector;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -121,7 +121,7 @@ public class ClientGame extends AbstractGame {
                   .getHistoryWriter()
                   .startNextStep(stepName, delegateName, player, displayName);
             }
-            BattleCalculator.clearOolCache();
+            CasualtySelector.clearOolCache();
             gameData.fireGameDataEvent(GameDataEvent.GAME_STEP_CHANGED);
           }
 

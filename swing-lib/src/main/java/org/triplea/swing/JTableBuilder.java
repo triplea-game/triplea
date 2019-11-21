@@ -3,7 +3,6 @@ package org.triplea.swing;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Preconditions;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -80,7 +79,7 @@ public class JTableBuilder {
   }
 
   public JTableBuilder columnNames(final String... columnNames) {
-    return columnNames(Arrays.asList(columnNames));
+    return columnNames(List.of(columnNames));
   }
 
   public JTableBuilder columnNames(final List<String> columnNames) {

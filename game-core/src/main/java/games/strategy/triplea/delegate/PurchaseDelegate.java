@@ -29,7 +29,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
@@ -75,7 +74,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
         // get all possible triggers based on this match.
         final Set<TriggerAttachment> toFirePossible =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Collections.singleton(player)), purchaseDelegateTriggerMatch);
+                new HashSet<>(Set.of(player)), purchaseDelegateTriggerMatch);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.
           final Map<ICondition, Boolean> testedConditions =

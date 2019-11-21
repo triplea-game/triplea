@@ -9,7 +9,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -195,12 +194,12 @@ public class Fire implements IExecutable {
                   Matches.unitIsTransportButNotCombatTransport()));
         }
         killed = nonTransports;
-        damaged = Collections.emptyList();
+        damaged = List.of();
         if (extraHits > transportsOnly.size()) {
           extraHits = transportsOnly.size();
         }
         message =
-            BattleCalculator.selectCasualties(
+            CasualtySelector.selectCasualties(
                 hitPlayer,
                 transportsOnly,
                 allEnemyUnitsNotIncludingWaitingToDie,
@@ -221,11 +220,11 @@ public class Fire implements IExecutable {
         confirmOwnCasualties = true;
       } else if (hitCount == numPossibleHits) { // exact number of combat units
         killed = nonTransports;
-        damaged = Collections.emptyList();
+        damaged = List.of();
         confirmOwnCasualties = true;
       } else { // less than possible number
         message =
-            BattleCalculator.selectCasualties(
+            CasualtySelector.selectCasualties(
                 hitPlayer,
                 nonTransports,
                 allEnemyUnitsNotIncludingWaitingToDie,
@@ -250,13 +249,13 @@ public class Fire implements IExecutable {
       // they all die
       if (hitCount >= AbstractBattle.getMaxHits(attackableUnits)) {
         killed = attackableUnits;
-        damaged = Collections.emptyList();
+        damaged = List.of();
         // everything died, so we need to confirm
         confirmOwnCasualties = true;
       } else { // Choose casualties
         final CasualtyDetails message;
         message =
-            BattleCalculator.selectCasualties(
+            CasualtySelector.selectCasualties(
                 hitPlayer,
                 attackableUnits,
                 allEnemyUnitsNotIncludingWaitingToDie,

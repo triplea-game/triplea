@@ -2,15 +2,18 @@ bot_user: "bot"
 
 bot_folder: "/home/{{ bot_user }}"
 
-bot_jar: "triplea-game-headless-{{ lookup('env', 'VERSION') }}.jar"
+bot_jar: "triplea-game-headless-{{ version }}.jar"
 
 bot_maps_folder: "{{ bot_folder }}/maps"
 
-bot_lobby_host: "{{ bot_lobby_address }}"
+bot_lobby_uri: "{{ lobby_uri }}"
 
 bot_max_memory: "168m"
 
 bot_name: "BotServer"
 
-bot_lobby_address: "{{ lobby_address }}"
-
+bot_ports:
+  - 4001
+  - 4002
+  - 4003
+  - 4004

@@ -24,6 +24,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,9 +107,8 @@ class WW2V3Year42Test {
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
-    final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
-    assertEquals(5, mfb.getAttackingUnits().size());
+    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
+    assertEquals(5, battle.getAttackingUnits().size());
   }
 
   @Test
@@ -132,9 +132,8 @@ class WW2V3Year42Test {
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle except the italian carrier
-    final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
-    assertEquals(6, mfb.getAttackingUnits().size());
+    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
+    assertEquals(6, battle.getAttackingUnits().size());
   }
 
   @Test
@@ -157,8 +156,7 @@ class WW2V3Year42Test {
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
-    final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
-    assertEquals(4, mfb.getAttackingUnits().size());
+    final IBattle battle = MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
+    assertEquals(4, battle.getAttackingUnits().size());
   }
 }
