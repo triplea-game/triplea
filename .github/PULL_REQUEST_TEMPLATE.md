@@ -27,7 +27,7 @@
   we would prefer to rely on automated testing.
 -->
 
-[] Manually testing done
+[] Manual testing done
 
 <!-- If manually tested, summarize the testing done below this line. -->
 
