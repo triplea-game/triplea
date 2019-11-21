@@ -84,7 +84,7 @@ jobs:
       script:
         - ./.travis/setup_database
         - ./.travis/run_smoke_tests
-    - stage: deploy
+    - stage: upload artifacts
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       install: skip
       before_install:
@@ -117,6 +117,22 @@ jobs:
           tags: false
           repo: triplea-game/triplea
           branch: master
+    - stage: deploy prerelease
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      install:
+        - sudo apt update
+        - sudo apt -y install sshpass
+        - sudo pip install ansible
+      language: python
+      python: "3.6"
+      script:
+        - eval "$(ssh-agent -s)"
+        - version=$(sed "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties)
+        - cd infrastructure
+        - export ANSIBLE_HOST_KEY_CHECKING=False
+        - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+        - ./run_deployment "$version" -i ansible/inventory/prerelease
+
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
   -  test "$TRAVIS_EVENT_TYPE" != "pull_request" && test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE

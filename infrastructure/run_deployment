@@ -6,26 +6,20 @@
 # If the script is updated, upload a new copy to the infrastructure machine
 # to /home/ansible.
 
-
-VERSION=${1-}
-INVENTORY_FILE=${2-}
-
 function usage() {
-  echo "Usage: $0 [Version] [InventoryFile]"
+  echo "Usage: $0 [Version] [ansible args]"
   echo "  Version: The version of tripleA to be downloaded and installed, eg: 1.10.0.141"
   echo "  InventoryFile: The inventory file to run, one of: {production|prerelease}"
   echo "Example: $0 1.10.5252 prerelease"
   exit 1
 }
 
-if [ -e "$VERSION" ] || [ -e "$INVENTORY_FILE" ]; then
+if [ "$#" -lt 2 ]; then
   usage
 fi
-export VERSION=$VERSION
 
-if [ "$INVENTORY_FILE" != production ] && [ "$INVENTORY_FILE" != prerelease ]; then
-  usage
-fi
+export VERSION=${1-}
+shift
 
 VAULT_PASSWORD_FILE="vault_password"
 if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
@@ -47,23 +41,6 @@ HTTP_SERVER_JAR_PATH="ansible/roles/http_server/files/$HTTP_SERVER_JAR"
 
 
 set -x
-
-function main() {
-  if [ ! -e "$HTTP_SERVER_JAR_PATH" ]; then
-    downloadHttpServerJar
-  fi
-
-  if [ ! -e "$BOT_JAR_PATH" ]; then
-      downloadBotJar
-  fi
-
-  downloadMigrations
-
-  ansible-playbook -D -v \
-      --vault-password-file "$VAULT_PASSWORD_FILE" \
-     ansible/site.yml \
-     -i "ansible/inventory/$INVENTORY_FILE"
-}
 
 function downloadHttpServerJar() {
   HTTP_SERVER_ZIP="triplea-http-server-$VERSION.zip"
@@ -111,4 +88,17 @@ function downloadMigrations() {
   mv "$migrationsZip" ansible/roles/flyway/files/
 }
 
-main
+if [ ! -e "$HTTP_SERVER_JAR_PATH" ]; then
+downloadHttpServerJar
+fi
+
+if [ ! -e "$BOT_JAR_PATH" ]; then
+  downloadBotJar
+fi
+
+downloadMigrations
+
+ansible-playbook \
+  --vault-password-file "$VAULT_PASSWORD_FILE" \
+ $@ \
+ ansible/site.yml
