@@ -6,9 +6,9 @@ import com.google.common.collect.Maps;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
@@ -30,10 +30,7 @@ public class MoveDescription extends AbstractMoveDescription {
     this.dependentUnits =
         Collections.unmodifiableMap(
             dependentUnits.entrySet().stream()
-                .collect(
-                    Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> Collections.unmodifiableSet(new HashSet<>(e.getValue())))));
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> Set.copyOf(e.getValue()))));
   }
 
   public MoveDescription(
