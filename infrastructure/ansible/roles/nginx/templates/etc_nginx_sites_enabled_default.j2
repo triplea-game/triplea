@@ -6,16 +6,14 @@ server {
 server {
     listen 443;
     server_name {{ inventory_hostname }};
-
-    ssl_certificate           {{ nginx_ssl_certificate }};
-    ssl_certificate_key       {{ nginx_ssl_certificate_key }};
+    ssl_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem; # managed by Certbot
 
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;
-    ssl_protocols  TLSv1.1 TLSv1.2;
-    ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+    ssl_protocols  TLSv1.2 TLSv1.3;
+    ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
     ssl_prefer_server_ciphers on;
-
     access_log            /var/log/nginx/java_server.access.log;
 
     location / {
@@ -26,9 +24,16 @@ server {
       proxy_set_header        X-Forwarded-Proto $scheme;
 
       # Fix the “It appears that your reverse proxy set up is broken" error.
-      proxy_pass          http://localhost:4567;
+      proxy_pass          http://localhost:8080;
       proxy_read_timeout  90;
 
-      proxy_redirect      http://localhost:443 https://localhost:{{ http_server_port }};
+      proxy_redirect      https://localhost:443 https://localhost:{{ http_server_port }};
+    }
+
+    location /lobby/chat/websocket {
+      proxy_pass http://localhost:8080;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
     }
 }
