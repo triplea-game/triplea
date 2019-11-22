@@ -367,7 +367,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
               .and(TriggerAttachment.resourceMatch());
       triggers.addAll(
           TriggerAttachment.collectForAllTriggersMatching(
-              new HashSet<>(Set.of(player)), endTurnDelegateTriggerMatch));
+              Set.of(player), endTurnDelegateTriggerMatch));
       allConditionsNeeded.addAll(
           AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(triggers), null));
     }

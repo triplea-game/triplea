@@ -243,7 +243,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final Map<ICondition, Boolean> allConditionsTestedSoFar) {
     final Set<ICondition> allConditionsNeeded =
         AbstractConditionsAttachment.getAllConditionsRecursive(
-            new HashSet<>(toFirePossible), allConditionsNeededSoFar);
+            Set.copyOf(toFirePossible), allConditionsNeededSoFar);
     return AbstractConditionsAttachment.testAllConditionsRecursive(
         allConditionsNeeded, allConditionsTestedSoFar, bridge);
   }
