@@ -1170,7 +1170,8 @@ class ProNonCombatMoveAi {
         }
 
         // Check if its worth defending
-        if ((result.getTuvSwing() - holdValue) > patd.getMinBattleResult().getTuvSwing()
+        if ((result.getTuvSwing() - holdValue)
+                > Math.max(0, patd.getMinBattleResult().getTuvSwing())
             || (!hasHigherStrategicValue
                 && (result.getTuvSwing() + extraUnitValue / 2)
                     >= patd.getMinBattleResult().getTuvSwing())) {
