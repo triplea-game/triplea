@@ -427,7 +427,7 @@ public final class ProMoveUtils {
             final var mergedUnits = new ArrayList<Unit>();
             mergedUnits.addAll(moves.get(j).getUnits());
             mergedUnits.addAll(moves.get(i).getUnits());
-            moves.set(i, new MoveDescription(mergedUnits, r));
+            moves.set(j, new MoveDescription(mergedUnits, r));
             moves.remove(i);
             i--;
             break;
