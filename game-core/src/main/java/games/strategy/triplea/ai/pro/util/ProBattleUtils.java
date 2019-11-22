@@ -19,8 +19,10 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -259,15 +261,22 @@ public final class ProBattleUtils {
             .getNeighbors(
                 t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
     nearbyTerritoriesForAllied.add(t);
-    final List<Unit> alliedUnits = new ArrayList<>();
+    final Set<Unit> alliedUnits = new HashSet<>();
     for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
       if (moveMap.get(nearbyTerritory) != null) {
-        alliedUnits.addAll(moveMap.get(nearbyTerritory).getAllDefenders());
+        alliedUnits.addAll(moveMap.get(nearbyTerritory).getMaxDefenders());
+      }
+    }
+    for (final Entry<Territory, ProTerritory> entry : moveMap.entrySet()) {
+      if (!nearbyTerritoriesForAllied.contains(entry.getKey())) {
+        alliedUnits.removeAll(entry.getValue().getUnits());
+        alliedUnits.removeAll(entry.getValue().getTempUnits());
       }
     }
 
     // Determine strength difference
-    final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
+    final double strengthDifference =
+        estimateStrengthDifference(t, enemyUnits, new ArrayList<>(alliedUnits));
     ProLogger.trace(
         t
             + ", current enemy land strengthDifference="
