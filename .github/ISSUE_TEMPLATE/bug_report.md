@@ -10,6 +10,9 @@ assignees: ''
 **Describe the bug**
 <!-- A clear and concise description of what the bug is. -->
 
+**Engine Version or SHA**
+<!-- Exact game engine version, or the latest SHA if building from source -->
+
 **To Reproduce**
 <!--
 Steps to reproduce the behavior:
