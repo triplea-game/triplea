@@ -9,6 +9,7 @@ import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -35,7 +36,8 @@ class ForgotPasswordClientTest extends WireMockTest {
   }
 
   private static ForgotPasswordResponse doServiceCall(final URI hostUri) {
-    return ForgotPasswordClient.newClient(hostUri).sendForgotPasswordRequest(REQUEST);
+    return ForgotPasswordClient.newClient(hostUri)
+        .sendForgotPasswordRequest(SystemIdHeader.headers(), REQUEST);
   }
 
   @Test

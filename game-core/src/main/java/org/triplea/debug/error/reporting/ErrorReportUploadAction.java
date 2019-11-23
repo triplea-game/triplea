@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
@@ -21,7 +22,8 @@ class ErrorReportUploadAction implements Predicate<ErrorReportRequest> {
   @Override
   public boolean test(final ErrorReportRequest errorReport) {
     try {
-      final ErrorReportResponse response = serviceClient.uploadErrorReport(errorReport);
+      final ErrorReportResponse response =
+          serviceClient.uploadErrorReport(SystemIdHeader.headers(), errorReport);
       successConfirmation.accept(URI.create(response.getGithubIssueLink()));
       return true;
     } catch (final FeignException e) {

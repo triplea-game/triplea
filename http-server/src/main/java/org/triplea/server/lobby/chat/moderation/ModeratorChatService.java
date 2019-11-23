@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
@@ -52,14 +53,14 @@ class ModeratorChatService {
   private static String playerBannedMessage(final BanPlayerRequest banPlayerRequest) {
     return String.format(
         "You have been banned for %s for violating lobby rules",
-        banPlayerRequest.formattedBanDuration());
+        BanDurationFormatter.formatBanMinutes(banPlayerRequest.getBanMinutes()));
   }
 
   private static String playerBannedNotification(
       final PlayerName bannedPlayerName, final BanPlayerRequest banPlayerRequest) {
     return String.format(
         "%s violated lobby rules and was banned for %s",
-        bannedPlayerName, banPlayerRequest.formattedBanDuration());
+        bannedPlayerName, BanDurationFormatter.formatBanMinutes(banPlayerRequest.getBanMinutes()));
   }
 
   /**
