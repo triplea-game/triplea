@@ -826,109 +826,111 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (unitsLeft == 0) {
         continue;
       }
-      final Map<Territory, Collection<Unit>> toScramble =
-          getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
-      if (toScramble == null) {
-        continue;
-      }
-      // verify max allowed
-      if (!scramblers.keySet().containsAll(toScramble.keySet())) {
-        throw new IllegalStateException("Trying to scramble from illegal territory");
-      }
-      for (final Territory t : scramblers.keySet()) {
-        if (toScramble.get(t) == null) {
+      {
+        final Map<Territory, Collection<Unit>> toScramble =
+            getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
+        if (toScramble == null) {
           continue;
         }
-        if (toScramble.get(t).size() > getMaxScrambleCount(scramblers.get(t).getFirst())) {
-          throw new IllegalStateException(
-              "Trying to scramble "
-                  + toScramble.get(t).size()
-                  + " out of "
-                  + t.getName()
-                  + ", but max allowed is "
-                  + scramblers.get(t).getFirst());
+        // verify max allowed
+        if (!scramblers.keySet().containsAll(toScramble.keySet())) {
+          throw new IllegalStateException("Trying to scramble from illegal territory");
         }
-      }
-
-      // Validate players have enough fuel to move there and back
-      final Map<PlayerId, ResourceCollection> playerFuelCost = new HashMap<>();
-      for (final Entry<Territory, Collection<Unit>> entry : toScramble.entrySet()) {
-        final Map<PlayerId, ResourceCollection> map =
-            Route.getScrambleFuelCostCharge(entry.getValue(), entry.getKey(), to, data);
-        for (final var playerAndCostEntry : map.entrySet()) {
-          if (playerFuelCost.containsKey(playerAndCostEntry.getKey())) {
-            playerFuelCost.get(playerAndCostEntry.getKey()).add(playerAndCostEntry.getValue());
-          } else {
-            playerFuelCost.put(playerAndCostEntry.getKey(), playerAndCostEntry.getValue());
+        for (final Territory t : scramblers.keySet()) {
+          if (toScramble.get(t) == null) {
+            continue;
           }
-        }
-      }
-      for (final Entry<PlayerId, ResourceCollection> playerAndCost : playerFuelCost.entrySet()) {
-        if (!playerAndCost
-            .getKey()
-            .getResources()
-            .has(playerAndCost.getValue().getResourcesCopy())) {
-          throw new IllegalStateException(
-              "Not enough fuel to scramble, player: "
-                  + playerAndCost.getKey()
-                  + ", needs: "
-                  + playerAndCost.getValue());
-        }
-      }
-
-      final CompositeChange change = new CompositeChange();
-      for (final Territory t : toScramble.keySet()) {
-        final Collection<Unit> scrambling = toScramble.get(t);
-        if (scrambling == null || scrambling.isEmpty()) {
-          continue;
-        }
-        int numberScrambled = scrambling.size();
-        final Collection<Unit> airbases = t.getUnitCollection().getMatches(airbasesCanScramble);
-        final int maxCanScramble = getMaxScrambleCount(airbases);
-        if (maxCanScramble != Integer.MAX_VALUE) {
-          // TODO: maybe sort from biggest to smallest first?
-          for (final Unit airbase : airbases) {
-            final int allowedScramble = ((TripleAUnit) airbase).getMaxScrambleCount();
-            if (allowedScramble > 0) {
-              final int newAllowed;
-              if (allowedScramble >= numberScrambled) {
-                newAllowed = allowedScramble - numberScrambled;
-                numberScrambled = 0;
-              } else {
-                newAllowed = 0;
-                numberScrambled -= allowedScramble;
-              }
-              change.add(
-                  ChangeFactory.unitPropertyChange(
-                      airbase, newAllowed, TripleAUnit.MAX_SCRAMBLE_COUNT));
-            }
-            if (numberScrambled <= 0) {
-              break;
-            }
-          }
-        }
-        for (final Unit u : scrambling) {
-          change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
-          change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
-          change.add(Route.getFuelChanges(Set.of(u), new Route(t, to), u.getOwner(), data));
-        }
-        // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
-        change.add(ChangeFactory.moveUnits(t, to, scrambling));
-        bridge
-            .getHistoryWriter()
-            .startEvent(
-                defender.getName()
-                    + " scrambles "
-                    + scrambling.size()
-                    + " units out of "
+          if (toScramble.get(t).size() > getMaxScrambleCount(scramblers.get(t).getFirst())) {
+            throw new IllegalStateException(
+                "Trying to scramble "
+                    + toScramble.get(t).size()
+                    + " out of "
                     + t.getName()
-                    + " to defend against the attack in "
-                    + to.getName(),
-                scrambling);
-        scrambledHere = true;
-      }
-      if (!change.isEmpty()) {
-        bridge.addChange(change);
+                    + ", but max allowed is "
+                    + scramblers.get(t).getFirst());
+          }
+        }
+
+        // Validate players have enough fuel to move there and back
+        final Map<PlayerId, ResourceCollection> playerFuelCost = new HashMap<>();
+        for (final Entry<Territory, Collection<Unit>> entry : toScramble.entrySet()) {
+          final Map<PlayerId, ResourceCollection> map =
+              Route.getScrambleFuelCostCharge(entry.getValue(), entry.getKey(), to, data);
+          for (final var playerAndCostEntry : map.entrySet()) {
+            if (playerFuelCost.containsKey(playerAndCostEntry.getKey())) {
+              playerFuelCost.get(playerAndCostEntry.getKey()).add(playerAndCostEntry.getValue());
+            } else {
+              playerFuelCost.put(playerAndCostEntry.getKey(), playerAndCostEntry.getValue());
+            }
+          }
+        }
+        for (final Entry<PlayerId, ResourceCollection> playerAndCost : playerFuelCost.entrySet()) {
+          if (!playerAndCost
+              .getKey()
+              .getResources()
+              .has(playerAndCost.getValue().getResourcesCopy())) {
+            throw new IllegalStateException(
+                "Not enough fuel to scramble, player: "
+                    + playerAndCost.getKey()
+                    + ", needs: "
+                    + playerAndCost.getValue());
+          }
+        }
+
+        final CompositeChange change = new CompositeChange();
+        for (final Territory t : toScramble.keySet()) {
+          final Collection<Unit> scrambling = toScramble.get(t);
+          if (scrambling == null || scrambling.isEmpty()) {
+            continue;
+          }
+          int numberScrambled = scrambling.size();
+          final Collection<Unit> airbases = t.getUnitCollection().getMatches(airbasesCanScramble);
+          final int maxCanScramble = getMaxScrambleCount(airbases);
+          if (maxCanScramble != Integer.MAX_VALUE) {
+            // TODO: maybe sort from biggest to smallest first?
+            for (final Unit airbase : airbases) {
+              final int allowedScramble = ((TripleAUnit) airbase).getMaxScrambleCount();
+              if (allowedScramble > 0) {
+                final int newAllowed;
+                if (allowedScramble >= numberScrambled) {
+                  newAllowed = allowedScramble - numberScrambled;
+                  numberScrambled = 0;
+                } else {
+                  newAllowed = 0;
+                  numberScrambled -= allowedScramble;
+                }
+                change.add(
+                    ChangeFactory.unitPropertyChange(
+                        airbase, newAllowed, TripleAUnit.MAX_SCRAMBLE_COUNT));
+              }
+              if (numberScrambled <= 0) {
+                break;
+              }
+            }
+          }
+          for (final Unit u : scrambling) {
+            change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+            change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
+            change.add(Route.getFuelChanges(Set.of(u), new Route(t, to), u.getOwner(), data));
+          }
+          // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
+          change.add(ChangeFactory.moveUnits(t, to, scrambling));
+          bridge
+              .getHistoryWriter()
+              .startEvent(
+                  defender.getName()
+                      + " scrambles "
+                      + scrambling.size()
+                      + " units out of "
+                      + t.getName()
+                      + " to defend against the attack in "
+                      + to.getName(),
+                  scrambling);
+          scrambledHere = true;
+        }
+        if (!change.isEmpty()) {
+          bridge.addChange(change);
+        }
       }
       if (!scrambledHere) {
         continue;
