@@ -30,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1429,8 +1428,8 @@ class BattleCalculatorPanel extends JPanel {
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
-      attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data, false, false));
-      Collections.reverse(attackers);
+      attackers.sort(
+          new UnitBattleComparator(false, costs, territoryEffects, data, false, false).reversed());
       final int attackPower =
           DiceRoll.getTotalPower(
               DiceRoll.getUnitPowerAndRollsForNormalBattles(

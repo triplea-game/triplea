@@ -693,13 +693,13 @@ class EditPanel extends ActionPanel {
             sortUnitsToRemove(units);
             units.sort(
                 new UnitBattleComparator(
-                    false,
-                    TuvUtils.getCostsForTuv(player, getData()),
-                    null,
-                    getData(),
-                    true,
-                    false));
-            Collections.reverse(units);
+                        false,
+                        TuvUtils.getCostsForTuv(player, getData()),
+                        null,
+                        getData(),
+                        true,
+                        false)
+                    .reversed());
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
             for (final Unit u : units) {
@@ -772,13 +772,13 @@ class EditPanel extends ActionPanel {
             sortUnitsToRemove(units);
             units.sort(
                 new UnitBattleComparator(
-                    false,
-                    TuvUtils.getCostsForTuv(player, getData()),
-                    null,
-                    getData(),
-                    true,
-                    false));
-            Collections.reverse(units);
+                        false,
+                        TuvUtils.getCostsForTuv(player, getData()),
+                        null,
+                        getData(),
+                        true,
+                        false)
+                    .reversed());
             // unit mapped to <max, min, current>
             final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<>();
             for (final Unit u : units) {

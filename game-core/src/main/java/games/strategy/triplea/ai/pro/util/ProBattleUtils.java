@@ -57,8 +57,13 @@ public final class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<>(attackingUnits);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-            false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false, false));
-    Collections.reverse(sortedUnitsList);
+                false,
+                ProData.unitValueMap,
+                TerritoryEffectHelper.getEffects(t),
+                data,
+                false,
+                false)
+            .reversed());
     final int attackPower =
         DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(
