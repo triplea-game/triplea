@@ -1,15 +1,19 @@
 package org.triplea.http.client.error.report;
 
 import feign.FeignException;
+import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
 import java.net.URI;
+import java.util.Map;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpConstants;
 
 /** Http client to upload error reports to the http lobby server. */
 @SuppressWarnings("InterfaceNeverImplemented")
 @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
+// TODO: Project#12 Hide the raw feign client, make consistent with other http clients that
+//  have a wrapper to hide the headers.
 public interface ErrorReportClient {
 
   String ERROR_REPORT_PATH = "/error-report";
@@ -22,7 +26,8 @@ public interface ErrorReportClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   @RequestLine("POST " + ERROR_REPORT_PATH)
-  ErrorReportResponse uploadErrorReport(ErrorReportRequest request);
+  ErrorReportResponse uploadErrorReport(
+      @HeaderMap Map<String, Object> headers, ErrorReportRequest request);
 
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
   static ErrorReportClient newClient(final URI uri) {

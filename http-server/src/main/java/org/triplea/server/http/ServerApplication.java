@@ -30,6 +30,7 @@ import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
 import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.access.BannedPlayerFilter;
 import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
@@ -112,6 +113,8 @@ public class ServerApplication extends Application<AppConfig> {
 
     final MetricRegistry metrics = new MetricRegistry();
     final Jdbi jdbi = createJdbi(configuration, environment);
+
+    environment.jersey().register(BannedPlayerFilter.newBannedPlayerFilter(jdbi));
 
     enableAuthentication(environment, metrics, jdbi);
 

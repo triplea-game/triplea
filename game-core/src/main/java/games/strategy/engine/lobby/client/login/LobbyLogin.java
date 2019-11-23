@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.HttpInteractionException;
+import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.HttpLobbyClient;
@@ -244,6 +245,7 @@ public class LobbyLogin {
                   () ->
                       ForgotPasswordClient.newClient(serverProperties.getUri())
                           .sendForgotPasswordRequest(
+                              SystemIdHeader.headers(),
                               ForgotPasswordRequest.builder()
                                   .username(panel.getUserName())
                                   .email(panel.getEmail())
