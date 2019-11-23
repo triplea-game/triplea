@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,8 +56,13 @@ public final class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<>(attackingUnits);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-            false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false, false));
-    Collections.reverse(sortedUnitsList);
+                false,
+                ProData.unitValueMap,
+                TerritoryEffectHelper.getEffects(t),
+                data,
+                false,
+                false)
+            .reversed());
     final int attackPower =
         DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -137,13 +141,13 @@ public final class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-            !attacking,
-            ProData.unitValueMap,
-            TerritoryEffectHelper.getEffects(t),
-            data,
-            false,
-            false));
-    Collections.reverse(sortedUnitsList);
+                !attacking,
+                ProData.unitValueMap,
+                TerritoryEffectHelper.getEffects(t),
+                data,
+                false,
+                false)
+            .reversed());
     final int myPower =
         DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(

@@ -105,7 +105,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -1485,13 +1484,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
             final List<Unit> units = new ArrayList<>(entry.getValue());
             units.sort(
                 new UnitBattleComparator(
-                    false,
-                    TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
-                    TerritoryEffectHelper.getEffects(entry.getKey()),
-                    data,
-                    true,
-                    false));
-            Collections.reverse(units);
+                        false,
+                        TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+                        TerritoryEffectHelper.getEffects(entry.getKey()),
+                        data,
+                        true,
+                        false)
+                    .reversed());
             possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
           }
           mapPanel.centerOn(
