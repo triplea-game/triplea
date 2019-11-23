@@ -122,7 +122,7 @@ jobs:
       install:
         - sudo apt update
         - sudo apt -y install sshpass
-        - sudo pip install ansible
+        - pip install ansible
       language: python
       python: "3.6"
       script:
