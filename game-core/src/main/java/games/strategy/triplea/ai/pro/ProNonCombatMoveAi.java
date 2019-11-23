@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -210,18 +211,10 @@ class ProNonCombatMoveAi {
     this.player = player;
 
     // Calculate move routes and perform moves
-    final List<Collection<Unit>> moveUnits = new ArrayList<>();
-    final List<Route> moveRoutes = new ArrayList<>();
-    ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, moveMap, false);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
+    ProMoveUtils.doMove(ProMoveUtils.calculateMoveRoutes(player, moveMap, false), moveDel);
 
     // Calculate amphib move routes and perform moves
-    moveUnits.clear();
-    moveRoutes.clear();
-    final var transportsToLoad = new ArrayList<Map<Unit, Unit>>();
-    ProMoveUtils.calculateAmphibRoutes(
-        player, moveUnits, moveRoutes, transportsToLoad, moveMap, false);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
+    ProMoveUtils.doMove(ProMoveUtils.calculateAmphibRoutes(player, moveMap, false), moveDel);
   }
 
   private void findUnitsThatCantMove(
@@ -1710,8 +1703,7 @@ class ProNonCombatMoveAi {
       }
 
       // Get all transport final territories
-      ProMoveUtils.calculateAmphibRoutes(
-          player, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), moveMap, false);
+      ProMoveUtils.calculateAmphibRoutes(player, moveMap, false);
       for (final ProTerritory t : moveMap.values()) {
         for (final Map.Entry<Unit, Territory> entry : t.getTransportTerritoryMap().entrySet()) {
           final ProTerritory territory = moveMap.get(entry.getValue());
@@ -2524,7 +2516,7 @@ class ProNonCombatMoveAi {
                       player);
           final MoveValidationResult mvr =
               MoveValidator.validateMove(
-                  List.of(u), r, player, Map.of(), Map.of(), true, null, data);
+                  new MoveDescription(List.of(u), r), player, true, null, data);
           if (!mvr.isMoveValid()) {
             continue;
           }

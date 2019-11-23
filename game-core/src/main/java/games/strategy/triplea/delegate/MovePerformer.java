@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
@@ -69,16 +70,10 @@ public class MovePerformer implements Serializable {
     return getRemotePlayer(player);
   }
 
-  void moveUnits(
-      final Collection<Unit> units,
-      final Route route,
-      final PlayerId id,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents,
-      final UndoableMove currentMove) {
+  void moveUnits(final MoveDescription move, final PlayerId id, final UndoableMove currentMove) {
     this.currentMove = currentMove;
-    this.newDependents = newDependents;
-    populateStack(units, route, id, unitsToTransports);
+    this.newDependents = move.getDependentUnits();
+    populateStack(move.getUnits(), move.getRoute(), id, move.getUnitsToTransports());
     executionStack.execute(bridge);
   }
 

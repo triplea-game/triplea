@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -8,13 +9,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.triplea.util.TransportUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 /** An abstraction of MoveDelegate in order to allow other delegates to extend this. */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
@@ -113,53 +112,24 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
         : units.iterator().next().getOwner();
   }
 
-  @Override
   public String move(final Collection<Unit> units, final Route route) {
-    return move(units, route, Map.of());
-  }
-
-  public String move(
-      final Collection<Unit> units, final Route route, final Collection<Unit> transports) {
-    final Map<Unit, Unit> unitsToTransports =
-        TransportUtils.mapTransports(route, units, transports);
-    if (unitsToTransports.size() != units.size()) {
-      return "Error: Only mapped "
-          + unitsToTransports.size()
-          + " of "
-          + units.size()
-          + " units to transports.";
-    }
-    return move(units, route, unitsToTransports);
+    return performMove(new MoveDescription(units, route));
   }
 
   @Override
-  public String move(
-      final Collection<Unit> units, final Route route, final Map<Unit, Unit> unitsToTransports) {
-    return move(units, route, unitsToTransports, Map.of());
-  }
-
-  @Override
-  public abstract String move(
-      Collection<Unit> units,
-      Route route,
-      Map<Unit, Unit> unitsToTransports,
-      Map<Unit, Collection<Unit>> newDependents);
+  public abstract String performMove(MoveDescription move);
 
   public static MoveValidationResult validateMove(
       final MoveType moveType,
-      final Collection<Unit> units,
-      final Route route,
+      final MoveDescription move,
       final PlayerId player,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves,
       final GameData data) {
     if (moveType == MoveType.SPECIAL) {
-      return SpecialMoveDelegate.validateMove(units, route, player, data);
+      return SpecialMoveDelegate.validateMove(move.getUnits(), move.getRoute(), player, data);
     }
-    return MoveValidator.validateMove(
-        units, route, player, unitsToTransports, newDependents, isNonCombat, undoableMoves, data);
+    return MoveValidator.validateMove(move, player, isNonCombat, undoableMoves, data);
   }
 
   @Override

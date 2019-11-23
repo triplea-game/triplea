@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
@@ -70,14 +71,15 @@ public class MoveValidator {
 
   /** Validates the specified move. */
   public static MoveValidationResult validateMove(
-      final Collection<Unit> units,
-      final Route route,
+      final MoveDescription move,
       final PlayerId player,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves,
       final GameData data) {
+    final Collection<Unit> units = move.getUnits();
+    final Route route = move.getRoute();
+    final Map<Unit, Unit> unitsToTransports = move.getUnitsToTransports();
+    final Map<Unit, Collection<Unit>> newDependents = move.getDependentUnits();
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
