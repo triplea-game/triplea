@@ -14,6 +14,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +87,9 @@ public class TerritoryNameDrawable extends AbstractDrawable {
 
     graphics.setFont(MapImage.getPropertyMapFont());
     graphics.setColor(MapImage.getPropertyTerritoryNameAndPuAndCommentColor());
+    graphics.setRenderingHint(
+        RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
     final FontMetrics fm = graphics.getFontMetrics();
 
     // if we specify a placement point, use it otherwise try to center it
