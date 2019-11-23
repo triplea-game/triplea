@@ -535,6 +535,16 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         }
 
         private void selectEndPoint(final Territory territory) {
+          final int option =
+              JOptionPane.showConfirmDialog(
+                  JOptionPane.getFrameForComponent(MovePanel.this),
+                  "Are you sure?",
+                  "Confirm move Political Relationships",
+                  JOptionPane.OK_CANCEL_OPTION,
+                  JOptionPane.PLAIN_MESSAGE);
+          if (option != JOptionPane.OK_OPTION) {
+            return;
+          }
           final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
           final List<Unit> units = new ArrayList<>(unitsThatCanMoveOnRoute);
           setSelectedEndpointTerritory(territory);
