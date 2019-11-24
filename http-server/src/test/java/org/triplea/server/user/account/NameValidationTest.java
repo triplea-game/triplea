@@ -50,7 +50,7 @@ class NameValidationTest {
   @Test
   void containsBadWord() {
     when(syntaxValidation.apply(NAME)).thenReturn(Optional.empty());
-    when(badWordsDao.containsBadWord(NAME)).thenReturn(1);
+    when(badWordsDao.containsBadWord(NAME)).thenReturn(true);
 
     final Optional<String> result = nameValidation.apply(NAME);
 
@@ -60,7 +60,7 @@ class NameValidationTest {
   @Test
   void userAlreadyExists() {
     when(syntaxValidation.apply(NAME)).thenReturn(Optional.empty());
-    when(badWordsDao.containsBadWord(NAME)).thenReturn(0);
+    when(badWordsDao.containsBadWord(NAME)).thenReturn(false);
     when(userJdbiDao.lookupUserIdByName(NAME)).thenReturn(Optional.of(1));
 
     final Optional<String> result = nameValidation.apply(NAME);
@@ -71,7 +71,7 @@ class NameValidationTest {
   @Test
   void valid() {
     when(syntaxValidation.apply(NAME)).thenReturn(Optional.empty());
-    when(badWordsDao.containsBadWord(NAME)).thenReturn(0);
+    when(badWordsDao.containsBadWord(NAME)).thenReturn(false);
     when(userJdbiDao.lookupUserIdByName(NAME)).thenReturn(Optional.empty());
 
     final Optional<String> result = nameValidation.apply(NAME);
