@@ -4,10 +4,15 @@
     name: nginx
     state: present
 
-- name: deploy dhparam.pem
+- name: generate dhparam.pem
   become: true
-  copy:
-    src: dhparam.pem
+  shell:
+    cmd: openssl dhparam -out /etc/nginx/dhparam.pem 4096
+    creates: /etc/nginx/dhparam.pem
+
+- name: set permissions of dhparam.pem
+  become: true
+  file:
     dest: /etc/nginx/dhparam.pem
     mode: 600
 
