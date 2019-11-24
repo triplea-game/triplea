@@ -745,8 +745,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       final IBattle battle = battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
       // do not forget we may already have the territory in the list, so we need to add to the
-      // collection, not overwrite
-      // it.
+      // collection, not overwrite it.
       if (battle != null && battle.isAmphibious() && battle instanceof DependentBattle) {
         final Collection<Territory> amphibFromTerrs =
             ((DependentBattle) battle).getAmphibiousAttackTerritories();
@@ -819,23 +818,22 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // Remove any units that were already scrambled.
       int unitsLeft = 0;
       final var scramblers = scramblersByTerritoryPlayer.get(terrPlayer);
-      for (final Territory from : scramblers.keySet()) {
-        scramblers.get(from).getSecond().retainAll(from.getUnitCollection());
-        unitsLeft += scramblers.get(from).getSecond().size();
+      for (final Territory from : scramblers.entrySet()) {
+        final Collection<Unit> unitsToScramble = scramblers.get(from).getSecond();
+        unitsToScramble.retainAll(from.getUnitCollection());
+        unitsLeft += unitsToScramble.getSecond().size();
       }
-      if (unitsLeft == 0) {
-        continue;
-      }
-      {
+
+      if (unitsLeft > 0) {
         final Map<Territory, Collection<Unit>> toScramble =
             getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
           continue;
         }
-        // verify max allowed
         if (!scramblers.keySet().containsAll(toScramble.keySet())) {
           throw new IllegalStateException("Trying to scramble from illegal territory");
         }
+        // verify max allowed
         for (final Territory t : scramblers.keySet()) {
           if (toScramble.get(t) == null) {
             continue;
@@ -945,8 +943,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           attackingUnits.removeAll(bombing.getAttackingUnits());
         }
         // no need to create a "bombing" battle or air battle, because those are set up
-        // automatically whenever the map
-        // allows scrambling into an air battle / air raid
+        // automatically whenever the map allows scrambling into an air battle / air raid
         if (attackingUnits.isEmpty()) {
           continue;
         }
@@ -955,14 +952,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .startEvent(
                 defender.getName() + " scrambles to create a battle in territory " + to.getName());
         // TODO: the attacking sea units do not remember where they came from, so they cannot
-        // retreat anywhere. Need to
-        // fix.
+        // retreat anywhere. Need to fix.
         battleTracker.addBattle(new RouteScripted(to), attackingUnits, player, bridge, null, null);
         battle = battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
           // this is an ugly mess of hacks, but will have to stay here till all transport related
-          // code is gutted and
-          // refactored.
+          // code is gutted and refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
           final Collection<Territory> neighborsLand =
               data.getMap().getNeighbors(to, Matches.territoryIsLand());
@@ -980,8 +975,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             for (final Unit transport :
                 CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
               // however, the map we add to the newly created battle, cannot hold any units that are
-              // NOT in this
-              // territory.
+              // NOT in this territory.
               // BUT it must still hold all transports
               if (!dependenciesForMfb.containsKey(transport)) {
                 dependenciesForMfb.put(transport, new ArrayList<>());
@@ -1022,8 +1016,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           if (attackingUnits.stream().anyMatch(Matches.unitIsAir().negate())) {
             // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope
-            // the user will
-            // choose the correct place to retreat to! (TODO: Fix this)
+            // the user will choose the correct place to retreat to! (TODO: Fix this)
             final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
             final Collection<Territory> neighbors =
                 data.getMap()
