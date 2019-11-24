@@ -119,9 +119,11 @@ jobs:
           branch: master
     - stage: deploy prerelease
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      addons:
+        apt:
+          packages:
+            - sshpass
       install:
-        - sudo apt update
-        - sudo apt -y install sshpass
         - pip install ansible
       language: python
       python: "3.6"
