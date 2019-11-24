@@ -53,7 +53,7 @@ class BadWordsDaoTest extends DaoTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"zz", "", "some word not containing any bad words"})
+  @ValueSource(strings = {"zz", "", "some string not containing any bad words"})
   void notBadWordContains(final String notInBadWords) {
     assertThat(badWordsDao.containsBadWord(notInBadWords), is(false));
   }
