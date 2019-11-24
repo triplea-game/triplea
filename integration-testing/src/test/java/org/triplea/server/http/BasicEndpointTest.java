@@ -25,7 +25,7 @@ public abstract class BasicEndpointTest<T> extends DropwizardTest {
   /** Use this to verify an endpoint that returns data. */
   protected <X> X verifyEndpointReturningObject(final Function<T, X> methodRunner) {
     final X result = methodRunner.apply(clientBuilder.apply(localhost));
-    assertThat(methodRunner.apply(clientBuilder.apply(localhost)), notNullValue());
+    assertThat(result, notNullValue());
     return result;
   }
 
