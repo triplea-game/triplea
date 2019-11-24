@@ -39,6 +39,6 @@ class CreateAccountControllerIntegrationTest extends BasicEndpointTest<LobbyLogi
         verifyEndpointReturningObject(
             client -> client.createAccount(USERNAME_1, EMAIL_1, PASSWORD_1));
 
-    assertThat(result, not(is(CreateAccountResponse.SUCCESS_RESPONSE)));
+    assertThat(result, is(not(CreateAccountResponse.SUCCESS_RESPONSE)));
   }
 }
