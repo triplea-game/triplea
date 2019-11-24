@@ -16,7 +16,7 @@ server {
     access_log            /var/log/nginx/java_server.access.log;
 
     ssl_prefer_server_ciphers on; 
-    ssl_dhparam /etc/nginx/dhparam.pem; # openssl dhparam -out /etc/nginx/dhparam.pem 4096
+    ssl_dhparam /etc/nginx/dhparam.pem;
     ssl_ecdh_curve secp384r1; # Requires nginx >= 1.1.0
     ssl_session_timeout  10m;
     ssl_session_cache shared:SSL:10m;

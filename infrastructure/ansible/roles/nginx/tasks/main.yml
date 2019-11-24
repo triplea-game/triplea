@@ -4,6 +4,13 @@
     name: nginx
     state: present
 
+- name: deploy dhparam.pem
+  become: true
+  copy:
+    src: dhparam.pem
+    dest: /etc/nginx/dhparam.pem
+    mode: 600
+
 - name: deploy nginx sites_enabled configuation
   become: true
   template:
