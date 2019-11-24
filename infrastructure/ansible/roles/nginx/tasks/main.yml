@@ -25,7 +25,9 @@
     proto: tcp
   with_items: "{{ nginx_allowed_ports }}"
 
-- name:  relaunch nginx
+- name: relaunch nginx
   become: true
-  shell: systemctl restart nginx
+  systemd:
+    name: nginx
+    state: restarted
 
