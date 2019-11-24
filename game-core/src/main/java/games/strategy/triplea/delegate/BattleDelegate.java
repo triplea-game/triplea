@@ -815,7 +815,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       boolean scrambledHere = false;
 
-      final var scramblers = scramblersByTerritoryPlayer.get(terrPlayer);
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
+          scramblersByTerritoryPlayer.get(terrPlayer);
       // Remove any units that were already scrambled to other territories.
       scramblers
           .entrySet()
