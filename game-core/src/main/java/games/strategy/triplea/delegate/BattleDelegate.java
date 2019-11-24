@@ -815,13 +815,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       boolean scrambledHere = false;
 
-      // Remove any units that were already scrambled.
+      // Remove any units that were already scrambled to other territories.
       int unitsLeft = 0;
       final var scramblers = scramblersByTerritoryPlayer.get(terrPlayer);
-      for (final Territory from : scramblers.entrySet()) {
+      for (final Territory from : scramblers.keySet()) {
         final Collection<Unit> unitsToScramble = scramblers.get(from).getSecond();
         unitsToScramble.retainAll(from.getUnitCollection());
-        unitsLeft += unitsToScramble.getSecond().size();
+        unitsLeft += unitsToScramble.size();
       }
 
       if (unitsLeft > 0) {
