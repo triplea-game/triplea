@@ -40,7 +40,8 @@ public class BannedPlayerFilter implements ContainerRequestFilter {
   public void filter(final ContainerRequestContext requestContext) {
     if (Strings.emptyToNull(request.getHeader(SystemIdHeader.SYSTEM_ID_HEADER)) == null) {
       // missing system id header, abort the request
-      requestContext.abortWith(Response.status(Status.FORBIDDEN).entity("Invalid request").build());
+      requestContext.abortWith(
+          Response.status(Status.UNAUTHORIZED).entity("Invalid request").build());
 
     } else {
       // check if user is banned, if so abort the request
@@ -50,7 +51,7 @@ public class BannedPlayerFilter implements ContainerRequestFilter {
           .ifPresent(
               banMessage ->
                   requestContext.abortWith(
-                      Response.status(Status.FORBIDDEN).entity(banMessage).build()));
+                      Response.status(Status.UNAUTHORIZED).entity(banMessage).build()));
     }
   }
 

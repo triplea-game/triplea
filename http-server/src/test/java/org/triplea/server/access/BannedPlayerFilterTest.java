@@ -103,7 +103,7 @@ class BannedPlayerFilterTest {
       verify(containerRequestContext).abortWith(responseCaptor.capture());
 
       final Response response = responseCaptor.getValue();
-      assertThat(response.getStatus(), is(Status.FORBIDDEN.getStatusCode()));
+      assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
       assertThat((String) response.getEntity(), StringContains.containsString("5 minutes"));
       assertThat((String) response.getEntity(), StringContains.containsString(BAN_ID));
     }
@@ -126,7 +126,7 @@ class BannedPlayerFilterTest {
       verify(containerRequestContext).abortWith(responseCaptor.capture());
 
       final Response response = responseCaptor.getValue();
-      assertThat(response.getStatus(), is(Status.FORBIDDEN.getStatusCode()));
+      assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
     }
   }
 }
