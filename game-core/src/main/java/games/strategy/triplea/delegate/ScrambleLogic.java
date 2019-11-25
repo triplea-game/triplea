@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
@@ -28,13 +27,17 @@ public class ScrambleLogic {
   private final PlayerId player;
   private final Set<Territory> territoriesWithBattles;
   private final Predicate<Unit> airbasesCanScramble;
-  private @Nullable BattleTracker battleTracker;
+  private BattleTracker battleTracker;
 
   public ScrambleLogic(
-      final GameData data, final PlayerId player, final Set<Territory> territoriesWithBattles) {
+      final GameData data,
+      final PlayerId player,
+      final Set<Territory> territoriesWithBattles,
+      final BattleTracker battleTracker) {
     this.data = data;
     this.player = player;
     this.territoriesWithBattles = territoriesWithBattles;
+    this.battleTracker = battleTracker;
     this.airbasesCanScramble =
         Matches.unitIsEnemyOf(data, player)
             .and(Matches.unitIsAirBase())
@@ -42,8 +45,8 @@ public class ScrambleLogic {
             .and(Matches.unitIsBeingTransported().negate());
   }
 
-  public void setBattleTracker(final BattleTracker battleTracker) {
-    this.battleTracker = battleTracker;
+  public ScrambleLogic(final GameData data, final PlayerId player, final Territory territory) {
+    this(data, player, Set.of(territory), new BattleTracker());
   }
 
   public Predicate<Unit> getAirbasesCanScramble() {

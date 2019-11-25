@@ -686,8 +686,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
 
     // now scramble them
-    final var scramble = new ScrambleLogic(getData(), player, territoriesWithBattles);
-    scramble.setBattleTracker(battleTracker);
+    final var scramble =
+        new ScrambleLogic(getData(), player, territoriesWithBattles, battleTracker);
     final Map<Territory, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>
         scramblersByTerritoryPlayer = scramble.findPossibleScramblers();
     for (final Territory to : scramblersByTerritoryPlayer.keySet()) {
