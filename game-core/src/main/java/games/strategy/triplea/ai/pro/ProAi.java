@@ -41,9 +41,9 @@ import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import org.triplea.java.collections.CollectionUtils;
@@ -311,8 +311,8 @@ public class ProAi extends AbstractAi {
     // If attacker with more unit strength or strafing and isn't land battle with only air left then
     // don't retreat
     final boolean isAttacker = player.equals(battle.getAttacker());
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final List<Unit> attackers = battle.getAttackingUnits();
+    final List<Unit> defenders = battle.getDefendingUnits();
     final double strengthDifference =
         ProBattleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
     final boolean isStrafing = isAttacker && storedStrafingTerritories.contains(battleTerritory);
@@ -395,8 +395,8 @@ public class ProAi extends AbstractAi {
       boolean needToCheck = true;
       final boolean isAttacker = player.equals(battle.getAttacker());
       if (!isAttacker) {
-        final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-        final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+        final List<Unit> attackers = battle.getAttackingUnits();
+        final List<Unit> defenders = List.copyOf(battle.getDefendingUnits());
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference =
             ProBattleUtils.estimateStrengthDifference(battleSite, attackers, defenders);
@@ -455,8 +455,8 @@ public class ProAi extends AbstractAi {
     if (battle == null) {
       return null;
     }
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final List<Unit> attackers = battle.getAttackingUnits();
+    final List<Unit> defenders = battle.getDefendingUnits();
     ProLogger.info(
         player.getName()
             + " checking scramble to "
@@ -486,8 +486,8 @@ public class ProAi extends AbstractAi {
     if (battle == null) {
       return false;
     }
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final List<Unit> attackers = battle.getAttackingUnits();
+    final List<Unit> defenders = battle.getDefendingUnits();
     ProLogger.info(
         player.getName()
             + " checking sub attack in "
@@ -500,7 +500,7 @@ public class ProAi extends AbstractAi {
 
     // Calculate battle results
     final ProBattleResult result =
-        calc.calculateBattleResults(unitTerritory, attackers, defenders, new HashSet<>());
+        calc.calculateBattleResults(unitTerritory, attackers, defenders, Set.of());
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTuvSwing());
     return result.getTuvSwing() > 0;
   }

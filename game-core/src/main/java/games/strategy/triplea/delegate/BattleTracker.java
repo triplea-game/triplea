@@ -190,7 +190,7 @@ public class BattleTracker implements Serializable {
   }
 
   void clearEmptyAirBattleAttacks(final IDelegateBridge bridge) {
-    for (final IBattle battle : new ArrayList<>(pendingBattles)) {
+    for (final IBattle battle : pendingBattles) {
       if (AirBattle.class.isAssignableFrom(battle.getClass())) {
         final AirBattle airBattle = (AirBattle) battle;
         airBattle.updateDefendingUnits();
@@ -206,7 +206,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> units,
       final PlayerId player,
       final IDelegateBridge bridge) {
-    for (final IBattle battle : new ArrayList<>(pendingBattles)) {
+    for (final IBattle battle : pendingBattles) {
       if (!battle.getTerritory().equals(route.getStart())) {
         battle.removeAttack(route, units);
         if (battle.isEmpty()) {
@@ -1162,9 +1162,8 @@ public class BattleTracker implements Serializable {
    * @param bombing whether only battles where there is bombing.
    */
   public Collection<Territory> getPendingBattleSites(final boolean bombing) {
-    final Collection<IBattle> pending = new HashSet<>(pendingBattles);
     final Collection<Territory> battles = new ArrayList<>();
-    for (final IBattle battle : pending) {
+    for (final IBattle battle : pendingBattles) {
       if (battle != null && !battle.isEmpty() && battle.isBombingRun() == bombing) {
         battles.add(battle.getTerritory());
       }
@@ -1174,8 +1173,7 @@ public class BattleTracker implements Serializable {
 
   BattleListing getPendingBattleSites() {
     final Map<BattleType, Collection<Territory>> battles = new HashMap<>();
-    final Collection<IBattle> pending = new HashSet<>(pendingBattles);
-    for (final IBattle battle : pending) {
+    for (final IBattle battle : pendingBattles) {
       if (battle != null && !battle.isEmpty()) {
         Collection<Territory> territories = battles.get(battle.getBattleType());
         if (territories == null) {
@@ -1343,7 +1341,7 @@ public class BattleTracker implements Serializable {
     // battles
     for (final Territory territory : getPendingBattleSites(false)) {
       final IBattle battle = getPendingBattle(territory, false, BattleType.NORMAL);
-      final List<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
+      final List<Unit> defenders = battle.getDefendingUnits();
       final List<Unit> sortedUnitsList =
           getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty()

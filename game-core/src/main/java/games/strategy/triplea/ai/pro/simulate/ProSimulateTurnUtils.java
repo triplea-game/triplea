@@ -26,7 +26,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,11 +58,11 @@ public final class ProSimulateTurnUtils {
             battleDelegate
                 .getBattleTracker()
                 .getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
-        final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
+        final List<Unit> attackers = List.copyOf(battle.getAttackingUnits());
         attackers.retainAll(t.getUnits());
-        final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+        final List<Unit> defenders = List.copyOf(battle.getDefendingUnits());
         defenders.retainAll(t.getUnits());
-        final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
+        final Set<Unit> bombardingUnits = Set.copyOf(battle.getBombardingUnits());
         ProLogger.debug("---" + t);
         ProLogger.debug("attackers=" + attackers);
         ProLogger.debug("defenders=" + defenders);

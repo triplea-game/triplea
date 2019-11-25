@@ -45,9 +45,9 @@ class ProScrambleAi {
         delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 
     // Check if defense already wins
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
+    final List<Unit> attackers = battle.getAttackingUnits();
+    final List<Unit> defenders = battle.getDefendingUnits();
+    final Set<Unit> bombardingUnits = Set.copyOf(battle.getBombardingUnits());
     final ProBattleResult minResult =
         calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger.debug(
@@ -123,7 +123,7 @@ class ProScrambleAi {
     ProBattleResult result = minResult;
     for (final Unit u : sortedUnitDefendOptions.keySet()) {
       unitsToScramble.add(u);
-      final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();
+      final List<Unit> currentDefenders = List.copyOf(battle.getDefendingUnits());
       currentDefenders.addAll(unitsToScramble);
       result =
           calc.calculateBattleResults(scrambleTo, attackers, currentDefenders, bombardingUnits);

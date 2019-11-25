@@ -58,8 +58,8 @@ class ProRetreatAi {
 
     // Get units and determine if attacker
     final boolean isAttacker = player.equals(battle.getAttacker());
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final List<Unit> attackers = battle.getAttackingUnits();
+    final List<Unit> defenders = battle.getDefendingUnits();
 
     // Calculate battle results
     final ProBattleResult result =

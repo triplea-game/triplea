@@ -122,22 +122,22 @@ public interface IBattle extends Serializable {
   boolean isEmpty();
 
   /** Returns units which are dependent on the given units. */
-  Collection<Unit> getDependentUnits(Collection<Unit> units);
+  List<Unit> getDependentUnits(Collection<Unit> units);
 
   /** Returns units which are actually assaulting amphibiously. */
-  Collection<Unit> getAmphibiousLandAttackers();
+  List<Unit> getAmphibiousLandAttackers();
 
   /** Returns units which are actually bombarding. */
-  Collection<Unit> getBombardingUnits();
+  List<Unit> getBombardingUnits();
 
   /** Returns what round this battle is in. */
   int getBattleRound();
 
   /** Returns units which are attacking. */
-  Collection<Unit> getAttackingUnits();
+  List<Unit> getAttackingUnits();
 
   /** Returns units which are defending. */
-  Collection<Unit> getDefendingUnits();
+  List<Unit> getDefendingUnits();
 
   List<Unit> getRemainingAttackingUnits();
 
