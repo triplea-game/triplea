@@ -150,7 +150,7 @@ class ProPoliticsAi {
       final List<PoliticalActionAttachment> actionChoicesOther =
           AiPoliticalUtils.getPoliticalActionsOther(
               player, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
+      if (!actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         final double random = Math.random();
