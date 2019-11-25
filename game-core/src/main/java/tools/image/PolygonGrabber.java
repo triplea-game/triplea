@@ -260,14 +260,12 @@ public final class PolygonGrabber {
                   log.info("Detecting Polygon for:" + territoryName);
                   final Polygon p = findPolygon(center.x, center.y);
                   // test if the poly contains the center point (this often fails when there is an
-                  // island right above (because
-                  // findPolygon will grab the island instead)
-                  if (!p.contains(center)) {
+                  // island right above (because findPolygon will grab the island instead)
+                  if (p == null || !p.contains(center)) {
                     continue;
                   }
                   // test if this poly contains any other centers, and if so do not do this one. let
-                  // the user manually do it to
-                  // make sure it gets done properly
+                  // the user manually do it to make sure it gets done properly
                   boolean hasIslands = false;
                   for (final Point otherCenterPoint : centers.values()) {
                     if (center.equals(otherCenterPoint)) {
