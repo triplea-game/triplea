@@ -302,7 +302,7 @@ public class BattleTracker implements Serializable {
       if (!airBattleCompleted
           && Properties.getRaidsMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
-              route.getEnd(), id, data, bombing)) {
+              route.getEnd(), id, data, true)) {
         addAirBattle(route, units, id, data, true);
       } else {
         addBombingBattle(route, units, id, data, targets);
@@ -314,7 +314,7 @@ public class BattleTracker implements Serializable {
       if (!airBattleCompleted
           && Properties.getBattlesMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
-              route.getEnd(), id, data, bombing)) {
+              route.getEnd(), id, data, false)) {
         addAirBattle(
             route,
             CollectionUtils.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts()),
