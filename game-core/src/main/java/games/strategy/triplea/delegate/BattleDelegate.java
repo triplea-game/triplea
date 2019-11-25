@@ -691,25 +691,32 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Territory, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>
         scramblersByTerritoryPlayer = scramble.findPossibleScramblers();
     for (final Territory to : scramblersByTerritoryPlayer.keySet()) {
-      boolean scrambledHere = false;
-
       PlayerId defender = PlayerId.NULL_PLAYERID;
       if (battleTracker.hasPendingBattle(to, false)) {
         defender = AbstractBattle.findDefender(to, player, data);
       }
-      final var scramblers = scramblersByTerritoryPlayer.get(to);
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
+          scramblersByTerritoryPlayer.get(to);
       for (final Territory from : scramblers.keySet()) {
         if (defender.isNull()) {
           defender = AbstractBattle.findDefender(from, player, data);
         }
       }
+      if (defender.isNull()) {
+        continue;
+      }
+      // Remove any units that were already scrambled to other territories.
+      scramblers
+          .entrySet()
+          .removeIf(
+              e -> {
+                final Collection<Unit> unitsToScramble = e.getValue().getSecond();
+                unitsToScramble.retainAll(e.getKey().getUnitCollection());
+                return unitsToScramble.isEmpty();
+              });
 
-      for (final Territory from : scramblers.keySet()) {
-        // verify that we didn't already scramble any of these units
-        scramblers.get(from).getSecond().retainAll(from.getUnitCollection());
-        if (defender.isNull() || scramblers.isEmpty()) {
-          continue;
-        }
+      boolean scrambledHere = false;
+      if (!scramblers.isEmpty()) {
         final Map<Territory, Collection<Unit>> toScramble =
             getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
