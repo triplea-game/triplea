@@ -206,7 +206,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> units,
       final PlayerId player,
       final IDelegateBridge bridge) {
-    for (final IBattle battle : pendingBattles) {
+    for (final IBattle battle : List.copyOf(pendingBattles)) {
       if (!battle.getTerritory().equals(route.getStart())) {
         battle.removeAttack(route, units);
         if (battle.isEmpty()) {

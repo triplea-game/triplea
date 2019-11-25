@@ -148,7 +148,7 @@ public class NonFightingBattle extends DependentBattle {
     if (withdrawn) {
       return;
     }
-    Collection<Unit> lost = getDependentUnits(units);
+    Collection<Unit> lost = new ArrayList<>(getDependentUnits(units));
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
     if (lost.size() != 0) {
