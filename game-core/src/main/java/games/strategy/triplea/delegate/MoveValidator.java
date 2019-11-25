@@ -1246,9 +1246,11 @@ public class MoveValidator {
             transport, route.getEnd())) {
           final Territory alreadyUnloadedTo =
               getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-          for (final Unit unit : TransportTracker.transporting(transport)) {
-            result.addDisallowedUnit(
-                TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+          if (alreadyUnloadedTo != null) {
+            for (final Unit unit : TransportTracker.transporting(transport)) {
+              result.addDisallowedUnit(
+                  TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+            }
           }
           // Check if the transport has already loaded after being in combat
         } else if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport)) {
