@@ -41,9 +41,9 @@ import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import org.triplea.java.collections.CollectionUtils;
@@ -396,7 +396,7 @@ public class ProAi extends AbstractAi {
       final boolean isAttacker = player.equals(battle.getAttacker());
       if (!isAttacker) {
         final List<Unit> attackers = battle.getAttackingUnits();
-        final List<Unit> defenders = List.copyOf(battle.getDefendingUnits());
+        final List<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference =
             ProBattleUtils.estimateStrengthDifference(battleSite, attackers, defenders);
@@ -500,7 +500,7 @@ public class ProAi extends AbstractAi {
 
     // Calculate battle results
     final ProBattleResult result =
-        calc.calculateBattleResults(unitTerritory, attackers, defenders, Set.of());
+        calc.calculateBattleResults(unitTerritory, attackers, defenders, new HashSet<>());
     ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTuvSwing());
     return result.getTuvSwing() > 0;
   }
