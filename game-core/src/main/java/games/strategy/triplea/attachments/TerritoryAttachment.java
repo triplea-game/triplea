@@ -696,7 +696,8 @@ public class TerritoryAttachment extends DefaultAttachment {
       if (!convoyAttached.isEmpty()) {
         sb.append("Needs: ").append(MyFormatter.defaultNamedToTextList(convoyAttached)).append(br);
       }
-      final Collection<Territory> requiredBy = getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
+      final Collection<Territory> requiredBy =
+          getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
       if (!requiredBy.isEmpty()) {
         sb.append("Required By: ")
             .append(MyFormatter.defaultNamedToTextList(requiredBy))
