@@ -612,21 +612,23 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /**
    * Returns the collection of territories that make up the convoy route containing the specified
-   * territory or {@code null} if the specified territory is not part of a convoy route.
+   * territory or returns an empty collection if the specified territory is not part of a convoy
+   * route.
    */
   public static Collection<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
-      final Territory t, final GameData data) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
+      final Territory territory, final GameData data) {
+    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta == null || !ta.getConvoyRoute()) {
       return new HashSet<>();
     }
-    final Set<Territory> territories = new HashSet<>();
+
+    final Collection<Territory> territories = new HashSet<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment cta = TerritoryAttachment.get(current);
       if (cta == null || !cta.getConvoyRoute()) {
         continue;
       }
-      if (cta.getConvoyAttached().contains(t)) {
+      if (cta.getConvoyAttached().contains(territory)) {
         territories.add(current);
       }
     }
