@@ -54,8 +54,7 @@ import org.xml.sax.SAXParseException;
 public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
-  @Nonnull
-  private final GameData data;
+  @Nonnull private final GameData data;
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   private final String mapName;
   private final XmlGameElementMapper xmlGameElementMapper;
