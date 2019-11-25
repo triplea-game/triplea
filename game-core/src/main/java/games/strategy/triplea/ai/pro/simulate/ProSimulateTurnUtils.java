@@ -288,8 +288,7 @@ public final class ProSimulateTurnUtils {
                 ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
     for (final Unit toTransport : toTransports) {
       if (!usedUnits.contains(toTransport)) {
-        final List<Unit> toTransportingUnits =
-            (List<Unit>) TransportTracker.transporting(toTransport);
+        final List<Unit> toTransportingUnits = TransportTracker.transporting(toTransport);
         if (transportingUnits.size() == toTransportingUnits.size()) {
           boolean canTransfer = true;
           for (int i = 0; i < transportingUnits.size(); i++) {

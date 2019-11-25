@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -125,8 +126,9 @@ public class TripleAUnit extends Unit {
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
-    return CollectionUtils.getMatches(
-        transportedUnitsPossible, o -> equals(get(o).getTransportedBy()));
+    return Collections.unmodifiableList(
+        CollectionUtils.getMatches(
+            transportedUnitsPossible, o -> equals(get(o).getTransportedBy())));
   }
 
   public List<Unit> getUnloaded() {

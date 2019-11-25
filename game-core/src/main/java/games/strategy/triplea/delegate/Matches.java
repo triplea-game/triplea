@@ -1173,18 +1173,14 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsTransporting() {
-    return unit -> {
-      final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
-      return !(transporting == null || transporting.isEmpty());
-    };
+    return unit -> !TripleAUnit.get(unit).getTransporting().isEmpty();
   }
 
   public static Predicate<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units) {
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
     return unit -> {
       final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
-      return transporting != null
-          && !Collections.disjoint(UnitSeparator.categorize(transporting), unitCategories);
+      return !Collections.disjoint(UnitSeparator.categorize(transporting), unitCategories);
     };
   }
 
