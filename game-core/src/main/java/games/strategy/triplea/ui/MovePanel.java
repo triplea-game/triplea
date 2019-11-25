@@ -635,7 +635,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               new SimpleUnitPanel(
                   getMap().getUiContext(),
                   SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-          unitsPanel.setUnitsFromCategories(UnitSeparator.categorize(possibleScramblers));
+          unitPanel.setUnitsFromCategories(UnitSeparator.categorize(possibleScramblers));
           final String message = "Warning: Units may scramble from nearby territories to defend:";
           final JPanel panel =
               new JPanelBuilder()
