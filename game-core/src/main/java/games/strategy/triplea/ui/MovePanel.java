@@ -29,6 +29,7 @@ import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -630,7 +631,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           if (possibleScramblers.isEmpty()) {
             return true;
           }
-          final SimpleUnitPanel unitsPanel =
+          final SimpleUnitPanel unitPanel =
               new SimpleUnitPanel(
                   getMap().getUiContext(),
                   SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
@@ -640,9 +641,13 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               new JPanelBuilder()
                   .borderLayout()
                   .addNorth(JLabelBuilder.builder().text(message).build())
-                  .addCenter(unitsPanel)
+                  .addCenter(unitPanel)
                   .addSouth(JLabelBuilder.builder().text("Confirm move?").build())
                   .build();
+          // The following is needed to help the unitPanel compute its initial height with
+          // multiple units present. Without it, an extra row is added based on a too narrow
+          // width initially.
+          panel.setSize(new Dimension(400, 100));
           final int option =
               JOptionPane.showConfirmDialog(
                   JOptionPane.getFrameForComponent(MovePanel.this),
