@@ -52,26 +52,3 @@ sudo -u postgres psql
 ```bash
 vagrant destroy -f
 ```
-
-
-# TODO
-
-## [ ] Execute 'run_deployment' for prerelease from travis after successful merge
-- will need to install sshpass on the travis machine
-- will need to set ansible password on travis as env variable
-- will need to add sshpass+ssh command to execute 'run_deployment'
-
-## [ ] certbot from letsencrypt
-
-Draft so far of what this needs, need to get this fully working and then converted to an ansible role:
-
-```bash
-sudo apt-get update
-sudo apt-get install software-properties-common
-sudo add-apt-repository universe
-sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get update
-sudo apt-get install certbot python-certbot-nginx 
-
-sudo certbot --test-cert --nginx -m tripleabuilderbot@gmail.com --agree-tos
-```
