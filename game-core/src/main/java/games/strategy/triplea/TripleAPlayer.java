@@ -335,10 +335,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
           move(nonCombat, stepName);
         }
       }
-      if (!nonCombat) {
-        if (canUnitsFight()) {
-          move(nonCombat, stepName);
-        }
+      if (!nonCombat && canUnitsFight()) {
+        move(false, stepName);
       }
       return;
     }

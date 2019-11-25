@@ -448,13 +448,13 @@ public class Route implements Serializable, Iterable<Territory> {
   private Tuple<ResourceCollection, Boolean> getFuelCostsAndIfChargedFlatFuelCost(
       final Unit unit, final GameData data, final boolean ignoreFlat) {
     final ResourceCollection resources = new ResourceCollection(data);
-    boolean chargedFlatFuelCost = false;
     if (Matches.unitIsBeingTransported().test(unit)) {
-      return Tuple.of(resources, chargedFlatFuelCost);
+      return Tuple.of(resources, false);
     }
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     resources.add(ua.getFuelCost());
     resources.multiply(getMovementCost(unit).setScale(0, RoundingMode.CEILING).intValue());
+    boolean chargedFlatFuelCost = false;
     if (!ignoreFlat && Matches.unitHasNotBeenChargedFlatFuelCost().test(unit)) {
       resources.add(ua.getFuelFlatCost());
       chargedFlatFuelCost = true;
