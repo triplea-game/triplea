@@ -10,12 +10,12 @@ import org.triplea.domain.data.PlayerName;
 
 @Value
 public class ChatMessage {
-  private final PlayerName from;
-  private final String message;
-
   @VisibleForTesting static final int MAX_MESSAGE_LENGTH = 200;
   @VisibleForTesting static final int MAX_LINE_LENGTH = 100;
   @VisibleForTesting static final String ELLIPSES = "..";
+
+  private final PlayerName from;
+  private final String message;
 
   public ChatMessage(final PlayerName from, final String message) {
     this.from = Preconditions.checkNotNull(from);
