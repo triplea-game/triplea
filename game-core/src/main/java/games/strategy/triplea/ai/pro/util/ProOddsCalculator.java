@@ -13,8 +13,8 @@ import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI odds calculator. */
@@ -44,9 +44,9 @@ public class ProOddsCalculator {
    */
   public ProBattleResult estimateAttackBattleResults(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits) {
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits) {
 
     final ProBattleResult result =
         checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits, true);
@@ -71,9 +71,9 @@ public class ProOddsCalculator {
    */
   public ProBattleResult estimateDefendBattleResults(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits) {
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits) {
 
     final ProBattleResult result =
         checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits, true);
@@ -102,25 +102,25 @@ public class ProOddsCalculator {
 
   public ProBattleResult calculateBattleResultsNoSubmerge(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits) {
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits) {
     return calculateBattleResults(t, attackingUnits, defendingUnits, bombardingUnits, false);
   }
 
   public ProBattleResult calculateBattleResults(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits) {
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits) {
     return calculateBattleResults(t, attackingUnits, defendingUnits, bombardingUnits, true);
   }
 
   private ProBattleResult calculateBattleResults(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits,
       final boolean checkSubmerge) {
 
     final ProBattleResult result =
@@ -133,8 +133,8 @@ public class ProOddsCalculator {
 
   private static ProBattleResult checkIfNoAttackersOrDefenders(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
       final boolean checkSubmerge) {
     final boolean hasNoDefenders =
         defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure());
@@ -157,8 +157,8 @@ public class ProOddsCalculator {
   }
 
   private static boolean canSubmergeBeforeBattle(
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
       final boolean checkSubmerge) {
     final GameData data = ProData.getData();
     return checkSubmerge
@@ -169,25 +169,25 @@ public class ProOddsCalculator {
 
   public ProBattleResult callBattleCalcWithRetreatAir(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits) {
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits) {
     return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, true, true);
   }
 
   public ProBattleResult callBattleCalc(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits) {
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits) {
     return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, true);
   }
 
   private ProBattleResult callBattleCalc(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits,
       final boolean checkSubmerge) {
     return callBattleCalc(t, attackingUnits, defendingUnits, bombardingUnits, checkSubmerge, false);
   }
@@ -195,9 +195,9 @@ public class ProOddsCalculator {
   /** Simulates the specified battle. */
   private ProBattleResult callBattleCalc(
       final Territory t,
-      final List<Unit> attackingUnits,
-      final List<Unit> defendingUnits,
-      final Set<Unit> bombardingUnits,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits,
       final boolean checkSubmerge,
       final boolean retreatWhenOnlyAirLeft) {
     final GameData data = ProData.getData();
@@ -208,8 +208,8 @@ public class ProOddsCalculator {
 
     final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
     final int runCount = Math.max(16, 100 - minArmySize);
-    final PlayerId attacker = attackingUnits.get(0).getOwner();
-    final PlayerId defender = defendingUnits.get(0).getOwner();
+    final PlayerId attacker = attackingUnits.iterator().next().getOwner();
+    final PlayerId defender = defendingUnits.iterator().next().getOwner();
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(true);
     }

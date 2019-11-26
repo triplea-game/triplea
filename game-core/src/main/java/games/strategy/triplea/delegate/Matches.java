@@ -753,7 +753,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsAirTransportable() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
-      if (ta == null || !ta.getParatroopers()) {
+      if (!ta.getParatroopers()) {
         return false;
       }
       final UnitType type = obj.getType();
@@ -769,7 +769,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsAirTransport() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
-      if (ta == null || !ta.getParatroopers()) {
+      if (!ta.getParatroopers()) {
         return false;
       }
       final UnitType type = obj.getType();

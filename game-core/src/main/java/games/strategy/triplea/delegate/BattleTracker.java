@@ -302,7 +302,7 @@ public class BattleTracker implements Serializable {
       if (!airBattleCompleted
           && Properties.getRaidsMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
-              route.getEnd(), id, data, bombing)) {
+              route.getEnd(), id, data, true)) {
         addAirBattle(route, units, id, data, true);
       } else {
         addBombingBattle(route, units, id, data, targets);
@@ -314,7 +314,7 @@ public class BattleTracker implements Serializable {
       if (!airBattleCompleted
           && Properties.getBattlesMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
-              route.getEnd(), id, data, bombing)) {
+              route.getEnd(), id, data, false)) {
         addAirBattle(
             route,
             CollectionUtils.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts()),
@@ -1341,7 +1341,7 @@ public class BattleTracker implements Serializable {
     // battles
     for (final Territory territory : getPendingBattleSites(false)) {
       final IBattle battle = getPendingBattle(territory, false, BattleType.NORMAL);
-      final List<Unit> defenders = battle.getDefendingUnits();
+      final Collection<Unit> defenders = battle.getDefendingUnits();
       final List<Unit> sortedUnitsList =
           getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty()
@@ -1371,7 +1371,7 @@ public class BattleTracker implements Serializable {
       final IDelegateBridge bridge,
       final GameData gameData,
       final Territory territory,
-      final List<Unit> defenders) {
+      final Collection<Unit> defenders) {
     final List<Unit> sortedUnitsList =
         new ArrayList<>(
             CollectionUtils.getMatches(

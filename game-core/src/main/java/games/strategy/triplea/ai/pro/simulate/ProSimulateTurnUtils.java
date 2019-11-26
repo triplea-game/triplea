@@ -59,11 +59,11 @@ public final class ProSimulateTurnUtils {
             battleDelegate
                 .getBattleTracker()
                 .getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
-        final List<Unit> attackers = new ArrayList<>(battle.getAttackingUnits());
+        final Collection<Unit> attackers = new ArrayList<>(battle.getAttackingUnits());
         attackers.retainAll(t.getUnits());
-        final List<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
+        final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
         defenders.retainAll(t.getUnits());
-        final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
+        final Collection<Unit> bombardingUnits = battle.getBombardingUnits();
         ProLogger.debug("---" + t);
         ProLogger.debug("attackers=" + attackers);
         ProLogger.debug("defenders=" + defenders);
@@ -71,8 +71,8 @@ public final class ProSimulateTurnUtils {
 
         final ProBattleResult result =
             calc.callBattleCalc(t, attackers, defenders, bombardingUnits);
-        final List<Unit> remainingAttackers = result.getAverageAttackersRemaining();
-        final List<Unit> remainingDefenders = result.getAverageDefendersRemaining();
+        final Collection<Unit> remainingAttackers = result.getAverageAttackersRemaining();
+        final Collection<Unit> remainingDefenders = result.getAverageDefendersRemaining();
         ProLogger.debug("remainingAttackers=" + remainingAttackers);
         ProLogger.debug("remainingDefenders=" + remainingDefenders);
 

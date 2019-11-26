@@ -2694,15 +2694,6 @@ public class UnitAttachment extends DefaultAttachment {
               + "offensiveAttackAAmaxDieSides is wrong, "
               + thisErrorMsg());
     }
-    if (carrierCapacity != -1 && carrierCost != -1) {
-      throw new GameParseException(
-          "carrierCost and carrierCapacity cannot be set at same time, " + thisErrorMsg());
-    }
-    if (((bombingBonus != 0 || bombingMaxDieSides >= 0) && !(isStrategicBomber || isRocket))
-        || (bombingMaxDieSides < -1)) {
-      throw new GameParseException(
-          "something wrong with bombingBonus or bombingMaxDieSides, " + thisErrorMsg());
-    }
     if (maxBuiltPerPlayer < -1) {
       throw new GameParseException("maxBuiltPerPlayer cannot be negative, " + thisErrorMsg());
     }

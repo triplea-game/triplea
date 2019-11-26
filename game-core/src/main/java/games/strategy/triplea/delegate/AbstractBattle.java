@@ -146,8 +146,8 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public List<Unit> getBombardingUnits() {
-    return Collections.unmodifiableList(bombardingUnits);
+  public Collection<Unit> getBombardingUnits() {
+    return Collections.unmodifiableCollection(bombardingUnits);
   }
 
   @Override
@@ -156,28 +156,28 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public List<Unit> getAmphibiousLandAttackers() {
-    return Collections.unmodifiableList(amphibiousLandAttackers);
+  public Collection<Unit> getAmphibiousLandAttackers() {
+    return Collections.unmodifiableCollection(amphibiousLandAttackers);
   }
 
   @Override
-  public List<Unit> getAttackingUnits() {
-    return Collections.unmodifiableList(attackingUnits);
+  public Collection<Unit> getAttackingUnits() {
+    return Collections.unmodifiableCollection(attackingUnits);
   }
 
   @Override
-  public List<Unit> getDefendingUnits() {
-    return Collections.unmodifiableList(defendingUnits);
+  public Collection<Unit> getDefendingUnits() {
+    return Collections.unmodifiableCollection(defendingUnits);
   }
 
   @Override
-  public List<Unit> getRemainingAttackingUnits() {
-    return Collections.unmodifiableList(attackingUnits);
+  public Collection<Unit> getRemainingAttackingUnits() {
+    return Collections.unmodifiableCollection(attackingUnits);
   }
 
   @Override
-  public List<Unit> getRemainingDefendingUnits() {
-    return Collections.unmodifiableList(defendingUnits);
+  public Collection<Unit> getRemainingDefendingUnits() {
+    return Collections.unmodifiableCollection(defendingUnits);
   }
 
   @Override

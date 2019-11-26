@@ -121,27 +121,29 @@ public interface IBattle extends Serializable {
    */
   boolean isEmpty();
 
-  /** Returns units which are dependent on the given units. */
-  List<Unit> getDependentUnits(Collection<Unit> units);
+  /** Returns units which are dependent on the given units. Read-only. */
+  Collection<Unit> getDependentUnits(Collection<Unit> units);
 
-  /** Returns units which are actually assaulting amphibiously. */
-  List<Unit> getAmphibiousLandAttackers();
+  /** Returns units which are actually assaulting amphibiously. Read-only. */
+  Collection<Unit> getAmphibiousLandAttackers();
 
-  /** Returns units which are actually bombarding. */
-  List<Unit> getBombardingUnits();
+  /** Returns units which are actually bombarding. Read-only. */
+  Collection<Unit> getBombardingUnits();
 
-  /** Returns what round this battle is in. */
+  /** Returns what round this battle is in. Read-only. */
   int getBattleRound();
 
-  /** Returns units which are attacking. */
-  List<Unit> getAttackingUnits();
+  /** Returns units which are attacking. Read-only. */
+  Collection<Unit> getAttackingUnits();
 
-  /** Returns units which are defending. */
-  List<Unit> getDefendingUnits();
+  /** Returns units which are defending. Read-only. */
+  Collection<Unit> getDefendingUnits();
 
-  List<Unit> getRemainingAttackingUnits();
+  /** Returns remaining attacking units. Read-only. */
+  Collection<Unit> getRemainingAttackingUnits();
 
-  List<Unit> getRemainingDefendingUnits();
+  /** Returns remaining defending units. Read-only. */
+  Collection<Unit> getRemainingDefendingUnits();
 
   WhoWon getWhoWon();
 
