@@ -99,11 +99,9 @@ public class ScrambleLogic {
     final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
 
     final Set<Territory> territoriesWithBattlesWater =
-        new HashSet<>(
-            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater()));
+            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater();
     final Set<Territory> territoriesWithBattlesLand =
-        new HashSet<>(
-            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
+            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand());
     final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory battleTerr : territoriesWithBattlesWater) {
       final Collection<Territory> canScrambleFrom = getCanScrambleFromTerritories(battleTerr);
@@ -150,7 +148,7 @@ public class ScrambleLogic {
             .and(Matches.unitWasScrambled().negate());
 
     final Map<Territory, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>
-        scramblersByTerritoryPlayer = new HashMap<>();
+        scramblersByTerritory = new HashMap<>();
     for (final Territory to : scrambleTerrs.keySet()) {
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers = new HashMap<>();
       for (final Territory from : scrambleTerrs.get(to)) {
@@ -173,9 +171,9 @@ public class ScrambleLogic {
       if (scramblers.isEmpty()) {
         continue;
       }
-      scramblersByTerritoryPlayer.put(to, scramblers);
+      scramblersByTerritory.put(to, scramblers);
     }
-    return scramblersByTerritoryPlayer;
+    return scramblersByTerritory;
   }
 
   private Collection<Territory> getCanScrambleFromTerritories(final Territory battleTerr) {

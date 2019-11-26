@@ -689,14 +689,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final var scramble =
         new ScrambleLogic(getData(), player, territoriesWithBattles, battleTracker);
     final Map<Territory, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>
-        scramblersByTerritoryPlayer = scramble.findPossibleScramblers();
+        scramblersByTerritory = scramble.findPossibleScramblers();
     for (final Territory to : scramblersByTerritoryPlayer.keySet()) {
       PlayerId defender = PlayerId.NULL_PLAYERID;
       if (battleTracker.hasPendingBattle(to, false)) {
         defender = AbstractBattle.findDefender(to, player, data);
       }
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
-          scramblersByTerritoryPlayer.get(to);
+          scramblersByTerritory.get(to);
       for (final Territory from : scramblers.keySet()) {
         if (defender.isNull()) {
           defender = AbstractBattle.findDefender(from, player, data);
