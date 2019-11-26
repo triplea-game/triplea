@@ -128,13 +128,30 @@ jobs:
       language: python
       python: "3.6"
       script:
+        - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
+        - version=$(cat game-core/src/main/resources/META-INF/triplea/product.properties | sed 's/.* //')
         - eval "$(ssh-agent -s)"
-        - version=$(sed "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties)
         - cd infrastructure
-        - export ANSIBLE_HOST_KEY_CHECKING=False
+        - ./build_artifacts
         - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
         - ./run_deployment "$version" -i ansible/inventory/prerelease
-
+    - stage: deploy production
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      addons:
+        apt:
+          packages:
+            - sshpass
+      install:
+        - pip install ansible
+      language: python
+      python: "3.6"
+      script:
+        - version="2.0.16817"
+        - ./.travis/download_artifacts "$version" 
+        - eval "$(ssh-agent -s)"
+        - cd infrastructure
+        - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+        # - ./run_deployment "$version" -i ansible/inventory/production
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
-  -  test "$TRAVIS_EVENT_TYPE" != "pull_request" && test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
+  - test "$TRAVIS_EVENT_TYPE" != "pull_request" && test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
