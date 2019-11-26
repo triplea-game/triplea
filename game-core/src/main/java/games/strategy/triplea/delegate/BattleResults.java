@@ -4,15 +4,15 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
-import java.util.List;
+import java.util.Collection;
 
 /** The results of an in-progress or complete battle. */
 public class BattleResults extends GameDataComponent {
-  private static final long serialVersionUID = 1381361441940258702L;
+  private static final long serialVersionUID = 1L;
 
   private final int battleRoundsFought;
-  private final List<Unit> remainingAttackingUnits;
-  private final List<Unit> remainingDefendingUnits;
+  private final Collection<Unit> remainingAttackingUnits;
+  private final Collection<Unit> remainingDefendingUnits;
   private final WhoWon whoWon;
 
   // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also
@@ -44,11 +44,11 @@ public class BattleResults extends GameDataComponent {
     whoWon = scriptedWhoWon;
   }
 
-  public List<Unit> getRemainingAttackingUnits() {
+  public Collection<Unit> getRemainingAttackingUnits() {
     return remainingAttackingUnits;
   }
 
-  public List<Unit> getRemainingDefendingUnits() {
+  public Collection<Unit> getRemainingDefendingUnits() {
     return remainingDefendingUnits;
   }
 

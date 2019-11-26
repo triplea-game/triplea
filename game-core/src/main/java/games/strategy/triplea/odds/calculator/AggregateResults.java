@@ -50,13 +50,13 @@ public class AggregateResults {
                                 - getAverageDefendingUnitsLeft())));
   }
 
-  public List<Unit> getAverageAttackingUnitsRemaining() {
+  public Collection<Unit> getAverageAttackingUnitsRemaining() {
     return getBattleResultsClosestToAverage()
         .map(BattleResults::getRemainingAttackingUnits)
         .orElseGet(ArrayList::new);
   }
 
-  public List<Unit> getAverageDefendingUnitsRemaining() {
+  public Collection<Unit> getAverageDefendingUnitsRemaining() {
     return getBattleResultsClosestToAverage()
         .map(BattleResults::getRemainingDefendingUnits)
         .orElseGet(ArrayList::new);
