@@ -17,8 +17,6 @@
     <!-- Full sea zone list:
                 1 Sea Zone:2 Sea Zone:3 Sea Zone:4 Sea Zone:5 Sea Zone:6 Sea Zone:7 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone:13 Sea Zone:14 Sea Zone:15 Sea Zone:16 Sea Zone:17 Sea Zone:18 Sea Zone:19 Sea Zone:20 Sea Zone:21 Sea Zone:22 Sea Zone:23 Sea Zone:24 Sea Zone:25 Sea Zone:26 Sea Zone:27 Sea Zone:28 Sea Zone:29 Sea Zone:30 Sea Zone:31 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:35 Sea Zone:36 Sea Zone:37 Sea Zone:38 Sea Zone:39 Sea Zone:40 Sea Zone:41 Sea Zone:42 Sea Zone:43 Sea Zone:44 Sea Zone:45 Sea Zone:46 Sea Zone:47 Sea Zone:48 Sea Zone:49 Sea Zone:50 Sea Zone:51 Sea Zone:52 Sea Zone:53 Sea Zone:54 Sea Zone:55 Sea Zone:56 Sea Zone:57 Sea Zone:58 Sea Zone:59 Sea Zone:60 Sea Zone:61 Sea Zone:62 Sea Zone:63 Sea Zone:64 Sea Zone:65 Sea Zone:66 Sea Zone:67 Sea Zone:68 Sea Zone:69 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:73 Sea Zone:74 Sea Zone:75 Sea Zone:76 Sea Zone:77 Sea Zone:78 Sea Zone:79 Sea Zone:80 Sea Zone:81 Sea Zone:82 Sea Zone:83 Sea Zone:84 Sea Zone:85 Sea Zone:86 Sea Zone:87 Sea Zone:88 Sea Zone:89 Sea Zone:90 Sea Zone:91 Sea Zone:92 Sea Zone:93 Sea Zone:94 Sea Zone:95 Sea Zone:96 Sea Zone:97 Sea Zone:98 Sea Zone:99 Sea Zone:100 Sea Zone:101 Sea Zone:102 Sea Zone:103 Sea Zone:104 Sea Zone:105 Sea Zone:106 Sea Zone:107 Sea Zone:108 Sea Zone:109 Sea Zone:110 Sea Zone:111 Sea Zone:112 Sea Zone:113 Sea Zone:114 Sea Zone:115 Sea Zone:116 Sea Zone:117 Sea Zone:118 Sea Zone:119 Sea Zone:120 Sea Zone:121 Sea Zone:122 Sea Zone:123 Sea Zone:124 Sea Zone:125 Sea Zone:126 Sea Zone:127 Sea Zone:128 Sea Zone
                 -->
-    <!-- Territory Definitions -->
-    <!-- P40 -->
     <territory name="Caroline Islands"/>
     <territory name="Iwo Jima"/>
     <territory name="Paulau Island"/>
@@ -58,7 +56,6 @@
     <territory name="India"/>
     <territory name="Malaya"/>
     <territory name="Borneo"/>
-    <!--<territory name="Yukon Territory"/>-->
     <territory name="Kwangtung"/>
     <territory name="Queensland"/>
     <territory name="Victoria"/>
@@ -167,7 +164,6 @@
     <territory name="62 Sea Zone" water="true"/>
     <territory name="61 Sea Zone" water="true"/>
     <territory name="60 Sea Zone" water="true"/>
-    <!-- E40 -->
     <territory name="West Indies"/>
     <territory name="Central United States"/>
     <territory name="Central America"/>
@@ -354,7 +350,6 @@
     <territory name="105 Sea Zone" water="true"/>
     <territory name="128 Sea Zone" water="true"/>
     <!-- Territory Connections -->
-    <!-- P40 Connections -->
     <connection t1="Caroline Islands" t2="33 Sea Zone"/>
     <connection t1="Iwo Jima" t2="17 Sea Zone"/>
     <connection t1="Paulau Island" t2="34 Sea Zone"/>
@@ -421,7 +416,6 @@
     <connection t1="Burma" t2="Himalayas"/>
     <connection t1="British Columbia" t2="Alaska"/>
     <connection t1="British Columbia" t2="1 Sea Zone"/>
-    <!--<connection t1="British Columbia" t2="Yukon Territory"/>-->
     <connection t1="India" t2="Himalayas"/>
     <connection t1="India" t2="West India"/>
     <connection t1="Queensland" t2="Northern Territory"/>
@@ -445,7 +439,6 @@
     <connection t1="Western United States" t2="British Columbia"/>
     <connection t1="Alaska" t2="2 Sea Zone"/>
     <connection t1="Alaska" t2="1 Sea Zone"/>
-    <!--<connection t1="Alaska" t2="Yukon Territory"/>-->
     <connection t1="Aleutian Islands" t2="8 Sea Zone"/>
     <connection t1="Sakha" t2="Amur"/>
     <connection t1="Sakha" t2="Siberia"/>
@@ -730,7 +723,6 @@
     <connection t1="Alberta Saskatchewan Manitoba" t2="Central United States"/>
     <connection t1="Alberta Saskatchewan Manitoba" t2="Ontario"/>
     <connection t1="Alberta Saskatchewan Manitoba" t2="121 Sea Zone"/>
-    <!--<connection t1="Alberta Saskatchewan Manitoba" t2="Yukon Territory"/>-->
     <connection t1="Alberta Saskatchewan Manitoba" t2="British Columbia"/>
     <connection t1="Trans-Jordan" t2="Iraq"/>
     <connection t1="Trans-Jordan" t2="81 Sea Zone"/>
@@ -785,14 +777,12 @@
     <connection t1="French Central Africa" t2="Nigeria"/>
     <connection t1="French Central Africa" t2="French West Africa"/>
     <connection t1="French West Africa" t2="Nigeria"/>
-    <!--<connection t1="French Guiana" t2="86 Sea Zone"/>-->
     <connection t1="French Guiana" t2="Brazil"/>
     <connection t1="French Guiana" t2="Suriname"/>
     <connection t1="French Guiana" t2="88 Sea Zone"/>
     <connection t1="Algeria" t2="94 Sea Zone"/>
     <connection t1="Algeria" t2="92 Sea Zone"/>
     <connection t1="Algeria" t2="Tunisia"/>
-    <!-- <connection t1="Southern France" t2="95 Sea Zone"/> TODO check this -->
     <connection t1="Southern France" t2="93 Sea Zone"/>
     <connection t1="Southern France" t2="Northern Italy"/>
     <connection t1="Southern France" t2="France"/>
@@ -995,7 +985,6 @@
     <connection t1="116 Sea Zone" t2="117 Sea Zone"/>
     <connection t1="116 Sea Zone" t2="121 Sea Zone"/>
     <connection t1="116 Sea Zone" t2="Newfoundland Labrador"/>
-    <!--<connection t1="65 Sea Zone" t2="Ecuador"/>-->
     <connection t1="65 Sea Zone" t2="66 Sea Zone"/>
     <connection t1="65 Sea Zone" t2="64 Sea Zone"/>
     <connection t1="65 Sea Zone" t2="51 Sea Zone"/>
@@ -1038,8 +1027,6 @@
     <connection t1="76 Sea Zone" t2="Italian Somaliland"/>
     <connection t1="76 Sea Zone" t2="77 Sea Zone"/>
     <connection t1="76 Sea Zone" t2="Ethiopia"/>
-    <!--<connection t1="76 Sea Zone" t2="Kenya"/>-->
-    <!--<connection t1="76 Sea Zone" t2="Anglo Egyptian Sudan"/> TODO: check this-->
     <connection t1="Mozambique" t2="Union of South Africa"/>
     <connection t1="Mozambique" t2="72 Sea Zone"/>
     <connection t1="Mozambique" t2="71 Sea Zone"/>
@@ -1173,7 +1160,6 @@
     <connection t1="Brazil" t2="Peru"/>
     <connection t1="Brazil" t2="Suriname"/>
     <connection t1="Venezuela" t2="Colombia"/>
-    <!--<connection t1="Venezuela" t2="88 Sea Zone"/>-->
     <connection t1="127 Sea Zone" t2="126 Sea Zone"/>
     <connection t1="127 Sea Zone" t2="Novgorod"/>
     <connection t1="127 Sea Zone" t2="Finland"/>
@@ -1364,7 +1350,6 @@
       <step name="britishTech" delegate="tech" player="British"/>
       <step name="britishTechActivation" delegate="tech_activation" player="British"/>
       <step name="britishPurchase" delegate="purchase" player="British"/>
-      <!--<step name="UK_PacificTech" delegate="tech" player="UK_Pacific"/>-->
       <step name="UK_PacificTechActivation" delegate="tech_activation" player="UK_Pacific"/>
       <step name="UK_PacificPurchase" delegate="purchase" player="UK_Pacific"/>
       <step name="britishPolitics" delegate="politics" player="British"/>
@@ -1512,97 +1497,6 @@
       <cost resource="PUs" quantity="5"/>
       <result resourceOrUnit="aaGun" quantity="1"/>
     </productionRule>
-    <!-- Advanced Industrial Production -->
-    <!--<productionRule name="buyInfantryIndustrialTechnology">
-                        <cost resource="PUs" quantity="3" />
-                        <result resourceOrUnit="infantry" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyMech_InfantryIndustrialTechnology">
-                        <cost resource="PUs" quantity="4" />
-                        <result resourceOrUnit="mech_infantry" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyArtilleryIndustrialTechnology">
-                        <cost resource="PUs" quantity="4" />
-                        <result resourceOrUnit="artillery" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyArmourIndustrialTechnology">
-                        <cost resource="PUs" quantity="6" />
-                        <result resourceOrUnit="armour" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyFighterIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="fighter" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyTactical_BomberIndustrialTechnology">
-                        <cost resource="PUs" quantity="11" />
-                        <result resourceOrUnit="tactical_bomber" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyBomberIndustrialTechnology">
-                        <cost resource="PUs" quantity="12" />
-                        <result resourceOrUnit="bomber" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyTransportIndustrialTechnology">
-                        <cost resource="PUs" quantity="6" />
-                        <result resourceOrUnit="transport" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyCarrierIndustrialTechnology">
-                        <cost resource="PUs" quantity="13" />
-                        <result resourceOrUnit="carrier" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyDestroyerIndustrialTechnology">
-                        <cost resource="PUs" quantity="7" />
-                        <result resourceOrUnit="destroyer" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyCruiserIndustrialTechnology">
-                        <cost resource="PUs" quantity="9" />
-                        <result resourceOrUnit="destroyer" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyBattleshipIndustrialTechnology">
-                        <cost resource="PUs" quantity="17" />
-                        <result resourceOrUnit="battleship" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buySubmarineIndustrialTechnology">
-                        <cost resource="PUs" quantity="5" />
-                        <result resourceOrUnit="submarine" quantity="1"/>
-                </productionRule>
-
-
-                <productionRule name="buyFactory_MinorIndustrialTechnology">
-                        <cost resource="PUs" quantity="12" />
-                        <result resourceOrUnit="factory_minor" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyFactory_MajorIndustrialTechnology">
-                        <cost resource="PUs" quantity="30" />
-                        <result resourceOrUnit="factory_major" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyAirfieldIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="airfield" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyHarbourIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="harbour" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyAAGunIndustrialTechnology">
-                        <cost resource="PUs" quantity="6" />
-                        <result resourceOrUnit="aaGun" quantity="1"/>
-                </productionRule>-->
     <!-- SHIPYARD PRICES -->
     <productionRule name="buyTransportShipyards">
       <cost resource="PUs" quantity="6"/>
@@ -1712,26 +1606,6 @@
     <productionFrontier name="productionChinese_Burma_Road_Closed">
       <frontierRules name="buyInfantry"/>
     </productionFrontier>
-    <!--<productionFrontier name="productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyMech_InfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyTactical_BomberIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-                        <frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactory_MinorIndustrialTechnology"/>
-                        <frontierRules name="buyFactory_MajorIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>-->
     <productionFrontier name="productionShipyards">
       <frontierRules name="buyTransportShipyards"/>
       <frontierRules name="buySubmarineShipyards"/>
@@ -1752,7 +1626,7 @@
     <playerProduction player="ANZAC" frontier="production"/>
     <playerRepair player="Americans" frontier="repair"/>
     <!-- Chinese are not allowed to repair
-                <playerRepair player="Chinese" frontier="repair"/> -->
+    <playerRepair player="Chinese" frontier="repair"/> -->
     <playerRepair player="British" frontier="repair"/>
     <playerRepair player="UK_Pacific" frontier="repair"/>
     <playerRepair player="ANZAC" frontier="repair"/>
@@ -1982,15 +1856,9 @@
       <option name="canLandAirUnitsOnOwnedLand" value="true"/>
     </attachment>
     <attachment name="relationshipTypeAttachment" attachTo="Friendly" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
-      <!--<option name="archeType" value="neutral"/>
-                        <option name="canMoveLandUnitsOverOwnedLand" value="true"/>
-                        <option name="canMoveAirUnitsOverOwnedLand" value="true"/>
-                        <option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
       <option name="archeType" value="allied"/>
     </attachment>
     <attachment name="relationshipTypeAttachment" attachTo="Custodianship" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
-      <!--<option name="archeType" value="war"/>
-                        <option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
       <option name="archeType" value="allied"/>
       <option name="canTakeOverOwnedTerritory" value="true"/>
     </attachment>
@@ -2006,13 +1874,6 @@
       <option name="canLandAirUnitsOnOwnedLand" value="false"/>
       <option name="canMoveIntoDuringCombatMove" value="false"/>
       <option name="rocketsCanFlyOver" value="false"/>
-      <!-- How Friendly Neutrals work:
-                                They may not be attacked. (IE: can not move into during combat move phase) (DONE)
-                                They can not be flown over. (Done)
-                                They can not be moved through, or blitzed. (TODO)
-                                During non-combat move, you may move land units into them to capture them and all their units. (Done)
-                                May only capture with units that have attack power (no aa guns). (TODO)
-                        -->
     </attachment>
     <attachment name="relationshipTypeAttachment" attachTo="Unfriendly_Neutral" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
       <option name="archeType" value="war"/>
@@ -2207,7 +2068,6 @@
       <option name="isInfantry" value="true"/>
       <option name="attack" value="1"/>
       <option name="defense" value="2"/>
-      <!--<option name="artillerySupportable" value="true"/>-->
       <option name="isAirTransportable" value="true"/>
       <option name="canBeCapturedOnEnteringBy" value="French:Americans:British:Russians:Germans:Italians:Japanese:ANZAC:Chinese"/>
       <option name="canBeGivenByTerritoryTo" value="British"/>
@@ -2218,7 +2078,6 @@
       <option name="transportCost" value="6"/>
       <option name="attack" value="1"/>
       <option name="defense" value="2"/>
-      <!--<option name="artillerySupportable" value="true"/>-->
       <option name="receivesAbilityWhenWith" value="canBlitz:armour"/>
       <option name="canBeCapturedOnEnteringBy" value="French:Americans:British:Russians:Germans:Italians:Japanese:ANZAC:Chinese"/>
       <option name="canBeGivenByTerritoryTo" value="British"/>
@@ -2229,7 +2088,6 @@
       <option name="transportCost" value="6"/>
       <option name="attack" value="2"/>
       <option name="defense" value="2"/>
-      <!--<option name="artillery" value="true"/>-->
       <option name="canBeCapturedOnEnteringBy" value="French:Americans:British:Russians:Germans:Italians:Japanese:ANZAC:Chinese"/>
       <option name="canBeGivenByTerritoryTo" value="British"/>
     </attachment>
@@ -2251,7 +2109,6 @@
       <option name="isMarine" value="true"/>
       <option name="attack" value="1"/>
       <option name="defense" value="2"/>
-      <!--<option name="artillerySupportable" value="false"/>-->
       <option name="isAirTransportable" value="true"/>
       <option name="canBeCapturedOnEnteringBy" value="French:Americans:British:Russians:Germans:Italians:Japanese:ANZAC:Chinese"/>
       <option name="canBeGivenByTerritoryTo" value="British"/>
@@ -2372,36 +2229,23 @@
       <option name="attack" value="2"/>
       <option name="defense" value="1"/>
       <option name="blockade" value="2"/>
-      <!-- stuff for targeting unescorted transports (we are using the new-fangled aa-gun code)
-                         <option name="isAAforFlyOverOnly" value="true"/>
-                         <option name="targetsAA" value="transport"/>
-                         <option name="willNotFireIfPresent" value="destroyer:cruiser:battleship:carrier"/>
-                         <option name="mayOverStackAA" value="true"/>
-                         <option name="maxAAattacks" value="1"/>
-                         <option name="attackAA" value="2"/>
-                         <option name="attackAAmaxDieSides" value="6"/>
-                         <option name="typeAA" value="Submarine Strike on Unescorted Transports"/>-->
       <option name="canBeGivenByTerritoryTo" value="British"/>
-      <!-- TODO: submarines now prevent amphibious assaults unless there is an owned warship present -->
     </attachment>
     <!-- Factory Minor -->
     <attachment name="unitAttachment" attachTo="factory_minor" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="isFactory" value="true"/>
       <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
       <option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
-      <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
       <option name="isAAforBombingThisUnitOnly" value="true"/>
       <option name="canProduceXUnits" value="3"/>
       <option name="maxDamage" value="6"/>
       <option name="canBeCapturedOnEnteringBy" value="French:Americans:British:Russians:Germans:Italians:Japanese:ANZAC:Chinese"/>
-      <!--<option name="canBeGivenByTerritoryTo" value="Germans"/>-->
     </attachment>
     <!-- Factory Major -->
     <attachment name="unitAttachment" attachTo="factory_major" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="isFactory" value="true"/>
       <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
       <option name="canOnlyBePlacedInTerritoryValuedAtX" value="3"/>
-      <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
       <option name="isAAforBombingThisUnitOnly" value="true"/>
       <option name="canProduceXUnits" value="10"/>
       <option name="maxDamage" value="20"/>
