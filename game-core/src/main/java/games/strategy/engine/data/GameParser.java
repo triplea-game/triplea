@@ -774,9 +774,6 @@ public final class GameParser {
     final PlayerList playerList = data.getPlayerList();
     for (final Element current : getChildren("player", root)) {
       final String name = current.getAttribute("name");
-      // It appears the commented line ALWAYS returns false regardless of the value of
-      // current.getAttribute("optional")
-      // boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
       final boolean isOptional = current.getAttribute("optional").equals("true");
       final boolean canBeDisabled = current.getAttribute("canBeDisabled").equals("true");
       final String defaultType = current.getAttribute("defaultType");

@@ -19,7 +19,6 @@ public final class PlayerEmailValidation {
     final String domain = subdomain + "(?:\\." + subdomain + ")*";
     final String localPart = word + "(?:\\." + word + ")*";
     final String email = localPart + "@" + domain;
-    // String regex = "(\\s*[\\w\\.-]+@\\w+\\.[\\w\\.]+\\s*)*";
     final String regex = "(\\s*" + email + "\\s*)*";
     return emailAddress.matches(regex) ? null : "Invalid email address";
   }
