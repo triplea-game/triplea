@@ -152,8 +152,8 @@ public class ResourceCollection extends GameDataComponent {
       try {
         resources.subtract(cost);
       } catch (final IllegalArgumentException iae) {
-        // when the subtraction isn't possible it will throw an exception, which means we can return
-        // i;
+        // when the subtraction isn't possible it will throw an exception,
+        // which means we can return i
         return i;
       }
     }

@@ -62,7 +62,6 @@ public interface Constants {
   String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
   String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";
   String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
-  // public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
   /*
    * These are the individual rules from a game (All default to FALSE)
    */

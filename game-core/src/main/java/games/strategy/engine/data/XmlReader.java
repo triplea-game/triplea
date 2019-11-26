@@ -34,7 +34,6 @@ public final class XmlReader {
   private static Document getDocument(
       final String mapName, final InputStream input, final Collection<SAXParseException> errorsSax)
       throws IOException, SAXException, ParserConfigurationException {
-    // try {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setValidating(true);
     // Not mandatory, but better than relying on the default implementation to prevent XXE
