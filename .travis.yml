@@ -97,7 +97,8 @@ jobs:
       script:
         - ./.travis/setup_database
         - ./.travis/run_smoke_tests
-    - stage: upload artifacts
+    - stage: deploy artifacts
+      env: DESCRIPTION="Upload to github releases"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       install: skip
       before_install:
@@ -130,7 +131,8 @@ jobs:
           tags: false
           repo: triplea-game/triplea
           branch: master
-    - stage: deploy prerelease
+    - stage: deploy artifacts
+      env: DESCRIPTION="Deploy to prerelease"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       addons:
         apt:
@@ -145,7 +147,7 @@ jobs:
         - version=$(cat game-core/src/main/resources/META-INF/triplea/product.properties | tr -d ' ' | sed 's/.*=//')
         - eval "$(ssh-agent -s)"
         - cd infrastructure
-        - ./build_artifacts
+        - ./build_deployment_artifacts
         - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
         - ./run_deployment "$version" -i ansible/inventory/prerelease
     - stage: deploy production
@@ -160,7 +162,7 @@ jobs:
       python: "3.6"
       script:
         - version="2.0.16817"
-        - ./.travis/download_artifacts "$version" 
+        - ./.travis/download_deployment_artifacts "$version" 
         - eval "$(ssh-agent -s)"
         - cd infrastructure
         - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
