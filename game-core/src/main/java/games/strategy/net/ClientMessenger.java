@@ -23,13 +23,10 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-import lombok.Getter;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.java.Interruptibles;
 
 /** Default implementation of {@link IClientMessenger}. */
@@ -45,25 +42,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode serverNode;
   private volatile boolean shutDown = false;
 
-  @Getter(onMethod_ = {@Override})
-  private boolean passwordChangeRequired;
-
-  private ApiKey apiKey;
-
-  /**
-   * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
-   * has been constructed.
-   */
-  ClientMessenger(
-      final String host,
-      final int port,
-      final String name,
-      final String mac,
-      final IConnectionLogin login)
-      throws IOException {
-    this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
-  }
-
   /**
    * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
    * has been constructed.
@@ -78,7 +56,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
    * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
    * has been constructed.
    */
-  @VisibleForTesting
   public ClientMessenger(
       final String host,
       final int port,
@@ -139,8 +116,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
         // ignore
       }
     }
-    passwordChangeRequired = conversation.isPasswordChangeRequired();
-    apiKey = conversation.getApiKey();
 
     if (conversation.getErrorMessage() != null
         && conversation
@@ -335,15 +310,5 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public String toString() {
     return "ClientMessenger LocalNode:" + node + " ServerNodes:" + serverNode;
-  }
-
-  @Override
-  public ApiKey getApiKey() {
-    return Optional.ofNullable(apiKey)
-        .orElseThrow(
-            () ->
-                new UnsupportedOperationException(
-                    "Unexpected missing api key, programmer error. "
-                        + "Likely caused by trying to access API key for a non-lobby connection."));
   }
 }

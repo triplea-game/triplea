@@ -2,7 +2,6 @@ package games.strategy.net;
 
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import java.io.File;
-import org.triplea.domain.data.ApiKey;
 
 /** A client messenger. Additional methods for selecting the game on the server. */
 public interface IClientMessenger extends IMessenger {
@@ -19,12 +18,4 @@ public interface IClientMessenger extends IMessenger {
 
   /** Stop listening for errors. */
   void removeErrorListener(IMessengerErrorListener listener);
-
-  boolean isPasswordChangeRequired();
-
-  /**
-   * When connecting to lobby, lobby will provide an API key. <br>
-   * When connecting to a game host, an API key will not be provided.
-   */
-  ApiKey getApiKey();
 }
