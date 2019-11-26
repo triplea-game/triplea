@@ -1,16 +1,18 @@
 [![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
+[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/context:java)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=security_rating)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
+
 [![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=ncloc)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 [![codecov](https://img.shields.io/codecov/c/github/triplea-game/triplea/master.svg?style=flat-square)](https://codecov.io/gh/triplea-game/triplea)
-[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/context:java)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
+
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=security_rating)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 [![Known Vulnerabilities](https://snyk.io/test/github/triplea-game/triplea/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/triplea-game/triplea?targetFile=build.gradle)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=bugs)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=code_smells)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 
 
 
