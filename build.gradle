@@ -28,7 +28,6 @@ wrapper {
 sonarqube {
     properties {
         property "sonar.host.url", "https://sonarcloud.io/"
-        property "sonar.organization", "triplea-game"
         property "sonar.projectKey", "triplea-game-sonar"
     }
 }
