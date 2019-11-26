@@ -36,7 +36,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
-import org.triplea.java.OptionalUtils;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
@@ -77,10 +76,8 @@ public class DownloadMapsWindow extends JFrame {
     final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();
     final Collection<String> unknownMapNames = new ArrayList<>();
     for (final String mapName : pendingDownloadMapNames) {
-      OptionalUtils.ifPresentOrElse(
-          findMap(mapName, allDownloads),
-          pendingDownloads::add,
-          () -> unknownMapNames.add(mapName));
+      findMap(mapName, allDownloads)
+          .ifPresentOrElse(pendingDownloads::add, () -> unknownMapNames.add(mapName));
     }
     final Collection<String> installedMapNames = removeInstalledDownloads(pendingDownloads);
 

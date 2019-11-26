@@ -73,35 +73,4 @@ final class OptionalUtilsTest {
       verify(action).run();
     }
   }
-
-  @Nested
-  final class IfPresentOrElseTest {
-    @Test
-    void shouldInvokePresentActionWhenValueIsPresent() {
-      final Object value = new Object();
-      final AtomicBoolean presentActionInvoked = new AtomicBoolean(false);
-
-      OptionalUtils.ifPresentOrElse(
-          Optional.of(value),
-          it -> {
-            presentActionInvoked.set(true);
-            assertThat(it, is(value));
-          },
-          () -> fail("empty action should not have been invoked"));
-
-      assertThat(presentActionInvoked.get(), is(true));
-    }
-
-    @Test
-    void shouldInvokeEmptyActionWhenValueIsAbsent() {
-      final AtomicBoolean emptyActionInvoked = new AtomicBoolean(false);
-
-      OptionalUtils.ifPresentOrElse(
-          Optional.empty(),
-          it -> fail("present action should not have been invoked"),
-          () -> emptyActionInvoked.set(true));
-
-      assertThat(emptyActionInvoked.get(), is(true));
-    }
-  }
 }
