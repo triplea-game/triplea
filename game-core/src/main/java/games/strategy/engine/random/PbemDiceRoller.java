@@ -56,8 +56,7 @@ public class PbemDiceRoller implements IRandomSource {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final String annotation)
-      throws IllegalStateException {
+  public int[] getRandom(final int max, final int count, final String annotation) {
     final Supplier<int[]> action =
         () -> {
           final HttpDiceRollerDialog dialog =
@@ -71,7 +70,7 @@ public class PbemDiceRoller implements IRandomSource {
   }
 
   @Override
-  public int getRandom(final int max, final String annotation) throws IllegalStateException {
+  public int getRandom(final int max, final String annotation) {
     return getRandom(max, 1, annotation)[0];
   }
 
@@ -176,12 +175,12 @@ public class PbemDiceRoller implements IRandomSource {
     // should only be called if we are not visible
     // should be called from the event thread
     // wont return until the roll is done.
-    void roll() throws IllegalStateException {
+    void roll() {
       rollInternal();
       setVisible(true);
     }
 
-    private void rollInternal() throws IllegalStateException {
+    private void rollInternal() {
       if (!SwingUtilities.isEventDispatchThread()) {
         throw new IllegalStateException("Wrong thread");
       }
@@ -206,7 +205,7 @@ public class PbemDiceRoller implements IRandomSource {
      * successfully. Before contacting Irony Dice Server, check if email has a reasonable valid
      * syntax.
      */
-    private void rollInSeparateThread() throws IllegalStateException {
+    private void rollInSeparateThread() {
       if (SwingUtilities.isEventDispatchThread()) {
         throw new IllegalStateException("Wrong thread");
       }
