@@ -96,7 +96,7 @@ jobs:
         - ./.travis/setup_gpg
         ## Update product version to include build number.
         ## EG: replace "2.0.0" to be "2.0.15555";
-        - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
+        - sed -i "s/.0 *$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
         - ./.travis/do_release
       deploy:
         jdk: openjdk11
@@ -129,7 +129,7 @@ jobs:
       python: "3.6"
       script:
         - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
-        - version=$(cat game-core/src/main/resources/META-INF/triplea/product.properties | sed 's/.* //')
+        - version=$(cat game-core/src/main/resources/META-INF/triplea/product.properties | tr -d ' ' | sed 's/.*=//')
         - eval "$(ssh-agent -s)"
         - cd infrastructure
         - ./build_artifacts
