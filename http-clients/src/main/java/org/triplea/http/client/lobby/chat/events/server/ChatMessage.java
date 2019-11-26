@@ -1,7 +1,10 @@
 package org.triplea.http.client.lobby.chat.events.server;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ascii;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import lombok.Value;
 import org.triplea.domain.data.PlayerName;
 
@@ -10,8 +13,18 @@ public class ChatMessage {
   private final PlayerName from;
   private final String message;
 
+  @VisibleForTesting static final int MAX_MESSAGE_LENGTH = 200;
+  @VisibleForTesting static final int MAX_LINE_LENGTH = 100;
+  @VisibleForTesting static final String ELLIPSES = "..";
+
   public ChatMessage(final PlayerName from, final String message) {
     this.from = Preconditions.checkNotNull(from);
-    this.message = Ascii.truncate(Preconditions.checkNotNull(message), 200, "..");
+    this.message =
+        Joiner.on("\n")
+            .join(
+                Splitter.fixedLength(MAX_LINE_LENGTH)
+                    .splitToList(
+                        Ascii.truncate(
+                            Preconditions.checkNotNull(message), MAX_MESSAGE_LENGTH, ELLIPSES)));
   }
 }
