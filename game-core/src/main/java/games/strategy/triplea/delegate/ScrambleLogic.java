@@ -26,8 +26,10 @@ public class ScrambleLogic {
   private final GameData data;
   private final PlayerId player;
   private final Set<Territory> territoriesWithBattles;
-  private final Predicate<Unit> airbasesCanScramble;
   private BattleTracker battleTracker;
+  private final Predicate<Unit> airbasesCanScramble;
+  private final Predicate<Territory> canScrambleFromPredicate;
+  private final int maxScrambleDistance;
 
   public ScrambleLogic(
       final GameData data,
@@ -43,6 +45,28 @@ public class ScrambleLogic {
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitIsBeingTransported().negate());
+    this.canScrambleFromPredicate =
+        PredicateBuilder.of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player, data)))
+            .and(
+                Matches.territoryHasUnitsThatMatch(
+                    Matches.unitCanScramble()
+                        .and(Matches.unitIsEnemyOf(data, player))
+                        .and(Matches.unitIsNotDisabled())))
+            .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
+            .andIf(Properties.getScrambleFromIslandOnly(data), Matches.territoryIsIsland())
+            .build();
+    this.maxScrambleDistance = computeMaxScrambleDistance(data);
+  }
+
+  private static int computeMaxScrambleDistance(final GameData data) {
+    int maxScrambleDistance = 0;
+    for (final UnitType unitType : data.getUnitTypeList()) {
+      final UnitAttachment ua = UnitAttachment.get(unitType);
+      if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
+        maxScrambleDistance = ua.getMaxScrambleDistance();
+      }
+    }
+    return maxScrambleDistance;
   }
 
   public ScrambleLogic(final GameData data, final PlayerId player, final Territory territory) {
@@ -71,26 +95,8 @@ public class ScrambleLogic {
     if (!Properties.getScrambleRulesInEffect(data)) {
       return Map.of();
     }
-    final boolean fromIslandOnly = Properties.getScrambleFromIslandOnly(data);
     final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
     final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
-    int maxScrambleDistance = 0;
-    for (final UnitType unitType : data.getUnitTypeList()) {
-      final UnitAttachment ua = UnitAttachment.get(unitType);
-      if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
-        maxScrambleDistance = ua.getMaxScrambleDistance();
-      }
-    }
-    final Predicate<Territory> canScramble =
-        PredicateBuilder.of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player, data)))
-            .and(
-                Matches.territoryHasUnitsThatMatch(
-                    Matches.unitCanScramble()
-                        .and(Matches.unitIsEnemyOf(data, player))
-                        .and(Matches.unitIsNotDisabled())))
-            .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
-            .andIf(fromIslandOnly, Matches.territoryIsIsland())
-            .build();
 
     final Set<Territory> territoriesWithBattlesWater =
         new HashSet<>(
@@ -100,18 +106,14 @@ public class ScrambleLogic {
             CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
     final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory battleTerr : territoriesWithBattlesWater) {
-      final Collection<Territory> canScrambleFrom =
-          CollectionUtils.getMatches(
-              data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble);
+      final Collection<Territory> canScrambleFrom = getCanScrambleFromTerritories(battleTerr);
       if (!canScrambleFrom.isEmpty()) {
         scrambleTerrs.put(battleTerr, new HashSet<>(canScrambleFrom));
       }
     }
     for (final Territory battleTerr : territoriesWithBattlesLand) {
       if (!toSeaOnly) {
-        final Collection<Territory> canScrambleFrom =
-            CollectionUtils.getMatches(
-                data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble);
+        final Collection<Territory> canScrambleFrom = getCanScrambleFromTerritories(battleTerr);
         if (!canScrambleFrom.isEmpty()) {
           scrambleTerrs.put(battleTerr, new HashSet<>(canScrambleFrom));
         }
@@ -127,10 +129,8 @@ public class ScrambleLogic {
           final Set<Territory> canScrambleFrom =
               scrambleTerrs.getOrDefault(amphibFrom, new HashSet<>());
           if (toAnyAmphibious) {
-            canScrambleFrom.addAll(
-                CollectionUtils.getMatches(
-                    data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
-          } else if (canScramble.test(battleTerr)) {
+            canScrambleFrom.addAll(getCanScrambleFromTerritories(amphibFrom));
+          } else if (canScrambleFromPredicate.test(battleTerr)) {
             canScrambleFrom.add(battleTerr);
           }
           if (!canScrambleFrom.isEmpty()) {
@@ -176,6 +176,11 @@ public class ScrambleLogic {
       scramblersByTerritoryPlayer.put(to, scramblers);
     }
     return scramblersByTerritoryPlayer;
+  }
+
+  private Collection<Territory> getCanScrambleFromTerritories(final Territory battleTerr) {
+    return CollectionUtils.getMatches(
+        data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScrambleFromPredicate);
   }
 
   /**
