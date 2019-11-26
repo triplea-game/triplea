@@ -205,7 +205,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand()));
       isAmphibious = true;
     }
-    final Map<Unit, Collection<Unit>> dependencies = TransportTracker.transporting(units);
+    final Map<Unit, Collection<Unit>> dependencies = new HashMap<>(TransportTracker.transporting(units));
     if (!isAlliedAirIndependent()) {
       dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, gameData, attacker));
       for (final Unit carrier : dependencies.keySet()) {
