@@ -3,11 +3,6 @@ sudo: false
 language: java
 if: tag is blank
 
-cache:
-  directories:
-    - '$HOME/.gradle'
-    - '.gradle'
-
 # Note: Travis generally does not allocate more than 5 VMs at once.
 # Avoid running more than 5 jobs in parallel. Try to keep the jobs
 # balanced so that they each take about the same amount of time.
@@ -34,6 +29,11 @@ jobs:
     - stage: verify
       env: DESCRIPTION="static verification"
       jdk: openjdk11
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
+          - '~/jdk-11.0.5+10'
       before_install:
         - ./.travis/install_java_11.0.5
         - export JAVA_HOME=~/jdk-11.0.5+10
@@ -44,10 +44,15 @@ jobs:
         ## shellcheck all shell scripts
         - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
         - .travis/check-links || travis_terminate 1;
-        - ./gradlew --no-daemon --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain pmdTest
+        - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain pmdTest
     - stage: verify
       env: DESCRIPTION="JDK11 tests"
       jdk: openjdk11
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
+          - '~/jdk-11.0.5+10'
       addons: {postgresql: "10"}
       before_install:
         - ./.travis/install_java_11.0.5
@@ -57,15 +62,24 @@ jobs:
       install: skip
       script:
         - ./.travis/setup_database &
-        - ./gradlew --no-daemon --parallel test integTest
+        - ./gradlew --parallel test integTest
     - stage: verify
       env: DESCRIPTION="JDK12 unitTests"
       jdk: openjdk12
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
       install: skip
       script:
-        - ./gradlew --no-daemon --parallel test
+        - ./gradlew --parallel test
     - stage: verify
       jdk: openjdk11
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
+          - '~/jdk-11.0.5+10'
       env: DESCRIPTION="JDK11 Coverage & Sonar"
       if: repo = 'triplea-game/triplea'
       git:
@@ -82,9 +96,14 @@ jobs:
         - java --version
       install: skip
       script:
-        - ./gradlew --no-daemon --parallel test jacocoTestReport sonarqube
+        - ./gradlew --parallel test jacocoTestReport sonarqube
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: verify
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
+          - '~/jdk-11.0.5+10'
       jdk: openjdk11
       env: DESCRIPTION="Smoke Test"
       addons: {postgresql: "10"}
@@ -101,6 +120,11 @@ jobs:
       env: DESCRIPTION="Upload to github releases"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       install: skip
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
+          - '~/jdk-11.0.5+10'
       before_install:
         - ./.travis/install_java_11.0.5
         - export JAVA_HOME=~/jdk-11.0.5+10
@@ -134,10 +158,20 @@ jobs:
     - stage: deploy artifacts
       env: DESCRIPTION="Deploy to prerelease"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
+          - '~/jdk-11.0.5+10'
       addons:
         apt:
           packages:
             - sshpass
+      before_install:
+        - ./.travis/install_java_11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5+10
+        - export PATH=${JAVA_HOME}/bin:$PATH
+        - java --version
       install:
         - pip install ansible
       language: python
@@ -156,6 +190,16 @@ jobs:
         apt:
           packages:
             - sshpass
+      cache:
+        directories:
+          - '$HOME/.gradle'
+          - '.gradle'
+          - '~/jdk-11.0.5+10'
+      before_install:
+        - ./.travis/install_java_11.0.5
+        - export JAVA_HOME=~/jdk-11.0.5+10
+        - export PATH=${JAVA_HOME}/bin:$PATH
+        - java --version
       install:
         - pip install ansible
       language: python
