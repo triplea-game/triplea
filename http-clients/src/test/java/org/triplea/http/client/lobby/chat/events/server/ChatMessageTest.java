@@ -25,7 +25,7 @@ class ChatMessageTest {
   @Test
   @DisplayName("Verify a message at max line length is left untouched")
   void messageAtMaxLineLength() {
-    String testString = createStringWithLength(ChatMessage.MAX_LINE_LENGTH);
+    final String testString = createStringWithLength(ChatMessage.MAX_LINE_LENGTH);
 
     final String result = chatMessage(testString);
 
@@ -35,7 +35,7 @@ class ChatMessageTest {
   @Test
   @DisplayName("Verify a message over max line length is split untouched")
   void messageOverMaxLineLength() {
-    String testString = createStringWithLength(ChatMessage.MAX_LINE_LENGTH + 1);
+    final String testString = createStringWithLength(ChatMessage.MAX_LINE_LENGTH + 1);
 
     final String result = chatMessage(testString);
 
@@ -52,7 +52,7 @@ class ChatMessageTest {
   @Test
   @DisplayName("Verify message at max length is not truncated")
   void messageAtMaxLimit() {
-    String testString = createStringWithLength(ChatMessage.MAX_MESSAGE_LENGTH);
+    final String testString = createStringWithLength(ChatMessage.MAX_MESSAGE_LENGTH);
 
     final String result = chatMessage(testString);
 
@@ -62,7 +62,7 @@ class ChatMessageTest {
   @Test
   @DisplayName("Verify message over max length is truncated")
   void messageOverMaxLimit() {
-    String testString = createStringWithLength(ChatMessage.MAX_MESSAGE_LENGTH + 1);
+    final String testString = createStringWithLength(ChatMessage.MAX_MESSAGE_LENGTH + 1);
 
     final String result = chatMessage(testString);
 
