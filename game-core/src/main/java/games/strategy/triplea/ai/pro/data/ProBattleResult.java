@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,8 +16,8 @@ public class ProBattleResult {
   private final double winPercentage;
   private final double tuvSwing;
   private final boolean hasLandUnitRemaining;
-  private final List<Unit> averageAttackersRemaining;
-  private final List<Unit> averageDefendersRemaining;
+  private final Collection<Unit> averageAttackersRemaining;
+  private final Collection<Unit> averageDefendersRemaining;
   private final double battleRounds;
 
   public ProBattleResult() {
