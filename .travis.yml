@@ -46,7 +46,7 @@ jobs:
         - .travis/check-links || travis_terminate 1;
         - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain pmdTest
     - stage: verify
-      env: "JDK11 Tests"
+      env: "Unit & Integration Tests"
       jdk: openjdk11
       cache:
         directories:
@@ -62,9 +62,10 @@ jobs:
       install: skip
       script:
         - ./.travis/setup_database &
-        - ./gradlew --parallel test integTest
+        - ./gradlew --parallel test integTest jacocoTestReport
+        - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: verify
-      env: "JDK12 Unit Tests"
+      env: "Unit Tests"
       jdk: openjdk12
       cache:
         directories:
@@ -74,14 +75,14 @@ jobs:
       script:
         - ./gradlew --parallel test
     - stage: verify
+      env: "Master Branch: Sonar Analysis"
       jdk: openjdk11
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       cache:
         directories:
           - '$HOME/.gradle'
           - '.gradle'
           - '~/jdk-11.0.5+10'
-      env: "JDK11 Coverage & Sonar"
-      if: repo = 'triplea-game/triplea'
       git:
         depth: false
       addons:
@@ -96,16 +97,15 @@ jobs:
         - java --version
       install: skip
       script:
-        - ./gradlew --parallel test jacocoTestReport sonarqube
-        - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+        - ./gradlew --parallel sonarqube
     - stage: verify
+      env: "Smoke Test"
+      jdk: openjdk11
       cache:
         directories:
           - '$HOME/.gradle'
           - '.gradle'
           - '~/jdk-11.0.5+10'
-      jdk: openjdk11
-      env: "Smoke Test"
       addons: {postgresql: "10"}
       before_install:
         - ./.travis/install_java_11.0.5
@@ -158,6 +158,8 @@ jobs:
     - stage: deploy artifacts
       env: "Deploy to Prerelease"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      language: python
+      python: "3.6"
       cache:
         directories:
           - '$HOME/.gradle'
@@ -174,8 +176,6 @@ jobs:
         - java --version
       install:
         - pip install ansible
-      language: python
-      python: "3.6"
       script:
         - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
         - version=$(cat game-core/src/main/resources/META-INF/triplea/product.properties | tr -d ' ' | sed 's/.*=//')
@@ -187,6 +187,8 @@ jobs:
     - stage: deploy production
       env: "Deploy to Producton"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      language: python
+      python: "3.6"
       addons:
         apt:
           packages:
@@ -203,8 +205,6 @@ jobs:
         - java --version
       install:
         - pip install ansible
-      language: python
-      python: "3.6"
       script:
         - version="2.0.16817"
         - ./infrastructure/download_deployment_artifacts "$version" 
