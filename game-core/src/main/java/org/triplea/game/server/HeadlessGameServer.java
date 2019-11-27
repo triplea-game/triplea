@@ -15,25 +15,17 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
-import org.mindrot.jbcrypt.BCrypt;
-import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.ExitStatus;
@@ -43,38 +35,21 @@ import org.triplea.util.ExitStatus;
 public class HeadlessGameServer {
   public static final String BOT_GAME_HOST_COMMENT = "automated_host";
   public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
-  private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
   private static HeadlessGameServer instance = null;
 
   private final AvailableGames availableGames = new AvailableGames();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-  private final ScheduledExecutorService lobbyWatcherResetupThread =
-      Executors.newScheduledThreadPool(1);
   private final HeadlessServerSetupPanelModel setupPanelModel =
       new HeadlessServerSetupPanelModel(gameSelectorModel);
   private ServerGame game = null;
   private boolean shutDown = false;
-  private final List<Runnable> shutdownListeners =
-      List.of(
-          lobbyWatcherResetupThread::shutdown,
-          () -> Optional.ofNullable(game).ifPresent(ServerGame::stopGame),
-          () ->
-              Optional.ofNullable(setupPanelModel.getPanel())
-                  .ifPresent(HeadlessServerSetup::cancel));
 
   private HeadlessGameServer() {
     if (instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
     instance = this;
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  log.info("Running ShutdownHook.");
-                  shutDown = true;
-                  shutdownListeners.forEach(Runnable::run);
-                }));
+
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (!fileName.isEmpty()) {
       try {
@@ -86,6 +61,18 @@ public class HeadlessGameServer {
         gameSelectorModel.resetGameDataToNull();
       }
     }
+
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  log.info("Running ShutdownHook.");
+                  shutDown = true;
+                  Optional.ofNullable(game).ifPresent(ServerGame::stopGame);
+                  Optional.ofNullable(setupPanelModel.getPanel())
+                      .ifPresent(HeadlessServerSetup::cancel);
+                }));
+
     new Thread(
             () -> {
               log.info("Headless Start");
@@ -204,203 +191,6 @@ public class HeadlessGameServer {
     }
   }
 
-  public static String getSalt() {
-    return BCrypt.gensalt();
-  }
-
-  private static String hashPassword(final String password, final String salt) {
-    return BCrypt.hashpw(password, salt);
-  }
-
-  /**
-   * Shuts down this headless game server at the request of a remote moderator.
-   *
-   * @param hashedPassword The hashed server password provided by the remote moderator.
-   * @param salt The salt used to hash the server password.
-   * @return {@code null} if the operation succeeded; otherwise an error message if the operation
-   *     failed.
-   */
-  public static String remoteShutdown(final String hashedPassword, final String salt) {
-    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
-      return "Host not accepting remote requests!";
-    }
-    if (hashPassword(password, salt).equals(hashedPassword)) {
-      new Thread(
-              () -> {
-                log.info("Remote Shutdown Initiated.");
-                ExitStatus.SUCCESS.exit();
-              })
-          .start();
-      return null;
-    }
-    log.info("Attempted remote shutdown with invalid password.");
-    return "Invalid password!";
-  }
-
-  /**
-   * Stops the active game on this headless game server at the request of a remote moderator. The
-   * game will be saved before it is stopped.
-   *
-   * @param hashedPassword The hashed server password provided by the remote moderator.
-   * @param salt The salt used to hash the server password.
-   * @return {@code null} if the operation succeeded; otherwise an error message if the operation
-   *     failed.
-   */
-  public String remoteStopGame(final String hashedPassword, final String salt) {
-    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
-      return "Host not accepting remote requests!";
-    }
-    if (hashPassword(password, salt).equals(hashedPassword)) {
-      final ServerGame serverGame = game;
-      if (serverGame != null) {
-        new Thread(
-                () -> {
-                  log.info("Remote Stop Game Initiated.");
-                  try {
-                    serverGame.saveGame(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile());
-                  } catch (final Exception e) {
-                    log.log(Level.SEVERE, "Failed to save game", e);
-                  }
-                  serverGame.stopGame();
-                })
-            .start();
-      }
-      return null;
-    }
-    log.info("Attempted remote stop game with invalid password.");
-    return "Invalid password!";
-  }
-
-  /**
-   * Returns the chat log from this headless game server at the request of a remote moderator.
-   *
-   * @param hashedPassword The hashed server password provided by the remote moderator.
-   * @param salt The salt used to hash the server password.
-   * @return The chat log if the operation succeeded; otherwise an error message if the operation
-   *     failed.
-   */
-  public String remoteGetChatLog(final String hashedPassword, final String salt) {
-    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
-      return "Host not accepting remote requests!";
-    }
-    if (hashPassword(password, salt).equals(hashedPassword)) {
-      final ChatModel chat = getServerModel().getChatModel();
-      if (chat == null || chat.getAllText() == null) {
-        return "Empty or null chat";
-      }
-      return chat.getAllText();
-    }
-    log.info("Attempted remote get chat log with invalid password.");
-    return "Invalid password!";
-  }
-
-  /**
-   * Boots the specified player from this headless game server at the request of a remote moderator.
-   *
-   * @param playerName The name of the player to boot.
-   * @param hashedPassword The hashed server password provided by the remote moderator.
-   * @param salt The salt used to hash the server password.
-   * @return {@code null} if the operation succeeded; otherwise an error message if the operation
-   *     failed.
-   */
-  public String remoteBootPlayer(
-      final String playerName, final String hashedPassword, final String salt) {
-    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
-      return "Host not accepting remote requests!";
-    }
-    if (hashPassword(password, salt).equals(hashedPassword)) {
-      new Thread(
-              () -> {
-                if (getServerModel() == null) {
-                  return;
-                }
-                final IServerMessenger messenger = getServerModel().getMessenger();
-                if (messenger == null) {
-                  return;
-                }
-                final Set<INode> nodes = messenger.getNodes();
-                if (nodes == null) {
-                  return;
-                }
-                try {
-                  for (final INode node : nodes) {
-                    final String realName = IServerMessenger.getRealName(node.getName());
-                    if (realName.equals(playerName)) {
-                      log.info("Remote Boot of Player: " + playerName);
-                      messenger.removeConnection(node);
-                    }
-                  }
-                } catch (final Exception e) {
-                  log.log(Level.SEVERE, "Failed to notify boot of player", e);
-                }
-              })
-          .start();
-      return null;
-    }
-    log.warning("Attempted remote boot player with invalid password.");
-    return "Invalid password!";
-  }
-
-  /**
-   * Bans the specified player from this headless game server at the request of a remote moderator.
-   *
-   * @param playerName The name of the player to ban.
-   * @param hashedPassword The hashed server password provided by the remote moderator.
-   * @param salt The salt used to hash the server password.
-   * @return {@code null} if the operation succeeded; otherwise an error message if the operation
-   *     failed.
-   */
-  public String remoteBanPlayer(
-      final String playerName, final String hashedPassword, final String salt) {
-    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
-      return "Host not accepting remote requests!";
-    }
-    // milliseconds (30 days max)
-    if (hashPassword(password, salt).equals(hashedPassword)) {
-      new Thread(
-              () -> {
-                if (getServerModel() == null) {
-                  return;
-                }
-                final IServerMessenger messenger = getServerModel().getMessenger();
-                if (messenger == null) {
-                  return;
-                }
-                final Set<INode> nodes = messenger.getNodes();
-                if (nodes == null) {
-                  return;
-                }
-                try {
-                  for (final INode node : nodes) {
-                    final String realName = IServerMessenger.getRealName(node.getName());
-                    final String ip = node.getAddress().getHostAddress();
-                    final String mac = messenger.getPlayerMac(node.getPlayerName());
-                    if (realName.equals(playerName)) {
-                      log.info("Remote Ban of Player: " + playerName);
-                      try {
-                        messenger.banPlayer(ip, mac);
-                      } catch (final Exception e) {
-                        log.log(Level.SEVERE, "Failed to ban player", e);
-                      }
-                      messenger.removeConnection(node);
-                    }
-                  }
-                } catch (final Exception e) {
-                  log.log(Level.SEVERE, "Failed to notify ban of player", e);
-                }
-              })
-          .start();
-      return null;
-    }
-    log.warning("Attempted remote ban player with invalid password.");
-    return "Invalid password!";
-  }
-
   private void waitForUsersHeadless() {
     setServerGame(null);
 
@@ -469,10 +259,6 @@ public class HeadlessGameServer {
   public static void waitForUsersHeadlessInstance() {
     log.info("Waiting for users to connect.");
     instance.waitForUsersHeadless();
-  }
-
-  private ServerModel getServerModel() {
-    return getServerModel(setupPanelModel);
   }
 
   private static ServerModel getServerModel(final HeadlessServerSetupPanelModel setupPanelModel) {
