@@ -18,7 +18,7 @@ final class MapDownloadProgressListener {
 
   private final DownloadFileDescription download;
   private final JProgressBar progressBar;
-  @Nullable private Long downloadLength;
+  @Nullable private volatile Long downloadLength;
 
   MapDownloadProgressListener(
       final DownloadFileDescription download, final JProgressBar progressBar) {
