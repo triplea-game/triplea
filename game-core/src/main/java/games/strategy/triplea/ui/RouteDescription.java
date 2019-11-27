@@ -53,7 +53,7 @@ class RouteDescription {
     diffX *= diffX;
     int diffY = end.y - other.end.y;
     diffY *= diffY;
-    final int endDiff = (int) Math.sqrt(diffX + diffY);
+    final int endDiff = (int) Math.sqrt((double) diffX + diffY);
     return endDiff < 6;
   }
 }

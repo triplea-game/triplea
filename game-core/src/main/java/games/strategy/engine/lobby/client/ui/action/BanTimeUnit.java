@@ -14,9 +14,9 @@ enum BanTimeUnit {
 
   DAYS("Days", TimeUnit.DAYS::toMinutes),
 
-  WEEKS("Weeks", durationUnit -> TimeUnit.DAYS.toMinutes(durationUnit * 7)),
+  WEEKS("Weeks", durationUnit -> TimeUnit.DAYS.toMinutes(durationUnit * 7L)),
 
-  MONTHS("Months", durationUnit -> TimeUnit.DAYS.toMinutes(durationUnit * 30)),
+  MONTHS("Months", durationUnit -> TimeUnit.DAYS.toMinutes(durationUnit * 30L)),
 
   FOREVER("Forever", value -> (long) BanDurationDialog.MAX_DURATION);
 

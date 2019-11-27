@@ -659,16 +659,17 @@ public class MapPanel extends ImageScrollerLargeView {
       if (drawHorizontalOverlap && x < 0) {
         if (drawVerticalOverlap && y < 0) {
           final Rectangle2D.Double leftUpperBounds =
-              new Rectangle2D.Double(model.getMaxWidth() + x, model.getMaxHeight() + y, -x, -y);
+              new Rectangle2D.Double(
+                  model.getMaxWidth() + (double) x, model.getMaxHeight() + (double) y, -x, -y);
           drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
         }
         final Rectangle2D.Double leftBounds =
-            new Rectangle2D.Double(model.getMaxWidth() + x, y, -x, getScaledHeight());
+            new Rectangle2D.Double(model.getMaxWidth() + (double) x, y, -x, getScaledHeight());
         drawTiles(g2d, images, data, leftBounds, undrawnTiles);
       }
       if (drawVerticalOverlap && y < 0) {
         final Rectangle2D.Double upperBounds =
-            new Rectangle2D.Double(x, model.getMaxHeight() + y, getScaledWidth(), -y);
+            new Rectangle2D.Double(x, model.getMaxHeight() + (double) y, getScaledWidth(), -y);
         drawTiles(g2d, images, data, upperBounds, undrawnTiles);
       }
     }

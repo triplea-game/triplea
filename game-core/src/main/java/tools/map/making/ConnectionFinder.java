@@ -441,7 +441,7 @@ public final class ConnectionFinder {
       if (arg.startsWith(LINE_THICKNESS)) {
         final int lineThickness = Integer.parseInt(value);
         scalePixels = lineThickness * 4;
-        minOverlap = scalePixels * 4;
+        minOverlap = scalePixels * 4.0;
         dimensionsSet = true;
       }
       if (arg.startsWith(MIN_OVERLAP)) {
@@ -467,7 +467,7 @@ public final class ConnectionFinder {
     if (value != null && value.length() > 0) {
       final int lineThickness = Integer.parseInt(value);
       scalePixels = lineThickness * 4;
-      minOverlap = scalePixels * 4;
+      minOverlap = scalePixels * 4.0;
       dimensionsSet = true;
     }
     value = System.getProperty(MIN_OVERLAP);

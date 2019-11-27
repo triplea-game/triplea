@@ -78,9 +78,9 @@ public class ProPurchaseOption {
     if (isInfra) {
       hitPoints = 0;
     }
-    attack = unitAttachment.getAttack(player) * quantity;
+    attack = (double) unitAttachment.getAttack(player) * quantity;
     amphibAttack = attack + 0.5 * unitAttachment.getIsMarine() * quantity;
-    defense = unitAttachment.getDefense(player) * quantity;
+    defense = (double) unitAttachment.getDefense(player) * quantity;
     transportCost = unitAttachment.getTransportCost() * quantity;
     carrierCost = unitAttachment.getCarrierCost() * quantity;
     isAir = unitAttachment.getIsAir();
@@ -255,7 +255,8 @@ public class ProPurchaseOption {
     final double distance = Math.max(0, enemyDistance - 1.5);
     final int moveValue = isLandTransport ? (movement + 1) : movement;
     // 1, 2, 2.5, 2.75, etc
-    final double moveFactor = 1 + 2 * (Math.pow(2, moveValue - 1) - 1) / Math.pow(2, moveValue - 1);
+    final double moveFactor =
+        1.0 + 2.0 * (Math.pow(2, moveValue - 1.0) - 1.0) / Math.pow(2, moveValue - 1.0);
     return Math.pow(moveFactor, distance / 5);
   }
 
