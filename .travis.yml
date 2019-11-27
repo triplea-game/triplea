@@ -27,7 +27,7 @@ if: tag is blank
 jobs:
   include:
     - stage: verify
-      env: DESCRIPTION="static verification"
+      env: "Static Verification"
       jdk: openjdk11
       cache:
         directories:
@@ -46,7 +46,7 @@ jobs:
         - .travis/check-links || travis_terminate 1;
         - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain pmdTest
     - stage: verify
-      env: DESCRIPTION="JDK11 tests"
+      env: "JDK11 Tests"
       jdk: openjdk11
       cache:
         directories:
@@ -64,7 +64,7 @@ jobs:
         - ./.travis/setup_database &
         - ./gradlew --parallel test integTest
     - stage: verify
-      env: DESCRIPTION="JDK12 unitTests"
+      env: "JDK12 Unit Tests"
       jdk: openjdk12
       cache:
         directories:
@@ -80,7 +80,7 @@ jobs:
           - '$HOME/.gradle'
           - '.gradle'
           - '~/jdk-11.0.5+10'
-      env: DESCRIPTION="JDK11 Coverage & Sonar"
+      env: "JDK11 Coverage & Sonar"
       if: repo = 'triplea-game/triplea'
       git:
         depth: false
@@ -105,7 +105,7 @@ jobs:
           - '.gradle'
           - '~/jdk-11.0.5+10'
       jdk: openjdk11
-      env: DESCRIPTION="Smoke Test"
+      env: "Smoke Test"
       addons: {postgresql: "10"}
       before_install:
         - ./.travis/install_java_11.0.5
@@ -117,7 +117,7 @@ jobs:
         - ./.travis/setup_database
         - ./.travis/run_smoke_tests
     - stage: deploy artifacts
-      env: DESCRIPTION="Upload to github releases"
+      env: "Upload to Github Releases"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       install: skip
       cache:
@@ -156,7 +156,7 @@ jobs:
           repo: triplea-game/triplea
           branch: master
     - stage: deploy artifacts
-      env: DESCRIPTION="Deploy to prerelease"
+      env: "Deploy to Prerelease"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       cache:
         directories:
@@ -185,6 +185,7 @@ jobs:
         - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
         - ./run_deployment "$version" -i ansible/inventory/prerelease
     - stage: deploy production
+      env: "Deploy to Producton"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       addons:
         apt:
