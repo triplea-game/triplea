@@ -689,22 +689,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final var scramble =
         new ScrambleLogic(getData(), player, territoriesWithBattles, battleTracker);
     final Map<Territory, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>
-        scramblersByTerritory = scramble.findPossibleScramblers();
-    for (final Territory to : scramblersByTerritoryPlayer.keySet()) {
-      PlayerId defender = PlayerId.NULL_PLAYERID;
-      if (battleTracker.hasPendingBattle(to, false)) {
-        defender = AbstractBattle.findDefender(to, player, data);
-      }
+        scramblersByTerritory = scramble.getUnitsThatCanScrambleByDestination();
+    for (final Territory to : scramblersByTerritory.keySet()) {
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
           scramblersByTerritory.get(to);
-      for (final Territory from : scramblers.keySet()) {
-        if (defender.isNull()) {
-          defender = AbstractBattle.findDefender(from, player, data);
-        }
-      }
-      if (defender.isNull()) {
-        continue;
-      }
+
       // Remove any units that were already scrambled to other territories.
       scramblers
           .entrySet()
@@ -716,7 +705,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               });
 
       boolean scrambledHere = false;
+      PlayerId defender = PlayerId.NULL_PLAYERID;
       if (!scramblers.isEmpty()) {
+        // Determine defender.
+        if (battleTracker.hasPendingBattle(to, false)) {
+          defender = AbstractBattle.findDefender(to, player, data);
+        }
+        for (final Territory from : scramblers.keySet()) {
+          if (defender.isNull()) {
+            defender = AbstractBattle.findDefender(from, player, data);
+          }
+        }
+        if (defender.isNull()) {
+          continue;
+        }
+
         final Map<Territory, Collection<Unit>> toScramble =
             getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
@@ -776,7 +779,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           int numberScrambled = scrambling.size();
           final Collection<Unit> airbases =
-              t.getUnitCollection().getMatches(scramble.getAirbasesCanScramble());
+              t.getUnitCollection().getMatches(scramble.getAirbaseThatCanScramblePredicate());
           final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
           if (maxCanScramble != Integer.MAX_VALUE) {
             // TODO: maybe sort from biggest to smallest first?

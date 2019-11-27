@@ -11,23 +11,27 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import lombok.Getter;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
+/**
+ * ScrambeLogic encapsulates the logic for finding possible units that can scramble to defend a
+ * given territory.
+ */
 public class ScrambleLogic {
   private final GameData data;
   private final PlayerId player;
   private final Set<Territory> territoriesWithBattles;
   private BattleTracker battleTracker;
-  private final Predicate<Unit> airbasesCanScramble;
+  @Getter private final Predicate<Unit> airbaseThatCanScramblePredicate;
   private final Predicate<Territory> canScrambleFromPredicate;
   private final int maxScrambleDistance;
 
@@ -40,7 +44,7 @@ public class ScrambleLogic {
     this.player = player;
     this.territoriesWithBattles = territoriesWithBattles;
     this.battleTracker = battleTracker;
-    this.airbasesCanScramble =
+    this.airbaseThatCanScramblePredicate =
         Matches.unitIsEnemyOf(data, player)
             .and(Matches.unitIsAirBase())
             .and(Matches.unitIsNotDisabled())
@@ -52,7 +56,7 @@ public class ScrambleLogic {
                     Matches.unitCanScramble()
                         .and(Matches.unitIsEnemyOf(data, player))
                         .and(Matches.unitIsNotDisabled())))
-            .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
+            .and(Matches.territoryHasUnitsThatMatch(airbaseThatCanScramblePredicate))
             .andIf(Properties.getScrambleFromIslandOnly(data), Matches.territoryIsIsland())
             .build();
     this.maxScrambleDistance = computeMaxScrambleDistance(data);
@@ -73,13 +77,14 @@ public class ScrambleLogic {
     this(data, player, Set.of(territory), new BattleTracker());
   }
 
-  public Predicate<Unit> getAirbasesCanScramble() {
-    return airbasesCanScramble;
-  }
-
+  /**
+   * Returns all units that can be scrambled for the given construction parameters.
+   *
+   * @return The units that can be scrambled.
+   */
   public Collection<Unit> getUnitsThatCanScramble() {
-    final var units = new ArrayList<Unit>();
-    for (final var entries : findPossibleScramblers().values()) {
+    final var units = new HashSet<Unit>();
+    for (final var entries : getUnitsThatCanScrambleByDestination().values()) {
       for (final var tuple : entries.values()) {
         units.addAll(tuple.getSecond());
       }
@@ -87,8 +92,21 @@ public class ScrambleLogic {
     return units;
   }
 
+  /**
+   * Returns the possible scramblers keyed by territory to scramble to. The value is a map from
+   * territory to scramble from to a Tuple of unit collections, with the first being the airbases
+   * used for scrambling and the second being the units to scramble.
+   *
+   * <p>Note: Since the same unit may be able scramble to different territories, the same unit may
+   * appear in the list of scramblers for different 'to' territories.
+   *
+   * <p>TODO: Simplify by getting rid of the Tuple - make a dedicated class or don't return
+   * airbases.
+   *
+   * @return The units that can be scrambled keyed by territory to scramble to.
+   */
   public Map<Territory, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>
-      findPossibleScramblers() {
+      getUnitsThatCanScrambleByDestination() {
     // first, figure out all the territories where scrambling units could scramble to
     // then ask the defending player if they wish to scramble units there, and actually move the
     // units there
@@ -98,10 +116,10 @@ public class ScrambleLogic {
     final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
     final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
 
-    final Set<Territory> territoriesWithBattlesWater =
-            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater();
-    final Set<Territory> territoriesWithBattlesLand =
-            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand());
+    final Collection<Territory> territoriesWithBattlesWater =
+        CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater());
+    final Collection<Territory> territoriesWithBattlesLand =
+        CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand());
     final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory battleTerr : territoriesWithBattlesWater) {
       final Collection<Territory> canScrambleFrom = getCanScrambleFromTerritories(battleTerr);
@@ -154,7 +172,7 @@ public class ScrambleLogic {
       for (final Territory from : scrambleTerrs.get(to)) {
         // find how many is the max this territory can scramble
         final UnitCollection fromUnits = from.getUnitCollection();
-        final Collection<Unit> airbases = fromUnits.getMatches(airbasesCanScramble);
+        final Collection<Unit> airbases = fromUnits.getMatches(airbaseThatCanScramblePredicate);
         if (getMaxScrambleCount(airbases) == 0) {
           continue;
         }
