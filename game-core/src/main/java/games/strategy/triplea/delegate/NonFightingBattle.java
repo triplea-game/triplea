@@ -164,7 +164,7 @@ public class NonFightingBattle extends DependentBattle {
     for (final Map.Entry<Unit, Collection<Unit>> entry : dependencies.entrySet()) {
       dependentUnits
           .computeIfAbsent(entry.getKey(), k -> new LinkedHashSet<>())
-          .addAll(entry.getValue());
+          .addAll(new ArrayList<>(entry.getValue()));
     }
   }
 }

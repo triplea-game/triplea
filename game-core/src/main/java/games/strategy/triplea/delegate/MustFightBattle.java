@@ -296,7 +296,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   @Override
   public void unitsLostInPrecedingBattle(
       final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
-    Collection<Unit> lost = getDependentUnits(units);
+    Collection<Unit> lost = new ArrayList<>(getDependentUnits(units));
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     // if all the amphibious attacking land units are lost, then we are no longer a naval invasion
     amphibiousLandAttackers.removeAll(lost);
