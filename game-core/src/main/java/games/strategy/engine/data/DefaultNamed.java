@@ -2,13 +2,12 @@ package games.strategy.engine.data;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import lombok.EqualsAndHashCode;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.ToString;
 import org.triplea.java.ArgChecker;
 
 /** Default implementation of {@link Named} for game data components. */
-@EqualsAndHashCode(callSuper = false)
 @ToString
 public class DefaultNamed extends GameDataComponent implements Named {
   private static final long serialVersionUID = -5737716450699952621L;
@@ -20,6 +19,19 @@ public class DefaultNamed extends GameDataComponent implements Named {
     super(data);
     ArgChecker.checkNotEmpty(name);
     this.name = name;
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (other instanceof Named) {
+      return Objects.equals(name, ((Named) other).getName());
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name);
   }
 
   // Workaround for JDK-8199664
