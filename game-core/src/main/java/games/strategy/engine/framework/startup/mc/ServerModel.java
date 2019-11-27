@@ -97,7 +97,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
-  private volatile ServerLauncher serverLauncher;
+  private ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
   private final IServerStartupRemote serverStartupRemote =

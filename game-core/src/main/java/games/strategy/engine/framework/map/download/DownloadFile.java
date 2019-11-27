@@ -25,7 +25,7 @@ final class DownloadFile {
 
   private final DownloadFileDescription download;
   private final DownloadListener downloadListener;
-  private volatile DownloadState state = DownloadState.NOT_STARTED;
+  private DownloadState state = DownloadState.NOT_STARTED;
 
   DownloadFile(final DownloadFileDescription download, final DownloadListener downloadListener) {
     this.download = download;

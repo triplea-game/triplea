@@ -9,7 +9,7 @@ import org.triplea.lobby.common.GameDescription.GameStatus;
  * lobby watcher as games are started and stopped on the host.
  */
 public class InGameLobbyWatcherWrapper {
-  private volatile InGameLobbyWatcher lobbyWatcher = null;
+  private InGameLobbyWatcher lobbyWatcher;
 
   public void setInGameLobbyWatcher(final InGameLobbyWatcher watcher) {
     lobbyWatcher = watcher;

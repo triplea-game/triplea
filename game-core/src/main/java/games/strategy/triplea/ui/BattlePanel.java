@@ -54,7 +54,7 @@ public final class BattlePanel extends ActionPanel {
   // if we are showing a battle, then this will be set to the currently displayed battle. This will
   // only be set after
   // the display is shown on the screen
-  private volatile UUID currentBattleDisplayed;
+  private UUID currentBattleDisplayed;
   private final JFrame battleFrame =
       JFrameBuilder.builder()
           .windowClosedAction(() -> PbemDiceRoller.setFocusWindow(null))
