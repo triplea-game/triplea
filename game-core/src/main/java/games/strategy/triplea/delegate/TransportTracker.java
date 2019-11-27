@@ -96,7 +96,7 @@ public class TransportTracker {
   }
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
-    final Collection<Unit> units = transporting(transport);
+    final Collection<Unit> units = new ArrayList<>(transporting(transport));
     units.addAll(unloaded(transport));
     return units;
   }
