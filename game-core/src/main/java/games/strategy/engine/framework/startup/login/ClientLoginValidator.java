@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import games.strategy.engine.ClientContext;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
@@ -92,8 +91,6 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     if (hashedMac == null) {
       return ErrorMessages.UNABLE_TO_OBTAIN_MAC;
-    } else if (!MacFinder.isValidHashedMacAddress(hashedMac)) {
-      return ErrorMessages.INVALID_MAC;
     }
 
     if (Boolean.TRUE.toString().equals(propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY))) {

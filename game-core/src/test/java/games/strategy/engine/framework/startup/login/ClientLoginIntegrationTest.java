@@ -10,12 +10,12 @@ import games.strategy.net.IClientMessenger;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
 import games.strategy.net.TestServerMessenger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.SystemId;
 import org.triplea.test.common.Integration;
 
 @Integration
@@ -75,7 +75,7 @@ final class ClientLoginIntegrationTest {
         "localhost",
         serverPort,
         "client",
-        MacFinder.getHashedMacAddress(),
+        SystemId.of("system-id"),
         new DefaultObjectStreamFactory(),
         connectionLogin);
   }

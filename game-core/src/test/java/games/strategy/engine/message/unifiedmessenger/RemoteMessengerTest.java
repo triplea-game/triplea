@@ -22,7 +22,6 @@ import games.strategy.net.ClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.net.TestServerMessenger;
 import java.net.InetAddress;
@@ -34,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 
 class RemoteMessengerTest {
@@ -138,8 +138,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      final String mac = MacFinder.getHashedMacAddress();
-      client = new ClientMessenger("localhost", serverPort, "client", mac);
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       unifiedMessengerHub = serverUnifiedMessenger.getHub();
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
@@ -180,8 +179,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      final String mac = MacFinder.getHashedMacAddress();
-      client = new ClientMessenger("localhost", serverPort, "client", mac);
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final RemoteMessenger serverRemoteMessenger =
           new RemoteMessenger(new UnifiedMessenger(server));
       final TestRemote testRemote = new TestRemote();
@@ -210,8 +208,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      final String mac = MacFinder.getHashedMacAddress();
-      client = new ClientMessenger("localhost", serverPort, "client", mac);
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger clientRemoteMessenger =
           new RemoteMessenger(new UnifiedMessenger(client));
@@ -236,8 +233,7 @@ class RemoteMessengerTest {
       server = new TestServerMessenger();
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
-      final String mac = MacFinder.getHashedMacAddress();
-      client = new ClientMessenger("localhost", serverPort, "client", mac);
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
       final RemoteMessenger clientRemoteMessenger =

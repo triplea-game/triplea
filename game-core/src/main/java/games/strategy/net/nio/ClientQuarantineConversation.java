@@ -11,6 +11,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.DialogBuilder;
 
@@ -44,15 +45,13 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       final SocketChannel channel,
       final NioSocket socket,
       final String localName,
-      final String mac) {
+      final SystemId systemId) {
     this.login = login;
     this.localName = localName;
     this.socket = socket;
     this.channel = channel;
-    // Send the local name
     send(this.localName);
-    // Send the mac address
-    send(mac);
+    send(systemId.getValue());
   }
 
   /** Prompts the user to enter their credentials. */
