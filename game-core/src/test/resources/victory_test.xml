@@ -956,119 +956,6 @@
                         <result resourceOrUnit="midget_submarine" quantity="1"/>
                 </productionRule>
 
-                <!-- Advanced Industrial Production -->
-                    <!-- IndustrialTechnology production rules are only needed if you are using or plan to use the "industrialTechnology" tech.
-
-                <productionRule name="buyInfantryIndustrialTechnology">
-                        <cost resource="PUs" quantity="3" />
-                        <result resourceOrUnit="infantry" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyArtilleryIndustrialTechnology">
-                        <cost resource="PUs" quantity="4" />
-                        <result resourceOrUnit="artillery" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyArmourIndustrialTechnology">
-                        <cost resource="PUs" quantity="5" />
-                        <result resourceOrUnit="armour" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyFighterIndustrialTechnology">
-                        <cost resource="PUs" quantity="9" />
-                        <result resourceOrUnit="fighter" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyJP_FighterIndustrialTechnology">
-                        <cost resource="PUs" quantity="9" />
-                        <result resourceOrUnit="jp_fighter" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyBomberIndustrialTechnology">
-                        <cost resource="PUs" quantity="11" />
-                        <result resourceOrUnit="bomber" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyAir_TransportIndustrialTechnology">
-                        <cost resource="PUs" quantity="9" />
-                        <result resourceOrUnit="air_transport" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyTransportIndustrialTechnology">
-                        <cost resource="PUs" quantity="6" />
-                        <result resourceOrUnit="transport" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyJP_TransportIndustrialTechnology">
-                        <cost resource="PUs" quantity="6" />
-                        <result resourceOrUnit="jp_transport" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyCarrierIndustrialTechnology">
-                        <cost resource="PUs" quantity="11" />
-                        <result resourceOrUnit="carrier" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyDestroyerIndustrialTechnology">
-                        <cost resource="PUs" quantity="7" />
-                        <result resourceOrUnit="destroyer" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyJP_DestroyerIndustrialTechnology">
-                        <cost resource="PUs" quantity="7" />
-                        <result resourceOrUnit="jp_destroyer" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyCruiserIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="cruiser" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyBattleshipIndustrialTechnology">
-                        <cost resource="PUs" quantity="17" />
-                        <result resourceOrUnit="battleship" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buySuper_CarrierIndustrialTechnology">
-                        <cost resource="PUs" quantity="17" />
-                        <result resourceOrUnit="super_carrier" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buySubmarineIndustrialTechnology">
-                        <cost resource="PUs" quantity="5" />
-                        <result resourceOrUnit="submarine" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyMidget_SubmarineIndustrialTechnology">
-                        <cost resource="PUs" quantity="3" />
-                        <result resourceOrUnit="midget_submarine" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyBunkerIndustrialTechnology">
-                        <cost resource="PUs" quantity="4" />
-                        <result resourceOrUnit="bunker" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyFactoryIndustrialTechnology">
-                        <cost resource="PUs" quantity="13" />
-                        <result resourceOrUnit="factory" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyAirfieldIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="airfield" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyHarbourIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
-                        <result resourceOrUnit="harbour" quantity="1"/>
-                </productionRule>
-
-                <productionRule name="buyAAGunIndustrialTechnology">
-                        <cost resource="PUs" quantity="5" />
-                        <result resourceOrUnit="aaGun" quantity="1"/>
-                </productionRule>
-                -->
 
                <!-- Repair rules -->
                     <!-- if you use ww2v3 style factory damage, you need repair rules -->
@@ -1119,60 +1006,6 @@
                     <repairRules name="repairAirfieldIndustrialTechnology"/>
                     <repairRules name="repairHarbourIndustrialTechnology"/>
                 </repairFrontier>
-
-                <!-- all players can use the same frontier, or you can have a different frontier for each player -->
-                <!-- only "production" (a single production frontier) is needed for most maps. if you use ww2v2 tech then you need IndustrialTechnology production, and if you use ww2v3 tech you need Shipyards -->
-                <!--<productionFrontier name="production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-                        <frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>-->
-
-                <!--<productionFrontier name="productionIndustrialTechnology">
-                        <frontierRules name="buyInfantryIndustrialTechnology"/>
-                        <frontierRules name="buyArtilleryIndustrialTechnology"/>
-                        <frontierRules name="buyArmourIndustrialTechnology"/>
-                        <frontierRules name="buyFighterIndustrialTechnology"/>
-                        <frontierRules name="buyBomberIndustrialTechnology"/>
-                        <frontierRules name="buyTransportIndustrialTechnology"/>
-                        <frontierRules name="buySubmarineIndustrialTechnology"/>
-                        <frontierRules name="buyDestroyerIndustrialTechnology"/>
-                        <frontierRules name="buyCruiserIndustrialTechnology"/>
-                        <frontierRules name="buyCarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBattleshipIndustrialTechnology"/>
-                        <frontierRules name="buySuper_CarrierIndustrialTechnology"/>
-                        <frontierRules name="buyBunkerIndustrialTechnology"/>
-                        <frontierRules name="buyAAGunIndustrialTechnology"/>
-                        <frontierRules name="buyFactoryIndustrialTechnology"/>
-                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
-                        <frontierRules name="buyHarbourIndustrialTechnology"/>
-                </productionFrontier>-->
-
-                    <!-- Shipyards frontier rules are only needed if you are using the "shipyards" tech AND have the shipyards game option ON. If the shipyards game option is ON, then all players must use 1 frontier called "production".
-                            If you want to use multiple production frontiers for different nations, then it is highly recommended you use triggers to add or remove productionRules instead of using the shipyard frontier.
-                <productionFrontier name="productionShipyards">
-                        <frontierRules name="buyTransportShipyards"/>
-                        <frontierRules name="buySubmarineShipyards"/>
-                        <frontierRules name="buyDestroyerShipyards"/>
-                        <frontierRules name="buyCruiserShipyards"/>
-                        <frontierRules name="buyCarrierShipyards"/>
-                        <frontierRules name="buyBattleshipShipyards"/>
-                        <frontierRules name="buySuper_CarrierShipyards"/>
-                </productionFrontier>-->
 
                 <productionFrontier name="Germans_production">
                         <frontierRules name="buyInfantry"/>
@@ -1274,26 +1107,6 @@
                         <frontierRules name="buyAirfield"/>
                         <frontierRules name="buyHarbour"/>
                 </productionFrontier>
-
-                <!--<productionFrontier name="Chinese_production">
-                        <frontierRules name="buyInfantry"/>
-                        <frontierRules name="buyArtillery"/>
-                        <frontierRules name="buyArmour"/>
-                        <frontierRules name="buyFighter"/>
-                        <frontierRules name="buyBomber"/>
-                        <frontierRules name="buyTransport"/>
-                        <frontierRules name="buySubmarine"/>
-                        <frontierRules name="buyDestroyer"/>
-                        <frontierRules name="buyCruiser"/>
-                        <frontierRules name="buyCarrier"/>
-                        <frontierRules name="buyBattleship"/>
-                        <frontierRules name="buySuper_Carrier"/>
-                        <frontierRules name="buyBunker"/>
-                        <frontierRules name="buyAAGun"/>
-                        <frontierRules name="buyFactory"/>
-                        <frontierRules name="buyAirfield"/>
-                        <frontierRules name="buyHarbour"/>
-                </productionFrontier>-->
 
                 <productionFrontier name="Chinese_CutOff_production">
                         <frontierRules name="buyInfantry"/>
@@ -1508,29 +1321,6 @@
         </technology>
 
         <attachmentList>
-
-<!--  relationshipType Attachments -->
-    <!--  each PoliticalRelationship needs a relationshipTypeAttachment
-            and each relationshipTypeAttachment needs an option: archetype that needs to be set to one of the following 3 values:
-            * "allied"
-            * "neutral"
-            * "war"
-            the archeType determines the default behaviour of this relationshipType that can be modified by setting other options.
-            Also the archeType determines the outcomes of isAllied, isNeutral and isWar query in the engine
-    -->
-    <!-- the following options are allowed for "relationshipTypeAttachment", (all options except for archeType only allow "true", "false", or "default")
-            archeType                               values: "allied" or "war" or "neutral"
-            canMoveLandUnitsOverOwnedLand           values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
-            canMoveAirUnitsOverOwnedLand            values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
-            canLandAirUnitsOnOwnedLand              values: "true", "false", or "default". default setting is "default", and "default" means that archeType of allied only lets you land units in the player's territories
-            upkeepCost                              values: "default", or any valid integer, or "percentage" with a count of a valid integer. Default = zero (0). This determines if there is a cost to maintain a relationship, which would be subtracted from PUs gained at end of turn.
-                                                                examples: a cost of 1 PU per turn: <option name="upkeepCost" value="1"/> or <option name="upkeepCost" value="flat" count="1"/>, or a cost of 9% of your income per turn: <option name="upkeepCost" value="percentage" count="9"/>
-            alliancesCanChainTogether               values: "true", "false", or "default". can only be applied to a relationship that is archetype "allied", and only 1 relationship can have it. if true, any nations that reach this relationship will share both allies and enemies.
-            isDefaultWarPosition                    values: "true", "false", or "default". can only be applied to a relationship that is archetype "war", and only 1 relationship can have it. if true, any nations that reach an alliance chaining relationship, will have their enemies who are not yet at war with, set to this relationship.
-            canTakeOverOwnedTerritory               values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war lets you take over territories.  By setting true, you can take over territories of an ally
-            givesBackOriginalTerritories            values: "true", "false", or "default". default setting is "default", and "default" means false. If true, at the end of each politics phase, any territories originally belonging to the other player will revert to that players control.
-    -->
-
                 <attachment name="relationshipTypeAttachment" attachTo="War" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
                         <option name="archeType" value="war"/>
                 </attachment>
@@ -1552,27 +1342,6 @@
                         <option name="archeType" value="neutral"/>
                 </attachment>
 
-<!-- Tech Attachments -->
-    <!-- IF you are using custom technologies (generic techs), then ALL players need a tech attachment, even if it is an empty tech attachment, otherwise there will be errors
-    -->
-    <!-- the following options are allowed for "techAttachment".  These are not required, they only determine if a country starts with a tech or not.  All default to False.
-            techCost                            values: the cost of buying tech rolls for this player, defaults to 5
-            superSub
-            jetPower
-            shipyards
-            aARadar
-            longRangeAir
-            heavyBomber
-            improvedArtillerySupport
-            rocket
-            paratroopers
-            increasedFactoryProduction
-            warBonds
-            mechanizedInfantry
-            destroyerBombard
-            industrialTechnology
-
-    -->
                 <!-- Germans -->
                 <attachment name="techAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TechAttachment" type="player">
                         <!-- techCost is optional, and defaults to 5 if missing.  techs default to false if missing -->
@@ -1684,152 +1453,12 @@
                                 just because something is in this list doesn't mean we can get it.  whether we can get it or not is determined by what is in "playerTech" -->
                 </attachment>
 
-
-
-<!-- Unit Attachments -->
-    <!-- Certain units require extra graphical icons present, for when technology is researched or damage is done.  Here is a list, in order of what is needed:
-            Anything I list as "_something" means that you must have the units exact name in front of it, example: fighter_jp
-            if the unit is called "aaGun" then you need units called "rockets", "rockets_r", and "aaGun_r"
-            if the unit has "isAA", but is not exactly named "aaGun", then you need units called "_rockets" and "_r" and "_rockets_r"
-            if the unit has "isRocket", you need "_rockets"
-            if the unit has "isAAforCombatOnly" and/or "isAAforBombingThisUnitOnly", then you need "_r"
-            if the unit has "isAir", but not "isStrategicBomber", then you need "_lr", and "_jp", and "_lr_jp"
-            if the unit has "isAir", and is "isStrategicBomber", then you need "_lr", and "_hb", and "_lr_hb"
-            if the unit has "isSub", then you need "_ss"
-            if the unit has "isFactory", or is called "factory", then you need "_it", and "_it_hit"
-            if a unit can be damaged (by being a factory, or by having "canBeDamaged", then you will need "_hit"
-            if a unit can be disabled, then you will need "_disabled"
-    -->
-    <!-- the following options are allowed for "unitAttachment"
-            isAir                               values: if a unit is air or not, defaults to false
-            isSea                               values: if a unit is sea or not, defaults to false. any unit that is neither air or sea, is land
-            movement                            values: the allowed movement of a unit, defaults to zero
-            attack                              values: the attack value, where a rolled dice must be equal or less than to hit the enemy
-            defense                             values: the defense value, where a rolled dice must be equal or less than to hit the enemy
-            isTwoHit                            values: does the unit have 2 hitpoints. default is false, which means 1 hitpoint
-
-            artillerySupportable                values: with the 'artillery' and 'unitSupportCount' ability, these three create a set of support attachments at the start of the game,
-                                                            allows the unit to receive support from an "artillery" unit (land, sea, or air are allowed)
-            artillery                           values: with the 'artillerySupportable' and 'unitSupportCount' ability, these three create a set of support attachments at the start of the game,
-                                                            artillery gives support (+1 attack) to "artillerySupportable" units (land, sea, or air are allowed)
-            unitSupportCount                    values: with the 'artillerySupportable' and 'artillery' ability, these three create a set of support attachments at the start of the game,
-                                                            unitSupportCount is the number of units that will be supported by the artillery, defaults to 1 if missing
-            isMarine                            values: gives the unit +1 attack if it is attacking amphibiously
-            canBlitz                            values: allows the unit to move through multiple empty enemy territories in one turn
-            receivesAbilityWhenWith             values: gives a unit an ability when they are with, or on the same route as, another unit. currently only works with 'canBlitz'. example: value="canBlitz:armour"
-            canBeGivenByTerritoryTo             values: will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners
-                                                            must be a list of Players who this unit can be given to.  example: value="Russians:Chinese"
-            canBeCapturedOnEnteringBy           values: will allow a unit to be captured from one player to another, if the specified player enters a territory with captureUnitOnEnteringBy
-                                                            must be a list of Players who this unit can be given to.  example: value="Russians:Chinese"
-            canInvadeOnlyFrom                   values: is a colon dilimited list of the transporting units which this unit can perform amphibious assaults from.
-                                                            A unit which can not perform amphibious assaults may instead disembark during non-combat
-                                                            can be set to "all", or "none", or a list of some transports. if this option is not present, it defaults to "all"
-            isInfantry                          values: allows the unit to be transported by 'isLandTransport' IF you have mechanizedInfantry technology
-            isLandTransport                     values: allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology
-            isAirTransportable                  values: allows the unit to be transported by an "isAirTransport" unit, IF you have paratroopers technology
-            isAirTransport                      values: allows an air unit to carry land units when you have paratroopers tech
-            transportCost                       values: the space this unit takes up in a transport
-            transportCapacity                   values: the amount of space of land units this unit can carry. can be used with sea or air units, except that air units will also require isAirTransport.
-            isCombatTransport                   values: considers a unit to be a combat sea unit, even if it has transport capacity, for the purposes of convoys and restricted attack on transports
-            isAirTransportable                  values: does nothing
-            isInfantry                          values: does nothing
-
-            canScramble                         values: allows the aircraft to enter a surrounding sea zone if the enemy is doing an attack on or from the surrounding sea zone
-            maxScrambleDistance                 values: the distance out an aircraft can scramble. anything higher than 1 is not supported well at this point.
-            isSuicide                           values: makes a unit die before combat begins, however they do get to roll
-            isKamikaze                          values: allows an air unit to use up all of its movement to go to a battle
-            isStrategicBomber                   values: allows a unit to bombing factories and canBeDamaged units
-            bombingMaxDieSides                  values: is the max dice sides for a strategic bombing or rocket attack.  if you want to lower the luck involved, use bombing bonus and lower the max dice sides.  This property is optional, and only turns on when you have LL for bombing turned on.
-                                                            example: if you want to have either a 3 or 4 rolled, then set maxDieSides to 2, and the Bonus to 2.  this means you will roll a 2 sided die (results are either "1" or "2") and add "2" to the result (so you get "3" or "4")
-            bombingBonus                        values: is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  This property is optional, and only turns on when you have LL for bombing turned on.
-            carrierCost                         values: the space this unit takes up when sitting on a carrier
-            carrierCapacity                     values: the amount of space or air unit this unit can carry.
-
-            canBombard                          values: allows a sea unit to bombard the enemy during an amphibious assault
-            bombard                             values: the value this unit bombards at. defaults to the attack value of the unit if missing
-            blockade                            values: allows the unit to do damage up to the value of land territories surrounding a blockade zone, to the enemy's income
-            isDestroyer                         values: cancels out an isSub unit's first strike and submerge abilities, and allows it to be hit by air units if using ww2v3 rules
-            isSub                               values: allows the unit to roll dice before other units, and submerge or retreat from battle even on defense, and if using ww2v3 rules not be hit by air unless the enemy has an isDestroyer
-
-            canBeDamaged                        values: sets if a unit can be attacked by strategic bombing raids or by rockets.  isFactory also allows these things
-            maxDamage                           values: is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number
-                                                            So for example, if the unit isFactory Or canProduceUnits, And canProduceXUnits = -1, And maxDamage = 3, THEN you will be able to do 3x the territory value in damage to this unit.
-                                                            If However, canProduceXUnits = 2, and maxDamage = 3, then you can do up to 3 damage to this unit.
-            maxOperationalDamage                values: is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. A disabled unit will not participate in combat too.  Does Not work with isFactory or canProduceUnits.
-            canDieFromReachingMaxDamage         values: means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero
-            isInfrastructure                    values: means a unit does not participate in combat, and they will be captured if the attacker is successful
-            destroyedWhenCapturedFrom           values: is a list of players who destroy a non-combat unit instead of letting it be captured.  destroyedWhenCapturedFrom just takes the value input then adds "FROM:" to the beginning, then calls destroyedWhenCapturedBy with the new value.
-            destroyedWhenCapturedBy             values: is a list of the players who destroy this non-combat unit instead of capturing it.  all non-combat units are normally captured by default. is a colon delimited list of player names.
-                                                            You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed.
-                                                            examples: <option name="destroyedWhenCapturedBy" value="BY:Chinese:Japanese"/> and <option name="destroyedWhenCapturedBy" value="FROM:Russians:Chinese"/>
-            whenCapturedChangesInto             values: allows a unit to change into a different unit when captured from a specific player to a specific player.  "fromPlayer:toPlayer:transferAttributes:unitType:numberOfUnits".  accepts "any" instead of a player name. allows multiple.
-                                                            examples: <option name="whenCapturedChangesInto" value="any:any:true:Minor_Factory:1"/> and <option name="whenCapturedChangesInto" value="Russians:Germans:false:gold:3:lumber:1"/>
-            isAirBase                           values: allows units with canScramble to scramble from a territory with this unit
-            maxScrambleCount                    values: max number of units which can scramble from this air base. defaults to infinite.
-            givesMovement                       values: allows a unit to give movement to other units.  must be an integer, followed by a colon ":", followed by the name of the unit
-            repairsUnits                        values: is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit.
-                                                            unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit
-                                                            example: option name="repairsUnits" value="battleship:super_carrier"
-            whenCombatDamaged                   values: this property lets you set certain behaviors for when this unit is damaged. the value is the effect, while the count is the damage from where to where. (example: <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>)
-                                                            units start at zero combat damage, and usually die at 1 damage. some units have 2 hp, so you can use this with 1:1 to say that when a unit has 1 damage they have this effect.
-                                                            currently only allows: unitsMayNotLandOnCarrier, unitsMayNotLeaveAlliedCarrier
-            canIntercept                        values: allows this unit to participate in air battles, as a defending unit
-            canEscort                           values: allows this unit to participate in air battles, as an attacking unit
-            airDefense                          values: defense value of interceptor
-            airAttack                           values: attack value of escort
-            fuelCost                            values: fuelCost is a list of at least one resource that get used up for each point of movementCost a unit does.  (can have multiple). example: <option name="fuelCost" value="Fuel" count="5"/> and <option name="fuelCost" value="PUs" count="1"/>
-
-    production related:
-            isFactory                           values: allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
-            canProduceXUnits                    values: allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.
-                                                            if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing
-            canProduceUnits                     values: allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors.
-            createsUnitsList                    values: is a list of units that this unit will create every turn at the end of the turn. can have multiple instances
-            createsResourcesList                values: is a list of resources that this unit will create every turn at the end of the turn. can have multiple instances
-
-    placement related:
-            maxBuiltPerPlayer                   values: is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more
-                                                            [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable]
-            canOnlyBePlacedInTerritoryValuedAtX values: the minimum territory value to place the unit there. defaults to "-1" which means anywhere
-            unitPlacementRestrictions           values: a list of territories where this unit can not be built. list can contain any number of territories, including sea zones .
-                                                            every unit may have a list, and the lists may be different for each unit. default is no list.
-                                                            the list may be turned on/off with "Unit Placement Restrictions" game property
-            unitPlacementOnlyAllowedIn          values: is the direct inverse of unitPlacementRestrictions
-            requiresUnits                       values: is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build.
-            consumesUnits                       values: requires that a unit be present in a territory, then when this unit is placed the other units are destroyed / upgraded into this unit.  Can have multiple instances of this, which means it consumes multiple types of units.
-            isConstruction                      values: allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contructions of "constructionType" may be placed per territory per turn.
-                                                            may have only "maxConstructionsPerTypePerTerr" constructions Total per territory with/without a factory unless you enable "More Constructions with/without Factory", which will allow up a total number of up to the territory value
-                                                            and "Unlimited Constructions" game property allows unlimited constructions total in a territory
-            constructionType                    values: is just a unique string which identifies what kind of construction this.
-                                                            if two or more constructions have the exact same constructionType (and the same PerType rules), then they will follow the same rules for placement.
-                                                            example: if you have little_bunker and big_bunker both as type "bunker", with constructionsPerTerrPerTypePerTurn=2, then you could place 2 littles, or 2 bigs, or 1 little and 1 big in a territory
-                                                            if you do not want this unit to be effected by the global properties "More Constructions with/without Factory" and "Unlimited Constructions", then make sure the type ends in "structure". example: "harbour_structure"
-            constructionsPerTerrPerTypePerTurn  values: is how many of this type you can place in a territory every turn
-            maxConstructionsPerTypePerTerr      values: is how many max of this type may be in a territory. this must be greater than constructionsPerTerrPerTypePerTurn
-                                                            if "More Constructions with/without Factory" = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories with/without factories
-                                                            if "Unlimited Constructions" = true, then this number becomes 10000
-            special                             values: a colon delimited list of possible options for this unit.  Currently only supports: "canOnlyPlaceInOriginalTerritories"
-
-    aa related:
-            isAA                                values: allows a unit to shoot at air units before combat starts and not participate in the rest of combat, have certain movement restrictions, and be capturable
-            attackAA                            values: the value that an isAA unit will attack at, for shooting at air units before battle
-            attackAAmaxDieSides                 values: sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).
-                                                            Be Warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck!
-            isAAforCombatOnly                   values: allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids
-            isAAforBombingThisUnitOnly          values: allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack
-            isRocket                            values: allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name
-            isAAmovement                        values: forces this unit to follow the rules for movement of an AA gun, and for placement of AA guns (like no moving during combat phase, max of 1 of each unit per territory, etc.)
-
-    -->
-
                 <!-- Infantry -->
                 <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="2"/>
                          <!-- isInfantry allows the unit to be transported by 'isLandTransport' IF you have mechanizedInfantry technology -->
                          <option name="isInfantry" value="true"/>
-                         <!-- isMarine gives the unit +1 attack if it is attacking amphibiously -->
-                         <!-- <option name="isMarine" value="true"/> -->
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <!-- artillerySupportable allows the unit to receive support from an "artillery" unit (land, sea, or air are allowed) -->
@@ -1839,12 +1468,6 @@
                          <!-- canBeGivenByTerritoryTo will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners
                                 must be a list of Players who this unit can be given to.  example: value="Russians:Chinese" -->
                          <option name="canBeGivenByTerritoryTo" value="Russians"/>
-                         <!-- canBeCapturedOnEnteringBy will allow a unit to be captured from one player to another, if the specified player enters a territory with captureUnitOnEnteringBy
-                                must be a list of Players who this unit can be given to.  example: value="Russians:Chinese"
-                         <option name="canBeCapturedOnEnteringBy" value="Americans:British"/>-->
-                         <!-- isAirTransportable and isInfantry currently do NOTHING, and are only kept for backwards compatibility
-                         <option name="isAirTransportable" value="false"/>
-                         <option name="isInfantry" value="false"/> -->
                 </attachment>
 
 
@@ -1877,12 +1500,7 @@
                          <!-- isLandTransport allows the unit to transport "isInfantry" on a one-to-one basis, if you have the mechanizedInfantry technology -->
                          <option name="isLandTransport" value="true"/>
                          <option name="canBeGivenByTerritoryTo" value="Russians"/>
-                         <!-- consumesUnits requires that a unit be present in a territory, then when this unit is placed the other units are destroyed / upgraded into this unit.  Can have multiple instances of this, which means it consumes multiple types of units.
-                         <option name="consumesUnits" value="2:infantry"/>
-                         <option name="consumesUnits" value="1:artillery"/>-->
                          <option name="isAirTransportable" value="true"/>
-                         <!-- receivesAbilityWhenWith gives a unit an ability when they are with, or on the same route as, another unit
-                         <option name="receivesAbilityWhenWith" value="canBlitz:armour"/>-->
                 </attachment>
 
                              <!-- Motorized -->
@@ -1925,10 +1543,6 @@
                          <option name="defense" value="4"/>
                          <option name="canScramble" value="true"/>
                          <option name="maxScrambleDistance" value="1"/>
-                         <!-- isSuicide makes a unit die before combat begins, however they do get to roll -->
-                         <!--<option name="isSuicide" value="true"/>-->
-                         <!-- isKamikaze allows an air unit to use up all of its movement to go to a battle -->
-                         <!--<option name="isKamikaze" value="true"/>-->
                          <option name="canIntercept" value="true"/>
                          <option name="canEscort" value="true"/>
                          <option name="airDefense" value="2"/>
@@ -2052,10 +1666,6 @@
                          <option name="transportCapacity" value="5"/>
                          <!-- isCombatTransport tells the engine that this sea unit can transport but can fight too. units will not be able to move through it like they would a transport, and it can be taken casualty during battle as normal -->
                          <option name="isCombatTransport" value="true"/>
-                         <!--<option name="hitPoints" value="2"/>-->
-                         <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect
-                         <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>
-                         <option name="whenCombatDamaged" value="unitsMayNotLeaveAlliedCarrier" count="1:2"/>-->
                 </attachment>
 
                 <!-- Submarine -->
@@ -2143,9 +1753,6 @@
                          <option name="givesMovement" value="1:jp_fighter"/>
                          <option name="givesMovement" value="1:bomber"/>
                          <option name="givesMovement" value="1:air_transport"/>
-                         <!--<option name="isAAforBombingThisUnitOnly" value="true"/>-->
-                         <!--<option name="whenCapturedChangesInto" value="any:Italians:false:aaGun:2:infantry:1"/>
-                         <option name="whenCapturedChangesInto" value="Russians:any:true:factory:1"/>-->
                 </attachment>
 
                 <!-- Harbour -->
@@ -2163,9 +1770,6 @@
                          <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
                          <option name="maxConstructionsPerTypePerTerr" value="1"/>
                          <option name="destroyedWhenCapturedBy" value="Chinese"/>
-                         <!--<option name="givesMovement" value="1:transport"/>
-                         <option name="givesMovement" value="1:jp_transport"/>-->
-                         <!--<option name="givesMovement" value="1:midget_submarine"/>-->
                          <option name="givesMovement" value="1:submarine"/>
                          <option name="givesMovement" value="1:destroyer"/>
                          <option name="givesMovement" value="1:jp_destroyer"/>
@@ -2173,14 +1777,12 @@
                          <option name="givesMovement" value="1:carrier"/>
                          <option name="givesMovement" value="1:battleship"/>
                          <option name="givesMovement" value="1:super_carrier"/>
-                         <!--<option name="isAAforBombingThisUnitOnly" value="true"/>-->
                 </attachment>
 
                 <!-- Factory -->
                 <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
                          <!-- isFactory units can have movement, but not much else -->
                          <option name="isFactory" value="true"/>
-                         <!--<option name="maxDamage" value="-1"/>-->
                          <!-- unitPlacementRestrictions are a list of territories where this unit can not be built. list can contain any number of territories, including sea zones .
                                 every unit may have a list, and the lists may be different for each unit. default is no list.
                                 the list may be turned on/off with "Unit Placement Restrictions" game property -->
@@ -2191,21 +1793,9 @@
                                 if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable] -->
                          <option name="maxBuiltPerPlayer" value="3"/>
                          <option name="destroyedWhenCapturedBy" value="Chinese"/>
-                         <!-- unitPlacementOnlyAllowedIn is the direct inverse of unitPlacementRestrictions
-                         <option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
                          <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.
                                 if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing -->
                          <option name="canProduceXUnits" value="-1"/>
-                         <!-- canProduceUnits allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors.
-                         <option name="canProduceUnits" value="true"/>-->
-                         <!-- createsUnitsList is a list of units that this unit will create every turn at the end of the turn. can have multiple instances
-                         <option name="createsUnitsList" value="2:infantry"/>
-                         <option name="createsUnitsList" value="1:artillery"/>-->
-                         <!-- createsResourcesList is a list of resources that this unit will create every turn at the end of the turn. can have multiple instances
-                         <option name="createsResourcesList" value="3:PUs"/>
-                         <option name="createsResourcesList" value="2:techTokens"/>-->
-                         <!-- special allows for some different options for the unit.
-                         <option name="special" value="canOnlyPlaceInOriginalTerritories"/>-->
                 </attachment>
 
                 <!-- AA Gun -->
@@ -2215,11 +1805,6 @@
                          <option name="movement" value="1"/>
                          <option name="destroyedWhenCapturedBy" value="Chinese"/>
                          <option name="destroyedWhenCapturedFrom" value="Russians"/>
-                         <!-- destroyedWhenCapturedBy and destroyedWhenCapturedFrom let a unit be destroyed instead of captured.  They can be a colon delimited list of players.
-                                You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed.
-                                destroyedWhenCapturedFrom just takes the value input then adds "FROM:" to the beginning, then calls destroyedWhenCapturedBy with the new value.
-                         <option name="destroyedWhenCapturedBy" value="BY:Chinese:Japanese"/>
-                         <option name="destroyedWhenCapturedBy" value="FROM:Russians:Chinese"/>-->
                          <option name="bombingMaxDieSides" value="2"/>
                          <option name="bombingBonus" value="2"/>
                          <!-- attackAA sets the value the AA will attack at (radar adds 1 if this is not 0). Defaults to 1.  Can not be more than half the diceSides (even with radar)-->
@@ -2227,67 +1812,14 @@
                          <!-- attackAAmaxDieSides sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).
                                 Be Warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck! -->
                          <option name="attackAAmaxDieSides" value="6"/>
-                         <!-- isAAforCombatOnly allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids
-                         <option name="isAAforCombatOnly" value="true"/>-->
-                         <!-- isAAforBombingThisUnitOnly allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack
-                         <option name="isAAforBombingThisUnitOnly" value="true"/>-->
-                         <!-- isRocket allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name.
-                         <option name="isRocket" value="true"/>-->
-                         <!-- isAAmovement forces this unit to follow the rules for movement of an AA gun, and for placement of AA guns (like no moving during combat phase, max of 1 of each unit per territory, etc.)
-                         <option name="isAAmovement" value="true"/>-->
                 </attachment>
-
-
-<!-- Territory Attachments -->
-    <!-- <option name="unitProduction" value="x"/> must be placed under <option name="production" value="x"/> if it is being used.
-            This is because a recent update to TripleA had the setting of 'production' automatically set 'unitProduction' to be equal to it.
-            If you want to set "production" without also setting "unitProduction", then please use "productionOnly" -->
-    <!-- the following options are allowed for "territoryAttachment"
-            production                              values: the PU production of the territory. also sets unitProduction to be equal.
-            productionOnly                          values: please do not use this. it is only here for use with triggers. it sets "production" without setting "unitProduction"
-            unitProduction                          values: unitProduction is complex and has 2 uses, depending on how you plan on dealing with damage. Defaults to whatever "production" is, so please set it after you set "production"
-                                                                1.  First use is used only with ww2v3 factory damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to a Territory, not to a Unit.
-                                                                        This decides the damage the territory starts at.  If unitProduction is less than production, then the territory starts damaged.  If they are equal, then the territory is not damaged.
-                                                                2.  Second use is used with newer maps which are using the new damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to an individual Unit instead of a Territory.
-                                                                        When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
-                                                                        (The damage potential of these units will normally be 2x the unitProduction, but this can be set individually by creative use of maxDamage and canProduceXUnits)
-            resources                               values: the amount we will get, then the name of the resource. example: value="2:steel"
-            isImpassable                            values: true or false, is this territory not passable?
-            capital                                 values: the capital of a player, and player's can have multiple capitals.  all players except for optional players require a capital.
-                                                                capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory
-            victoryCity                             values: a victory city is typically used for victory conditions
-                                                                victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory
-            originalFactory                         values: means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units
-            originalOwner                           values: allows a territory to revert to this player's control if liberated by an ally
-            navalBase                               values: works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
-            airBase                                 values: works according to original pacific rules: it allows free movement between the land territory and any connecting water territories,
-                                                                which potentially gives an air units +2 movement if they move from airbase to airbase and both airbases have water connecting to them on the route (or are islands)
-            captureUnitOnEnteringBy                 values: allows some players to have their units change to another player's control, if they are located in territories with this attachment, and the specified player captures this territory
-                                                                it must be a list of the player's names in a ":" delimited list.  For example: value="Russians:Germans"
-            changeUnitOwners                        values: allows some players to have their units change to another player's control, if they are located in territories with this attachment
-                                                                it must be a list of the player's names in a ":" delimited list.  For example: value="Russians:Germans"
-            convoyRoute                             values: true or false. Is this territory part of a Convoy route. (meaning, if this territory Either REQUIRES other territories to be owned, or is REQUIRED BY other territories to be owned).
-            convoyAttached                          values: a colon (":") delimited list of the territories this convoy is route is using (list of territories This territory REQUIRES). This can be empty if this territory does not require any other territories but is required by other territories.
-                                                                At least one of the attached territories must be owned by a friendly to collect income from this territory.
-            blockadeZone                            values: true or false, can this territory be blockaded by neighboring sea zones?
-            kamikazeZone                            values: true or false, does nothing right now, but it will put a symbol on the map (the kamikazeZone symbol must be in the flags folder and be named "<owner_name>_fade"
-            territoryEffect                         values: adds a territoryEffect to a territory, can have multiple
-            whenCapturedByGoesTo                    values: the player that captures the territory, then the player that will get the territory, separated by a colon.  Can have multiple. For example: value="Americans:Russians"
-
-    -->
 
                 <attachment name="territoryAttachment" attachTo="West Balkans" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-                        <!-- resources allow you to use custom resource production for a territory.
-                        <option name="resources" value="1:Steel"/>
-                        <option name="resources" value="1:Aluminium"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Greece" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-                        <!-- captureUnitOnEnteringBy allows some players to have their units change to another player's control, if they are located in territories with this attachment, and the specified player captures this territory
-                                it must be a list of the player's names in a ":" delimited list.  For example: value="Russians:Germans"
-                        <option name="captureUnitOnEnteringBy" value="Americans:British"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Sicily" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2296,9 +1828,6 @@
 
                 <attachment name="territoryAttachment" attachTo="Sardinia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-                        <!-- convoyRoute and convoyAttached are for setting a territory to require another territory in order to collect income. at least one of the listed territories must be owned by a friendly to collect income from this territory.
-                        <option name="convoyRoute" value="true"/>
-                        <option name="convoyAttached" value="14 Sea Zone:13 Sea Zone"/> -->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Eastern Canada" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2311,23 +1840,6 @@
                         <option name="capital" value="Germans"/>
                         <!-- victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory -->
                         <option name="victoryCity" value="1"/>
-                        <!--- originalFactory means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units
-                        <option name="originalFactory" value="true"/> -->
-                        <!-- navalBase territory attachment works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
-                        <option name="navalBase" value="true"/> -->
-                        <!-- airBase territory attachment works according to original pacific rules: it allows free movement between the land territory and any connecting water territories,
-                                which potentially gives an air units +2 movement if they move from airbase to airbase and both airbases have water connecting to them on the route (or are islands)
-                        <option name="airBase" value="true"/> -->
-                        <!-- unitProduction is complex and has 2 uses, depending on how you plan on dealing with damage.
-                                    (setting "production" sets "unitProduction" at the same time to be equal, therefore unitProduction defaults to production if it is not set, or if it is set before production.
-                                    If you want unitProduction to be different, please set it after you set production.)
-                            1.  First use is used only with ww2v3 factory damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to a Territory, not to a Unit.
-                                    This decides the damage the territory starts at.  If unitProduction is less than production, then the territory starts damaged.  If they are equal, then the territory is not damaged.
-                            2.  Second use is used with newer maps which are using the new damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to an individual Unit instead of a Territory.
-                                    When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
-                                    The damage potential of these units will normally be 2x the unitProduction, but this can be set individually by creative use of maxDamage and canProduceXUnits.
-                                Must be placed UNDER 'production' in the xml, because 'production' automatically sets 'unitProduction' to be equal otherwise.
-                        <option name="unitProduction" value="14"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Midway" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2446,7 +1958,6 @@
                 <attachment name="territoryAttachment" attachTo="Western United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
                         <option name="victoryCity" value="1"/>
-                        <!--<option name="unitProduction" value="10"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Karelia S.S.R." javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2527,7 +2038,6 @@
                         <option name="production" value="8"/>
                         <option name="capital" value="British"/>
                         <option name="victoryCity" value="1"/>
-                        <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Western Europe" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2569,9 +2079,6 @@
                 <attachment name="territoryAttachment" attachTo="Caucus" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
                         <option name="victoryCity" value="1"/>
-                        <!--<option name="unitProduction" value="4"/>-->
-                        <!-- you can have multiple capitals per country, and can modify if they capture or destroy their PUs, and how many capitals are needed for that to happen -->
-                        <!--<option name="capital" value="Russians"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Sinkiang" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2584,7 +2091,6 @@
 
                 <attachment name="territoryAttachment" attachTo="East Balkans" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-                        <!--<option name="unitProduction" value="3"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Wake Island" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2599,7 +2105,6 @@
 
                 <attachment name="territoryAttachment" attachTo="Evanki National Okrug" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-                        <!--<option name="capital" value="Russians"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Sweden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2637,7 +2142,6 @@
                         <option name="production" value="12"/>
                         <option name="capital" value="Americans"/>
                         <option name="victoryCity" value="1"/>
-                        <!--<option name="unitProduction" value="12"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Belorussia" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2653,7 +2157,6 @@
                         <option name="production" value="8"/>
                         <option name="capital" value="Russians"/>
                         <option name="victoryCity" value="1"/>
-                        <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Anglo Egypt" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2679,7 +2182,6 @@
 
                 <attachment name="territoryAttachment" attachTo="Central United States" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="4"/>
-                        <!--<option name="territoryEffect" value="mountain"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Argentina" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -2700,25 +2202,12 @@
                         <option name="production" value="8"/>
                         <option name="capital" value="Japanese"/>
                         <option name="victoryCity" value="1"/>
-                        <!--<option name="unitProduction" value="8"/>-->
                 </attachment>
 
                 <attachment name="territoryAttachment" attachTo="Caroline Islands" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                 </attachment>
 
-                <!-- Convoy Centers, Convoy Routes, Blockade Zones -->
-                <!-- Convoy Routes must be attached to both the Requiring territory and the Required territory. Sea convoys can have income too, and if they do then they operate just like Convoy Centers for the income
-                <attachment name="territoryAttachment" attachTo="13 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
-                        <option name="production" value="0"/>
-                        <option name="convoyRoute" value="true"/>
-                        <option name="convoyAttached" value=""/>
-                </attachment>
-                <attachment name="territoryAttachment" attachTo="14 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
-                        <option name="convoyRoute" value="true"/>
-                        <option name="convoyAttached" value=""/>
-                </attachment> -->
                 <attachment name="territoryAttachment" attachTo="5 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
                         <!-- Sea zone 5 is part of the convoyRoute of Norway (Norway has it listed under convoyAttached), so Sea zone 5 must have convoyRoute = true -->
@@ -2756,8 +2245,6 @@
                 <attachment name="territoryAttachment" attachTo="49 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                         <option name="blockadeZone" value="true"/>
-                        <!-- kamikazeZone does nothing right now, but it will put a symbol on the map (the kamikazeZone symbol must be in the flags folder and be named "<owner_name>_fade"
-                        <option name="kamikazeZone" value="true"/>-->
                 </attachment>
                 <attachment name="territoryAttachment" attachTo="58 Sea Zone" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
@@ -2766,11 +2253,7 @@
 
 
 
-<!-- Canals -->
-    <!-- the following options are allowed for "canalAttachmentXXX" (all canal attachments need X identical attachments attached to the X number of sea zones involved)
-            canalName                           values: any string name for the canal. must match its counterpart attachment.
-            landTerritories                     values: a colon (":") delimited list of the territories that make up this canal. must match its counterpart attachment.
-    -->
+                <!-- Canals -->
                 <attachment name="canalAttachmentSuez" attachTo="15 Sea Zone" javaClass="games.strategy.triplea.attachments.CanalAttachment" type="territory">
                     <option name="canalName" value="Suez Canal"/>
                     <option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
@@ -2823,17 +2306,6 @@
             impArtTech                          values: "true" or "false", does this support get doubled by the improvedArtillery technology?
     -->
 
-                <!--<attachment name="supportAttachmentRussiansArtillery1" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
-                    <option name="unitType" value="infantry"/>
-                    <option name="faction" value="allied"/>
-                    <option name="side" value="offence"/>
-                    <option name="dice" value="strength"/>
-                    <option name="bonus" value="1"/>
-                    <option name="number" value="1"/>
-                    <option name="bonusType" value="ArtyOld"/>
-                    <option name="impArtTech" value="true"/>
-                </attachment>-->
-
                 <attachment name="supportAttachmentRussiansArtillery2" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
                     <option name="unitType" value="infantry"/>
                     <option name="faction" value="allied"/>
@@ -2878,17 +2350,6 @@
                     <option name="bonusType" value="tactics1"/>
                     <option name="impArtTech" value="false"/>
                 </attachment>
-
-                <!--<attachment name="supportAttachmentSubmarineWolfPackTacticsDefence" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
-                    <option name="unitType" value="submarine"/>
-                    <option name="faction" value="allied"/>
-                    <option name="side" value="defence"/>
-                    <option name="dice" value="strength"/>
-                    <option name="bonus" value="1"/>
-                    <option name="number" value="1"/>
-                    <option name="bonusType" value="tactics2"/>
-                    <option name="impArtTech" value="false"/>
-                </attachment>-->
 
 <!--  National Objectives -->
     <!-- all Objective Attachments, Conditions, Triggers, Rules, etc, must have a unique name (if you don't use unique names, you may get funny results with your trigger attachments, or even java errors) -->
@@ -3030,31 +2491,6 @@
                     <option name="objectiveValue" value="10"/>
                     <option name="rounds" value="10-+"/>
                 </attachment>
-
-                <!--<attachment name="objectiveAttachmentAmericans8" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                    <option name="objectiveValue" value="12"/>
-                    <option name="rounds" value="12-13"/>
-                </attachment>
-
-                <attachment name="objectiveAttachmentAmericans9" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                    <option name="objectiveValue" value="14"/>
-                    <option name="rounds" value="14-15"/>
-                </attachment>
-
-                <attachment name="objectiveAttachmentAmericans10" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                    <option name="objectiveValue" value="16"/>
-                    <option name="rounds" value="16-17"/>
-                </attachment>
-
-                <attachment name="objectiveAttachmentAmericans11" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                    <option name="objectiveValue" value="18"/>
-                    <option name="rounds" value="18-19"/>
-                </attachment>
-
-                <attachment name="objectiveAttachmentAmericans12" attachTo="Americans" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                    <option name="objectiveValue" value="20"/>
-                    <option name="rounds" value="20-+"/>
-                </attachment>-->
 
     <!-- Chinese Objectives -->
                 <attachment name="objectiveAttachmentChinese2_BurmaRoad" attachTo="Chinese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
@@ -3340,150 +2776,6 @@
 
 
 <!-- Triggers -->
-    <!-- Triggers with "uses" will use up a single 'use' every round that they are used.  So a trigger that gives a player a tech, adds units to a territory, changes a relationship, and sends a notification to a player,
-                will use up a Single (1) use, assuming those four actions were done in a single round (as determined by the endRound phase [EndRoundDelegate])-->
-    <!-- the following options are allowed for "triggerAttachmentXXX"
-            conditions                          values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
-                                                            can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
-            conditionType                       values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger.
-                                                        AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
-            invert                              values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
-                                                        This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
-            uses                                values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
-            when                                values: this is a value of when the trigger should fire. it is optional, and if left out the trigger will fire at its default time. "before/after:name-of-step" (example: value="after:chineseEndTurn")
-            chance                              values: "x:y", where x = to hit, and y = dice sides.  So "1:6" = 16.7% chance, while "3:10" = 30% chance
-            victory                             values: the string message from notifications.properties to be displayed if the condition is true.
-            notification                        values: this is a popup window containing a message that will be given to the current player. "name-of-entry-in-notifications.properties" or "message"
-                                                            both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.
-            resource                            values: "PUs" or "techTokens", given at end of turn phase.  "resource" will be affected by "each" in a condition statement.
-            resourceCount                       values: the number of specified resource to be given
-            placement                           values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count.  "placement" will be affected by "each" in a condition statement.
-                                                        (example: value="Moscow:artillery:infantry" count="2" [if count is missing, defaults to 1])
-            removeUnits                         values: removes up to that number of the desired unit, at the beginning of the combat move phase. list is done the same way as placement.
-            purchase                            values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3").  "purchase" will be affected by "each" in a condition statement.
-            tech                                values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
-            availableTech                       values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
-                                                        If prefixed with "-" then it will remove the tech from that category (if the player already has the tech, it will do nothing).
-            frontier                            values: name of a production frontier, changes the player's production frontier to BE the one listed, at beginning of the purchase phase. (does not add the production to the current list, is a new list completely)
-            productionRule                      values: the name of the frontier, and then the name of the production rule you want to add or remove from a frontier, at beginning of the purchase phase.
-                                                        If prefixed with "-" then it will remove the production rule instead of adding it. (example: value="Germans_production:buySuper_Carrier" or value="Germans_production:-buyEarly_Fighter")
-            support                             values: name of support attachment, adds specified player to the list of players a supportAttachment supports. Can be a list. (example: value="supportAttachmentGermans1AwesomeArtillery")
-                                                        If prefixed with "-" then it will remove that player from the support attachment (example: value="-supportAttachmentArtyOldartillery")
-            relationshipChange                  values: the change in relationship for these players, format: "player1:player2:oldRelation:newRelation" example: "Russians:Americans:coldWar:allOutWar"
-                                                        oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
-                                                        You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
-
-        For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.
-        You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )
-            players                             values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). Also used as list of players affected by a playerProperty change.
-            playerAttachmentName                values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, PoliticalActionAttachment) and the exact full name of the attachment to be changed.
-                                                            (example: value="RulesAttachment" count="rulesAttachment"). Defaults to PlayerAttachment if missing.
-            playerProperty                      values: the name of any actual attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)
-            unitType                            values: the exact names of the unit to be affected by a unitProperty change (example: value="cruiser:super_cruiser")
-            unitAttachmentName                  values: the type of attachment (UnitAttachment, UnitSupportAttachment) and the exact full name of the attachment to be changed. Defaults to UnitAttachment if missing.
-            unitProperty                        values: the name of any actual attachment property, with a count equal to the property's values (examples: value="attack" count="4", or value="isAir" count="true"), requires unitType declared
-                                                        Something to note is that <option name="artillery" value="true"/> AND <option name="artillerySupportable" value="true"/> AND <option name="unitSupportCount" value="1"/> are all converted into a support attachment when the game starts,
-                                                            so adding or removing them as unit properties will do nothing (the bonusType for them is "ArtyOld", and the supportAttachment name is "supportAttachmentArtyOld<nameofUnit>") unitProperty changes are done for ALL players who use that unitType,
-                                                            regardless of the player specified in the trigger. In order to have a unitType+unitProperty change only affect certain players and not others, you need to make a new unit type for those players (ie: rename the unit for those players only)
-            territories                         values: the exact names of the territories to be affected by a territoryProperty change (example: value="Germany:Italy")
-            territoryAttachmentName             values: the type of attachment (TerritoryAttachment, CanalAttachment) and the exact full name of the attachment to be changed. Defaults to TerritoryAttachment if missing.
-            territoryProperty                   values: the name of any actual attachment property, with a count equal to the property's values (examples: value="production" count="4", or value="victoryCity" count="true"), requires territories declared
-            relationshipTypes                   values: the exact names of the relationshipType to be affected by a relationshipTypeProperty change
-            relationshipTypeAttachmentName      values: the type of attachment (RelationshipTypeAttachment) and the exact full name of the attachment to be changed. Defaults to RelationshipTypeAttachment if missing.
-            relationshipTypeProperty            values: the name of any actual attachment property, with a count equal to the property's values, requires relationshipTypes declared
-            territoryEffects                    values: the exact names of the territoryEffects to be affected by a territoryEffectProperty change
-            territoryEffectAttachmentName       values: the type of attachment (TerritoryEffectAttachment) and the exact full name of the attachment to be changed. Defaults to TerritoryEffectAttachment if missing.
-            territoryEffectProperty             values: the name of any actual attachment property, with a count equal to the property's values, requires territoryEffects declared
-
-    -->
-        <!-- Clarification on how "each" works.  (Each is just a way to simplify writing national objectives, conditions, and triggers. It does not do anything extra that you could not do before)
-                Lets say you have this objective:
-                    <attachment name="objectiveAttachmentRussians1_EasternEuropeMegaIncome" attachTo="Russians" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
-                        <option name="objectiveValue" value="4"/>
-                        <option name="directOwnershipTerritories" value="Norway:Eastern Europe:East Balkans:Ukraine S.S.R.:Belorussia" count="each"/>
-                    </attachment>
-                What would happen is that "Russians" would get 4 PUs for EACH territory in that list that satisfied directOwnershipTerritories.
-                If you used it as a condition statement, then it would act as 1 for the purposes of returning true/false (in other words, own at least 1 territory and the condition would be true).
-                Now lets say you have this trigger:
-                    <attachment name="triggerAttachmentRussians5_FarEastReserves" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                        <option name="conditions" value="objectiveAttachmentRussians1_EasternEuropeMegaIncome"/>
-                        <option name="placement" value="Russia:infantry" count="2"/>
-                    </attachment>
-                This trigger would add 2 infantry to russia for each territory inside the condition objectiveAttachmentRussians1_EasternEuropeMegaIncome that is true.
-                IF you have more than 1 condition with Each, then the trigger will use the largest Each.  If you have a meta-condition (a condition that contains other conditions), the trigger will NOT look inside the conditions inside the meta-condition.
-                Since it would be meaningless to, for example, change a relation to the same thing 10 times in a row, Each only works with the following kinds of triggers:
-                resource, placement, purchase
-        -->
-        <!-- Clarification on changing properties and clearing of properties. (Any property not in this list overwrites itself if you set it multiple times)
-                The following attachments may have MULTIPLE instances, meaning that they are adding to some variable, meaning that they may be cleared by triggers if you want to (by prefixing with "-clear-"):
-                Unit Attachments:
-                    canBeGivenByTerritoryTo
-                    canBeCapturedOnEnteringBy
-                    destroyedWhenCapturedBy
-                    requiresUnits
-                    givesMovement
-                    consumesUnits
-                    createsUnitsList
-                    createsResourcesList
-                    receivesAbilityWhenWith
-                    whenCapturedChangesInto
-                    special
-                    fuelCost
-
-                Unit Support Attachments:
-                    players
-
-                Territory Attachments:
-                    changeUnitOwners
-                    captureUnitOnEnteringBy
-                    territoryEffect
-                    whenCapturedByGoesTo
-                    convoyAttached
-
-                Territory Effect Attachments:
-                    combatDefenseEffect
-                    combatOffenseEffect
-
-                Player Attachments:
-                    giveUnitControl
-                    captureUnitOnEnteringBy
-                    suicideAttackResources
-
-                Objectives & Condition Attachments:
-                    conditions
-                    unitPresence
-                    relationship
-
-                Rules Attachments:
-                    productionPerXTerritories
-
-                Trigger Attachments:
-                    conditions
-                    productionRule
-                    tech
-                    availableTech
-                    placement
-                    purchase
-                    support
-                    relationshipChange
-
-                    players
-                    playerProperty
-                    unitType
-                    unitProperty
-                    territories
-                    territoryProperty
-                    relationshipTypes
-                    relationshipTypeProperty
-                    territoryEffects
-                    territoryEffectProperty
-
-                Political Action Attachments:
-                    conditions
-                    relationshipChange
-                    actionAccept
-
-        -->
     <!-- Victory Triggers -->
                         <!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
                 <attachment name="triggerAttachmentAxisVictory1_CapitalControl" attachTo="Germans" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
@@ -3693,14 +2985,6 @@
                     <option name="uses" value="1"/>
                 </attachment>
 
-    <!-- Italians Triggers -->
-                <!-- on turn 2 italy will go automatically to war with Russia
-                <attachment name="triggerAttachmentItaliansWarRussians" attachTo="Italians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentItalianTurn2"/>
-                    <option name="relationshipChange" value="Italians:Russians:any:War"/>
-                </attachment>-->
-
-
                 <attachment name="triggerAttachmentItalians2_NorthAfrica" attachTo="Italians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
                     <option name="conditions" value="conditionAttachmentItalians1"/>
                     <option name="purchase" value="cruiser" count="1"/>
@@ -3736,27 +3020,6 @@
                     <option name="productionRule" value="Italians_production:buySuper_CarrierShipyards"/>
                     <option name="uses" value="1"/>
                 </attachment>
-
-                <!--  these triggers are notificationtriggers
-                <attachment name="triggerItalyTurn1CombatMoveNotification" attachTo="Italians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentItalianTurn1"/>
-                    <option name="when" value="before:italianCombatMove"/>
-                    <option name="notification" value="ITALY_TURN1_BEFORE_CM"/>
-                </attachment>
-
-                 <attachment name="triggerItalyTurn1AfterBattleNotification" attachTo="Italians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentItalianTurn1"/>
-                    <option name="when" value="after:italianBattle"/>
-                    <option name="notification" value="ITALY_TURN1_AFTER_BATTLE"/>
-                </attachment>-->
-
-
-    <!-- Americans Triggers -->
-                <!--<attachment name="triggerAttachmentAmericans1" attachTo="Americans" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentGermans3a:conditionAttachmentAmericans1"/>
-                    <option name="tech" value="paratroopers"/>
-                    <option name="uses" value="1"/>
-                </attachment>-->
 
                 <attachment name="triggerAttachmentAmericans6_TheTurningPointInThePacific" attachTo="Americans" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
                     <option name="conditions" value="conditionAttachmentAmericans2"/>
@@ -3842,18 +3105,6 @@
                     <option name="notification" value="RUSSIAN_CAPITAL_LOST"/>
                     <option name="uses" value="1"/>
                 </attachment>
-
-                <!-- when Italy is at War with Russia, Russia will automatically go to war with Japan from any Neutral stance
-                <attachment name="triggerAttachmentRussiansWarJapanese" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentRussiansNeutralItalians"/>
-                    <option name="relationshipChange" value="Russians:Japanese:anyNeutral:War"/>
-                </attachment>-->
-
-                <!-- when Italy is at War with Russia, Russia will automatically go to war with Germany from exactly Neutral state
-                <attachment name="triggerAttachmentRussiansWarGermans" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentRussiansNeutralItalians"/>
-                    <option name="relationshipChange" value="Russians:Germans:Neutrality:War"/>
-                </attachment>-->
 
                 <attachment name="triggerAttachmentRussians3_RecoveredGermanTech" attachTo="Russians" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
                     <option name="conditions" value="objectiveAttachmentRussians3_HardAdvance"/>
@@ -3941,47 +3192,6 @@
                     <option name="playerProperty" value="placementAnySeaZone" count="true"/>
                 </attachment>
 
-                <!--<attachment name="triggerAttachmentChineseParatroopersCanProduce" attachTo="Chinese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentChineseParatroopers"/>
-                    <option name="productionRule" value="Germans_production:buyAir_Transport"/>
-                </attachment>
-
-                <attachment name="triggerAttachmentChineseShipyards" attachTo="Chinese" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-                    <option name="conditions" value="conditionAttachmentChineseShipyards"/>
-                    <option name="productionRule" value="Chinese_production:-buyTransport"/>
-                    <option name="productionRule" value="Chinese_production:-buySubmarine"/>
-                    <option name="productionRule" value="Chinese_production:-buyDestroyer"/>
-                    <option name="productionRule" value="Chinese_production:-buyCruiser"/>
-                    <option name="productionRule" value="Chinese_production:-buyCarrier"/>
-                    <option name="productionRule" value="Chinese_production:-buyBattleship"/>
-                    <option name="productionRule" value="Chinese_production:-buySuper_Carrier"/>
-                    <option name="productionRule" value="Chinese_production:buyTransportShipyards"/>
-                    <option name="productionRule" value="Chinese_production:buySubmarineShipyards"/>
-                    <option name="productionRule" value="Chinese_production:buyDestroyerShipyards"/>
-                    <option name="productionRule" value="Chinese_production:buyCruiserShipyards"/>
-                    <option name="productionRule" value="Chinese_production:buyCarrierShipyards"/>
-                    <option name="productionRule" value="Chinese_production:buyBattleshipShipyards"/>
-                    <option name="productionRule" value="Chinese_production:buySuper_CarrierShipyards"/>
-                    <option name="uses" value="1"/>
-                </attachment>-->
-
-<!--  Rules Restrictions (must have the exact name of "rulesAttachment"-->
-    <!-- the following options are allowed for "playerAttachment"
-            movementRestrictionType                     values: "allowed" or "disallowed", affects the list movementRestrictionTerritories. defaults to null
-            movementRestrictionTerritories              values: a colon (":") delimited list of territories that the player either can not move into, or can not move outside of
-            productionPerXTerritories                   values: gives units to a player as part of NoPuPurchase delegate.  You can have multiple instances of productionPerXTerritories.
-                                                                    value = the name of the unit, and count = the number of territories you need to get 1 of that unit.  if the name of the unit is missing, it defaults to "infantry"
-            placementAnyTerritory                       values: "true" or "false", can you place in any LAND territory you owned at the beginning of the turn?
-            placementAnySeaZone                         values: "true" or "false", can you place in any SEA territory beside a LAND territory you owned at the beginning of the turn?
-            placementCapturedTerritory                  values: "true" or "false", can you place in territory you captured this turn?
-            placementPerTerritory                       values: governs if you can or can not place in that territory, based on the number of owned units in that territory.  You may place in any territory with LESS units than the given value
-                                                                    A value greater than Zero is required to be able to produce infinite units (or infinite up to maxPlacePerTerritory, which you can set too)
-            maxPlacePerTerritory                        values: governs the max you may place per turn per territory (can override factory rules and infinite placement rules)
-            unlimitedProduction                         values: will turn off warnings about purchasing more units than you can place. does not actually do anything to the game.
-            dominatingFirstRoundAttack                  values: means that the very first round of the game, all enemies defend on a "1" instead of their normal defense.
-            negateDominatingFirstRoundAttack            values: means that this player is not affected by the dominatingFirstRoundAttack
-            placementInCapitalRestricted                values: means that the player may only place units in their capitol
-    -->
     <!-- Chinese Rules -->
                 <attachment name="rulesAttachment" attachTo="Chinese" javaClass="games.strategy.triplea.attachments.RulesAttachment" type="player">
                     <option name="movementRestrictionTerritories" value="Sinkiang:Central China:China:Manchuria:Kwangtung:French Indochina"/>
@@ -4007,40 +3217,9 @@
                     <option name="placementInCapitalRestricted" value="true"/> -->
                 </attachment>
 
-<!-- Player Attachments -->
-    <!-- the following options are allowed for "playerAttachment"
-            giveUnitControl                     values: allow multiple players to give units to multiple other players, if those units are in a designated territory
-                                                            must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"
-            captureUnitOnEnteringBy             values: allows multiple players to let their units be captured by multiple other players, if those units are in a designated territory and a designated player captures that territory
-                                                            must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"
-            destroysPUs                         values: means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false = capture the PUs)
-            retainCapitalNumber                 values: means that we do not lose our money if we still control at least this many of our capitals (defaults to 1).
-                                                            If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured)
-            retainCapitalProduceNumber          values: is similar to above, but only affect gaining income and producing units (probably should be less than or equal to retainCapitalNumber)
-                                                            If a player has no playerAttachment, then it defaults to 1 (ie: you keep collecting and producing units so long as you control at least 1 capital)
-            suicideAttackResources              values: the first value is the resource we wish to use for the suicide attacks, and the count is the attack value each of that resource has when used in Kamikaze Suicide Attacks
-                                                            The attacks happen during an opponents turn at the beginning of the battle step, so for example Japan may launch these attacks after the American combat move. The attacks target specific warships for destruction.
-                                                            These attacks only occur in territories that are designated as kamikazeZone, and the attacks will be done by the original owner of that territory (owner when the game started, make sure to set it in the ownerInitialize)
-                                                            Currently the attacks only target units owned by the current player, and must be surface warships (not subs, not transports) [I plan to let you specify which units later, and let you target land units too].
-                                                            examples: <option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/> (
-            vps                                 values: not sure if it works
-            captureVps                          values: not sure if it works
-    -->
-                <!-- Currently "vps" and "captureVps" do not work. if they work in the future they will follow original pacific rules
-                <attachment name="playerAttachment" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
-                    <option name="vps" value="0"/>
-                    <option name="captureVps" value="0"/>
-                </attachment> -->
-
                 <attachment name="playerAttachment" attachTo="Russians" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
                     <!-- destroysPUs means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false = capture the PUs) -->
                     <option name="destroysPUs" value="true"/>
-                    <!-- retainCapitalNumber means that we do not lose our money if we still control at least this many of our capitals (defaults to 1).
-                        If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured) -->
-                    <!-- <option name="retainCapitalNumber" value="2"/> -->
-                    <!-- retainCapitalProduceNumber is similar to above, but only affect gaining income and producing units (probably should be less than or equal to retainCapitalNumber)
-                        If a player has no playerAttachment, then it defaults to 1 (ie: you keep collecting and producing units so long as you control at least 1 capital) -->
-                    <!-- <option name="retainCapitalProduceNumber" value="1"/> -->
                 </attachment>
 
                 <attachment name="playerAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
@@ -4049,26 +3228,6 @@
                     <option name="giveUnitControl" value="Russians"/>
                 </attachment>
 
-                <!--<attachment name="playerAttachment" attachTo="Italians" javaClass="games.strategy.triplea.attachments.PlayerAttachment" type="player">
-                       <- captureUnitOnEnteringBy allows multiple players to let their units be captured by multiple other players, if those units are in a designated territory and a designated player captures that territory
-                            must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"
-                    <option name="captureUnitOnEnteringBy" value="Americans:British"/>
-                </attachment>-->
-
-<!-- Political Action Attachments -->
-    <!-- the following options are allowed for "politicalActionAttachmentXXX"
-            conditions                          value:  this is a colon delimited list of conditions, and this politicalActionAttachment is only active (thus can be performed) if this returns true
-            conditionType                       value:  AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger.
-                                                        AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
-            invert                              value:  true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
-                                                        This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
-            relationshipChange                  value:  the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
-                                                        You can add multiple relationshipchanges per attachment
-            chance                              value:  diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
-            text                                value:  a KEY referring to politicstext.properties to indicate the texts used for regarding this action
-            actionAccept                        value:  a list of players that must accept this action before it takes effect (handy for peacetreaties)
-            attemptsPerTurn                     value:  the number of times this action can be attempted per round (default: 1)
-    -->
                 <attachment name="politicalActionAttachmentItaliansDeclareWarOnRussians" attachTo="Italians" javaClass="games.strategy.triplea.attachments.PoliticalActionAttachment" type="player">
                     <option name="conditions" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>
                     <option name="relationshipChange" value="Italians:Russians:War"/>
@@ -4682,11 +3841,6 @@
                 <!-- END OF TYPICAL OPTIONAL PROPERTIES -->
 
                 <!-- rules and tech -->
-                        <!-- ww2v2 rules override many individual rules to create revised rules
-                <property name="WW2V2" value="false" editable="false">
-                        <boolean/>
-                </property> -->
-
                 <property name="WW2V3" value="true" editable="false">
                         <boolean/>
                 </property>
@@ -4736,12 +3890,6 @@
                 <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
                         <boolean/>
                 </property>
-
-                        <!-- Pacific Theater does 4 things: allows nations to gain VictoryPoints by capturing PUs, allows Strategic Bombing to destroy VPs,
-                                allows NoPU purchases (ww2v3 does also), and allows an additional purchase in NOPU purchases if you control the Burma Road
-                <property name="Pacific Theater" value="false" editable="false">
-                        <boolean/>
-                </property>-->
 
                 <property name="Use Fuel Cost" value="true" editable="true">
                         <boolean/>
@@ -4826,11 +3974,6 @@
                 <property name="Roll AA Individually" value="true" editable="false">
                         <boolean/>
                 </property>
-
-                        <!-- random aa casualties lets the engine choose casualties randomly, and allows you to lose 2 bombers if you attack with 2 bombers and some fighters. I do not recommend using this property
-                <property name="Random AA Casualties" value="false" editable="false">
-                        <boolean/>
-                </property>-->
 
                 <property name="Choose AA Casualties" value="false" editable="false">
                         <boolean/>
@@ -4980,11 +4123,6 @@
                         <boolean/>
                 </property>
 
-                        <!-- used to add destroyers and artillery to the ww2v1 map
-                <property name="Use Destroyers and Artillery" value="false" editable="false">
-                        <boolean/>
-                </property>-->
-
                         <!-- may only bomb or rocket a factory to a max of its territory value per turn (the individual two parts are below) -->
                 <property name="Territory Turn Limit" value="false" editable="false">
                         <boolean/>
@@ -5030,11 +4168,6 @@
                 <property name="Limit SBR Damage To Factory Production" value="false" editable="false">
                         <boolean/>
                 </property>
-
-                        <!-- allows the loss of a victory point for every 10 sbr damage per turn
-                <property name="SBR Victory Points" value="false" editable="false">
-                        <boolean/>
-                </property>-->
 
                 <!-- Neutrals related -->
                         <!-- amount of money subtracted to attack a neutral territory, (set neutrals charge to zero if you plan on attacking neutrals) -->

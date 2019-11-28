@@ -31,32 +31,29 @@ public class BattleDrawable extends TerritoryDrawable {
       final GameData data,
       final Graphics2D graphics,
       final MapData mapData) {
+    final Territory territory = data.getMap().getTerritory(territoryName);
     final Set<PlayerId> players = new HashSet<>();
-    for (final Unit u : data.getMap().getTerritory(territoryName).getUnitCollection()) {
+    for (final Unit u : territory.getUnitCollection()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
         players.add(u.getOwner());
       }
     }
-    final Territory territory = data.getMap().getTerritory(territoryName);
     PlayerId attacker = null;
     boolean draw = false;
-    for (final PlayerId p : players) {
-      if (!territory.isWater()) {
+
+    if (!territory.isWater()) {
+      for (final PlayerId p : players) {
         if (data.getRelationshipTracker().isAtWar(p, territory.getOwner())) {
           attacker = p;
           draw = true;
           break;
         }
+      }
+    }
 
-        // O(n^2), but n is usually 2, and almost always < 10
-        for (final PlayerId p2 : players) {
-          if (data.getRelationshipTracker().isAtWar(p, p2)) {
-            draw = true;
-            break;
-          }
-        }
-      } else {
-        // O(n^2), but n is usually 2, and almost always < 10
+    if (!draw) {
+      // O(n^2), but n is usually 2, and almost always < 10
+      for (final PlayerId p : players) {
         for (final PlayerId p2 : players) {
           if (data.getRelationshipTracker().isAtWar(p, p2)) {
             draw = true;
@@ -65,6 +62,7 @@ public class BattleDrawable extends TerritoryDrawable {
         }
       }
     }
+
     if (draw) {
       final Color stripeColor;
       if (attacker == null || territory.isWater()) {

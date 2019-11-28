@@ -32,7 +32,6 @@ import games.strategy.triplea.util.TuvUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -303,7 +302,7 @@ public class BattleTracker implements Serializable {
       if (!airBattleCompleted
           && Properties.getRaidsMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
-              route.getEnd(), id, data, bombing)) {
+              route.getEnd(), id, data, true)) {
         addAirBattle(route, units, id, data, true);
       } else {
         addBombingBattle(route, units, id, data, targets);
@@ -315,7 +314,7 @@ public class BattleTracker implements Serializable {
       if (!airBattleCompleted
           && Properties.getBattlesMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
-              route.getEnd(), id, data, bombing)) {
+              route.getEnd(), id, data, false)) {
         addAirBattle(
             route,
             CollectionUtils.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts()),
@@ -1381,13 +1380,13 @@ public class BattleTracker implements Serializable {
                 defenders, Matches.unitCanBeInBattle(false, !territory.isWater(), 1, true)));
     sortedUnitsList.sort(
         new UnitBattleComparator(
-            true,
-            TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
-            TerritoryEffectHelper.getEffects(territory),
-            gameData,
-            false,
-            false));
-    Collections.reverse(sortedUnitsList);
+                true,
+                TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
+                TerritoryEffectHelper.getEffects(territory),
+                gameData,
+                false,
+                false)
+            .reversed());
     return sortedUnitsList;
   }
 

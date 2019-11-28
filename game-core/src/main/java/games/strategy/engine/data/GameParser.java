@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -773,9 +774,6 @@ public final class GameParser {
     final PlayerList playerList = data.getPlayerList();
     for (final Element current : getChildren("player", root)) {
       final String name = current.getAttribute("name");
-      // It appears the commented line ALWAYS returns false regardless of the value of
-      // current.getAttribute("optional")
-      // boolean isOptional = Boolean.getBoolean(current.getAttribute("optional"));
       final boolean isOptional = current.getAttribute("optional").equals("true");
       final boolean canBeDisabled = current.getAttribute("canBeDisabled").equals("true");
       final String defaultType = current.getAttribute("defaultType");
@@ -864,15 +862,19 @@ public final class GameParser {
         final List<Node> children2 = getNonTextNodesIgnoringValue(current);
         if (children2.size() == 0) {
           // we don't know what type this property is!!, it appears like only numbers and string may
-          // be represented
-          // without proper type definition
-          try {
-            // test if it is an integer
-            final int integer = Integer.parseInt(value);
-            properties.set(property, integer);
-          } catch (final NumberFormatException e) {
-            // then it must be a string
-            properties.set(property, value);
+          // be represented without proper type definition
+
+          if (value == null) {
+            properties.set(property, null);
+          } else {
+            try {
+              // test if it is an integer
+              final int integer = Integer.parseInt(value);
+              properties.set(property, integer);
+            } catch (final NumberFormatException e) {
+              // then it must be a string
+              properties.set(property, value);
+            }
           }
         } else {
           final String type = children2.get(0).getNodeName();
@@ -881,7 +883,7 @@ public final class GameParser {
               properties.set(property, Boolean.valueOf(value));
               break;
             case "file":
-              properties.set(property, new File(value));
+              properties.set(property, Optional.ofNullable(value).map(File::new).orElse(null));
               break;
             case "number":
               int intValue = 0;

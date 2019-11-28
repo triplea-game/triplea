@@ -1,50 +1,21 @@
 package games.strategy.triplea.delegate.remote;
 
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.UndoableMove;
 import java.util.Collection;
-import java.util.Map;
 
 /** Remote interface for MoveDelegate. */
 public interface IMoveDelegate
     extends IAbstractMoveDelegate<UndoableMove>, IAbstractForumPosterDelegate {
   /**
-   * Moves the specified units along the specified route.
+   * Performs the specified move.
    *
-   * @param units - the units to move.
-   * @param route - the route to move along
-   * @param unitsToTransports - mapping from units to transports to load, must be non null
+   * @param move - the move to perform.
    * @return an error message if the move can't be made, null otherwise
    */
-  String move(Collection<Unit> units, Route route, Map<Unit, Unit> unitsToTransports);
-
-  /**
-   * Moves the specified units along the specified route accounting for dependents.
-   *
-   * @param units - the units to move.
-   * @param route - the route to move along
-   * @param unitsToTransports - mapping from units to transports to load, must be non null
-   * @param newDependents - units that will be made into new dependents if this move is successful,
-   *     must be non null
-   * @return an error message if the move can't be made, null otherwise
-   */
-  String move(
-      Collection<Unit> units,
-      Route route,
-      Map<Unit, Unit> unitsToTransports,
-      Map<Unit, Collection<Unit>> newDependents);
-
-  /**
-   * equivalent to move(units, route, Collections.EMPTY_LIST)
-   *
-   * @param units - the units to move
-   * @param route - the route to move along
-   * @return an error message if the move cant be made, null otherwise
-   */
-  String move(Collection<Unit> units, Route route);
+  String performMove(MoveDescription move);
 
   /**
    * Get what air units must move before the end of the players turn.

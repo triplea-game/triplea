@@ -1,6 +1,10 @@
 package org.triplea.lobby.server.db.dao.user.ban;
 
-import static org.triplea.lobby.server.db.dao.user.ban.UserBanRecord.DATE_CREATED_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.BAN_EXPIRY_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.DATE_CREATED_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.IP_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.PUBLIC_ID_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.SYSTEM_ID_COLUMN;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +20,34 @@ public interface UserBanDao {
           + UserBanRecord.SELECT_CLAUSE
           + "\n"
           + "from banned_user\n"
+          + "where "
+          + BAN_EXPIRY_COLUMN
+          + " > now()\n"
           + "order by "
           + DATE_CREATED_COLUMN
           + " desc")
   List<UserBanRecord> lookupBans();
+
+  @SqlQuery(
+      "select "
+          + PUBLIC_ID_COLUMN
+          + ", "
+          + BAN_EXPIRY_COLUMN
+          + "\n"
+          + "from banned_user\n"
+          + "where \n"
+          + IP_COLUMN
+          + " = :ip::inet"
+          + " or "
+          + SYSTEM_ID_COLUMN
+          + " = :systemId"
+          + " and "
+          + BAN_EXPIRY_COLUMN
+          + " > now() "
+          + "order by "
+          + BAN_EXPIRY_COLUMN
+          + " desc limit 1")
+  Optional<BanLookupRecord> lookupBan(@Bind("ip") String ip, @Bind("systemId") String systemId);
 
   @SqlQuery(
       "select username\n" //

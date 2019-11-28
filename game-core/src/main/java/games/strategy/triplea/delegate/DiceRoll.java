@@ -590,7 +590,7 @@ public class DiceRoll implements Externalizable {
       final IBattle battle,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie) {
 
     // Decide whether to use low luck rules or normal rules.
     if (Properties.getLowLuck(bridge.getData())) {
@@ -645,8 +645,8 @@ public class DiceRoll implements Externalizable {
    *     called, for the actual battle.
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> unitsGettingPowerFor,
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final boolean defending,
       final GameData data,
       final Territory location,
@@ -674,8 +674,8 @@ public class DiceRoll implements Externalizable {
    *     called, for the actual battle.
    */
   protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> unitsGettingPowerFor,
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final boolean defending,
       final GameData data,
       final Territory location,
@@ -874,14 +874,14 @@ public class DiceRoll implements Externalizable {
 
   /** Roll dice for units using low luck rules. */
   private static DiceRoll rollDiceLowLuck(
-      final List<Unit> unitsList,
+      final Collection<Unit> unitsList,
       final boolean defending,
       final PlayerId player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie) {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
@@ -1263,7 +1263,7 @@ public class DiceRoll implements Externalizable {
   }
 
   static DiceRoll airBattle(
-      final List<Unit> unitsList,
+      final Collection<Unit> unitsList,
       final boolean defending,
       final PlayerId player,
       final IDelegateBridge bridge,
@@ -1382,14 +1382,14 @@ public class DiceRoll implements Externalizable {
 
   /** Roll dice for units per normal rules. */
   private static DiceRoll rollDiceNormal(
-      final List<Unit> unitsList,
+      final Collection<Unit> unitsList,
       final boolean defending,
       final PlayerId player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie) {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
@@ -1513,7 +1513,8 @@ public class DiceRoll implements Externalizable {
     return annotation.split(" ", 2)[0];
   }
 
-  static String getAnnotation(final List<Unit> units, final PlayerId player, final IBattle battle) {
+  static String getAnnotation(
+      final Collection<Unit> units, final PlayerId player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player
     // name via the

@@ -1,11 +1,11 @@
 package games.strategy.triplea.delegate;
 
+import games.strategy.engine.data.AbstractMoveDescription;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.data.AbstractMoveDescription;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;

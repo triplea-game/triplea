@@ -10,6 +10,8 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.db.dao.DaoTest;
@@ -17,25 +19,63 @@ import org.triplea.lobby.server.db.dao.DaoTest;
 class UserBanDaoTest extends DaoTest {
   private final UserBanDao userBanDao = DaoTest.newDao(UserBanDao.class);
 
-  @Test
+  @Nested
   @DataSet(cleanBefore = true, value = "user_ban/lookup_bans.yml")
-  void lookupBans() {
-    final List<UserBanRecord> result = userBanDao.lookupBans();
+  class BanLookups {
+    @Test
+    @DisplayName("Verify retrieval of all current bans")
+    void lookupBans() {
+      final List<UserBanRecord> result = userBanDao.lookupBans();
 
-    assertThat(result, hasSize(2));
-    assertThat(result.get(0).getBanExpiry(), is(Instant.parse("2100-01-01T23:59:59.0Z")));
-    assertThat(result.get(0).getDateCreated(), is(Instant.parse("2020-01-01T23:59:59.0Z")));
-    assertThat(result.get(0).getIp(), is("127.0.0.2"));
-    assertThat(result.get(0).getPublicBanId(), is("public-id2"));
-    assertThat(result.get(0).getSystemId(), is("system-id2"));
-    assertThat(result.get(0).getUsername(), is("username2"));
+      assertThat(result, hasSize(2));
+      assertThat(result.get(0).getBanExpiry(), is(Instant.parse("2100-01-01T23:59:59.0Z")));
+      assertThat(result.get(0).getDateCreated(), is(Instant.parse("2020-01-01T23:59:59.0Z")));
+      assertThat(result.get(0).getIp(), is("127.0.0.2"));
+      assertThat(result.get(0).getPublicBanId(), is("public-id2"));
+      assertThat(result.get(0).getSystemId(), is("system-id2"));
+      assertThat(result.get(0).getUsername(), is("username2"));
 
-    assertThat(result.get(1).getBanExpiry(), is(Instant.parse("2021-01-01T23:59:59.0Z")));
-    assertThat(result.get(1).getDateCreated(), is(Instant.parse("2010-01-01T23:59:59.0Z")));
-    assertThat(result.get(1).getIp(), is("127.0.0.1"));
-    assertThat(result.get(1).getPublicBanId(), is("public-id1"));
-    assertThat(result.get(1).getSystemId(), is("system-id1"));
-    assertThat(result.get(1).getUsername(), is("username1"));
+      assertThat(result.get(1).getBanExpiry(), is(Instant.parse("2021-01-01T23:59:59.0Z")));
+      assertThat(result.get(1).getDateCreated(), is(Instant.parse("2010-01-01T23:59:59.0Z")));
+      assertThat(result.get(1).getIp(), is("127.0.0.1"));
+      assertThat(result.get(1).getPublicBanId(), is("public-id1"));
+      assertThat(result.get(1).getSystemId(), is("system-id1"));
+      assertThat(result.get(1).getUsername(), is("username1"));
+    }
+
+    @Test
+    @DisplayName("Verify ban lookup case with no results found")
+    void lookupBanEmptyCase() {
+      final Optional<BanLookupRecord> result = userBanDao.lookupBan("99.99.99.99", "system-id-DNE");
+
+      assertThat(result, isEmpty());
+    }
+
+    @Test
+    @DisplayName("Verify ban lookup by IP address")
+    void lookupBanRecordByIp() {
+      final Optional<BanLookupRecord> result = userBanDao.lookupBan("127.0.0.2", "any-system-id");
+      assertThat(
+          result,
+          isPresentAndIs(
+              BanLookupRecord.builder()
+                  .banExpiry(Instant.parse("2100-01-01T23:59:59.0Z"))
+                  .publicBanId("public-id2")
+                  .build()));
+    }
+
+    @Test
+    @DisplayName("Verify we can lookup bans by system-id and will choose the row with max(expiry)")
+    void lookupBanRecordBySystemId() {
+      final Optional<BanLookupRecord> result = userBanDao.lookupBan("99.99.99.99", "system-id2");
+      assertThat(
+          result,
+          isPresentAndIs(
+              BanLookupRecord.builder()
+                  .banExpiry(Instant.parse("2100-01-01T23:59:59.0Z"))
+                  .publicBanId("public-id2")
+                  .build()));
+    }
   }
 
   @Nested
@@ -52,17 +92,20 @@ class UserBanDaoTest extends DaoTest {
     }
   }
 
-  @Test
-  @DataSet(cleanBefore = true, value = "user_ban/remove_ban_before.yml")
-  @ExpectedDataSet("user_ban/remove_ban_after.yml")
-  void removeBan() {
-    userBanDao.removeBan("public-id");
-  }
+  @Nested
+  class AddAndRemoveBan {
+    @Test
+    @DataSet(cleanBefore = true, value = "user_ban/remove_ban_before.yml")
+    @ExpectedDataSet("user_ban/remove_ban_after.yml")
+    void removeBan() {
+      userBanDao.removeBan("public-id");
+    }
 
-  @Test
-  @DataSet(cleanBefore = true, value = "user_ban/add_ban_before.yml")
-  @ExpectedDataSet("user_ban/add_ban_after.yml")
-  void addBan() {
-    userBanDao.addBan("public-id", "username", "system-id", "127.0.0.3", 5);
+    @Test
+    @DataSet(cleanBefore = true, value = "user_ban/add_ban_before.yml")
+    @ExpectedDataSet("user_ban/add_ban_after.yml")
+    void addBan() {
+      userBanDao.addBan("public-id", "username", "system-id", "127.0.0.3", 5);
+    }
   }
 }

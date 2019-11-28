@@ -1,35 +1,35 @@
 package games.strategy.triplea.ai.pro.util;
 
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 /**
  * MoveBatcher implements an algorithm that batches AI moves together, reducing the number of
  * distinct moves the AI does (and thus the visual delay) by combining moves together.
  */
 public class MoveBatcher {
+  // TODO: #5499 Merge/replace with MoveDescription.
   private static class Move {
     private final ArrayList<Unit> units;
     private final Route route;
-    private final @Nullable HashMap<Unit, Unit> unitsToTransports;
+    private final HashMap<Unit, Unit> unitsToTransports;
 
     private Move(
         final ArrayList<Unit> units,
         final Route route,
-        final @Nullable HashMap<Unit, Unit> unitsToTransports) {
+        final HashMap<Unit, Unit> unitsToTransports) {
       this.units = units;
       this.route = route;
       this.unitsToTransports = unitsToTransports;
     }
 
     Move(final ArrayList<Unit> units, final Route route) {
-      this(units, route, null);
+      this(units, route, new HashMap<>());
     }
 
     Move(final Unit unit, final Route route, final Unit transportToLoad) {
@@ -56,13 +56,8 @@ public class MoveBatcher {
       return false;
     }
 
-    void addTo(
-        final List<Collection<Unit>> moveUnits,
-        final List<Route> moveRoutes,
-        final List<Map<Unit, Unit>> unitsToTransports) {
-      moveUnits.add(units);
-      moveRoutes.add(route);
-      unitsToTransports.add(this.unitsToTransports);
+    MoveDescription toMoveDescription() {
+      return new MoveDescription(units, route, unitsToTransports, Map.of());
     }
   }
 
@@ -107,29 +102,23 @@ public class MoveBatcher {
   }
 
   /**
-   * Emits the accumulated moves to the passed output params.
+   * Batches and returns the list of moves.
    *
-   * <p>TODO: #5416 Refactor the IMoveDelegate and ProMoveUtils code to use a List of Move objects,
-   * instead of these parallel lists.
-   *
-   * @param moveUnits The units to move.
-   * @param moveRoutes The routes to move along
-   * @param unitsToTransports The map from units to transports to be loaded.
+   * @return the list of moves.
    */
-  public void batchAndEmit(
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final List<Map<Unit, Unit>> unitsToTransports) {
+  public List<MoveDescription> batchMoves() {
+    final var moves = new ArrayList<MoveDescription>();
     int i = 0;
     for (final var sequence : moveSequences) {
       if (!sequence.isEmpty()) {
         mergeSequences(sequence, moveSequences.subList(i + 1, moveSequences.size()));
         for (final Move move : sequence) {
-          move.addTo(moveUnits, moveRoutes, unitsToTransports);
+          moves.add(move.toMoveDescription());
         }
       }
       i++;
     }
+    return moves;
   }
 
   /**

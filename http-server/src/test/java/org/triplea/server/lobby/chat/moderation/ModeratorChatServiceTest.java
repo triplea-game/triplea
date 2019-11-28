@@ -28,6 +28,7 @@ import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
 import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope.ServerMessageType;
+import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
@@ -112,7 +113,8 @@ class ModeratorChatServiceTest {
       assertThat(
           "Make sure ban message has ban duration",
           disconnectMessageCaptor.getValue().toLowerCase(),
-          containsString(BAN_PLAYER_REQUEST.formattedBanDuration()));
+          containsString(
+              BanDurationFormatter.formatBanMinutes(BAN_PLAYER_REQUEST.getBanMinutes())));
     }
 
     private void verifyEveryoneElseIsNotifiedOfPlayerBan() {

@@ -18,8 +18,6 @@ public interface BadWordsDao {
   int removeBadWord(@Bind("word") String badWordToRemove);
 
   @SqlQuery(
-      "select count(bw.word) "
-          + "from bad_word bw "
-          + "where lower(:word) like '%' || lower(bw.word) || '%'")
-  int containsBadWord(@Bind("word") String word);
+      "select exists (select * from bad_word where lower(:word) like '%' || lower(word) || '%')")
+  boolean containsBadWord(@Bind("word") String word);
 }

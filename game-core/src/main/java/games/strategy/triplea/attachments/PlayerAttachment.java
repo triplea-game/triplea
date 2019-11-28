@@ -258,7 +258,6 @@ public class PlayerAttachment extends DefaultAttachment {
         copyUnitsMoving.removeAll(
             CollectionUtils.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).negate()));
       }
-      // else if (type.equals("total"))
       // now remove units that are not part of our list
       currentInTerritory.retainAll(
           CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));

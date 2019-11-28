@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.weak;
 
 import com.google.common.collect.Streams;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
@@ -120,77 +121,41 @@ public class WeakAi extends AbstractAi {
 
   private void doNonCombatMove(
       final IMoveDelegate moveDel, final PlayerId player, final GameData data) {
-    final List<Collection<Unit>> moveUnits = new ArrayList<>();
-    final List<Route> moveRoutes = new ArrayList<>();
-    final var unitsToTransport = new ArrayList<Map<Unit, Unit>>();
     // load the transports first
     // they may be able to move farther
-    populateTransportLoad(data, moveUnits, moveRoutes, unitsToTransport, player);
-    doMove(moveUnits, moveRoutes, unitsToTransport, moveDel);
-    moveRoutes.clear();
-    moveUnits.clear();
-    unitsToTransport.clear();
+    doMove(calculateTransportLoad(data, player), moveDel);
     // do the rest of the moves
-    populateNonCombat(data, moveUnits, moveRoutes, player);
-    populateNonCombatSea(true, data, moveUnits, moveRoutes, player);
-    doMove(moveUnits, moveRoutes, null, moveDel);
-    moveUnits.clear();
-    moveRoutes.clear();
-    unitsToTransport.clear();
+    doMove(calculateNonCombat(data, player), moveDel);
+    doMove(calculateNonCombatSea(true, data, player), moveDel);
     // load the transports again if we can
     // they may be able to move farther
-    populateTransportLoad(data, moveUnits, moveRoutes, unitsToTransport, player);
-    doMove(moveUnits, moveRoutes, unitsToTransport, moveDel);
-    moveRoutes.clear();
-    moveUnits.clear();
-    unitsToTransport.clear();
+    doMove(calculateTransportLoad(data, player), moveDel);
     // unload the transports that can be unloaded
-    populateTransportUnloadNonCom(data, moveUnits, moveRoutes, player);
-    doMove(moveUnits, moveRoutes, null, moveDel);
+    doMove(calculateTransportUnloadNonCombat(data, player), moveDel);
   }
 
   private void doCombatMove(
       final IMoveDelegate moveDel, final PlayerId player, final GameData data) {
-    final List<Collection<Unit>> moveUnits = new ArrayList<>();
-    final List<Route> moveRoutes = new ArrayList<>();
-    final var unitsToTransports = new ArrayList<Map<Unit, Unit>>();
     // load the transports first
     // they may be able to take part in a battle
-    populateTransportLoad(data, moveUnits, moveRoutes, unitsToTransports, player);
-    doMove(moveUnits, moveRoutes, unitsToTransports, moveDel);
-    moveRoutes.clear();
-    moveUnits.clear();
-    // we want to move loaded transports before we try to fight our battles
-    populateNonCombatSea(false, data, moveUnits, moveRoutes, player);
-    // find second amphib target
-    final Route altRoute = getAlternativeAmphibRoute(player, data);
-    if (altRoute != null) {
-      moveCombatSea(data, moveUnits, moveRoutes, player, altRoute);
-    }
-    doMove(moveUnits, moveRoutes, null, moveDel);
-    moveUnits.clear();
-    moveRoutes.clear();
-    unitsToTransports.clear();
+    doMove(calculateTransportLoad(data, player), moveDel);
+    doMove(calculateCombatSea(data, player), moveDel);
+
     // fight
-    populateCombatMove(data, moveUnits, moveRoutes, player);
-    populateCombatMoveSea(data, moveUnits, moveRoutes, player);
-    doMove(moveUnits, moveRoutes, null, moveDel);
+    doMove(calculateCombatMove(data, player), moveDel);
+    doMove(calculateCombatMoveSea(data, player), moveDel);
   }
 
-  private void populateTransportLoad(
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final List<Map<Unit, Unit>> unitsToTransports,
-      final PlayerId player) {
+  private List<MoveDescription> calculateTransportLoad(final GameData data, final PlayerId player) {
     if (!isAmphibAttack(player, data)) {
-      return;
+      return List.of();
     }
     final Territory capitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     if (capitol == null || !capitol.getOwner().equals(player)) {
-      return;
+      return List.of();
     }
+    final var moves = new ArrayList<MoveDescription>();
     List<Unit> unitsToLoad =
         capitol.getUnitCollection().getMatches(Matches.unitIsInfrastructure().negate());
     unitsToLoad = CollectionUtils.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerId()));
@@ -223,33 +188,28 @@ public class WeakAi extends AbstractAi {
       }
       if (units.size() > 0) {
         final Route route = new Route(capitol, neighbor);
-        moveUnits.add(units);
-        moveRoutes.add(route);
-        unitsToTransports.add(transportMap);
+        moves.add(new MoveDescription(units, route, transportMap, Map.of()));
       }
     }
+    return moves;
   }
 
-  private static void populateTransportUnloadNonCom(
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player) {
+  private static List<MoveDescription> calculateTransportUnloadNonCombat(
+      final GameData data, final PlayerId player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     if (amphibRoute == null) {
-      return;
+      return List.of();
     }
     final Territory lastSeaZoneOnAmphib =
         amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     final Territory landOn = amphibRoute.getEnd();
     final Predicate<Unit> landAndOwned = Matches.unitIsLand().and(Matches.unitIsOwnedBy(player));
     final List<Unit> units = lastSeaZoneOnAmphib.getUnitCollection().getMatches(landAndOwned);
-    if (units.size() > 0) {
-      // just try to make the move, the engine will stop us if it doesnt work
-      final Route route = new Route(lastSeaZoneOnAmphib, landOn);
-      moveUnits.add(units);
-      moveRoutes.add(route);
+    if (units.isEmpty()) {
+      return List.of();
     }
+    final Route route = new Route(lastSeaZoneOnAmphib, landOn);
+    return List.of(new MoveDescription(units, route));
   }
 
   private static List<Unit> load2Transports(final List<Unit> transportsToLoad) {
@@ -261,41 +221,32 @@ public class WeakAi extends AbstractAi {
     return units;
   }
 
-  private static void doMove(
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final List<Map<Unit, Unit>> unitsToTransports,
-      final IMoveDelegate moveDel) {
-    for (int i = 0; i < moveRoutes.size(); i++) {
-      if (moveRoutes.get(i) == null
-          || moveRoutes.get(i).getEnd() == null
-          || moveRoutes.get(i).getStart() == null
-          || moveRoutes.get(i).hasNoSteps()) {
+  private static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
+    for (final MoveDescription move : moves) {
+      // TODO: #5499 Validate this when MoveDescription is constructed.
+      if (move.getRoute().getEnd() == null
+          || move.getRoute().getStart() == null
+          || move.getRoute().hasNoSteps()) {
         continue;
       }
 
-      if (unitsToTransports == null) {
-        moveDel.move(moveUnits.get(i), moveRoutes.get(i));
-      } else {
-        moveDel.move(moveUnits.get(i), moveRoutes.get(i), unitsToTransports.get(i));
-      }
+      moveDel.performMove(move);
       pause();
     }
   }
 
-  private static void moveCombatSea(
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player,
-      final Route amphibRoute) {
-    // TODO workaround - should check if amphibRoute is in moveRoutes
-    if (moveRoutes.size() == 2) {
-      moveRoutes.remove(1);
-      moveUnits.remove(1);
-    }
+  private static List<MoveDescription> calculateCombatSea(
+      final GameData data, final PlayerId player) {
+    // we want to move loaded transports before we try to fight our battles
+    final List<MoveDescription> moves = calculateNonCombatSea(false, data, player);
+    // find second amphib target
+    final Route amphibRoute = getAlternativeAmphibRoute(player, data);
     if (amphibRoute == null) {
-      return;
+      return moves;
+    }
+    // TODO workaround - should check if amphibRoute is in moves
+    if (moves.size() == 2) {
+      moves.remove(1);
     }
     final Territory firstSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(0);
     final Territory lastSeaZoneOnAmphib =
@@ -314,18 +265,14 @@ public class WeakAi extends AbstractAi {
     }
     final List<Unit> landUnits = load2Transports(unitsToMove);
     final Route r = getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
-    moveRoutes.add(r);
     unitsToMove.addAll(landUnits);
-    moveUnits.add(unitsToMove);
+    moves.add(new MoveDescription(unitsToMove, r));
+    return moves;
   }
 
   /** prepares moves for transports. */
-  private static void populateNonCombatSea(
-      final boolean nonCombat,
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player) {
+  private static List<MoveDescription> calculateNonCombatSea(
+      final boolean nonCombat, final GameData data, final PlayerId player) {
     final Route amphibRoute = getAmphibRoute(player, data);
     Territory firstSeaZoneOnAmphib = null;
     Territory lastSeaZoneOnAmphib = null;
@@ -335,6 +282,7 @@ public class WeakAi extends AbstractAi {
     }
     final Predicate<Unit> ownedAndNotMoved =
         Matches.unitIsOwnedBy(player).and(Matches.unitHasNotMoved());
+    final var moves = new ArrayList<MoveDescription>();
     for (final Territory t : data.getMap()) {
       // move sea units to the capitol, unless they are loaded transports
       if (t.isWater()) {
@@ -345,10 +293,9 @@ public class WeakAi extends AbstractAi {
             // two move route to end
             final Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
             if (r != null && r.numberOfSteps() > 0) {
-              moveRoutes.add(r);
               final List<Unit> unitsToMove =
                   t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player));
-              moveUnits.add(unitsToMove);
+              moves.add(new MoveDescription(unitsToMove, r));
             }
           }
         }
@@ -356,12 +303,12 @@ public class WeakAi extends AbstractAi {
           // move toward the start of the amphib route
           if (firstSeaZoneOnAmphib != null) {
             final Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
-            moveRoutes.add(r);
-            moveUnits.add(t.getUnitCollection().getMatches(ownedAndNotMoved));
+            moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
           }
         }
       }
     }
+    return moves;
   }
 
   private static Route getMaxSeaRoute(
@@ -383,11 +330,9 @@ public class WeakAi extends AbstractAi {
     return r;
   }
 
-  private static void populateCombatMoveSea(
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player) {
+  private static List<MoveDescription> calculateCombatMoveSea(
+      final GameData data, final PlayerId player) {
+    final var moves = new ArrayList<MoveDescription>();
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     for (final Territory t : data.getMap()) {
       if (!t.isWater()) {
@@ -421,12 +366,12 @@ public class WeakAi extends AbstractAi {
             }
             final List<Unit> units = owned.getUnitCollection().getMatches(attackable);
             unitsAlreadyMoved.addAll(units);
-            moveUnits.add(units);
-            moveRoutes.add(new Route(owned, t));
+            moves.add(new MoveDescription(units, new Route(owned, t)));
           }
         }
       }
     }
+    return moves;
   }
 
   // searches for amphibious attack on empty territory
@@ -465,13 +410,9 @@ public class WeakAi extends AbstractAi {
     return altRoute;
   }
 
-  private void populateNonCombat(
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player) {
+  private List<MoveDescription> calculateNonCombat(final GameData data, final PlayerId player) {
     final Collection<Territory> territories = data.getMap().getTerritories();
-    movePlanesHomeNonCom(moveUnits, moveRoutes, player, data);
+    final List<MoveDescription> moves = movePlanesHomeNonCombat(player, data);
     // move our units toward the nearest enemy capitol
     for (final Territory t : territories) {
       if (t.isWater()) {
@@ -522,12 +463,11 @@ public class WeakAi extends AbstractAi {
         }
       }
       if (to != null) {
-        if (units.size() > 0) {
-          moveUnits.add(units);
+        if (!units.isEmpty()) {
           final Route routeToCapitol = data.getMap().getRoute(t, to, moveThrough);
           final Territory firstStep = routeToCapitol.getAllTerritories().get(1);
           final Route route = new Route(t, firstStep);
-          moveRoutes.add(route);
+          moves.add(new MoveDescription(units, route));
         }
       } else { // if we cant move to a capitol, move towards the enemy
         final Predicate<Territory> routeCondition =
@@ -541,20 +481,17 @@ public class WeakAi extends AbstractAi {
               Utils.findNearest(t, Matches.isTerritoryEnemy(player, data), routeCondition, data);
         }
         if (newRoute != null && newRoute.numberOfSteps() != 0) {
-          moveUnits.add(units);
           final Territory firstStep = newRoute.getAllTerritories().get(1);
           final Route route = new Route(t, firstStep);
-          moveRoutes.add(route);
+          moves.add(new MoveDescription(units, route));
         }
       }
     }
+    return moves;
   }
 
-  private void movePlanesHomeNonCom(
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player,
-      final GameData data) {
+  private List<MoveDescription> movePlanesHomeNonCombat(
+      final PlayerId player, final GameData data) {
     // the preferred way to get the delegate
     final IMoveDelegate delegateRemote = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
     // this works because we are on the server
@@ -566,6 +503,7 @@ public class WeakAi extends AbstractAi {
         Matches.territoryHasEnemyAaForFlyOver(player, data)
             .negate()
             .and(Matches.territoryIsImpassable().negate());
+    final var moves = new ArrayList<MoveDescription>();
     for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
       final Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
       final Route aaRoute =
@@ -575,19 +513,14 @@ public class WeakAi extends AbstractAi {
       // don't bother to see if all the air units have enough movement points to move without aa
       // guns firing
       // simply move first over no aa, then with aa one (but hopefully not both) will be rejected
-      moveUnits.add(airToLand);
-      moveRoutes.add(noAaRoute);
-      moveUnits.add(airToLand);
-      moveRoutes.add(aaRoute);
+      moves.add(new MoveDescription(airToLand, noAaRoute));
+      moves.add(new MoveDescription(airToLand, aaRoute));
     }
+    return moves;
   }
 
-  private static void populateCombatMove(
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player) {
-    populateBomberCombat(data, moveUnits, moveRoutes, player);
+  private List<MoveDescription> calculateCombatMove(final GameData data, final PlayerId player) {
+    final List<MoveDescription> moves = calculateBomberCombat(data, player);
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
     final Predicate<Territory> walkInto =
@@ -675,17 +608,19 @@ public class WeakAi extends AbstractAi {
                     .and(Matches.unitIsNotAa())
                     .and(Matches.unitCanNotMoveDuringCombatMove().negate());
             if (!unitsAlreadyMoved.contains(unit) && match.test(unit)) {
-              moveRoutes.add(new Route(attackFrom, enemy));
+              final Route route = new Route(attackFrom, enemy);
               // if unloading units, unload all of them, otherwise we wont be able to unload them
               // in non com, for land moves we want to move the minimal
               // number of units, to leave units free to move elsewhere
               if (attackFrom.isWater()) {
                 final List<Unit> units =
                     attackFrom.getUnitCollection().getMatches(Matches.unitIsLandAndOwnedBy(player));
-                moveUnits.add(CollectionUtils.difference(units, unitsAlreadyMoved));
+                moves.add(
+                    new MoveDescription(
+                        CollectionUtils.difference(units, unitsAlreadyMoved), route));
                 unitsAlreadyMoved.addAll(units);
               } else {
-                moveUnits.add(Set.of(unit));
+                moves.add(new MoveDescription(List.of(unit), route));
               }
               unitsAlreadyMoved.add(unit);
               taken = true;
@@ -748,25 +683,23 @@ public class WeakAi extends AbstractAi {
             remainingStrengthNeeded -= AiUtils.strength(units, true, false);
             if (units.size() > 0) {
               unitsAlreadyMoved.addAll(units);
-              moveUnits.add(units);
-              moveRoutes.add(new Route(owned, enemy));
+              moves.add(new MoveDescription(units, new Route(owned, enemy)));
             }
           }
         }
       }
     }
+    return moves;
   }
 
-  private static void populateBomberCombat(
-      final GameData data,
-      final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes,
-      final PlayerId player) {
+  private static List<MoveDescription> calculateBomberCombat(
+      final GameData data, final PlayerId player) {
     final Predicate<Territory> enemyFactory =
         Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
             data, player, Matches.unitCanProduceUnitsAndCanBeDamaged());
     final Predicate<Unit> ownBomber =
         Matches.unitIsStrategicBomber().and(Matches.unitIsOwnedBy(player));
+    final var moves = new ArrayList<MoveDescription>();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> bombers = t.getUnitCollection().getMatches(ownBomber);
       if (bombers.isEmpty()) {
@@ -775,9 +708,9 @@ public class WeakAi extends AbstractAi {
       final Predicate<Territory> routeCond =
           Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
       final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
-      moveUnits.add(bombers);
-      moveRoutes.add(bombRoute);
+      moves.add(new MoveDescription(bombers, bombRoute));
     }
+    return moves;
   }
 
   private static int countTransports(final GameData data, final PlayerId player) {

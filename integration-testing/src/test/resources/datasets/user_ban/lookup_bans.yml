@@ -13,3 +13,10 @@ banned_user:
     ip: 127.0.0.2
     date_created: 2020-01-01 23:59:59
     ban_expiry: 2100-01-01 23:59:59
+  - id: 3
+    public_id: expired-ban
+    username: username2
+    system_id: system-id2
+    ip: 127.0.0.2
+    date_created: 2000-01-01 23:59:59
+    ban_expiry: 2000-01-01 23:59:59

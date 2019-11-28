@@ -107,7 +107,7 @@ public class GameListingController extends HttpController {
   @Path(GameListingClient.BOOT_GAME_PATH)
   @RolesAllowed(UserRole.MODERATOR)
   public Response bootGame(@Auth final AuthenticatedUser authenticatedUser, final String gameId) {
-    gameListing.bootGame(authenticatedUser.getUserId(), gameId);
+    gameListing.bootGame(authenticatedUser.getUserIdOrThrow(), gameId);
     return Response.ok().build();
   }
 }

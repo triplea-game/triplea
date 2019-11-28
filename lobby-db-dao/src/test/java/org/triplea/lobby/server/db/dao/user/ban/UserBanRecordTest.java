@@ -33,14 +33,14 @@ class UserBanRecordTest {
 
   @Test
   void buildResultMapper() throws Exception {
-    when(resultSet.getTimestamp(eq(UserBanRecord.BAN_EXPIRY_COLUMN), any(Calendar.class)))
+    when(resultSet.getTimestamp(eq(BanTableColumns.BAN_EXPIRY_COLUMN), any(Calendar.class)))
         .thenReturn(timestamp);
-    when(resultSet.getTimestamp(eq(UserBanRecord.DATE_CREATED_COLUMN), any(Calendar.class)))
+    when(resultSet.getTimestamp(eq(BanTableColumns.DATE_CREATED_COLUMN), any(Calendar.class)))
         .thenReturn(yesterdayTimestamp);
-    when(resultSet.getString(UserBanRecord.SYSTEM_ID_COLUMN)).thenReturn(MAC);
-    when(resultSet.getString(UserBanRecord.IP_COLUMN)).thenReturn(IP);
-    when(resultSet.getString(UserBanRecord.PUBLIC_ID_COLUMN)).thenReturn(PUBLIC_ID);
-    when(resultSet.getString(UserBanRecord.USERNAME_COLUMN)).thenReturn(USERNAME);
+    when(resultSet.getString(BanTableColumns.SYSTEM_ID_COLUMN)).thenReturn(MAC);
+    when(resultSet.getString(BanTableColumns.IP_COLUMN)).thenReturn(IP);
+    when(resultSet.getString(BanTableColumns.PUBLIC_ID_COLUMN)).thenReturn(PUBLIC_ID);
+    when(resultSet.getString(BanTableColumns.USERNAME_COLUMN)).thenReturn(USERNAME);
 
     final UserBanRecord result = UserBanRecord.buildResultMapper().map(resultSet, null);
 

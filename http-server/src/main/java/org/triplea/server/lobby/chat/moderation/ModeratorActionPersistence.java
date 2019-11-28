@@ -4,6 +4,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao.AuditAction;
@@ -33,7 +34,7 @@ class ModeratorActionPersistence {
             .actionTarget(
                 playerIdLookup.getPlayerName().getValue()
                     + " "
-                    + banPlayerRequest.formattedBanDuration())
+                    + BanDurationFormatter.formatBanMinutes(banPlayerRequest.getBanMinutes()))
             .build());
   }
 

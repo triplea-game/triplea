@@ -2,6 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -19,7 +20,6 @@ import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
-import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -335,19 +335,12 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
           move(nonCombat, stepName);
         }
       }
-      if (!nonCombat) {
-        if (canUnitsFight()) {
-          move(nonCombat, stepName);
-        }
+      if (!nonCombat && canUnitsFight()) {
+        move(false, stepName);
       }
       return;
     }
-    final String error =
-        moveDel.move(
-            moveDescription.getUnits(),
-            moveDescription.getRoute(),
-            moveDescription.getUnitsToTransports(),
-            moveDescription.getDependentUnits());
+    final String error = moveDel.performMove(moveDescription);
     if (error != null) {
       ui.notifyError(error);
     }

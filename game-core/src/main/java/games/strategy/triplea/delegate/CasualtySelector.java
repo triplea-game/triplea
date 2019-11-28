@@ -952,9 +952,9 @@ public class CasualtySelector {
     // Sort enough units to kill off
     final List<Unit> sortedUnitsList = new ArrayList<>(targetsToPickFrom);
     sortedUnitsList.sort(
-        new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
+        new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false)
+            .reversed());
     // Sort units starting with strongest so that support gets added to them first
-    Collections.reverse(sortedUnitsList);
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();

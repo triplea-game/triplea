@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
@@ -143,9 +144,9 @@ final class EditValidator {
     return null;
   }
 
+  @Nullable
   static String validateAddTech(
       final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
-    final String result = null;
     if (techs == null) {
       return "No tech selected";
     }
@@ -166,12 +167,12 @@ final class EditValidator {
         return "Technology not available for this player";
       }
     }
-    return result;
+    return null;
   }
 
+  @Nullable
   static String validateRemoveTech(
       final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
-    final String result = null;
     if (techs == null) {
       return "No tech selected";
     }
@@ -195,7 +196,7 @@ final class EditValidator {
         return "Cannot remove " + TechAdvance.TECH_NAME_IMPROVED_SHIPYARDS;
       }
     }
-    return result;
+    return null;
   }
 
   static String validateChangeHitDamage(
@@ -262,9 +263,9 @@ final class EditValidator {
     return null;
   }
 
+  @Nullable
   static String validateChangePoliticalRelationships(
       final Collection<Triple<PlayerId, PlayerId, RelationshipType>> relationshipChanges) {
-    final String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
       return "Relationship Changes are empty";
     }
@@ -277,6 +278,6 @@ final class EditValidator {
         return "New Relationship is null";
       }
     }
-    return result;
+    return null;
   }
 }

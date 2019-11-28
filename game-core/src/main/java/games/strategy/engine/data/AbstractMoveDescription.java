@@ -1,6 +1,5 @@
-package games.strategy.triplea.delegate.data;
+package games.strategy.engine.data;
 
-import games.strategy.engine.data.Unit;
 import java.io.Serializable;
 import java.util.Collection;
 

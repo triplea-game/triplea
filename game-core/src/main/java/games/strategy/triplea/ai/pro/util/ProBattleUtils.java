@@ -17,7 +17,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +40,9 @@ public final class ProBattleUtils {
    * or within a single round of combat.
    */
   public static boolean checkForOverwhelmingWin(
-      final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits) {
+      final Territory t,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits) {
     final GameData data = ProData.getData();
 
     if (defendingUnits.isEmpty() && !attackingUnits.isEmpty()) {
@@ -57,8 +59,13 @@ public final class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<>(attackingUnits);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-            false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false, false));
-    Collections.reverse(sortedUnitsList);
+                false,
+                ProData.unitValueMap,
+                TerritoryEffectHelper.getEffects(t),
+                data,
+                false,
+                false)
+            .reversed());
     final int attackPower =
         DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -86,7 +93,9 @@ public final class ProBattleUtils {
    *     indicates equal attacker and defender strength.
    */
   public static double estimateStrengthDifference(
-      final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits) {
+      final Territory t,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits) {
 
     if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
       return 0;
@@ -106,8 +115,8 @@ public final class ProBattleUtils {
    */
   public static double estimateStrength(
       final Territory t,
-      final List<Unit> myUnits,
-      final List<Unit> enemyUnits,
+      final Collection<Unit> myUnits,
+      final Collection<Unit> enemyUnits,
       final boolean attacking) {
     final GameData data = ProData.getData();
 
@@ -126,8 +135,8 @@ public final class ProBattleUtils {
 
   private static double estimatePower(
       final Territory t,
-      final List<Unit> myUnits,
-      final List<Unit> enemyUnits,
+      final Collection<Unit> myUnits,
+      final Collection<Unit> enemyUnits,
       final boolean attacking) {
     final GameData data = ProData.getData();
 
@@ -137,13 +146,13 @@ public final class ProBattleUtils {
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-            !attacking,
-            ProData.unitValueMap,
-            TerritoryEffectHelper.getEffects(t),
-            data,
-            false,
-            false));
-    Collections.reverse(sortedUnitsList);
+                !attacking,
+                ProData.unitValueMap,
+                TerritoryEffectHelper.getEffects(t),
+                data,
+                false,
+                false)
+            .reversed());
     final int myPower =
         DiceRoll.getTotalPower(
             DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -296,7 +305,7 @@ public final class ProBattleUtils {
       final Territory t,
       final PlayerId player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final List<Unit> unitsToPlace) {
+      final Collection<Unit> unitsToPlace) {
     final GameData data = ProData.getData();
 
     int landDistance = ProUtils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);

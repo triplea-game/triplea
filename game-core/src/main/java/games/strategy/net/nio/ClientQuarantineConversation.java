@@ -7,13 +7,10 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.DialogBuilder;
 
@@ -41,13 +38,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private Map<String, String> challengeResponse;
   private volatile boolean isClosed = false;
   @Getter private volatile String errorMessage;
-  /**
-   * On login to lobby, server will respond with an API key that can be used for interacting with
-   * the http server. Game hosts will not provide an API key.
-   */
-  @Nullable @Getter private volatile ApiKey apiKey;
-
-  @Getter private boolean passwordChangeRequired = false;
 
   public ClientQuarantineConversation(
       final IConnectionLogin login,
@@ -140,14 +130,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           }
           localName = strings[0];
           serverName = strings[1];
-          if (strings.length > 2) {
-            passwordChangeRequired =
-                strings[2] != null
-                    && strings[2].equals(ServerQuarantineConversation.CHANGE_PASSWORD);
-          }
-          if (strings.length > 3) {
-            apiKey = Optional.ofNullable(strings[3]).map(ApiKey::of).orElse(null);
-          }
           step = Step.READ_ADDRESS;
           return Action.NONE;
         case READ_ADDRESS:

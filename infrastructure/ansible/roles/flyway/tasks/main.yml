@@ -37,40 +37,34 @@
   become_user: postgres
 
 - name: Download flyway CLI
-  tags: flyway
   get_url:
     url: "{{ flyway_download_location }}"
     dest: /tmp/flyway-cli.tar.gz
     mode: 777
 
 - name: extract flyway
-  tags: flyway
   unarchive:
     copy: no
     src: /tmp/flyway-cli.tar.gz
     dest: /tmp/
 
 - name: deploy flyway conf file
-  tags: flyway
   template:
     src: flyway.conf.j2
     dest: /tmp/flyway-5.2.4/conf/flyway.conf
     mode: "644"
 
 - name: install unzip
-  tags: flyway
   become: true
   apt:
     state: present
     name: unzip
 
 - name: extract migrations
-  tags: flyway
   unarchive:
      src: migrations.zip
      dest: /tmp/flyway-5.2.4/sql/
      mode: "644"
 
 - name: run flyway
-  tags: flyway
   shell: /tmp/flyway-5.2.4/flyway migrate

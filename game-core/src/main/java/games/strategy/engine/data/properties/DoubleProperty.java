@@ -42,7 +42,7 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   }
 
   private static double roundToPlace(final double number, final int places) {
-    return new BigDecimal(number).setScale(places, RoundingMode.FLOOR).doubleValue();
+    return BigDecimal.valueOf(number).setScale(places, RoundingMode.FLOOR).doubleValue();
   }
 
   @Override

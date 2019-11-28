@@ -1,10 +1,10 @@
 package games.strategy.engine.framework.map.download;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
-import org.triplea.java.OptionalUtils;
 
 /**
  * A listener of map download progress events that updates the associated controls in the UI.
@@ -17,8 +17,8 @@ final class MapDownloadProgressListener {
   private static final int MAX_PROGRESS_VALUE = 100;
 
   private final DownloadFileDescription download;
-  private volatile Optional<Long> downloadLength = Optional.empty();
   private final JProgressBar progressBar;
+  @Nullable private volatile Long downloadLength;
 
   MapDownloadProgressListener(
       final DownloadFileDescription download, final JProgressBar progressBar) {
@@ -42,7 +42,8 @@ final class MapDownloadProgressListener {
             () ->
                 downloadLength =
                     DownloadConfiguration.downloadLengthReader()
-                        .getDownloadLength(download.getUrl()))
+                        .getDownloadLength(download.getUrl())
+                        .orElse(null))
         .start();
   }
 
@@ -73,12 +74,13 @@ final class MapDownloadProgressListener {
 
   void downloadUpdated(final long currentLength) {
     final String toolTipText = String.format("Installing to: %s", download.getInstallLocation());
-    OptionalUtils.ifPresentOrElse(
-        downloadLength,
-        totalLength ->
-            updateProgressBarWithPercentComplete(
-                toolTipText, percentComplete(currentLength, totalLength)),
-        () -> updateProgressBarWithCurrentLength(toolTipText, currentLength));
+
+    Optional.ofNullable(downloadLength)
+        .ifPresentOrElse(
+            totalLength ->
+                updateProgressBarWithPercentComplete(
+                    toolTipText, percentComplete(currentLength, totalLength)),
+            () -> updateProgressBarWithCurrentLength(toolTipText, currentLength));
   }
 
   private static int percentComplete(final long currentLength, final long totalLength) {

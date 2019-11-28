@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @DataSet(cleanBefore = true, value = "bad_words/select.yml")
 class BadWordsDaoTest extends DaoTest {
@@ -48,17 +49,12 @@ class BadWordsDaoTest extends DaoTest {
   @ParameterizedTest
   @MethodSource
   void badWordContains(final String badWord) {
-    assertThat(badWordsDao.containsBadWord(badWord), is(1));
-  }
-
-  @SuppressWarnings("unused")
-  private static List<String> notBadWordContains() {
-    return List.of("zz", "", "some word not containing any bad words");
+    assertThat(badWordsDao.containsBadWord(badWord), is(true));
   }
 
   @ParameterizedTest
-  @MethodSource
+  @ValueSource(strings = {"zz", "", "some string not containing any bad words"})
   void notBadWordContains(final String notInBadWords) {
-    assertThat(badWordsDao.containsBadWord(notInBadWords), is(0));
+    assertThat(badWordsDao.containsBadWord(notInBadWords), is(false));
   }
 }

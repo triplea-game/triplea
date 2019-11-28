@@ -1,5 +1,12 @@
 package org.triplea.lobby.server.db.dao.user.ban;
 
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.BAN_EXPIRY_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.DATE_CREATED_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.IP_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.PUBLIC_ID_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.SYSTEM_ID_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.USERNAME_COLUMN;
+
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,12 +25,6 @@ import org.triplea.lobby.server.db.TimestampMapper;
 @NoArgsConstructor
 @Getter
 public class UserBanRecord {
-  public static final String PUBLIC_ID_COLUMN = "public_id";
-  public static final String USERNAME_COLUMN = "username";
-  public static final String SYSTEM_ID_COLUMN = "system_id";
-  public static final String IP_COLUMN = "ip";
-  public static final String BAN_EXPIRY_COLUMN = "ban_expiry";
-  public static final String DATE_CREATED_COLUMN = "date_created";
 
   static final String SELECT_CLAUSE =
       PUBLIC_ID_COLUMN

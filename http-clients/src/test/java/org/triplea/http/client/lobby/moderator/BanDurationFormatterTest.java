@@ -7,20 +7,13 @@ import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.triplea.domain.data.PlayerChatId;
 
-class BanPlayerRequestTest {
+class BanDurationFormatterTest {
 
   @ParameterizedTest
   @MethodSource
   void formattedBanDuration(final long banMinutes, final String expectedOutput) {
-    final BanPlayerRequest banPlayerRequest =
-        BanPlayerRequest.builder()
-            .playerChatId(PlayerChatId.of("chat-id").getValue())
-            .banMinutes(banMinutes)
-            .build();
-
-    final String result = banPlayerRequest.formattedBanDuration();
+    final String result = BanDurationFormatter.formatBanMinutes(banMinutes);
 
     assertThat(result, is(expectedOutput));
   }

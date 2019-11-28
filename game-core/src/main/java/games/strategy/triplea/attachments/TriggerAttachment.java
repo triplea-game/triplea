@@ -311,10 +311,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     // Victory messages and recording of winners
     triggerVictory(triggersToFire, bridge, noChanceFireTriggerParams);
     // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we
-    // change at end of
-    // each round)
+    // change at end of each round)
     if (initialFireTriggerParams.useUses) {
-      setUsesForWhenTriggers(triggersToFire, bridge, initialFireTriggerParams.useUses);
+      setUsesForWhenTriggers(triggersToFire, bridge, true);
     }
   }
 

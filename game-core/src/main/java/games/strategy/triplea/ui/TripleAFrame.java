@@ -10,6 +10,7 @@ import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -59,7 +60,6 @@ import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
-import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
@@ -105,7 +105,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -1485,13 +1484,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
             final List<Unit> units = new ArrayList<>(entry.getValue());
             units.sort(
                 new UnitBattleComparator(
-                    false,
-                    TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
-                    TerritoryEffectHelper.getEffects(entry.getKey()),
-                    data,
-                    true,
-                    false));
-            Collections.reverse(units);
+                        false,
+                        TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+                        TerritoryEffectHelper.getEffects(entry.getKey()),
+                        data,
+                        true,
+                        false)
+                    .reversed());
             possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
           }
           mapPanel.centerOn(

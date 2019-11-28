@@ -840,8 +840,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           attackingUnits.removeAll(bombing.getAttackingUnits());
         }
         // no need to create a "bombing" battle or air battle, because those are set up
-        // automatically whenever the map
-        // allows scrambling into an air battle / air raid
+        // automatically whenever the map allows scrambling into an air battle / air raid
         if (attackingUnits.isEmpty()) {
           continue;
         }
@@ -855,8 +854,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         battle = battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
           // this is an ugly mess of hacks, but will have to stay here till all transport related
-          // code is gutted and
-          // refactored.
+          // code is gutted and refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
           final Collection<Territory> neighborsLand =
               data.getMap().getNeighbors(to, Matches.territoryIsLand());
@@ -874,8 +872,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             for (final Unit transport :
                 CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
               // however, the map we add to the newly created battle, cannot hold any units that are
-              // NOT in this
-              // territory.
+              // NOT in this territory.
               // BUT it must still hold all transports
               if (!dependenciesForMfb.containsKey(transport)) {
                 dependenciesForMfb.put(transport, new ArrayList<>());
