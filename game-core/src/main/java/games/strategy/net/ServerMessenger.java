@@ -297,7 +297,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Override
   public void removeConnection(final INode nodeToRemove) {
     if (nodeToRemove.equals(this.node)) {
-      throw new IllegalArgumentException("Cant remove yourself!");
+      throw new IllegalArgumentException("Can't remove yourself!");
     }
     notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
