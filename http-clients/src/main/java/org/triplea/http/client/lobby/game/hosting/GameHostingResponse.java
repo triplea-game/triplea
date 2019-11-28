@@ -1,11 +1,11 @@
 package org.triplea.http.client.lobby.game.hosting;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.triplea.http.client.IpAddressParser;
 
 @ToString
 @Builder
@@ -23,11 +23,6 @@ public class GameHostingResponse {
   private final String apiKey;
 
   public InetAddress getPublicVisibleIp() {
-    try {
-      return InetAddress.getByName(publicVisibleIp);
-    } catch (final UnknownHostException e) {
-      throw new IllegalStateException(
-          "Our IP address reported by lobby server is invalid: " + publicVisibleIp);
-    }
+    return IpAddressParser.fromString(publicVisibleIp);
   }
 }
