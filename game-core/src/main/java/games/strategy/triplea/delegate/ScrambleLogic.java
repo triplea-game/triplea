@@ -35,6 +35,10 @@ public class ScrambleLogic {
   private final Predicate<Territory> canScrambleFromPredicate;
   private final int maxScrambleDistance;
 
+  public ScrambleLogic(final GameData data, final PlayerId player, final Territory territory) {
+    this(data, player, Set.of(territory), new BattleTracker());
+  }
+
   public ScrambleLogic(
       final GameData data,
       final PlayerId player,
@@ -71,10 +75,6 @@ public class ScrambleLogic {
       }
     }
     return maxScrambleDistance;
-  }
-
-  public ScrambleLogic(final GameData data, final PlayerId player, final Territory territory) {
-    this(data, player, Set.of(territory), new BattleTracker());
   }
 
   /**

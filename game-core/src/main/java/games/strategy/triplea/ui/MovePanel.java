@@ -617,20 +617,25 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         }
 
         private boolean confirmEndPoint(final Territory territory) {
-          final PlayerId player = getCurrentPlayer();
-          final boolean willStartBattle =
-              Matches.territoryHasUnitsOwnedBy(player)
-                  .negate()
-                  .and(Matches.territoryHasEnemyUnits(player, getData()))
-                  .test(territory);
-          if (!willStartBattle) {
+          if (!willStartBattle(territory)) {
             return true;
           }
-          final var scramble = new ScrambleLogic(getData(), player, territory);
+          final var scramble = new ScrambleLogic(getData(), getCurrentPlayer(), territory);
           final Collection<Unit> possibleScramblers = scramble.getUnitsThatCanScramble();
-          if (possibleScramblers.isEmpty()) {
-            return true;
-          }
+          return possibleScramblers.isEmpty()
+              || showScrambleWarningAndConfirmMove(possibleScramblers);
+        }
+
+        private boolean willStartBattle(final Territory territory) {
+          final PlayerId player = getCurrentPlayer();
+          return Matches.territoryHasUnitsOwnedBy(player)
+              .negate()
+              .and(Matches.territoryHasEnemyUnits(player, getData()))
+              .test(territory);
+        }
+
+        private boolean showScrambleWarningAndConfirmMove(
+            final Collection<Unit> possibleScramblers) {
           final SimpleUnitPanel unitPanel =
               new SimpleUnitPanel(
                   getMap().getUiContext(),
