@@ -113,20 +113,22 @@ public class FileProperty extends AbstractEditableProperty<File> {
     final FileDialog fileDialog = new FileDialog(owner);
     fileDialog.setMode(FileDialog.LOAD);
     fileDialog.setFilenameFilter(
-        (dir, name) -> {
-          if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
-            return true;
-          }
-          for (final String suffix : acceptableSuffixes) {
-            if (name.toLowerCase().endsWith(suffix)) {
-              return true;
-            }
-          }
-          return false;
-        });
+        (dir, name) ->
+            acceptableSuffixes == null
+                || acceptableSuffixes.length == 0
+                || hasSuffix(acceptableSuffixes, name));
     fileDialog.setVisible(true);
     return Optional.ofNullable(fileDialog.getFile())
-        .map(fileName -> new File(fileDialog.getDirectory(), fileName));
+        .map(fileName -> new File(fileDialog.getDirectory(), fileName.toLowerCase()));
+  }
+
+  private static boolean hasSuffix(final String[] acceptableSuffixes, final String name) {
+    for (final String suffix : acceptableSuffixes) {
+      if (name.endsWith(suffix)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static Optional<File> getFileUsingDialogNonMac(
@@ -162,19 +164,9 @@ public class FileProperty extends AbstractEditableProperty<File> {
 
     @Override
     public boolean accept(final File file1) {
-      if (file1 == null) {
-        return false;
-      } else if (file1.isDirectory()) {
-        return true;
-      } else {
-        final String name = file1.getAbsolutePath().toLowerCase();
-        for (final String suffix : acceptableSuffixes) {
-          if (name.endsWith(suffix)) {
-            return true;
-          }
-        }
-        return false;
-      }
+      return file1 != null
+          && (file1.isDirectory()
+              || hasSuffix(acceptableSuffixes, file1.getAbsolutePath().toLowerCase()));
     }
 
     @Override
