@@ -103,28 +103,34 @@ public class FileProperty extends AbstractEditableProperty<File> {
     // For some strange reason, the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = new FileDialog(owner);
-      fileDialog.setMode(FileDialog.LOAD);
-      fileDialog.setFilenameFilter(
-          (dir, name) -> {
-            if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
+      return getFileUsingDialogOnMac(owner, acceptableSuffixes);
+    }
+    return getFileUsingDialogNonMac(owner, acceptableSuffixes);
+  }
+
+  private static Optional<File> getFileUsingDialogOnMac(
+      final Frame owner, final String... acceptableSuffixes) {
+    final FileDialog fileDialog = new FileDialog(owner);
+    fileDialog.setMode(FileDialog.LOAD);
+    fileDialog.setFilenameFilter(
+        (dir, name) -> {
+          if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
+            return true;
+          }
+          for (final String suffix : acceptableSuffixes) {
+            if (name.toLowerCase().endsWith(suffix)) {
               return true;
             }
-            for (final String suffix : acceptableSuffixes) {
-              if (name.toLowerCase().endsWith(suffix)) {
-                return true;
-              }
-            }
-            return false;
-          });
-      fileDialog.setVisible(true);
-      final String fileName = fileDialog.getFile();
-      final String dirName = fileDialog.getDirectory();
-      if (fileName == null) {
-        return Optional.empty();
-      }
-      return Optional.of(new File(dirName, fileName));
-    }
+          }
+          return false;
+        });
+    fileDialog.setVisible(true);
+    return Optional.ofNullable(fileDialog.getFile())
+        .map(fileName -> new File(fileDialog.getDirectory(), fileName));
+  }
+
+  private static Optional<File> getFileUsingDialogNonMac(
+      final Frame owner, final String... acceptableSuffixes) {
     final JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileFilter(
         new FileFilter() {
