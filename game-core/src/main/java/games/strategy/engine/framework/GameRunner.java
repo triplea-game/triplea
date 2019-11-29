@@ -42,7 +42,6 @@ import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Services;
@@ -129,10 +128,6 @@ public final class GameRunner {
       return Optional.of(fileChooser.getSelectedFile());
     }
     return Optional.empty();
-  }
-
-  public static ProgressWindow newProgressWindow(final String title) {
-    return new ProgressWindow(mainFrame, title);
   }
 
   public static BackgroundTaskRunner newBackgroundTaskRunner() {
