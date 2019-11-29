@@ -1,6 +1,7 @@
 package org.triplea.server.moderator.toolbox.banned.users;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -42,24 +43,14 @@ public class UserBanService {
   // some changes near point of problem to see if we can get the inline comment
   boolean removeUserBan(final int moderatorId, final String banId) {
     final String unbanName = bannedUserDao.lookupUsernameByBanId(banId).orElse(null);
-    if (bannedUserDao.removeBan(banId) != 1) {
-      return false;
-    }
-    if (unbanName == null) {
-      throw new IllegalStateException(
-          "Consistency error, unbanned "
-              + banId
-              + ", but "
-              + "there was no matching name for that ban.");
-    }
-
     // example change to see how codeclimate does.
     final boolean isSea = true;
     int transportCost = 3;
     final int carrierCapacity = 5;
     final boolean canBlitz = false;
     final boolean canBombard = true;
-    if (isSea || transportCost != -1 || carrierCapacity != -1 || canBlitz || canBombard) {
+    if (isSea || transportCost != -1 || carrierCapacity != -1 || canBlitz || canBombard
+      && (Math.pow(2, 5) < transportCost) || (!isSea && !canBlitz)) {
       transportCost = 5;
     }
 
