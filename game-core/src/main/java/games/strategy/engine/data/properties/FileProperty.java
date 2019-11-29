@@ -84,21 +84,22 @@ public class FileProperty extends AbstractEditableProperty<File> {
         new MouseAdapter() {
           @Override
           public void mouseClicked(final MouseEvent e) {
-            final File selection =
-                getFileUsingDialog(JOptionPane.getFrameForComponent(label), acceptableSuffixes);
-            if (selection != null) {
-              file = selection;
-              label.setText(file.getAbsolutePath());
-              // Ask Swing to repaint this label when it's convenient
-              SwingUtilities.invokeLater(label::repaint);
-            }
+            getFileUsingDialog(JOptionPane.getFrameForComponent(label), acceptableSuffixes)
+                .ifPresent(
+                    selection -> {
+                      file = selection;
+                      label.setText(file.getAbsolutePath());
+                      // Ask Swing to repaint this label when it's convenient
+                      SwingUtilities.invokeLater(label::repaint);
+                    });
           }
         });
     return label;
   }
 
   /** Prompts the user to select a file. */
-  private static File getFileUsingDialog(final Frame owner, final String... acceptableSuffixes) {
+  private static Optional<File> getFileUsingDialog(
+      final Frame owner, final String... acceptableSuffixes) {
     // For some strange reason, the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (SystemProperties.isMac()) {
@@ -120,11 +121,10 @@ public class FileProperty extends AbstractEditableProperty<File> {
       final String fileName = fileDialog.getFile();
       final String dirName = fileDialog.getDirectory();
       if (fileName == null) {
-        return null;
+        return Optional.empty();
       }
-      return new File(dirName, fileName);
+      return Optional.of(new File(dirName, fileName));
     }
-    Optional<File> selectedFile;
     final JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileFilter(
         new FileFilter() {
@@ -153,11 +153,9 @@ public class FileProperty extends AbstractEditableProperty<File> {
     final int returnCode = fileChooser.showOpenDialog(null);
 
     if (returnCode == JFileChooser.APPROVE_OPTION) {
-      selectedFile = Optional.of(fileChooser.getSelectedFile());
-    } else {
-      selectedFile = Optional.empty();
+      return Optional.of(fileChooser.getSelectedFile());
     }
-    return selectedFile.orElse(null);
+    return Optional.empty();
   }
 
   @Override
