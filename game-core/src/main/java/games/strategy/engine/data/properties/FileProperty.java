@@ -153,7 +153,7 @@ public class FileProperty extends AbstractEditableProperty<File> {
   private static class FilePropertyFilter extends FileFilter {
     private final String[] acceptableSuffixes;
 
-    public FilePropertyFilter(String... acceptableSuffixes) {
+    FilePropertyFilter(final String... acceptableSuffixes) {
       this.acceptableSuffixes = acceptableSuffixes;
     }
 
