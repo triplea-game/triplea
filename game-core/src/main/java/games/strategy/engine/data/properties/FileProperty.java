@@ -132,30 +132,7 @@ public class FileProperty extends AbstractEditableProperty<File> {
   private static Optional<File> getFileUsingDialogNonMac(
       final Frame owner, final String... acceptableSuffixes) {
     final JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileFilter(
-        new FileFilter() {
-          @Override
-          public boolean accept(final File file1) {
-            if (file1 == null) {
-              return false;
-            } else if (file1.isDirectory()) {
-              return true;
-            } else {
-              final String name = file1.getAbsolutePath().toLowerCase();
-              for (final String suffix : acceptableSuffixes) {
-                if (name.endsWith(suffix)) {
-                  return true;
-                }
-              }
-              return false;
-            }
-          }
-
-          @Override
-          public String getDescription() {
-            return Arrays.toString(acceptableSuffixes);
-          }
-        });
+    fileChooser.setFileFilter(new FilePropertyFilter(acceptableSuffixes));
     final int returnCode = fileChooser.showOpenDialog(owner);
 
     if (returnCode == JFileChooser.APPROVE_OPTION) {
@@ -174,5 +151,35 @@ public class FileProperty extends AbstractEditableProperty<File> {
           .anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
     }
     return false;
+  }
+
+  private static class FilePropertyFilter extends FileFilter {
+    private final String[] acceptableSuffixes;
+
+    public FilePropertyFilter(String... acceptableSuffixes) {
+      this.acceptableSuffixes = acceptableSuffixes;
+    }
+
+    @Override
+    public boolean accept(final File file1) {
+      if (file1 == null) {
+        return false;
+      } else if (file1.isDirectory()) {
+        return true;
+      } else {
+        final String name = file1.getAbsolutePath().toLowerCase();
+        for (final String suffix : acceptableSuffixes) {
+          if (name.endsWith(suffix)) {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+
+    @Override
+    public String getDescription() {
+      return Arrays.toString(acceptableSuffixes);
+    }
   }
 }
