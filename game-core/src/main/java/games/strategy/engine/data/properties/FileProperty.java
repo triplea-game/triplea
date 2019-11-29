@@ -123,12 +123,7 @@ public class FileProperty extends AbstractEditableProperty<File> {
   }
 
   private static boolean hasSuffix(final String[] acceptableSuffixes, final String name) {
-    for (final String suffix : acceptableSuffixes) {
-      if (name.endsWith(suffix)) {
-        return true;
-      }
-    }
-    return false;
+    return Arrays.stream(acceptableSuffixes).anyMatch(name::endsWith);
   }
 
   private static Optional<File> getFileUsingDialogNonMac(
