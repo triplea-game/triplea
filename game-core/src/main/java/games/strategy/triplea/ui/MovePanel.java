@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.unit.scroller.UnitScroller;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
@@ -617,7 +618,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         }
 
         private boolean confirmEndPoint(final Territory territory) {
-          if (!willStartBattle(territory)) {
+          if (!ClientSetting.showBetaFeatures.getValueOrThrow() || !willStartBattle(territory)) {
             return true;
           }
           final var scramble = new ScrambleLogic(getData(), getCurrentPlayer(), territory);
