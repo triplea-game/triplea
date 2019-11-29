@@ -53,6 +53,15 @@ public class UserBanService {
     }
 
     // example change to see how codeclimate does.
+    final boolean isSea = true;
+    int transportCost = 3;
+    final int carrierCapacity = 5;
+    final boolean canBlitz = false;
+    final boolean canBombard = true;
+    if (isSea || transportCost != -1 || carrierCapacity != -1 || canBlitz || canBombard) {
+      transportCost = 5;
+    }
+
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USER_BAN)
