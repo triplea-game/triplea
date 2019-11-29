@@ -156,7 +156,7 @@ public class FileProperty extends AbstractEditableProperty<File> {
             return Arrays.toString(acceptableSuffixes);
           }
         });
-    final int returnCode = fileChooser.showOpenDialog(null);
+    final int returnCode = fileChooser.showOpenDialog(owner);
 
     if (returnCode == JFileChooser.APPROVE_OPTION) {
       return Optional.of(fileChooser.getSelectedFile());
