@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Optional;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
@@ -254,7 +255,8 @@ public class MetaSetupPanel extends SetupPanel {
     hostGame.addActionListener(e -> new Thread(model::showServer).start());
     connectToHostedGame.addActionListener(e -> new Thread(model::showClient).start());
     connectToLobby.addActionListener(e -> model.login());
-    enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
+    enginePreferences.addActionListener(
+        e -> ClientSetting.showSettingsWindow(JOptionPane.getFrameForComponent(this)));
     ruleBook.addActionListener(e -> ruleBook());
     userGuideButton.addActionListener(e -> userGuidePage());
   }

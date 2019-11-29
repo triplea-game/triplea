@@ -1,6 +1,5 @@
 package games.strategy.engine.framework;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
@@ -32,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -96,18 +94,6 @@ public final class GameRunner {
     LookAndFeelSwingFrameListener.register(mainFrame);
 
     mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-  }
-
-  /**
-   * Creates a new modeless dialog with the specified title whose parent is the main frame window.
-   *
-   * @param title The dialog title.
-   * @return A new modeless dialog.
-   */
-  public static JDialog newDialog(final String title) {
-    checkNotNull(title);
-
-    return new JDialog(mainFrame, title);
   }
 
   public static FileDialog newFileDialog() {

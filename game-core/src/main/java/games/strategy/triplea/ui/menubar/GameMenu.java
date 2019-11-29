@@ -57,7 +57,7 @@ final class GameMenu extends JMenu {
 
     addEditMode();
     addSeparator();
-    add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow()));
+    add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow(frame)));
     add(SoundOptions.buildGlobalSoundSwitchMenuItem());
     add(SoundOptions.buildSoundOptionsMenuItem());
     addSeparator();
