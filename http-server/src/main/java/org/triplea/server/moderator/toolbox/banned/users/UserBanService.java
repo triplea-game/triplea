@@ -39,6 +39,7 @@ public class UserBanService {
         .collect(Collectors.toList());
   }
 
+  // some changes near point of problem to see if we can get the inline comment
   boolean removeUserBan(final int moderatorId, final String banId) {
     final String unbanName = bannedUserDao.lookupUsernameByBanId(banId).orElse(null);
     if (bannedUserDao.removeBan(banId) != 1) {
