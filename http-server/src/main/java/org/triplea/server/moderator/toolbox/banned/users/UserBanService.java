@@ -52,6 +52,7 @@ public class UserBanService {
               + "there was no matching name for that ban.");
     }
 
+    // example change to see how codeclimate does.
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USER_BAN)
