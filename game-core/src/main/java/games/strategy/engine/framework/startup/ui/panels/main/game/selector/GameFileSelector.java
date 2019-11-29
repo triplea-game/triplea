@@ -5,6 +5,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.File;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public final class GameFileSelector {
     // For some strange reason, the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = GameRunner.newFileDialog();
+      final FileDialog fileDialog = new FileDialog((Frame) null);
       fileDialog.setMode(FileDialog.LOAD);
       fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));

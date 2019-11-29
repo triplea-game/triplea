@@ -3,12 +3,14 @@ package games.strategy.engine.data.properties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
@@ -82,7 +84,8 @@ public class FileProperty extends AbstractEditableProperty<File> {
         new MouseAdapter() {
           @Override
           public void mouseClicked(final MouseEvent e) {
-            final File selection = getFileUsingDialog(acceptableSuffixes);
+            final File selection =
+                getFileUsingDialog(JOptionPane.getFrameForComponent(label), acceptableSuffixes);
             if (selection != null) {
               file = selection;
               label.setText(file.getAbsolutePath());
@@ -95,11 +98,11 @@ public class FileProperty extends AbstractEditableProperty<File> {
   }
 
   /** Prompts the user to select a file. */
-  private static File getFileUsingDialog(final String... acceptableSuffixes) {
+  private static File getFileUsingDialog(final Frame owner, final String... acceptableSuffixes) {
     // For some strange reason, the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = GameRunner.newFileDialog();
+      final FileDialog fileDialog = new FileDialog(owner);
       fileDialog.setMode(FileDialog.LOAD);
       fileDialog.setFilenameFilter(
           (dir, name) -> {

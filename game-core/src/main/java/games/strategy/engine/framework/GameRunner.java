@@ -22,7 +22,6 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
-import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -93,10 +92,6 @@ public final class GameRunner {
     LookAndFeelSwingFrameListener.register(mainFrame);
 
     mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-  }
-
-  public static FileDialog newFileDialog() {
-    return new FileDialog(mainFrame);
   }
 
   /**
