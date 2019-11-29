@@ -1,6 +1,5 @@
 package games.strategy.engine.data.properties;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -10,6 +9,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -124,31 +124,39 @@ public class FileProperty extends AbstractEditableProperty<File> {
       }
       return new File(dirName, fileName);
     }
-    final Optional<File> selectedFile =
-        GameRunner.showFileChooser(
-            new FileFilter() {
-              @Override
-              public boolean accept(final File file) {
-                if (file == null) {
-                  return false;
-                } else if (file.isDirectory()) {
+    Optional<File> selectedFile;
+    final JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileFilter(
+        new FileFilter() {
+          @Override
+          public boolean accept(final File file1) {
+            if (file1 == null) {
+              return false;
+            } else if (file1.isDirectory()) {
+              return true;
+            } else {
+              final String name = file1.getAbsolutePath().toLowerCase();
+              for (final String suffix : acceptableSuffixes) {
+                if (name.endsWith(suffix)) {
                   return true;
-                } else {
-                  final String name = file.getAbsolutePath().toLowerCase();
-                  for (final String suffix : acceptableSuffixes) {
-                    if (name.endsWith(suffix)) {
-                      return true;
-                    }
-                  }
-                  return false;
                 }
               }
+              return false;
+            }
+          }
 
-              @Override
-              public String getDescription() {
-                return Arrays.toString(acceptableSuffixes);
-              }
-            });
+          @Override
+          public String getDescription() {
+            return Arrays.toString(acceptableSuffixes);
+          }
+        });
+    final int returnCode = fileChooser.showOpenDialog(null);
+
+    if (returnCode == JFileChooser.APPROVE_OPTION) {
+      selectedFile = Optional.of(fileChooser.getSelectedFile());
+    } else {
+      selectedFile = Optional.empty();
+    }
     return selectedFile.orElse(null);
   }
 

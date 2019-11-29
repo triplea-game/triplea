@@ -28,13 +28,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileFilter;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
@@ -91,23 +88,6 @@ public final class GameRunner {
     LookAndFeelSwingFrameListener.register(mainFrame);
 
     mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-  }
-
-  /**
-   * Opens a Swing FileChooser menu.
-   *
-   * @return Empty optional if dialog is closed without selection, otherwise returns the user
-   *     selection.
-   */
-  public static Optional<File> showFileChooser(final FileFilter fileFilter) {
-    final JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileFilter(fileFilter);
-    final int returnCode = fileChooser.showOpenDialog(mainFrame);
-
-    if (returnCode == JFileChooser.APPROVE_OPTION) {
-      return Optional.of(fileChooser.getSelectedFile());
-    }
-    return Optional.empty();
   }
 
   public static BackgroundTaskRunner newBackgroundTaskRunner() {
