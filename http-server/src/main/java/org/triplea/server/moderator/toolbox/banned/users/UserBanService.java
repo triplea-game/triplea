@@ -1,7 +1,6 @@
 package org.triplea.server.moderator.toolbox.banned.users;
 
 import java.util.List;
-import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -49,8 +48,12 @@ public class UserBanService {
     final int carrierCapacity = 5;
     final boolean canBlitz = false;
     final boolean canBombard = true;
-    if (isSea || transportCost != -1 || carrierCapacity != -1 || canBlitz || canBombard
-      && (Math.pow(2, 5) < transportCost) || (!isSea && !canBlitz)) {
+    if (isSea
+        || transportCost != -1
+        || carrierCapacity != -1
+        || canBlitz
+        || canBombard && (Math.pow(2, 5) < transportCost)
+        || (!isSea && !canBlitz)) {
       transportCost = 5;
     }
 
