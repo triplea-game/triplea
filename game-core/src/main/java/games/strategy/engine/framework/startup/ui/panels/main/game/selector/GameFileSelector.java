@@ -1,13 +1,14 @@
 package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
 import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.File;
 import java.util.Optional;
+import javax.swing.JFileChooser;
 
 /**
  * Utility class containing swing logic to show a file prompt to user. Used for selecting saved
@@ -34,6 +35,12 @@ public final class GameFileSelector {
       return Optional.ofNullable(fileName).map(name -> new File(dirName, fileName));
     }
 
-    return GameRunner.showSaveGameFileChooser();
+    // Non-Mac platforms should use the normal Swing JFileChooser
+    final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+    final int selectedOption = fileChooser.showOpenDialog(null);
+    if (selectedOption == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    }
+    return Optional.empty();
   }
 }

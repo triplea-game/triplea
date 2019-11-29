@@ -18,7 +18,6 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
@@ -106,20 +105,6 @@ public final class GameRunner {
     final int returnCode = fileChooser.showOpenDialog(mainFrame);
 
     if (returnCode == JFileChooser.APPROVE_OPTION) {
-      return Optional.of(fileChooser.getSelectedFile());
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Opens a file selection dialog where a user can select/create a file for TripleA save game. An
-   * empty optional is returned if user just closes down the dialog window.
-   */
-  public static Optional<File> showSaveGameFileChooser() {
-    // Non-Mac platforms should use the normal Swing JFileChooser
-    final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-    final int selectedOption = fileChooser.showOpenDialog(mainFrame);
-    if (selectedOption == JFileChooser.APPROVE_OPTION) {
       return Optional.of(fileChooser.getSelectedFile());
     }
     return Optional.empty();
