@@ -120,28 +120,28 @@ public interface IBattle extends Serializable {
    */
   boolean isEmpty();
 
-  /** Returns units which are dependent on the given units. Read-only. */
+  /** @return Unmodifiable collection of units that are dependent on the given units. */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
-  /** Returns units which are actually assaulting amphibiously. Read-only. */
+  /** @return Unmodifiable collection of units that are assaulting amphibiously. */
   Collection<Unit> getAmphibiousLandAttackers();
 
-  /** Returns units which are actually bombarding. Read-only. */
+  /** @return Unmodifiable collection of units that are bombarding. */
   Collection<Unit> getBombardingUnits();
 
-  /** Returns what round this battle is in. Read-only. */
+  /** @return What round this battle is in. Read-only. */
   int getBattleRound();
 
-  /** Returns units which are attacking. Read-only. */
+  /** @return Unmodifiable collection of the attacking units. */
   Collection<Unit> getAttackingUnits();
 
-  /** Returns units which are defending. Read-only. */
+  /** @return Unmodifiable collection of the defending units. */
   Collection<Unit> getDefendingUnits();
 
-  /** Returns remaining attacking units. Read-only. */
+  /** @return Unmodifiable collection of the remaining attacking units. */
   Collection<Unit> getRemainingAttackingUnits();
 
-  /** Returns remaining defending units. Read-only. */
+  /** @return Unmodifiable collection of the remaining defending units. */
   Collection<Unit> getRemainingDefendingUnits();
 
   WhoWon getWhoWon();

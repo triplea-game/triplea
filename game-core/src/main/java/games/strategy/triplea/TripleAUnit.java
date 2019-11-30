@@ -108,6 +108,8 @@ public class TripleAUnit extends Unit {
   /**
    * This is a very slow method because it checks all territories on the map. Try not to use this
    * method if possible.
+   *
+   * @return Unmodifiable collection of units that the given transport is transporting.
    */
   public List<Unit> getTransporting() {
     if (Matches.unitCanTransport().test(this) || Matches.unitIsCarrier().test(this)) {
@@ -123,6 +125,7 @@ public class TripleAUnit extends Unit {
     return List.of();
   }
 
+  /** @return Unmodifiable collection of units that the given transport is transporting. */
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units

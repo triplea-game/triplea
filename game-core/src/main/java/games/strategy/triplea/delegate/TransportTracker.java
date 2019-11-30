@@ -40,18 +40,18 @@ public class TransportTracker {
     }
   }
 
-  /** Returns the collection of units that the given transport is transporting. */
+  /** @return Unmodifiable collection of units that the given transport is transporting. */
   public static List<Unit> transporting(final Unit transport) {
     return ((TripleAUnit) transport).getTransporting();
   }
 
-  /** Returns the collection of units that the given transport is transporting. */
+  /** @return Unmodifiable collection of units that the given transport is transporting. */
   public static List<Unit> transporting(
       final Unit transport, final Collection<Unit> transportedUnitsPossible) {
     return ((TripleAUnit) transport).getTransporting(transportedUnitsPossible);
   }
 
-  /** Returns a map of transport -> collection of transported units. */
+  /** @return Unmodifiable map of transport -> collection of transported units. */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return transporting(units, TransportTracker::transporting);
   }
