@@ -686,13 +686,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
 
     // now scramble them
-    final var scramble =
+    final var scrambleLogic =
         new ScrambleLogic(getData(), player, territoriesWithBattles, battleTracker);
-    final Map<Territory, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>
-        scramblersByTerritory = scramble.getUnitsThatCanScrambleByDestination();
-    for (final Territory to : scramblersByTerritory.keySet()) {
+    for (final var territoryToScramblersEntry :
+        scrambleLogic.getUnitsThatCanScrambleByDestination().entrySet()) {
+      final Territory to = territoryToScramblersEntry.getKey();
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
-          scramblersByTerritory.get(to);
+          territoryToScramblersEntry.getValue();
 
       // Remove any units that were already scrambled to other territories.
       scramblers
@@ -711,10 +711,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (battleTracker.hasPendingBattle(to, false)) {
           defender = AbstractBattle.findDefender(to, player, data);
         }
-        for (final Territory from : scramblers.keySet()) {
-          if (defender.isNull()) {
-            defender = AbstractBattle.findDefender(from, player, data);
-          }
+        // find possible scrambling defending in the from territories
+        if (defender.isNull()) {
+          defender =
+              scramblers.keySet().stream()
+                  .map(from -> AbstractBattle.findDefender(from, player, data))
+                  .filter(player -> !player.isNull())
+                  .findFirst()
+                  .orElse(PlayerId.NULL_PLAYERID);
         }
         if (defender.isNull()) {
           continue;
@@ -779,7 +783,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           int numberScrambled = scrambling.size();
           final Collection<Unit> airbases =
-              t.getUnitCollection().getMatches(scramble.getAirbaseThatCanScramblePredicate());
+              t.getUnitCollection().getMatches(scrambleLogic.getAirbaseThatCanScramblePredicate());
           final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
           if (maxCanScramble != Integer.MAX_VALUE) {
             // TODO: maybe sort from biggest to smallest first?
