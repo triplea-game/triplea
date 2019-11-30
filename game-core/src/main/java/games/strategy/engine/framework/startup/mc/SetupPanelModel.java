@@ -53,8 +53,7 @@ public class SetupPanelModel implements ServerSetupModel {
    * clients.
    */
   public void showServer() {
-    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui))
-        .createServerMessenger();
+    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui));
   }
 
   @Override

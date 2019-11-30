@@ -268,6 +268,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.ui = ui;
     this.launchAction = launchAction;
+    getServerProps().ifPresent(this::createServerMessenger);
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -384,10 +385,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 .build());
   }
 
-  public void createServerMessenger() {
-    getServerProps().ifPresent(this::createServerMessenger);
-  }
-
   private void createServerMessenger(final ServerConnectionProps props) {
     try {
       this.serverMessenger =
@@ -420,7 +417,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
       if (ui == null) {
-        chatModelCancel = null;
         chatModel =
             new HeadlessChat(new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers)));
       } else {
