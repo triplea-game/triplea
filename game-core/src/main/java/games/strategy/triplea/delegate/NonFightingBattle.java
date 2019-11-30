@@ -35,7 +35,7 @@ public class NonFightingBattle extends DependentBattle {
 
   @Override
   public Change addAttackChange(
-      final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {  
+      final Route route, final Collection<Unit> units, final Map<Unit, Set<Unit>> targets) {
     addDependentTransportingUnits(units);
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     this.attackingFrom.add(attackingFrom);
