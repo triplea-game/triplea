@@ -1,9 +1,11 @@
 package games.strategy.triplea.delegate;
 
 import com.google.common.collect.ImmutableList;
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.triplea.java.collections.CollectionUtils;
@@ -91,6 +94,17 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     return Collections.unmodifiableList(dependentUnits);
+  }
+
+  void addDependentTransportingUnits(Collection<Unit> units) {
+    final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
+    for (final Unit unit : addedTransporting.keySet()) {
+      if (dependentUnits.get(unit) != null) {
+        dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+      } else {
+        dependentUnits.put(unit, new ArrayList<>(addedTransporting.get(unit)));
+      }
+    }
   }
 
   void clearTransportedBy(final IDelegateBridge bridge) {
