@@ -10,7 +10,6 @@ import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.ComboProperty;
-import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -937,9 +936,6 @@ public final class GameParser {
     switch (childName) {
       case "boolean":
         editableProperty = new BooleanProperty(name, null, Boolean.parseBoolean(defaultValue));
-        break;
-      case "file":
-        editableProperty = new FileProperty(name, null, defaultValue);
         break;
       case "list":
       case "combo":
