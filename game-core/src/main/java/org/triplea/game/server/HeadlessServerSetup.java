@@ -57,8 +57,8 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   }
 
   @Override
-  public synchronized Optional<ILauncher> getLauncher() {
-    return model.getLauncher().map(launcher -> launcher);
+  public synchronized Optional<? extends ILauncher> getLauncher() {
+    return model.getLauncher();
   }
 
   @Override
