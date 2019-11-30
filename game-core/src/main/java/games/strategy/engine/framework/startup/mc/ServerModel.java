@@ -397,7 +397,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
 
-      GameHostingResponse gameHostingResponse = null;
+      @Nullable final GameHostingResponse gameHostingResponse;
 
       if (System.getProperty(LOBBY_URI) != null) {
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
@@ -413,6 +413,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                     ? new WatcherThreadMessaging.HeadlessWatcherThreadMessaging()
                     : new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui));
         lobbyWatcherThread.createLobbyWatcher(lobbyUri, gameHostingResponse);
+      } else {
+        gameHostingResponse = null;
       }
 
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
