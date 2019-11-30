@@ -420,6 +420,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
       if (ui == null) {
+        chatModelCancel = null;
         chatModel =
             new HeadlessChat(new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers)));
       } else {
