@@ -79,7 +79,7 @@ public class FinishedBattle extends AbstractBattle {
       if (dependentUnits.get(unit) != null) {
         dependentUnits.get(unit).addAll(addedTransporting.get(unit));
       } else {
-        dependentUnits.put(unit, addedTransporting.get(unit));
+        dependentUnits.put(unit, new ArrayList<>(addedTransporting.get(unit)));
       }
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
