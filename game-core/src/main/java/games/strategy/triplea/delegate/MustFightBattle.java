@@ -205,7 +205,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand()));
       isAmphibious = true;
     }
-    final Map<Unit, Collection<Unit>> dependencies = TransportTracker.transporting(units);
+    final Map<Unit, Collection<Unit>> dependencies =
+        new HashMap<>(TransportTracker.transporting(units));
     if (!isAlliedAirIndependent()) {
       dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, gameData, attacker));
       for (final Unit carrier : dependencies.keySet()) {
@@ -295,7 +296,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   @Override
   public void unitsLostInPrecedingBattle(
       final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
-    Collection<Unit> lost = getDependentUnits(units);
+    Collection<Unit> lost = new ArrayList<>(getDependentUnits(units));
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     // if all the amphibious attacking land units are lost, then we are no longer a naval invasion
     amphibiousLandAttackers.removeAll(lost);

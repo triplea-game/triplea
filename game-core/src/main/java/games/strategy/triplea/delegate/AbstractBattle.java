@@ -16,6 +16,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,15 +82,26 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
-    final Collection<Unit> dependentUnits = new ArrayList<>();
+  public List<Unit> getDependentUnits(final Collection<Unit> units) {
+    final List<Unit> dependentUnits = new ArrayList<>();
     for (final Unit unit : units) {
       final Collection<Unit> dependent = this.dependentUnits.get(unit);
       if (dependent != null) {
         dependentUnits.addAll(dependent);
       }
     }
-    return dependentUnits;
+    return Collections.unmodifiableList(dependentUnits);
+  }
+
+  void addDependentTransportingUnits(final Collection<Unit> units) {
+    final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
+    for (final Unit unit : addedTransporting.keySet()) {
+      if (dependentUnits.get(unit) != null) {
+        dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+      } else {
+        dependentUnits.put(unit, new ArrayList<>(addedTransporting.get(unit)));
+      }
+    }
   }
 
   void clearTransportedBy(final IDelegateBridge bridge) {
@@ -146,7 +158,7 @@ abstract class AbstractBattle implements IBattle {
 
   @Override
   public Collection<Unit> getBombardingUnits() {
-    return new ArrayList<>(bombardingUnits);
+    return Collections.unmodifiableCollection(bombardingUnits);
   }
 
   @Override
@@ -156,27 +168,27 @@ abstract class AbstractBattle implements IBattle {
 
   @Override
   public Collection<Unit> getAmphibiousLandAttackers() {
-    return new ArrayList<>(amphibiousLandAttackers);
+    return Collections.unmodifiableCollection(amphibiousLandAttackers);
   }
 
   @Override
   public Collection<Unit> getAttackingUnits() {
-    return new ArrayList<>(attackingUnits);
+    return Collections.unmodifiableCollection(attackingUnits);
   }
 
   @Override
   public Collection<Unit> getDefendingUnits() {
-    return new ArrayList<>(defendingUnits);
+    return Collections.unmodifiableCollection(defendingUnits);
   }
 
   @Override
-  public List<Unit> getRemainingAttackingUnits() {
-    return new ArrayList<>(attackingUnits);
+  public Collection<Unit> getRemainingAttackingUnits() {
+    return Collections.unmodifiableCollection(attackingUnits);
   }
 
   @Override
-  public List<Unit> getRemainingDefendingUnits() {
-    return new ArrayList<>(defendingUnits);
+  public Collection<Unit> getRemainingDefendingUnits() {
+    return Collections.unmodifiableCollection(defendingUnits);
   }
 
   @Override

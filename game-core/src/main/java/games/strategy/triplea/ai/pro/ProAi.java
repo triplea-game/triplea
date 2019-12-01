@@ -396,7 +396,7 @@ public class ProAi extends AbstractAi {
       final boolean isAttacker = player.equals(battle.getAttacker());
       if (!isAttacker) {
         final Collection<Unit> attackers = battle.getAttackingUnits();
-        final Collection<Unit> defenders = battle.getDefendingUnits();
+        final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference =
             ProBattleUtils.estimateStrengthDifference(battleSite, attackers, defenders);

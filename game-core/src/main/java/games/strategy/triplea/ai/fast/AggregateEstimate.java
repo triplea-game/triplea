@@ -7,21 +7,20 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.Collection;
-import java.util.List;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
 class AggregateEstimate extends AggregateResults {
   private final int battleRoundsFought;
   private final double winPercentage;
-  private final List<Unit> remainingAttackingUnits;
-  private final List<Unit> remainingDefendingUnits;
+  private final Collection<Unit> remainingAttackingUnits;
+  private final Collection<Unit> remainingDefendingUnits;
 
   AggregateEstimate(
       final int battleRoundsFought,
       final double winPercentage,
-      final List<Unit> remainingAttackingUnits,
-      final List<Unit> remainingDefendingUnits) {
+      final Collection<Unit> remainingAttackingUnits,
+      final Collection<Unit> remainingDefendingUnits) {
     super(1);
     this.battleRoundsFought = battleRoundsFought;
     this.winPercentage = winPercentage;
@@ -30,12 +29,12 @@ class AggregateEstimate extends AggregateResults {
   }
 
   @Override
-  public List<Unit> getAverageAttackingUnitsRemaining() {
+  public Collection<Unit> getAverageAttackingUnitsRemaining() {
     return remainingAttackingUnits;
   }
 
   @Override
-  public List<Unit> getAverageDefendingUnitsRemaining() {
+  public Collection<Unit> getAverageDefendingUnitsRemaining() {
     return remainingDefendingUnits;
   }
 

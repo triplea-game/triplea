@@ -229,8 +229,8 @@ public class ProOddsCalculator {
 
     // Find battle result statistics
     final double winPercentage = results.getAttackerWinPercent() * 100;
-    final List<Unit> averageAttackersRemaining = results.getAverageAttackingUnitsRemaining();
-    final List<Unit> averageDefendersRemaining = results.getAverageDefendingUnitsRemaining();
+    final Collection<Unit> averageAttackersRemaining = results.getAverageAttackingUnitsRemaining();
+    final Collection<Unit> averageDefendersRemaining = results.getAverageDefendingUnitsRemaining();
     final List<Unit> mainCombatAttackers =
         CollectionUtils.getMatches(
             attackingUnits, Matches.unitCanBeInBattle(true, !t.isWater(), 1, true));

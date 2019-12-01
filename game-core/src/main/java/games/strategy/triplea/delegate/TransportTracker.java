@@ -15,6 +15,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,18 +40,18 @@ public class TransportTracker {
     }
   }
 
-  /** Returns the collection of units that the given transport is transporting. */
-  public static Collection<Unit> transporting(final Unit transport) {
-    return new ArrayList<>(((TripleAUnit) transport).getTransporting());
+  /** @return Unmodifiable collection of units that the given transport is transporting. */
+  public static List<Unit> transporting(final Unit transport) {
+    return ((TripleAUnit) transport).getTransporting();
   }
 
-  /** Returns the collection of units that the given transport is transporting. */
-  public static Collection<Unit> transporting(
+  /** @return Unmodifiable collection of units that the given transport is transporting. */
+  public static List<Unit> transporting(
       final Unit transport, final Collection<Unit> transportedUnitsPossible) {
-    return new ArrayList<>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
+    return ((TripleAUnit) transport).getTransporting(transportedUnitsPossible);
   }
 
-  /** Returns a map of transport -> collection of transported units. */
+  /** @return Unmodifiable map of transport -> collection of transported units. */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
     return transporting(units, TransportTracker::transporting);
   }
@@ -69,7 +70,7 @@ public class TransportTracker {
         returnVal.put(transport, transporting);
       }
     }
-    return returnVal;
+    return Collections.unmodifiableMap(returnVal);
   }
 
   /**
@@ -83,7 +84,7 @@ public class TransportTracker {
   }
 
   public static boolean isTransporting(final Unit transport) {
-    return !((TripleAUnit) transport).getTransporting().isEmpty();
+    return transporting(transport).isEmpty();
   }
 
   /**
@@ -95,7 +96,7 @@ public class TransportTracker {
   }
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
-    final Collection<Unit> units = transporting(transport);
+    final Collection<Unit> units = new ArrayList<>(transporting(transport));
     units.addAll(unloaded(transport));
     return units;
   }
