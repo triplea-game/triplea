@@ -621,7 +621,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           if (!ClientSetting.showBetaFeatures.getValueOrThrow() || !willStartBattle(territory)) {
             return true;
           }
-          if (!Properties.getScrambleRulesInEffect(data)) {
+          if (!Properties.getScrambleRulesInEffect(getData())) {
             return true;
           }
           final var scrambleLogic = new ScrambleLogic(getData(), getCurrentPlayer(), territory);
