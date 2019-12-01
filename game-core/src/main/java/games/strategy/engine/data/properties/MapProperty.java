@@ -47,8 +47,6 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
             properties.add(new ColorProperty(key, description, ((Color) value)));
           } else if (value instanceof String) {
             properties.add(new StringProperty(key, description, ((String) value)));
-          } else if (value instanceof Collection) {
-            properties.add(new CollectionProperty<>(name, description, ((Collection<?>) value)));
           } else if (value instanceof Integer) {
             properties.add(
                 new NumberProperty(
