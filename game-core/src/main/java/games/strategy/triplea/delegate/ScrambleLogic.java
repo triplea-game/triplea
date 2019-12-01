@@ -44,6 +44,9 @@ public class ScrambleLogic {
       final PlayerId player,
       final Set<Territory> territoriesWithBattles,
       final BattleTracker battleTracker) {
+    if (!Properties.getScrambleRulesInEffect(data)) {
+      throw new IllegalStateException("Scrambling not supported");
+    }
     this.data = data;
     this.player = player;
     this.territoriesWithBattles = territoriesWithBattles;
@@ -110,9 +113,6 @@ public class ScrambleLogic {
     // first, figure out all the territories where scrambling units could scramble to
     // then ask the defending player if they wish to scramble units there, and actually move the
     // units there
-    if (!Properties.getScrambleRulesInEffect(data)) {
-      return Map.of();
-    }
     final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
     final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
 

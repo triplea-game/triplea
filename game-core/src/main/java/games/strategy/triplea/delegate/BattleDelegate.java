@@ -677,6 +677,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private void doScrambling() {
     final GameData data = getData();
+    if (!Properties.getScrambleRulesInEffect(data)) {
+      return;
+    }
     final BattleListing pendingBattleSites = battleTracker.getPendingBattleSites();
     final Set<Territory> territoriesWithBattles =
         pendingBattleSites.getNormalBattlesIncludingAirBattles();
