@@ -1,4 +1,4 @@
-package games.strategy.engine.message.unifiedmessenger;
+package games.strategy.engine.message;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
@@ -8,6 +8,7 @@ import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.UnifiedMessengerHub;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;

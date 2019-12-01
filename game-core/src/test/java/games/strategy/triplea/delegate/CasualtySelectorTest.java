@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package  games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
-class BattleCalculatorTest {
+class CasualtySelectorTest {
   private IDelegateBridge bridge;
 
   private void givenRemotePlayerWillSelectStrategicBombersForCasualties() {
