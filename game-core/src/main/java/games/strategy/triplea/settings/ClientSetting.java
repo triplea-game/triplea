@@ -9,6 +9,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import java.awt.Frame;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -230,8 +231,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     listeners.remove(listener);
   }
 
-  public static void showSettingsWindow() {
-    SettingsWindow.INSTANCE.open();
+  public static void showSettingsWindow(final Frame owner) {
+    SettingsWindow.INSTANCE.open(owner);
   }
 
   /** Persists all pending client setting changes to the backing store. */

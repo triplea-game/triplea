@@ -197,7 +197,8 @@ public class ForumPosterEditor extends EditorPanel {
   /** Tests the Forum poster. */
   private void testForum() {
     final IForumPoster poster = newForumPoster();
-    final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
+    final ProgressWindow progressWindow =
+        new ProgressWindow(JOptionPane.getFrameForComponent(this), poster.getTestMessage());
     progressWindow.setVisible(true);
 
     new Thread(

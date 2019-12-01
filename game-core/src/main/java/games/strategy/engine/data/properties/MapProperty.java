@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
 
 import java.awt.Color;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,8 +45,6 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
             properties.add(new BooleanProperty(key, description, ((Boolean) value)));
           } else if (value instanceof Color) {
             properties.add(new ColorProperty(key, description, ((Color) value)));
-          } else if (value instanceof File) {
-            properties.add(new FileProperty(key, description, ((File) value)));
           } else if (value instanceof String) {
             properties.add(new StringProperty(key, description, ((String) value)));
           } else if (value instanceof Collection) {

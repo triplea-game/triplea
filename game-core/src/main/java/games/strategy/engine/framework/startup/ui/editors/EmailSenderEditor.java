@@ -140,7 +140,8 @@ public class EmailSenderEditor extends EditorPanel {
 
   /** Tests the email sender. This must be called from the swing event thread */
   private void testEmail() {
-    final ProgressWindow progressWindow = GameRunner.newProgressWindow("Sending test email...");
+    final ProgressWindow progressWindow =
+        new ProgressWindow(JOptionPane.getFrameForComponent(this), "Sending test email...");
     progressWindow.setVisible(true);
     new Thread(
             () -> {

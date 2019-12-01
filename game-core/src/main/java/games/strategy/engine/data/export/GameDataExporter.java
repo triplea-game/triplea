@@ -24,7 +24,6 @@ import games.strategy.engine.data.XmlReader;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.ComboProperty;
-import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -173,9 +172,6 @@ public class GameDataExporter {
     String value = "" + prop.getValue();
     if (prop.getClass().equals(BooleanProperty.class)) {
       typeString = "            <boolean/>\n";
-    }
-    if (prop.getClass().equals(FileProperty.class)) {
-      typeString = "            <file/>\n";
     }
     if (prop.getClass().equals(StringProperty.class)) {
       typeString = "            <string/>\n";

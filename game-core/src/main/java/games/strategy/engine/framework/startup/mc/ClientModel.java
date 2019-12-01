@@ -37,6 +37,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
+import java.awt.Frame;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -449,8 +450,8 @@ public class ClientModel implements IMessengerErrorListener {
     return new ChangeGameOptionsClientAction(parent, getServerStartup());
   }
 
-  public Action getHostBotChangeGameToSaveGameClientAction() {
-    return new ChangeGameToSaveGameClientAction(getClientMessenger());
+  public Action getHostBotChangeGameToSaveGameClientAction(final Frame owner) {
+    return new ChangeGameToSaveGameClientAction(getClientMessenger(), owner);
   }
 
   public Action getHostBotChangeToAutosaveClientAction(
