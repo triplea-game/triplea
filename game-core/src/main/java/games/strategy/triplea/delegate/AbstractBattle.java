@@ -93,7 +93,7 @@ abstract class AbstractBattle implements IBattle {
     return Collections.unmodifiableList(dependentUnits);
   }
 
-  void addDependentTransportingUnits(Collection<Unit> units) {
+  void addDependentTransportingUnits(final Collection<Unit> units) {
     final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
     for (final Unit unit : addedTransporting.keySet()) {
       if (dependentUnits.get(unit) != null) {
