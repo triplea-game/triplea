@@ -27,6 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 
 /** Default implementation of {@link IClientMessenger}. */
@@ -47,9 +48,10 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
    * has been constructed.
    */
   @VisibleForTesting
-  public ClientMessenger(final String host, final int port, final String name, final String mac)
+  public ClientMessenger(
+      final String host, final int port, final String name, final SystemId systemId)
       throws IOException {
-    this(host, port, name, mac, new DefaultObjectStreamFactory(), null);
+    this(host, port, name, systemId, new DefaultObjectStreamFactory(), null);
   }
 
   /**
@@ -60,12 +62,11 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
       final String host,
       final int port,
       final String name,
-      final String mac,
+      final SystemId systemId,
       final IObjectStreamFactory streamFact,
       final IConnectionLogin login)
       throws IOException {
-    Preconditions.checkNotNull(mac);
-    Preconditions.checkArgument(MacFinder.isValidHashedMacAddress(mac), "Not a valid mac: " + mac);
+    Preconditions.checkNotNull(systemId);
     socketChannel = SocketChannel.open();
     socketChannel.configureBlocking(false);
     final InetSocketAddress remote = new InetSocketAddress(host, port);
@@ -83,9 +84,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
           }
         } catch (final ConnectException e) {
           throw new RuntimeException(
-              String.format(
-                  "Could not connect host: %s, port: %s, name: %s, mac: %s", host, port, name, mac),
-              e);
+              String.format("Could not connect host: %s, port: %s", host, port), e);
         }
         if (!Interruptibles.sleep(50)) {
           shutDown();
@@ -99,7 +98,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     socket.setKeepAlive(true);
     nioSocket = new NioSocket(streamFact, this);
     final ClientQuarantineConversation conversation =
-        new ClientQuarantineConversation(login, socketChannel, nioSocket, name, mac);
+        new ClientQuarantineConversation(login, socketChannel, nioSocket, name, systemId);
 
     nioSocket.add(socketChannel, conversation);
     // allow the credentials to be shown in this thread

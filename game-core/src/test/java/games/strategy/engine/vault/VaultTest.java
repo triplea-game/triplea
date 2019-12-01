@@ -11,7 +11,6 @@ import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.Node;
 import games.strategy.net.TestServerMessenger;
@@ -19,7 +18,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.SystemId;
 
 /**
  * Comment(KG): This test is broken, If you run each test individually they all work, but when
@@ -38,8 +39,8 @@ class VaultTest {
     serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
-    final String mac = MacFinder.getHashedMacAddress();
-    clientMessenger = new ClientMessenger("localhost", serverPort, "client1", mac);
+    clientMessenger =
+        new ClientMessenger("localhost", serverPort, "client1", SystemId.of("system-id"));
     final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
     final UnifiedMessenger clientUnifiedMessenger = new UnifiedMessenger(clientMessenger);
     serverVault = new Vault(new ChannelMessenger(serverUnifiedMessenger));
@@ -71,6 +72,8 @@ class VaultTest {
    * Passes when run individually. Fails when run as part of a suite that consists of multiple
    * server/vault tests.
    */
+  @Disabled
+  @Test
   void temporarilyDisabledSoPleaseRunManuallytestServerLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultId id = serverVault.lock(data);
@@ -102,6 +105,8 @@ class VaultTest {
    * Passes when run individually. Fails when run as part of a suite that consists of multiple
    * server/vault tests.
    */
+  @Disabled
+  @Test
   void temporarilyDisabledSoPleaseRunManuallytestMultiple() throws NotUnlockedException {
     final byte[] data1 = new byte[] {0, 1, 2, 3, 4, 5};
     final byte[] data2 = new byte[] {0xE, 0xF, 2, 1, 3, 1, 2, 12, 3, 31, 124, 12, 1};

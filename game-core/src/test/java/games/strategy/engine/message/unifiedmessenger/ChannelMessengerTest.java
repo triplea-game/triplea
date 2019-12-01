@@ -11,13 +11,13 @@ import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.TestServerMessenger;
 import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.SystemId;
 import org.triplea.swing.DialogBuilder;
 
 class ChannelMessengerTest {
@@ -34,8 +34,8 @@ class ChannelMessengerTest {
     serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
-    final String mac = MacFinder.getHashedMacAddress();
-    clientMessenger = new ClientMessenger("localhost", serverPort, "client1", mac);
+    final SystemId systemId = SystemId.of("system-id");
+    clientMessenger = new ClientMessenger("localhost", serverPort, "client1", systemId);
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
     unifiedMessengerHub = unifiedMessenger.getHub();
     serverChannelMessenger = new ChannelMessenger(unifiedMessenger);
@@ -87,9 +87,9 @@ class ChannelMessengerTest {
     assertHasChannel(test, unifiedMessengerHub);
     assertEquals(1, clientChannelMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
     // add a new client
-    final String mac = MacFinder.getHashedMacAddress();
+    final SystemId systemId = SystemId.of("system-id2");
     final ClientMessenger clientMessenger2 =
-        new ClientMessenger("localhost", serverPort, "client2", mac);
+        new ClientMessenger("localhost", serverPort, "client2", systemId);
     final ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
     ((IChannelBase) client2.getChannelBroadcaster(test)).testString("a");
     assertCallCountIs(client1Subscriber, 1);
