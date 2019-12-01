@@ -53,10 +53,10 @@ import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirBattle;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BaseEditDelegate;
-import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
@@ -1626,7 +1626,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
             final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
             final int maxAllowed =
                 Math.min(
-                    BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()),
+                    ScrambleLogic.getMaxScrambleCount(possibleScramblers.get(from).getFirst()),
                     possible.size());
             final UnitChooser chooser = new UnitChooser(possible, Map.of(), false, uiContext);
             chooser.setMaxAndShowMaxButton(maxAllowed);

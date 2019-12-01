@@ -19,15 +19,18 @@ import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.unit.scroller.UnitScroller;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -49,6 +52,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -56,6 +60,8 @@ import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** The action panel displayed during the combat and non-combat move actions. */
 @Log
@@ -536,15 +542,18 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
         private void selectEndPoint(final Territory territory) {
           final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
-          final List<Unit> units = new ArrayList<>(unitsThatCanMoveOnRoute);
-          setSelectedEndpointTerritory(territory);
-          if (units.isEmpty() || route == null) {
+          if (unitsThatCanMoveOnRoute.isEmpty() || route == null) {
             cancelMove();
             return;
           }
+          if (!confirmEndPoint(territory)) {
+            return;
+          }
+          setSelectedEndpointTerritory(territory);
           Collection<Unit> transports = null;
           final Predicate<Unit> paratroopNBombers =
               Matches.unitIsAirTransport().and(Matches.unitIsAirTransportable());
+          final var units = new ArrayList<>(unitsThatCanMoveOnRoute);
           final boolean paratroopsLanding = units.stream().anyMatch(paratroopNBombers);
           if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
             transports = getTransportsToLoad(route, units, false);
@@ -606,6 +615,56 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           forced = null;
           updateRouteAndMouseShadowUnits(null);
           release();
+        }
+
+        private boolean confirmEndPoint(final Territory territory) {
+          if (!ClientSetting.showBetaFeatures.getValueOrThrow() || !willStartBattle(territory)) {
+            return true;
+          }
+          if (!Properties.getScrambleRulesInEffect(getData())) {
+            return true;
+          }
+          final var scrambleLogic = new ScrambleLogic(getData(), getCurrentPlayer(), territory);
+          final Collection<Unit> possibleScramblers = scrambleLogic.getUnitsThatCanScramble();
+          return possibleScramblers.isEmpty()
+              || showScrambleWarningAndConfirmMove(possibleScramblers);
+        }
+
+        private boolean willStartBattle(final Territory territory) {
+          final PlayerId player = getCurrentPlayer();
+          return Matches.territoryHasUnitsOwnedBy(player)
+              .negate()
+              .and(Matches.territoryHasEnemyUnits(player, getData()))
+              .test(territory);
+        }
+
+        private boolean showScrambleWarningAndConfirmMove(
+            final Collection<Unit> possibleScramblers) {
+          final SimpleUnitPanel unitPanel =
+              new SimpleUnitPanel(
+                  getMap().getUiContext(),
+                  SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
+          unitPanel.setUnitsFromCategories(UnitSeparator.categorize(possibleScramblers));
+          final String message = "Warning: Units may scramble from nearby territories to defend:";
+          final JPanel panel =
+              new JPanelBuilder()
+                  .borderLayout()
+                  .addNorth(JLabelBuilder.builder().text(message).build())
+                  .addCenter(unitPanel)
+                  .addSouth(JLabelBuilder.builder().text("Confirm move?").build())
+                  .build();
+          // The following is needed to help the unitPanel compute its initial height with
+          // multiple units present. Without it, an extra row is added based on a too narrow
+          // width initially.
+          panel.setSize(new Dimension(400, 100));
+          final int option =
+              JOptionPane.showConfirmDialog(
+                  JOptionPane.getFrameForComponent(MovePanel.this),
+                  panel,
+                  "Scramble Warning",
+                  JOptionPane.OK_CANCEL_OPTION,
+                  JOptionPane.WARNING_MESSAGE);
+          return option == JOptionPane.OK_OPTION;
         }
       };
 

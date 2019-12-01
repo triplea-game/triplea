@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.ScrambleLogic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -66,7 +67,7 @@ class ProScrambleAi {
     final Map<Territory, List<Unit>> possibleMaxScramblerMap = new HashMap<>();
     for (final Territory t : possibleScramblers.keySet()) {
       final int maxCanScramble =
-          BattleDelegate.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
+          ScrambleLogic.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
       List<Unit> canScrambleAir = new ArrayList<>(possibleScramblers.get(t).getSecond());
       if (maxCanScramble < canScrambleAir.size()) {
         canScrambleAir.sort(
