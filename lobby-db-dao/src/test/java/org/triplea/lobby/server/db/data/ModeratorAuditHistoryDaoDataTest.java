@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ModeratorAuditHistoryItemTest {
+class ModeratorAuditHistoryDaoDataTest {
 
   private static final Instant NOW = Instant.now();
   private static final Timestamp timestamp = Timestamp.from(NOW);

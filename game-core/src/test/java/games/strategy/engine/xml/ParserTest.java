@@ -23,7 +23,10 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 
+@Integration(type = TestType.ACCEPTANCE)
 class ParserTest {
   private GameData gameData;
 

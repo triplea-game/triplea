@@ -9,7 +9,10 @@ import games.strategy.triplea.delegate.Matches;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 
+@Integration(type = TestType.ACCEPTANCE)
 class MapTest {
   private Territory aa;
   private Territory ab;
