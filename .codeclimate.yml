@@ -2,7 +2,7 @@ plugins:
   # https://docs.codeclimate.com/docs/git-legal
   git-legal:
     enabled: true
-      allow_strong_copyleft: true
+    allow_strong_copyleft: true
   # https://docs.codeclimate.com/docs/fixme
   fixme:
     enabled: true
