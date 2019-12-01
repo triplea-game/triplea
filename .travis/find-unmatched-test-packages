@@ -24,21 +24,23 @@ while read -r file; do
      testFileMatchCount=$(grep -c "/$testFileName" "$testFiles")
 
      ## If we find the expected test file name, check if test file package
-     ## matches teh source file
+     ## matches the source file
      if [ "$testFileMatchCount" == 1 ]; then
 
        ## Grab the name of the matching test file with full path
        testFileMatch=$(grep "/$testFileName" "$testFiles")
 
-       ## chop off the filename suffix and the '/src/test/java/' prefix
+       ## chop off the filename and the '/src/test/java/' prefix
+       ## EG: ./project/src/test/java/org/triplea/package/File.java -> org/triplea/package
        testPackage=$(echo "$testFileMatch" | \
             sed 's|\(.*\)/.*\.java$|\1|' | sed 's|.*/java/||')
 
-       ## chop off the filename suffix and the '/src/main/java/' prefix
+       ## chop off the filename and the '/src/main/java/' prefix
+       ## EG: ./project/src/main/java/org/triplea/package/File.java -> org/triplea/package
        srcPackage=$(echo "$file" | \
             sed 's|\(.*\)/.*\.java$|\1|' | sed 's|.*/java/||')
 
-       ## compare path strings, if they do not match then we found a problem
+       ## compare package path strings, if they do not match then we found a problem
        if [ "$srcPackage" != "$testPackage" ]; then
          echo ""
          echo -e "${red}$testFileName${normal}"
