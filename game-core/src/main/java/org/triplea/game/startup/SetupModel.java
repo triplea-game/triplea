@@ -24,7 +24,7 @@ public interface SetupModel {
 
   void postStartGame();
 
-  Optional<ILauncher> getLauncher();
+  Optional<? extends ILauncher> getLauncher();
 
   /**
    * Helper method to clear PbF/PbEM related properties from a game that has potentially been used

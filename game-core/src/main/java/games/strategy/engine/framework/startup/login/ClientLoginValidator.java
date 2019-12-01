@@ -6,11 +6,11 @@ import games.strategy.engine.ClientContext;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nullable;
+import lombok.Setter;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.Version;
 
@@ -33,12 +33,8 @@ public final class ClientLoginValidator implements ILoginValidator {
     String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
   }
 
-  private final IServerMessenger serverMessenger;
+  @Setter private IServerMessenger serverMessenger;
   private @Nullable String password;
-
-  public ClientLoginValidator(final IServerMessenger serverMessenger) {
-    this.serverMessenger = serverMessenger;
-  }
 
   /** Set the password required for the game. If {@code null} or empty, no password is required. */
   public void setGamePassword(final @Nullable String password) {
@@ -63,12 +59,13 @@ public final class ClientLoginValidator implements ILoginValidator {
   }
 
   @Override
+  @Nullable
   public String verifyConnection(
       final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient,
       final String clientName,
       final String hashedMac,
-      final SocketAddress remoteAddress) {
+      final InetSocketAddress remoteAddress) {
     final String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
     if (versionString == null
         || versionString.length() > 20
@@ -84,7 +81,7 @@ public final class ClientLoginValidator implements ILoginValidator {
           clientVersion, ClientContext.engineVersion());
     }
 
-    final String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
+    final String remoteIp = remoteAddress.getAddress().getHostAddress();
     if (serverMessenger.isPlayerBanned(remoteIp, hashedMac)) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED;
     }

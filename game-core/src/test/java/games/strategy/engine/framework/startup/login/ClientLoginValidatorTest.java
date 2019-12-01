@@ -18,7 +18,7 @@ final class ClientLoginValidatorTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class AuthenticateTest {
-    private final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
+    private final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
 
     @BeforeEach
     void givenPasswordSet() {

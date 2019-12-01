@@ -214,7 +214,7 @@ public class InGameLobbyWatcher {
             .withGameVersion(gameSelectorModel.getGameVersion()));
   }
 
-  void setGameSelectorModel(@Nullable final GameSelectorModel model) {
+  public void setGameSelectorModel(@Nullable final GameSelectorModel model) {
     cleanUpGameModelListener();
     if (model != null) {
       gameSelectorModel = model;

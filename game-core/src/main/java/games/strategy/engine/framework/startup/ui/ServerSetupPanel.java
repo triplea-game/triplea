@@ -1,12 +1,10 @@
 package games.strategy.engine.framework.startup.ui;
 
-import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
 import games.strategy.engine.framework.network.ui.SetPasswordAction;
+import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -15,41 +13,29 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.IServerMessenger;
-import games.strategy.triplea.UrlConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import org.triplea.awt.OpenFileUtility;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
-import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
-import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.swing.DialogBuilder;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -64,87 +50,15 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   private final GameSelectorModel gameSelectorModel;
   private JPanel info;
   private JPanel networkPanel;
-  private final InGameLobbyWatcherWrapper lobbyWatcher = new InGameLobbyWatcherWrapper();
 
   public ServerSetupPanel(final ServerModel model, final GameSelectorModel gameSelectorModel) {
     this.model = model;
     this.gameSelectorModel = gameSelectorModel;
     this.model.setRemoteModelListener(this);
 
-    if (System.getProperty(LOBBY_URI) != null) {
-      createLobbyWatcher();
-    }
-
     createComponents();
     layoutComponents();
     internalPlayerListChanged();
-  }
-
-  private void createLobbyWatcher() {
-    final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
-
-    final GameHostingResponse gameHostingResponse =
-        GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
-
-    final HttpLobbyClient lobbyClient =
-        HttpLobbyClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
-
-    InGameLobbyWatcher.newInGameLobbyWatcher(
-            model.getMessenger(),
-            gameHostingResponse,
-            GameListingClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey())),
-            this::connectionLostReporter,
-            this::connectionReEstablishedReporter,
-            lobbyWatcher.getInGameLobbyWatcher())
-        .ifPresent(
-            watcher -> {
-              watcher.setGameSelectorModel(gameSelectorModel);
-              lobbyWatcher.setInGameLobbyWatcher(watcher);
-
-              final Consumer<String> errorHandler =
-                  message ->
-                      SwingUtilities.invokeLater(
-                          () -> {
-                            final Frame parentComponent =
-                                JOptionPane.getFrameForComponent(ServerSetupPanel.this);
-                            if (JOptionPane.showConfirmDialog(
-                                    parentComponent,
-                                    message
-                                        + "\nDo you want to view the tutorial on how to host? "
-                                        + "This will open in your internet browser.",
-                                    "View Help Website?",
-                                    JOptionPane.YES_NO_OPTION)
-                                == JOptionPane.YES_OPTION) {
-                              OpenFileUtility.openUrl(UrlConstants.USER_GUIDE);
-                            }
-                          });
-
-              LocalServerAvailabilityCheck.builder()
-                  .connectivityCheckClient(lobbyClient.getConnectivityCheckClient())
-                  .localPort(model.getMessenger().getLocalNode().getPort())
-                  .errorHandler(errorHandler)
-                  .build()
-                  .run();
-
-              System.clearProperty(LOBBY_URI);
-              System.clearProperty(TRIPLEA_NAME);
-            });
-  }
-
-  private void connectionLostReporter(final String message) {
-    DialogBuilder.builder()
-        .parent(this)
-        .title("Connection to Lobby Lost")
-        .errorMessage(message)
-        .showDialog();
-  }
-
-  private void connectionReEstablishedReporter(final String message) {
-    DialogBuilder.builder()
-        .parent(this)
-        .title("Re-Connected to Lobby")
-        .infoMessage(message)
-        .showDialog();
   }
 
   private void createComponents() {
@@ -361,7 +275,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   public void cancel() {
     model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
     model.cancel();
-    lobbyWatcher.shutDown();
   }
 
   @Override
@@ -550,14 +463,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   @Override
-  public synchronized Optional<ILauncher> getLauncher() {
-    return model
-        .getLauncher()
-        .map(
-            launcher -> {
-              launcher.setInGameLobbyWatcher(lobbyWatcher);
-              return launcher;
-            });
+  public synchronized Optional<? extends ILauncher> getLauncher() {
+    return model.getLauncher();
   }
 
   @Override
@@ -567,11 +474,20 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     actions.add(new BanPlayerAction(this, model.getMessenger()));
     actions.add(
         new SetPasswordAction(
-            this, lobbyWatcher, (ClientLoginValidator) model.getMessenger().getLoginValidator()));
-    if (lobbyWatcher.isActive()) {
-      actions.add(new EditGameCommentAction(lobbyWatcher, ServerSetupPanel.this));
-      actions.add(new RemoveGameFromLobbyAction(lobbyWatcher));
-    }
+            this,
+            Optional.ofNullable(model.getLobbyWatcherThread())
+                .map(LobbyWatcherThread::getLobbyWatcher)
+                .orElse(null),
+            (ClientLoginValidator) model.getMessenger().getLoginValidator()));
+
+    Optional.ofNullable(model.getLobbyWatcherThread())
+        .map(LobbyWatcherThread::getLobbyWatcher)
+        .filter(InGameLobbyWatcherWrapper::isActive)
+        .ifPresent(
+            watcher -> {
+              actions.add(new EditGameCommentAction(watcher, ServerSetupPanel.this));
+              actions.add(new RemoveGameFromLobbyAction(watcher));
+            });
     return actions;
   }
 

@@ -40,7 +40,8 @@ final class ClientLoginIntegrationTest {
   }
 
   private static ILoginValidator newLoginValidator(final IServerMessenger serverMessenger) {
-    final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
+    final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+    clientLoginValidator.setServerMessenger(serverMessenger);
     clientLoginValidator.setGamePassword(PASSWORD);
     return clientLoginValidator;
   }
