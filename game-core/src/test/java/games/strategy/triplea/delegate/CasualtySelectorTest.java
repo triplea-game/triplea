@@ -1,4 +1,4 @@
-package  games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;

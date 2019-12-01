@@ -11,13 +11,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.message.ConnectionLostException;
-import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.MessageContext;
-import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.message.RemoteNotFoundException;
-import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
