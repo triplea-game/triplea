@@ -1,0 +1,17 @@
+plugins:
+  # https://docs.codeclimate.com/docs/git-legal
+  git-legal:
+    enabled: true
+    allow_strong_copyleft: true
+  # https://docs.codeclimate.com/docs/fixme
+  fixme:
+    enabled: true
+  # https://docs.codeclimate.com/docs/codenarc
+  codenarc:
+    enabled: true
+  # https://docs.codeclimate.com/docs/markdownlint
+  markdownlint:
+    enabled: true
+  # https://docs.codeclimate.com/docs/shellcheck
+  shellcheck:
+    enabled: true
