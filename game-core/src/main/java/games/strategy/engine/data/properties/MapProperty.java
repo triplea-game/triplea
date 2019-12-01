@@ -98,8 +98,8 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     }
 
     final Map<?, ?> otherMap = (Map<?, ?>) value;
-    if (!areAllElementsNullOrInstanceOf(otherMap.keySet(), String.class)
-        || !areAllElementsNullOrInstanceOf(otherMap.values(), getMapValueType())) {
+    if (containsIncompatibleType(otherMap.keySet(), String.class)
+        || containsIncompatibleType(otherMap.values(), getMapValueType())) {
       return false;
     }
 
@@ -116,9 +116,9 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     return true;
   }
 
-  private static boolean areAllElementsNullOrInstanceOf(
+  private static boolean containsIncompatibleType(
       final Collection<?> collection, final Class<?> type) {
-    return collection.stream().filter(not(Objects::isNull)).allMatch(type::isInstance);
+    return collection.stream().filter(not(Objects::isNull)).anyMatch(not(type::isInstance));
   }
 
   private Class<?> getMapValueType() {
