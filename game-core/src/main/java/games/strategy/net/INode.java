@@ -34,4 +34,9 @@ public interface INode extends Serializable, Comparable<INode> {
 
   /** Returns the address for the node as seen by the server. */
   InetSocketAddress getSocketAddress();
+
+  /** Returns the IP address of this node. */
+  default String getIpAddress() {
+    return getSocketAddress().getAddress().getHostAddress();
+  }
 }
