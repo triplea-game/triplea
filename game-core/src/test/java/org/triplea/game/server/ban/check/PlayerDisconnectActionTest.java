@@ -22,7 +22,7 @@ import org.triplea.domain.data.PlayerName;
 @ExtendWith(MockitoExtension.class)
 class PlayerDisconnectActionTest {
   private static final INode NODE_1 =
-      new Node("node-1", InetSocketAddress.createUnresolved("1.1.1.1", 5000));
+      new Node("node-1", InetSocketAddress.createUnresolved("99.99.99.100", 5000));
 
   private static final String NODE_2_NAME = "node-2";
   private static final INode NODE_2 =
