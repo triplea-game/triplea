@@ -1,7 +1,7 @@
 package games.strategy.engine.data.properties;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.not;
+import static java.util.function.Predicate.not;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -30,13 +30,12 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     checkNotNull(map);
 
     this.map = map;
-    resetProperties(map, properties, name, description);
+    resetProperties(map, properties, description);
   }
 
   private static void resetProperties(
       final Map<String, ?> map,
       final List<IEditableProperty<?>> properties,
-      final String name,
       final String description) {
     properties.clear();
     map.forEach(
@@ -79,7 +78,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     checkNotNull(value);
 
     map = value;
-    resetProperties(map, properties, getName(), getDescription());
+    resetProperties(map, properties, getDescription());
   }
 
   @Override
@@ -108,7 +107,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     try {
       @SuppressWarnings("unchecked")
       final Map<String, ?> typedOtherMap = (Map<String, ?>) otherMap;
-      resetProperties(typedOtherMap, new ArrayList<>(), getName(), getDescription());
+      resetProperties(typedOtherMap, new ArrayList<>(), getDescription());
     } catch (final IllegalArgumentException e) {
       log.warning("Validation failed: " + e.getMessage());
       return false;
