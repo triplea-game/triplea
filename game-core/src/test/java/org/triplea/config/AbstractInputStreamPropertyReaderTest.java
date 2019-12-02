@@ -61,7 +61,4 @@ final class AbstractInputStreamPropertyReaderTest {
       assertThat(e.getCause(), is(sameInstance(expectedCause)));
     }
   }
-
-  @Nested
-  class AbstractInputStreamPropertyReaderAsPropertyReaderTest {}
 }
