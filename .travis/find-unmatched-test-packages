@@ -3,6 +3,7 @@
 set -u
 
 red="\e[91m"
+bold="\e[1m"
 normal="\e[0m"
 
 status=0
@@ -50,5 +51,12 @@ while read -r file; do
        fi
      fi
 done <<<"$(cat "$srcFiles")"
+
+
+if [ "$status" -eq 1 ]; then
+  echo ""
+  echo -e "${bold}Found test files in packages that did not match the corresponding source file.${normal}"
+  echo -e "${bold}To fix, move either the test file or source file so that the packages match.${normal}"
+fi
 
 exit "$status"
