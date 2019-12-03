@@ -38,7 +38,7 @@ function example() {
 function displayResult() {
   local found="$1"
   if [ "$found" -eq 0 ]; then
-    echo -e "${green}[GOOD]${normal}"
+    echo -e "${green}[OK]${normal}"
   else
     echo -e "${blinkingRed}[FIX]${normal}"
   fi
