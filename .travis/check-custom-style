@@ -20,7 +20,7 @@ status=0
 function main() {
   favorJava9CollectionsApi
   referToCollectionsByInterfaceType
-  legacyApi
+  avoidLegacyApi
   databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
@@ -65,7 +65,7 @@ function referToCollectionsByInterfaceType() {
   echo ""
 }
 
-function legacyApi() {
+function avoidLegacyApi() {
   title "Do not use legacy API tools like Vector"
   local found=0
 
