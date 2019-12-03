@@ -365,13 +365,11 @@ public class ProTerritoryManager {
     for (final var territoryToScramblersEntry :
         scrambleLogic.getUnitsThatCanScrambleByDestination().entrySet()) {
       final Territory to = territoryToScramblersEntry.getKey();
-      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> value =
-          territoryToScramblersEntry.getValue();
       for (final var fromToScrambers : territoryToScramblersEntry.getValue().entrySet()) {
         final Territory from = fromToScrambers.getKey();
         final Collection<Unit> airbases = fromToScrambers.getValue().getFirst();
         final Collection<Unit> scramblers = fromToScrambers.getValue().getSecond();
-        final int maxCanScramble = ScrambeLogic.getMaxScrambleCount(airbases);
+        final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
 
         final List<Unit> addTo = moveMap.get(to).getMaxScrambleUnits();
         if (maxCanScramble < scramblers.size()) {
