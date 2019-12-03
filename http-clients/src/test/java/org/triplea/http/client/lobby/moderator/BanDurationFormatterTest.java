@@ -21,6 +21,7 @@ class BanDurationFormatterTest {
   @SuppressWarnings("unused")
   private static List<Arguments> formattedBanDuration() {
     return List.of(
+        Arguments.of(0, "less than a minute"),
         Arguments.of(1, "1 minutes"),
         Arguments.of(5, "5 minutes"),
         Arguments.of(10, "10 minutes"),
