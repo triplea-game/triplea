@@ -372,7 +372,7 @@ public class ProTerritoryManager {
         final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
 
         final List<Unit> addTo = moveMap.get(to).getMaxScrambleUnits();
-        if (maxCanScramble < scramblers.size()) {
+        if (scramblers.size() <= maxCanScramble) {
           addTo.addAll(scramblers);
         } else {
           scramblers.stream()
@@ -382,7 +382,7 @@ public class ProTerritoryManager {
                               ProBattleUtils.estimateStrength(to, List.of(unit), List.of(), false))
                       .reversed())
               .limit(maxCanScramble)
-              .collect(Collectors.toCollection(() -> addTo));
+              .forEachOrdered(addTo::add);
         }
       }
     }
