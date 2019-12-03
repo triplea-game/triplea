@@ -6,6 +6,7 @@ green="\e[92m"
 blue="\e[34m"
 normal="\e[0m"
 bold="\e[1m"
+blinkingRed="${bold}\e[5m\e[91m"
 
 javaFiles=$(mktemp)
 sqlFiles=$(mktemp)
@@ -37,7 +38,9 @@ function example() {
 function displayResult() {
   local found="$1"
   if [ "$found" -eq 0 ]; then
-    echo -e "${green}[OK]${normal}"
+    echo -e "${green}[GOOD]${normal}"
+  else
+    echo -e "${blinkingRed}[FIX]${normal}"
   fi
   echo ""
   
