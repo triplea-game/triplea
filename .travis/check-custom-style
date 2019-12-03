@@ -34,6 +34,15 @@ function example() {
   echo -e "${blue}Ex: $1${normal}"
 }
 
+function displayResult() {
+  local found="$1"
+  if [ "$found" -eq 0 ]; then
+    echo -e "${green}[OK]${normal}"
+  fi
+  echo ""
+  
+}
+
 function favorJava9CollectionsApi() {
   title "Verifying preference to use List.of(), Map.of() and Set.of() compared to java.util.Collections.*"
   example "instead of 'Collections.singleton(value)', use 'Set.of(value)'"
@@ -44,10 +53,7 @@ function favorJava9CollectionsApi() {
     grep --color=auto -H -f .travis/style.include/disallowed-collection-imports "$file" && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
 
-  if [ "$found" -eq 0 ]; then
-    echo -e "${green}[OK]${normal}"
-  fi
-  echo ""
+  displayResult "$found"
 }
 
 function referToCollectionsByInterfaceType() {
@@ -58,11 +64,8 @@ function referToCollectionsByInterfaceType() {
   while read -r file; do
     grep --color=auto -E -H -f .travis/style.include/concrete-collection-types "$file" && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
-
-  if [ "$found" -eq 0 ]; then
-    echo -e "${green}[OK]${normal}"
-  fi
-  echo ""
+  
+  displayResult "$found"
 }
 
 function avoidLegacyApi() {
@@ -73,10 +76,7 @@ function avoidLegacyApi() {
     grep --color=auto -H -f .travis/style.include/legacy-api "$file" && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
   
-  if [ "$found" -eq 0 ]; then
-    echo -e "${green}[OK]${normal}"
-  fi
-  echo ""
+  displayResult "$found"
 }
 
 function databaseNamesAreLowerSnakeCase() {
@@ -87,11 +87,8 @@ function databaseNamesAreLowerSnakeCase() {
   while read -r file; do
     grep --color=auto -H -E "[a-z][A-Z]" "$file" && status=1 && found=1
   done <<< "$(cat "$sqlFiles")"
-
-  if [ "$found" -eq 0 ]; then
-    echo -e "${green}[OK]${normal}"
-  fi
-  echo ""
+  
+  displayResult "$found"
 }
   
 
@@ -105,10 +102,7 @@ function databaseTablesAreSingular() {
   done <<< "$(cat "$sqlFiles")"
 
 
-  if [ "$found" -eq 0 ]; then
-    echo -e "${green}[OK]${normal}"
-  fi
-  echo ""
+  displayResult "$found"
 }
 
 function noTabsInSql() {
@@ -117,6 +111,8 @@ function noTabsInSql() {
   while read -r file; do
     grep --color=auto -P -n "\t" "$file" && status=1 && found=1
   done <<< "$(cat "$sqlFiles")"
+  
+  displayResult "$found"
 }
 
 main
