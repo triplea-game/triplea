@@ -1,4 +1,4 @@
-package org.triplea.java;
+package org.triplea.java.collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

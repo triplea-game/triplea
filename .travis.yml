@@ -45,6 +45,8 @@ jobs:
         - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
         - .travis/check-links || travis_terminate 1;
         - .travis/find-unused-dbunit-datasets || travis_terminate 1
+        - .travis/find-unmatched-test-packages || travis_terminate 1;
+        - .travis/find-orphaned-tests || travis_terminate 1;
         - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain pmdTest
     - stage: verify
       env: "Unit & Integration Tests"

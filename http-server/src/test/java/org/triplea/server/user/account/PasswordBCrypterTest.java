@@ -8,7 +8,7 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
-class PasswordBcrypterTest {
+class PasswordBCrypterTest {
 
   @Test
   void bcrypt() {

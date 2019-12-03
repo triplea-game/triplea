@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
 import org.junit.jupiter.api.Test;
 
-class KeyBindingsTest {
+class KeyBindingSupplierTest {
   @Test
   void fromKeyEventCode() {
     assertThrows(IllegalArgumentException.class, () -> KeyBindingSupplier.fromKeyEventCode(1110));

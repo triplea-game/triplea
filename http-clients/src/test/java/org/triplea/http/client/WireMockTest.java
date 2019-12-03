@@ -14,7 +14,7 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
 @SuppressWarnings("PrivateConstructorForUtilityClass")
 @ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
-public class WireMockTest {
+public abstract class WireMockTest {
   protected static final ApiKey API_KEY = ApiKey.of("api-key-value");
   private static final ObjectMapper objectMapper;
 

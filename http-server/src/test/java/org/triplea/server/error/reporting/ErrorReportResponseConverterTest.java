@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
-class ErrorReportResponseAdapterTest {
+class ErrorReportResponseConverterTest {
 
   private static final CreateIssueResponse CREATE_ISSUE_RESPONSE =
       new CreateIssueResponse("http://html_url");

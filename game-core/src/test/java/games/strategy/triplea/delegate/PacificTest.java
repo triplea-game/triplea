@@ -22,7 +22,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 
+@Integration(type = TestType.ACCEPTANCE)
 class PacificTest extends AbstractDelegateTestCase {
   private UnitType marine;
   // Define players

@@ -1,4 +1,4 @@
-package org.triplea.java;
+package org.triplea.java.collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -14,7 +14,6 @@ import java.util.Map;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
-import org.triplea.java.collections.IntegerMap;
 
 class IntegerMapTest {
   private final Object k1 = new Object();
