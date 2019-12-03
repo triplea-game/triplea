@@ -21,7 +21,7 @@ import org.triplea.util.Version;
  * versions directly from the map zip files.
  */
 @ExtendWith(TempDirectory.class)
-class FileSystemStrategyTest {
+class FileSystemAccessStrategyTest {
   private FileSystemAccessStrategy testObj;
   private File mapFile;
 

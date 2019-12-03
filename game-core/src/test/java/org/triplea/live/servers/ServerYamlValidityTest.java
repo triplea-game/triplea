@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import org.hamcrest.core.StringEndsWith;
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 import org.triplea.util.Version;
 
 /**
@@ -29,6 +31,7 @@ import org.triplea.util.Version;
  *   <li>No exact version duplicates
  * </ul>
  */
+@Integration(type = TestType.ACCEPTANCE)
 class ServerYamlValidityTest {
   private static final Supplier<InputStream> SERVERS_YML =
       () -> asInputStream(readContents("servers.yml"));

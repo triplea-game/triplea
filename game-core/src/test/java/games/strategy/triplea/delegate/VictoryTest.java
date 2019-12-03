@@ -20,12 +20,15 @@ import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 
 /**
  * "Victory" map is just a branch/mod of Pact of Steel 2. POS2 is an actual game with good gameplay
  * that we don't want to mess with, so "Victory" is more of an xml purely for testing purposes, and
  * probably should never be played.
  */
+@Integration(type = TestType.ACCEPTANCE)
 class VictoryTest {
   private GameData gameData;
   private PlayerId italians;

@@ -1,3 +1,8 @@
 #!/bin/bash
+
+.travis/find-unmatched-test-packages &
+.travis/find-orphaned-tests &
+.travis/find-unused-dbunit-datasets &
+
 ./gradlew --parallel spotlessApply check
 

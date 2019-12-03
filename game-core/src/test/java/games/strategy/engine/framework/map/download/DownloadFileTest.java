@@ -8,7 +8,7 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import org.junit.jupiter.api.Test;
 import org.triplea.util.Version;
 
-class FileDownloadTest {
+class DownloadFileTest {
   @Test
   void testBasicStartCancel() {
     final DownloadFileDescription downloadFileDescription =
