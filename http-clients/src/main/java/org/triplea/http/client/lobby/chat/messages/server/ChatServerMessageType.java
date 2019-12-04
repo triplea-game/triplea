@@ -29,8 +29,7 @@ public enum ChatServerMessageType {
   public <T> void sendPayloadToListener(
       final ServerMessageEnvelope serverMessageEnvelope,
       final ChatMessageListeners chatMessageListeners) {
-    Preconditions.checkArgument(
-        valueOf(serverMessageEnvelope.getMessageType()) == this);
+    Preconditions.checkArgument(valueOf(serverMessageEnvelope.getMessageType()) == this);
     final T payload = (T) serverMessageEnvelope.getPayload(classType);
     ((Consumer<T>) extractListener.apply(chatMessageListeners)).accept(payload);
   }
