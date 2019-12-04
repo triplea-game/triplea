@@ -84,7 +84,7 @@ public class TransportTracker {
   }
 
   public static boolean isTransporting(final Unit transport) {
-    return transporting(transport).isEmpty();
+    return !transporting(transport).isEmpty();
   }
 
   /**
