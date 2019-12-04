@@ -19,12 +19,11 @@ import org.junit.jupiter.api.Test;
 
 class TransportTrackerTest {
   private final GameData gameData = TestMapGameData.REVISED.getGameData();
-  private final Territory brazil = territory("Brazil", gameData);
   private final Territory sz18 = territory("18 Sea Zone", gameData);
   private final Unit transport = transport(gameData).create(americans(gameData));
   private final Unit tank = armour(gameData).create(americans(gameData));
 
-  public TransportTrackerTest() throws Exception {}
+  TransportTrackerTest() throws Exception {}
 
   @Test
   void testIsTransporting() throws Exception {
