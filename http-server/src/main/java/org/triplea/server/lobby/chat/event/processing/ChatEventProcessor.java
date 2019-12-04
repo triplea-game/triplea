@@ -42,30 +42,13 @@ public class ChatEventProcessor {
     switch (chatClientEnvelopeType.get()) {
       case CONNECT:
         chatters.put(session, sender);
-        return List.of(
-            ServerResponse.backToClient(
-                ChatServerEnvelopeFactory.newPlayerListing(
-                    new ArrayList<>(chatters.getAllParticipants()))),
-            ServerResponse.broadcast(ChatServerEnvelopeFactory.newPlayerJoined(sender)));
+        return playerConnectedMessages(sender);
       case SLAP:
-        final PlayerName slapped = PlayerName.of(clientMessageEnvelope.getPayload());
-        return List.of(
-            ServerResponse.broadcast(
-                ChatServerEnvelopeFactory.newSlap(
-                    PlayerSlapped.builder()
-                        .slapper(sender.getPlayerName())
-                        .slapped(slapped)
-                        .build())));
+        return List.of(playerSlappedMessage(sender, clientMessageEnvelope));
       case MESSAGE:
-        return List.of(
-            ServerResponse.broadcast(
-                ChatServerEnvelopeFactory.newChatMessage(
-                    new ChatMessage(sender.getPlayerName(), clientMessageEnvelope.getPayload()))));
+        return List.of(chatMessage(sender, clientMessageEnvelope));
       case UPDATE_MY_STATUS:
-        return List.of(
-            ServerResponse.broadcast(
-                ChatServerEnvelopeFactory.newStatusUpdate(
-                    new StatusUpdate(sender.getPlayerName(), clientMessageEnvelope.getPayload()))));
+        return List.of(statusUpdateMessage(sender, clientMessageEnvelope));
       default:
         throw new UnsupportedOperationException(
             "Unhandled message type: " + chatClientEnvelopeType);
@@ -79,6 +62,36 @@ public class ChatEventProcessor {
     } catch (final IllegalArgumentException ignored) {
       return Optional.empty();
     }
+  }
+
+  private List<ServerResponse> playerConnectedMessages(final ChatParticipant sender) {
+    return List.of(
+        ServerResponse.backToClient(
+            ChatServerEnvelopeFactory.newPlayerListing(
+                new ArrayList<>(chatters.getAllParticipants()))),
+        ServerResponse.broadcast(ChatServerEnvelopeFactory.newPlayerJoined(sender)));
+  }
+
+  private ServerResponse playerSlappedMessage(
+      final ChatParticipant sender, final ClientMessageEnvelope clientMessageEnvelope) {
+    final PlayerName slapped = PlayerName.of(clientMessageEnvelope.getPayload());
+    return ServerResponse.broadcast(
+        ChatServerEnvelopeFactory.newSlap(
+            PlayerSlapped.builder().slapper(sender.getPlayerName()).slapped(slapped).build()));
+  }
+
+  private ServerResponse chatMessage(
+      final ChatParticipant sender, final ClientMessageEnvelope clientMessageEnvelope) {
+    return ServerResponse.broadcast(
+        ChatServerEnvelopeFactory.newChatMessage(
+            new ChatMessage(sender.getPlayerName(), clientMessageEnvelope.getPayload())));
+  }
+
+  private ServerResponse statusUpdateMessage(
+      final ChatParticipant sender, final ClientMessageEnvelope clientMessageEnvelope) {
+    return ServerResponse.broadcast(
+        ChatServerEnvelopeFactory.newStatusUpdate(
+            new StatusUpdate(sender.getPlayerName(), clientMessageEnvelope.getPayload())));
   }
 
   public Optional<ServerMessageEnvelope> disconnect(final Session session) {
