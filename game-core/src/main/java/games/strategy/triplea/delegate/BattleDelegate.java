@@ -875,7 +875,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
             // after that is applied, we have to make a map of all dependencies
             final Map<Unit, Collection<Unit>> dependenciesForMfb =
-                TransportTracker.transportingWithAllPossibleUnits(attackingUnits);
+                new HashMap<>(TransportTracker.transportingWithAllPossibleUnits(attackingUnits));
             for (final Unit transport :
                 CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
               // however, the map we add to the newly created battle, cannot hold any units that are
@@ -945,14 +945,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // dependencies set.
       if (to.isWater()) {
         for (final Territory t : data.getMap().getNeighbors(to, Matches.territoryIsLand())) {
-          final IBattle battleAmphib = battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
-          if (battleAmphib != null) {
-            if (!battleTracker.getDependentOn(battle).contains(battleAmphib)) {
-              battleTracker.addDependency(battleAmphib, battle);
+          final IBattle adjacentBattle =
+              battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
+          if (adjacentBattle != null) {
+            if (Matches.battleIsAmphibiousWithUnitsAttackingFrom(to).test(adjacentBattle)) {
+              battleTracker.addDependency(adjacentBattle, battle);
             }
-            if (battleAmphib instanceof MustFightBattle) {
+            if (adjacentBattle instanceof MustFightBattle) {
               // and we want to reset the defenders if the scrambling air has left that battle
-              ((MustFightBattle) battleAmphib).resetDefendingUnits(player, data);
+              ((MustFightBattle) adjacentBattle).resetDefendingUnits(player, data);
             }
           }
         }
