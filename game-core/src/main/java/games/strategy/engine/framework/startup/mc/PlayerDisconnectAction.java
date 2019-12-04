@@ -4,8 +4,9 @@ import com.google.common.base.Preconditions;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import java.net.InetAddress;
-import java.util.Set;
+import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.IpAddressParser;
 
@@ -18,18 +19,20 @@ public class PlayerDisconnectAction implements Consumer<InetAddress> {
   @Override
   public void accept(final InetAddress bannedIp) {
     Preconditions.checkNotNull(bannedIp);
-    final Set<INode> nodes = messenger.getNodes();
-
-    if (IpAddressParser.fromString(messenger.getLocalNode().getIpAddress()).equals(bannedIp)) {
+    if (isGameHostBeingBanned(bannedIp)) {
       shutdownCallback.run();
     } else {
-      for (final INode node : nodes) {
-        final InetAddress ipAddress = IpAddressParser.fromString(node.getIpAddress());
-
-        if (ipAddress.equals(bannedIp)) {
-          messenger.removeConnection(node);
-        }
-      }
+      findNodesWithIp(bannedIp).forEach(messenger::removeConnection);
     }
+  }
+
+  private boolean isGameHostBeingBanned(final InetAddress bannedIp) {
+    return IpAddressParser.fromString(messenger.getLocalNode().getIpAddress()).equals(bannedIp);
+  }
+
+  private Collection<INode> findNodesWithIp(final InetAddress bannedIp) {
+    return messenger.getNodes().stream()
+        .filter(node -> IpAddressParser.fromString(node.getIpAddress()).equals(bannedIp))
+        .collect(Collectors.toSet());
   }
 }
