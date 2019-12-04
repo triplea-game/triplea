@@ -1,29 +1,18 @@
 package org.triplea.http.client.lobby.chat;
 
-import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.CHAT_EVENT;
-import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.CHAT_MESSAGE;
-import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_JOINED;
-import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_LEFT;
-import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_LISTING;
-import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_SLAPPED;
-import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.STATUS_CHANGED;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.function.Consumer;
+import lombok.Setter;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
-import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
-import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
-import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
-import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
@@ -34,15 +23,7 @@ public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
 
   private final GenericWebSocketClient webSocketClient;
   private final ChatClientEnvelopeFactory outboundMessageFactory;
-
-  private final Collection<Consumer<StatusUpdate>> playerStatusListeners = new ArrayList<>();
-  private final Collection<Consumer<PlayerName>> playerLeftListeners = new ArrayList<>();
-  private final Collection<Consumer<ChatParticipant>> playerJoinedListeners = new ArrayList<>();
-  private final Collection<Consumer<PlayerSlapped>> playerSlappedListeners = new ArrayList<>();
-  private final Collection<Consumer<ChatMessage>> chatMessageListeners = new ArrayList<>();
-  private final Collection<Consumer<ChatterList>> connectedListeners =
-      new ArrayList<>();
-  private final Collection<Consumer<String>> chatEventListeners = new ArrayList<>();
+  @Setter private ChatMessageListeners chatMessageListeners;
 
   public LobbyChatClient(final URI lobbyUri, final ApiKey apiKey) {
     this(
@@ -85,34 +66,6 @@ public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
     webSocketClient.send(outboundMessageFactory.updateMyPlayerStatus(status));
   }
 
-  public void addPlayerStatusListener(final Consumer<StatusUpdate> playerStatusListener) {
-    playerStatusListeners.add(playerStatusListener);
-  }
-
-  public void addPlayerLeftListener(final Consumer<PlayerName> playerLeftListener) {
-    playerLeftListeners.add(playerLeftListener);
-  }
-
-  public void addPlayerJoinedListener(final Consumer<ChatParticipant> playerJoinedListener) {
-    playerJoinedListeners.add(playerJoinedListener);
-  }
-
-  public void addPlayerSlappedListener(final Consumer<PlayerSlapped> playerSlappedListener) {
-    playerSlappedListeners.add(playerSlappedListener);
-  }
-
-  public void addChatMessageListener(final Consumer<ChatMessage> messageListener) {
-    chatMessageListeners.add(messageListener);
-  }
-
-  public void addConnectedListener(final Consumer<ChatterList> connectedListener) {
-    connectedListeners.add(connectedListener);
-  }
-
-  public void addChatEventListener(final Consumer<String> chatEventListener) {
-    chatEventListeners.add(chatEventListener);
-  }
-
   public void addConnectionLostListener(final Consumer<String> connectionLostListener) {
     webSocketClient.addConnectionLostListener(connectionLostListener);
   }
@@ -124,55 +77,22 @@ public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
   @Override
   public void accept(final ServerMessageEnvelope inboundMessage) {
     // ensure we have all listeners fully wired
-    Preconditions.checkState(!playerStatusListeners.isEmpty());
-    Preconditions.checkState(!playerLeftListeners.isEmpty());
-    Preconditions.checkState(!playerJoinedListeners.isEmpty());
-    Preconditions.checkState(!playerSlappedListeners.isEmpty());
-    Preconditions.checkState(!chatMessageListeners.isEmpty());
-    Preconditions.checkState(!connectedListeners.isEmpty());
+    Preconditions.checkNotNull(chatMessageListeners);
 
-    try {
-      ChatServerMessageType.valueOf(inboundMessage.getMessageType());
-    } catch (final IllegalArgumentException ignored) {
-      // no-op, all socket listeners receive the same messages
-      return;
-    }
-
-    switch (ChatServerMessageType.valueOf(inboundMessage.getMessageType())) {
-      case PLAYER_LISTING:
-        sendPayloadToListeners(inboundMessage, PLAYER_LISTING, connectedListeners);
-        break;
-      case STATUS_CHANGED:
-        sendPayloadToListeners(inboundMessage, STATUS_CHANGED, playerStatusListeners);
-        break;
-      case PLAYER_LEFT:
-        sendPayloadToListeners(inboundMessage, PLAYER_LEFT, playerLeftListeners);
-        break;
-      case PLAYER_JOINED:
-        sendPayloadToListeners(inboundMessage, PLAYER_JOINED, playerJoinedListeners);
-        break;
-      case PLAYER_SLAPPED:
-        sendPayloadToListeners(inboundMessage, PLAYER_SLAPPED, playerSlappedListeners);
-        break;
-      case CHAT_MESSAGE:
-        sendPayloadToListeners(inboundMessage, CHAT_MESSAGE, chatMessageListeners);
-        break;
-      case CHAT_EVENT:
-        sendPayloadToListeners(inboundMessage, CHAT_EVENT, chatEventListeners);
-        break;
-      case SERVER_ERROR:
-        log.severe(inboundMessage.getPayload(String.class));
-        break;
-      default:
-        log.severe("Unrecognized server message type: " + inboundMessage.getMessageType());
-    }
+    extractMessageType(inboundMessage)
+        .ifPresent(
+            chatMessageType ->
+                chatMessageType.sendPayloadToListener(inboundMessage, chatMessageListeners));
   }
 
-  private <T> void sendPayloadToListeners(
-      final ServerMessageEnvelope inboundMessage,
-      final ChatServerMessageType chatServerMessageType,
-      final Collection<Consumer<T>> listeners) {
-    final T payload = chatServerMessageType.extractPayload(inboundMessage);
-    listeners.forEach(l -> l.accept(payload));
+  private Optional<ChatServerMessageType> extractMessageType(
+      final ServerMessageEnvelope inboundMessage) {
+    try {
+      return Optional.of(ChatServerMessageType.valueOf(inboundMessage.getMessageType()));
+    } catch (final IllegalArgumentException ignored) {
+      // All socket listeners receive the same messages. This server message could
+      // be for a different listener to handle.
+      return Optional.empty();
+    }
   }
 }

@@ -2,10 +2,10 @@ package org.triplea.http.client.lobby.chat;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -19,6 +19,7 @@ import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
+import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
 import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
@@ -31,7 +32,7 @@ class LobbyChatClientTest {
   private static final String MESSAGE = "message";
   private static final String STATUS = "status";
 
-  private static final List<ChatParticipant> chatters = new ArrayList<>();
+  private static final ChatterList chatters = new ChatterList(List.of());
   private static final ChatParticipant CHAT_PARTICIPANT =
       ChatParticipant.builder()
           .playerName(PlayerName.of("player-name"))
@@ -52,17 +53,24 @@ class LobbyChatClientTest {
   @Mock private Consumer<ChatParticipant> playerJoinedListener;
   @Mock private Consumer<PlayerSlapped> playerSlappedListener;
   @Mock private Consumer<ChatMessage> chatMessageListener;
-  @Mock private Consumer<Collection<ChatParticipant>> connectedListener;
+  @Mock private Consumer<ChatterList> connectedListener;
+  @Mock private Consumer<String> chatEventListener;
+  @Mock private Consumer<String> serverErrorListener;
 
   @BeforeEach
   void setup() {
     lobbyChatClient = new LobbyChatClient(webSocketClient, clientEventFactory);
-    lobbyChatClient.addConnectedListener(connectedListener);
-    lobbyChatClient.addPlayerStatusListener(playerStatusListener);
-    lobbyChatClient.addPlayerJoinedListener(playerJoinedListener);
-    lobbyChatClient.addPlayerLeftListener(playerLeftListener);
-    lobbyChatClient.addPlayerSlappedListener(playerSlappedListener);
-    lobbyChatClient.addChatMessageListener(chatMessageListener);
+    lobbyChatClient.setChatMessageListeners(
+        ChatMessageListeners.builder()
+            .connectedListener(connectedListener)
+            .playerStatusListener(playerStatusListener)
+            .playerJoinedListener(playerJoinedListener)
+            .playerLeftListener(playerLeftListener)
+            .playerSlappedListener(playerSlappedListener)
+            .chatMessageListener(chatMessageListener)
+            .chatEventListener(chatEventListener)
+            .serverErrorListener(serverErrorListener)
+            .build());
   }
 
   @Test
@@ -121,7 +129,7 @@ class LobbyChatClientTest {
 
   @Test
   void playerListing() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerListing(chatters));
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerListing(List.of()));
 
     verify(connectedListener).accept(chatters);
   }
@@ -159,5 +167,19 @@ class LobbyChatClientTest {
     lobbyChatClient.accept(ChatServerEnvelopeFactory.newChatMessage(CHAT_MESSAGE));
 
     verify(chatMessageListener).accept(CHAT_MESSAGE);
+  }
+
+  @Test
+  void chatEvent() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newEventMessage("event"));
+
+    verify(chatEventListener).accept("event");
+  }
+
+  @Test
+  void serverError() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newErrorMessage());
+
+    verify(serverErrorListener).accept(anyString());
   }
 }

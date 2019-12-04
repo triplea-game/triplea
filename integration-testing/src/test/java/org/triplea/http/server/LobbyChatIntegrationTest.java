@@ -15,9 +15,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatMessageListeners;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
 import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.server.http.DropwizardTest;
@@ -42,7 +44,7 @@ import org.triplea.server.http.DropwizardTest;
  * sequence.
  *
  * <p>Of note, when a player joins they will receive two events, a 'join' event and a 'connected'
- * event. The 'join' event should notify that they themselves haved joined (all players receive
+ * event. The 'join' event should notify that they themselves have joined (all players receive
  * this), and second, only they should receive a 'connected' event that informs them of all players
  * that have joined. So we expect 'moderator' to be the only player in the connected list, when
  * chatter joins we expect both moderator and chatter to be in the connected event list.
@@ -71,7 +73,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   private List<ChatParticipant> modPlayerJoinedEvents = new ArrayList<>();
   private List<PlayerSlapped> modPlayerSlappedEvents = new ArrayList<>();
   private List<ChatMessage> modMessageEvents = new ArrayList<>();
-  private List<Collection<ChatParticipant>> modConnectedEvents = new ArrayList<>();
+  private List<ChatterList> modConnectedEvents = new ArrayList<>();
   private LobbyChatClient moderator;
 
   private List<StatusUpdate> chatterPlayerStatusEvents = new ArrayList<>();
@@ -79,30 +81,48 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   private List<ChatParticipant> chatterPlayerJoinedEvents = new ArrayList<>();
   private List<PlayerSlapped> chatterPlayerSlappedEvents = new ArrayList<>();
   private List<ChatMessage> chatterMessageEvents = new ArrayList<>();
-  private List<Collection<ChatParticipant>> chatterConnectedEvents = new ArrayList<>();
+  private List<ChatterList> chatterConnectedEvents = new ArrayList<>();
   private LobbyChatClient chatter;
 
   private LobbyChatClient createModerator() {
     final LobbyChatClient moderator =
         // caution: api-key must match values in database (integration.yml)
         new LobbyChatClient(localhost, MODERATOR_API_KEY);
-    moderator.addPlayerStatusListener(modPlayerStatusEvents::add);
-    moderator.addPlayerLeftListener(modPlayerLeftEvents::add);
-    moderator.addPlayerJoinedListener(modPlayerJoinedEvents::add);
-    moderator.addPlayerSlappedListener(modPlayerSlappedEvents::add);
-    moderator.addChatMessageListener(modMessageEvents::add);
-    moderator.addConnectedListener(modConnectedEvents::add);
+
+    moderator.setChatMessageListeners(
+        ChatMessageListeners.builder()
+            .playerStatusListener(modPlayerStatusEvents::add)
+            .playerLeftListener(modPlayerLeftEvents::add)
+            .playerJoinedListener(modPlayerJoinedEvents::add)
+            .playerSlappedListener(modPlayerSlappedEvents::add)
+            .chatMessageListener(modMessageEvents::add)
+            .connectedListener(modConnectedEvents::add)
+            .chatEventListener(msg -> {})
+            .serverErrorListener(
+                error -> {
+                  throw new RuntimeException(error);
+                })
+            .build());
     return moderator;
   }
 
   private LobbyChatClient createChatter() {
     final LobbyChatClient chatter = new LobbyChatClient(localhost, CHATTER_API_KEY);
-    chatter.addPlayerStatusListener(chatterPlayerStatusEvents::add);
-    chatter.addPlayerLeftListener(chatterPlayerLeftEvents::add);
-    chatter.addPlayerJoinedListener(chatterPlayerJoinedEvents::add);
-    chatter.addPlayerSlappedListener(chatterPlayerSlappedEvents::add);
-    chatter.addChatMessageListener(chatterMessageEvents::add);
-    chatter.addConnectedListener(chatterConnectedEvents::add);
+
+    chatter.setChatMessageListeners(
+        ChatMessageListeners.builder()
+            .playerStatusListener(chatterPlayerStatusEvents::add)
+            .playerLeftListener(chatterPlayerLeftEvents::add)
+            .playerJoinedListener(chatterPlayerJoinedEvents::add)
+            .playerSlappedListener(chatterPlayerSlappedEvents::add)
+            .chatMessageListener(chatterMessageEvents::add)
+            .connectedListener(chatterConnectedEvents::add)
+            .chatEventListener(msg -> {})
+            .serverErrorListener(
+                error -> {
+                  throw new RuntimeException(error);
+                })
+            .build());
     return chatter;
   }
 
@@ -149,10 +169,9 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   }
 
   private static void verifyConnectedPlayers(
-      final List<Collection<ChatParticipant>> connectedEvents,
-      final ChatParticipant... participants) {
+      final List<ChatterList> connectedEvents, final ChatParticipant... participants) {
     waitForMessage(connectedEvents);
-    assertThat(connectedEvents.get(0), hasItems(participants));
+    assertThat(connectedEvents.get(0).getChatters(), hasItems(participants));
   }
 
   private static void verifyPlayerJoinedEvent(
