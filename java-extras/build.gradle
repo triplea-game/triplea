@@ -1,6 +1,5 @@
 description = 'TripleA library for low-level helper APIs, ie: syntactic sugar'
 
 dependencies {
-    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation project(':test-common')
 }
