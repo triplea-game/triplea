@@ -18,7 +18,7 @@ class LobbyWebsocketClientTest extends DropwizardTest {
   @Test
   @DisplayName("Verify basic websocket operations: open, send, close")
   void verifyConnectivity() throws Exception {
-    final URI websocketUri = URI.create(localhost + LobbyChatClient.WEBSOCKET_PATH);
+    final URI websocketUri = URI.create(localhost + LobbyChatClient.LOBBY_CHAT_WEBSOCKET_PATH);
 
     final WebSocketClient client =
         new WebSocketClient(websocketUri) {

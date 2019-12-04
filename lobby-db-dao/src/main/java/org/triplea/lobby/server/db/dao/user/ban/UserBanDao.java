@@ -28,6 +28,8 @@ public interface UserBanDao {
           + " desc")
   List<UserBanRecord> lookupBans();
 
+  // TODO: Project#12 convert select to be an update to count matches against system id vs IP
+  // TODO: test that expired bans are not returned when IP address or system id does match.
   @SqlQuery(
       "select "
           + PUBLIC_ID_COLUMN
@@ -35,19 +37,30 @@ public interface UserBanDao {
           + BAN_EXPIRY_COLUMN
           + "\n"
           + "from banned_user\n"
-          + "where \n"
+          + "where (\n"
           + IP_COLUMN
           + " = :ip::inet"
           + " or "
           + SYSTEM_ID_COLUMN
           + " = :systemId"
-          + " and "
+          + ") and "
           + BAN_EXPIRY_COLUMN
           + " > now() "
           + "order by "
           + BAN_EXPIRY_COLUMN
           + " desc limit 1")
   Optional<BanLookupRecord> lookupBan(@Bind("ip") String ip, @Bind("systemId") String systemId);
+
+  // TODO: test-me
+  @SqlQuery(
+      "select exists (select * from banned_user "
+          + "where \n"
+          + IP_COLUMN
+          + " = :ip::inet"
+          + " and "
+          + BAN_EXPIRY_COLUMN
+          + " > now())")
+  boolean isBannedByIp(@Bind("ip") String ip);
 
   @SqlQuery(
       "select username\n" //

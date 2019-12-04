@@ -3,9 +3,8 @@ package games.strategy.engine.chat;
 import java.util.Collection;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 
 /**
  * ChatClient can also be thought of as a 'ChatListener' (it is not named so to avoid confusion with
@@ -24,7 +23,7 @@ public interface ChatClient {
   /** A chat message has been received. */
   void messageReceived(ChatMessage chatMessage);
 
-  void eventReceived(ChatEvent chatEvent);
+  void eventReceived(String chatEvent);
 
   /**
    * A new chatter has joined.

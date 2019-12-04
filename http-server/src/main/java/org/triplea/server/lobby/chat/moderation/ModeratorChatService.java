@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.IpAddressParser;
+import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
-import org.triplea.server.lobby.chat.MessageBroadcaster;
+import org.triplea.server.http.web.socket.MessageBroadcaster;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
-import org.triplea.server.lobby.chat.event.processing.ServerMessageEnvelopeFactory;
+import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 
 @Builder
 @Slf4j
@@ -21,6 +23,7 @@ class ModeratorChatService {
   @Nonnull private final ModeratorActionPersistence moderatorActionPersistence;
   @Nonnull private final Chatters chatters;
   @Nonnull private final MessageBroadcaster messageBroadcaster;
+  @Nonnull private final RemoteActionsEventQueue remoteActionsEventQueue;
 
   /**
    * Bans a player for a given duration. Banned players are disconnected from chat, players in chat
@@ -37,9 +40,11 @@ class ModeratorChatService {
         playerIdLookup.getPlayerName(), playerBannedMessage(banPlayerRequest));
     messageBroadcaster.accept(
         chatters.fetchOpenSessions(),
-        ServerMessageEnvelopeFactory.newEventMessage(
+        ChatServerEnvelopeFactory.newEventMessage(
             playerBannedNotification(playerIdLookup.getPlayerName(), banPlayerRequest)));
 
+    remoteActionsEventQueue.addPlayerBannedEvent(
+        IpAddressParser.fromString(playerIdLookup.getIp()));
     moderatorActionPersistence.recordBan(moderatorUserId, playerIdLookup, banPlayerRequest);
   }
 
@@ -72,7 +77,7 @@ class ModeratorChatService {
     chatters.disconnectPlayerSessions(playerIdLookup.getPlayerName(), "Disconnected by moderator");
     messageBroadcaster.accept(
         chatters.fetchOpenSessions(),
-        ServerMessageEnvelopeFactory.newEventMessage(
+        ChatServerEnvelopeFactory.newEventMessage(
             playerIdLookup.getPlayerName() + " was disconnected by moderator"));
     moderatorActionPersistence.recordPlayerDisconnect(moderatorId, playerIdLookup);
   }

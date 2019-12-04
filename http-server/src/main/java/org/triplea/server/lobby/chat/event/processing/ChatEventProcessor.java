@@ -8,12 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
-import org.triplea.server.lobby.chat.InetExtractor;
+import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeType;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
+import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
+import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
+import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 /**
  * Handles processing logic when receiving chat messages and retains state of the currently
@@ -26,59 +27,65 @@ public class ChatEventProcessor {
 
   private final Chatters chatters;
 
-  public List<ServerResponse> process(
+  public List<ServerResponse> processAndComputeServerResponses(
       final Session session,
       final ChatParticipant sender,
-      final ClientMessageEnvelope clientEventEnvelope) {
+      final ClientMessageEnvelope clientMessageEnvelope) {
 
-    final List<ServerResponse> responses = new ArrayList<>();
+    final Optional<ChatClientEnvelopeType> chatClientEnvelopeType =
+        parseType(clientMessageEnvelope);
 
-    switch (clientEventEnvelope.getMessageType()) {
+    if (chatClientEnvelopeType.isEmpty()) {
+      return List.of();
+    }
+
+    switch (chatClientEnvelopeType.get()) {
       case CONNECT:
         chatters.put(session, sender);
-        responses.add(
+        return List.of(
             ServerResponse.backToClient(
-                ServerMessageEnvelopeFactory.newPlayerListing(
-                    new ArrayList<>(chatters.getAllParticipants()))));
-        responses.add(
-            ServerResponse.broadcast(ServerMessageEnvelopeFactory.newPlayerJoined(sender)));
-        return responses;
+                ChatServerEnvelopeFactory.newPlayerListing(
+                    new ArrayList<>(chatters.getAllParticipants()))),
+            ServerResponse.broadcast(ChatServerEnvelopeFactory.newPlayerJoined(sender)));
       case SLAP:
-        final PlayerName slapped = PlayerName.of(clientEventEnvelope.getPayload());
-        responses.add(
+        final PlayerName slapped = PlayerName.of(clientMessageEnvelope.getPayload());
+        return List.of(
             ServerResponse.broadcast(
-                ServerMessageEnvelopeFactory.newSlap(
+                ChatServerEnvelopeFactory.newSlap(
                     PlayerSlapped.builder()
                         .slapper(sender.getPlayerName())
                         .slapped(slapped)
                         .build())));
-        return responses;
       case MESSAGE:
-        responses.add(
+        return List.of(
             ServerResponse.broadcast(
-                ServerMessageEnvelopeFactory.newChatMessage(
-                    new ChatMessage(sender.getPlayerName(), clientEventEnvelope.getPayload()))));
-        return responses;
+                ChatServerEnvelopeFactory.newChatMessage(
+                    new ChatMessage(sender.getPlayerName(), clientMessageEnvelope.getPayload()))));
       case UPDATE_MY_STATUS:
-        responses.add(
+        return List.of(
             ServerResponse.broadcast(
-                ServerMessageEnvelopeFactory.newStatusUpdate(
-                    new StatusUpdate(sender.getPlayerName(), clientEventEnvelope.getPayload()))));
-        return responses;
+                ChatServerEnvelopeFactory.newStatusUpdate(
+                    new StatusUpdate(sender.getPlayerName(), clientMessageEnvelope.getPayload()))));
       default:
-        log.warn(
-            "Ignored message type: {}, from IP: {}",
-            clientEventEnvelope.getMessageType(),
-            InetExtractor.extract(session.getUserProperties()));
-        return responses;
+        throw new UnsupportedOperationException(
+            "Unhandled message type: " + chatClientEnvelopeType);
+    }
+  }
+
+  private Optional<ChatClientEnvelopeType> parseType(
+      final ClientMessageEnvelope clientMessageEnvelope) {
+    try {
+      return Optional.of(ChatClientEnvelopeType.valueOf(clientMessageEnvelope.getMessageType()));
+    } catch (final IllegalArgumentException ignored) {
+      return Optional.empty();
     }
   }
 
   public Optional<ServerMessageEnvelope> disconnect(final Session session) {
-    return chatters.removeSession(session).map(ServerMessageEnvelopeFactory::newPlayerLeft);
+    return chatters.removeSession(session).map(ChatServerEnvelopeFactory::newPlayerLeft);
   }
 
   public ServerMessageEnvelope createErrorMessage() {
-    return ServerMessageEnvelopeFactory.newErrorMessage();
+    return ChatServerEnvelopeFactory.newErrorMessage();
   }
 }

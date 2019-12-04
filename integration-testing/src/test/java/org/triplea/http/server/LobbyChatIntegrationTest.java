@@ -17,9 +17,9 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
+import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.server.http.DropwizardTest;
 
 /**
