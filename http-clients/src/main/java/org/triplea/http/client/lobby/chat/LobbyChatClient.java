@@ -1,5 +1,13 @@
 package org.triplea.http.client.lobby.chat;
 
+import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.CHAT_EVENT;
+import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.CHAT_MESSAGE;
+import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_JOINED;
+import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_LEFT;
+import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_LISTING;
+import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.PLAYER_SLAPPED;
+import static org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType.STATUS_CHANGED;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.net.URI;
@@ -32,7 +40,7 @@ public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
   private final Collection<Consumer<ChatParticipant>> playerJoinedListeners = new ArrayList<>();
   private final Collection<Consumer<PlayerSlapped>> playerSlappedListeners = new ArrayList<>();
   private final Collection<Consumer<ChatMessage>> chatMessageListeners = new ArrayList<>();
-  private final Collection<Consumer<Collection<ChatParticipant>>> connectedListeners =
+  private final Collection<Consumer<ChatterList>> connectedListeners =
       new ArrayList<>();
   private final Collection<Consumer<String>> chatEventListeners = new ArrayList<>();
 
@@ -97,7 +105,7 @@ public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
     chatMessageListeners.add(messageListener);
   }
 
-  public void addConnectedListener(final Consumer<Collection<ChatParticipant>> connectedListener) {
+  public void addConnectedListener(final Consumer<ChatterList> connectedListener) {
     connectedListeners.add(connectedListener);
   }
 
@@ -132,38 +140,25 @@ public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
 
     switch (ChatServerMessageType.valueOf(inboundMessage.getMessageType())) {
       case PLAYER_LISTING:
-        connectedListeners.forEach(
-            connectedListener ->
-                connectedListener.accept(
-                    inboundMessage.getPayload(ChatterList.class).getChatters()));
+        sendPayloadToListeners(inboundMessage, PLAYER_LISTING, connectedListeners);
         break;
       case STATUS_CHANGED:
-        playerStatusListeners.forEach(
-            statusListener -> statusListener.accept(inboundMessage.getPayload(StatusUpdate.class)));
+        sendPayloadToListeners(inboundMessage, STATUS_CHANGED, playerStatusListeners);
         break;
       case PLAYER_LEFT:
-        playerLeftListeners.forEach(
-            playerLeftListener ->
-                playerLeftListener.accept(inboundMessage.getPayload(PlayerName.class)));
+        sendPayloadToListeners(inboundMessage, PLAYER_LEFT, playerLeftListeners);
         break;
       case PLAYER_JOINED:
-        playerJoinedListeners.forEach(
-            playerJoinedListener ->
-                playerJoinedListener.accept(inboundMessage.getPayload(ChatParticipant.class)));
+        sendPayloadToListeners(inboundMessage, PLAYER_JOINED, playerJoinedListeners);
         break;
       case PLAYER_SLAPPED:
-        playerSlappedListeners.forEach(
-            playerSlappedListener ->
-                playerSlappedListener.accept(inboundMessage.getPayload(PlayerSlapped.class)));
+        sendPayloadToListeners(inboundMessage, PLAYER_SLAPPED, playerSlappedListeners);
         break;
       case CHAT_MESSAGE:
-        chatMessageListeners.forEach(
-            chatMessageListener ->
-                chatMessageListener.accept(inboundMessage.getPayload(ChatMessage.class)));
+        sendPayloadToListeners(inboundMessage, CHAT_MESSAGE, chatMessageListeners);
         break;
       case CHAT_EVENT:
-        chatEventListeners.forEach(
-            chatEventListener -> chatEventListener.accept(inboundMessage.getPayload(String.class)));
+        sendPayloadToListeners(inboundMessage, CHAT_EVENT, chatEventListeners);
         break;
       case SERVER_ERROR:
         log.severe(inboundMessage.getPayload(String.class));
@@ -171,5 +166,13 @@ public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
       default:
         log.severe("Unrecognized server message type: " + inboundMessage.getMessageType());
     }
+  }
+
+  private <T> void sendPayloadToListeners(
+      final ServerMessageEnvelope inboundMessage,
+      final ChatServerMessageType chatServerMessageType,
+      final Collection<Consumer<T>> listeners) {
+    final T payload = chatServerMessageType.extractPayload(inboundMessage);
+    listeners.forEach(l -> l.accept(payload));
   }
 }

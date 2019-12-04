@@ -1,9 +1,9 @@
 package games.strategy.engine.chat;
 
-import java.util.Collection;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 
 /**
@@ -18,7 +18,7 @@ public interface ChatClient {
   /**
    * Initial (async) connection to server is established. Not invoked for synchronous connections.
    */
-  void connected(Collection<ChatParticipant> chatters);
+  void connected(ChatterList chatters);
 
   /** A chat message has been received. */
   void messageReceived(ChatMessage chatMessage);
