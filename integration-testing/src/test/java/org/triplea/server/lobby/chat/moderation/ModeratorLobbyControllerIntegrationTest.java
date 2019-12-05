@@ -11,6 +11,7 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
+import org.triplea.server.http.AllowedUserRole;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class ModeratorLobbyControllerIntegrationTest extends ProtectedEndpointTest<ModeratorChatClient> {
@@ -18,7 +19,7 @@ class ModeratorLobbyControllerIntegrationTest extends ProtectedEndpointTest<Mode
   private static final String CHAT_ID = "chat-id";
 
   ModeratorLobbyControllerIntegrationTest() {
-    super(ModeratorChatClient::newClient);
+    super(AllowedUserRole.MODERATOR, ModeratorChatClient::newClient);
   }
 
   @Test
@@ -32,7 +33,7 @@ class ModeratorLobbyControllerIntegrationTest extends ProtectedEndpointTest<Mode
   }
 
   private void sendBanPlayerRequest() {
-    verifyEndpointReturningVoid(
+    verifyEndpoint(
         client ->
             client.banPlayer(
                 BanPlayerRequest.builder().banMinutes(1).playerChatId(CHAT_ID).build()));
@@ -49,6 +50,6 @@ class ModeratorLobbyControllerIntegrationTest extends ProtectedEndpointTest<Mode
   }
 
   private void sendDisconnectPlayerRequest() {
-    verifyEndpointReturningVoid(client -> client.disconnectPlayer(PlayerChatId.of(CHAT_ID)));
+    verifyEndpoint(client -> client.disconnectPlayer(PlayerChatId.of(CHAT_ID)));
   }
 }

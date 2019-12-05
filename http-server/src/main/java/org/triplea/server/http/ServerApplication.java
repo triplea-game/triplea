@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.server.ServerEndpointConfig;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
@@ -115,7 +116,7 @@ public class ServerApplication extends Application<AppConfig> {
     final Jdbi jdbi = createJdbi(configuration, environment);
 
     environment.jersey().register(BannedPlayerFilter.newBannedPlayerFilter(jdbi));
-
+    environment.jersey().register(new RolesAllowedDynamicFeature());
     enableAuthentication(environment, metrics, jdbi);
 
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));

@@ -2,26 +2,27 @@ package org.triplea.server.moderator.toolbox.moderators;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
+import org.triplea.server.http.AllowedUserRole;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class ModeratorsControllerIntegrationTest
     extends ProtectedEndpointTest<ToolboxModeratorManagementClient> {
   ModeratorsControllerIntegrationTest() {
-    super(ToolboxModeratorManagementClient::newClient);
+    super(AllowedUserRole.MODERATOR, ToolboxModeratorManagementClient::newClient);
   }
 
   @Test
   void isSuperMod() {
-    verifyEndpointReturningObject(ToolboxModeratorManagementClient::isCurrentUserSuperMod);
+    verifyEndpoint(ToolboxModeratorManagementClient::isCurrentUserSuperMod);
   }
 
   @Test
   void removeMod() {
-    verifyEndpointReturningVoid(client -> client.removeMod("mod"));
+    verifyEndpoint(AllowedUserRole.ADMIN, client -> client.removeMod("mod"));
   }
 
   @Test
   void setSuperMod() {
-    verifyEndpointReturningVoid(client -> client.addSuperMod("mod3"));
+    verifyEndpoint(AllowedUserRole.ADMIN, client -> client.addSuperMod("mod3"));
   }
 }

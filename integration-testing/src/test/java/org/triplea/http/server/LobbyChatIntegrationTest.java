@@ -55,8 +55,8 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   private static final String MESSAGE = "sample";
 
   // caution: api-key values must match database (integration.yml)
-  private static final ApiKey MODERATOR_API_KEY = ApiKey.of("test");
-  private static final ApiKey CHATTER_API_KEY = ApiKey.of("test1");
+  private static final ApiKey MODERATOR_API_KEY = ApiKey.of("MODERATOR");
+  private static final ApiKey CHATTER_API_KEY = ApiKey.of("PLAYER");
 
   private static final PlayerName MODERATOR_NAME = PlayerName.of("mod");
   private static final ChatParticipant MODERATOR =

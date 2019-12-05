@@ -3,12 +3,13 @@ package org.triplea.server.moderator.toolbox.banned.users;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.server.http.AllowedUserRole;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class UserBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUserBanClient> {
 
   UserBanControllerIntegrationTest() {
-    super(ToolboxUserBanClient::newClient);
+    super(AllowedUserRole.MODERATOR, ToolboxUserBanClient::newClient);
   }
 
   @Test
@@ -18,12 +19,12 @@ class UserBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUser
 
   @Test
   void removeUserBan() {
-    verifyEndpointReturningVoid(client -> client.removeUserBan("xyz"));
+    verifyEndpoint(client -> client.removeUserBan("xyz"));
   }
 
   @Test
   void banUser() {
-    verifyEndpointReturningVoid(
+    verifyEndpoint(
         client ->
             client.banUser(
                 UserBanParams.builder()

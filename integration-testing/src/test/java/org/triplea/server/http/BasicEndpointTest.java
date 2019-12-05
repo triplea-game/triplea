@@ -18,7 +18,7 @@ public abstract class BasicEndpointTest<T> extends DropwizardTest {
   }
 
   /** Use this to verify an endpoint that returns void. */
-  protected void verifyEndpointReturningVoid(final Consumer<T> methodRunner) {
+  protected void verifyEndpoint(final Consumer<T> methodRunner) {
     methodRunner.accept(clientBuilder.apply(localhost));
   }
 
