@@ -27,8 +27,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerName;
-import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.TimeManager;
 import org.triplea.sound.ClipPlayer;
@@ -317,8 +316,8 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   @Override
-  public void eventReceived(final ChatEvent chatEvent) {
-    addGenericMessage(chatEvent.getMessage());
+  public void eventReceived(final String chatEvent) {
+    addGenericMessage(chatEvent);
   }
 
   private void addGenericMessage(final String message) {

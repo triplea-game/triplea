@@ -21,7 +21,25 @@ public class IpAddressParser {
     try {
       return InetAddress.getByName(ipString);
     } catch (final UnknownHostException e) {
-      throw new IllegalArgumentException("Invalid IP address: " + ipString + ", " + e.getMessage());
+      throw new IllegalArgumentException("Invalid IP address: " + ipString, e);
+    }
+  }
+
+  /**
+   * Detects if a given IP-Address represented as a string is valid and can be parsed into an {@code
+   * InetAddress}.
+   */
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  public static boolean isValid(final String ipString) {
+    if (ipString == null || ipString.isBlank()) {
+      return false;
+    }
+
+    try {
+      InetAddress.getByName(ipString);
+      return true;
+    } catch (final UnknownHostException e) {
+      return false;
     }
   }
 }
