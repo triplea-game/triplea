@@ -7,17 +7,17 @@ import static org.hamcrest.core.IsNot.not;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
-import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.java.Sha512Hasher;
 import org.triplea.server.http.BasicEndpointTest;
 
 class CreateAccountControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient> {
   private static final String USERNAME = "user-name";
   private static final String EMAIL = "email@email.com";
-  private static final String PASSWORD = RsaAuthenticator.hashPasswordWithSalt("pass");
+  private static final String PASSWORD = Sha512Hasher.hashPasswordWithSalt("pass");
 
   private static final String USERNAME_1 = "user-name_1";
   private static final String EMAIL_1 = "email1@email.com";
-  private static final String PASSWORD_1 = RsaAuthenticator.hashPasswordWithSalt("pass_1");
+  private static final String PASSWORD_1 = Sha512Hasher.hashPasswordWithSalt("pass_1");
 
   CreateAccountControllerIntegrationTest() {
     super(LobbyLoginClient::newClient);
