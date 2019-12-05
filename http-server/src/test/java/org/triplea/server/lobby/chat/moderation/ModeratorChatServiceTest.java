@@ -26,14 +26,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope.ServerMessageType;
+import org.triplea.http.client.IpAddressParser;
+import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
-import org.triplea.server.lobby.chat.MessageBroadcaster;
+import org.triplea.server.http.web.socket.MessageBroadcaster;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
+import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +47,7 @@ class ModeratorChatServiceTest {
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
   private static final PlayerIdLookup PLAYER_ID_LOOKUP =
       PlayerIdLookup.builder()
-          .ip("ip")
+          .ip("99.99.99.99")
           .playerName(PlayerName.of("player-name"))
           .systemId(SystemId.of("system-id"))
           .build();
@@ -55,6 +57,7 @@ class ModeratorChatServiceTest {
   @Mock private ModeratorActionPersistence moderatorActionPersistence;
   @Mock private Chatters chatters;
   @Mock private MessageBroadcaster messageBroadcaster;
+  @Mock private RemoteActionsEventQueue remoteActionsEventQueue;
 
   @InjectMocks private ModeratorChatService moderatorChatService;
 
@@ -89,6 +92,7 @@ class ModeratorChatServiceTest {
       verifyBannedPlayerIsDisconnectedFromChat();
       verifyEveryoneElseIsNotifiedOfPlayerBan();
       verifyBanIsRecordedInAuditLog();
+      verifyBanMessageIsEmittedToEventQueue();
     }
 
     private void givenPlayerLookup(final PlayerIdLookup playerIdLookup) {
@@ -117,6 +121,11 @@ class ModeratorChatServiceTest {
               BanDurationFormatter.formatBanMinutes(BAN_PLAYER_REQUEST.getBanMinutes())));
     }
 
+    private void verifyBanMessageIsEmittedToEventQueue() {
+      verify(remoteActionsEventQueue)
+          .addPlayerBannedEvent(IpAddressParser.fromString(PLAYER_ID_LOOKUP.getIp()));
+    }
+
     private void verifyEveryoneElseIsNotifiedOfPlayerBan() {
       final ArgumentCaptor<ServerMessageEnvelope> serverMessageCaptor =
           ArgumentCaptor.forClass(ServerMessageEnvelope.class);
@@ -124,14 +133,14 @@ class ModeratorChatServiceTest {
       assertThat(
           "Make sure message type sent to all players is a chat_event",
           serverMessageCaptor.getValue().getMessageType(),
-          is(ServerMessageType.CHAT_EVENT));
+          is(ChatServerMessageType.CHAT_EVENT.toString()));
       assertThat(
           "Make sure ban event message contains the banned players name",
-          serverMessageCaptor.getValue().toChatEvent().getMessage(),
+          serverMessageCaptor.getValue().getPayload(String.class),
           containsString(PLAYER_ID_LOOKUP.getPlayerName().getValue()));
       assertThat(
           "Make sure ban event message contains the word ban",
-          serverMessageCaptor.getValue().toChatEvent().getMessage().toLowerCase(),
+          serverMessageCaptor.getValue().getPayload(String.class).toLowerCase(),
           containsString("ban"));
     }
 
@@ -174,13 +183,13 @@ class ModeratorChatServiceTest {
     }
 
     private void verifyPlayerIsDisconnected() {
-      final ArgumentCaptor<String> disconnectMessgeCaptor = ArgumentCaptor.forClass(String.class);
+      final ArgumentCaptor<String> disconnectMessageCaptor = ArgumentCaptor.forClass(String.class);
       verify(chatters)
           .disconnectPlayerSessions(
-              eq(PLAYER_ID_LOOKUP.getPlayerName()), disconnectMessgeCaptor.capture());
+              eq(PLAYER_ID_LOOKUP.getPlayerName()), disconnectMessageCaptor.capture());
       assertThat(
           "Disconnect message should contain the word 'disconnect'",
-          disconnectMessgeCaptor.getValue().toLowerCase(),
+          disconnectMessageCaptor.getValue().toLowerCase(),
           containsString("disconnect"));
     }
 
@@ -191,14 +200,14 @@ class ModeratorChatServiceTest {
       assertThat(
           "Message type is chat event",
           eventMessageCaptor.getValue().getMessageType(),
-          is(ServerMessageType.CHAT_EVENT));
+          is(ChatServerMessageType.CHAT_EVENT.toString()));
       assertThat(
           "Disconnect message to chatters contains 'was disconnected'",
-          eventMessageCaptor.getValue().toChatEvent().getMessage(),
+          eventMessageCaptor.getValue().getPayload(String.class),
           containsString("was disconnected"));
       assertThat(
           "Disconnect message contains player name",
-          eventMessageCaptor.getValue().toChatEvent().getMessage(),
+          eventMessageCaptor.getValue().getPayload(String.class),
           containsString(PLAYER_ID_LOOKUP.getPlayerName().getValue()));
     }
 

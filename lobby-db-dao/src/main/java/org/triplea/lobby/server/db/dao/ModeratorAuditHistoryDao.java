@@ -25,34 +25,21 @@ public interface ModeratorAuditHistoryDao {
   /** The set of moderator actions. */
   enum AuditAction {
     BAN_MAC,
-
     BAN_USERNAME,
-
     REMOVE_USERNAME_BAN,
-
     BOOT_GAME,
-
     BOOT_USER_FROM_BOT,
-
     BOOT_USER_FROM_LOBBY,
-
     BAN_PLAYER_FROM_BOT,
-
     ADD_BAD_WORD,
-
     REMOVE_BAD_WORD,
-
     BAN_USER,
-
     REMOVE_USER_BAN,
-
     REMOVE_MODERATOR,
-
     ADD_SUPER_MOD,
-
     DISCONNECT_USER,
-
     DISCONNECT_GAME,
+    REMOTE_SHUTDOWN,
   }
 
   /** Parameters needed when adding an audit record. */

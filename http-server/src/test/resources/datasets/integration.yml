@@ -1,0 +1,121 @@
+bad_word:
+  - date_created: 2010-01-01 23:59:20.0
+    word: bad
+  - date_created: 2010-01-01 23:59:20.0
+    word: awful
+  - date_created: 2010-01-01 23:59:20.0
+    word: not nice
+
+banned_username:
+  - date_created: 2010-01-01 23:59:20.0
+    username: bad
+  - date_created: 2010-01-01 23:59:20.0
+    username: awful
+  - date_created: 2010-01-01 23:59:20.0
+    username: not nice
+
+banned_user:
+  - id: 1000
+    public_id: xyz
+    username: banned
+    system_id: system-id
+    ip: 1.1.1.1
+    ban_expiry: 2100-01-01 23:59:20.0
+    date_created: 2010-01-01 23:59:20.0
+  - id: 1001
+    public_id: xyz2
+    username: banned2
+    system_id: system-id2
+    ip: 1.1.1.2
+    ban_expiry: 2000-01-01 23:59:20.0
+    date_created: 2000-01-01 23:59:20.0
+
+user_role:
+  - id: 1
+    name: ADMIN
+  - id: 2
+    name: MODERATOR
+  - id: 3
+    name: PLAYER
+  - id: 4
+    name: ANONYMOUS
+  - id: 5
+    name: HOST
+
+lobby_user:
+  - id: 5000
+    username: "super-mod"
+    email: "test@test.com"
+    password: "1234567890"
+    user_role_id: 1
+  - id: 5001
+    username: "mod"
+    email: "test1@test.com"
+    password: "1234567890"
+    user_role_id: 2
+  - id: 5002
+    username: "mod2"
+    email: "test2@test.com"
+    password: "1234567890"
+    user_role_id: 2
+  - id: 5003
+    username: "mod3"
+    email: "test3@test.com"
+    password: "1234567890"
+    user_role_id: 2
+  - id: 5004
+    username: "not-mod"
+    email: "test3@test.com"
+    password: "1234567890"
+    user_role_id: 3
+  - id: 5005
+    username: "player"
+    email: "test4@test.com"
+    # pass == password
+    bcrypt_password: "$2a$10$RSkV60Ky7F7.ybGmiOEUcO/ynTyUZlLqSoXSQtliSrpFf7/WEe3QO"
+    user_role_id: 3
+  - id: 5006
+    username: "legacy-password-user"
+    email: "test5@test.com"
+    # password = legacy
+    password: "$1$fI35PvIT$UalpbkHiqpGMobUhO34RL1"
+    user_role_id: 3
+
+temp_password_request:
+  - id: 1000
+    lobby_user_id: 5005
+    # pass == temp-password
+    temp_password: "$2a$10$sg3bZHeUQhx6TCI1KU0I.eJa9GLsz5LwMiyXbK9LQIq0mJc0PTIhm"
+    date_created: 2222-01-01 23:59:20.0
+
+moderator_action_history:
+  - id: 1000
+    lobby_user_id: 5000
+    date_created: 2010-01-01 23:59:20.0
+    action_name: example
+    action_target: troll
+
+access_log:
+  - access_time: 2010-01-01 23:59:20.0
+    username: example
+    ip: 1.1.1.1
+    system_id: system-id
+    registered: false
+
+lobby_api_key:
+    #  key = sha512(test)
+  - key: ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff
+    username: "mod"
+    lobby_user_id: 5000
+    user_role_id: 1
+    player_chat_id: moderator-chat-id
+    system_id: system-id1
+    ip: "127.0.0.1"
+    # key = sha512(test1)
+  - key: b16ed7d24b3ecbd4164dcdad374e08c0ab7518aa07f9d3683f34c2b3c67a15830268cb4a56c1ff6f54c8e54a795f5b87c08668b51f82d0093f7baee7d2981181
+    username: "chatter"
+    lobby_user_id: 5000
+    user_role_id: 3
+    player_chat_id: chatter-chat-id
+    system_id: system-id2
+    ip: "127.0.0.1"

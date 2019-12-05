@@ -21,12 +21,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanRecord;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
+import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 
 @ExtendWith(MockitoExtension.class)
 class UserBanServiceTest {
@@ -37,11 +39,11 @@ class UserBanServiceTest {
 
   private static final UserBanRecord USER_BAN_RECORD_1 =
       UserBanRecord.builder()
-          .systemId("Suns stutter from madnesses like addled comrades.")
+          .systemId("Suns stutter from madness like addled comrades.")
           .publicBanId("Ah, never endure a mast.")
           .banExpiry(Instant.now().plus(1, ChronoUnit.DAYS))
           .dateCreated(Instant.now())
-          .ip("The hornpipe sings love like a mighty cannon.")
+          .ip("33.99.99.99")
           .username("How old. You drink like a jolly roger.")
           .build();
   private static final UserBanRecord USER_BAN_RECORD_2 =
@@ -50,15 +52,15 @@ class UserBanServiceTest {
           .publicBanId("")
           .banExpiry(Instant.now().plus(2, ChronoUnit.DAYS))
           .dateCreated(Instant.now().minus(2, ChronoUnit.HOURS))
-          .ip("Riddle, power, and strength.")
-          .username("The bucaneer desires with love, break the bahamas until it travels.")
+          .ip("55.99.99.99")
+          .username("The buccaneer desires with love, break the bahamas until it travels.")
           .build();
 
   private static final UserBanParams USER_BAN_PARAMS =
       UserBanParams.builder()
           .username(USERNAME)
           .systemId("Love ho! fight to be desired.")
-          .ip("Rainy, old pants swiftly desire a warm, lively parrot.")
+          .ip("99.99.00.99")
           .hoursToBan(20)
           .build();
 
@@ -66,6 +68,7 @@ class UserBanServiceTest {
   @Mock private UserBanDao bannedUserDao;
   @Mock private Supplier<String> publicIdSupplier;
   @Mock private Chatters chatters;
+  @Mock private RemoteActionsEventQueue playerBanEvents;
 
   @InjectMocks private UserBanService bannedUsersService;
 
@@ -131,6 +134,7 @@ class UserBanServiceTest {
 
       assertThat(bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS), is(false));
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
+      verify(playerBanEvents, never()).addPlayerBannedEvent(any());
     }
 
     private void givenBanDaoUpdateCount(final int updateCount) {
@@ -159,6 +163,8 @@ class UserBanServiceTest {
 
       verify(chatters)
           .disconnectPlayerSessions(eq(PlayerName.of(USER_BAN_PARAMS.getUsername())), any());
+      verify(playerBanEvents)
+          .addPlayerBannedEvent(IpAddressParser.fromString(USER_BAN_PARAMS.getIp()));
     }
   }
 }

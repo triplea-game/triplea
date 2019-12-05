@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 @ExtendWith(MockitoExtension.class)
 class ServerResponseTest {

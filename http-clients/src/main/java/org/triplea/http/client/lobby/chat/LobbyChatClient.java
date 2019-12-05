@@ -1,38 +1,43 @@
 package org.triplea.http.client.lobby.chat;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.function.Consumer;
+import lombok.Setter;
+import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageFactory;
-import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
+import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
+import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 /** Core websocket client to communicate with lobby chat API. */
-public class LobbyChatClient {
-  public static final String WEBSOCKET_PATH = "/lobby/chat/websocket";
+@Log
+public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
+  public static final String LOBBY_CHAT_WEBSOCKET_PATH = "/lobby/chat/websocket";
 
-  private final GenericWebSocketClient<ServerMessageEnvelope, ClientMessageEnvelope>
-      webSocketClient;
-  private final ClientMessageFactory outboundMessageFactory;
-  private final InboundChat inboundChat;
+  private final GenericWebSocketClient webSocketClient;
+  private final ChatClientEnvelopeFactory outboundMessageFactory;
+  @Setter private ChatMessageListeners chatMessageListeners;
 
   public LobbyChatClient(final URI lobbyUri, final ApiKey apiKey) {
-    this(new InboundChat(URI.create(lobbyUri + WEBSOCKET_PATH)), new ClientMessageFactory(apiKey));
+    this(
+        new GenericWebSocketClient(
+            URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH), "Failed to connect to chat."),
+        new ChatClientEnvelopeFactory(apiKey));
   }
 
   @VisibleForTesting
-  LobbyChatClient(final InboundChat inboundChat, final ClientMessageFactory clientEventFactory) {
-    this.inboundChat = inboundChat;
-    webSocketClient = inboundChat.getWebSocketClient();
+  LobbyChatClient(
+      final GenericWebSocketClient webSocketClient,
+      final ChatClientEnvelopeFactory clientEventFactory) {
+    this.webSocketClient = webSocketClient;
+    webSocketClient.addMessageListener(this);
     outboundMessageFactory = clientEventFactory;
   }
 
@@ -61,39 +66,33 @@ public class LobbyChatClient {
     webSocketClient.send(outboundMessageFactory.updateMyPlayerStatus(status));
   }
 
-  public void addPlayerStatusListener(final Consumer<StatusUpdate> playerStatusListener) {
-    inboundChat.addPlayerStatusListener(playerStatusListener);
-  }
-
-  public void addPlayerLeftListener(final Consumer<PlayerName> playerLeftListener) {
-    inboundChat.addPlayerLeftListener(playerLeftListener);
-  }
-
-  public void addPlayerJoinedListener(final Consumer<ChatParticipant> playerJoinedListener) {
-    inboundChat.addPlayerJoinedListener(playerJoinedListener);
-  }
-
-  public void addChatMessageListener(final Consumer<ChatMessage> messageListener) {
-    inboundChat.addChatMessageListener(messageListener);
-  }
-
-  public void addConnectedListener(final Consumer<Collection<ChatParticipant>> connectedListener) {
-    inboundChat.addConnectedListener(connectedListener);
-  }
-
-  public void addPlayerSlappedListener(final Consumer<PlayerSlapped> playerSlappedListener) {
-    inboundChat.addPlayerSlappedListener(playerSlappedListener);
-  }
-
-  public void addChatEventListener(final Consumer<ChatEvent> chatEventListener) {
-    inboundChat.addChatEventListener(chatEventListener);
-  }
-
-  public void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
-    inboundChat.addConnectionClosedListener(connectionClosedListener);
-  }
-
   public void addConnectionLostListener(final Consumer<String> connectionLostListener) {
-    inboundChat.addConnectionLostListener(connectionLostListener);
+    webSocketClient.addConnectionLostListener(connectionLostListener);
+  }
+
+  public void addConnectionClosedListener(final Consumer<String> connectionLostListener) {
+    webSocketClient.addConnectionClosedListener(connectionLostListener);
+  }
+
+  @Override
+  public void accept(final ServerMessageEnvelope inboundMessage) {
+    // ensure we have all listeners fully wired
+    Preconditions.checkNotNull(chatMessageListeners);
+
+    extractMessageType(inboundMessage)
+        .ifPresent(
+            chatMessageType ->
+                chatMessageType.sendPayloadToListener(inboundMessage, chatMessageListeners));
+  }
+
+  private Optional<ChatServerMessageType> extractMessageType(
+      final ServerMessageEnvelope inboundMessage) {
+    try {
+      return Optional.of(ChatServerMessageType.valueOf(inboundMessage.getMessageType()));
+    } catch (final IllegalArgumentException ignored) {
+      // All socket listeners receive the same messages. This server message could
+      // be for a different listener to handle.
+      return Optional.empty();
+    }
   }
 }

@@ -20,8 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
+import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeType;
+import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.lobby.server.db.data.UserRole;
@@ -39,7 +40,7 @@ class MessagingServiceTest {
   private static final ClientMessageEnvelope CLIENT_EVENT_ENVELOPE =
       ClientMessageEnvelope.builder()
           .apiKey(TestData.API_KEY.getValue())
-          .messageType(ClientMessageEnvelope.ClientMessageType.MESSAGE.name())
+          .messageType(ChatClientEnvelopeType.MESSAGE.name())
           .payload("payload-message")
           .build();
 
@@ -111,7 +112,8 @@ class MessagingServiceTest {
     void eventProcessingFails() {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
           .thenReturn(Optional.of(MODERATOR_DATA));
-      when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
+      when(eventProcessing.processAndComputeServerResponses(
+              session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
           .thenReturn(List.of());
       when(session.getUserProperties()).thenReturn(userPropertiesMap);
 
@@ -134,7 +136,8 @@ class MessagingServiceTest {
     private void givenServerResponse(final ServerResponse... responses) {
       when(apiKeyDaoWrapper.lookupByApiKey(TestData.API_KEY))
           .thenReturn(Optional.of(MODERATOR_DATA));
-      when(eventProcessing.process(session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
+      when(eventProcessing.processAndComputeServerResponses(
+              session, CHAT_PARTICIPANT, CLIENT_EVENT_ENVELOPE))
           .thenReturn(List.of(responses));
     }
 
