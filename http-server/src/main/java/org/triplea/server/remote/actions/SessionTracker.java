@@ -22,10 +22,6 @@ class SessionTracker {
   void addSession(final Session session) {
     final InetAddress ip = ipAddressExtractor.apply(session);
     log.info("Adding websocket session, IP: {}, session id: {}", ip, session.getId());
-
-    if (!listeningSessions.containsKey(ip)) {
-      listeningSessions.put(ip, new HashMap<>());
-    }
     listeningSessions.computeIfAbsent(ip, k -> new HashMap<>()).put(session.getId(), session);
   }
 
