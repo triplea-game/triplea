@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.websocket.Session;
@@ -47,7 +48,7 @@ class SessionTracker {
     final Collection<Session> closedSessions =
         listeningSessions.values().stream()
             .flatMap(sessions -> sessions.values().stream())
-            .filter(session -> !session.isOpen())
+            .filter(Predicate.not(Session::isOpen))
             .collect(Collectors.toSet());
 
     closedSessions.forEach(this::removeSession);
