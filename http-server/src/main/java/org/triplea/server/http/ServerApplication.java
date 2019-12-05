@@ -120,6 +120,9 @@ public class ServerApplication extends Application<AppConfig> {
     enableAuthentication(environment, metrics, jdbi);
 
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
+    if(!configuration.isProd()) {
+      environment.jersey().register(new GeneralExceptionMapper());
+    }
 
     final Chatters chatters = new Chatters();
 
