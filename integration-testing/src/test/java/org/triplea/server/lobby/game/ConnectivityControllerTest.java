@@ -8,9 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
-import org.triplea.server.http.ProtectedEndpointTest;
+import org.triplea.server.http.AuthenticatedEndpointTest;
 
-class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheckClient> {
+class ConnectivityControllerTest extends AuthenticatedEndpointTest<ConnectivityCheckClient> {
   private static final int PORT = 20000;
 
   ConnectivityControllerTest() {

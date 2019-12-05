@@ -3,9 +3,9 @@ package org.triplea.server.moderator.toolbox.banned.users;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
-import org.triplea.server.http.ProtectedEndpointTest;
+import org.triplea.server.http.AuthenticatedEndpointTest;
 
-class UserBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUserBanClient> {
+class UserBanControllerIntegrationTest extends AuthenticatedEndpointTest<ToolboxUserBanClient> {
 
   UserBanControllerIntegrationTest() {
     super(ToolboxUserBanClient::newClient);

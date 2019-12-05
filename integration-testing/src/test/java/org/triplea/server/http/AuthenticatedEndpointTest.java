@@ -19,13 +19,13 @@ import org.triplea.http.client.HttpInteractionException;
  * method, we'll first verify the endpoint using a valid API key, then we'll verify that the
  * endpoint is not accessible when using an invalid API key.
  */
-public abstract class ProtectedEndpointTest<T> extends DropwizardTest {
+public abstract class AuthenticatedEndpointTest<T> extends DropwizardTest {
   private static final ApiKey VALID_API_TOKEN = ApiKey.of("test");
   private static final ApiKey INVALID_API_TOKEN = ApiKey.of("not-correct");
 
   private final BiFunction<URI, ApiKey, T> clientBuilder;
 
-  protected ProtectedEndpointTest(final BiFunction<URI, ApiKey, T> clientBuilder) {
+  protected AuthenticatedEndpointTest(final BiFunction<URI, ApiKey, T> clientBuilder) {
     this.clientBuilder = clientBuilder;
   }
 

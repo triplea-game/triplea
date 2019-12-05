@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.server.TestData;
-import org.triplea.server.http.ProtectedEndpointTest;
+import org.triplea.server.http.AuthenticatedEndpointTest;
 
-class GameListingControllerTest extends ProtectedEndpointTest<GameListingClient> {
+class GameListingControllerTest extends AuthenticatedEndpointTest<GameListingClient> {
 
   private static final LobbyGame LOBBY_GAME = TestData.LOBBY_GAME;
 

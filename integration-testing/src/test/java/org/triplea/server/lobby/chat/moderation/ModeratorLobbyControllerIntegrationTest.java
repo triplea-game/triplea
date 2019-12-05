@@ -11,9 +11,10 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
-import org.triplea.server.http.ProtectedEndpointTest;
+import org.triplea.server.http.AuthenticatedEndpointTest;
 
-class ModeratorLobbyControllerIntegrationTest extends ProtectedEndpointTest<ModeratorChatClient> {
+class ModeratorLobbyControllerIntegrationTest
+    extends AuthenticatedEndpointTest<ModeratorChatClient> {
 
   private static final String CHAT_ID = "chat-id";
 

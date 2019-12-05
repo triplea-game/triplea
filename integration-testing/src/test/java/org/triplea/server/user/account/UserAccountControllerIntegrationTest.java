@@ -2,9 +2,9 @@ package org.triplea.server.user.account;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.user.account.UserAccountClient;
-import org.triplea.server.http.ProtectedEndpointTest;
+import org.triplea.server.http.AuthenticatedEndpointTest;
 
-class UserAccountControllerIntegrationTest extends ProtectedEndpointTest<UserAccountClient> {
+class UserAccountControllerIntegrationTest extends AuthenticatedEndpointTest<UserAccountClient> {
 
   UserAccountControllerIntegrationTest() {
     super(UserAccountClient::newClient);

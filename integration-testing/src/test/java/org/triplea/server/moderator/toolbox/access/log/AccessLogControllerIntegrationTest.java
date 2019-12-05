@@ -3,9 +3,9 @@ package org.triplea.server.moderator.toolbox.access.log;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
-import org.triplea.server.http.ProtectedEndpointTest;
+import org.triplea.server.http.AuthenticatedEndpointTest;
 
-class AccessLogControllerIntegrationTest extends ProtectedEndpointTest<ToolboxAccessLogClient> {
+class AccessLogControllerIntegrationTest extends AuthenticatedEndpointTest<ToolboxAccessLogClient> {
 
   private static final PagingParams PAGING_PARAMS =
       PagingParams.builder().pageSize(1).rowNumber(0).build();
