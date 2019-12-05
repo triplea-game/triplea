@@ -61,7 +61,6 @@ dependencies {
     testImplementation "org.mindrot:jbcrypt:$jbcryptVersion"
     testImplementation project(":test-common")
     testImplementation project(':domain-data')
-    testImplementation project(':game-core')
     testImplementation project(':http-clients')
     testImplementation project(':http-server')
     testImplementation project(':java-extras')
