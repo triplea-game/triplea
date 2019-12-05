@@ -4,7 +4,6 @@ import java.net.InetAddress;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -27,8 +26,7 @@ class SessionTracker {
     if (!listeningSessions.containsKey(ip)) {
       listeningSessions.put(ip, new HashMap<>());
     }
-    final Map<String, Session> sessionsById = listeningSessions.get(ip);
-    sessionsById.put(session.getId(), session);
+    listeningSessions.computeIfAbsent(ip, k -> new HashMap<>()).put(session.getId(), session);
   }
 
   void removeSession(final Session session) {
