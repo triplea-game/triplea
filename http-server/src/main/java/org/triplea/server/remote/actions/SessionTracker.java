@@ -58,6 +58,6 @@ class SessionTracker {
   }
 
   Collection<Session> getSessionsByIp(final InetAddress ip) {
-    return listeningSessions.containsKey(ip) ? listeningSessions.get(ip).values() : Set.of();
+    return listeningSessions.getOrDefault(ip, Map.of()).values();
   }
 }
