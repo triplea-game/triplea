@@ -39,7 +39,7 @@ public class GameListingController extends HttpController {
    */
   @RateLimited(
       keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
+      rates = {@Rate(limit = 20, duration = 4, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(GameListingClient.POST_GAME_PATH)
   public String postGame(

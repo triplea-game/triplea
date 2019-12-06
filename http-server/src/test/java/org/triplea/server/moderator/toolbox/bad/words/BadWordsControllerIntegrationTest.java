@@ -2,22 +2,23 @@ package org.triplea.server.moderator.toolbox.bad.words;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
+import org.triplea.server.http.AllowedUserRole;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class BadWordsControllerIntegrationTest extends ProtectedEndpointTest<ToolboxBadWordsClient> {
 
   BadWordsControllerIntegrationTest() {
-    super(ToolboxBadWordsClient::newClient);
+    super(AllowedUserRole.MODERATOR, ToolboxBadWordsClient::newClient);
   }
 
   @Test
   void removeBadWord() {
-    verifyEndpointReturningVoid(client -> client.removeBadWord("awful"));
+    verifyEndpoint(client -> client.removeBadWord("awful"));
   }
 
   @Test
   void addBadWord() {
-    verifyEndpointReturningVoid(client -> client.addBadWord("horrible"));
+    verifyEndpoint(client -> client.addBadWord("horrible"));
   }
 
   @Test

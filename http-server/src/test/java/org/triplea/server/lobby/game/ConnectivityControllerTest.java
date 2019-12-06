@@ -8,20 +8,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
+import org.triplea.server.http.AllowedUserRole;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheckClient> {
   private static final int PORT = 20000;
 
   ConnectivityControllerTest() {
-    super(ConnectivityCheckClient::newClient);
+    super(AllowedUserRole.ANONYMOUS, ConnectivityCheckClient::newClient);
   }
 
   /** Negative case, check connectivity for a port that is not listening. */
   @Test
   void checkConnectivityNegativeCase() {
-    final boolean result =
-        super.verifyEndpointReturningObject(client -> client.checkConnectivity(PORT));
+    final boolean result = verifyEndpointReturningObject(client -> client.checkConnectivity(PORT));
     assertThat(result, is(false));
   }
 
@@ -32,8 +32,7 @@ class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheck
   @Test
   void checkConnectivityPositiveCase() throws IOException {
     openSocket();
-    final boolean result =
-        super.verifyEndpointReturningObject(client -> client.checkConnectivity(PORT));
+    final boolean result = verifyEndpointReturningObject(client -> client.checkConnectivity(PORT));
     assertThat(result, is(true));
   }
 
