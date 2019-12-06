@@ -80,6 +80,7 @@ public class GameListingController extends HttpController {
       rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @GET
   @Path(GameListingClient.FETCH_GAMES_PATH)
+  @RolesAllowed(UserRole.ANONYMOUS)
   public Collection<LobbyGameListing> fetchGames() {
     return gameListing.getGames();
   }
