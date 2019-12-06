@@ -111,18 +111,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void testIsSaveGame() {
-    testObj.load(null, null);
-    assertThat(testObj.isSavedGame(), is(false));
-
-    testObj.load(null, "someWeirdString");
-    assertThat(testObj.isSavedGame(), is(true));
-
-    testObj.load(null, GameDataFileUtils.addExtension("file"));
-    assertThat(testObj.isSavedGame(), is(true));
-  }
-
-  @Test
   void testCanSelect() {
     assertThat(testObj.isCanSelect(), is(true));
     testObj.setCanSelect(false);
