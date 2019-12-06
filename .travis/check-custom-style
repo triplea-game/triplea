@@ -12,6 +12,9 @@ javaFiles=$(mktemp)
 sqlFiles=$(mktemp)
 trap 'rm $javaFiles $sqlFiles' EXIT
 
+
+## Create a cache of java and SQL files for faster iteration over all files.
+
 find . -type f -name "*.java" > "$javaFiles"
 find lobby-db/src/main/resources -type f -name "*.sql" > "$sqlFiles"
 
@@ -19,10 +22,10 @@ status=0
 
 
 function main() {
-  favorJava9CollectionsApi
-  referToCollectionsByInterfaceType
+  #favorJava9CollectionsApi
+  #referToCollectionsByInterfaceType
   avoidLegacyApi
-  databaseNamesAreLowerSnakeCase
+  #databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
 }
