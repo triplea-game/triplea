@@ -5,14 +5,18 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
-import org.triplea.server.lobby.chat.MessageBroadcaster;
-import org.triplea.server.lobby.chat.MessageSender;
+import org.triplea.server.http.web.socket.MessageBroadcaster;
+import org.triplea.server.http.web.socket.MessageSender;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
+import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 
 @UtilityClass
 public class ModeratorChatControllerFactory {
 
-  public static ModeratorChatController buildController(final Jdbi jdbi, final Chatters chatters) {
+  public static ModeratorChatController buildController(
+      final Jdbi jdbi,
+      final Chatters chatters,
+      final RemoteActionsEventQueue remoteActionsEventQueue) {
     return ModeratorChatController.builder()
         .moderatorChatService(
             ModeratorChatService.builder()
@@ -24,6 +28,7 @@ public class ModeratorChatControllerFactory {
                         .moderatorAuditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
                         .userBanDao(jdbi.onDemand(UserBanDao.class))
                         .build())
+                .remoteActionsEventQueue(remoteActionsEventQueue)
                 .build())
         .build();
   }

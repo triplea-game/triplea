@@ -47,7 +47,7 @@ class ProScrambleAi {
 
     // Check if defense already wins
     final Collection<Unit> attackers = battle.getAttackingUnits();
-    final Collection<Unit> defenders = battle.getDefendingUnits();
+    final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
     final Collection<Unit> bombardingUnits = battle.getBombardingUnits();
     final ProBattleResult minResult =
         calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);

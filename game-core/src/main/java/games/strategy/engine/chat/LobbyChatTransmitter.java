@@ -2,7 +2,9 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.lobby.client.LobbyClient;
 import java.util.Collection;
+import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.lobby.chat.ChatMessageListeners;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
 
@@ -12,6 +14,7 @@ import org.triplea.http.client.lobby.chat.LobbyChatClient;
  * a {@code ChatClient}.
  */
 // TODO: Project#12 test-me
+@Log
 public class LobbyChatTransmitter implements ChatTransmitter {
   private final LobbyChatClient lobbyChatClient;
   private final PlayerName localPlayerName;
@@ -23,20 +26,25 @@ public class LobbyChatTransmitter implements ChatTransmitter {
 
   @Override
   public void setChatClient(final ChatClient chatClient) {
-    lobbyChatClient.addPlayerStatusListener(chatClient::statusUpdated);
-    lobbyChatClient.addPlayerLeftListener(chatClient::participantRemoved);
-    lobbyChatClient.addPlayerJoinedListener(chatClient::participantAdded);
-    lobbyChatClient.addChatMessageListener(chatClient::messageReceived);
-    lobbyChatClient.addConnectedListener(chatClient::connected);
-    lobbyChatClient.addChatEventListener(chatClient::eventReceived);
-    lobbyChatClient.addPlayerSlappedListener(
-        slapEvent -> {
-          if (slapEvent.getSlapped().equals(localPlayerName)) {
-            chatClient.slappedBy(slapEvent.getSlapper());
-          } else {
-            chatClient.playerSlapped(slapEvent.getSlapper() + " slapped " + slapEvent.getSlapped());
-          }
-        });
+    lobbyChatClient.setChatMessageListeners(
+        ChatMessageListeners.builder()
+            .playerStatusListener(chatClient::statusUpdated)
+            .playerLeftListener(chatClient::participantRemoved)
+            .playerJoinedListener(chatClient::participantAdded)
+            .chatMessageListener(chatClient::messageReceived)
+            .connectedListener(chatClient::connected)
+            .chatEventListener(chatClient::eventReceived)
+            .playerSlappedListener(
+                slapEvent -> {
+                  if (slapEvent.getSlapped().equals(localPlayerName)) {
+                    chatClient.slappedBy(slapEvent.getSlapper());
+                  } else {
+                    chatClient.playerSlapped(
+                        slapEvent.getSlapper() + " slapped " + slapEvent.getSlapped());
+                  }
+                })
+            .serverErrorListener(log::severe)
+            .build());
   }
 
   @Override

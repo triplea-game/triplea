@@ -5,12 +5,15 @@ import com.google.gson.Gson;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.java.concurrency.CompletableFutureUtils;
 
 /**
@@ -21,43 +24,26 @@ import org.triplea.java.concurrency.CompletableFutureUtils;
  * API, and it automatically converts incoming and outgoing messages to JSON string. In particular
  * this class makes sure that all operations are non-blocking, but keep their initial dispatch
  * order.
- *
- * @param <IncomingT> Message type we expect to receive from the server.
- * @param <OutgoingT> Message type we send to the server.
  */
 @Log
-public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketConnectionListener {
+public class GenericWebSocketClient implements WebSocketConnectionListener {
   private static final Gson gson = new Gson();
   private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
   private final WebSocketConnection client;
-  private final Class<IncomingT> incomingMessageType;
-  private final Consumer<IncomingT> messageListener;
+  private Collection<Consumer<ServerMessageEnvelope>> messageListeners = new HashSet<>();
   /** These are called if connection is disconnected (by server). */
   private final Collection<Consumer<String>> connectionLostListeners = new ArrayList<>();
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Consumer<String>> connectionClosedListeners = new ArrayList<>();
 
-  public GenericWebSocketClient(
-      final URI lobbyUri,
-      final Class<IncomingT> incomingMessageType,
-      final Consumer<IncomingT> messageListener,
-      final String connectionErrorMessage) {
-    this(
-        incomingMessageType,
-        messageListener,
-        new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)),
-        connectionErrorMessage);
+  public GenericWebSocketClient(final URI lobbyUri, final String connectionErrorMessage) {
+    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)), connectionErrorMessage);
   }
 
   @VisibleForTesting
   GenericWebSocketClient(
-      final Class<IncomingT> incomingMessageType,
-      final Consumer<IncomingT> messageListener,
-      final WebSocketConnection webSocketClient,
-      final String connectionErrorMessage) {
-    this.incomingMessageType = incomingMessageType;
-    this.messageListener = messageListener;
+      final WebSocketConnection webSocketClient, final String connectionErrorMessage) {
     client = webSocketClient;
     client.addListener(this);
     CompletableFutureUtils.logExceptionWhenComplete(
@@ -75,13 +61,17 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
         : uri;
   }
 
+  public void addMessageListener(final Consumer<ServerMessageEnvelope> messageListener) {
+    messageListeners.add(messageListener);
+  }
+
   /**
    * Non-blocking send of a message to the server. Implementation note: data is sent as a JSON
    * string, this method handles conversion of the parameter object to JSON.
    *
    * @param message The data object to send to the server.
    */
-  public void send(final OutgoingT message) {
+  public void send(final ClientMessageEnvelope message) {
     // we get by doing the send on a new thread.
     CompletableFutureUtils.logExceptionWhenComplete(
         CompletableFuture.runAsync(() -> client.sendMessage(gson.toJson(message)), threadPool),
@@ -112,8 +102,8 @@ public class GenericWebSocketClient<IncomingT, OutgoingT> implements WebSocketCo
 
   @Override
   public void messageReceived(final String message) {
-    final IncomingT converted = gson.fromJson(message, incomingMessageType);
-    messageListener.accept(converted);
+    final ServerMessageEnvelope converted = gson.fromJson(message, ServerMessageEnvelope.class);
+    messageListeners.forEach(listener -> listener.accept(converted));
   }
 
   @Override

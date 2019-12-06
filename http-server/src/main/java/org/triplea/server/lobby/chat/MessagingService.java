@@ -9,9 +9,10 @@ import javax.annotation.Nonnull;
 import javax.websocket.Session;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.server.lobby.chat.event.processing.ChatEventProcessor;
@@ -49,14 +50,17 @@ class MessagingService {
 
   private void handleClientEnvelope(
       final Session session, final ClientMessageEnvelope clientEventEnvelope) {
-    apiKeyDaoWrapper
-        .lookupByApiKey(clientEventEnvelope.getApiKey())
-        .map(chatParticipantAdapter)
+    lookupChatParticipantByApiKey(clientEventEnvelope.getApiKey())
         .map(
             chatParticipant ->
-                chatEventProcessor.process(session, chatParticipant, clientEventEnvelope))
+                chatEventProcessor.processAndComputeServerResponses(
+                    session, chatParticipant, clientEventEnvelope))
         .ifPresentOrElse(
             responses -> sendMessages(session, responses), () -> logRequestIgnoredWarning(session));
+  }
+
+  private Optional<ChatParticipant> lookupChatParticipantByApiKey(final ApiKey apiKey) {
+    return apiKeyDaoWrapper.lookupByApiKey(apiKey).map(chatParticipantAdapter);
   }
 
   private void sendMessages(final Session session, final Collection<ServerResponse> responses) {
@@ -81,6 +85,8 @@ class MessagingService {
   }
 
   void handleError(final Session session, final Throwable throwable) {
+    log.warn(
+        "Messaging service error processing request, sending error message to client", throwable);
     final ServerMessageEnvelope error = chatEventProcessor.createErrorMessage();
     messageSender.accept(session, error);
   }

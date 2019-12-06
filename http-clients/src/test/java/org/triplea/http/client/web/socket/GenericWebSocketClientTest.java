@@ -10,8 +10,6 @@ import static org.mockito.Mockito.verify;
 import com.google.gson.Gson;
 import java.net.URI;
 import java.util.function.Consumer;
-import lombok.ToString;
-import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -26,44 +26,30 @@ class GenericWebSocketClientTest {
   private static final String REASON = "reason";
   private static final Exception exception = new Exception("example cause");
 
-  private static final ExampleServerMessage EXAMPLE_SERVER_MESSAGE =
-      new ExampleServerMessage("exampleProperty", "exampleValue");
+  private static final ServerMessageEnvelope EXAMPLE_SERVER_MESSAGE =
+      ServerMessageEnvelope.packageMessage("message", "exampleValue");
 
-  @Value
-  @ToString
-  private static class ExampleServerMessage {
-    private final String property;
-    private final String value;
-  }
-
-  private static final ExampleOutgoingMessage EXAMPLE_CLIENT_MESSAGE =
-      new ExampleOutgoingMessage("name", 1);
-
-  @Value
-  @ToString
-  private static class ExampleOutgoingMessage {
-    private final String name;
-    private final int value;
-  }
+  private static final ClientMessageEnvelope EXAMPLE_CLIENT_MESSAGE =
+      ClientMessageEnvelope.builder()
+          .apiKey("api-key")
+          .messageType("type")
+          .payload("payload")
+          .build();
 
   private final Gson gson = new Gson();
 
-  @Mock private Consumer<ExampleServerMessage> messageListener;
+  @Mock private Consumer<ServerMessageEnvelope> messageListener;
   @Mock private Consumer<String> connectionLostListener;
   @Mock private Consumer<String> connectionClosedListener;
   @Mock private WebSocketConnection webSocketClient;
 
-  private GenericWebSocketClient<ExampleServerMessage, ExampleOutgoingMessage>
-      genericWebSocketClient;
+  private GenericWebSocketClient genericWebSocketClient;
 
   @BeforeEach
   void setup() {
     genericWebSocketClient =
-        new GenericWebSocketClient<>(
-            ExampleServerMessage.class,
-            messageListener,
-            webSocketClient,
-            "test-client connect error message");
+        new GenericWebSocketClient(webSocketClient, "test-client connect error message");
+    genericWebSocketClient.addMessageListener(messageListener);
     genericWebSocketClient.addConnectionLostListener(connectionLostListener);
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
   }

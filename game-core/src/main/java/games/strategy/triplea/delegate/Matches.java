@@ -1083,6 +1083,14 @@ public final class Matches {
     return IBattle::isAmphibious;
   }
 
+  static Predicate<IBattle> battleIsAmphibiousWithUnitsAttackingFrom(final Territory from) {
+    return battleIsAmphibious()
+        .and(
+            b ->
+                (b instanceof DependentBattle)
+                    && ((DependentBattle) b).getAmphibiousAttackTerritories().contains(from));
+  }
+
   public static Predicate<Unit> unitHasEnoughMovementForRoute(final Route route) {
     return unit -> {
       BigDecimal left = TripleAUnit.get(unit).getMovementLeft();

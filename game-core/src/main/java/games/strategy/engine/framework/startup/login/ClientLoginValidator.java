@@ -27,7 +27,6 @@ public final class ClientLoginValidator implements ILoginValidator {
   @VisibleForTesting
   interface ErrorMessages {
     String NO_ERROR = null;
-    String INVALID_MAC = "Invalid mac address";
     String INVALID_PASSWORD = "Invalid password";
     String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
     String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";

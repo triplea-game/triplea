@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 @Getter
 @EqualsAndHashCode

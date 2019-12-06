@@ -8,9 +8,11 @@ import lombok.experimental.UtilityClass;
 public class BanDurationFormatter {
 
   public static String formatBanMinutes(final long banMinutes) {
-    Preconditions.checkState(banMinutes > 0);
+    Preconditions.checkState(banMinutes >= 0);
 
-    if (banMinutes < 60) {
+    if (banMinutes == 0) {
+      return "less than a minute";
+    } else if (banMinutes < 60) {
       return banMinutes + " minutes";
     } else if (TimeUnit.MINUTES.toHours(banMinutes) < 24) {
       return TimeUnit.MINUTES.toHours(banMinutes) + " hours";

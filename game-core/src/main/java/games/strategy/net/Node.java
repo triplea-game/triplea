@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.triplea.http.client.IpAddressParser;
 
 /** Class to hold information about a packet destination or source. */
 @ToString
@@ -31,7 +32,9 @@ public class Node implements INode {
   }
 
   public Node(final String name, final InetSocketAddress address) {
-    this(name, address.getAddress(), address.getPort());
+    // Note: we use `InetSocketAddress.getHostString()` and not `InetSocketAddress.getAddress()`.
+    // `InetSocketAddress.getAddress()` returns null when we are using an unresolved IP address.
+    this(name, IpAddressParser.fromString(address.getHostString()), address.getPort());
   }
 
   /** Returns the localhost InetAddress. */

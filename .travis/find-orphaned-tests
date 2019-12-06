@@ -17,7 +17,6 @@ trap 'rm $testFiles $testFilesTemp' EXIT
 ##  - files that are suffixed 'IntegrationTest.java'
 
 find . -type f -path "*/src/test/java/*" -name "*Test.java" \
-   | grep -v "^./integration-testing/" \
    | grep -v "IntegrationTest.java" > "$testFiles"
 
 ## Exclude files with specific annotations or abstract test classes
