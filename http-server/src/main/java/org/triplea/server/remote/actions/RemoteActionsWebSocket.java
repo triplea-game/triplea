@@ -7,7 +7,6 @@ import javax.websocket.OnError;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.remote.actions.RemoteActionsWebsocketListener;
 
 /**
@@ -16,7 +15,6 @@ import org.triplea.http.client.remote.actions.RemoteActionsWebsocketListener;
  * to shutdown.
  */
 @ServerEndpoint(RemoteActionsWebsocketListener.NOTIFICATIONS_WEBSOCKET_PATH)
-@Slf4j
 public class RemoteActionsWebSocket {
   public static final String ACTIONS_QUEUE_KEY = "remote.actions.event.queue";
 

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.websocket.Session;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeType;
@@ -21,7 +20,6 @@ import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
  * connected chatters. The class is responsible for receiving client messages, updating local
  * chatter state, and returns a list of server responses to broadcast or send back to users.
  */
-@Slf4j
 @AllArgsConstructor
 public class ChatEventProcessor {
 

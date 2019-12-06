@@ -39,7 +39,8 @@ class GameListingControllerTest extends ProtectedEndpointTest<GameListingClient>
   @Test
   void fetchGames() {
     verifyEndpoint(client -> client.postGame(LOBBY_GAME));
-    verifyEndpointReturningCollection(GameListingClient::fetchGameListing);
+    verifyEndpointReturningCollection(
+        AllowedUserRole.ANONYMOUS, GameListingClient::fetchGameListing);
   }
 
   @Test

@@ -15,7 +15,7 @@ class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheck
   private static final int PORT = 20000;
 
   ConnectivityControllerTest() {
-    super(AllowedUserRole.ANONYMOUS, ConnectivityCheckClient::newClient);
+    super(AllowedUserRole.HOST, ConnectivityCheckClient::newClient);
   }
 
   /** Negative case, check connectivity for a port that is not listening. */

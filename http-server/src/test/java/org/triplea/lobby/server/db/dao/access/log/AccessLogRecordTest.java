@@ -5,6 +5,11 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.ACCESS_TIME_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.IP_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.REGISTERED_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.SYSTEM_ID_COLUMN;
+import static org.triplea.lobby.server.db.dao.access.log.AccessLogRecord.USERNAME_COLUMN;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -29,12 +34,11 @@ class AccessLogRecordTest {
 
   @Test
   void buildResultMapper() throws Exception {
-    when(resultSet.getBoolean(AccessLogRecord.REGISTERED_COLUMN)).thenReturn(true);
-    when(resultSet.getString(AccessLogRecord.USERNAME_COLUMN)).thenReturn(USERNAME);
-    when(resultSet.getString(AccessLogRecord.SYSTEM_ID_COLUMN)).thenReturn(MAC);
-    when(resultSet.getString(AccessLogRecord.IP_COLUMN)).thenReturn(IP);
-    when(resultSet.getTimestamp(eq(AccessLogRecord.ACCESS_TIME_COLUMN), any(Calendar.class)))
-        .thenReturn(timestamp);
+    when(resultSet.getBoolean(REGISTERED_COLUMN)).thenReturn(true);
+    when(resultSet.getString(USERNAME_COLUMN)).thenReturn(USERNAME);
+    when(resultSet.getString(SYSTEM_ID_COLUMN)).thenReturn(MAC);
+    when(resultSet.getString(IP_COLUMN)).thenReturn(IP);
+    when(resultSet.getTimestamp(eq(ACCESS_TIME_COLUMN), any(Calendar.class))).thenReturn(timestamp);
 
     final AccessLogRecord result = AccessLogRecord.buildResultMapper().map(resultSet, null);
 

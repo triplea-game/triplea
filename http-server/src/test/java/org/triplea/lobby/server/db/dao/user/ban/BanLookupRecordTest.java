@@ -5,6 +5,8 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.BAN_EXPIRY_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.PUBLIC_ID_COLUMN;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -25,9 +27,8 @@ class BanLookupRecordTest {
 
   @Test
   void buildResultMapper() throws Exception {
-    when(resultSet.getTimestamp(eq(BanTableColumns.BAN_EXPIRY_COLUMN), any(Calendar.class)))
-        .thenReturn(timestamp);
-    when(resultSet.getString(BanTableColumns.PUBLIC_ID_COLUMN)).thenReturn(PUBLIC_ID);
+    when(resultSet.getTimestamp(eq(BAN_EXPIRY_COLUMN), any(Calendar.class))).thenReturn(timestamp);
+    when(resultSet.getString(PUBLIC_ID_COLUMN)).thenReturn(PUBLIC_ID);
 
     final BanLookupRecord result = BanLookupRecord.buildResultMapper().map(resultSet, null);
 

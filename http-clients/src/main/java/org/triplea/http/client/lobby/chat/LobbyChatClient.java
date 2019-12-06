@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
@@ -15,7 +14,6 @@ import org.triplea.http.client.web.socket.WebsocketListener;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 /** Core websocket client to communicate with lobby chat API. */
-@Log
 public class LobbyChatClient
     extends WebsocketListener<ChatServerMessageType, ChatMessageListeners> {
   public static final String LOBBY_CHAT_WEBSOCKET_PATH = "/lobby/chat/websocket";

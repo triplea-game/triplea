@@ -2,7 +2,6 @@ package org.triplea.server.lobby.chat.moderation;
 
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.IpAddressParser;
@@ -16,7 +15,6 @@ import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 
 @Builder
-@Slf4j
 class ModeratorChatService {
 
   @Nonnull private final LobbyApiKeyDaoWrapper lobbyApiKeyDaoWrapper;
