@@ -31,7 +31,7 @@ public class ConnectivityController extends HttpController {
   @RateLimited(
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
-  @RolesAllowed(UserRole.ANONYMOUS)
+  @RolesAllowed(UserRole.HOST)
   public boolean checkConnectivity(@Context final HttpServletRequest request, final Integer port) {
     Preconditions.checkArgument(port > 0, "Port must be a positive number, was: " + port);
     Preconditions.checkArgument(
