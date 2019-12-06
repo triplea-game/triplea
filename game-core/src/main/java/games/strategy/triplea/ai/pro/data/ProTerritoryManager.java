@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.util.Tuple;
 
 /** Manages info about territories. */
 public class ProTerritoryManager {
@@ -363,10 +364,10 @@ public class ProTerritoryManager {
     for (final var territoryToScramblersEntry :
         scrambleLogic.getUnitsThatCanScrambleByDestination().entrySet()) {
       final Territory to = territoryToScramblersEntry.getKey();
-      for (final var fromToScrambers : territoryToScramblersEntry.getValue().entrySet()) {
-        final Territory from = fromToScrambers.getKey();
-        final Collection<Unit> airbases = fromToScrambers.getValue().getFirst();
-        final Collection<Unit> scramblers = fromToScrambers.getValue().getSecond();
+      for (final Tuple<Collection<Unit>, Collection<Unit>> airbasesAndScramblers :
+          territoryToScramblersEntry.getValue().values()) {
+        final Collection<Unit> airbases = airbasesAndScramblers.getFirst();
+        final Collection<Unit> scramblers = airbasesAndScramblers.getSecond();
         final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
 
         final List<Unit> addTo = moveMap.get(to).getMaxScrambleUnits();
