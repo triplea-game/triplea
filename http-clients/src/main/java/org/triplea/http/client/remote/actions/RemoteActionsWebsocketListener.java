@@ -1,13 +1,11 @@
 package org.triplea.http.client.remote.actions;
 
 import java.net.URI;
-import lombok.extern.java.Log;
 import org.triplea.http.client.remote.actions.messages.server.ServerRemoteActionMessageType;
 import org.triplea.http.client.web.socket.WebsocketListener;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 /** Listens to a websocket for remote actions, eg: player banned. */
-@Log
 public class RemoteActionsWebsocketListener
     extends WebsocketListener<ServerRemoteActionMessageType, RemoteActionListeners> {
 
