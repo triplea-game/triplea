@@ -5,6 +5,12 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.BAN_EXPIRY_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.DATE_CREATED_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.IP_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.PUBLIC_ID_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.SYSTEM_ID_COLUMN;
+import static org.triplea.lobby.server.db.dao.user.ban.BanTableColumns.USERNAME_COLUMN;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -33,14 +39,13 @@ class UserBanRecordTest {
 
   @Test
   void buildResultMapper() throws Exception {
-    when(resultSet.getTimestamp(eq(BanTableColumns.BAN_EXPIRY_COLUMN), any(Calendar.class)))
-        .thenReturn(timestamp);
-    when(resultSet.getTimestamp(eq(BanTableColumns.DATE_CREATED_COLUMN), any(Calendar.class)))
+    when(resultSet.getTimestamp(eq(BAN_EXPIRY_COLUMN), any(Calendar.class))).thenReturn(timestamp);
+    when(resultSet.getTimestamp(eq(DATE_CREATED_COLUMN), any(Calendar.class)))
         .thenReturn(yesterdayTimestamp);
-    when(resultSet.getString(BanTableColumns.SYSTEM_ID_COLUMN)).thenReturn(MAC);
-    when(resultSet.getString(BanTableColumns.IP_COLUMN)).thenReturn(IP);
-    when(resultSet.getString(BanTableColumns.PUBLIC_ID_COLUMN)).thenReturn(PUBLIC_ID);
-    when(resultSet.getString(BanTableColumns.USERNAME_COLUMN)).thenReturn(USERNAME);
+    when(resultSet.getString(SYSTEM_ID_COLUMN)).thenReturn(MAC);
+    when(resultSet.getString(IP_COLUMN)).thenReturn(IP);
+    when(resultSet.getString(PUBLIC_ID_COLUMN)).thenReturn(PUBLIC_ID);
+    when(resultSet.getString(USERNAME_COLUMN)).thenReturn(USERNAME);
 
     final UserBanRecord result = UserBanRecord.buildResultMapper().map(resultSet, null);
 
