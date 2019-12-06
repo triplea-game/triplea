@@ -67,9 +67,7 @@ public class MoveBatcher {
     for (final var sequence : moveSequences) {
       if (!sequence.isEmpty()) {
         mergeSequences(sequence, moveSequences.subList(i + 1, moveSequences.size()));
-        for (final MoveDescription move : sequence) {
-          moves.add(move);
-        }
+        moves.addAll(sequence);
       }
       i++;
     }
