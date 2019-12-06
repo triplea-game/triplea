@@ -47,6 +47,7 @@ jobs:
         - .travis/find-unused-dbunit-datasets || travis_terminate 1
         - .travis/find-unmatched-test-packages || travis_terminate 1;
         # - .travis/find-orphaned-tests || travis_terminate 1;
+        - .travis/check-custom-style || travis_terminate 1;
         - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain pmdTest
     - stage: verify
       env: "Unit & Integration Tests"
