@@ -64,7 +64,8 @@ jobs:
         - java --version
       install: skip
       script:
-        - ./.travis/setup_database &
+        - .travis/setup_database
+        - .travis/launch-http-server
         - ./gradlew --parallel test integTest jacocoTestReport
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: verify
