@@ -67,6 +67,7 @@ import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.remote.actions.RemoteActionListeners;
 import org.triplea.http.client.remote.actions.RemoteActionsWebsocketListener;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
@@ -286,8 +287,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
     Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
     Optional.ofNullable(chatModelCancel).ifPresent(Runnable::run);
-    Optional.ofNullable(remoteActionsListener)
-        .ifPresent(RemoteActionsWebsocketListener::stopListening);
+    Optional.ofNullable(remoteActionsListener).ifPresent(RemoteActionsWebsocketListener::close);
   }
 
   public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
@@ -405,14 +405,17 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
         gameHostingResponse = GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
 
-        remoteActionsListener = new RemoteActionsWebsocketListener(lobbyUri);
-        remoteActionsListener.addPlayerBannedListener(
-            new PlayerDisconnectAction(serverMessenger, this::cancel));
-        remoteActionsListener.addShutdownRequestListener(
-            () -> {
-              cancel();
-              ExitStatus.SUCCESS.exit();
-            });
+        remoteActionsListener =
+            new RemoteActionsWebsocketListener(
+                lobbyUri,
+                RemoteActionListeners.builder()
+                    .bannedPlayerListener(new PlayerDisconnectAction(serverMessenger, this::cancel))
+                    .shutdownListener(
+                        emptyStringMessage -> {
+                          cancel();
+                          ExitStatus.SUCCESS.exit();
+                        })
+                    .build());
 
         lobbyWatcherThread =
             new LobbyWatcherThread(
