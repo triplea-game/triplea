@@ -62,24 +62,6 @@ final class GameDescriptionTest {
   }
 
   @Nested
-  final class FormatBotStartTimeTest {
-    @Test
-    void nullStartDateTimeIsFormattedToEmptyString() {
-      final GameDescription gameDescription = GameDescription.builder().build();
-
-      assertThat(gameDescription.getFormattedBotStartTime(), is(""));
-    }
-
-    @Test
-    void shouldNotThrowExceptionWhenStartedDateIsNotNull() {
-      final GameDescription gameDescription =
-          GameDescription.builder().startDateTime(Instant.now()).build();
-
-      assertDoesNotThrow(gameDescription::getFormattedBotStartTime);
-    }
-  }
-
-  @Nested
   final class ToAndFromLobbyGame {
 
     @Test
