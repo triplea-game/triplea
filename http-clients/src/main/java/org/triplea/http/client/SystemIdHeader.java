@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.Map;
 import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.SystemIdLoader;
 
@@ -12,7 +11,6 @@ import org.triplea.domain.data.SystemIdLoader;
  * Creates headers with a user's 'system-id'. If a system-id has not been generated, one will be
  * generated and stored in preferences.
  */
-@Log
 @UtilityClass
 public class SystemIdHeader {
   public static final String SYSTEM_ID_HEADER = "System-Id-Header";

@@ -25,6 +25,7 @@ function main() {
   #favorJava9CollectionsApi
   #referToCollectionsByInterfaceType
   avoidLegacyApi
+  removeUnusedLogAnnotations
   #databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
@@ -82,6 +83,23 @@ function avoidLegacyApi() {
     grep --color=auto -H -f .travis/style.include/legacy-api "$file" && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
   
+  displayResult "$found"
+}
+
+function removeUnusedLogAnnotations() {
+  title "Remove unused lombok @Log and @Slf4j annotations"
+  local found=0
+
+  while read -r file; do
+    if grep -Eq "@Log|@Slf4j" "$file"; then
+      if ! grep -Eq "log::|log\." "$file"; then
+        echo -e "${bold}$file${normal}"
+        found=1
+        status=1
+      fi
+    fi
+  done <<< "$(cat "$javaFiles")"
+
   displayResult "$found"
 }
 

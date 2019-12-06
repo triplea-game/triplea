@@ -11,12 +11,10 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 
 /** Setup panel model for headless server. */
-@Log
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
