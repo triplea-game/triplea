@@ -223,13 +223,6 @@ public class WeakAi extends AbstractAi {
 
   private static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
     for (final MoveDescription move : moves) {
-      // TODO: #5499 Validate this when MoveDescription is constructed.
-      if (move.getRoute().getEnd() == null
-          || move.getRoute().getStart() == null
-          || move.getRoute().hasNoSteps()) {
-        continue;
-      }
-
       moveDel.performMove(move);
       pause();
     }

@@ -438,18 +438,6 @@ public final class ProMoveUtils {
 
     // Move units
     for (final MoveDescription move : moves) {
-      // TODO: #5499 Validate this when MoveDescription is constructed.
-      if (move.getRoute().getEnd() == null || move.getRoute().getStart() == null) {
-        ProLogger.warn(
-            data.getSequence().getRound()
-                + "-"
-                + data.getSequence().getStep().getName()
-                + ": route not valid "
-                + move.getRoute()
-                + " units: "
-                + move.getUnits());
-        continue;
-      }
       final String result = moveDel.performMove(move);
       if (result != null) {
         ProLogger.warn(
