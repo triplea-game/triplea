@@ -68,15 +68,6 @@ public class GameDescription implements Serializable {
     return hostedBy.getName();
   }
 
-  public String getFormattedBotStartTime() {
-    return startDateTime == null
-        ? ""
-        : new DateTimeFormatterBuilder()
-            .appendLocalized(null, FormatStyle.SHORT)
-            .toFormatter()
-            .format(LocalDateTime.ofInstant(startDateTime, ZoneOffset.systemDefault()));
-  }
-
   public static GameDescription fromLobbyGame(final LobbyGameListing lobbyGameListing) {
     return fromLobbyGame(lobbyGameListing.getLobbyGame());
   }
