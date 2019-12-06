@@ -6,12 +6,10 @@ import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.java.Log;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 
 /** Server setup model. */
-@Log
 class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   private final ServerModel model;
   private final GameSelectorModel gameSelectorModel;

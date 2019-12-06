@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
@@ -17,7 +16,6 @@ import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 /** Core websocket client to communicate with lobby chat API. */
-@Log
 public class LobbyChatClient implements Consumer<ServerMessageEnvelope> {
   public static final String LOBBY_CHAT_WEBSOCKET_PATH = "/lobby/chat/websocket";
 

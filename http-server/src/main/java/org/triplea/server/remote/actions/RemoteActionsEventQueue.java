@@ -6,7 +6,6 @@ import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import javax.websocket.Session;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.remote.actions.messages.server.RemoteActionsEnvelopeFactory;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
@@ -24,7 +23,6 @@ import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
  * </ul>
  */
 @Builder
-@Slf4j
 public class RemoteActionsEventQueue {
 
   @Nonnull private final BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
