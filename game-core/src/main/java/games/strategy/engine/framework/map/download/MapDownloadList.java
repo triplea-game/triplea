@@ -43,6 +43,7 @@ class MapDownloadList {
     }
   }
 
+  @VisibleForTesting
   List<DownloadFileDescription> getAvailable() {
     return available;
   }
@@ -56,6 +57,7 @@ class MapDownloadList {
     return installed;
   }
 
+  @VisibleForTesting
   List<DownloadFileDescription> getOutOfDate() {
     return outOfDate;
   }
