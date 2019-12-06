@@ -258,8 +258,10 @@ public class WeakAi extends AbstractAi {
     }
     final List<Unit> landUnits = load2Transports(unitsToMove);
     final Route r = getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
-    unitsToMove.addAll(landUnits);
-    moves.add(new MoveDescription(unitsToMove, r));
+    if (r != null) {
+      unitsToMove.addAll(landUnits);
+      moves.add(new MoveDescription(unitsToMove, r));
+    }
     return moves;
   }
 
@@ -285,7 +287,7 @@ public class WeakAi extends AbstractAi {
           if (lastSeaZoneOnAmphib != null) {
             // two move route to end
             final Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
-            if (r != null && r.numberOfSteps() > 0) {
+            if (r != null) {
               final List<Unit> unitsToMove =
                   t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player));
               moves.add(new MoveDescription(unitsToMove, r));
@@ -296,7 +298,9 @@ public class WeakAi extends AbstractAi {
           // move toward the start of the amphib route
           if (firstSeaZoneOnAmphib != null) {
             final Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
-            moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
+            if (r != null) {
+              moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
+            }
           }
         }
       }
@@ -314,7 +318,7 @@ public class WeakAi extends AbstractAi {
             .and(Matches.territoryHasEnemyUnits(player, data).negate())
             .and(Matches.territoryHasNonAllowedCanal(player, null, data).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
-    if (r == null || !routeCond.test(destination)) {
+    if (r == null || r.hasNoSteps() || !routeCond.test(destination)) {
       return null;
     }
     if (r.numberOfSteps() > 2) {
