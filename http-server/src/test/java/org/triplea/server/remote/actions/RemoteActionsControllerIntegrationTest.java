@@ -24,7 +24,7 @@ class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<Remot
   class SendShutdown {
     @Test
     void sendShutdownSignal() {
-      verifyEndpointReturningVoid(
+      verifyEndpoint(
           client -> client.sendShutdownRequest(IpAddressParser.fromString("99.99.33.33")));
     }
   }
