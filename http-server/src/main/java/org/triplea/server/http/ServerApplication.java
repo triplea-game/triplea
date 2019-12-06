@@ -112,14 +112,7 @@ public class ServerApplication extends Application<AppConfig> {
   @Override
   public void run(final AppConfig configuration, final Environment environment) {
     if (configuration.isLogRequestAndResponses()) {
-      environment
-          .jersey()
-          .register(
-              new LoggingFeature(
-                  Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
-                  Level.INFO,
-                  LoggingFeature.Verbosity.PAYLOAD_ANY,
-                  LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+      enableRequestResponseLogging(environment);
     }
 
     final MetricRegistry metrics = new MetricRegistry();
@@ -130,9 +123,6 @@ public class ServerApplication extends Application<AppConfig> {
     enableAuthentication(environment, metrics, jdbi);
 
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
-    if(!configuration.isProd()) {
-      environment.jersey().register(new GeneralExceptionMapper());
-    }
 
     final var chatters = new Chatters();
     final var remoteActionsEventQueue = RemoteActionsEventQueueFactory.newRemoteActionsEventQueue();
@@ -148,6 +138,29 @@ public class ServerApplication extends Application<AppConfig> {
     remoteActionsConfiguration
         .getUserProperties()
         .put(RemoteActionsWebSocket.ACTIONS_QUEUE_KEY, remoteActionsEventQueue);
+  }
+
+  private static void enableRequestResponseLogging(final Environment environment) {
+    environment
+        .jersey()
+        .register(
+            new LoggingFeature(
+                Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
+                Level.INFO,
+                LoggingFeature.Verbosity.PAYLOAD_ANY,
+                LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+  }
+
+  private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
+    final JdbiFactory factory = new JdbiFactory();
+    final Jdbi jdbi =
+        factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    JdbiDatabase.registerRowMappers(jdbi);
+
+    if (configuration.isLogSqlStatements()) {
+      JdbiDatabase.registerSqlLogger(jdbi);
+    }
+    return jdbi;
   }
 
   private static void enableAuthentication(
@@ -198,17 +211,5 @@ public class ServerApplication extends Application<AppConfig> {
         ModeratorsControllerFactory.buildController(appConfig, jdbi),
         RemoteActionsControllerFactory.buildController(jdbi, remoteActionsEventQueue),
         UpdateAccountControllerFactory.buildController(jdbi));
-  }
-
-  private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
-    final JdbiFactory factory = new JdbiFactory();
-    final Jdbi jdbi =
-        factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
-    JdbiDatabase.registerRowMappers(jdbi);
-
-    if (configuration.isLogSqlStatements()) {
-      JdbiDatabase.registerSqlLogger(jdbi);
-    }
-    return jdbi;
   }
 }
