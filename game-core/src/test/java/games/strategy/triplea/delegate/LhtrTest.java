@@ -37,7 +37,6 @@ class LhtrTest {
 
   private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(
       final IDelegateBridge delegateBridge) {
-    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveHariKari();
     verify(delegateBridge.getRemotePlayer(), never()).confirmMoveInFaceOfAa(any());
     verify(delegateBridge.getRemotePlayer(), never()).confirmMoveKamikaze();
   }

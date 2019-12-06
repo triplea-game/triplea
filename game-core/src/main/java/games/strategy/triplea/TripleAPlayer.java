@@ -704,13 +704,6 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
   }
 
   @Override
-  public void confirmMoveHariKari() {
-    final String question =
-        "All units in destination territory will automatically die, do you still want to move?";
-    ui.getOk(question);
-  }
-
-  @Override
   public Territory retreatQuery(
       final UUID battleId,
       final boolean submerge,
