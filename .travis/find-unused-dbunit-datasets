@@ -13,13 +13,15 @@ bold="\e[1m"
 
 status=0
 
+dbunit_project="http-server"
+
 ## Loop over all .yml dataset files
 while read -r dataSetFilePath; do
   
   ## Determine the .yml file reference we should look for. To do this, remove
   ## the dataset path prefix, eg:
   ## integration-testing/src/test/resources/datasets/very/test.yml -> very/test.yml
-  dataSetFile=${dataSetFilePath/integration-testing\/src\/test\/resources\/datasets\//}
+  dataSetFile=${dataSetFilePath/${dbunit_project}\/src\/test\/resources\/datasets\//}
   
   ## Next, loop over all tests and set 'found=1' if we find a reference to the target dataSetFile
   found=0
@@ -28,14 +30,14 @@ while read -r dataSetFilePath; do
       found=1
       break
     fi 
-  done <<< "$(find integration-testing/src/test/java -type f -name "*java")"
+  done <<< "$(find "${dbunit_project}/src/test/java" -type f -name "*java")"
 
   ## If 'found==0', we did not find the dataSetFile, report it and flag and error status code
   if [ "$found" -eq 0 ]; then
    echo -e "${red}$dataSetFilePath${normal}"
    status=1
   fi
-done <<< "$(find "integration-testing/src/test/resources/datasets" -type f -name "*yml")"
+done <<< "$(find "${dbunit_project}/src/test/resources/datasets" -type f -name "*yml")"
 
 
 if [ "$status" -eq 1 ]; then

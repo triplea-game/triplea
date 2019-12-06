@@ -42,9 +42,15 @@ dependencies {
     implementation project(':lobby-db-dao')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
     testImplementation project(":test-common")
+    testImplementation project(':domain-data')
+    testImplementation project(':http-clients')
+    testImplementation project(':java-extras')
+    testImplementation project(':lobby-db-dao')
 }
 
 jar {
