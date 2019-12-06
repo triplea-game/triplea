@@ -257,7 +257,8 @@ public class WeakAi extends AbstractAi {
       unitsToMove.addAll(transports.subList(0, 1));
     }
     final List<Unit> landUnits = load2Transports(unitsToMove);
-    final @Nullable Route r = getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
+    final @Nullable Route r =
+        getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
     if (r != null) {
       unitsToMove.addAll(landUnits);
       moves.add(new MoveDescription(unitsToMove, r));
