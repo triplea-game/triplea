@@ -19,9 +19,9 @@ Install from the download site: https://www.vagrantup.com/downloads.html
 
 The version in 'apt' is likely to be out of date and could have Ruby errors.
 
-Once downloaded, unzip somewhere, add that somewhere to your path so the command 
-"vagrant" is available. If not added to your path, fully quality the command 'vagrant'
-in the steps below to match.
+Once downloaded, unzip somewhere, add that somewhere to your path so the
+command "vagrant" is available. If not added to your path, fully quality
+the command 'vagrant' in the steps below to match.
 
 
 ### (2) Launch Vagrant virtual machine
