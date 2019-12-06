@@ -24,6 +24,7 @@ class ChannelMessengerTest {
   private ChannelMessenger serverChannelMessenger;
   private ChannelMessenger clientChannelMessenger;
   private UnifiedMessengerHub unifiedMessengerHub;
+  private UnifiedMessenger unifiedMessenger;
 
   @BeforeEach
   void setUp() throws IOException {
@@ -33,7 +34,7 @@ class ChannelMessengerTest {
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final SystemId systemId = SystemId.of("system-id");
     clientMessenger = new ClientMessenger("localhost", serverPort, "client1", systemId);
-    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
+    unifiedMessenger = new UnifiedMessenger(serverMessenger);
     unifiedMessengerHub = unifiedMessenger.getHub();
     serverChannelMessenger = new ChannelMessenger(unifiedMessenger);
     clientChannelMessenger = new ChannelMessenger(new UnifiedMessenger(clientMessenger));
@@ -82,7 +83,7 @@ class ChannelMessengerTest {
     final ChannelSubscriber client1Subscriber = new ChannelSubscriber();
     clientChannelMessenger.registerChannelSubscriber(client1Subscriber, test);
     assertHasChannel(test, unifiedMessengerHub);
-    assertEquals(1, clientChannelMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
+    assertEquals(1, unifiedMessenger.getLocalEndPointCount(test));
     // add a new client
     final SystemId systemId = SystemId.of("system-id2");
     final ClientMessenger clientMessenger2 =
