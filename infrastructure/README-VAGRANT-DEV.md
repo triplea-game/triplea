@@ -7,11 +7,22 @@ updates and/or build new roles.
 
 ## Installation
 
-### (1) Install Vagrant, VirtualBox and Ansible
+### (1.A) Install, VirtualBox and Ansible
 
 ```bash
-sudo apt install -y virtualbox vagrant ansible
-```
+sudo apt install -y virtualbox ansible
+``
+
+### (1.B) Install Vagrant
+
+Install from the download site: https://www.vagrantup.com/downloads.html
+
+The version in 'apt' is likely to be out of date and could have Ruby errors.
+
+Once downloaded, unzip somewhere, add that somewhere to your path so the command 
+"vagrant" is available. If not added to your path, fully quality the command 'vagrant'
+in the steps below to match.
+
 
 ### (2) Launch Vagrant virtual machine
 ```bash
