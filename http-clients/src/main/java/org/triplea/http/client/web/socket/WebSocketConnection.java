@@ -24,6 +24,7 @@ import org.triplea.java.timer.Timers;
  *   <li>sending message requests after the connection to server has been established (async)
  *   <li>triggering listener callbacks when messages are received from server
  *   <li>closing the websocket connection (async)
+ *   <li>Issuing periodic keep-alive messages (ping) to keep the websocket connection open
  * </ul>
  */
 class WebSocketConnection {
