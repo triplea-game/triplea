@@ -99,10 +99,6 @@ public class GameSelectorModel extends Observable {
     }
   }
 
-  synchronized boolean isSavedGame() {
-    return fileName != null;
-  }
-
   void setCanSelect(final boolean canSelect) {
     this.canSelect = canSelect;
     notifyObs();
