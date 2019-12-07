@@ -138,6 +138,7 @@ class LobbyGameTableModel extends AbstractTableModel {
         .orElse(null);
   }
 
+  @VisibleForTesting
   LobbyGameUpdateListener getLobbyGameBroadcaster() {
     return lobbyGameBroadcaster;
   }
