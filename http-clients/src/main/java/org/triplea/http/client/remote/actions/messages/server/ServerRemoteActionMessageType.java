@@ -3,7 +3,6 @@ package org.triplea.http.client.remote.actions.messages.server;
 import java.net.InetAddress;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import lombok.AllArgsConstructor;
 import org.triplea.http.client.remote.actions.RemoteActionListeners;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
