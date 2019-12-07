@@ -26,9 +26,7 @@ public class MoveDescription extends AbstractMoveDescription {
       final Map<Unit, Collection<Unit>> dependentUnits) {
     super(Collections.unmodifiableCollection(units));
     this.route = Preconditions.checkNotNull(route);
-    if (route.hasNoSteps()) {
-      throw new IllegalStateException("Invalid route: " + route);
-    }
+    Preconditions.checkArgument(route.hasSteps());
     this.unitsToTransports = Collections.unmodifiableMap(unitsToTransports);
     this.dependentUnits =
         Collections.unmodifiableMap(
