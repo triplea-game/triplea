@@ -195,7 +195,7 @@ public class ServerApplication extends Application<AppConfig> {
       final Chatters chatters,
       final RemoteActionsEventQueue remoteActionsEventQueue) {
     return ImmutableList.of(
-        AccessLogControllerFactory.buildController(appConfig, jdbi),
+        AccessLogControllerFactory.buildController(jdbi),
         BadWordControllerFactory.buildController(jdbi),
         ConnectivityControllerFactory.buildController(),
         CreateAccountControllerFactory.buildController(jdbi),
