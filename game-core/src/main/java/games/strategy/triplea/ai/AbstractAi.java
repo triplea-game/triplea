@@ -101,9 +101,6 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   }
 
   @Override
-  public void confirmMoveHariKari() {}
-
-  @Override
   public Territory whereShouldRocketsAttack(
       final Collection<Territory> candidates, final Territory from) {
     return candidates.iterator().next();

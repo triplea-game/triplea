@@ -196,9 +196,6 @@ public interface Player extends IRemote {
   /** The attempted move will kill some air units. */
   boolean confirmMoveKamikaze();
 
-  /** The attempted move will kill some units. */
-  void confirmMoveHariKari();
-
   /**
    * Ask the player if he wishes to retreat.
    *
