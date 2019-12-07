@@ -8,12 +8,13 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class WebsocketMessageWrapper<T, X> {
+public class WebsocketMessageWrapper<T, X> implements WebsocketMessageType<T> {
 
   private final Class<X> classType;
   private final Function<T, Consumer<X>> listenerMethod;
   private final String name;
 
+  @Override
   public void sendPayloadToListener(
       final ServerMessageEnvelope serverMessageEnvelope, final T listener) {
     Preconditions.checkArgument(
