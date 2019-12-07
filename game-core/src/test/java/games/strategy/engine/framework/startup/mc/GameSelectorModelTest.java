@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
-import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.net.URI;

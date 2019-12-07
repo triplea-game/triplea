@@ -1,6 +1,5 @@
 package games.strategy.engine.message;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.INode;
 import java.lang.reflect.InvocationHandler;
