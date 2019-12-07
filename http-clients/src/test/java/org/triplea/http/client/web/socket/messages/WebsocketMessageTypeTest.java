@@ -26,7 +26,6 @@ class WebsocketMessageTypeTest {
   }
 
   @AllArgsConstructor
-  @SuppressWarnings("ImmutableEnumChecker")
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
     MESSAGE_TYPE(Integer.class, ExampleMessageListeners::getListener);
 

@@ -10,7 +10,6 @@ import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 import org.triplea.http.client.web.socket.messages.WebsocketMessageWrapper;
 
 /** Chat message types that a server can send over websocket to client. */
-@SuppressWarnings("ImmutableEnumChecker")
 public enum ChatServerMessageType implements WebsocketMessageType<ChatMessageListeners> {
   CHAT_EVENT(String.class, ChatMessageListeners::getChatEventListener),
   CHAT_MESSAGE(ChatMessage.class, ChatMessageListeners::getChatMessageListener),
