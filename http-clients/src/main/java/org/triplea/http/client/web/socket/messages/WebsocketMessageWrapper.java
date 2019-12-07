@@ -2,7 +2,6 @@ package org.triplea.http.client.web.socket.messages;
 
 import com.google.common.base.Preconditions;
 import com.google.errorprone.annotations.Immutable;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
