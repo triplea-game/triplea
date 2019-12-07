@@ -24,7 +24,7 @@ public enum ServerRemoteActionMessageType implements WebsocketMessageType<Remote
   <X> ServerRemoteActionMessageType(
       final Class<X> classType, final Function<RemoteActionListeners, Consumer<X>> listenerMethod) {
     this.websocketMessageWrapper =
-        new WebsocketMessageWrapper<>(classType, listenerMethod, this::toString);
+        new WebsocketMessageWrapper<>(classType, listenerMethod, toString());
   }
 
   @Override

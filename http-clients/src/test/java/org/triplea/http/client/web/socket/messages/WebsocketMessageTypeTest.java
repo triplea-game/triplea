@@ -36,7 +36,7 @@ class WebsocketMessageTypeTest {
         final Class<X> classType,
         final Function<ExampleMessageListeners, Consumer<X>> listenerMethod) {
       this.websocketMessageWrapper =
-          new WebsocketMessageWrapper<>(classType, listenerMethod, this::toString);
+          new WebsocketMessageWrapper<>(classType, listenerMethod, toString());
     }
 
     @Override

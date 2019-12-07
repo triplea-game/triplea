@@ -26,7 +26,7 @@ public enum ChatServerMessageType implements WebsocketMessageType<ChatMessageLis
   <X> ChatServerMessageType(
       final Class<X> classType, final Function<ChatMessageListeners, Consumer<X>> listenerMethod) {
     this.websocketMessageWrapper =
-        new WebsocketMessageWrapper<>(classType, listenerMethod, this::toString);
+        new WebsocketMessageWrapper<>(classType, listenerMethod, toString());
   }
 
   @Override
