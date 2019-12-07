@@ -26,13 +26,24 @@ class WebsocketMessageTypeTest {
   }
 
   @AllArgsConstructor
-  @Getter(onMethod_ = @Override)
   @SuppressWarnings("ImmutableEnumChecker")
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
     MESSAGE_TYPE(Integer.class, ExampleMessageListeners::getListener);
 
-    private final Class<?> classType;
-    private final Function<ExampleMessageListeners, Consumer<?>> listenerMethod;
+    private final WebsocketMessageWrapper<ExampleMessageListeners, ?> websocketMessageWrapper;
+
+    <X> ExampleMessageType(
+        final Class<X> classType,
+        final Function<ExampleMessageListeners, Consumer<X>> listenerMethod) {
+      this.websocketMessageWrapper =
+          new WebsocketMessageWrapper<>(classType, listenerMethod, this::toString);
+    }
+
+    @Override
+    public void sendPayloadToListener(
+        final ServerMessageEnvelope serverMessageEnvelope, final ExampleMessageListeners listener) {
+      websocketMessageWrapper.sendPayloadToListener(serverMessageEnvelope, listener);
+    }
   }
 
   @Mock private Consumer<Integer> listenerImplementation;
