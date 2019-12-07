@@ -6,10 +6,6 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.FormatStyle;
 import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -66,15 +62,6 @@ public class GameDescription implements Serializable {
 
   public String getHostName() {
     return hostedBy.getName();
-  }
-
-  public String getFormattedBotStartTime() {
-    return startDateTime == null
-        ? ""
-        : new DateTimeFormatterBuilder()
-            .appendLocalized(null, FormatStyle.SHORT)
-            .toFormatter()
-            .format(LocalDateTime.ofInstant(startDateTime, ZoneOffset.systemDefault()));
   }
 
   public static GameDescription fromLobbyGame(final LobbyGameListing lobbyGameListing) {
