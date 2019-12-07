@@ -9,7 +9,6 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.lobby.common.LobbyConstants;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerNameAssignerTest {
@@ -97,23 +96,5 @@ class PlayerNameAssignerTest {
         PlayerNameAssigner.assignName(
             NAME_1, MAC, List.of(NAME_1 + " (2)", NAME_1 + " (1)", NAME_1)),
         is(NAME_1 + " (3)"));
-  }
-
-  @Test
-  void multipleBotNames() {
-    final String bot01 = "Bot01_bot" + LobbyConstants.LOBBY_WATCHER_NAME;
-    final String bot02 = "Bot02_bot" + LobbyConstants.LOBBY_WATCHER_NAME;
-    final String bot03 = "Bot02_bot" + LobbyConstants.LOBBY_WATCHER_NAME;
-
-    assertThat(
-        "with a bot logged in already, mac check should ignore the already logged in bot",
-        PlayerNameAssigner.assignName(bot01, MAC, List.of(bot02)),
-        is(bot01));
-
-    assertThat(
-        "again, even with multiple bots logged in, mac check should ignore existing logins "
-            + "that have a bot lobby watch name",
-        PlayerNameAssigner.assignName(bot01, MAC, List.of(bot02, bot03)),
-        is(bot01));
   }
 }

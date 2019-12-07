@@ -1,10 +1,10 @@
 package games.strategy.net;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.lobby.PlayerNameValidation;
 import java.util.Collection;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.triplea.domain.data.PlayerName;
 
 /** Utility class that will assign a name to a newly logging in player. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,7 +21,7 @@ public final class PlayerNameAssigner {
    */
   public static String assignName(
       final String desiredName, final String mac, final Collection<String> loggedInNames) {
-    Preconditions.checkArgument(PlayerNameValidation.validate(desiredName) == null);
+    Preconditions.checkArgument(PlayerName.validate(desiredName) == null);
     Preconditions.checkNotNull(mac);
     Preconditions.checkNotNull(loggedInNames);
 

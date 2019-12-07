@@ -24,7 +24,6 @@ import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
-import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
@@ -46,7 +45,6 @@ public class LobbyFrame extends JFrame {
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
     chatMessagePanel.addServerMessage(serverProperties.getMessage());
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(chat);
-    chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::newModeratorActions);
 

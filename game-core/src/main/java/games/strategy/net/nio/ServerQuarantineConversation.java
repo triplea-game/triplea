@@ -1,6 +1,5 @@
 package games.strategy.net.nio;
 
-import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.INode;
 import games.strategy.net.MessageHeader;
@@ -98,7 +97,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                             remoteName,
                             remoteMac,
                             (InetSocketAddress) channel.socket().getRemoteSocketAddress()))
-                    .orElseGet(() -> PlayerNameValidation.validate(remoteName));
+                    .orElseGet(() -> PlayerName.validate(remoteName));
             if (error != null && !error.equals(CHANGE_PASSWORD)) {
               step = Step.ACK_ERROR;
               send(error);
