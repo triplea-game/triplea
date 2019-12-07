@@ -10,7 +10,6 @@ import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 import org.triplea.http.client.web.socket.messages.WebsocketMessageWrapper;
 
 /** Types of messages that can be sent from server to client indicating a 'remote action' */
-@AllArgsConstructor
 @SuppressWarnings("ImmutableEnumChecker")
 public enum ServerRemoteActionMessageType implements WebsocketMessageType<RemoteActionListeners> {
   /** Requests that the server receiving this message to disconnect and shutdown. */
