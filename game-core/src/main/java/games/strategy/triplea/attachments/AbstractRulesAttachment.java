@@ -376,13 +376,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         // See if the first entry contains the number of territories needed to meet the criteria
         try {
           // check if this is an integer, and if so set territory count
-          getInt(name);
+          Integer.parseInt(name);
           if (mustSetTerritoryCount) {
             haveSetCount = true;
             setTerritoryCount(name);
           }
           continue;
-        } catch (final Exception e) {
+        } catch (final NumberFormatException e) {
           // territory name is not an integer; fall through
         }
       }
