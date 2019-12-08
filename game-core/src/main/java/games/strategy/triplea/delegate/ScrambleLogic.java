@@ -36,7 +36,12 @@ public class ScrambleLogic {
   private final int maxScrambleDistance;
 
   public ScrambleLogic(final GameData data, final PlayerId player, final Territory territory) {
-    this(data, player, Set.of(territory), new BattleTracker());
+    this(data, player, Set.of(territory));
+  }
+
+  public ScrambleLogic(
+      final GameData data, final PlayerId player, final Set<Territory> territoriesWithBattles) {
+    this(data, player, territoriesWithBattles, new BattleTracker());
   }
 
   public ScrambleLogic(
