@@ -38,6 +38,18 @@ public final class TransportUtils {
     return mapTransportsAlreadyLoaded(units, units);
   }
 
+  /** Returns a map of paratrooper -> air transport, if paratrooper rules are in effect. */
+  public static Map<Unit, Unit> mapParatroopers(final Collection<Unit> units) {
+    final Collection<Unit> airTransports =
+        CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
+    final Collection<Unit> paratroops =
+        CollectionUtils.getMatches(units, Matches.unitIsAirTransportable());
+    if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
+      return mapTransportsToLoad(paratroops, airTransports);
+    }
+    return Map.of();
+  }
+
   /** Returns a map of unit -> transport. Tries to load units evenly across all transports. */
   public static Map<Unit, Unit> mapTransportsToLoad(
       final Collection<Unit> units, final Collection<Unit> transports) {

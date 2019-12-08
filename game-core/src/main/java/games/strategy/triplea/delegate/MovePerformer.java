@@ -141,9 +141,8 @@ public class MovePerformer implements Serializable {
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            // if any non enemy territories on route
-            // or if any enemy units on route the battles on (note water could have enemy but its
-            // not owned)
+            // if any non enemy territories on route or if any enemy units on route the battles
+            // on (note water could have enemy but its not owned)
             final GameData data = bridge.getData();
             final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
             final Collection<Unit> arrived =
@@ -156,18 +155,10 @@ public class MovePerformer implements Serializable {
                     ? unitsToTransports
                     : TransportUtils.mapTransports(route, arrived, null);
             // If we have paratrooper land units being carried by air units, they should be dropped
-            // off in the last
-            // territory. This means they are still dependent during the middle steps of the route.
-            final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<>();
-            final Collection<Unit> airTransports =
-                CollectionUtils.getMatches(arrived, Matches.unitIsAirTransport());
-            final Collection<Unit> paratroops =
-                CollectionUtils.getMatches(arrived, Matches.unitIsAirTransportable());
-            if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-              final Map<Unit, Unit> transportingAir =
-                  TransportUtils.mapTransportsToLoad(paratroops, airTransports);
-              dependentOnSomethingTilTheEndOfRoute.addAll(transportingAir.keySet());
-            }
+            // off in the last territory. This means they are still dependent during the middle
+            // steps of the route.
+            final Collection<Unit> dependentOnSomethingTilTheEndOfRoute =
+                TransportUtils.mapParatroopers(arrived).keySet();
             final Collection<Unit> presentFromStartTilEnd = new ArrayList<>(arrived);
             presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
             final CompositeChange change = new CompositeChange();
@@ -282,8 +273,8 @@ public class MovePerformer implements Serializable {
                   && GameStepPropertiesHelper.isNonCombatMove(data, false)
                   && !targetedAttack) {
                 // We are in non-combat move phase, and we are taking over friendly territories. No
-                // need for a battle. (This
-                // could get really difficult if we want these recorded in battle records).
+                // need for a battle. (This could get really difficult if we want these recorded in
+                // battle records).
                 for (final Territory t :
                     route.getMatches(
                         Matches

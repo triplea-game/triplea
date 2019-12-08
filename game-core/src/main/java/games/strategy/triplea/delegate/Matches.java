@@ -1458,6 +1458,8 @@ public final class Matches {
       final PlayerId currentPlayer,
       final GameData data,
       final boolean forceLoadParatroopersIfPossible) {
+    final Map<Unit, Unit> paratrooperMap =
+        forceLoadParatroopersIfPossible ? TransportUtils.mapParatroopers(units) : Map.of();
     return dependent -> {
       // transported on a sea transport
       final Unit transportedBy = ((TripleAUnit) dependent).getTransportedBy();
@@ -1467,23 +1469,11 @@ public final class Matches {
       // cargo on a carrier
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
           MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
-      if (carrierMustMoveWith != null) {
-        if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
-          return true;
-        }
+      if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
+        return true;
       }
-      // paratrooper on an air transport
-      if (forceLoadParatroopersIfPossible) {
-        final Collection<Unit> airTransports =
-            CollectionUtils.getMatches(units, unitIsAirTransport());
-        final Collection<Unit> paratroops =
-            CollectionUtils.getMatches(units, unitIsAirTransportable());
-        if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-          return TransportUtils.mapTransportsToLoad(paratroops, airTransports)
-              .containsKey(dependent);
-        }
-      }
-      return false;
+
+      return paratrooperMap.containsKey(dependent);
     };
   }
 
