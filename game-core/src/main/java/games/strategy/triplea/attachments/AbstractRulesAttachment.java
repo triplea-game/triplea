@@ -24,14 +24,8 @@ import org.triplea.java.collections.CollectionUtils;
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
 
-  // Determines if we will be counting each for the purposes of objectiveValue
-  private boolean countEach = false;
   // The multiple that will be applied to objectiveValue if countEach is true
   protected int eachMultiple = 1;
-  // Used with the next Territory conditions to determine the number of territories needed to be
-  // valid
-  // (ex: alliedOwnershipTerritories)
-  private int territoryCount = -1;
   // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
@@ -45,6 +39,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   protected boolean switched = true;
   // allows custom GameProperties
   protected String gameProperty = null;
+  // Determines if we will be counting each for the purposes of objectiveValue
+  private boolean countEach = false;
+  // Used with the next Territory conditions to determine the number of territories needed to be
+  // valid (ex: alliedOwnershipTerritories)
+  private int territoryCount = -1;
 
   protected AbstractRulesAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
