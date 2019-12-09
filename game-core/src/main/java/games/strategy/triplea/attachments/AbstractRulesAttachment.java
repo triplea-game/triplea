@@ -98,21 +98,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     objectiveValue = 0;
   }
 
-  /**
-   * Internal use only, is not set by xml or property utils. Is used to determine the number of
-   * territories we need to satisfy a specific territory based condition check. It is set multiple
-   * times during each check [isSatisfied], as there might be multiple types of territory checks
-   * being done. So it is just a temporary value.
-   */
-  private void setTerritoryCount(final String value) {
-    if (value.equals("each")) {
-      territoryCount = 1;
-      countEach = true;
-    } else {
-      territoryCount = getInt(value);
-    }
-  }
-
   private void setTerritoryCount(final int setTerritoryCount) {
     this.territoryCount = setTerritoryCount;
   }
@@ -341,9 +326,15 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       }
 
       final Set<Territory> territories = getTerritoriesBasedOnStringName(terrs[1], players, data);
-      // set it a second time, since getTerritoriesBasedOnStringName also sets it (so do it
-      setTerritoryCount(String.valueOf(terrs[0]));
-      // after the method call).
+      // set it a second time, since getTerritoriesBasedOnStringName also sets it
+      // (so do it after the method call).
+      if ("each".equals(terrs[0])) {
+        setTerritoryCount(1);
+        countEach = true;
+      } else {
+        setTerritoryCount(getInt(terrs[0]));
+      }
+
       return territories;
     } else {
       // Get the list of territories
