@@ -98,8 +98,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     objectiveValue = 0;
   }
 
-  private void setTerritoryCount(final int setTerritoryCount) {
-    this.territoryCount = setTerritoryCount;
+  private void setTerritoryCount(final int territoryCount) {
+    this.territoryCount = territoryCount;
   }
 
   int getTerritoryCount() {
