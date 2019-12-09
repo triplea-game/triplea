@@ -25,13 +25,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   private static final long serialVersionUID = -6977650137928964759L;
 
   // Determines if we will be counting each for the purposes of objectiveValue
-  protected boolean countEach = false;
+  private boolean countEach = false;
   // The multiple that will be applied to objectiveValue if countEach is true
   protected int eachMultiple = 1;
   // Used with the next Territory conditions to determine the number of territories needed to be
   // valid
   // (ex: alliedOwnershipTerritories)
-  protected int territoryCount = -1;
+  private int territoryCount = -1;
   // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
@@ -104,7 +104,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * times during each check [isSatisfied], as there might be multiple types of territory checks
    * being done. So it is just a temporary value.
    */
-  protected void setTerritoryCount(final String value) {
+  private void setTerritoryCount(final String value) {
     if (value.equals("each")) {
       territoryCount = 1;
       countEach = true;
@@ -113,7 +113,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
-  public int getTerritoryCount() {
+  private void setTerritoryCount(final int setTerritoryCount) {
+    this.territoryCount = setTerritoryCount;
+  }
+
+  int getTerritoryCount() {
     return territoryCount;
   }
 
@@ -248,7 +252,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater",
    * "all", "map", and turns it into an actual list of territories. Also sets territoryCount.
    */
-  protected Set<Territory> getTerritoriesBasedOnStringName(
+  private Set<Territory> getTerritoriesBasedOnStringName(
       final String name, final Collection<PlayerId> players, final GameData data) {
     final GameMap gameMap = data.getMap();
     switch (name) {
@@ -259,7 +263,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         for (final PlayerId player : players) {
           originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
         }
-        setTerritoryCount(String.valueOf(originalTerrs.size()));
+        setTerritoryCount(originalTerrs.size());
         return originalTerrs;
       case "originalNoWater":
         // get all originally owned territories, but no water or impassables
@@ -271,7 +275,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                   // TODO: does this account for occupiedTerrOf???
                   Matches.territoryIsNotImpassableToLandUnits(player, data)));
         }
-        setTerritoryCount(String.valueOf(originalTerritories.size()));
+        setTerritoryCount(originalTerritories.size());
         return originalTerritories;
 
       case "controlled":
@@ -279,7 +283,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         for (final PlayerId player : players) {
           ownedTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
         }
-        setTerritoryCount(String.valueOf(ownedTerrs.size()));
+        setTerritoryCount(ownedTerrs.size());
         return ownedTerrs;
       case "controlledNoWater":
         final Set<Territory> ownedTerrsNoWater = new HashSet<>();
@@ -289,7 +293,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                   gameMap.getTerritoriesOwnedBy(player),
                   Matches.territoryIsNotImpassableToLandUnits(player, data)));
         }
-        setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
+        setTerritoryCount(ownedTerrsNoWater.size());
         return ownedTerrsNoWater;
       case "all":
         final Set<Territory> allTerrs = new HashSet<>();
@@ -297,11 +301,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
           allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
         }
-        setTerritoryCount(String.valueOf(allTerrs.size()));
+        setTerritoryCount(allTerrs.size());
         return allTerrs;
       case "map":
         final Set<Territory> allTerritories = new HashSet<>(gameMap.getTerritories());
-        setTerritoryCount(String.valueOf(allTerritories.size()));
+        setTerritoryCount(allTerritories.size());
         return allTerritories;
       default: // The list just contained 1 territory
         final Territory t = data.getMap().getTerritory(name);
@@ -310,7 +314,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         }
         final Set<Territory> terr = new HashSet<>();
         terr.add(t);
-        setTerritoryCount(String.valueOf(1));
+        setTerritoryCount(1);
         return terr;
     }
   }
@@ -376,10 +380,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         // See if the first entry contains the number of territories needed to meet the criteria
         try {
           // check if this is an integer, and if so set territory count
-          Integer.parseInt(name);
+          final int territoryCount = Integer.parseInt(name);
           if (mustSetTerritoryCount) {
             haveSetCount = true;
-            setTerritoryCount(name);
+            setTerritoryCount(territoryCount);
           }
           continue;
         } catch (final NumberFormatException e) {
@@ -390,7 +394,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         countEach = true;
         if (mustSetTerritoryCount) {
           haveSetCount = true;
-          setTerritoryCount(String.valueOf(1));
+          setTerritoryCount(1);
         }
         continue;
       }
@@ -413,7 +417,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
     if (mustSetTerritoryCount && !haveSetCount) {
       // if we have not set it, then set it to be the size of this list
-      setTerritoryCount(String.valueOf(territories.size()));
+      setTerritoryCount(territories.size());
     }
     return territories;
   }
