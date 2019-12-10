@@ -204,10 +204,14 @@ public class BattleDisplay extends JPanel {
     final JPanel casualtyPanel;
     if (playerId.equals(defender)) {
       casualtyPanel = casualtiesInstantPanelDefender;
-      casualtyPanel.remove(labelNoneDefender);
+      if (!killedUnits.isEmpty()) {
+        casualtyPanel.remove(labelNoneDefender);
+      }
     } else {
       casualtyPanel = casualtiesInstantPanelAttacker;
-      casualtyPanel.remove(labelNoneAttacker);
+      if (!killedUnits.isEmpty()) {
+        casualtyPanel.remove(labelNoneAttacker);
+      }
     }
     final Map<Unit, Collection<Unit>> dependentsMap;
     gameData.acquireReadLock();
