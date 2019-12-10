@@ -94,6 +94,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   // cache this so we can update it only when territory/units change
   private List<Unit> unitsThatCanMoveOnRoute;
   private Image currentCursorImage;
+  private final Image warningImage;
+  private final Image errorImage;
   private Route routeCached = null;
   private String displayText = "Combat Move";
   private MoveType moveType = MoveType.DEFAULT;
@@ -736,6 +738,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     mouseCurrentTerritory = null;
     unitsThatCanMoveOnRoute = List.of();
     currentCursorImage = null;
+    warningImage = getMap().getWarningImage().orElse(null);
+    errorImage = getMap().getErrorImage().orElse(null);
 
     unitScroller = new UnitScroller(getData(), getMap());
   }
@@ -1191,7 +1195,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         currentCursorImage = null;
       } else {
         setStatusWarningMessage("Not all units can move there");
-        currentCursorImage = getMap().getWarningImage().orElse(null);
+        currentCursorImage = warningImage;
       }
     } else {
       String message = allResults.getError();
@@ -1203,10 +1207,10 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       }
       if (!lastResults.isMoveValid()) {
         setStatusErrorMessage(message);
-        currentCursorImage = getMap().getErrorImage().orElse(null);
+        currentCursorImage = errorImage;
       } else {
         setStatusWarningMessage(message);
-        currentCursorImage = getMap().getWarningImage().orElse(null);
+        currentCursorImage = warningImage;
       }
     }
     if (unitsThatCanMoveOnRoute.size() != new HashSet<>(unitsThatCanMoveOnRoute).size()) {
