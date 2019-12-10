@@ -7,6 +7,11 @@ import lombok.Value;
 
 @Value(staticConstructor = "of")
 @Immutable
+// The function passed as second param isn't
+// guaranteed to be immutable, but we are
+// going to trust the future-devs to use
+// stateless lambdas.
+@SuppressWarnings("Immutable")
 public class MessageTypeListenerBinding<T, X> {
 
   private final Class<X> classType;
