@@ -1,9 +1,6 @@
 package org.triplea.http.client.remote.actions.messages.server;
 
 import java.net.InetAddress;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.http.client.remote.actions.RemoteActionListeners;
@@ -18,7 +15,9 @@ public enum ServerRemoteActionMessageType implements WebsocketMessageType<Remote
   SHUTDOWN(MessageTypeListenerBinding.of(String.class, RemoteActionListeners::getShutdownListener)),
 
   /** Indicates a player has been banned and they should be disconnected if present. */
-  PLAYER_BANNED(MessageTypeListenerBinding.of(InetAddress.class, RemoteActionListeners::getBannedPlayerListener));
+  PLAYER_BANNED(
+      MessageTypeListenerBinding.of(
+          InetAddress.class, RemoteActionListeners::getBannedPlayerListener));
 
   private final MessageTypeListenerBinding<RemoteActionListeners, ?> messageTypeListenerBinding;
 }

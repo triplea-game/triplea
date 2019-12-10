@@ -27,7 +27,8 @@ class WebsocketMessageTypeTest {
   @Getter(onMethod_ = @Override)
   @AllArgsConstructor
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
-    MESSAGE_TYPE(MessageTypeListenerBinding.of(Integer.class, ExampleMessageListeners::getListener));
+    MESSAGE_TYPE(
+        MessageTypeListenerBinding.of(Integer.class, ExampleMessageListeners::getListener));
 
     private final MessageTypeListenerBinding<ExampleMessageListeners, ?> messageTypeListenerBinding;
   }
