@@ -6,7 +6,7 @@ import java.util.function.Function;
 import org.triplea.http.client.remote.actions.RemoteActionListeners;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
-import org.triplea.http.client.web.socket.messages.WebsocketMessageWrapper;
+import org.triplea.http.client.web.socket.messages.MessageTypeListenerBinding;
 
 /** Types of messages that can be sent from server to client indicating a 'remote action' */
 public enum ServerRemoteActionMessageType implements WebsocketMessageType<RemoteActionListeners> {
@@ -16,17 +16,17 @@ public enum ServerRemoteActionMessageType implements WebsocketMessageType<Remote
   /** Indicates a player has been banned and they should be disconnected if present. */
   PLAYER_BANNED(InetAddress.class, RemoteActionListeners::getBannedPlayerListener);
 
-  private final WebsocketMessageWrapper<RemoteActionListeners, ?> websocketMessageWrapper;
+  private final MessageTypeListenerBinding<RemoteActionListeners, ?> messageTypeListenerBinding;
 
   <X> ServerRemoteActionMessageType(
       final Class<X> classType, final Function<RemoteActionListeners, Consumer<X>> listenerMethod) {
-    this.websocketMessageWrapper =
-        new WebsocketMessageWrapper<>(classType, listenerMethod, toString());
+    this.messageTypeListenerBinding =
+        new MessageTypeListenerBinding<>(classType, listenerMethod, toString());
   }
 
   @Override
   public void sendPayloadToListener(
       final ServerMessageEnvelope serverMessageEnvelope, final RemoteActionListeners listener) {
-    websocketMessageWrapper.sendPayloadToListener(serverMessageEnvelope, listener);
+    messageTypeListenerBinding.sendPayloadToListener(serverMessageEnvelope, listener);
   }
 }

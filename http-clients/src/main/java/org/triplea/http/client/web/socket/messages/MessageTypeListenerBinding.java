@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Immutable
-public class WebsocketMessageWrapper<T, X> implements WebsocketMessageType<T> {
+public class MessageTypeListenerBinding<T, X> implements WebsocketMessageType<T> {
 
   private final Class<X> classType;
   private final Function<T, Consumer<X>> listenerMethod;

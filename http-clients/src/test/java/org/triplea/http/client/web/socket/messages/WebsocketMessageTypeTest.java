@@ -29,19 +29,19 @@ class WebsocketMessageTypeTest {
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
     MESSAGE_TYPE(Integer.class, ExampleMessageListeners::getListener);
 
-    private final WebsocketMessageWrapper<ExampleMessageListeners, ?> websocketMessageWrapper;
+    private final MessageTypeListenerBinding<ExampleMessageListeners, ?> messageTypeListenerBinding;
 
     <X> ExampleMessageType(
         final Class<X> classType,
         final Function<ExampleMessageListeners, Consumer<X>> listenerMethod) {
-      this.websocketMessageWrapper =
-          new WebsocketMessageWrapper<>(classType, listenerMethod, toString());
+      this.messageTypeListenerBinding =
+          new MessageTypeListenerBinding<>(classType, listenerMethod, toString());
     }
 
     @Override
     public void sendPayloadToListener(
         final ServerMessageEnvelope serverMessageEnvelope, final ExampleMessageListeners listener) {
-      websocketMessageWrapper.sendPayloadToListener(serverMessageEnvelope, listener);
+      messageTypeListenerBinding.sendPayloadToListener(serverMessageEnvelope, listener);
     }
   }
 
