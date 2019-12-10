@@ -6,7 +6,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,16 +25,11 @@ class WebsocketMessageTypeTest {
   }
 
   @Getter(onMethod_ = @Override)
+  @AllArgsConstructor
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
-    MESSAGE_TYPE(Integer.class, ExampleMessageListeners::getListener);
+    MESSAGE_TYPE(MessageTypeListenerBinding.of(Integer.class, ExampleMessageListeners::getListener));
 
     private final MessageTypeListenerBinding<ExampleMessageListeners, ?> messageTypeListenerBinding;
-
-    <X> ExampleMessageType(
-        final Class<X> classType,
-        final Function<ExampleMessageListeners, Consumer<X>> listenerMethod) {
-      this.messageTypeListenerBinding = MessageTypeListenerBinding.of(classType, listenerMethod);
-    }
   }
 
   @Mock private Consumer<Integer> listenerImplementation;
