@@ -25,7 +25,7 @@ class WebsocketMessageTypeTest {
     @Nonnull Consumer<Integer> listener;
   }
 
-  @AllArgsConstructor
+  @Getter
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
     MESSAGE_TYPE(Integer.class, ExampleMessageListeners::getListener);
 
@@ -35,13 +35,7 @@ class WebsocketMessageTypeTest {
         final Class<X> classType,
         final Function<ExampleMessageListeners, Consumer<X>> listenerMethod) {
       this.messageTypeListenerBinding =
-          new MessageTypeListenerBinding<>(classType, listenerMethod, toString());
-    }
-
-    @Override
-    public void sendPayloadToListener(
-        final ServerMessageEnvelope serverMessageEnvelope, final ExampleMessageListeners listener) {
-      messageTypeListenerBinding.sendPayloadToListener(serverMessageEnvelope, listener);
+          MessageTypeListenerBinding.of(classType, listenerMethod, toString());
     }
   }
 

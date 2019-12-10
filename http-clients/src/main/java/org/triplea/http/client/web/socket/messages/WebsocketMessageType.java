@@ -9,5 +9,10 @@ package org.triplea.http.client.web.socket.messages;
  */
 public interface WebsocketMessageType<T> {
 
-  void sendPayloadToListener(final ServerMessageEnvelope serverMessageEnvelope, final T listener);
+  MessageTypeListenerBinding<T, ?> getMessageTypeListenerBinding();
+
+  default void sendPayloadToListener(
+      final ServerMessageEnvelope serverMessageEnvelope, final T listener) {
+    getMessageTypeListenerBinding().sendPayloadToListener(serverMessageEnvelope, listener);
+  }
 }

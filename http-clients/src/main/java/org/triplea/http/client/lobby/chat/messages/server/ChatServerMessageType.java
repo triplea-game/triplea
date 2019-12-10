@@ -2,14 +2,15 @@ package org.triplea.http.client.lobby.chat.messages.server;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import lombok.Getter;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
-import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 import org.triplea.http.client.web.socket.messages.MessageTypeListenerBinding;
+import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 
 /** Chat message types that a server can send over websocket to client. */
+@Getter(onMethod_ = @Override)
 public enum ChatServerMessageType implements WebsocketMessageType<ChatMessageListeners> {
   CHAT_EVENT(String.class, ChatMessageListeners::getChatEventListener),
   CHAT_MESSAGE(ChatMessage.class, ChatMessageListeners::getChatMessageListener),
@@ -25,12 +26,6 @@ public enum ChatServerMessageType implements WebsocketMessageType<ChatMessageLis
   <X> ChatServerMessageType(
       final Class<X> classType, final Function<ChatMessageListeners, Consumer<X>> listenerMethod) {
     this.messageTypeListenerBinding =
-        new MessageTypeListenerBinding<>(classType, listenerMethod, toString());
-  }
-
-  @Override
-  public void sendPayloadToListener(
-      final ServerMessageEnvelope serverMessageEnvelope, final ChatMessageListeners listener) {
-    messageTypeListenerBinding.sendPayloadToListener(serverMessageEnvelope, listener);
+        MessageTypeListenerBinding.of(classType, listenerMethod, toString());
   }
 }
