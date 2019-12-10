@@ -223,13 +223,6 @@ public class WeakAi extends AbstractAi {
 
   private static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
     for (final MoveDescription move : moves) {
-      // TODO: #5499 Validate this when MoveDescription is constructed.
-      if (move.getRoute().getEnd() == null
-          || move.getRoute().getStart() == null
-          || move.getRoute().hasNoSteps()) {
-        continue;
-      }
-
       moveDel.performMove(move);
       pause();
     }
@@ -264,9 +257,12 @@ public class WeakAi extends AbstractAi {
       unitsToMove.addAll(transports.subList(0, 1));
     }
     final List<Unit> landUnits = load2Transports(unitsToMove);
-    final Route r = getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
-    unitsToMove.addAll(landUnits);
-    moves.add(new MoveDescription(unitsToMove, r));
+    final @Nullable Route r =
+        getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
+    if (r != null) {
+      unitsToMove.addAll(landUnits);
+      moves.add(new MoveDescription(unitsToMove, r));
+    }
     return moves;
   }
 
@@ -291,8 +287,8 @@ public class WeakAi extends AbstractAi {
           // move along amphi route
           if (lastSeaZoneOnAmphib != null) {
             // two move route to end
-            final Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
-            if (r != null && r.numberOfSteps() > 0) {
+            final @Nullable Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
+            if (r != null) {
               final List<Unit> unitsToMove =
                   t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player));
               moves.add(new MoveDescription(unitsToMove, r));
@@ -302,8 +298,10 @@ public class WeakAi extends AbstractAi {
         if (nonCombat && t.getUnitCollection().anyMatch(ownedAndNotMoved)) {
           // move toward the start of the amphib route
           if (firstSeaZoneOnAmphib != null) {
-            final Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
-            moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
+            final @Nullable Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
+            if (r != null) {
+              moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
+            }
           }
         }
       }
@@ -311,7 +309,7 @@ public class WeakAi extends AbstractAi {
     return moves;
   }
 
-  private static Route getMaxSeaRoute(
+  private static @Nullable Route getMaxSeaRoute(
       final GameData data,
       final Territory start,
       final Territory destination,
@@ -321,7 +319,7 @@ public class WeakAi extends AbstractAi {
             .and(Matches.territoryHasEnemyUnits(player, data).negate())
             .and(Matches.territoryHasNonAllowedCanal(player, null, data).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
-    if (r == null || !routeCond.test(destination)) {
+    if (r == null || r.hasNoSteps() || !routeCond.test(destination)) {
       return null;
     }
     if (r.numberOfSteps() > 2) {
