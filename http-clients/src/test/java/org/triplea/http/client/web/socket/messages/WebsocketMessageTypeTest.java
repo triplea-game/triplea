@@ -34,8 +34,7 @@ class WebsocketMessageTypeTest {
     <X> ExampleMessageType(
         final Class<X> classType,
         final Function<ExampleMessageListeners, Consumer<X>> listenerMethod) {
-      this.messageTypeListenerBinding =
-          MessageTypeListenerBinding.of(classType, listenerMethod);
+      this.messageTypeListenerBinding = MessageTypeListenerBinding.of(classType, listenerMethod);
     }
   }
 

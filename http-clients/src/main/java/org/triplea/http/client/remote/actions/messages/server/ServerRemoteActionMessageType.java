@@ -21,7 +21,6 @@ public enum ServerRemoteActionMessageType implements WebsocketMessageType<Remote
 
   <X> ServerRemoteActionMessageType(
       final Class<X> classType, final Function<RemoteActionListeners, Consumer<X>> listenerMethod) {
-    this.messageTypeListenerBinding =
-        MessageTypeListenerBinding.of(classType, listenerMethod);
+    this.messageTypeListenerBinding = MessageTypeListenerBinding.of(classType, listenerMethod);
   }
 }
