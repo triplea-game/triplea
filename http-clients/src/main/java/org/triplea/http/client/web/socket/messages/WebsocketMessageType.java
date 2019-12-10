@@ -1,5 +1,7 @@
 package org.triplea.http.client.web.socket.messages;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Interface representing a websocket message type that knows about the correct type
  * to extract from a payload object from a {@code ServerMessageEnvelope}.
@@ -17,6 +19,11 @@ public interface WebsocketMessageType<T> {
 
   default void sendPayloadToListener(
       final ServerMessageEnvelope serverMessageEnvelope, final T listener) {
+    Preconditions.checkArgument(
+        serverMessageEnvelope.getMessageType().equals(toString()),
+        String.format(
+            "Unexpected message type: %s, wanted message type: %s",
+            serverMessageEnvelope.getMessageType(), toString()));
     getMessageTypeListenerBinding().sendPayloadToListener(serverMessageEnvelope, listener);
   }
 }

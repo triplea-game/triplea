@@ -26,6 +26,6 @@ public enum ChatServerMessageType implements WebsocketMessageType<ChatMessageLis
   <X> ChatServerMessageType(
       final Class<X> classType, final Function<ChatMessageListeners, Consumer<X>> listenerMethod) {
     this.messageTypeListenerBinding =
-        MessageTypeListenerBinding.of(classType, listenerMethod, toString());
+        MessageTypeListenerBinding.of(classType, listenerMethod);
   }
 }
