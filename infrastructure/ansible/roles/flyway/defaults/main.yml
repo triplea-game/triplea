@@ -1,5 +1,5 @@
-flyway_download_location: "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.2.4/flyway-commandline-5.2.4-linux-x64.tar.gz"
-
+flyway_version: "5.2.4"
+flyway_download_location: "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/{{ flyway_version }}/flyway-commandline-{{ flyway_version }}-linux-x64.tar.gz"
 flyway_db_user: "{{ lobby_db_user }}"
 flyway_db_password: "{{ lobby_db_password }}"
 flyway_db_name: "{{ lobby_db_name }}"

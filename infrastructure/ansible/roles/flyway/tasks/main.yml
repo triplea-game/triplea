@@ -36,13 +36,25 @@
   shell: echo "alter role {{ flyway_db_user }} with password '{{ flyway_db_password }}';"  | sudo -u postgres psql
   become_user: postgres
 
+- name: check for flyway download 
+  stat:
+    path: /tmp/flyway-cli.tar.gz
+  register: flyway_download
+
 - name: Download flyway CLI
+  when: flyway_download.stat.exists == False
   get_url:
     url: "{{ flyway_download_location }}"
     dest: /tmp/flyway-cli.tar.gz
     mode: 777
 
+- name: check for extracted flyway
+  stat:
+    path: /tmp/flyway-{{ version }}
+  register: flyway_extraction
+
 - name: extract flyway
+  when: flyway_extraction.stat.exists == False
   unarchive:
     copy: no
     src: /tmp/flyway-cli.tar.gz
