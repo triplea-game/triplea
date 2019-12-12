@@ -766,7 +766,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         : getCurrentPlayer();
   }
 
-  /** Sort sthe specified units in preferred movement or unload order. */
+  /** Sorts the specified units in preferred movement or unload order. */
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
     if (!units.isEmpty()) {
       units.sort(getUnitsToMoveComparator(units, route));
