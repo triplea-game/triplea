@@ -769,12 +769,16 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
   /** Sorts the specified units in preferred movement or unload order. */
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
-    units.sort(getUnitsToMoveComparator(units, route));
+    if (!units.isEmpty()) {
+      units.sort(getUnitsToMoveComparator(units, route));
+    }
   }
 
   /** Sorts the specified units in reverse preferred movement or unload order. */
   private void sortUnitsToMoveReverse(final List<Unit> units, final Route route) {
-    units.sort(getUnitsToMoveComparator(units, route).reversed());
+    if (!units.isEmpty()) {
+      units.sort(getUnitsToMoveComparator(units, route).reversed());
+    }
   }
 
   private Comparator<Unit> getUnitsToMoveComparator(final List<Unit> units, final Route route) {
