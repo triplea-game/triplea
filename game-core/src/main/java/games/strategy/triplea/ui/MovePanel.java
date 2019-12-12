@@ -53,6 +53,8 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
@@ -60,7 +62,6 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
-import org.triplea.util.Tuple;
 
 /** The action panel displayed during the combat and non-combat move actions. */
 public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
@@ -768,16 +769,12 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
   /** Sorts the specified units in preferred movement or unload order. */
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
-    if (!units.isEmpty()) {
-      units.sort(getUnitsToMoveComparator(units, route));
-    }
+    units.sort(getUnitsToMoveComparator(units, route));
   }
 
   /** Sorts the specified units in reverse preferred movement or unload order. */
   private void sortUnitsToMoveReverse(final List<Unit> units, final Route route) {
-    if (!units.isEmpty()) {
-      units.sort(getUnitsToMoveComparator(units, route).reversed());
-    }
+    units.sort(getUnitsToMoveComparator(units, route).reversed());
   }
 
   private Comparator<Unit> getUnitsToMoveComparator(final List<Unit> units, final Route route) {
@@ -1142,31 +1139,25 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
     }
     sortUnitsToMoveReverse(best, route);
-    Tuple<MoveValidationResult, List<Unit>> result =
+    MoveValidationResultWithDependents lastResult =
         validateMoveWithDependents(best, unitsToTransports, route);
-    final MoveValidationResult allResults = result.getFirst();
-    List<Unit> bestWithDependents = result.getSecond();
+    final MoveValidationResult allUnitsResult = lastResult.getResult();
 
-    MoveValidationResult lastResults = allResults;
-    if (!allResults.isMoveValid()) {
+    if (!allUnitsResult.isMoveValid()) {
       // if the player is invading only consider units that can invade
       if (!nonCombat
           && route.isUnload()
           && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).test(route.getEnd())) {
-        result = validateMoveWithDependents(best, unitsToTransports, route);
-        bestWithDependents = result.getSecond();
-        lastResults = result.getFirst();
+        lastResult = validateMoveWithDependents(best, unitsToTransports, route);
       }
-      while (!best.isEmpty() && !lastResults.isMoveValid()) {
+      while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
         best = best.subList(1, best.size());
-        result = validateMoveWithDependents(best, unitsToTransports, route);
-        bestWithDependents = result.getSecond();
-        lastResults = result.getFirst();
+        lastResult = validateMoveWithDependents(best, unitsToTransports, route);
       }
     }
-    if (allResults.isMoveValid()) {
+    if (allUnitsResult.isMoveValid()) {
       // valid move
-      if (bestWithDependents.containsAll(selectedUnits)) {
+      if (lastResult.getUnitsWithDependents().containsAll(selectedUnits)) {
         clearStatusMessage();
         currentCursorImage = null;
       } else {
@@ -1174,14 +1165,14 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         currentCursorImage = warningImage;
       }
     } else {
-      String message = allResults.getError();
+      String message = allUnitsResult.getError();
       if (message == null) {
-        message = allResults.getDisallowedUnitWarning(0);
+        message = allUnitsResult.getDisallowedUnitWarning(0);
       }
       if (message == null) {
-        message = allResults.getUnresolvedUnitWarning(0);
+        message = allUnitsResult.getUnresolvedUnitWarning(0);
       }
-      if (!lastResults.isMoveValid()) {
+      if (!lastResult.getResult().isMoveValid()) {
         setStatusErrorMessage(message);
         currentCursorImage = errorImage;
       } else {
@@ -1193,24 +1184,31 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       cancelMove();
       return;
     }
-    unitsThatCanMoveOnRoute = new ArrayList<>(bestWithDependents);
+    unitsThatCanMoveOnRoute = new ArrayList<>(lastResult.getUnitsWithDependents());
   }
 
-  private Tuple<MoveValidationResult, List<Unit>> validateMoveWithDependents(
+  @AllArgsConstructor
+  @Getter
+  private static class MoveValidationResultWithDependents {
+    private final MoveValidationResult result;
+    private final List<Unit> unitsWithDependents;
+  }
+
+  private MoveValidationResultWithDependents validateMoveWithDependents(
       final List<Unit> units, final Map<Unit, Unit> unitsToTransports, final Route route) {
-    final List<Unit> bestWithDependents = addMustMoveWith(units);
+    final List<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
     getData().acquireReadLock();
     try {
       final MoveDescription move =
-          new MoveDescription(bestWithDependents, route, unitsToTransports, dependentUnits);
+          new MoveDescription(unitsWithDependents, route, unitsToTransports, dependentUnits);
       result =
           AbstractMoveDelegate.validateMove(
               moveType, move, getCurrentPlayer(), nonCombat, getUndoableMoves(), getData());
     } finally {
       getData().releaseReadLock();
     }
-    return Tuple.of(result, bestWithDependents);
+    return new MoveValidationResultWithDependents(result, unitsWithDependents);
   }
 
   private List<Unit> addMustMoveWith(final List<Unit> best) {
