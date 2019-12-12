@@ -1,3 +1,10 @@
+- name: create service user to run flyway
+  become: true
+  user:
+    name: "{{ flyway_user }}"
+    create_home: yes
+    system: yes
+
 - name: Create user on DB for application use
   become: true
   become_user: postgres
@@ -28,43 +35,66 @@
     role_attr_flags: NOSUPERUSER,NOCREATEDB
     state: "present"
 
+- name: check if password is valid
+  shell: echo "select 1" |  psql -h localhost -U {{ flyway_db_user }} {{ flyway_db_name }}
+  environment:
+    PGPASSWORD: "{{ flyway_db_password }}"
+  register: password_check
+  changed_when: false
+
 # This is a hack because the previous tasks were supposed to set
-# the DB level password for our user, but it typically does not.
+# the DB level password for our DB user, but it typically does not.
 # To achieve this, we'll run the native SQL commands to set the
 # user DB password.
 - name: "Hack, set password of {{ flyway_db_user }}"
+  when: password_check.rc != 0
   shell: echo "alter role {{ flyway_db_user }} with password '{{ flyway_db_password }}';"  | sudo -u postgres psql
   become_user: postgres
 
 - name: Download flyway CLI
+  become: true
+  become_user: flyway
   get_url:
     url: "{{ flyway_download_location }}"
-    dest: /tmp/flyway-cli.tar.gz
-    mode: 777
+    dest: "{{ flyway_downloaded_file_location }}"
+    mode: "644"
+    checksum: "md5:57f496acc6399fe30ee1fd957545abf1"
 
 - name: extract flyway
+  become: true
+  become_user: flyway
   unarchive:
     copy: no
-    src: /tmp/flyway-cli.tar.gz
-    dest: /tmp/
+    src: "{{ flyway_downloaded_file_location }}"
+    dest: "/home/flyway/"
+    creates: "{{ flyway_extracted_location }}"
 
 - name: deploy flyway conf file
+  become: true
+  become_user: flyway
   template:
     src: flyway.conf.j2
-    dest: /tmp/flyway-5.2.4/conf/flyway.conf
+    dest: "{{ flyway_extracted_location }}/conf/flyway.conf"
     mode: "644"
 
 - name: install unzip
   become: true
+  become_user: flyway
   apt:
     state: present
     name: unzip
 
 - name: extract migrations
+  become: true
+  become_user: flyway
   unarchive:
      src: migrations.zip
-     dest: /tmp/flyway-5.2.4/sql/
+     dest: "{{ flyway_extracted_location }}/sql/"
      mode: "644"
 
 - name: run flyway
-  shell: /tmp/flyway-5.2.4/flyway migrate
+  become: true
+  become_user: flyway
+  command: "{{ flyway_extracted_location }}/flyway migrate"
+  register: flyway
+  changed_when: '"is up to date. No migration necessary" not in flyway.stdout'
