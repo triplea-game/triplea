@@ -69,5 +69,6 @@ function buildMigrations() {
 buildMigrations
 
 ansible-playbook -D -v \
-     ansible/site.yml \
+    "$@" \
+    ansible/site.yml \
     -i ansible/inventory/vagrant 
