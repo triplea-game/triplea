@@ -49,22 +49,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.util.Tuple;
 
 /** The action panel displayed during the combat and non-combat move actions. */
-@Log
 public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
@@ -768,31 +766,27 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         : getCurrentPlayer();
   }
 
-  /** Sort the specified units in preferred movement or unload order. */
+  /** Sort sthe specified units in preferred movement or unload order. */
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
-    if (units == null || units.isEmpty()) {
-      return;
-    } else if (route == null) {
-      final Exception nullRouteError =
-          (new IllegalArgumentException("route is not supposed to be null"));
-      log.log(
-          Level.SEVERE,
-          "Programming error, route should not be null here. "
-              + "Aborting sort operation and returning.",
-          nullRouteError);
-      return;
+    if (!units.isEmpty()) {
+      units.sort(getUnitsToMoveComparator(units, route));
     }
+  }
 
-    final Comparator<Unit> unitComparator;
+  /** Sorts the specified units in reverse preferred movement or unload order. */
+  private void sortUnitsToMoveReverse(final List<Unit> units, final Route route) {
+    if (!units.isEmpty()) {
+      units.sort(getUnitsToMoveComparator(units, route).reversed());
+    }
+  }
+
+  private Comparator<Unit> getUnitsToMoveComparator(final List<Unit> units, final Route route) {
     // sort units based on which transports are allowed to unload
     if (route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
-      unitComparator =
-          UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units));
+      return UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units));
     } else {
-      unitComparator = UnitComparator.getMovableUnitsComparator(units, route);
+      return UnitComparator.getMovableUnitsComparator(units, route);
     }
-
-    units.sort(unitComparator);
   }
 
   /** Sort the specified transports in preferred load order. */
@@ -1141,51 +1135,33 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     List<Unit> best = new ArrayList<>(units);
     // if the player selects a land unit and other units when the
     // only consider the non land units
-    if (route.getStart().isWater()
-        && route.getEnd() != null
-        && route.getEnd().isWater()
-        && !route.isLoad()) {
+    if (route.getStart().isWater() && route.getEnd().isWater() && !route.isLoad()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
     }
     if (route.isUnload()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
     }
-    sortUnitsToMove(best, route);
-    Collections.reverse(best);
-    List<Unit> bestWithDependents = addMustMoveWith(best);
-    final MoveValidationResult allResults;
-    getData().acquireReadLock();
-    try {
-      final MoveDescription move =
-          new MoveDescription(bestWithDependents, route, unitsToTransports, dependentUnits);
-      allResults =
-          AbstractMoveDelegate.validateMove(
-              moveType, move, getCurrentPlayer(), nonCombat, getUndoableMoves(), getData());
-    } finally {
-      getData().releaseReadLock();
-    }
+    sortUnitsToMoveReverse(best, route);
+    Tuple<MoveValidationResult, List<Unit>> result =
+        validateMoveWithDependents(best, unitsToTransports, route);
+    final MoveValidationResult allResults = result.getFirst();
+    List<Unit> bestWithDependents = result.getSecond();
+
     MoveValidationResult lastResults = allResults;
     if (!allResults.isMoveValid()) {
       // if the player is invading only consider units that can invade
       if (!nonCombat
           && route.isUnload()
           && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).test(route.getEnd())) {
-        best = CollectionUtils.getMatches(best, Matches.unitCanInvade());
-        bestWithDependents = addMustMoveWith(best);
-        final MoveDescription move =
-            new MoveDescription(bestWithDependents, route, unitsToTransports, dependentUnits);
-        lastResults =
-            AbstractMoveDelegate.validateMove(
-                moveType, move, getCurrentPlayer(), nonCombat, getUndoableMoves(), getData());
+        result = validateMoveWithDependents(best, unitsToTransports, route);
+        bestWithDependents = result.getSecond();
+        lastResults = result.getFirst();
       }
       while (!best.isEmpty() && !lastResults.isMoveValid()) {
         best = best.subList(1, best.size());
-        bestWithDependents = addMustMoveWith(best);
-        final MoveDescription move =
-            new MoveDescription(bestWithDependents, route, unitsToTransports, dependentUnits);
-        lastResults =
-            AbstractMoveDelegate.validateMove(
-                moveType, move, getCurrentPlayer(), nonCombat, getUndoableMoves(), getData());
+        result = validateMoveWithDependents(best, unitsToTransports, route);
+        bestWithDependents = result.getSecond();
+        lastResults = result.getFirst();
       }
     }
     if (allResults.isMoveValid()) {
@@ -1218,6 +1194,23 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       return;
     }
     unitsThatCanMoveOnRoute = new ArrayList<>(bestWithDependents);
+  }
+
+  private Tuple<MoveValidationResult, List<Unit>> validateMoveWithDependents(
+      final List<Unit> units, final Map<Unit, Unit> unitsToTransports, final Route route) {
+    final List<Unit> bestWithDependents = addMustMoveWith(units);
+    final MoveValidationResult result;
+    getData().acquireReadLock();
+    try {
+      final MoveDescription move =
+          new MoveDescription(bestWithDependents, route, unitsToTransports, dependentUnits);
+      result =
+          AbstractMoveDelegate.validateMove(
+              moveType, move, getCurrentPlayer(), nonCombat, getUndoableMoves(), getData());
+    } finally {
+      getData().releaseReadLock();
+    }
+    return Tuple.of(result, bestWithDependents);
   }
 
   private List<Unit> addMustMoveWith(final List<Unit> best) {
