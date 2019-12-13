@@ -7,6 +7,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Properties;
@@ -1122,19 +1123,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       return;
     }
     getMap().hideMouseCursor();
-    // TODO kev check for already loaded airTransports
-    Map<Unit, Unit> unitsToTransports = Map.of();
-    if (MoveValidator.isLoad(units, dependentUnits, route, getData(), getCurrentPlayer())) {
-      final Collection<Unit> transportsToLoad =
-          route
-              .getEnd()
-              .getUnitCollection()
-              .getMatches(
-                  Matches.unitIsTransport().and(Matches.alliedUnit(getCurrentPlayer(), getData())));
-      unitsToTransports = TransportUtils.mapTransports(route, units, transportsToLoad);
-    }
+    final Collection<Unit> transportsToLoad = getPossibleTransportsToLoad(units, route);
     List<Unit> best = new ArrayList<>(units);
-    // if the player selects a land unit and other units when the
+    // if the player selects a land unit and other units then
     // only consider the non land units
     if (route.getStart().isWater() && route.getEnd().isWater() && !route.isLoad()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
@@ -1144,7 +1135,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     }
     sortUnitsToMoveReverse(best, route);
     MoveValidationResultWithDependents lastResult =
-        validateMoveWithDependents(best, unitsToTransports, route);
+        validateMoveWithDependents(best, transportsToLoad, route);
     final MoveValidationResult allUnitsResult = lastResult.getResult();
 
     if (!allUnitsResult.isMoveValid()) {
@@ -1152,11 +1143,11 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       if (!nonCombat
           && route.isUnload()
           && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).test(route.getEnd())) {
-        lastResult = validateMoveWithDependents(best, unitsToTransports, route);
+        lastResult = validateMoveWithDependents(best, transportsToLoad, route);
       }
       while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
         best = best.subList(1, best.size());
-        lastResult = validateMoveWithDependents(best, unitsToTransports, route);
+        lastResult = validateMoveWithDependents(best, transportsToLoad, route);
       }
     }
     if (allUnitsResult.isMoveValid()) {
@@ -1191,6 +1182,17 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     unitsThatCanMoveOnRoute = new ArrayList<>(lastResult.getUnitsWithDependents());
   }
 
+  private Collection<Unit> getPossibleTransportsToLoad(
+      final Collection<Unit> units, final Route route) {
+    // TODO kev check for already loaded airTransports
+    if (MoveValidator.isLoad(units, dependentUnits, route, getData(), getCurrentPlayer())) {
+      final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
+      return unitsAtEnd.getMatches(
+          Matches.unitIsTransport().and(Matches.alliedUnit(getCurrentPlayer(), getData())));
+    }
+    return List.of();
+  }
+
   @AllArgsConstructor
   @Getter
   private static class MoveValidationResultWithDependents {
@@ -1199,11 +1201,15 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   }
 
   private MoveValidationResultWithDependents validateMoveWithDependents(
-      final List<Unit> units, final Map<Unit, Unit> unitsToTransports, final Route route) {
+      final List<Unit> units, final Collection<Unit> transportsToLoad, final Route route) {
     final List<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
     getData().acquireReadLock();
     try {
+      final Map<Unit, Unit> unitsToTransports =
+          transportsToLoad.isEmpty()
+              ? Map.of()
+              : TransportUtils.mapTransports(route, units, transportsToLoad);
       final MoveDescription move =
           new MoveDescription(unitsWithDependents, route, unitsToTransports, dependentUnits);
       result =
@@ -1469,8 +1475,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     if (mustQueryUser) {
       final List<Unit> defaultSelections = new ArrayList<>(units.size());
       if (route.isLoad()) {
-        final Collection<Unit> transportsToLoad =
-            new ArrayList<>(getTransportsToLoad(route, units, false));
+        final Collection<Unit> transportsToLoad = getTransportsToLoad(route, units, false);
         defaultSelections.addAll(
             TransportUtils.mapTransports(route, units, transportsToLoad).keySet());
       } else {
