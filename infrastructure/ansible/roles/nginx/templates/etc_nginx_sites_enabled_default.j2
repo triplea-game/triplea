@@ -6,8 +6,8 @@ server {
 server {
     listen 443;
     server_name {{ inventory_hostname }};
-    ssl_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem; # managed by Certbot
+    ssl_certificate {{ nginx_ssl_certificate }};
+    ssl_certificate_key {{ nginx_ssl_certificate_key }};
 
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;
