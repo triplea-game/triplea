@@ -7,14 +7,12 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
@@ -23,10 +21,10 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UnitComparator;
-import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.unit.scroller.UnitScroller;
+import games.strategy.triplea.util.MovableUnitsFilter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
@@ -54,8 +52,6 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
@@ -775,13 +771,6 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     }
   }
 
-  /** Sorts the specified units in reverse preferred movement or unload order. */
-  private void sortUnitsToMoveReverse(final List<Unit> units, final Route route) {
-    if (!units.isEmpty()) {
-      units.sort(getUnitsToMoveComparator(units, route).reversed());
-    }
-  }
-
   private Comparator<Unit> getUnitsToMoveComparator(final List<Unit> units, final Route route) {
     // sort units based on which transports are allowed to unload
     if (route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
@@ -1123,119 +1112,31 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       return;
     }
     getMap().hideMouseCursor();
-    final Collection<Unit> transportsToLoad = getPossibleTransportsToLoad(units, route);
-    List<Unit> best = new ArrayList<>(units);
-    // if the player selects a land unit and other units then
-    // only consider the non land units
-    if (route.getStart().isWater() && route.getEnd().isWater() && !route.isLoad()) {
-      best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
-    }
-    if (route.isUnload()) {
-      best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
-    }
-    sortUnitsToMoveReverse(best, route);
-    MoveValidationResultWithDependents lastResult =
-        validateMoveWithDependents(best, transportsToLoad, route);
-    final MoveValidationResult allUnitsResult = lastResult.getResult();
 
-    if (!allUnitsResult.isMoveValid()) {
-      // if the player is invading only consider units that can invade
-      if (!nonCombat
-          && route.isUnload()
-          && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).test(route.getEnd())) {
-        lastResult = validateMoveWithDependents(best, transportsToLoad, route);
-      }
-      while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
-        best = best.subList(1, best.size());
-        lastResult = validateMoveWithDependents(best, transportsToLoad, route);
-      }
-    }
-    if (allUnitsResult.isMoveValid()) {
-      // valid move
-      if (lastResult.getUnitsWithDependents().containsAll(selectedUnits)) {
-        clearStatusMessage();
-        currentCursorImage = null;
-      } else {
-        setStatusWarningMessage("Not all units can move there");
-        currentCursorImage = warningImage;
-      }
+    final MovableUnitsFilter unitsFilter =
+        new MovableUnitsFilter(
+            getData(), getUnitOwner(units), route, nonCombat, moveType, getUndoableMoves());
+    final var result = unitsFilter.filterUnitsThatCanMove(units, dependentUnits);
+
+    if (result.getErrorMessage() != null) {
+      setStatusErrorMessage(result.getErrorMessage());
+      currentCursorImage = errorImage;
+    } else if (result.getWarningMessage() != null) {
+      setStatusErrorMessage(result.getWarningMessage());
+      currentCursorImage = warningImage;
+    } else if (result.getUnitsWithDependents().containsAll(selectedUnits)) {
+      clearStatusMessage();
+      currentCursorImage = null;
     } else {
-      String message = allUnitsResult.getError();
-      if (message == null) {
-        message = allUnitsResult.getDisallowedUnitWarning(0);
-      }
-      if (message == null) {
-        message = allUnitsResult.getUnresolvedUnitWarning(0);
-      }
-      if (!lastResult.getResult().isMoveValid()) {
-        setStatusErrorMessage(message);
-        currentCursorImage = errorImage;
-      } else {
-        setStatusWarningMessage(message);
-        currentCursorImage = warningImage;
-      }
+      setStatusWarningMessage("Not all units can move there");
+      currentCursorImage = warningImage;
     }
+
     if (unitsThatCanMoveOnRoute.size() != new HashSet<>(unitsThatCanMoveOnRoute).size()) {
       cancelMove();
       return;
     }
-    unitsThatCanMoveOnRoute = new ArrayList<>(lastResult.getUnitsWithDependents());
-  }
-
-  private Collection<Unit> getPossibleTransportsToLoad(
-      final Collection<Unit> units, final Route route) {
-    // TODO kev check for already loaded airTransports
-    if (MoveValidator.isLoad(units, dependentUnits, route, getData(), getCurrentPlayer())) {
-      final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
-      return unitsAtEnd.getMatches(
-          Matches.unitIsTransport().and(Matches.alliedUnit(getCurrentPlayer(), getData())));
-    }
-    return List.of();
-  }
-
-  @AllArgsConstructor
-  @Getter
-  private static class MoveValidationResultWithDependents {
-    private final MoveValidationResult result;
-    private final List<Unit> unitsWithDependents;
-  }
-
-  private MoveValidationResultWithDependents validateMoveWithDependents(
-      final List<Unit> units, final Collection<Unit> transportsToLoad, final Route route) {
-    final List<Unit> unitsWithDependents = addMustMoveWith(units);
-    final MoveValidationResult result;
-    getData().acquireReadLock();
-    try {
-      final Map<Unit, Unit> unitsToTransports =
-          transportsToLoad.isEmpty()
-              ? Map.of()
-              : TransportUtils.mapTransports(route, units, transportsToLoad);
-      final MoveDescription move =
-          new MoveDescription(unitsWithDependents, route, unitsToTransports, dependentUnits);
-      result =
-          AbstractMoveDelegate.validateMove(
-              moveType, move, getCurrentPlayer(), nonCombat, getUndoableMoves(), getData());
-    } finally {
-      getData().releaseReadLock();
-    }
-    return new MoveValidationResultWithDependents(result, unitsWithDependents);
-  }
-
-  private List<Unit> addMustMoveWith(final List<Unit> best) {
-    final List<Unit> bestWithDependents = new ArrayList<>(best);
-    for (final Unit u : best) {
-      if (mustMoveWithDetails.getMustMoveWith().containsKey(u)) {
-        final Collection<Unit> mustMoveWith = mustMoveWithDetails.getMustMoveWith().get(u);
-        if (mustMoveWith != null) {
-          for (final Unit m : mustMoveWith) {
-            if (!bestWithDependents.contains(m)) {
-              bestWithDependents.addAll(mustMoveWith);
-            }
-          }
-        }
-      }
-    }
-    return bestWithDependents;
+    unitsThatCanMoveOnRoute = result.getUnitsWithDependents();
   }
 
   /** Route can be null. */
