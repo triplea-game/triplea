@@ -8,7 +8,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.db.dao.DaoTest;
 
-class GameHostApiKeyDaoTest extends DaoTest {
+class GameHostingApiKeyDaoTest extends DaoTest {
 
   private final GameHostingApiKeyDao gameHostApiKeyDao = DaoTest.newDao(GameHostingApiKeyDao.class);
 

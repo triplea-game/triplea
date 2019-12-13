@@ -53,6 +53,7 @@ done < "$testFiles"
 if [ "$status" -eq 1 ]; then
   echo "You can fix these errors by:"
   echo " - renaming the test file to match the source file being tested"
+  echo " - renaming the test file to end with 'IntegrationTest'"
   echo " - adding an @Integration annotation to the test"
   echo " - adding an @ExtendedUnitTest annotation to the test"
 fi
