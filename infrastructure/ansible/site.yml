@@ -21,10 +21,11 @@
   gather_facts: no
   serial: 100%
   strategy: free
-  tags: postgres
   roles:
-    - postgres
-    - flyway
+    - role: postgres
+      tags: [ postgres ]
+    - role: flyway
+      tags: [ flyway ]
 
 - hosts: dropwizardHosts
   gather_facts: no
