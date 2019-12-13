@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
 import org.triplea.server.http.DropwizardTest;
 
-class LobbyWebsocketClientTest extends DropwizardTest {
+class LobbyWebsocketClientIntegrationTest extends DropwizardTest {
 
   @Test
   @DisplayName("Verify basic websocket operations: open, send, close")
