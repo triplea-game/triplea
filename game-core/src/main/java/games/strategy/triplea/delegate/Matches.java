@@ -29,8 +29,10 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1495,6 +1497,10 @@ public final class Matches {
 
   public static Predicate<Unit> unitIsOfTypes(final Set<UnitType> types) {
     return unit -> types != null && !types.isEmpty() && types.contains(unit.getType());
+  }
+
+  public static Predicate<Unit> unitIsOfTypes(final UnitType... types) {
+    return unitIsOfTypes(new HashSet<>(Arrays.asList(types)));
   }
 
   static Predicate<Territory> territoryWasFoughtOver(final BattleTracker tracker) {

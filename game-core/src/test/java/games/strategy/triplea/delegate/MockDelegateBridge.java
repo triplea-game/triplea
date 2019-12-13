@@ -21,7 +21,7 @@ import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
 import org.triplea.sound.ISound;
 
-final class MockDelegateBridge {
+public final class MockDelegateBridge {
   private MockDelegateBridge() {}
 
   /**
@@ -29,7 +29,7 @@ final class MockDelegateBridge {
    *
    * @return A mock that can be configured using standard Mockito idioms.
    */
-  static IDelegateBridge newInstance(final GameData gameData, final PlayerId playerId) {
+  public static IDelegateBridge newInstance(final GameData gameData, final PlayerId playerId) {
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     doAnswer(
             invocation -> {
@@ -68,7 +68,7 @@ final class MockDelegateBridge {
         .getRandom(anyInt(), anyInt(), any(), any(), anyString());
   }
 
-  static void advanceToStep(final IDelegateBridge delegateBridge, final String stepName) {
+  public static void advanceToStep(final IDelegateBridge delegateBridge, final String stepName) {
     final GameData gameData = delegateBridge.getData();
     gameData.acquireWriteLock();
     try {
