@@ -1097,14 +1097,8 @@ public final class Matches {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final PlayerId player = unit.getOwner();
       if (ua.getIsAir()) {
-        TerritoryAttachment taStart = null;
-        TerritoryAttachment taEnd = null;
-        if (route.getStart() != null) {
-          taStart = TerritoryAttachment.get(route.getStart());
-        }
-        if (route.getEnd() != null) {
-          taEnd = TerritoryAttachment.get(route.getEnd());
-        }
+        final TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
+        final TerritoryAttachment taEnd = TerritoryAttachment.get(route.getEnd());
         if (taStart != null && taStart.getAirBase()) {
           left = left.add(BigDecimal.ONE);
         }

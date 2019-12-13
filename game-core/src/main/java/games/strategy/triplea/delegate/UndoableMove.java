@@ -114,7 +114,7 @@ public class UndoableMove extends AbstractUndoableMove {
         } else {
           Map<Unit, Set<Unit>> targets = null;
           Unit target = null;
-          if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
+          if (routeUnitUsedToMove != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal =
                 end.getUnitCollection()

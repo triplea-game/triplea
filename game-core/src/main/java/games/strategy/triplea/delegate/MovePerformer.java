@@ -302,12 +302,9 @@ public class MovePerformer implements Serializable {
             final Change moveChange = markMovementChange(arrived, route, id);
             change.add(moveChange);
             // actually move the units
-            if (route.getStart() != null && route.getEnd() != null) {
-              // ChangeFactory.addUnits(route.getEnd(), arrived);
-              final Change remove = ChangeFactory.removeUnits(route.getStart(), units);
-              final Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
-              change.add(add, remove);
-            }
+            final Change remove = ChangeFactory.removeUnits(route.getStart(), units);
+            final Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
+            change.add(add, remove);
             MovePerformer.this.bridge.addChange(change);
             currentMove.addChange(change);
             currentMove.setDescription(
