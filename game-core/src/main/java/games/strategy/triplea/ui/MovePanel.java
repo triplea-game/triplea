@@ -7,6 +7,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Properties;
@@ -52,6 +53,8 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
@@ -1019,7 +1022,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         movableBuilder.and(enoughMovement);
       }
     }
-    if (route != null && route.getEnd() != null) {
+    if (route != null) {
       final boolean water = route.getEnd().isWater();
       if (water && !route.isLoad()) {
         movableBuilder.and(Matches.unitIsNotLand());

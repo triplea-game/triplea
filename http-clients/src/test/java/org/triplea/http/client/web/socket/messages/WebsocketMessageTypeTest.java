@@ -6,7 +6,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,14 +24,13 @@ class WebsocketMessageTypeTest {
     @Nonnull Consumer<Integer> listener;
   }
 
-  @AllArgsConstructor
   @Getter(onMethod_ = @Override)
-  @SuppressWarnings("ImmutableEnumChecker")
+  @AllArgsConstructor
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
-    MESSAGE_TYPE(Integer.class, ExampleMessageListeners::getListener);
+    MESSAGE_TYPE(
+        MessageTypeListenerBinding.of(Integer.class, ExampleMessageListeners::getListener));
 
-    private final Class<?> classType;
-    private final Function<ExampleMessageListeners, Consumer<?>> listenerMethod;
+    private final MessageTypeListenerBinding<ExampleMessageListeners, ?> messageTypeListenerBinding;
   }
 
   @Mock private Consumer<Integer> listenerImplementation;

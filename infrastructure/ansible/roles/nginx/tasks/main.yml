@@ -4,6 +4,12 @@
     name: nginx
     state: present
 
+- name: create SSL keys if needed
+  become: true
+  command: openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -batch
+  args:
+    creates: "{{ nginx_ssl_certificate_key }}"
+
 - name: deploy nginx sites_enabled configuation
   become: true
   template:
@@ -20,5 +26,7 @@
 
 - name:  relaunch nginx
   become: true
-  shell: systemctl restart nginx
+  systemd:
+    name: nginx
+    state: restarted
 
