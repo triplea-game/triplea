@@ -103,6 +103,7 @@ public final class MovableUnitsFilter {
       if (!nonCombat
           && route.isUnload()
           && Matches.isTerritoryEnemy(player, data).test(route.getEnd())) {
+        best = CollectionUtils.getMatches(best, Matches.unitCanInvade());
         lastResult = validateMoveWithDependents(best, dependentUnits, transportsToLoad);
       }
       while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
