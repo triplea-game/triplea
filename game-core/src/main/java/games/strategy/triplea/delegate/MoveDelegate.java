@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -94,7 +95,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final Set<TriggerAttachment> toFirePossible =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Set.of(player)), moveCombatDelegateAllTriggerMatch);
+                Set.of(player), moveCombatDelegateAllTriggerMatch);
         if (!toFirePossible.isEmpty()) {
 
           // collect conditions and test them for ALL triggers, both those that we will fire before
@@ -103,7 +104,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
           final Set<TriggerAttachment> toFireBeforeBonus =
               TriggerAttachment.collectForAllTriggersMatching(
-                  new HashSet<>(Set.of(player)), moveCombatDelegateBeforeBonusTriggerMatch);
+                  Set.of(player), moveCombatDelegateBeforeBonusTriggerMatch);
           if (!toFireBeforeBonus.isEmpty()) {
 
             // get all triggers that are satisfied based on the tested conditions.
@@ -156,7 +157,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final Set<TriggerAttachment> toFireAfterBonus =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Set.of(player)), moveCombatDelegateAfterBonusTriggerMatch);
+                Set.of(player), moveCombatDelegateAfterBonusTriggerMatch);
         if (!toFireAfterBonus.isEmpty()) {
 
           // get all triggers that are satisfied based on the tested conditions.
@@ -612,26 +613,15 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public String move(
-      final Collection<Unit> units,
-      final Route route,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents) {
+  public String performMove(final MoveDescription move) {
     final GameData data = getData();
 
     // the reason we use this, is if we are in edit mode, we may have a different unit owner than
     // the current player
-    final PlayerId player = getUnitsOwner(units);
+    final PlayerId player = getUnitsOwner(move.getUnits());
     final MoveValidationResult result =
         MoveValidator.validateMove(
-            units,
-            route,
-            player,
-            unitsToTransports,
-            newDependents,
-            GameStepPropertiesHelper.isNonCombatMove(data, false),
-            movesToUndo,
-            data);
+            move, player, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo, data);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
@@ -653,7 +643,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     Collection<Unit> kamikazeUnits = new ArrayList<>();
 
     // confirm kamikaze moves, and remove them from unresolved units
-    if (getKamikazeAir || units.stream().anyMatch(Matches.unitIsKamikaze())) {
+    if (getKamikazeAir || move.getUnits().stream().anyMatch(Matches.unitIsKamikaze())) {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
       if (kamikazeUnits.size() > 0 && bridge.getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
@@ -672,7 +662,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final AaInMoveUtil aaInMoveUtil = new AaInMoveUtil();
     aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritores =
-        aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
+        aaInMoveUtil.getTerritoriesWhereAaWillFire(move.getRoute(), move.getUnits());
     if (!aaFiringTerritores.isEmpty()) {
       if (!bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
         return null;
@@ -680,9 +670,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
 
     // do the move
-    final UndoableMove currentMove = new UndoableMove(units, route);
+    final Route route = move.getRoute();
+    final UndoableMove currentMove = new UndoableMove(move.getUnits(), move.getRoute());
     final String transcriptText =
-        MyFormatter.unitsToTextNoOwner(units)
+        MyFormatter.unitsToTextNoOwner(move.getUnits())
             + " moved from "
             + route.getStart().getName()
             + " to "
@@ -696,8 +687,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     tempMovePerformer = new MovePerformer();
     tempMovePerformer.initialize(this);
-    tempMovePerformer.moveUnits(
-        units, route, player, unitsToTransports, newDependents, currentMove);
+    tempMovePerformer.moveUnits(move, player, currentMove);
     tempMovePerformer = null;
     return null;
   }

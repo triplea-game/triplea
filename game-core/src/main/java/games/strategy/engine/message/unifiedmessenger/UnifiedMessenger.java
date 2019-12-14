@@ -63,7 +63,7 @@ public class UnifiedMessenger {
   }
 
   @VisibleForTesting
-  UnifiedMessengerHub getHub() {
+  public UnifiedMessengerHub getHub() {
     return hub;
   }
 

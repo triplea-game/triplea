@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
@@ -69,16 +70,10 @@ public class MovePerformer implements Serializable {
     return getRemotePlayer(player);
   }
 
-  void moveUnits(
-      final Collection<Unit> units,
-      final Route route,
-      final PlayerId id,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents,
-      final UndoableMove currentMove) {
+  void moveUnits(final MoveDescription move, final PlayerId id, final UndoableMove currentMove) {
     this.currentMove = currentMove;
-    this.newDependents = newDependents;
-    populateStack(units, route, id, unitsToTransports);
+    this.newDependents = move.getDependentUnits();
+    populateStack(move.getUnits(), move.getRoute(), id, move.getUnitsToTransports());
     executionStack.execute(bridge);
   }
 
@@ -146,9 +141,8 @@ public class MovePerformer implements Serializable {
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            // if any non enemy territories on route
-            // or if any enemy units on route the battles on (note water could have enemy but its
-            // not owned)
+            // if any non enemy territories on route or if any enemy units on route the battles
+            // on (note water could have enemy but its not owned)
             final GameData data = bridge.getData();
             final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
             final Collection<Unit> arrived =
@@ -161,18 +155,10 @@ public class MovePerformer implements Serializable {
                     ? unitsToTransports
                     : TransportUtils.mapTransports(route, arrived, null);
             // If we have paratrooper land units being carried by air units, they should be dropped
-            // off in the last
-            // territory. This means they are still dependent during the middle steps of the route.
-            final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<>();
-            final Collection<Unit> airTransports =
-                CollectionUtils.getMatches(arrived, Matches.unitIsAirTransport());
-            final Collection<Unit> paratroops =
-                CollectionUtils.getMatches(arrived, Matches.unitIsAirTransportable());
-            if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-              final Map<Unit, Unit> transportingAir =
-                  TransportUtils.mapTransportsToLoad(paratroops, airTransports);
-              dependentOnSomethingTilTheEndOfRoute.addAll(transportingAir.keySet());
-            }
+            // off in the last territory. This means they are still dependent during the middle
+            // steps of the route.
+            final Collection<Unit> dependentOnSomethingTilTheEndOfRoute =
+                TransportUtils.mapParatroopers(arrived).keySet();
             final Collection<Unit> presentFromStartTilEnd = new ArrayList<>(arrived);
             presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
             final CompositeChange change = new CompositeChange();
@@ -287,8 +273,8 @@ public class MovePerformer implements Serializable {
                   && GameStepPropertiesHelper.isNonCombatMove(data, false)
                   && !targetedAttack) {
                 // We are in non-combat move phase, and we are taking over friendly territories. No
-                // need for a battle. (This
-                // could get really difficult if we want these recorded in battle records).
+                // need for a battle. (This could get really difficult if we want these recorded in
+                // battle records).
                 for (final Territory t :
                     route.getMatches(
                         Matches
@@ -316,12 +302,9 @@ public class MovePerformer implements Serializable {
             final Change moveChange = markMovementChange(arrived, route, id);
             change.add(moveChange);
             // actually move the units
-            if (route.getStart() != null && route.getEnd() != null) {
-              // ChangeFactory.addUnits(route.getEnd(), arrived);
-              final Change remove = ChangeFactory.removeUnits(route.getStart(), units);
-              final Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
-              change.add(add, remove);
-            }
+            final Change remove = ChangeFactory.removeUnits(route.getStart(), units);
+            final Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
+            change.add(add, remove);
             MovePerformer.this.bridge.addChange(change);
             currentMove.addChange(change);
             currentMove.setDescription(

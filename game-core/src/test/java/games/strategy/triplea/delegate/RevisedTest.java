@@ -51,6 +51,7 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -68,16 +69,21 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
+import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 
+@Integration(type = TestType.ACCEPTANCE)
 class RevisedTest {
   private GameData gameData;
 
@@ -186,12 +192,10 @@ class RevisedTest {
     // the transport can enter sz 8
     // since the sub is submerged
     final Route m1 = new Route(sz1, sz8);
-    assertNull(moveDelegate.move(sz1.getUnits(), m1));
+    move(sz1.getUnits(), m1);
     // the transport can now leave sz8
     final Route m2 = new Route(sz8, sz7);
-    final String error =
-        moveDelegate.move(sz8.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)), m2);
-    assertNull(error, error);
+    move(sz8.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)), m2);
   }
 
   @Test
@@ -218,7 +222,7 @@ class RevisedTest {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Territory novo = gameData.getMap().getTerritory("Novosibirsk");
-    moveDelegate.move(novo.getUnits(), new Route(novo, sinkiang));
+    move(novo.getUnits(), new Route(novo, sinkiang));
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
@@ -233,11 +237,11 @@ class RevisedTest {
     final Territory russia = gameData.getMap().getTerritory("Russia");
     // move two tanks from russia, then undo
     final Route r = new Route(russia, novo, sinkiang);
-    assertNull(moveDelegate.move(russia.getUnitCollection().getMatches(Matches.unitCanBlitz()), r));
+    move(russia.getUnitCollection().getMatches(Matches.unitCanBlitz()), r);
     moveDelegate.undoMove(0);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));
     // now move the planes into the territory
-    assertNull(moveDelegate.move(russia.getUnitCollection().getMatches(Matches.unitIsAir()), r));
+    move(russia.getUnitCollection().getMatches(Matches.unitIsAir()), r);
     // make sure they can't land, they can't because the territory was conquered
     assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
   }
@@ -270,17 +274,12 @@ class RevisedTest {
                 .next();
     sub.setSubmerged(true);
     // now move an infantry through the sz
-    String results =
-        moveDelegate.move(
-            CollectionUtils.getNMatches(germany.getUnits(), 1, Matches.unitIsOfType(infantryType)),
-            new Route(germany, sz5),
-            CollectionUtils.getMatches(sz5.getUnits(), Matches.unitIsOfType(trnType)));
-    assertNull(results);
-    results =
-        moveDelegate.move(
-            CollectionUtils.getNMatches(sz5.getUnits(), 1, Matches.unitIsOfType(infantryType)),
-            new Route(sz5, karelia));
-    assertNull(results);
+    load(
+        CollectionUtils.getNMatches(germany.getUnits(), 1, Matches.unitIsOfType(infantryType)),
+        new Route(germany, sz5));
+    move(
+        CollectionUtils.getNMatches(sz5.getUnits(), 1, Matches.unitIsOfType(infantryType)),
+        new Route(sz5, karelia));
     moveDelegate.end();
     final IDelegate battle = gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
@@ -305,12 +304,14 @@ class RevisedTest {
     addTo(uk, infantry(gameData).create(2, americans));
     // try to load them on the british players turn
     final Territory sz2 = territory("2 Sea Zone", gameData);
+    final Collection<Unit> units =
+        uk.getUnitCollection().getMatches(Matches.unitIsOwnedBy(americans));
+    final List<Unit> transports = sz2.getUnitCollection().getMatches(Matches.unitIsTransport());
+    final Map<Unit, Unit> unitsToTransports =
+        TransportUtils.mapTransports(new Route(uk, sz2), units, transports);
     final String error =
         moveDelegate(gameData)
-            .move(
-                uk.getUnitCollection().getMatches(Matches.unitIsOwnedBy(americans)),
-                new Route(uk, sz2),
-                sz2.getUnitCollection().getMatches(Matches.unitIsTransport()));
+            .performMove(new MoveDescription(units, new Route(uk, sz2), unitsToTransports));
     // should not be able to load on british turn, only on american turn
     assertNotNull(error);
   }
@@ -415,8 +416,7 @@ class RevisedTest {
     final Route sz14To13 = new Route(sz14, sz13);
     final List<Unit> transports = sz14.getUnitCollection().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
-    final String error = moveDelegate.move(transports, sz14To13);
-    assertNull(error, error);
+    move(transports, sz14To13);
   }
 
   @Test
@@ -437,7 +437,10 @@ class RevisedTest {
     assertEquals(2, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    final String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
+    final String error =
+        moveDelegate.performMove(
+            new MoveDescription(
+                infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
     assertNull(error, error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
@@ -471,7 +474,10 @@ class RevisedTest {
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     // load the transport
-    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
+    String error =
+        moveDelegate.performMove(
+            new MoveDescription(
+                infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
     assertNull(error, error);
     final Route sz5ToNorway = new Route(sz5, norway);
     // move the infantry in two steps
@@ -516,9 +522,15 @@ class RevisedTest {
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     // load the transports
     // in two moves
-    String error = moveDelegate.move(infantry.subList(0, 1), eeToSz5, List.of(transport));
+    String error =
+        moveDelegate.performMove(
+            new MoveDescription(
+                infantry.subList(0, 1), eeToSz5, Map.of(infantry.get(0), transport)));
     assertNull(error, error);
-    error = moveDelegate.move(infantry.subList(1, 2), eeToSz5, List.of(transport));
+    error =
+        moveDelegate.performMove(
+            new MoveDescription(
+                infantry.subList(1, 2), eeToSz5, Map.of(infantry.get(1), transport)));
     assertNull(error, error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
@@ -555,7 +567,9 @@ class RevisedTest {
     assertEquals(1, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
+    String error =
+        moveDelegate.performMove(
+            new MoveDescription(infantry, eeToSz5, Map.of(infantry.get(0), transport)));
     assertNull(error, error);
     // try to unload
     final Route sz5ToEee = new Route(sz5, eastEurope);
@@ -582,7 +596,10 @@ class RevisedTest {
     assertEquals(2, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
+    String error =
+        moveDelegate.performMove(
+            new MoveDescription(
+                infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
@@ -631,7 +648,10 @@ class RevisedTest {
     assertEquals(2, infantry.size());
     final TripleAUnit transport =
         (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
-    String error = moveDelegate.move(infantry, eeToSz5, List.of(transport));
+    String error =
+        moveDelegate.performMove(
+            new MoveDescription(
+                infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");

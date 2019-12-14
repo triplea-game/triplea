@@ -9,7 +9,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -121,27 +120,29 @@ public interface IBattle extends Serializable {
    */
   boolean isEmpty();
 
-  /** Returns units which are dependent on the given units. */
+  /** @return Unmodifiable collection of units that are dependent on the given units. */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
-  /** Returns units which are actually assaulting amphibiously. */
+  /** @return Unmodifiable collection of units that are assaulting amphibiously. */
   Collection<Unit> getAmphibiousLandAttackers();
 
-  /** Returns units which are actually bombarding. */
+  /** @return Unmodifiable collection of units that are bombarding. */
   Collection<Unit> getBombardingUnits();
 
-  /** Returns what round this battle is in. */
+  /** @return What round this battle is in. Read-only. */
   int getBattleRound();
 
-  /** Returns units which are attacking. */
+  /** @return Unmodifiable collection of the attacking units. */
   Collection<Unit> getAttackingUnits();
 
-  /** Returns units which are defending. */
+  /** @return Unmodifiable collection of the defending units. */
   Collection<Unit> getDefendingUnits();
 
-  List<Unit> getRemainingAttackingUnits();
+  /** @return Unmodifiable collection of the remaining attacking units. */
+  Collection<Unit> getRemainingAttackingUnits();
 
-  List<Unit> getRemainingDefendingUnits();
+  /** @return Unmodifiable collection of the remaining defending units. */
+  Collection<Unit> getRemainingDefendingUnits();
 
   WhoWon getWhoWon();
 

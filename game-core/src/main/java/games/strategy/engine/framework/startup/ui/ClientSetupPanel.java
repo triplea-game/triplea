@@ -23,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.triplea.domain.data.PlayerName;
@@ -131,7 +132,6 @@ public class ClientSetupPanel extends SetupPanel {
     layout.setConstraints(playedByLabel, playConstraints);
     players.add(playedByLabel);
     final JLabel allianceLabel = new JLabel("Alliance");
-    // allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
     for (final PlayerRow row : playerRows) {
@@ -256,7 +256,9 @@ public class ClientSetupPanel extends SetupPanel {
     final List<Action> actions = new ArrayList<>();
     actions.add(clientModel.getHostBotSetMapClientAction(this));
     actions.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
-    actions.add(clientModel.getHostBotChangeGameToSaveGameClientAction());
+    actions.add(
+        clientModel.getHostBotChangeGameToSaveGameClientAction(
+            JOptionPane.getFrameForComponent(this)));
     actions.add(
         clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.DEFAULT));
     actions.add(

@@ -26,11 +26,9 @@ import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -59,11 +57,11 @@ public final class ProSimulateTurnUtils {
             battleDelegate
                 .getBattleTracker()
                 .getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
-        final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
+        final Collection<Unit> attackers = new ArrayList<>(battle.getAttackingUnits());
         attackers.retainAll(t.getUnits());
-        final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+        final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
         defenders.retainAll(t.getUnits());
-        final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
+        final Collection<Unit> bombardingUnits = battle.getBombardingUnits();
         ProLogger.debug("---" + t);
         ProLogger.debug("attackers=" + attackers);
         ProLogger.debug("defenders=" + defenders);
@@ -71,8 +69,8 @@ public final class ProSimulateTurnUtils {
 
         final ProBattleResult result =
             calc.callBattleCalc(t, attackers, defenders, bombardingUnits);
-        final List<Unit> remainingAttackers = result.getAverageAttackersRemaining();
-        final List<Unit> remainingDefenders = result.getAverageDefendersRemaining();
+        final Collection<Unit> remainingAttackers = result.getAverageAttackersRemaining();
+        final Collection<Unit> remainingDefenders = result.getAverageDefendersRemaining();
         ProLogger.debug("remainingAttackers=" + remainingAttackers);
         ProLogger.debug("remainingDefenders=" + remainingDefenders);
 
@@ -288,8 +286,7 @@ public final class ProSimulateTurnUtils {
                 ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
     for (final Unit toTransport : toTransports) {
       if (!usedUnits.contains(toTransport)) {
-        final List<Unit> toTransportingUnits =
-            (List<Unit>) TransportTracker.transporting(toTransport);
+        final List<Unit> toTransportingUnits = TransportTracker.transporting(toTransport);
         if (transportingUnits.size() == toTransportingUnits.size()) {
           boolean canTransfer = true;
           for (int i = 0; i < transportingUnits.size(); i++) {

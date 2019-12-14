@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -30,7 +29,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -118,12 +116,7 @@ public class ProCombatMoveAi {
 
     // Get all transport final territories
     ProMoveUtils.calculateAmphibRoutes(
-        player,
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>(),
-        territoryManager.getAttackOptions().getTerritoryMap(),
-        true);
+        player, territoryManager.getAttackOptions().getTerritoryMap(), true);
 
     // Determine max enemy counter attack units and remove territories where transports are exposed
     removeTerritoriesWhereTransportsAreExposed();
@@ -161,28 +154,11 @@ public class ProCombatMoveAi {
     this.data = data;
     this.player = player;
 
-    final List<Collection<Unit>> moveUnits = new ArrayList<>();
-    final List<Route> moveRoutes = new ArrayList<>();
-    ProMoveUtils.calculateMoveRoutes(player, moveUnits, moveRoutes, attackMap, true);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
-
-    moveUnits.clear();
-    moveRoutes.clear();
-    final var transportsToLoad = new ArrayList<Map<Unit, Unit>>();
-    ProMoveUtils.calculateAmphibRoutes(
-        player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
-
-    moveUnits.clear();
-    moveRoutes.clear();
-    ProMoveUtils.calculateBombardMoveRoutes(player, moveUnits, moveRoutes, attackMap);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
-
-    moveUnits.clear();
-    moveRoutes.clear();
+    ProMoveUtils.doMove(ProMoveUtils.calculateMoveRoutes(player, attackMap, true), moveDel);
+    ProMoveUtils.doMove(ProMoveUtils.calculateAmphibRoutes(player, attackMap, true), moveDel);
+    ProMoveUtils.doMove(ProMoveUtils.calculateBombardMoveRoutes(player, attackMap), moveDel);
     isBombing = true;
-    ProMoveUtils.calculateBombingRoutes(player, moveUnits, moveRoutes, attackMap);
-    ProMoveUtils.doMove(moveUnits, moveRoutes, moveDel);
+    ProMoveUtils.doMove(ProMoveUtils.calculateBombingRoutes(player, attackMap), moveDel);
     isBombing = false;
   }
 

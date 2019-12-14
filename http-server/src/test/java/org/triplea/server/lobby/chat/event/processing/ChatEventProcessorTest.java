@@ -10,7 +10,6 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.websocket.Session;
 import org.junit.jupiter.api.Nested;
@@ -22,13 +21,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageFactory;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
-import org.triplea.server.lobby.chat.InetExtractor;
+import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
+import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
+import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
+import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
+import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -54,15 +54,15 @@ class ChatEventProcessorTest {
 
   @Mock private Session session;
 
-  private final ClientMessageFactory clientEventFactory =
-      new ClientMessageFactory(ApiKey.of("key"));
+  private final ChatClientEnvelopeFactory clientEventFactory =
+      new ChatClientEnvelopeFactory(ApiKey.of("key"));
 
   @Nested
   class ProcessConnectMessage {
     @Test
     void connect() {
       final List<ServerResponse> responses =
-          chatEventProcessor.process(
+          chatEventProcessor.processAndComputeServerResponses(
               session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
 
       assertThat("Expect a player-listing and player-joined message", responses, hasSize(2));
@@ -72,29 +72,30 @@ class ChatEventProcessorTest {
           responses.get(0),
           is(
               ServerResponse.backToClient(
-                  ServerMessageEnvelopeFactory.newPlayerListing(List.of(CHAT_PARTICIPANT_0)))));
+                  ChatServerEnvelopeFactory.newPlayerListing(List.of(CHAT_PARTICIPANT_0)))));
 
       assertThat(
           "Second message is player joined",
           responses.get(1),
           is(
               ServerResponse.broadcast(
-                  ServerMessageEnvelopeFactory.newPlayerJoined(CHAT_PARTICIPANT_0))));
+                  ChatServerEnvelopeFactory.newPlayerJoined(CHAT_PARTICIPANT_0))));
     }
 
     @Test
     void multiplePlayersConnect() {
-      chatEventProcessor.process(session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
+      chatEventProcessor.processAndComputeServerResponses(
+          session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
 
       final List<ServerResponse> responses =
-          chatEventProcessor.process(
+          chatEventProcessor.processAndComputeServerResponses(
               session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
 
       assertThat("Expect a player-listing and player-joined message", responses, hasSize(2));
 
       assertThat(
           "First message should be player-listing with both participants",
-          responses.get(0).getServerEventEnvelope().toPlayerListing().getChatters(),
+          responses.get(0).getServerEventEnvelope().getPayload(ChatterList.class).getChatters(),
           hasItems(CHAT_PARTICIPANT_0, CHAT_PARTICIPANT_1));
 
       assertThat(
@@ -107,13 +108,13 @@ class ChatEventProcessorTest {
           responses.get(1),
           is(
               ServerResponse.broadcast(
-                  ServerMessageEnvelopeFactory.newPlayerJoined(CHAT_PARTICIPANT_1))));
+                  ChatServerEnvelopeFactory.newPlayerJoined(CHAT_PARTICIPANT_1))));
     }
 
     @Test
     void slap() {
       final List<ServerResponse> responses =
-          chatEventProcessor.process(
+          chatEventProcessor.processAndComputeServerResponses(
               session, CHAT_PARTICIPANT_0, clientEventFactory.slapMessage(PLAYER_NAME_1));
 
       assertThat(responses, hasSize(1));
@@ -121,7 +122,7 @@ class ChatEventProcessorTest {
           responses.get(0),
           is(
               ServerResponse.broadcast(
-                  ServerMessageEnvelopeFactory.newSlap(
+                  ChatServerEnvelopeFactory.newSlap(
                       PlayerSlapped.builder()
                           .slapper(CHAT_PARTICIPANT_0.getPlayerName())
                           .slapped(PLAYER_NAME_1)
@@ -131,7 +132,7 @@ class ChatEventProcessorTest {
     @Test
     void message() {
       final List<ServerResponse> responses =
-          chatEventProcessor.process(
+          chatEventProcessor.processAndComputeServerResponses(
               session, CHAT_PARTICIPANT_0, clientEventFactory.sendMessage(MESSAGE));
 
       assertThat(responses, hasSize(1));
@@ -139,14 +140,14 @@ class ChatEventProcessorTest {
           responses.get(0),
           is(
               ServerResponse.broadcast(
-                  ServerMessageEnvelopeFactory.newChatMessage(
+                  ChatServerEnvelopeFactory.newChatMessage(
                       new ChatMessage(CHAT_PARTICIPANT_0.getPlayerName(), MESSAGE)))));
     }
 
     @Test
     void updateStatus() {
       final List<ServerResponse> responses =
-          chatEventProcessor.process(
+          chatEventProcessor.processAndComputeServerResponses(
               session, CHAT_PARTICIPANT_0, clientEventFactory.updateMyPlayerStatus(STATUS));
 
       assertThat(responses, hasSize(1));
@@ -154,17 +155,14 @@ class ChatEventProcessorTest {
           responses.get(0),
           is(
               ServerResponse.broadcast(
-                  ServerMessageEnvelopeFactory.newStatusUpdate(
+                  ChatServerEnvelopeFactory.newStatusUpdate(
                       new StatusUpdate(CHAT_PARTICIPANT_0.getPlayerName(), STATUS)))));
     }
 
     @Test
     void unknownType() {
-      when(session.getUserProperties())
-          .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, "/127.0.0.1:99"));
-
       final List<ServerResponse> responses =
-          chatEventProcessor.process(
+          chatEventProcessor.processAndComputeServerResponses(
               session,
               CHAT_PARTICIPANT_0,
               ClientMessageEnvelope.builder()
@@ -195,7 +193,7 @@ class ChatEventProcessorTest {
       final Optional<ServerMessageEnvelope> result =
           chatEventProcessorWithMocks.disconnect(session);
 
-      assertThat(result, isPresentAndIs(ServerMessageEnvelopeFactory.newPlayerLeft(PLAYER_NAME_0)));
+      assertThat(result, isPresentAndIs(ChatServerEnvelopeFactory.newPlayerLeft(PLAYER_NAME_0)));
     }
   }
 
@@ -205,7 +203,7 @@ class ChatEventProcessorTest {
     void createErrorMessage() {
       final ServerMessageEnvelope serverEventEnvelope = chatEventProcessor.createErrorMessage();
 
-      assertThat(serverEventEnvelope, is(ServerMessageEnvelopeFactory.newErrorMessage()));
+      assertThat(serverEventEnvelope, is(ChatServerEnvelopeFactory.newErrorMessage()));
     }
   }
 }

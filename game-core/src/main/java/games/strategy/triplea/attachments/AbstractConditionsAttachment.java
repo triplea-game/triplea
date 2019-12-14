@@ -170,8 +170,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       for (final ICondition subCondition : condition.getConditions()) {
         if (!allConditionsNeededSoFar.contains(subCondition)) {
           allConditionsNeededSoFar.addAll(
-              getAllConditionsRecursive(
-                  new HashSet<>(Set.of(subCondition)), allConditionsNeededSoFar));
+              getAllConditionsRecursive(Set.of(subCondition), allConditionsNeededSoFar));
         }
       }
     }

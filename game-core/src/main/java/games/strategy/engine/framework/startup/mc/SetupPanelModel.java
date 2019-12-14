@@ -1,6 +1,10 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
+
 import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
@@ -12,12 +16,14 @@ import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
+import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 import org.triplea.live.servers.LiveServersFetcher;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
@@ -47,18 +53,24 @@ public class SetupPanelModel implements ServerSetupModel {
    * clients.
    */
   public void showServer() {
-    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui))
-        .createServerMessenger();
+    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui));
   }
 
   @Override
-  public void onServerMessengerCreated(final ServerModel serverModel) {
+  public void onServerMessengerCreated(
+      final ServerModel serverModel, @Nullable final GameHostingResponse gameHostingResponse) {
+
+    final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+    clientLoginValidator.setGamePassword(System.getProperty(SERVER_PASSWORD));
+    clientLoginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
+    serverModel.getMessenger().setLoginValidator(clientLoginValidator);
+
     SwingUtilities.invokeLater(
         () -> {
           setGameTypePanel(new ServerSetupPanel(serverModel, gameSelectorModel));
+
           // for whatever reason, the server window is showing very very small, causing the nation
-          // info to be cut and
-          // requiring scroll bars
+          // info to be cut and requiring scroll bars
           final int x = Math.max(ui.getPreferredSize().width, 800);
           final int y = Math.max(ui.getPreferredSize().height, 660);
           ui.setPreferredSize(new Dimension(x, y));

@@ -7,11 +7,22 @@ updates and/or build new roles.
 
 ## Installation
 
-### (1) Install Vagrant, VirtualBox and Ansible
+### (1.A) Install, VirtualBox and Ansible
 
 ```bash
-sudo apt install -y virtualbox vagrant ansible
-```
+sudo apt install -y virtualbox ansible
+``
+
+### (1.B) Install Vagrant
+
+Install from the download site: https://www.vagrantup.com/downloads.html
+
+The version in 'apt' is likely to be out of date and could have Ruby errors.
+
+Once downloaded, unzip somewhere, add that somewhere to your path so the
+command "vagrant" is available. If not added to your path, fully quality
+the command 'vagrant' in the steps below to match.
+
 
 ### (2) Launch Vagrant virtual machine
 ```bash
@@ -51,27 +62,4 @@ sudo -u postgres psql
 
 ```bash
 vagrant destroy -f
-```
-
-
-# TODO
-
-## [ ] Execute 'run_deployment' for prerelease from travis after successful merge
-- will need to install sshpass on the travis machine
-- will need to set ansible password on travis as env variable
-- will need to add sshpass+ssh command to execute 'run_deployment'
-
-## [ ] certbot from letsencrypt
-
-Draft so far of what this needs, need to get this fully working and then converted to an ansible role:
-
-```bash
-sudo apt-get update
-sudo apt-get install software-properties-common
-sudo add-apt-repository universe
-sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get update
-sudo apt-get install certbot python-certbot-nginx 
-
-sudo certbot --test-cert --nginx -m tripleabuilderbot@gmail.com --agree-tos
 ```

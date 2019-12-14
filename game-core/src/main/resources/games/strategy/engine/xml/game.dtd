@@ -274,7 +274,7 @@
 
 	
 <!ELEMENT propertyList (property*)>
-	<!ELEMENT property (boolean?, string?, file?, number?, color?, list?, value?) >
+	<!ELEMENT property (boolean?, string?, number?, color?, value?) >
 	<!-- can the player edit this on start up? if true then the type must be specified with a nested element -->
 	<!ATTLIST property
 		value CDATA ""
@@ -290,9 +290,6 @@
 		<!ELEMENT string EMPTY>
 		<!ATTLIST string
 		>
-		<!ELEMENT file EMPTY>
-		<!ATTLIST string
-		>
 		<!ELEMENT number EMPTY>
 		<!-- currently only integers are supported -->
 		<!ATTLIST number
@@ -304,8 +301,3 @@
 		<!ATTLIST color
 		>
 		
-		<!ELEMENT list EMPTY>
-		<!-- a comma separated list of possible values -->
-		<!ATTLIST list
-			values CDATA #REQUIRED
-		>

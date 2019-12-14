@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -14,8 +15,10 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.util.TransportUtils;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import junit.framework.AssertionFailedError;
 import lombok.experimental.UtilityClass;
@@ -349,7 +352,13 @@ public final class GameDataTestUtil {
             .getEnd()
             .getUnitCollection()
             .getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
-    final String error = moveDelegate.move(units, route, transports);
+    final Map<Unit, Unit> unitsToTransports =
+        TransportUtils.mapTransports(route, units, transports);
+    if (unitsToTransports.size() != units.size()) {
+      throw new AssertionFailedError("Not all units mapped to transports");
+    }
+    final String error =
+        moveDelegate.performMove(new MoveDescription(units, route, unitsToTransports));
     if (error != null) {
       throw new AssertionFailedError("Illegal move:" + error);
     }
@@ -359,7 +368,8 @@ public final class GameDataTestUtil {
     if (units.isEmpty()) {
       throw new AssertionFailedError("No units");
     }
-    final String error = moveDelegate(route.getStart().getData()).move(units, route);
+    final String error =
+        moveDelegate(route.getStart().getData()).performMove(new MoveDescription(units, route));
     if (error != null) {
       throw new AssertionFailedError("Illegal move:" + error);
     }

@@ -152,7 +152,9 @@ public final class GameSelectorPanel extends JPanel implements Observer {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
               final JPopupMenu menu = new JPopupMenu();
-              menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction());
+              menu.add(
+                  clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(
+                      JOptionPane.getFrameForComponent(this)));
               menu.add(
                   clientModelForHostBots.getHostBotChangeToAutosaveClientAction(
                       GameSelectorPanel.this, HeadlessAutoSaveType.DEFAULT));
@@ -310,7 +312,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void selectSavedGameFile() {
-    GameFileSelector.selectGameFile()
+    GameFileSelector.selectGameFile(JOptionPane.getFrameForComponent(this))
         .ifPresent(
             file -> {
               try {

@@ -23,17 +23,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.server.ServerEndpointConfig;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
+import org.triplea.http.client.remote.actions.RemoteActionsWebsocketListener;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
 import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.access.BannedPlayerFilter;
 import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
-import org.triplea.server.lobby.chat.ChatSocketController;
+import org.triplea.server.lobby.chat.ChatWebsocket;
 import org.triplea.server.lobby.chat.MessagingServiceFactory;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.lobby.chat.moderation.ModeratorChatControllerFactory;
@@ -46,6 +49,10 @@ import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
 import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
 import org.triplea.server.moderator.toolbox.banned.users.UserBanControllerFactory;
 import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFactory;
+import org.triplea.server.remote.actions.RemoteActionsControllerFactory;
+import org.triplea.server.remote.actions.RemoteActionsEventQueue;
+import org.triplea.server.remote.actions.RemoteActionsEventQueueFactory;
+import org.triplea.server.remote.actions.RemoteActionsWebSocket;
 import org.triplea.server.user.account.create.CreateAccountControllerFactory;
 import org.triplea.server.user.account.login.LoginControllerFactory;
 import org.triplea.server.user.account.update.UpdateAccountControllerFactory;
@@ -59,6 +66,7 @@ public class ServerApplication extends Application<AppConfig> {
 
   private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};
   private ServerEndpointConfig chatSocketConfiguration;
+  private ServerEndpointConfig remoteActionsConfiguration;
 
   /**
    * Main entry-point method, launches the drop-wizard http server. If no args are passed then will
@@ -80,10 +88,8 @@ public class ServerApplication extends Application<AppConfig> {
 
     // From: https://www.dropwizard.io/0.7.1/docs/manual/jdbi.html
     // By adding the JdbiExceptionsBundle to your application, Dropwizard will automatically unwrap
-    // any
-    // thrown SQLException or DBIException instances. This is critical for debugging, since
-    // otherwise
-    // only the common wrapper exception’s stack trace is logged.
+    // ant thrown SQLException or DBIException instances. This is critical for debugging, since
+    // otherwise only the common wrapper exception’s stack trace is logged.
     bootstrap.addBundle(new JdbiExceptionsBundle());
     bootstrap.addBundle(new RateLimitBundle(new InMemoryRateLimiterFactory()));
 
@@ -92,42 +98,69 @@ public class ServerApplication extends Application<AppConfig> {
     // socket configuration that can then be retrieved from a websocket session.
     chatSocketConfiguration =
         ServerEndpointConfig.Builder.create(
-                ChatSocketController.class, LobbyChatClient.WEBSOCKET_PATH)
+                ChatWebsocket.class, LobbyChatClient.LOBBY_CHAT_WEBSOCKET_PATH)
             .build();
-    bootstrap.addBundle(new WebsocketBundle(chatSocketConfiguration));
+
+    remoteActionsConfiguration =
+        ServerEndpointConfig.Builder.create(
+                RemoteActionsWebSocket.class,
+                RemoteActionsWebsocketListener.NOTIFICATIONS_WEBSOCKET_PATH)
+            .build();
+    bootstrap.addBundle(new WebsocketBundle(chatSocketConfiguration, remoteActionsConfiguration));
   }
 
   @Override
   public void run(final AppConfig configuration, final Environment environment) {
     if (configuration.isLogRequestAndResponses()) {
-      environment
-          .jersey()
-          .register(
-              new LoggingFeature(
-                  Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
-                  Level.INFO,
-                  LoggingFeature.Verbosity.PAYLOAD_ANY,
-                  LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+      enableRequestResponseLogging(environment);
     }
 
     final MetricRegistry metrics = new MetricRegistry();
     final Jdbi jdbi = createJdbi(configuration, environment);
 
+    environment.jersey().register(BannedPlayerFilter.newBannedPlayerFilter(jdbi));
+    environment.jersey().register(new RolesAllowedDynamicFeature());
     enableAuthentication(environment, metrics, jdbi);
 
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
 
-    final Chatters chatters = new Chatters();
+    final var chatters = new Chatters();
+    final var remoteActionsEventQueue = RemoteActionsEventQueueFactory.newRemoteActionsEventQueue();
 
-    endPointControllers(configuration, jdbi, chatters)
+    endPointControllers(configuration, jdbi, chatters, remoteActionsEventQueue)
         .forEach(controller -> environment.jersey().register(controller));
 
     // Inject beans into websocket endpoint
     chatSocketConfiguration
         .getUserProperties()
-        .put(
-            ChatSocketController.MESSAGING_SERVICE_KEY,
-            MessagingServiceFactory.build(jdbi, chatters));
+        .put(ChatWebsocket.MESSAGING_SERVICE_KEY, MessagingServiceFactory.build(jdbi, chatters));
+
+    remoteActionsConfiguration
+        .getUserProperties()
+        .put(RemoteActionsWebSocket.ACTIONS_QUEUE_KEY, remoteActionsEventQueue);
+  }
+
+  private static void enableRequestResponseLogging(final Environment environment) {
+    environment
+        .jersey()
+        .register(
+            new LoggingFeature(
+                Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
+                Level.INFO,
+                LoggingFeature.Verbosity.PAYLOAD_ANY,
+                LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+  }
+
+  private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
+    final JdbiFactory factory = new JdbiFactory();
+    final Jdbi jdbi =
+        factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    JdbiDatabase.registerRowMappers(jdbi);
+
+    if (configuration.isLogSqlStatements()) {
+      JdbiDatabase.registerSqlLogger(jdbi);
+    }
+    return jdbi;
   }
 
   private static void enableAuthentication(
@@ -157,9 +190,12 @@ public class ServerApplication extends Application<AppConfig> {
   }
 
   private List<Object> endPointControllers(
-      final AppConfig appConfig, final Jdbi jdbi, final Chatters chatters) {
+      final AppConfig appConfig,
+      final Jdbi jdbi,
+      final Chatters chatters,
+      final RemoteActionsEventQueue remoteActionsEventQueue) {
     return ImmutableList.of(
-        AccessLogControllerFactory.buildController(appConfig, jdbi),
+        AccessLogControllerFactory.buildController(jdbi),
         BadWordControllerFactory.buildController(jdbi),
         ConnectivityControllerFactory.buildController(),
         CreateAccountControllerFactory.buildController(jdbi),
@@ -167,24 +203,13 @@ public class ServerApplication extends Application<AppConfig> {
         GameHostingControllerFactory.buildController(jdbi),
         GameListingControllerFactory.buildController(jdbi),
         LoginControllerFactory.buildController(jdbi, chatters),
-        ModeratorChatControllerFactory.buildController(jdbi, chatters),
+        ModeratorChatControllerFactory.buildController(jdbi, chatters, remoteActionsEventQueue),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
-        UserBanControllerFactory.buildController(appConfig, jdbi, chatters),
+        UserBanControllerFactory.buildController(jdbi, chatters, remoteActionsEventQueue),
         ErrorReportControllerFactory.buildController(appConfig, jdbi),
         ModeratorAuditHistoryControllerFactory.buildController(appConfig, jdbi),
         ModeratorsControllerFactory.buildController(appConfig, jdbi),
+        RemoteActionsControllerFactory.buildController(jdbi, remoteActionsEventQueue),
         UpdateAccountControllerFactory.buildController(jdbi));
-  }
-
-  private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
-    final JdbiFactory factory = new JdbiFactory();
-    final Jdbi jdbi =
-        factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
-    JdbiDatabase.registerRowMappers(jdbi);
-
-    if (configuration.isLogSqlStatements()) {
-      JdbiDatabase.registerSqlLogger(jdbi);
-    }
-    return jdbi;
   }
 }

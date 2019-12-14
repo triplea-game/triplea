@@ -753,7 +753,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsAirTransportable() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
-      if (ta == null || !ta.getParatroopers()) {
+      if (!ta.getParatroopers()) {
         return false;
       }
       final UnitType type = obj.getType();
@@ -769,7 +769,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsAirTransport() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
-      if (ta == null || !ta.getParatroopers()) {
+      if (!ta.getParatroopers()) {
         return false;
       }
       final UnitType type = obj.getType();
@@ -1083,20 +1083,22 @@ public final class Matches {
     return IBattle::isAmphibious;
   }
 
+  static Predicate<IBattle> battleIsAmphibiousWithUnitsAttackingFrom(final Territory from) {
+    return battleIsAmphibious()
+        .and(
+            b ->
+                (b instanceof DependentBattle)
+                    && ((DependentBattle) b).getAmphibiousAttackTerritories().contains(from));
+  }
+
   public static Predicate<Unit> unitHasEnoughMovementForRoute(final Route route) {
     return unit -> {
       BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final PlayerId player = unit.getOwner();
       if (ua.getIsAir()) {
-        TerritoryAttachment taStart = null;
-        TerritoryAttachment taEnd = null;
-        if (route.getStart() != null) {
-          taStart = TerritoryAttachment.get(route.getStart());
-        }
-        if (route.getEnd() != null) {
-          taEnd = TerritoryAttachment.get(route.getEnd());
-        }
+        final TerritoryAttachment taStart = TerritoryAttachment.get(route.getStart());
+        final TerritoryAttachment taEnd = TerritoryAttachment.get(route.getEnd());
         if (taStart != null && taStart.getAirBase()) {
           left = left.add(BigDecimal.ONE);
         }
@@ -1173,18 +1175,14 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsTransporting() {
-    return unit -> {
-      final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
-      return !(transporting == null || transporting.isEmpty());
-    };
+    return unit -> !TripleAUnit.get(unit).getTransporting().isEmpty();
   }
 
   public static Predicate<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units) {
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
     return unit -> {
       final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
-      return transporting != null
-          && !Collections.disjoint(UnitSeparator.categorize(transporting), unitCategories);
+      return !Collections.disjoint(UnitSeparator.categorize(transporting), unitCategories);
     };
   }
 
@@ -1454,6 +1452,8 @@ public final class Matches {
       final PlayerId currentPlayer,
       final GameData data,
       final boolean forceLoadParatroopersIfPossible) {
+    final Map<Unit, Unit> paratrooperMap =
+        forceLoadParatroopersIfPossible ? TransportUtils.mapParatroopers(units) : Map.of();
     return dependent -> {
       // transported on a sea transport
       final Unit transportedBy = ((TripleAUnit) dependent).getTransportedBy();
@@ -1463,23 +1463,11 @@ public final class Matches {
       // cargo on a carrier
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
           MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
-      if (carrierMustMoveWith != null) {
-        if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
-          return true;
-        }
+      if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
+        return true;
       }
-      // paratrooper on an air transport
-      if (forceLoadParatroopersIfPossible) {
-        final Collection<Unit> airTransports =
-            CollectionUtils.getMatches(units, unitIsAirTransport());
-        final Collection<Unit> paratroops =
-            CollectionUtils.getMatches(units, unitIsAirTransportable());
-        if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-          return TransportUtils.mapTransportsToLoad(paratroops, airTransports)
-              .containsKey(dependent);
-        }
-      }
-      return false;
+
+      return paratrooperMap.containsKey(dependent);
     };
   }
 

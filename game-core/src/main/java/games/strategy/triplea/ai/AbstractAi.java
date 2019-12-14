@@ -101,9 +101,6 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   }
 
   @Override
-  public void confirmMoveHariKari() {}
-
-  @Override
   public Territory whereShouldRocketsAttack(
       final Collection<Territory> candidates, final Territory from) {
     return candidates.iterator().next();
@@ -627,7 +624,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
           AiPoliticalUtils.getPoliticalActionsTowardsWar(
               id, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
+      if (!actionChoicesTowardsWar.isEmpty()) {
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
         // should we use bridge's random source here?
@@ -666,7 +663,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final List<PoliticalActionAttachment> actionChoicesOther =
           AiPoliticalUtils.getPoliticalActionsOther(
               id, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
+      if (!actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         // should we use bridge's random source here?

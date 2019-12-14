@@ -6,8 +6,8 @@ import games.strategy.net.Messengers;
 import java.util.Collection;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
 public class MessengersChatTransmitter implements ChatTransmitter {

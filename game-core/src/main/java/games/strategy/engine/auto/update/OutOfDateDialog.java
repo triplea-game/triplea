@@ -65,7 +65,6 @@ class OutOfDateDialog {
     updates.addHyperlinkListener(hyperlinkListener);
     updates.setCaretPosition(0);
     final JScrollPane scroll = new JScrollPane(updates);
-    // scroll.setBorder(BorderFactory.createEmptyBorder());
     panel.add(scroll, BorderLayout.CENTER);
     final Dimension maxDimension = panel.getPreferredSize();
     maxDimension.width = Math.min(maxDimension.width, 700);

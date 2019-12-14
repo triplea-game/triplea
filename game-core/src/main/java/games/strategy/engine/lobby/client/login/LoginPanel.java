@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.login;
 
-import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -21,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
@@ -222,7 +222,7 @@ final class LoginPanel extends JPanel {
   }
 
   private void logonPressed() {
-    final String validationMessage = PlayerNameValidation.validate(username.getText());
+    final String validationMessage = PlayerName.validate(username.getText());
 
     if (validationMessage != null) {
       JOptionPane.showMessageDialog(

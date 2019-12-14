@@ -2,25 +2,28 @@ package org.triplea.http.client.lobby.chat;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.PlayerName;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.client.ClientMessageFactory;
-import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.events.server.PlayerSlapped;
-import org.triplea.http.client.lobby.chat.events.server.ServerMessageEnvelope;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
+import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
+import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
+import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
+import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
+import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 
 @ExtendWith(MockitoExtension.class)
 class LobbyChatClientTest {
@@ -29,21 +32,50 @@ class LobbyChatClientTest {
   private static final String MESSAGE = "message";
   private static final String STATUS = "status";
 
-  @Mock private InboundChat inboundChat;
+  private static final ChatterList chatters = new ChatterList(List.of());
+  private static final ChatParticipant CHAT_PARTICIPANT =
+      ChatParticipant.builder()
+          .playerName(PlayerName.of("player-name"))
+          .playerChatId(PlayerChatId.newId())
+          .build();
+  private static final StatusUpdate STATUS_UPDATE = new StatusUpdate(PLAYER_NAME, "");
+  private static final PlayerSlapped PLAYER_SLAPPED =
+      PlayerSlapped.builder().slapper(PLAYER_NAME).slapped(PlayerName.of("slapped")).build();
+  private static final ChatMessage CHAT_MESSAGE = new ChatMessage(PLAYER_NAME, "message");
 
-  @Mock
-  private GenericWebSocketClient<ServerMessageEnvelope, ClientMessageEnvelope> webSocketClient;
-
-  @Mock private ClientMessageFactory clientEventFactory;
-  @Mock private ClientMessageEnvelope clientEnvelope;
-
+  @Mock private GenericWebSocketClient webSocketClient;
+  @Mock private ChatClientEnvelopeFactory clientEventFactory;
   private LobbyChatClient lobbyChatClient;
+
+  @Mock private ClientMessageEnvelope clientEnvelope;
+  @Mock private Consumer<StatusUpdate> playerStatusListener;
+  @Mock private Consumer<PlayerName> playerLeftListener;
+  @Mock private Consumer<ChatParticipant> playerJoinedListener;
+  @Mock private Consumer<PlayerSlapped> playerSlappedListener;
+  @Mock private Consumer<ChatMessage> chatMessageListener;
+  @Mock private Consumer<ChatterList> connectedListener;
+  @Mock private Consumer<String> chatEventListener;
+  @Mock private Consumer<String> serverErrorListener;
 
   @BeforeEach
   void setup() {
-    when(inboundChat.getWebSocketClient()).thenReturn(webSocketClient);
+    lobbyChatClient = new LobbyChatClient(webSocketClient, clientEventFactory);
+    lobbyChatClient.setChatMessageListeners(
+        ChatMessageListeners.builder()
+            .connectedListener(connectedListener)
+            .playerStatusListener(playerStatusListener)
+            .playerJoinedListener(playerJoinedListener)
+            .playerLeftListener(playerLeftListener)
+            .playerSlappedListener(playerSlappedListener)
+            .chatMessageListener(chatMessageListener)
+            .chatEventListener(chatEventListener)
+            .serverErrorListener(serverErrorListener)
+            .build());
+  }
 
-    lobbyChatClient = new LobbyChatClient(inboundChat, clientEventFactory);
+  @Test
+  void verifyConstructorRegistersItselfAsWebsocketListener() {
+    verify(webSocketClient).addMessageListener(lobbyChatClient);
   }
 
   @Test
@@ -96,83 +128,58 @@ class LobbyChatClientTest {
   }
 
   @Test
-  void addPlayerStatusListener() {
-    final Consumer<StatusUpdate> listener = data -> {};
+  void playerListing() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerListing(List.of()));
 
-    lobbyChatClient.addPlayerStatusListener(listener);
-
-    verify(inboundChat).addPlayerStatusListener(listener);
+    verify(connectedListener).accept(chatters);
   }
 
   @Test
-  void addPlayerLeftListene() {
-    final Consumer<PlayerName> listener = data -> {};
+  void statusChanged() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newStatusUpdate(STATUS_UPDATE));
 
-    lobbyChatClient.addPlayerLeftListener(listener);
-
-    verify(inboundChat).addPlayerLeftListener(listener);
+    verify(playerStatusListener).accept(STATUS_UPDATE);
   }
 
   @Test
-  void addPlayerJoinedListener() {
-    final Consumer<ChatParticipant> listener = data -> {};
+  void playerJoined() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerJoined(CHAT_PARTICIPANT));
 
-    lobbyChatClient.addPlayerJoinedListener(listener);
-
-    verify(inboundChat).addPlayerJoinedListener(listener);
+    verify(playerJoinedListener).accept(CHAT_PARTICIPANT);
   }
 
   @Test
-  void addChatMessageListener() {
-    final Consumer<ChatMessage> listener = data -> {};
+  void playerLeft() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerLeft(PLAYER_NAME));
 
-    lobbyChatClient.addChatMessageListener(listener);
-
-    verify(inboundChat).addChatMessageListener(listener);
+    verify(playerLeftListener).accept(PLAYER_NAME);
   }
 
   @Test
-  void addConnectedListener() {
-    final Consumer<Collection<ChatParticipant>> listener = data -> {};
+  void playerSlapped() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newSlap(PLAYER_SLAPPED));
 
-    lobbyChatClient.addConnectedListener(listener);
-
-    verify(inboundChat).addConnectedListener(listener);
+    verify(playerSlappedListener).accept(PLAYER_SLAPPED);
   }
 
   @Test
-  void addPlayerSlappedListener() {
-    final Consumer<PlayerSlapped> listener = data -> {};
+  void chatMessage() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newChatMessage(CHAT_MESSAGE));
 
-    lobbyChatClient.addPlayerSlappedListener(listener);
-
-    verify(inboundChat).addPlayerSlappedListener(listener);
+    verify(chatMessageListener).accept(CHAT_MESSAGE);
   }
 
   @Test
-  void addChatEventListener() {
-    final Consumer<ChatEvent> listener = data -> {};
+  void chatEvent() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newEventMessage("event"));
 
-    lobbyChatClient.addChatEventListener(listener);
-
-    verify(inboundChat).addChatEventListener(listener);
+    verify(chatEventListener).accept("event");
   }
 
   @Test
-  void addConnectionLostListener() {
-    final Consumer<String> listener = data -> {};
+  void serverError() {
+    lobbyChatClient.accept(ChatServerEnvelopeFactory.newErrorMessage());
 
-    lobbyChatClient.addConnectionLostListener(listener);
-
-    verify(inboundChat).addConnectionLostListener(listener);
-  }
-
-  @Test
-  void addConnectionClosedListener() {
-    final Consumer<String> listener = data -> {};
-
-    lobbyChatClient.addConnectionClosedListener(listener);
-
-    verify(inboundChat).addConnectionClosedListener(listener);
+    verify(serverErrorListener).accept(anyString());
   }
 }

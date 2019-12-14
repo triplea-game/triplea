@@ -10,7 +10,6 @@ import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
 import java.time.Duration;
@@ -22,9 +21,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.SystemId;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.server.ChatEvent;
-import org.triplea.http.client.lobby.chat.events.server.ChatMessage;
+import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.test.common.Integration;
 
 @Integration
@@ -57,9 +56,9 @@ final class ChatIntegrationTest {
     messenger = new TestServerMessenger();
     messenger.setAcceptNewConnections(true);
     final int serverPort = messenger.getLocalNode().getSocketAddress().getPort();
-    final String mac = MacFinder.getHashedMacAddress();
-    client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
-    client2Messenger = new ClientMessenger("localhost", serverPort, "client2", mac);
+    final SystemId systemId = SystemId.of("system-id");
+    client1Messenger = new ClientMessenger("localhost", serverPort, "client1", systemId);
+    client2Messenger = new ClientMessenger("localhost", serverPort, "client2", systemId);
     final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(messenger);
     remoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
     channelMessenger = new ChannelMessenger(serverUnifiedMessenger);
@@ -203,7 +202,7 @@ final class ChatIntegrationTest {
     public void slap(final String message) {}
 
     @Override
-    public void eventReceived(final ChatEvent event) {}
+    public void eventReceived(final String event) {}
 
     @Override
     public void messageReceived(final ChatMessage chatMessage) {

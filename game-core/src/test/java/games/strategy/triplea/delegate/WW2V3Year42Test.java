@@ -15,7 +15,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -25,12 +24,14 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 
+@Integration(type = TestType.ACCEPTANCE)
 class WW2V3Year42Test {
   private GameData gameData;
 
@@ -48,7 +49,6 @@ class WW2V3Year42Test {
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
     final PlayerId germans = germans(gameData);
-    final IMoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -56,8 +56,7 @@ class WW2V3Year42Test {
     final Route sz13To12 = new Route(sz13, sz12);
     final List<Unit> transports = sz13.getUnitCollection().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
-    final String error = moveDelegate.move(transports, sz13To12);
-    assertNull(error);
+    move(transports, sz13To12);
   }
 
   @Test

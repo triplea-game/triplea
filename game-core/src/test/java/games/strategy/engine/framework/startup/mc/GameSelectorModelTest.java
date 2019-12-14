@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
-import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.net.URI;
@@ -108,18 +107,6 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
     testObj.resetGameDataToNull();
     assertHasEmptyData(testObj);
-  }
-
-  @Test
-  void testIsSaveGame() {
-    testObj.load(null, null);
-    assertThat(testObj.isSavedGame(), is(false));
-
-    testObj.load(null, "someWeirdString");
-    assertThat(testObj.isSavedGame(), is(true));
-
-    testObj.load(null, GameDataFileUtils.addExtension("file"));
-    assertThat(testObj.isSavedGame(), is(true));
   }
 
   @Test

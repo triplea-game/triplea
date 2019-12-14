@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.ScrambleLogic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -45,9 +46,9 @@ class ProScrambleAi {
         delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 
     // Check if defense already wins
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
+    final Collection<Unit> attackers = battle.getAttackingUnits();
+    final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
+    final Collection<Unit> bombardingUnits = battle.getBombardingUnits();
     final ProBattleResult minResult =
         calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger.debug(
@@ -66,7 +67,7 @@ class ProScrambleAi {
     final Map<Territory, List<Unit>> possibleMaxScramblerMap = new HashMap<>();
     for (final Territory t : possibleScramblers.keySet()) {
       final int maxCanScramble =
-          BattleDelegate.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
+          ScrambleLogic.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
       List<Unit> canScrambleAir = new ArrayList<>(possibleScramblers.get(t).getSecond());
       if (maxCanScramble < canScrambleAir.size()) {
         canScrambleAir.sort(
@@ -123,7 +124,7 @@ class ProScrambleAi {
     ProBattleResult result = minResult;
     for (final Unit u : sortedUnitDefendOptions.keySet()) {
       unitsToScramble.add(u);
-      final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();
+      final Collection<Unit> currentDefenders = new ArrayList<>(battle.getDefendingUnits());
       currentDefenders.addAll(unitsToScramble);
       result =
           calc.calculateBattleResults(scrambleTo, attackers, currentDefenders, bombardingUnits);

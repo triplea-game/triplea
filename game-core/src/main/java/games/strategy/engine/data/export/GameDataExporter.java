@@ -23,8 +23,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.XmlReader;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
-import games.strategy.engine.data.properties.ComboProperty;
-import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -41,7 +39,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.extern.java.Log;
@@ -174,23 +171,12 @@ public class GameDataExporter {
     if (prop.getClass().equals(BooleanProperty.class)) {
       typeString = "            <boolean/>\n";
     }
-    if (prop.getClass().equals(FileProperty.class)) {
-      typeString = "            <file/>\n";
-    }
     if (prop.getClass().equals(StringProperty.class)) {
       typeString = "            <string/>\n";
     }
     if (prop.getClass().equals(ColorProperty.class)) {
       typeString = "            <color/>\n";
       value = "0x" + Integer.toHexString(((Integer) prop.getValue())).toUpperCase();
-    }
-    if (prop.getClass().equals(ComboProperty.class)) {
-      final ComboProperty<?> comboProperty = (ComboProperty<?>) prop;
-      final Collection<String> encodedPossibleValues =
-          comboProperty.getPossibleValues().stream()
-              .map(Object::toString)
-              .collect(Collectors.toList());
-      typeString = "            <list>" + String.join(",", encodedPossibleValues) + "</list>\n";
     }
     if (prop.getClass().equals(NumberProperty.class)) {
       final NumberProperty numberProperty = (NumberProperty) prop;

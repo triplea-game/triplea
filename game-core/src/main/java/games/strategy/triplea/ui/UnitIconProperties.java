@@ -21,7 +21,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.java.Log;
-import org.triplea.java.OptionalUtils;
 import org.triplea.util.FileNameUtils;
 
 /** Loads unit icons from unit_icons.properties. */
@@ -155,8 +154,7 @@ public final class UnitIconProperties extends PropertyFile {
     final String gameName = normalizeGameName(gameData);
     for (final UnitIconDescriptor unitIconDescriptor : unitIconDescriptors) {
       if (unitIconDescriptor.matches(gameName, playerName, unitTypeName)) {
-        OptionalUtils.ifPresentOrElse(
-            unitIconDescriptor.conditionName,
+        unitIconDescriptor.conditionName.ifPresentOrElse(
             conditionName -> {
               if (conditionsStatus.get(
                   conditionSupplier.getCondition(playerName, conditionName, gameData))) {

@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -58,8 +57,8 @@ class ProRetreatAi {
 
     // Get units and determine if attacker
     final boolean isAttacker = player.equals(battle.getAttacker());
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final Collection<Unit> attackers = battle.getAttackingUnits();
+    final Collection<Unit> defenders = battle.getDefendingUnits();
 
     // Calculate battle results
     final ProBattleResult result =

@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
@@ -7,7 +8,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.Runnables;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
@@ -24,9 +24,10 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.framework.startup.LobbyWatcherThread;
+import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
-import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.message.RemoteName;
@@ -39,6 +40,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,18 +56,23 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
+import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
+import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.remote.actions.RemoteActionListeners;
+import org.triplea.http.client.remote.actions.RemoteActionsWebsocketListener;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
+import org.triplea.util.ExitStatus;
 import org.triplea.util.Version;
 
 /** Represents a network-aware game server to which multiple clients may connect. */
@@ -93,13 +100,16 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   @Nullable private final JFrame ui;
   private final LaunchAction launchAction;
   private ChatModel chatModel;
-  private Runnable chatModelCancel = Runnables.doNothing();
+  private Runnable chatModelCancel;
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
+  @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;
+  private @Nullable RemoteActionsWebsocketListener remoteActionsListener;
+
   private final IServerStartupRemote serverStartupRemote =
       new IServerStartupRemote() {
         @Override
@@ -262,6 +272,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.ui = ui;
     this.launchAction = launchAction;
+    getServerProps().ifPresent(this::createServerMessenger);
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -272,11 +283,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   public void cancel() {
     gameSelectorModel.deleteObserver(gameSelectorObserver);
-    if (messengers != null) {
-      chatController.deactivate();
-      messengers.shutDown();
-      chatModelCancel.run();
-    }
+    // TODO: Project#12 Stop ServerPoller thread here
+    Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
+    Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
+    Optional.ofNullable(chatModelCancel).ifPresent(Runnable::run);
+    Optional.ofNullable(remoteActionsListener).ifPresent(RemoteActionsWebsocketListener::close);
   }
 
   public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
@@ -379,27 +390,50 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 .build());
   }
 
-  public void createServerMessenger() {
-    getServerProps().ifPresent(this::createServerMessenger);
-  }
-
-  private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
+  private void createServerMessenger(final ServerConnectionProps props) {
     try {
       this.serverMessenger =
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
-      final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
-      clientLoginValidator.setGamePassword(props.getPassword());
-      serverMessenger.setLoginValidator(clientLoginValidator);
       serverMessenger.addConnectionChangeListener(this);
 
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
+
+      @Nullable final GameHostingResponse gameHostingResponse;
+
+      if (System.getProperty(LOBBY_URI) != null) {
+        final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
+        gameHostingResponse = GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
+
+        remoteActionsListener =
+            new RemoteActionsWebsocketListener(
+                lobbyUri,
+                RemoteActionListeners.builder()
+                    .bannedPlayerListener(new PlayerDisconnectAction(serverMessenger, this::cancel))
+                    .shutdownListener(
+                        emptyStringMessage -> {
+                          cancel();
+                          ExitStatus.SUCCESS.exit();
+                        })
+                    .build());
+
+        lobbyWatcherThread =
+            new LobbyWatcherThread(
+                gameSelectorModel,
+                serverMessenger,
+                ui == null
+                    ? new WatcherThreadMessaging.HeadlessWatcherThreadMessaging()
+                    : new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui));
+        lobbyWatcherThread.createLobbyWatcher(lobbyUri, gameHostingResponse);
+      } else {
+        gameHostingResponse = null;
+      }
+
       chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
       if (ui == null) {
         chatModel =
             new HeadlessChat(new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers)));
-        chatModelCancel = Runnables.doNothing();
       } else {
         final var chatPanel = ChatPanel.newChatPanel(messengers, CHAT_NAME, ChatSoundProfile.GAME);
         chatModelCancel = () -> chatPanel.setChat(null);
@@ -408,7 +442,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
-      serverSetupModel.onServerMessengerCreated(this);
+      serverSetupModel.onServerMessengerCreated(this, gameHostingResponse);
     } catch (final IOException ioe) {
       log.log(Level.SEVERE, "Unable to create server socket", ioe);
       cancel();
@@ -612,7 +646,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               .ifPresent(node -> remotePlayers.put(entry.getKey(), node));
         }
       }
-      return Optional.of(
+
+      final ServerLauncher serverLauncher =
           new ServerLauncher(
               clientCount,
               messengers,
@@ -620,7 +655,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               getPlayerListingInternal(),
               remotePlayers,
               this,
-              launchAction));
+              launchAction);
+      Optional.ofNullable(lobbyWatcherThread)
+          .map(LobbyWatcherThread::getLobbyWatcher)
+          .ifPresent(serverLauncher::setInGameLobbyWatcher);
+      return Optional.of(serverLauncher);
     }
   }
 

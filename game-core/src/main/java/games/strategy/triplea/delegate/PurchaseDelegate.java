@@ -74,7 +74,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
         // get all possible triggers based on this match.
         final Set<TriggerAttachment> toFirePossible =
             TriggerAttachment.collectForAllTriggersMatching(
-                new HashSet<>(Set.of(player)), purchaseDelegateTriggerMatch);
+                Set.of(player), purchaseDelegateTriggerMatch);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.
           final Map<ICondition, Boolean> testedConditions =

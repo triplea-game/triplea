@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
@@ -30,7 +28,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
-import org.triplea.http.client.lobby.chat.events.server.StatusUpdate;
+import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.swing.SwingAction;
 
 /** A UI component that displays the players participating in a chat. */
@@ -56,7 +54,6 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   private JList<ChatParticipant> players;
   private DefaultListModel<ChatParticipant> listModel;
   private Chat chat;
-  private final Set<String> hiddenPlayers = new HashSet<>();
   // if our renderer is overridden we do not set this directly on the JList,
   // instead we feed it the node name and status as a string
   private ListCellRenderer<Object> setCellRenderer = new DefaultListCellRenderer();
@@ -68,10 +65,6 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     layoutComponents();
     setupListeners();
     setChat(chat);
-  }
-
-  public void addHiddenPlayerName(final String name) {
-    hiddenPlayers.add(name);
   }
 
   /** Sets the chat whose players will be displayed in this panel. */
@@ -219,11 +212,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     SwingAction.invokeNowOrLater(
         () -> {
           listModel.clear();
-          for (final ChatParticipant chatParticipant : updatedPlayers) {
-            if (!hiddenPlayers.contains(chatParticipant.getPlayerName().getValue())) {
-              listModel.addElement(chatParticipant);
-            }
-          }
+          updatedPlayers.forEach(listModel::addElement);
         });
   }
 

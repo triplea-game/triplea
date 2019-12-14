@@ -1,6 +1,5 @@
 package games.strategy.engine.framework;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
@@ -19,11 +18,9 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
-import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -31,20 +28,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileFilter;
 import org.triplea.domain.data.PlayerName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Services;
@@ -96,57 +88,6 @@ public final class GameRunner {
     LookAndFeelSwingFrameListener.register(mainFrame);
 
     mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-  }
-
-  /**
-   * Creates a new modeless dialog with the specified title whose parent is the main frame window.
-   *
-   * @param title The dialog title.
-   * @return A new modeless dialog.
-   */
-  public static JDialog newDialog(final String title) {
-    checkNotNull(title);
-
-    return new JDialog(mainFrame, title);
-  }
-
-  public static FileDialog newFileDialog() {
-    return new FileDialog(mainFrame);
-  }
-
-  /**
-   * Opens a Swing FileChooser menu.
-   *
-   * @return Empty optional if dialog is closed without selection, otherwise returns the user
-   *     selection.
-   */
-  public static Optional<File> showFileChooser(final FileFilter fileFilter) {
-    final JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileFilter(fileFilter);
-    final int returnCode = fileChooser.showOpenDialog(mainFrame);
-
-    if (returnCode == JFileChooser.APPROVE_OPTION) {
-      return Optional.of(fileChooser.getSelectedFile());
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Opens a file selection dialog where a user can select/create a file for TripleA save game. An
-   * empty optional is returned if user just closes down the dialog window.
-   */
-  public static Optional<File> showSaveGameFileChooser() {
-    // Non-Mac platforms should use the normal Swing JFileChooser
-    final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-    final int selectedOption = fileChooser.showOpenDialog(mainFrame);
-    if (selectedOption == JFileChooser.APPROVE_OPTION) {
-      return Optional.of(fileChooser.getSelectedFile());
-    }
-    return Optional.empty();
-  }
-
-  public static ProgressWindow newProgressWindow(final String title) {
-    return new ProgressWindow(mainFrame, title);
   }
 
   public static BackgroundTaskRunner newBackgroundTaskRunner() {

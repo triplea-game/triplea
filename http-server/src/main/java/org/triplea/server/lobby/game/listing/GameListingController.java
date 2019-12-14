@@ -39,7 +39,7 @@ public class GameListingController extends HttpController {
    */
   @RateLimited(
       keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
+      rates = {@Rate(limit = 20, duration = 4, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(GameListingClient.POST_GAME_PATH)
   public String postGame(
@@ -80,6 +80,7 @@ public class GameListingController extends HttpController {
       rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.SECONDS)})
   @GET
   @Path(GameListingClient.FETCH_GAMES_PATH)
+  @RolesAllowed(UserRole.ANONYMOUS)
   public Collection<LobbyGameListing> fetchGames() {
     return gameListing.getGames();
   }
@@ -107,7 +108,7 @@ public class GameListingController extends HttpController {
   @Path(GameListingClient.BOOT_GAME_PATH)
   @RolesAllowed(UserRole.MODERATOR)
   public Response bootGame(@Auth final AuthenticatedUser authenticatedUser, final String gameId) {
-    gameListing.bootGame(authenticatedUser.getUserId(), gameId);
+    gameListing.bootGame(authenticatedUser.getUserIdOrThrow(), gameId);
     return Response.ok().build();
   }
 }

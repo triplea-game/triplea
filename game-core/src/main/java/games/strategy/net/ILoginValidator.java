@@ -1,7 +1,8 @@
 package games.strategy.net;
 
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** Code to validate a login attempt. */
 public interface ILoginValidator {
@@ -20,10 +21,11 @@ public interface ILoginValidator {
    * @param clientName - the user name given by the client
    * @return - null if the attempt was successful, an error message otherwise
    */
+  @Nullable
   String verifyConnection(
       Map<String, String> propertiesSentToClient,
       Map<String, String> propertiesReadFromClient,
       String clientName,
       String clientMac,
-      SocketAddress remoteAddress);
+      InetSocketAddress remoteAddress);
 }

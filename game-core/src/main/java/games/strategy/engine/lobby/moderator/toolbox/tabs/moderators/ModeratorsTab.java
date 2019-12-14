@@ -50,7 +50,7 @@ public final class ModeratorsTab implements Supplier<Component> {
             .build();
 
     if (moderatorsTabModel.isSuperMod()) {
-      panel.add(buildAddModeratorPanel(dataTable), BorderLayout.SOUTH);
+      panel.add(buildAddModeratorPanel(), BorderLayout.SOUTH);
     }
     return panel;
   }
@@ -69,7 +69,7 @@ public final class ModeratorsTab implements Supplier<Component> {
     return table;
   }
 
-  private Component buildAddModeratorPanel(final JTable table) {
+  private Component buildAddModeratorPanel() {
     final JTextField addField =
         JTextFieldBuilder.builder()
             .columns(7)
@@ -81,7 +81,7 @@ public final class ModeratorsTab implements Supplier<Component> {
         new JButtonBuilder()
             .enabled(false)
             .title("Add moderator")
-            .actionListener(button -> moderatorsTabActions.addModerator(addField, button, table))
+            .actionListener(button -> moderatorsTabActions.addModerator(addField, button))
             .toolTip("Promotes a user to the moderators")
             .build();
 

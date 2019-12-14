@@ -1,8 +1,8 @@
 package games.strategy.triplea.settings;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.framework.GameRunner;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Arrays;
@@ -61,10 +61,10 @@ public enum SettingsWindow {
   }
 
   /** Opens the settings Swing window. */
-  public void open() {
+  public void open(final Frame owner) {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     if (dialog == null) {
-      dialog = GameRunner.newDialog("Settings");
+      dialog = new JDialog(owner, "Settings");
       dialog.setContentPane(newContentPane());
       dialog.setMinimumSize(new Dimension(400, 50));
       dialog.pack();

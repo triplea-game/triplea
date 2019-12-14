@@ -9,6 +9,7 @@ import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClientTesting;
+import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
@@ -37,6 +38,7 @@ class ErrorReportClientTest extends WireMockTest {
   private static ErrorReportResponse doServiceCall(final URI hostUri) {
     return ErrorReportClient.newClient(hostUri)
         .uploadErrorReport(
+            SystemIdHeader.headers(),
             ErrorReportRequest.builder()
                 .title("Guttuss cadunt in germanus oenipons!")
                 .body(MESSAGE_FROM_USER)

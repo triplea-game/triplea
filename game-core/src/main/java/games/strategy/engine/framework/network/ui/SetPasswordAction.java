@@ -5,6 +5,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,11 +17,11 @@ public class SetPasswordAction extends AbstractAction {
   private static final long serialVersionUID = -7767288210554177480L;
   private final ClientLoginValidator validator;
   private final Component parent;
-  private final InGameLobbyWatcherWrapper lobbyWatcher;
+  @Nullable private final InGameLobbyWatcherWrapper lobbyWatcher;
 
   public SetPasswordAction(
       final Component parent,
-      final InGameLobbyWatcherWrapper watcher,
+      @Nullable final InGameLobbyWatcherWrapper watcher,
       final ClientLoginValidator validator) {
     super("Set Game Password");
     this.validator = validator;

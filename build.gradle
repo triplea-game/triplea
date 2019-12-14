@@ -6,6 +6,7 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '2.0' apply false
     id 'net.ltgt.errorprone' version '0.8.1' apply false
     id 'com.diffplug.gradle.spotless' version '3.23.0' apply false
+    id "org.sonarqube" version "2.8"
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -22,6 +23,14 @@ check {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io/"
+        property "sonar.organization", "triplea-game"
+        property "sonar.projectKey", "triplea-game-sonar"
+    }
 }
 
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {

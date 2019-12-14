@@ -121,7 +121,7 @@ public class InGameLobbyWatcher {
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
     keepAliveTimer =
         Timers.fixedRateTimer("lobby-watcher-keep-alive")
-            .period((GameListingClient.KEEP_ALIVE_SECONDS / 2) - 1, TimeUnit.SECONDS)
+            .period((GameListingClient.KEEP_ALIVE_SECONDS / 2L) - 1, TimeUnit.SECONDS)
             .task(
                 LobbyWatcherKeepAliveTask.builder()
                     .gameId(gameId)
@@ -214,7 +214,7 @@ public class InGameLobbyWatcher {
             .withGameVersion(gameSelectorModel.getGameVersion()));
   }
 
-  void setGameSelectorModel(@Nullable final GameSelectorModel model) {
+  public void setGameSelectorModel(@Nullable final GameSelectorModel model) {
     cleanUpGameModelListener();
     if (model != null) {
       gameSelectorModel = model;

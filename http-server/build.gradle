@@ -39,12 +39,17 @@ dependencies {
     implementation project(':domain-data')
     implementation project(':http-clients')
     implementation project(':java-extras')
-    implementation project(':lobby-db-dao')
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     testImplementation "com.github.database-rider:rider-junit5:$databaseRiderVersion"
+    testImplementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     testImplementation "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
+    testImplementation "uk.co.datumedge:hamcrest-json:$hamcrestJsonVersion"
     testImplementation project(":test-common")
+    testImplementation project(':domain-data')
+    testImplementation project(':http-clients')
+    testImplementation project(':java-extras')
 }
 
 jar {

@@ -243,7 +243,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final Map<ICondition, Boolean> allConditionsTestedSoFar) {
     final Set<ICondition> allConditionsNeeded =
         AbstractConditionsAttachment.getAllConditionsRecursive(
-            new HashSet<>(toFirePossible), allConditionsNeededSoFar);
+            Set.copyOf(toFirePossible), allConditionsNeededSoFar);
     return AbstractConditionsAttachment.testAllConditionsRecursive(
         allConditionsNeeded, allConditionsTestedSoFar, bridge);
   }
@@ -311,10 +311,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     // Victory messages and recording of winners
     triggerVictory(triggersToFire, bridge, noChanceFireTriggerParams);
     // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we
-    // change at end of
-    // each round)
+    // change at end of each round)
     if (initialFireTriggerParams.useUses) {
-      setUsesForWhenTriggers(triggersToFire, bridge, initialFireTriggerParams.useUses);
+      setUsesForWhenTriggers(triggersToFire, bridge, true);
     }
   }
 

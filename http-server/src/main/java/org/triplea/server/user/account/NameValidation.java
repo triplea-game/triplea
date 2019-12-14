@@ -20,7 +20,7 @@ public class NameValidation implements Function<String, Optional<String>> {
         .apply(playerName)
         .or(
             () ->
-                badWordsDao.containsBadWord(playerName) > 0
+                badWordsDao.containsBadWord(playerName)
                     ? Optional.of("That is not a nice name")
                     : Optional.empty())
         .or(

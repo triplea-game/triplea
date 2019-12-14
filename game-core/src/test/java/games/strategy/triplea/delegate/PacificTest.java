@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.load;
+import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
@@ -20,7 +22,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.test.common.Integration;
+import org.triplea.test.common.TestType;
 
+@Integration(type = TestType.ACCEPTANCE)
 class PacificTest extends AbstractDelegateTestCase {
   private UnitType marine;
   // Define players
@@ -80,8 +85,9 @@ class PacificTest extends AbstractDelegateTestCase {
     bridge = newDelegateBridge(americans);
     advanceToStep(bridge, "japaneseCombatMove");
     delegate = new MoveDelegate();
-    delegate.initialize("MoveDelegate", "MoveDelegate");
+    delegate.initialize("move", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
+    gameData.addDelegate(delegate);
     delegate.start();
   }
 
@@ -176,8 +182,7 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(unitedStates, sz5, sz4, sz10, sz16, sz27, newBritain);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
@@ -186,9 +191,7 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
-    // assertError( results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
@@ -197,8 +200,7 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
@@ -207,18 +209,19 @@ class PacificTest extends AbstractDelegateTestCase {
     final Route route = new Route(sz5, sz7, sz8, sz20);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
-    assertValid(results);
+    move(GameDataTestUtil.getUnits(map, route.getStart()), route);
   }
 
   @Test
   void testJapaneseDestroyerTransport() {
     bridge = newDelegateBridge(japanese);
     delegate = new MoveDelegate();
-    delegate.initialize("MoveDelegate", "MoveDelegate");
+    delegate.initialize("move", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
+    gameData.addDelegate(delegate);
     advanceToStep(bridge, "japaneseNonCombatMove");
     delegate.start();
+
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     final Route route = new Route(bonin, sz24);
@@ -227,10 +230,7 @@ class PacificTest extends AbstractDelegateTestCase {
     assertEquals(2, bonin.getUnitCollection().size());
     assertEquals(1, sz24.getUnitCollection().size());
     // validate movement
-    final String results =
-        delegate.move(
-            GameDataTestUtil.getUnits(map, route.getStart()), route, route.getEnd().getUnits());
-    assertValid(results);
+    load(GameDataTestUtil.getUnits(map, route.getStart()), route);
     // verify unit counts after move
     assertEquals(1, bonin.getUnitCollection().size());
     assertEquals(2, sz24.getUnitCollection().size());

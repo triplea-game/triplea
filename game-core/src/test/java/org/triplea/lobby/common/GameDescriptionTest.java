@@ -2,11 +2,9 @@ package org.triplea.lobby.common;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import games.strategy.net.Node;
 import java.net.InetAddress;
-import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -58,24 +56,6 @@ final class GameDescriptionTest {
           .forEach(
               shouldNotBeBot ->
                   assertThat(shouldNotBeBot.toString(), shouldNotBeBot.isBot(), is(false)));
-    }
-  }
-
-  @Nested
-  final class FormatBotStartTimeTest {
-    @Test
-    void nullStartDateTimeIsFormattedToEmptyString() {
-      final GameDescription gameDescription = GameDescription.builder().build();
-
-      assertThat(gameDescription.getFormattedBotStartTime(), is(""));
-    }
-
-    @Test
-    void shouldNotThrowExceptionWhenStartedDateIsNotNull() {
-      final GameDescription gameDescription =
-          GameDescription.builder().startDateTime(Instant.now()).build();
-
-      assertDoesNotThrow(gameDescription::getFormattedBotStartTime);
     }
   }
 

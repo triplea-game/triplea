@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.login;
 
-import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -18,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.triplea.domain.data.PlayerEmailValidation;
+import org.triplea.domain.data.PlayerName;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -143,10 +143,10 @@ final class ForgotPasswordPanel extends JPanel {
   }
 
   private void okPressed() {
-    if (!PlayerNameValidation.isValid(userNameField.getText())) {
+    if (!PlayerName.isValid(userNameField.getText())) {
       JOptionPane.showMessageDialog(
           this,
-          PlayerNameValidation.validate(userNameField.getText()),
+          PlayerName.validate(userNameField.getText()),
           "Invalid name",
           JOptionPane.ERROR_MESSAGE);
       return;

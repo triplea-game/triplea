@@ -2,6 +2,7 @@ package games.strategy.triplea.ui.history;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -18,7 +19,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
-import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.awt.BorderLayout;
 import java.io.PrintWriter;

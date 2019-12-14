@@ -5,6 +5,7 @@ import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
+import java.net.InetAddress;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -165,7 +166,8 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Collection<Action> getGeneralAdminGamesListContextActions() {
-    return List.of(SwingAction.of("Boot Game", e -> bootGame()));
+    return List.of(
+        SwingAction.of("Boot Game", e -> bootGame()), SwingAction.of("Shutdown", e -> shutdown()));
   }
 
   private void joinGame() {
@@ -216,5 +218,25 @@ class LobbyGamePanel extends JPanel {
     lobbyClient.getHttpLobbyClient().getGameListingClient().bootGame(gameId);
     JOptionPane.showMessageDialog(
         null, "The game you selected has been disconnected from the lobby.");
+  }
+
+  private void shutdown() {
+    final int selectedIndex = gameTable.getSelectedRow();
+    if (selectedIndex == -1) {
+      return;
+    }
+    final int result =
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to shutdown the selected game?",
+            "Send Shutdown Signal?",
+            JOptionPane.OK_CANCEL_OPTION);
+    if (result != JOptionPane.OK_OPTION) {
+      return;
+    }
+
+    final InetAddress ipAddress = gameTableModel.get(selectedIndex).getHostedBy().getAddress();
+    lobbyClient.getHttpLobbyClient().getRemoteActionsClient().sendShutdownRequest(ipAddress);
+    JOptionPane.showMessageDialog(null, "The game you selected was sent a shutdown signal");
   }
 }

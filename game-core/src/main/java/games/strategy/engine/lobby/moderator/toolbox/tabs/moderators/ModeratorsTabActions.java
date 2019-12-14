@@ -56,7 +56,7 @@ final class ModeratorsTabActions {
     };
   }
 
-  void addModerator(final JTextField addField, final Component button, final JTable table) {
+  void addModerator(final JTextField addField, final Component button) {
     moderatorsTabModel.addModerator(addField.getText().trim());
     addField.setText("");
     button.setEnabled(false);

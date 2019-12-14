@@ -1,112 +1,47 @@
 package org.triplea.game.server;
 
-import games.strategy.engine.chat.Chat;
-import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
-import games.strategy.engine.framework.IGame;
-import games.strategy.engine.framework.LocalPlayers;
-import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.launcher.LaunchAction;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
+
+import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.startup.LobbyWatcherThread;
+import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.player.Player;
-import games.strategy.triplea.ui.HeadlessUiContext;
-import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.ui.display.HeadlessDisplay;
-import java.io.File;
 import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.triplea.game.startup.ServerSetupModel;
-import org.triplea.sound.HeadlessSoundChannel;
-import org.triplea.sound.ISound;
+import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 
 /** Setup panel model for headless server. */
-@Log
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
   private final GameSelectorModel gameSelectorModel;
   private HeadlessServerSetup headlessServerSetup;
 
-  HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel) {
-    this.gameSelectorModel = gameSelectorModel;
-  }
-
   @Override
   public void showSelectType() {
-    new ServerModel(
-            gameSelectorModel,
-            this,
-            null,
-            new LaunchAction() {
-              @Override
-              public void handleGameInterruption(
-                  final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
-                try {
-                  log.info("Game ended, going back to waiting.");
-                  // if we do not do this, we can get into an infinite loop of launching a game,
-                  // then crashing out, then launching, etc.
-                  serverModel.setAllPlayersToNullNodes();
-                  final File f1 = getAutoSaveFileUtils().getHeadlessAutoSaveFile();
-                  if (!f1.exists() || !gameSelectorModel.load(f1)) {
-                    gameSelectorModel.resetGameDataToNull();
-                  }
-                } catch (final Exception e1) {
-                  log.log(Level.SEVERE, "Failed to load game", e1);
-                  gameSelectorModel.resetGameDataToNull();
-                }
-              }
-
-              @Override
-              public void onGameInterrupt() {
-                // tell headless server to wait for new connections:
-                HeadlessGameServer.waitForUsersHeadlessInstance();
-              }
-
-              @Override
-              public void onEnd(final String message) {
-                log.info(message);
-              }
-
-              @Override
-              public IDisplay startGame(
-                  final LocalPlayers localPlayers,
-                  final IGame game,
-                  final Set<Player> players,
-                  final Chat chat) {
-                final UiContext uiContext = new HeadlessUiContext();
-                uiContext.setDefaultMapDir(game.getData());
-                uiContext.setLocalPlayers(localPlayers);
-                return new HeadlessDisplay();
-              }
-
-              @Override
-              public ISound getSoundChannel(final LocalPlayers localPlayers) {
-                return new HeadlessSoundChannel();
-              }
-
-              @Override
-              public File getAutoSaveFile() {
-                return getAutoSaveFileUtils().getHeadlessAutoSaveFile();
-              }
-
-              @Override
-              public void onLaunch(final ServerGame serverGame) {
-                HeadlessGameServer.setServerGame(serverGame);
-              }
-
-              @Override
-              public HeadlessAutoSaveFileUtils getAutoSaveFileUtils() {
-                return new HeadlessAutoSaveFileUtils();
-              }
-            })
-        .createServerMessenger();
+    new ServerModel(gameSelectorModel, this, null, new HeadlessLaunchAction());
   }
 
   @Override
-  public void onServerMessengerCreated(final ServerModel serverModel) {
+  public void onServerMessengerCreated(
+      final ServerModel serverModel, final GameHostingResponse gameHostingResponse) {
+    Preconditions.checkNotNull(
+        gameHostingResponse, "hosting response is null, did the bot connect to lobby?");
+    Preconditions.checkNotNull(System.getProperty(LOBBY_URI));
+
     Optional.ofNullable(headlessServerSetup).ifPresent(HeadlessServerSetup::cancel);
+
+    final ClientLoginValidator loginValidator = new ClientLoginValidator();
+    loginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
+    // TODO: Project#12 Wrap loginValidator here and instead inject headlessLoginValidator
+    serverModel.getMessenger().setLoginValidator(loginValidator);
+    Optional.ofNullable(serverModel.getLobbyWatcherThread())
+        .map(LobbyWatcherThread::getLobbyWatcher)
+        .ifPresent(lobbyWatcher -> lobbyWatcher.setGameSelectorModel(gameSelectorModel));
     headlessServerSetup = new HeadlessServerSetup(serverModel, gameSelectorModel);
   }
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.SystemIdLoader;
 
 /** Factory class for implementations of {@link IClientMessenger}. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,7 +24,7 @@ public final class ClientMessengerFactory {
         props.getHost(),
         props.getPort(),
         props.getName(),
-        MacFinder.getHashedMacAddress(),
+        SystemIdLoader.load(),
         objectStreamFactory,
         clientLogin);
   }

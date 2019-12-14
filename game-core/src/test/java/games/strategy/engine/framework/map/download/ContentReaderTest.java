@@ -44,7 +44,7 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
       assertThat(fileContent(), is(bytes));
     }
 
-    private byte[] givenEntityContentIs(final byte[] bytes) throws Exception {
+    private byte[] givenEntityContentIs(final byte[] bytes) {
       when(closeableDownloader.getStream()).thenReturn(new ByteArrayInputStream(bytes));
       return bytes;
     }

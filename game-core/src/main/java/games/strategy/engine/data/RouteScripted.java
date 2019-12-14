@@ -37,17 +37,9 @@ public class RouteScripted extends Route {
   }
 
   @Override
-  public Territory getEnd() {
-    if (super.getEnd() == null) {
-      return super.getStart();
-    }
-    return super.getEnd();
-  }
-
-  @Override
   public Territory getTerritoryAtStep(final int i) {
     try {
-      if (super.getEnd() == null || super.getTerritoryAtStep(i) == null) {
+      if (super.getTerritoryAtStep(i) == null) {
         return super.getStart();
       }
     } catch (final ArrayIndexOutOfBoundsException e) {

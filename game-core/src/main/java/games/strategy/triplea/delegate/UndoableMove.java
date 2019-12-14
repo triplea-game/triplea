@@ -4,13 +4,13 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.ui.MovePanel;
 import java.util.Collection;
 import java.util.HashMap;
@@ -114,7 +114,7 @@ public class UndoableMove extends AbstractUndoableMove {
         } else {
           Map<Unit, Set<Unit>> targets = null;
           Unit target = null;
-          if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
+          if (routeUnitUsedToMove != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal =
                 end.getUnitCollection()

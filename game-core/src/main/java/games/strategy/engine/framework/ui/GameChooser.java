@@ -66,7 +66,7 @@ public class GameChooser extends JDialog {
     leftPanel.setLayout(new GridBagLayout());
     final JLabel gamesLabel = new JLabel("Games");
     gamesLabel.setFont(
-        gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2));
+        gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2.0F));
     leftPanel.add(
         gamesLabel,
         new GridBagConstraints(

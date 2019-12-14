@@ -1,3 +1,109 @@
+# Ansible Overview
+
+Deployment is done with [ansible](https://www.ansible.com/)
+In short, ansible will run commands to assert state on a target machine.
+Asserting state means, for example, that a certain system user should exist,
+if not, ansible will create it. In this ansible is idempotent by design.
+
+Ansible is driven by the concept of a playbook. It ties an inventory
+file, which contains a set of hosts defined by groups, to 'roles'. Roles
+can be thought of as an applications. The roles are defined by the
+folders in the 'roles' folder. Ansible roles have a standard file format
+where variables are defined. In this project the two files of most
+note are "defaults/main.yml", which defines all variables to be used
+in a role, and "tasks/main.yml" which defines a series of tasks to execute.
+
+It's also notewory that 'group_vars' can be used to define environment
+specific variables. Ansible has a precedence ordering for variables,
+'group_vars' have high precedence, they override most other values,
+'defaults' have lowest.
+So you may see for example a default variable that is defined like 
+`bot_lobby_uri: "{{ lobby_uri }}"`
+That essentially means there is no default value for the variable
+and we expect the variable to be defined in group_vars.
+
+## Running Ansible
+
+- Prerelease is automatic
+  - Deployments are run as the last step of travis builds, after artifacts
+are uploaded to github releases. A utility script will download those artifacts
+and place them in a location ansible can find them, then deployment to
+prerelease will start which updates/upgrades/installs to the servers
+defined in the prerelease inventory file.
+
+- To run full stack locally, see the vagrant readme file in this same folder.
+- To run deployment manually:
+
+Assuming a vault password file named 'vault_password' is created in the same
+folder and contains the ansible vault password, run: 
+
+``bash
+./run_deployment [version_to_install] [ansible_args]
+```
+
+examples
+```bash
+./run_deployment 2.0.1000 -i ansible/inventory/prerelease
+
+# To see verbose output
+./run_deployment 2.0.1000 -v -i ansible/inventory/prerelease
+
+# To see 'diff' output, which shows how each file on server is being updated
+#  (caution!! this can expose secret values to stdout)
+./run_deployment 2.0.1000 -d -i ansible/inventory/prerelease
+
+# To see SSL debug output:
+./run_deployment 2.0.1000 -vvv -i ansible/inventory/prerelease
+
+# To deploy to just bots, use tags, '-t' (see playbook for tag names)
+./run_deployment 2.0.1000 -vvv -t bots -i ansible/inventory/prerelease
+```
+
+Production deployment is only a matter of specifying the production inventory file.
+
+```
+./run_deployment 2.0.1000 -vvv -i ansible/inventory/production
+```
+
+## Vault Password
+
+To run ansible, you will need to create a file named 'vault_password' 
+and add to that file the ansible vault passowrd (project admins/maintainers will have this).
+
+```
+cd infrastructure/
+touch vault_password
+# edit 'vault_password' and add the ansible vault password
+```
+
+
+## PreRelease and Production Deployments
+
+- Executed as part of travis pipeline build after release artifacts are generated
+and deployed to github releases.
+- Variable values, such as passwords are kept constant between prerelease and production
+- Production version is controlled by a variable, prerelease is always latest version
+- Prerelease specific deployment instructions are excluded via ansible 'if' instructions,
+  when promoting such steps to production, we remove those if statements.
+- Production deployment occurs on every build, ansible is idempotent by design,
+  this allows us to ensure updates, update/add/change servers from inventory files
+
+## Ansible Public Key
+
+Ansible needs to communicate to target servers via ssh. Locally we have a private key
+that is encrypted and decrypted when ansible runs (decryption is via ansible vault).
+To enable this, we need the ansible public key to be deployed to the target server under
+the root users 'authorized_keys' file.
+
+The installation of a public key to root user can be done during linode creation from the
+lindoe web UI. Add this public key to your linode account profile (via the linode website):
+
+> ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBdU9dU02UR5MCutULVgpdT1mN6wjJOKL8sW1/ZZkdym ansible-public-key
+
+Then, when creating a new linode, select that public key and it will added to the root user
+'authorized_keys' file.
+
+
 # Ansible Variables
 
 ## Shared Variables
@@ -29,52 +135,6 @@ ie: `{{ foo_db_password }}`
 - do not use `vars` folder
 - define shared variables and environment specific overrides in `group_vars`
 - all other variables should be defined in `defaults/main.yml`
-
-
-# Running Ansible
-
-## Ansible Public Key
-
-Ansible needs to communicate to target servers via ssh. Locally we have a private key
-that is encrypted and decrypted when ansible runs (decryption is via ansible vault).
-To enable this, we need the ansible public key to be deployed to the target server under
-the root users 'authorized_keys' file.
-
-The installation of a public key to root user can be done during linode creation from the
-lindoe web UI. Add this public key to your linode account profile (via the linode website):
-
-> ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBdU9dU02UR5MCutULVgpdT1mN6wjJOKL8sW1/ZZkdym ansible-public-key
-
-Then, when creating a new linode, select that public key and it will added to the root user
-'authorized_keys' file.
-
-
-## Vault Password
-
-To run ansible, you will need to create a file named 'vault_password' 
-and add to that file the ansible vault passowrd (project admins/maintainers will have this).
-
-```
-cd infrastructure/
-touch vault_password
-# edit 'vault_password' and add the ansible vault password
-```
-
-## Executing a Deployment
-
-Assuming a vault password file is created, run: `./run_deployment <VERSION> [prerelease|production]`
-
-
-## PreRelease and Production Deployments
-
-- Executed as part of travis pipeline build after release artifacts are generated
-and deployed to github releases.
-- Variable values, such as passwords are kept constant between prerelease and production
-- Production version is controlled by a variable, prerelease is always latest version
-- Prerelease specific deployment instructions are excluded via ansible 'if' instructions,
-  when promoting such steps to production, we remove those if statements.
-- Production deployment occurs on every build, ansible is idempotent by design,
-  this allows us to ensure updates, update/add/change servers from inventory files
 
 
 # Creating Secrets

@@ -39,11 +39,6 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     this.channelMessenger = channelMessenger;
   }
 
-  public boolean isPasswordChangeRequired() {
-    return messenger instanceof IClientMessenger
-        && ((IClientMessenger) messenger).isPasswordChangeRequired();
-  }
-
   // TODO: API could be improved, perhaps return an optional, and/or store exact instance types from
   // constructor.
   public IServerMessenger getServerMessenger() {

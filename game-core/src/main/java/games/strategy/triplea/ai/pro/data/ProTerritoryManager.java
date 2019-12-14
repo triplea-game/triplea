@@ -18,6 +18,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.math.BigDecimal;
@@ -31,9 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
-import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.util.Tuple;
 
 /** Manages info about territories. */
 public class ProTerritoryManager {
@@ -360,101 +360,31 @@ public class ProTerritoryManager {
       return;
     }
 
-    // Find scramble properties
-    final boolean fromIslandOnly = Properties.getScrambleFromIslandOnly(data);
-    final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
-    final int maxScrambleDistance =
-        StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
-            .map(UnitAttachment::get)
-            .filter(UnitAttachment::getCanScramble)
-            .mapToInt(UnitAttachment::getMaxScrambleDistance)
-            .max()
-            .orElse(0);
-    final Predicate<Unit> airbasesCanScramble =
-        Matches.unitIsEnemyOf(data, player)
-            .and(Matches.unitIsAirBase())
-            .and(Matches.unitIsNotDisabled())
-            .and(Matches.unitIsBeingTransported().negate());
-    final Predicate<Territory> canScramble =
-        PredicateBuilder.of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player, data)))
-            .and(
-                Matches.territoryHasUnitsThatMatch(
-                    Matches.unitCanScramble()
-                        .and(Matches.unitIsEnemyOf(data, player))
-                        .and(Matches.unitIsNotDisabled())))
-            .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
-            .andIf(fromIslandOnly, Matches.territoryIsIsland())
-            .build();
+    final var scrambleLogic = new ScrambleLogic(data, player, moveMap.keySet());
+    for (final var territoryToScramblersEntry :
+        scrambleLogic.getUnitsThatCanScrambleByDestination().entrySet()) {
+      final Territory to = territoryToScramblersEntry.getKey();
+      for (final Tuple<Collection<Unit>, Collection<Unit>> airbasesAndScramblers :
+          territoryToScramblersEntry.getValue().values()) {
+        final Collection<Unit> airbases = airbasesAndScramblers.getFirst();
+        final Collection<Unit> scramblers = airbasesAndScramblers.getSecond();
+        final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
 
-    // Find potential territories to scramble from
-    final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
-    for (final Territory t : moveMap.keySet()) {
-      if (t.isWater() || !toSeaOnly) {
-        final Set<Territory> canScrambleFrom =
-            new HashSet<>(
-                CollectionUtils.getMatches(
-                    data.getMap().getNeighbors(t, maxScrambleDistance), canScramble));
-        if (!canScrambleFrom.isEmpty()) {
-          scrambleTerrs.put(t, canScrambleFrom);
+        final List<Unit> addTo = moveMap.get(to).getMaxScrambleUnits();
+        if (scramblers.size() <= maxCanScramble) {
+          addTo.addAll(scramblers);
+        } else {
+          scramblers.stream()
+              .sorted(
+                  Comparator.<Unit>comparingDouble(
+                          unit ->
+                              ProBattleUtils.estimateStrength(to, List.of(unit), List.of(), false))
+                      .reversed())
+              .limit(maxCanScramble)
+              .forEachOrdered(addTo::add);
         }
       }
     }
-    if (scrambleTerrs.isEmpty()) {
-      return;
-    }
-
-    // Find potential max units that can be scrambled to each territory
-    for (final Territory to : scrambleTerrs.keySet()) {
-      for (final Territory from : scrambleTerrs.get(to)) {
-
-        // Find potential scramble units from territory
-        final Collection<Unit> airbases = from.getUnitCollection().getMatches(airbasesCanScramble);
-        final int maxCanScramble = getMaxScrambleCount(airbases);
-        final Route toBattleRoute =
-            data.getMap().getRoute(from, to, Matches.territoryIsNotImpassable());
-        List<Unit> canScrambleAir =
-            from.getUnitCollection()
-                .getMatches(
-                    Matches.unitIsEnemyOf(data, player)
-                        .and(Matches.unitCanScramble())
-                        .and(Matches.unitIsNotDisabled())
-                        .and(Matches.unitWasScrambled().negate())
-                        .and(Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
-
-        // Add max scramble units
-        if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
-          if (maxCanScramble < canScrambleAir.size()) {
-            canScrambleAir.sort(
-                Comparator.<Unit>comparingDouble(
-                        o ->
-                            ProBattleUtils.estimateStrength(
-                                to, List.of(o), new ArrayList<>(), false))
-                    .reversed());
-            canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
-          }
-          moveMap.get(to).getMaxScrambleUnits().addAll(canScrambleAir);
-        }
-      }
-    }
-  }
-
-  private static int getMaxScrambleCount(final Collection<Unit> airbases) {
-    if (airbases.isEmpty()
-        || !airbases.stream().allMatch(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
-      throw new IllegalStateException("All units must be viable airbases");
-    }
-
-    // find how many is the max this territory can scramble
-    int maxScrambled = 0;
-    for (final Unit base : airbases) {
-      final UnitAttachment ua = UnitAttachment.get(base.getType());
-      final int baseMax = ua.getMaxScrambleCount();
-      if (baseMax == -1) {
-        return Integer.MAX_VALUE;
-      }
-      maxScrambled += baseMax;
-    }
-    return maxScrambled;
   }
 
   private static void findAttackOptions(

@@ -1,12 +1,12 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
-import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 import java.awt.Component;
 import java.util.ArrayList;

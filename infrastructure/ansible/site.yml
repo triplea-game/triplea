@@ -10,6 +10,7 @@
   gather_facts: no
   serial: 100%
   strategy: free
+  tags: security
   roles:
     - apt_update
     - admin_user
@@ -20,15 +21,17 @@
   gather_facts: no
   serial: 100%
   strategy: free
-  tags: lobbyDb
   roles:
-    - postgres
-    - flyway
+    - role: postgres
+      tags: [ postgres ]
+    - role: flyway
+      tags: [ flyway ]
 
 - hosts: dropwizardHosts
   gather_facts: no
   serial: 100%
   strategy: free
+  tags: lobby
   roles:
     - java
     - http_server
@@ -37,6 +40,7 @@
 - hosts: botHosts
   gather_facts: no
   serial: 100%
+  tags: bots
   roles:
     - java
     - bot

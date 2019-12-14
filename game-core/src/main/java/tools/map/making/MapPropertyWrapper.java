@@ -3,10 +3,8 @@ package tools.map.making;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.properties.AbstractEditableProperty;
 import games.strategy.engine.data.properties.BooleanProperty;
-import games.strategy.engine.data.properties.CollectionProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.DoubleProperty;
-import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.MapProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -14,12 +12,10 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.data.properties.StringProperty;
 import java.awt.Color;
 import java.beans.Introspector;
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +51,8 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
       property = new BooleanProperty(name, description, ((Boolean) defaultValue));
     } else if (defaultValue instanceof Color) {
       property = new ColorProperty(name, description, ((Color) defaultValue));
-    } else if (defaultValue instanceof File) {
-      property = new FileProperty(name, description, ((File) defaultValue));
     } else if (defaultValue instanceof String) {
       property = new StringProperty(name, description, ((String) defaultValue));
-    } else if (defaultValue instanceof Collection) {
-      property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
     } else if (defaultValue instanceof Map) {
       property = new MapProperty<>(name, description, ((Map<String, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {

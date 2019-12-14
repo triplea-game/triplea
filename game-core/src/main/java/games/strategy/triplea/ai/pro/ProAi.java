@@ -311,8 +311,8 @@ public class ProAi extends AbstractAi {
     // If attacker with more unit strength or strafing and isn't land battle with only air left then
     // don't retreat
     final boolean isAttacker = player.equals(battle.getAttacker());
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final Collection<Unit> attackers = battle.getAttackingUnits();
+    final Collection<Unit> defenders = battle.getDefendingUnits();
     final double strengthDifference =
         ProBattleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
     final boolean isStrafing = isAttacker && storedStrafingTerritories.contains(battleTerritory);
@@ -395,8 +395,8 @@ public class ProAi extends AbstractAi {
       boolean needToCheck = true;
       final boolean isAttacker = player.equals(battle.getAttacker());
       if (!isAttacker) {
-        final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-        final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+        final Collection<Unit> attackers = battle.getAttackingUnits();
+        final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference =
             ProBattleUtils.estimateStrengthDifference(battleSite, attackers, defenders);
@@ -455,8 +455,8 @@ public class ProAi extends AbstractAi {
     if (battle == null) {
       return null;
     }
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final Collection<Unit> attackers = battle.getAttackingUnits();
+    final Collection<Unit> defenders = battle.getDefendingUnits();
     ProLogger.info(
         player.getName()
             + " checking scramble to "
@@ -486,8 +486,8 @@ public class ProAi extends AbstractAi {
     if (battle == null) {
       return false;
     }
-    final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-    final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+    final Collection<Unit> attackers = battle.getAttackingUnits();
+    final Collection<Unit> defenders = battle.getDefendingUnits();
     ProLogger.info(
         player.getName()
             + " checking sub attack in "

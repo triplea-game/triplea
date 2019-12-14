@@ -15,6 +15,7 @@ import javax.annotation.concurrent.GuardedBy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.SystemId;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.test.common.Integration;
 
@@ -34,10 +35,11 @@ class MessengerIntegrationTest {
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
-    final String mac = MacFinder.getHashedMacAddress();
-    client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
+    client1Messenger =
+        new ClientMessenger("localhost", serverPort, "client1", SystemId.of("system-id"));
     client1Messenger.addMessageListener(client1MessageListener);
-    client2Messenger = new ClientMessenger("localhost", serverPort, "client2", mac);
+    client2Messenger =
+        new ClientMessenger("localhost", serverPort, "client2", SystemId.of("system-id"));
     client2Messenger.addMessageListener(client2MessageListener);
     assertEquals(client1Messenger.getServerNode(), serverMessenger.getLocalNode());
     assertEquals(client2Messenger.getServerNode(), serverMessenger.getLocalNode());

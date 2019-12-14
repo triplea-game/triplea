@@ -211,9 +211,7 @@ final class ProTechAi {
               final Route seaRoute =
                   getMaxSeaRoute(
                       data, t4, waterCheck, transports, enemyPlayer, maxTransportDistance);
-              if (seaRoute == null
-                  || seaRoute.getEnd() == null
-                  || !seaRoute.getEnd().equals(waterCheck)) {
+              if (seaRoute == null || !seaRoute.getEnd().equals(waterCheck)) {
                 continue;
               }
             }
@@ -573,7 +571,7 @@ final class ProTechAi {
     final Predicate<Territory> routeCond =
         Matches.territoryHasUnitsThatMatch(unitCond).negate().and(Matches.territoryIsWater());
     Route r = data.getMap().getRouteForUnits(start, destination, routeCond, units, player);
-    if (r == null || r.getEnd() == null) {
+    if (r == null) {
       return null;
     }
     final int routeDistance = r.numberOfSteps();

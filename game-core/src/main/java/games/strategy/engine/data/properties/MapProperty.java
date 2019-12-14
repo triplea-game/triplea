@@ -1,10 +1,9 @@
 package games.strategy.engine.data.properties;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.not;
+import static java.util.function.Predicate.not;
 
 import java.awt.Color;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,13 +30,12 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     checkNotNull(map);
 
     this.map = map;
-    resetProperties(map, properties, name, description);
+    resetProperties(map, properties, description);
   }
 
   private static void resetProperties(
       final Map<String, ?> map,
       final List<IEditableProperty<?>> properties,
-      final String name,
       final String description) {
     properties.clear();
     map.forEach(
@@ -46,12 +44,8 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
             properties.add(new BooleanProperty(key, description, ((Boolean) value)));
           } else if (value instanceof Color) {
             properties.add(new ColorProperty(key, description, ((Color) value)));
-          } else if (value instanceof File) {
-            properties.add(new FileProperty(key, description, ((File) value)));
           } else if (value instanceof String) {
             properties.add(new StringProperty(key, description, ((String) value)));
-          } else if (value instanceof Collection) {
-            properties.add(new CollectionProperty<>(name, description, ((Collection<?>) value)));
           } else if (value instanceof Integer) {
             properties.add(
                 new NumberProperty(
@@ -84,7 +78,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     checkNotNull(value);
 
     map = value;
-    resetProperties(map, properties, getName(), getDescription());
+    resetProperties(map, properties, getDescription());
   }
 
   @Override
@@ -104,8 +98,8 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     }
 
     final Map<?, ?> otherMap = (Map<?, ?>) value;
-    if (!areAllElementsNullOrInstanceOf(otherMap.keySet(), String.class)
-        || !areAllElementsNullOrInstanceOf(otherMap.values(), getMapValueType())) {
+    if (containsIncompatibleType(otherMap.keySet(), String.class)
+        || containsIncompatibleType(otherMap.values(), getMapValueType())) {
       return false;
     }
 
@@ -113,7 +107,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     try {
       @SuppressWarnings("unchecked")
       final Map<String, ?> typedOtherMap = (Map<String, ?>) otherMap;
-      resetProperties(typedOtherMap, new ArrayList<>(), getName(), getDescription());
+      resetProperties(typedOtherMap, new ArrayList<>(), getDescription());
     } catch (final IllegalArgumentException e) {
       log.warning("Validation failed: " + e.getMessage());
       return false;
@@ -122,9 +116,9 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     return true;
   }
 
-  private static boolean areAllElementsNullOrInstanceOf(
+  private static boolean containsIncompatibleType(
       final Collection<?> collection, final Class<?> type) {
-    return collection.stream().filter(not(Objects::isNull)).allMatch(type::isInstance);
+    return collection.stream().filter(not(Objects::isNull)).anyMatch(not(type::isInstance));
   }
 
   private Class<?> getMapValueType() {

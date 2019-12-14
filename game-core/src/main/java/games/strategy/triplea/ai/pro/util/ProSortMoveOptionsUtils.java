@@ -12,7 +12,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,13 +183,13 @@ public final class ProSortMoveOptionsUtils {
               final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
               sortedUnitsList.sort(
                   new UnitBattleComparator(
-                      false,
-                      ProData.unitValueMap,
-                      TerritoryEffectHelper.getEffects(t),
-                      data,
-                      false,
-                      false));
-              Collections.reverse(sortedUnitsList);
+                          false,
+                          ProData.unitValueMap,
+                          TerritoryEffectHelper.getEffects(t),
+                          data,
+                          false,
+                          false)
+                      .reversed());
               final int powerWithout =
                   DiceRoll.getTotalPower(
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -206,13 +205,13 @@ public final class ProSortMoveOptionsUtils {
               sortedUnitsList.add(o1.getKey());
               sortedUnitsList.sort(
                   new UnitBattleComparator(
-                      false,
-                      ProData.unitValueMap,
-                      TerritoryEffectHelper.getEffects(t),
-                      data,
-                      false,
-                      false));
-              Collections.reverse(sortedUnitsList);
+                          false,
+                          ProData.unitValueMap,
+                          TerritoryEffectHelper.getEffects(t),
+                          data,
+                          false,
+                          false)
+                      .reversed());
               final int powerWith =
                   DiceRoll.getTotalPower(
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -245,13 +244,13 @@ public final class ProSortMoveOptionsUtils {
               final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
               sortedUnitsList.sort(
                   new UnitBattleComparator(
-                      false,
-                      ProData.unitValueMap,
-                      TerritoryEffectHelper.getEffects(t),
-                      data,
-                      false,
-                      false));
-              Collections.reverse(sortedUnitsList);
+                          false,
+                          ProData.unitValueMap,
+                          TerritoryEffectHelper.getEffects(t),
+                          data,
+                          false,
+                          false)
+                      .reversed());
               final int powerWithout =
                   DiceRoll.getTotalPower(
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -267,13 +266,13 @@ public final class ProSortMoveOptionsUtils {
               sortedUnitsList.add(o2.getKey());
               sortedUnitsList.sort(
                   new UnitBattleComparator(
-                      false,
-                      ProData.unitValueMap,
-                      TerritoryEffectHelper.getEffects(t),
-                      data,
-                      false,
-                      false));
-              Collections.reverse(sortedUnitsList);
+                          false,
+                          ProData.unitValueMap,
+                          TerritoryEffectHelper.getEffects(t),
+                          data,
+                          false,
+                          false)
+                      .reversed());
               final int powerWith =
                   DiceRoll.getTotalPower(
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(

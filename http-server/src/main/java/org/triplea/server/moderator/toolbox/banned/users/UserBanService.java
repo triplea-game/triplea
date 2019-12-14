@@ -6,11 +6,13 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.domain.data.PlayerName;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
+import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 
 /**
  * Service layer for managing user bans, get bans, add and remove. User bans are done by MAC and IP
@@ -23,6 +25,7 @@ public class UserBanService {
   @Nonnull private final UserBanDao bannedUserDao;
   @Nonnull private final Supplier<String> publicIdSupplier;
   @Nonnull private final Chatters chatters;
+  @Nonnull private final RemoteActionsEventQueue remoteActionsEventQueue;
 
   List<UserBanData> getBannedUsers() {
     return bannedUserDao.lookupBans().stream()
@@ -75,6 +78,8 @@ public class UserBanService {
     chatters.disconnectPlayerSessions(
         PlayerName.of(banUserParams.getUsername()),
         "You have been banned for " + banUserParams.getHoursToBan() + " hours");
+
+    remoteActionsEventQueue.addPlayerBannedEvent(IpAddressParser.fromString(banUserParams.getIp()));
 
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()

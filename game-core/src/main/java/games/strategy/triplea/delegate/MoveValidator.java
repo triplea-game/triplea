@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
@@ -70,14 +71,15 @@ public class MoveValidator {
 
   /** Validates the specified move. */
   public static MoveValidationResult validateMove(
-      final Collection<Unit> units,
-      final Route route,
+      final MoveDescription move,
       final PlayerId player,
-      final Map<Unit, Unit> unitsToTransports,
-      final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves,
       final GameData data) {
+    final Collection<Unit> units = move.getUnits();
+    final Route route = move.getRoute();
+    final Map<Unit, Unit> unitsToTransports = move.getUnitsToTransports();
+    final Map<Unit, Collection<Unit>> newDependents = move.getDependentUnits();
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
@@ -697,8 +699,7 @@ public class MoveValidator {
       final MoveValidationResult result) {
     final boolean isEditMode = getEditMode(data);
     // make sure transports in the destination
-    if (route.getEnd() != null
-        && !route.getEnd().getUnitCollection().containsAll(unitToTransport.values())
+    if (!route.getEnd().getUnitCollection().containsAll(unitToTransport.values())
         && !units.containsAll(unitToTransport.values())) {
       return result.setErrorReturnResult("Transports not found in route end");
     }
@@ -778,7 +779,7 @@ public class MoveValidator {
     } // !isEditMode
 
     // make sure that no non sea non transportable no carriable units end at sea
-    if (route.getEnd() != null && route.getEnd().isWater()) {
+    if (route.getEnd().isWater()) {
       for (final Unit unit : MoveValidator.getUnitsThatCantGoOnWater(units)) {
         result.addDisallowedUnit("Not all units can end at water", unit);
       }
@@ -792,49 +793,47 @@ public class MoveValidator {
       }
     }
     // test for stack limits per unit
-    if (route.getEnd() != null) {
-      final Collection<Unit> unitsWithStackingLimits =
-          CollectionUtils.getMatches(
-              units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
-      for (final Territory t : route.getSteps()) {
-        final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
-        if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)
-            || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(data, player))) {
-          for (final Unit unit : unitsWithStackingLimits) {
-            final UnitType ut = unit.getType();
-            int maxAllowed =
-                UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                    "attackingLimit", ut, t, player, data);
-            maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-            if (maxAllowed > 0) {
-              unitsAllowedSoFar.add(unit);
-            } else {
-              result.addDisallowedUnit(
-                  "UnitType " + ut.getName() + " has reached stacking limit", unit);
-            }
+    final Collection<Unit> unitsWithStackingLimits =
+        CollectionUtils.getMatches(
+            units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
+    for (final Territory t : route.getSteps()) {
+      final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
+      if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)
+          || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(data, player))) {
+        for (final Unit unit : unitsWithStackingLimits) {
+          final UnitType ut = unit.getType();
+          int maxAllowed =
+              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+                  "attackingLimit", ut, t, player, data);
+          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
+          if (maxAllowed > 0) {
+            unitsAllowedSoFar.add(unit);
+          } else {
+            result.addDisallowedUnit(
+                "UnitType " + ut.getName() + " has reached stacking limit", unit);
           }
-          if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-              "attackingLimit", units, t, player, data)) {
-            return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
+        }
+        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
+            "attackingLimit", units, t, player, data)) {
+          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
+        }
+      } else {
+        for (final Unit unit : unitsWithStackingLimits) {
+          final UnitType ut = unit.getType();
+          int maxAllowed =
+              UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+                  "movementLimit", ut, t, player, data);
+          maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
+          if (maxAllowed > 0) {
+            unitsAllowedSoFar.add(unit);
+          } else {
+            result.addDisallowedUnit(
+                "UnitType " + ut.getName() + " has reached stacking limit", unit);
           }
-        } else {
-          for (final Unit unit : unitsWithStackingLimits) {
-            final UnitType ut = unit.getType();
-            int maxAllowed =
-                UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-                    "movementLimit", ut, t, player, data);
-            maxAllowed -= CollectionUtils.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
-            if (maxAllowed > 0) {
-              unitsAllowedSoFar.add(unit);
-            } else {
-              result.addDisallowedUnit(
-                  "UnitType " + ut.getName() + " has reached stacking limit", unit);
-            }
-          }
-          if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
-              "movementLimit", units, t, player, data)) {
-            return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
-          }
+        }
+        if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(
+            "movementLimit", units, t, player, data)) {
+          return result.setErrorReturnResult("Units Cannot Go Over Stacking Limit");
         }
       }
     }
@@ -988,7 +987,7 @@ public class MoveValidator {
     }
     // if there are no steps, then we began in this sea zone, so see if there are ignored units in
     // this sea zone (not sure if we need !ignoreRouteEnd here).
-    if (steps.isEmpty() && route.getStart() != null && !ignoreRouteEnd) {
+    if (steps.isEmpty() && !ignoreRouteEnd) {
       steps.add(route.getStart());
     }
     boolean validMove = false;
@@ -1244,9 +1243,11 @@ public class MoveValidator {
             transport, route.getEnd())) {
           final Territory alreadyUnloadedTo =
               getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-          for (final Unit unit : TransportTracker.transporting(transport)) {
-            result.addDisallowedUnit(
-                TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+          if (alreadyUnloadedTo != null) {
+            for (final Unit unit : TransportTracker.transporting(transport)) {
+              result.addDisallowedUnit(
+                  TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+            }
           }
           // Check if the transport has already loaded after being in combat
         } else if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport)) {

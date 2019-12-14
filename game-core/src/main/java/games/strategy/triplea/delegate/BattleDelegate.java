@@ -45,7 +45,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -677,175 +676,72 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   private void doScrambling() {
-    // first, figure out all the territories where scrambling units could scramble to
-    // then ask the defending player if they wish to scramble units there, and actually move the
-    // units there
     final GameData data = getData();
     if (!Properties.getScrambleRulesInEffect(data)) {
       return;
     }
-    final boolean fromIslandOnly = Properties.getScrambleFromIslandOnly(data);
-    final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
-    final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
-    final boolean toSbr = Properties.getCanScrambleIntoAirBattles(data);
-    int maxScrambleDistance = 0;
-    for (final UnitType unitType : data.getUnitTypeList()) {
-      final UnitAttachment ua = UnitAttachment.get(unitType);
-      if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
-        maxScrambleDistance = ua.getMaxScrambleDistance();
-      }
-    }
-    final Predicate<Unit> airbasesCanScramble =
-        Matches.unitIsEnemyOf(data, player)
-            .and(Matches.unitIsAirBase())
-            .and(Matches.unitIsNotDisabled())
-            .and(Matches.unitIsBeingTransported().negate());
-    final Predicate<Territory> canScramble =
-        PredicateBuilder.of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player, data)))
-            .and(
-                Matches.territoryHasUnitsThatMatch(
-                    Matches.unitCanScramble()
-                        .and(Matches.unitIsEnemyOf(data, player))
-                        .and(Matches.unitIsNotDisabled())))
-            .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
-            .andIf(fromIslandOnly, Matches.territoryIsIsland())
-            .build();
-
+    final BattleListing pendingBattleSites = battleTracker.getPendingBattleSites();
     final Set<Territory> territoriesWithBattles =
-        battleTracker.getPendingBattleSites().getNormalBattlesIncludingAirBattles();
-    if (toSbr) {
+        pendingBattleSites.getNormalBattlesIncludingAirBattles();
+    if (Properties.getCanScrambleIntoAirBattles(data)) {
       territoriesWithBattles.addAll(
-          battleTracker.getPendingBattleSites().getStrategicBombingRaidsIncludingAirBattles());
+          pendingBattleSites.getStrategicBombingRaidsIncludingAirBattles());
     }
-    final Set<Territory> territoriesWithBattlesWater =
-        new HashSet<>(
-            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater()));
-    final Set<Territory> territoriesWithBattlesLand =
-        new HashSet<>(
-            CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
-    final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
-    for (final Territory battleTerr : territoriesWithBattlesWater) {
-      final Set<Territory> canScrambleFrom =
-          new HashSet<>(
-              CollectionUtils.getMatches(
-                  data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
-      if (!canScrambleFrom.isEmpty()) {
-        scrambleTerrs.put(battleTerr, canScrambleFrom);
-      }
-    }
-    for (final Territory battleTerr : territoriesWithBattlesLand) {
-      if (!toSeaOnly) {
-        final Set<Territory> canScrambleFrom =
-            new HashSet<>(
-                CollectionUtils.getMatches(
-                    data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
-        if (!canScrambleFrom.isEmpty()) {
-          scrambleTerrs.put(battleTerr, canScrambleFrom);
-        }
-      }
-      final IBattle battle = battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
-      // do not forget we may already have the territory in the list, so we need to add to the
-      // collection, not overwrite
-      // it.
-      if (battle != null && battle.isAmphibious() && battle instanceof DependentBattle) {
-        final Collection<Territory> amphibFromTerrs =
-            ((DependentBattle) battle).getAmphibiousAttackTerritories();
-        amphibFromTerrs.removeAll(territoriesWithBattlesWater);
-        for (final Territory amphibFrom : amphibFromTerrs) {
-          final Set<Territory> canScrambleFrom =
-              scrambleTerrs.getOrDefault(amphibFrom, new HashSet<>());
-          if (toAnyAmphibious) {
-            canScrambleFrom.addAll(
-                CollectionUtils.getMatches(
-                    data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
-          } else if (canScramble.test(battleTerr)) {
-            canScrambleFrom.add(battleTerr);
-          }
-          if (!canScrambleFrom.isEmpty()) {
-            scrambleTerrs.put(amphibFrom, canScrambleFrom);
-          }
-        }
-      }
-    }
-    // now scrambleTerrs is a list of places we can scramble from
-    if (scrambleTerrs.isEmpty()) {
-      return;
-    }
-    final Map<
-            Tuple<Territory, PlayerId>,
-            Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>>
-        scramblersByTerritoryPlayer = new HashMap<>();
-    for (final Territory to : scrambleTerrs.keySet()) {
-      // find who we should ask
-      PlayerId defender = null;
-      if (battleTracker.hasPendingBattle(to, false)) {
-        defender = AbstractBattle.findDefender(to, player, data);
-      }
-      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers = new HashMap<>();
-      for (final Territory from : scrambleTerrs.get(to)) {
-        if (defender == null) {
-          defender = AbstractBattle.findDefender(from, player, data);
-        }
-        // find how many is the max this territory can scramble
-        final Collection<Unit> airbases = from.getUnitCollection().getMatches(airbasesCanScramble);
-        final int maxCanScramble = getMaxScrambleCount(airbases);
-        // TODO: consider movement cost and canals by checking each air unit separately
-        final Route toBattleRoute =
-            data.getMap().getRoute(from, to, Matches.territoryIsNotImpassable());
-        final Collection<Unit> canScrambleAir =
-            from.getUnitCollection()
-                .getMatches(
-                    Matches.unitIsEnemyOf(data, player)
-                        .and(Matches.unitCanScramble())
-                        .and(Matches.unitIsNotDisabled())
-                        .and(Matches.unitWasScrambled().negate())
-                        .and(Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
-        if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
-          scramblers.put(from, Tuple.of(airbases, canScrambleAir));
-        }
-      }
-      if (defender == null || scramblers.isEmpty()) {
-        continue;
-      }
-      scramblersByTerritoryPlayer
-          .computeIfAbsent(Tuple.of(to, defender), k -> new ArrayList<>())
-          .add(scramblers);
-    }
+
     // now scramble them
-    for (final Tuple<Territory, PlayerId> terrPlayer : scramblersByTerritoryPlayer.keySet()) {
-      final Territory to = terrPlayer.getFirst();
-      final PlayerId defender = terrPlayer.getSecond();
-      if (defender == null || defender.isNull()) {
-        continue;
-      }
+    final var scrambleLogic =
+        new ScrambleLogic(getData(), player, territoriesWithBattles, battleTracker);
+    for (final var territoryToScramblersEntry :
+        scrambleLogic.getUnitsThatCanScrambleByDestination().entrySet()) {
+      final Territory to = territoryToScramblersEntry.getKey();
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
+          territoryToScramblersEntry.getValue();
+
+      // Remove any units that were already scrambled to other territories.
+      scramblers
+          .entrySet()
+          .removeIf(
+              e -> {
+                final Collection<Unit> unitsToScramble = e.getValue().getSecond();
+                unitsToScramble.retainAll(e.getKey().getUnitCollection());
+                return unitsToScramble.isEmpty();
+              });
+
       boolean scrambledHere = false;
-      for (final var scramblers : scramblersByTerritoryPlayer.get(terrPlayer)) {
-        // verify that we didn't already scramble any of these units
-        final Iterator<Territory> territoryIter = scramblers.keySet().iterator();
-        while (territoryIter.hasNext()) {
-          final Territory t = territoryIter.next();
-          scramblers.get(t).getSecond().retainAll(t.getUnitCollection());
-          if (scramblers.get(t).getSecond().isEmpty()) {
-            territoryIter.remove();
-          }
+      PlayerId defender = PlayerId.NULL_PLAYERID;
+      if (!scramblers.isEmpty()) {
+        // Determine defender.
+        if (battleTracker.hasPendingBattle(to, false)) {
+          defender = AbstractBattle.findDefender(to, player, data);
         }
-        if (scramblers.isEmpty()) {
+        // find possible scrambling defending in the from territories
+        if (defender.isNull()) {
+          defender =
+              scramblers.keySet().stream()
+                  .map(from -> AbstractBattle.findDefender(from, player, data))
+                  .filter(player -> !player.isNull())
+                  .findFirst()
+                  .orElse(PlayerId.NULL_PLAYERID);
+        }
+        if (defender.isNull()) {
           continue;
         }
+
         final Map<Territory, Collection<Unit>> toScramble =
             getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
           continue;
         }
-        // verify max allowed
         if (!scramblers.keySet().containsAll(toScramble.keySet())) {
           throw new IllegalStateException("Trying to scramble from illegal territory");
         }
+        // verify max allowed
         for (final Territory t : scramblers.keySet()) {
           if (toScramble.get(t) == null) {
             continue;
           }
-          if (toScramble.get(t).size() > getMaxScrambleCount(scramblers.get(t).getFirst())) {
+          if (toScramble.get(t).size()
+              > ScrambleLogic.getMaxScrambleCount(scramblers.get(t).getFirst())) {
             throw new IllegalStateException(
                 "Trying to scramble "
                     + toScramble.get(t).size()
@@ -889,8 +785,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             continue;
           }
           int numberScrambled = scrambling.size();
-          final Collection<Unit> airbases = t.getUnitCollection().getMatches(airbasesCanScramble);
-          final int maxCanScramble = getMaxScrambleCount(airbases);
+          final Collection<Unit> airbases =
+              t.getUnitCollection().getMatches(scrambleLogic.getAirbaseThatCanScramblePredicate());
+          final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
           if (maxCanScramble != Integer.MAX_VALUE) {
             // TODO: maybe sort from biggest to smallest first?
             for (final Unit airbase : airbases) {
@@ -950,8 +847,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           attackingUnits.removeAll(bombing.getAttackingUnits());
         }
         // no need to create a "bombing" battle or air battle, because those are set up
-        // automatically whenever the map
-        // allows scrambling into an air battle / air raid
+        // automatically whenever the map allows scrambling into an air battle / air raid
         if (attackingUnits.isEmpty()) {
           continue;
         }
@@ -960,14 +856,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .startEvent(
                 defender.getName() + " scrambles to create a battle in territory " + to.getName());
         // TODO: the attacking sea units do not remember where they came from, so they cannot
-        // retreat anywhere. Need to
-        // fix.
+        // retreat anywhere. Need to fix.
         battleTracker.addBattle(new RouteScripted(to), attackingUnits, player, bridge, null, null);
         battle = battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
         if (battle instanceof MustFightBattle) {
           // this is an ugly mess of hacks, but will have to stay here till all transport related
-          // code is gutted and
-          // refactored.
+          // code is gutted and refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
           final Collection<Territory> neighborsLand =
               data.getMap().getNeighbors(to, Matches.territoryIsLand());
@@ -981,12 +875,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
             // after that is applied, we have to make a map of all dependencies
             final Map<Unit, Collection<Unit>> dependenciesForMfb =
-                TransportTracker.transportingWithAllPossibleUnits(attackingUnits);
+                new HashMap<>(TransportTracker.transportingWithAllPossibleUnits(attackingUnits));
             for (final Unit transport :
                 CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
               // however, the map we add to the newly created battle, cannot hold any units that are
-              // NOT in this
-              // territory.
+              // NOT in this territory.
               // BUT it must still hold all transports
               if (!dependenciesForMfb.containsKey(transport)) {
                 dependenciesForMfb.put(transport, new ArrayList<>());
@@ -1027,8 +920,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           if (attackingUnits.stream().anyMatch(Matches.unitIsAir().negate())) {
             // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope
-            // the user will
-            // choose the correct place to retreat to! (TODO: Fix this)
+            // the user will choose the correct place to retreat to! (TODO: Fix this)
             final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
             final Collection<Territory> neighbors =
                 data.getMap()
@@ -1053,41 +945,20 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // dependencies set.
       if (to.isWater()) {
         for (final Territory t : data.getMap().getNeighbors(to, Matches.territoryIsLand())) {
-          final IBattle battleAmphib = battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
-          if (battleAmphib != null) {
-            if (!battleTracker.getDependentOn(battle).contains(battleAmphib)) {
-              battleTracker.addDependency(battleAmphib, battle);
+          final IBattle adjacentBattle =
+              battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
+          if (adjacentBattle != null) {
+            if (Matches.battleIsAmphibiousWithUnitsAttackingFrom(to).test(adjacentBattle)) {
+              battleTracker.addDependency(adjacentBattle, battle);
             }
-            if (battleAmphib instanceof MustFightBattle) {
+            if (adjacentBattle instanceof MustFightBattle) {
               // and we want to reset the defenders if the scrambling air has left that battle
-              ((MustFightBattle) battleAmphib).resetDefendingUnits(player, data);
+              ((MustFightBattle) adjacentBattle).resetDefendingUnits(player, data);
             }
           }
         }
       }
     }
-  }
-
-  /**
-   * Returns the maximum number of units that can scramble from the specified air bases.
-   *
-   * @return {@link Integer#MAX_VALUE} if any air base can scramble an infinite number of units.
-   */
-  public static int getMaxScrambleCount(final Collection<Unit> airbases) {
-    if (airbases.isEmpty()
-        || !airbases.stream().allMatch(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
-      throw new IllegalStateException("All units must be viable airbases");
-    }
-    // find how many is the max this territory can scramble
-    int maxScrambled = 0;
-    for (final Unit base : airbases) {
-      final int baseMax = ((TripleAUnit) base).getMaxScrambleCount();
-      if (baseMax == -1) {
-        return Integer.MAX_VALUE;
-      }
-      maxScrambled += baseMax;
-    }
-    return maxScrambled;
   }
 
   private void scramblingCleanup() {

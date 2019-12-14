@@ -6,26 +6,21 @@
 # If the script is updated, upload a new copy to the infrastructure machine
 # to /home/ansible.
 
-
-VERSION=${1-}
-INVENTORY_FILE=${2-}
-
 function usage() {
-  echo "Usage: $0 [Version] [InventoryFile]"
-  echo "  Version: The version of tripleA to be downloaded and installed, eg: 1.10.0.141"
-  echo "  InventoryFile: The inventory file to run, one of: {production|prerelease}"
-  echo "Example: $0 1.10.5252 prerelease"
+  echo "Usage: $0 [Version] [ansible_args]"
+  echo "  version: The version of tripleA we will deploy eg: 1.10.5252"
+  echo "  ansible_args: Args passed to ansible-playbook"
+  echo "Example: $0 1.10.5252 -i ansible/inventory/prerelease"
+  echo "Example: $0 1.10.5252 --diff -v -i ansible/inventory/prerelease"
   exit 1
 }
 
-if [ -e "$VERSION" ] || [ -e "$INVENTORY_FILE" ]; then
+if [ "$#" -lt 2 ]; then
   usage
 fi
-export VERSION=$VERSION
 
-if [ "$INVENTORY_FILE" != production ] && [ "$INVENTORY_FILE" != prerelease ]; then
-  usage
-fi
+export VERSION=${1-}
+shift
 
 VAULT_PASSWORD_FILE="vault_password"
 if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
@@ -33,82 +28,27 @@ if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
   exit 1
 fi
 
-if [ ! -f "ansible_ssh_key.ed25519" ]; then
-  echo "Could not find file ansible_ssh_key.ed25519 at current directory"
+HTTP_SERVER_JAR="ansible/roles/http_server/files/triplea-http-server-$VERSION.jar"
+if [ ! -f "$HTTP_SERVER_JAR" ]; then
+  echo "Error: File does not exist: $HTTP_SERVER_JAR"
+  exit 1
+fi
+
+BOT_JAR="ansible/roles/bot/files/triplea-game-headless-$VERSION.jar"
+if [ ! -f "$BOT_JAR" ]; then
+  echo "Error: File does not exist: $BOT_JAR"
+  exit 1
+fi
+
+MIGRATIONS_ZIP="ansible/roles/flyway/files/migrations.zip"
+if [ ! -f "$MIGRATIONS_ZIP" ]; then
+  echo "Error: File does not exist: $MIGRATIONS_ZIP"
   exit 1
 fi
 
 ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
 
-BOT_JAR="triplea-game-headless-$VERSION.jar"
-BOT_JAR_PATH="ansible/roles/bot/files/$BOT_JAR"
-HTTP_SERVER_JAR="triplea-http-server-$VERSION.jar"
-HTTP_SERVER_JAR_PATH="ansible/roles/http_server/files/$HTTP_SERVER_JAR"
-
-
-set -x
-
-function main() {
-  if [ ! -e "$HTTP_SERVER_JAR_PATH" ]; then
-    downloadHttpServerJar
-  fi
-
-  if [ ! -e "$BOT_JAR_PATH" ]; then
-      downloadBotJar
-  fi
-
-  downloadMigrations
-
-  ansible-playbook -D -v \
-      --vault-password-file "$VAULT_PASSWORD_FILE" \
-     ansible/site.yml \
-     -i "ansible/inventory/$INVENTORY_FILE"
-}
-
-function downloadHttpServerJar() {
-  HTTP_SERVER_ZIP="triplea-http-server-$VERSION.zip"
-  rm -f "$HTTP_SERVER_ZIP"
-  HTTP_SERVER_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$HTTP_SERVER_ZIP"
-  wget "$HTTP_SERVER_DL_LOCATION"
-  if [ ! -f "$HTTP_SERVER_ZIP" ]; then
-    echo "ERROR: failed to download http server zip from: $HTTP_SERVER_ZIP"
-    exit 1
-  fi
-
-  unzip "$HTTP_SERVER_ZIP" -d http-server
-  rm "$HTTP_SERVER_ZIP"
-
-  mkdir -p ansible/roles/http_server/files/
-  mv "http-server/bin/$HTTP_SERVER_JAR" "$HTTP_SERVER_JAR_PATH"
-}
-
-function downloadBotJar() {
-  local -r botZip="triplea-game-headless-$VERSION.zip"
-  rm -f "$botZip"
-  BOT_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$botZip"
-  wget $BOT_DL_LOCATION
-  if [ ! -f "$botZip" ]; then
-    echo "ERROR: failed to download bot zip from: $BOT_DL_LOCATION"
-  fi
-  rm -rf bot/
-  unzip "$botZip" -d bot
-  rm "$botZip"
-  mkdir -p ansible/roles/bot/files/
-  mv "bot/bin/$BOT_JAR" "$BOT_JAR_PATH"
-}
-
-function downloadMigrations() {
-  local -r migrationsZip="migrations.zip"
-
-  rm -f "$migrationsZip"
-  local migrationsDlLocation="https://github.com/triplea-game/triplea/releases/download/$VERSION/migrations.zip"
-  wget "$migrationsDlLocation"
-  if [ ! -f "$migrationsZip" ]; then
-    echo "ERROR: failed to download migrations zip from: $migrationsDlLocation"
-  fi
-  
-  mkdir -p ansible/roles/flyway/files/
-  mv "$migrationsZip" ansible/roles/flyway/files/
-}
-
-main
+ansible-playbook \
+  --vault-password-file "$VAULT_PASSWORD_FILE" \
+ "$@" \
+ ansible/site.yml
