@@ -114,7 +114,7 @@ public final class MovableUnitsFilter {
     if (route.isUnload()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
     }
-    if (!units.isEmpty()) {
+    if (!best.isEmpty()) {
       best.sort(getUnitComparator(best).reversed());
     }
 
