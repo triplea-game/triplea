@@ -1029,7 +1029,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         movableBuilder.and(enoughMovement);
       }
     }
-    if (route != null && route.getEnd() != null) {
+    if (route != null) {
       final boolean water = route.getEnd().isWater();
       if (water && !route.isLoad()) {
         movableBuilder.and(Matches.unitIsNotLand());
