@@ -30,15 +30,39 @@ import org.triplea.java.collections.CollectionUtils;
  */
 public final class MovableUnitsFilter {
   /** The result of the filter operation. */
-  @AllArgsConstructor
   @Getter
   public static class Result {
     // The filtered units and dependents that can move on the route.
     private final List<Unit> unitsWithDependents;
     // An error message, if no units could move on the route.
-    @Nullable private final String errorMessage;
+    @Nullable private String errorMessage;
     // A warning message, if some, but not all units could move on the route.
-    @Nullable private final String warningMessage;
+    @Nullable private String warningMessage;
+
+    public Result(
+        final MoveValidationResult allUnitsResult,
+        final MoveValidationResultWithDependents lastResult) {
+      this.unitsWithDependents = lastResult.getUnitsWithDependents();
+      if (!allUnitsResult.isMoveValid()) {
+        @Nullable String message = getErrorOrWarningMessage(allUnitsResult);
+        if (!lastResult.getResult().isMoveValid()) {
+          this.errorMessage = message;
+        } else {
+          this.warningMessage = message;
+        }
+      }
+    }
+
+    private static @Nullable String getErrorOrWarningMessage(final MoveValidationResult result) {
+      @Nullable String message = result.getError();
+      if (message == null) {
+        message = result.getDisallowedUnitWarning(0);
+      }
+      if (message == null) {
+        message = result.getUnresolvedUnitWarning(0);
+      }
+      return message;
+    }
   }
 
   @AllArgsConstructor
@@ -112,29 +136,7 @@ public final class MovableUnitsFilter {
       }
     }
 
-    return makeResult(allUnitsResult, lastResult);
-  }
-
-  private Result makeResult(
-      final MoveValidationResult allUnitsResult,
-      final MoveValidationResultWithDependents lastResult) {
-    @Nullable String errorMessage = null;
-    @Nullable String warningMessage = null;
-    if (!allUnitsResult.isMoveValid()) {
-      @Nullable String message = allUnitsResult.getError();
-      if (message == null) {
-        message = allUnitsResult.getDisallowedUnitWarning(0);
-      }
-      if (message == null) {
-        message = allUnitsResult.getUnresolvedUnitWarning(0);
-      }
-      if (!lastResult.getResult().isMoveValid()) {
-        errorMessage = message;
-      } else {
-        warningMessage = message;
-      }
-    }
-    return new Result(lastResult.getUnitsWithDependents(), errorMessage, warningMessage);
+    return new Result(allUnitsResult, lastResult);
   }
 
   private Collection<Unit> getPossibleTransportsToLoad(
