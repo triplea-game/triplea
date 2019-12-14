@@ -1,2 +1,4 @@
+nginx_ssl_certificate: /etc/nginx/cert.crt
+nginx_ssl_certificate_key: /etc/nginx/cert.key
 nginx_allowed_ports:
   - 443
