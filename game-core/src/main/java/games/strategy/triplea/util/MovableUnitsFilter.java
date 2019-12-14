@@ -44,7 +44,7 @@ public final class MovableUnitsFilter {
         final MoveValidationResultWithDependents lastResult) {
       this.unitsWithDependents = lastResult.getUnitsWithDependents();
       if (!allUnitsResult.isMoveValid()) {
-        @Nullable String message = getErrorOrWarningMessage(allUnitsResult);
+        final @Nullable finalString message = getErrorOrWarningMessage(allUnitsResult);
         if (!lastResult.getResult().isMoveValid()) {
           this.errorMessage = message;
         } else {
