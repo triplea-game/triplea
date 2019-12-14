@@ -20,5 +20,7 @@
 
 - name:  relaunch nginx
   become: true
-  shell: systemctl restart nginx
+  systemd:
+    name: nginx
+    state: restarted
 
