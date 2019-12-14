@@ -9,6 +9,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -57,6 +59,7 @@ public class MovableUnitsFilterTest {
   }
 
   @Test
+  @DisplayName("moving units two territories should filter to just tanks")
   void filterUnitsThatCanMove() throws Exception {
     final Route route = new Route(germany, easternEurope, kareliaSsr);
     final Collection<Unit> units = germanyUnits(Matches.unitIsOfTypes(infantryType, armourType));
@@ -67,6 +70,6 @@ public class MovableUnitsFilterTest {
     final var result = filterUnits(route, units);
     assertThat(result.getErrorMessage(), is(nullValue()));
     assertThat(result.getWarningMessage(), is("Not all units have enough movement"));
-    assertThat(result.getUnitsWithDependents(), is(justTanks));
+    assertThat(result.getUnitsWithDependents(), containsInAnyOrder(justTanks.toArray()));
   }
 }
