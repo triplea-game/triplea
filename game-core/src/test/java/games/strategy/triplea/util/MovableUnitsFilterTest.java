@@ -8,6 +8,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsNull.nullValue;
 
@@ -59,8 +60,8 @@ public class MovableUnitsFilterTest {
   }
 
   @Test
-  @DisplayName("moving units two territories should filter to just tanks")
-  void filterUnitsThatCanMove() throws Exception {
+  @DisplayName("moving infantry and tanks two territories should filter to just tanks")
+  void onlyTanksCanMoveTwo() {
     final Route route = new Route(germany, easternEurope, kareliaSsr);
     final Collection<Unit> units = germanyUnits(Matches.unitIsOfTypes(infantryType, armourType));
     assertThat(units, hasSize(5));
@@ -71,5 +72,44 @@ public class MovableUnitsFilterTest {
     assertThat(result.getErrorMessage(), is(nullValue()));
     assertThat(result.getWarningMessage(), is("Not all units have enough movement"));
     assertThat(result.getUnitsWithDependents(), containsInAnyOrder(justTanks.toArray()));
+  }
+
+  @Test
+  @DisplayName("moving infantry two territories is not possible")
+  void noInfantryCanMoveTwo() {
+    final Route route = new Route(germany, easternEurope, kareliaSsr);
+    final Collection<Unit> infantry = germanyUnits(Matches.unitIsOfTypes(infantryType));
+    assertThat(infantry, hasSize(3));
+
+    final var result = filterUnits(route, infantry);
+    assertThat(result.getErrorMessage(), is("Not all units have enough movement"));
+    assertThat(result.getWarningMessage(), is(nullValue()));
+    assertThat(result.getUnitsWithDependents(), is(empty()));
+  }
+
+  @Test
+  @DisplayName("tanks can move two spaces")
+  void tanksCanMoveTwo() {
+    final Route route = new Route(germany, easternEurope, kareliaSsr);
+    final Collection<Unit> tanks = germanyUnits(Matches.unitIsOfTypes(armourType));
+    assertThat(tanks, hasSize(2));
+
+    final var result = filterUnits(route, tanks);
+    assertThat(result.getErrorMessage(), is(nullValue()));
+    assertThat(result.getWarningMessage(), is(nullValue()));
+    assertThat(result.getUnitsWithDependents(), is(tanks));
+  }
+
+  @Test
+  @DisplayName("infantry can move one space")
+  void infantryCanMoveOne() {
+    final Route route = new Route(germany, easternEurope);
+    final Collection<Unit> infantry = germanyUnits(Matches.unitIsOfTypes(infantryType));
+    assertThat(infantry, hasSize(3));
+
+    final var result = filterUnits(route, infantry);
+    assertThat(result.getErrorMessage(), is(nullValue()));
+    assertThat(result.getWarningMessage(), is(nullValue()));
+    assertThat(result.getUnitsWithDependents(), containsInAnyOrder(infantry.toArray()));
   }
 }
