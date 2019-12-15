@@ -79,7 +79,6 @@
 
 - name: install unzip
   become: true
-  become_user: flyway
   apt:
     state: present
     name: unzip
