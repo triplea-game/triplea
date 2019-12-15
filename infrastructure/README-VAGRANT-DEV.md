@@ -43,8 +43,12 @@ sudo chown $USER:$USER -R ~/triplea/infrastructure/.vagrant/
 ```
 
 ### HTTPS Config
-Ansible will setup a self-signed certificate to be used by nginx. So in order to actually access the server without any exception thrown by the TLS layer, you'll have to import this certificate into your OS' root certificates.
-In order to extract the certificate on to your system, you'll have to install the vagrant-scp plugin like this:
+
+Ansible will setup a self-signed certificate to be used by nginx.
+So in order to actually access the server without any exception thrown by the TLS layer,
+you'll have to import this certificate into your OS' root certificates.
+To extract the certificate on to your system,
+you'll have to install the vagrant-scp plugin like this:
 ```bash
 vagrant plugin install vagrant-scp
 ```
