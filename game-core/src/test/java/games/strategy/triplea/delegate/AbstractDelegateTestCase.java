@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
  * most-commonly-accessed players, territories, and unit types.
  */
 public abstract class AbstractDelegateTestCase {
-  protected GameData gameData = TestMapGameData.DELEGATE_TEST.getGameData();;
+  protected GameData gameData = TestMapGameData.DELEGATE_TEST.getGameData();
   protected PlayerId british = GameDataTestUtil.british(gameData);
   protected PlayerId japanese = GameDataTestUtil.japanese(gameData);
   protected PlayerId russians = GameDataTestUtil.russians(gameData);
