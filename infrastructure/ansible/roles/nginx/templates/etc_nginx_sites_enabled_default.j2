@@ -16,12 +16,12 @@ server {
     access_log            /var/log/nginx/java_server.access.log;
 
     ssl_dhparam /etc/nginx/dhparam.pem;
-    ssl_ecdh_curve secp384r1; # Requires nginx >= 1.1.0
+    ssl_ecdh_curve secp384r1;
     ssl_session_timeout  10m;
     ssl_session_cache shared:SSL:10m;
-    ssl_session_tickets off; # Requires nginx >= 1.5.9
-    ssl_stapling on; # Requires nginx >= 1.3.7
-    ssl_stapling_verify on; # Requires nginx => 1.3.7
+    ssl_session_tickets off;
+    ssl_stapling on;
+    ssl_stapling_verify on;
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
     add_header X-Frame-Options DENY;
     add_header X-Content-Type-Options nosniff;
