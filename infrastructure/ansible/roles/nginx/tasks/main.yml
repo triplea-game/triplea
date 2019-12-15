@@ -7,13 +7,13 @@
 - name: generate dhparam.pem
   become: true
   shell:
-    cmd: openssl dhparam -out /etc/nginx/dhparam.pem 4096
-    creates: /etc/nginx/dhparam.pem
+    cmd: openssl dhparam -out {{ nginx_ssl_dhparams }} 4096
+    creates: "{{ nginx_ssl_dhparams }}"
 
 - name: set permissions of dhparam.pem
   become: true
   file:
-    dest: /etc/nginx/dhparam.pem
+    dest: "{{ nginx_ssl_dhparams }}"
     mode: 600
 
 - name: create SSL keys if needed
