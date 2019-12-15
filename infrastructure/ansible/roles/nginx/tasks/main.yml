@@ -4,9 +4,21 @@
     name: nginx
     state: present
 
+- name: generate dhparam.pem
+  become: true
+  shell:
+    cmd: openssl dhparam -out {{ nginx_ssl_dhparams }} 4096
+    creates: "{{ nginx_ssl_dhparams }}"
+
+- name: set permissions of dhparam.pem
+  become: true
+  file:
+    dest: "{{ nginx_ssl_dhparams }}"
+    mode: 600
+
 - name: create SSL keys if needed
   become: true
-  command: openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -batch
+  command: openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -batch -subj '/CN=localhost' -sha256
   args:
     creates: "{{ nginx_ssl_certificate_key }}"
 
@@ -24,7 +36,7 @@
     proto: tcp
   with_items: "{{ nginx_allowed_ports }}"
 
-- name:  relaunch nginx
+- name: relaunch nginx
   become: true
   systemd:
     name: nginx

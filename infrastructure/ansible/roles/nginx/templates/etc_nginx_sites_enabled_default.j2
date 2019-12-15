@@ -10,11 +10,22 @@ server {
     ssl_certificate_key {{ nginx_ssl_certificate_key }};
 
     ssl on;
-    ssl_session_cache  builtin:1000  shared:SSL:10m;
     ssl_protocols  TLSv1.2 TLSv1.3;
     ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
     ssl_prefer_server_ciphers on;
     access_log            /var/log/nginx/java_server.access.log;
+
+    ssl_dhparam {{ nginx_ssl_dhparams }};
+    ssl_ecdh_curve secp384r1;
+    ssl_session_timeout  10m;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_tickets off;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
 
     location / {
 
