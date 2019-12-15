@@ -1129,6 +1129,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           currentCursorImage = warningImage;
         }
         break;
+      default:
+        throw new IllegalStateException("unknown status");
     }
 
     if (unitsThatCanMoveOnRoute.size() != new HashSet<>(unitsThatCanMoveOnRoute).size()) {
