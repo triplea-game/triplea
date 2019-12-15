@@ -72,22 +72,21 @@ public final class MovableUnitsFilter {
     private final List<Unit> unitsWithDependents;
   }
 
-  private final GameData data;
   private final PlayerId player;
+  private final GameData data;
   private final Route route;
   private final boolean nonCombat;
   private final MoveType moveType;
   private final List<UndoableMove> undoableMoves;
 
   public MovableUnitsFilter(
-      final GameData data,
       final PlayerId player,
       final Route route,
       final boolean nonCombat,
       final MoveType moveType,
       final List<UndoableMove> undoableMoves) {
-    this.data = Preconditions.checkNotNull(data);
     this.player = Preconditions.checkNotNull(player);
+    this.data = player.getData();
     this.route = Preconditions.checkNotNull(route);
     this.nonCombat = nonCombat;
     this.moveType = moveType;

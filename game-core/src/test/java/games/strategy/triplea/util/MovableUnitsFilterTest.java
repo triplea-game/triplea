@@ -51,7 +51,7 @@ public class MovableUnitsFilterTest {
     advanceToStep(bridge, "NonCombatMove");
     final MovableUnitsFilter filter =
         new MovableUnitsFilter(
-            gameData, germans, route, false, AbstractMoveDelegate.MoveType.DEFAULT, List.of());
+            germans, route, false, AbstractMoveDelegate.MoveType.DEFAULT, List.of());
     return filter.filterUnitsThatCanMove(units, Map.of());
   }
 
