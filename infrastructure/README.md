@@ -76,7 +76,6 @@ touch vault_password
 # edit 'vault_password' and add the ansible vault password
 ```
 
-
 ## PreRelease and Production Deployments
 
 - Executed as part of travis pipeline build after release artifacts are generated
@@ -102,7 +101,6 @@ lindoe web UI. Add this public key to your linode account profile (via the linod
 
 Then, when creating a new linode, select that public key and it will added to the root user
 'authorized_keys' file.
-
 
 # Ansible Variables
 
@@ -136,7 +134,6 @@ ie: `{{ foo_db_password }}`
 - define shared variables and environment specific overrides in `group_vars`
 - all other variables should be defined in `defaults/main.yml`
 
-
 # Creating Secrets
 
 ### Encrypting variables
@@ -167,7 +164,6 @@ For reference, encrypting a file looks like this:
 ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed25519
 ```
 
-
 # Https Certificate Installation
 
 Currently done manually.
@@ -188,7 +184,6 @@ sudo certbot --nginx -m tripleabuilderbot@gmail.com --agree-tos
 Create CAA DNS records
 
 ![Screenshot from 2019-11-19 13-06-13](https://user-images.githubusercontent.com/12397753/69196411-48980e00-0ae3-11ea-9130-61e1fd5368b3.png)
-
 
 Everything that goes well, should look like:
 ```
