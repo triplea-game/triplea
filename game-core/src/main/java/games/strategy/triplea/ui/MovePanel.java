@@ -415,12 +415,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               }
               dependentUnits.put(airTransport, unitsColl);
               mustMoveWithDetails =
-                  MoveValidator.getMustMoveWith(
-                      route.getStart(),
-                      route.getStart().getUnits(),
-                      dependentUnits,
-                      getData(),
-                      player);
+                  MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
             }
           }
           return loadedUnits;
@@ -1162,11 +1157,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
       return List.of();
     }
-    final Collection<Unit> endOwnedUnits = route.getEnd().getUnits();
     final PlayerId unitOwner = getUnitOwner(unitsToLoad);
     final MustMoveWithDetails endMustMoveWith =
-        MoveValidator.getMustMoveWith(
-            route.getEnd(), endOwnedUnits, dependentUnits, getData(), unitOwner);
+        MoveValidator.getMustMoveWith(route.getEnd(), dependentUnits, unitOwner);
     int minTransportCost = defaultMinTransportCost;
     for (final Unit unit : unitsToLoad) {
       minTransportCost =
@@ -1175,7 +1168,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     final Predicate<Unit> candidateTransportsMatch =
         Matches.unitIsTransport().and(Matches.alliedUnit(unitOwner, getGameData()));
     final List<Unit> candidateTransports =
-        CollectionUtils.getMatches(endOwnedUnits, candidateTransportsMatch);
+        CollectionUtils.getMatches(route.getEnd().getUnits(), candidateTransportsMatch);
 
     // remove transports that don't have enough capacity
     final Iterator<Unit> transportIter = candidateTransports.iterator();
@@ -1437,12 +1430,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       mustMoveWithDetails = null;
     } else {
       mustMoveWithDetails =
-          MoveValidator.getMustMoveWith(
-              firstSelectedTerritory,
-              firstSelectedTerritory.getUnits(),
-              dependentUnits,
-              getData(),
-              getCurrentPlayer());
+          MoveValidator.getMustMoveWith(firstSelectedTerritory, dependentUnits, getCurrentPlayer());
     }
   }
 

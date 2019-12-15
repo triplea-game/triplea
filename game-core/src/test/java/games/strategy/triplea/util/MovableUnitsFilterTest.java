@@ -97,7 +97,7 @@ public class MovableUnitsFilterTest {
     final var result = filterUnits(route, tanks);
     assertThat(result.getErrorMessage(), is(nullValue()));
     assertThat(result.getWarningMessage(), is(nullValue()));
-    assertThat(result.getUnitsWithDependents(), is(tanks));
+    assertThat(result.getUnitsWithDependents(), containsInAnyOrder(tanks.toArray()));
   }
 
   @Test

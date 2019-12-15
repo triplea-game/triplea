@@ -144,7 +144,7 @@ public final class MovableUnitsFilter {
       final Map<Unit, Collection<Unit>> dependentUnits,
       final Route route) {
     // TODO kev check for already loaded airTransports
-    if (MoveValidator.isLoad(units, dependentUnits, route, data, player)) {
+    if (MoveValidator.isLoad(units, dependentUnits, route, player)) {
       final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
       return unitsAtEnd.getMatches(Matches.unitIsTransport().and(Matches.alliedUnit(player, data)));
     }
@@ -187,8 +187,7 @@ public final class MovableUnitsFilter {
   private List<Unit> addMustMoveWith(
       final List<Unit> best, final Map<Unit, Collection<Unit>> dependentUnits) {
     final MustMoveWithDetails mustMoveWithDetails =
-        MoveValidator.getMustMoveWith(
-            route.getStart(), route.getStart().getUnits(), dependentUnits, data, player);
+        MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
     final List<Unit> bestWithDependents = new ArrayList<>(best);
     for (final Unit u : best) {
       final Collection<Unit> mustMoveWith = mustMoveWithDetails.getMustMoveWithForUnit(u);
