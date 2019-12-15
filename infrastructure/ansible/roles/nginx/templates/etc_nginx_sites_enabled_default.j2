@@ -22,8 +22,6 @@ server {
     ssl_session_tickets off; # Requires nginx >= 1.5.9
     ssl_stapling on; # Requires nginx >= 1.3.7
     ssl_stapling_verify on; # Requires nginx => 1.3.7
-    resolver $DNS-IP-1 $DNS-IP-2 valid=300s;
-    resolver_timeout 5s; 
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
     add_header X-Frame-Options DENY;
     add_header X-Content-Type-Options nosniff;
