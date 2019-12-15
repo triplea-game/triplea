@@ -43,8 +43,6 @@ public class MovableUnitsFilterTest {
   final UnitType infantryType = infantry(gameData);
   final UnitType armourType = armour(gameData);
 
-  public MovableUnitsFilterTest() throws Exception {}
-
   private IDelegateBridge newDelegateBridge(final PlayerId player) {
     return MockDelegateBridge.newInstance(gameData, player);
   }
