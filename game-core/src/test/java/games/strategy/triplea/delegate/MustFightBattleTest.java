@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 class MustFightBattleTest extends AbstractDelegateTestCase {
   @Test
-  void testFightWithIsSuicideOnHit() throws Exception {
+  void testFightWithIsSuicideOnHit() {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Create battle with 1 cruiser attacking 1 mine
@@ -49,7 +49,7 @@ class MustFightBattleTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testFightWithBothZeroStrength() throws Exception {
+  void testFightWithBothZeroStrength() {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Create TWW battle in Celebes with 1 inf attacking 1 strat where both have 0 strength

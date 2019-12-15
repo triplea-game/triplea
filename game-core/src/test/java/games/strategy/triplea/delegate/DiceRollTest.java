@@ -41,12 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.CollectionUtils;
 
 class DiceRollTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.LHTR.getGameData();
-  }
+  private GameData gameData = TestMapGameData.LHTR.getGameData();
 
   private IDelegateBridge newDelegateBridge(final PlayerId player) {
     return MockDelegateBridge.newInstance(gameData, player);
@@ -203,7 +198,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testMarineAttackPlus1() throws Exception {
+  void testMarineAttackPlus1() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerId americans = GameDataTestUtil.americans(gameData);
@@ -228,7 +223,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testMarineAttackPlus1LowLuck() throws Exception {
+  void testMarineAttackPlus1LowLuck() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
@@ -254,7 +249,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testMarineAttackNormalIfNotAmphibious() throws Exception {
+  void testMarineAttackNormalIfNotAmphibious() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerId americans = GameDataTestUtil.americans(gameData);
@@ -397,7 +392,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testAaLowLuckWithRadar() throws Exception {
+  void testAaLowLuckWithRadar() {
     gameData = TestMapGameData.WW2V3_1941.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory finnland = gameData.getMap().getTerritory("Finland");
@@ -463,7 +458,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testAaSupport() throws Exception {
+  void testAaSupport() {
     gameData = TestMapGameData.TWW.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
 
@@ -538,7 +533,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testHeavyBombers() throws Exception {
+  void testHeavyBombers() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
@@ -569,7 +564,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testHeavyBombersDefend() throws Exception {
+  void testHeavyBombersDefend() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
@@ -751,7 +746,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testGetTotalPowerForSupportBonusTypeCount() throws Exception {
+  void testGetTotalPowerForSupportBonusTypeCount() {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Move regular units

@@ -64,7 +64,7 @@ class CasualtySelectorTest {
   }
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     final GameData data = TestMapGameData.REVISED.getGameData();
     bridge = MockDelegateBridge.newInstance(data, british(data));
   }

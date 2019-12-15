@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class ProUtilsTest {
 
   @Test
-  void testIsPassiveNeutralPlayer() throws Exception {
+  void testIsPassiveNeutralPlayer() {
     final GameData data = TestMapGameData.GLOBAL1940.getGameData();
     final PlayerId russians = data.getPlayerList().getPlayerId("Russians");
     assertFalse(ProUtils.isPassiveNeutralPlayer(russians));
@@ -22,7 +22,7 @@ class ProUtilsTest {
   }
 
   @Test
-  void testIsNeutralPlayer() throws Exception {
+  void testIsNeutralPlayer() {
     final GameData data = TestMapGameData.GLOBAL1940.getGameData();
     final PlayerId russians = data.getPlayerList().getPlayerId("Russians");
     assertFalse(ProUtils.isNeutralPlayer(russians));

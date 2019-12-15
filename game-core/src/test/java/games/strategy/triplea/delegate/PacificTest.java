@@ -51,7 +51,7 @@ class PacificTest extends AbstractDelegateTestCase {
   private MoveDelegate delegate;
 
   @BeforeEach
-  void setupPacificTest() throws Exception {
+  void setupPacificTest() {
     gameData = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
     // Define units
     infantry = GameDataTestUtil.infantry(gameData);

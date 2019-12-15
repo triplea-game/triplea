@@ -11,7 +11,6 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.io.IoUtils;
 import org.triplea.test.common.Integration;
@@ -19,14 +18,8 @@ import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class SerializationTest {
-  private GameData gameDataSource;
-  private GameData gameDataSink;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameDataSource = TestMapGameData.TEST.getGameData();
-    gameDataSink = TestMapGameData.TEST.getGameData();
-  }
+  private GameData gameDataSource = TestMapGameData.TEST.getGameData();
+  private GameData gameDataSink = TestMapGameData.TEST.getGameData();
 
   private Object serialize(final Object anObject) throws Exception {
     final byte[] bytes =

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class UnitsThatCantFightUtilTest {
 
   @Test
-  void testCantFightAttacksV3() throws Exception {
+  void testCantFightAttacksV3() {
     final GameData data = TestMapGameData.WW2V3_1941.getGameData();
 
     Collection<Territory> territories =
@@ -30,7 +30,7 @@ class UnitsThatCantFightUtilTest {
   }
 
   @Test
-  void testCantFightAttackInRevised() throws Exception {
+  void testCantFightAttackInRevised() {
     final GameData data = TestMapGameData.REVISED.getGameData();
     final Territory sz15 = territory("15 Sea Zone", data);
     addTo(sz15, transport(data).create(1, germans(data)));

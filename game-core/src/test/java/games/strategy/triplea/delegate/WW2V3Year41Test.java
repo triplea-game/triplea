@@ -87,7 +87,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
@@ -97,7 +96,7 @@ import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class WW2V3Year41Test {
-  private GameData gameData;
+  private final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
 
   private static void givenRemotePlayerWillSelectAttackSubs(final IDelegateBridge delegateBridge) {
     when(delegateBridge.getRemotePlayer().selectAttackSubs(any())).thenReturn(true);
@@ -134,11 +133,6 @@ class WW2V3Year41Test {
       final IDelegateBridge delegateBridge) {
     verify(delegateBridge.getRemotePlayer(), never())
         .retreatQuery(any(), anyBoolean(), any(), any(), any());
-  }
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.WW2V3_1941.getGameData();
   }
 
   private IDelegateBridge newDelegateBridge(final PlayerId player) {

@@ -9,16 +9,10 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AllianceTrackerTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.TEST.getGameData();
-  }
+  private GameData gameData = TestMapGameData.TEST.getGameData();
 
   @Test
   void testAddAlliance() {
