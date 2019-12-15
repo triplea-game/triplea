@@ -44,7 +44,7 @@ public final class MovableUnitsFilter {
         final MoveValidationResultWithDependents lastResult) {
       this.unitsWithDependents = lastResult.getUnitsWithDependents();
       if (!allUnitsResult.isMoveValid()) {
-        final @Nullable final String message = getErrorOrWarningMessage(allUnitsResult);
+        final @Nullable String message = getErrorOrWarningMessage(allUnitsResult);
         if (!lastResult.getResult().isMoveValid()) {
           this.errorMessage = message;
         } else {
@@ -191,12 +191,10 @@ public final class MovableUnitsFilter {
             route.getStart(), route.getStart().getUnits(), dependentUnits, data, player);
     final List<Unit> bestWithDependents = new ArrayList<>(best);
     for (final Unit u : best) {
-      final Collection<Unit> mustMoveWith = mustMoveWithDetails.getMustMoveWith().get(u);
-      if (mustMoveWith != null) {
-        for (final Unit m : mustMoveWith) {
-          if (!bestWithDependents.contains(m)) {
-            bestWithDependents.addAll(mustMoveWith);
-          }
+      final Collection<Unit> mustMoveWith = mustMoveWithDetails.getMustMoveWithForUnit(u);
+      for (final Unit m : mustMoveWith) {
+        if (!bestWithDependents.contains(m)) {
+          bestWithDependents.addAll(mustMoveWith);
         }
       }
     }

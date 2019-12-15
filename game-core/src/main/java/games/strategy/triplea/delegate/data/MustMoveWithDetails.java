@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.data;
 import games.strategy.engine.data.Unit;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,9 @@ public class MustMoveWithDetails implements Serializable {
 
   public Map<Unit, Collection<Unit>> getMustMoveWith() {
     return mapping;
+  }
+
+  public Collection<Unit> getMustMoveWithForUnit(final Unit unit) {
+    return mapping.getOrDefault(unit, List.of());
   }
 }

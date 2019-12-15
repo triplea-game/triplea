@@ -1415,13 +1415,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     // add the dependent units
     final List<Unit> unitsCopy = new ArrayList<>(units);
     for (final Unit unit : unitsCopy) {
-      final Collection<Unit> forced = mustMoveWithDetails.getMustMoveWith().get(unit);
-      if (forced != null) {
-        // add dependent if necessary
-        for (final Unit dependent : forced) {
-          if (unitsCopy.indexOf(dependent) == -1) {
-            units.add(dependent);
-          }
+      for (final Unit dependent : mustMoveWithDetails.getMustMoveWithForUnit(unit)) {
+        if (unitsCopy.indexOf(dependent) == -1) {
+          units.add(dependent);
         }
       }
     }
