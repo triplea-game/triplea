@@ -23,8 +23,6 @@ class TransportTrackerTest {
   private final Unit transport = transport(gameData).create(americans(gameData));
   private final Unit tank = armour(gameData).create(americans(gameData));
 
-  TransportTrackerTest() throws Exception {}
-
   @Test
   void testIsTransporting() throws Exception {
     addTo(sz18, List.of(transport));

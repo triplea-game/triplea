@@ -13,21 +13,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
-
-  private GameData twwGameData;
-  private PlayerId germanPlayer;
-  private Territory sicily;
-
-  @BeforeEach
-  void setup() throws Exception {
-    twwGameData = TestMapGameData.TWW.getGameData();
-    germanPlayer = GameDataTestUtil.germany(twwGameData);
-    sicily = territory("Sicily", twwGameData);
-  }
+  private final GameData twwGameData = TestMapGameData.TWW.getGameData();
+  private final PlayerId germanPlayer = GameDataTestUtil.germany(twwGameData);
+  private final Territory sicily = territory("Sicily", twwGameData);
 
   @Test
   void testGetMaxMovementCostZero() {

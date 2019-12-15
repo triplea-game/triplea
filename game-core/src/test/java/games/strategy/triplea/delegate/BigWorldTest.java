@@ -11,19 +11,13 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class BigWorldTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
-  }
+  private GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
 
   @Test
   void testCanalMovementNotStartingInCanalZone() {

@@ -76,7 +76,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
@@ -85,7 +84,7 @@ import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class RevisedTest {
-  private GameData gameData;
+  private final GameData gameData = TestMapGameData.REVISED.getGameData();
 
   private static void givenRemotePlayerWillSelectDefaultCasualties(
       final IDelegateBridge delegateBridge) {
@@ -123,11 +122,6 @@ class RevisedTest {
   private static void givenRemotePlayerWillConfirmMoveInFaceOfAa(
       final IDelegateBridge delegateBridge) {
     when(delegateBridge.getRemotePlayer().confirmMoveInFaceOfAa(any())).thenReturn(true);
-  }
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.REVISED.getGameData();
   }
 
   private IDelegateBridge newDelegateBridge(final PlayerId player) {

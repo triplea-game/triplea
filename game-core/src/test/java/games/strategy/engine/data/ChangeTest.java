@@ -14,17 +14,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.io.IoUtils;
 
 class ChangeTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.TEST.getGameData();
-  }
+  private final GameData gameData = TestMapGameData.TEST.getGameData();
 
   private Change serialize(final Change change) throws Exception {
     final byte[] bytes =
