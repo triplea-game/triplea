@@ -19,20 +19,12 @@ import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.Map.Entry;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AirThatCantLandUtilTest {
-  private GameData gameData;
-  private PlayerId americansPlayer;
-  private UnitType fighterType;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.REVISED.getGameData();
-    americansPlayer = GameDataTestUtil.americans(gameData);
-    fighterType = GameDataTestUtil.fighter(gameData);
-  }
+  private GameData gameData = TestMapGameData.REVISED.getGameData();
+  private PlayerId americansPlayer = GameDataTestUtil.americans(gameData);
+  private UnitType fighterType = GameDataTestUtil.fighter(gameData);
 
   private IDelegateBridge newDelegateBridge(final PlayerId player) {
     return MockDelegateBridge.newInstance(gameData, player);

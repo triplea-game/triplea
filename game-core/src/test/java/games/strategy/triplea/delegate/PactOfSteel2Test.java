@@ -12,7 +12,6 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.test.common.Integration;
@@ -20,12 +19,7 @@ import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class PactOfSteel2Test {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
-  }
+  private final GameData gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
 
   private IDelegateBridge newDelegateBridge(final PlayerId player) {
     return MockDelegateBridge.newInstance(gameData, player);

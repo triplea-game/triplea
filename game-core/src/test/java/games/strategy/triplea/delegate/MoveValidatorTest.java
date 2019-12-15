@@ -106,8 +106,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testValidateMoveForRequiresUnitsToMove() throws Exception {
-
+  void testValidateMoveForRequiresUnitsToMove() {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Move regular units
@@ -161,8 +160,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testValidateMoveForLandTransports() throws Exception {
-
+  void testValidateMoveForLandTransports() {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Move truck 2 territories
@@ -216,8 +214,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testValidateUnitsCanLoadInHostileSeaZones() throws Exception {
-
+  void testValidateUnitsCanLoadInHostileSeaZones() {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Load german unit in sea zone with no enemy ships

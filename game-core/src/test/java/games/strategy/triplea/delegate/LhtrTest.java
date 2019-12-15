@@ -26,24 +26,18 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import java.util.Set;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class LhtrTest {
-  private GameData gameData;
+  private final GameData gameData = TestMapGameData.LHTR.getGameData();
 
   private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(
       final IDelegateBridge delegateBridge) {
     verify(delegateBridge.getRemotePlayer(), never()).confirmMoveInFaceOfAa(any());
     verify(delegateBridge.getRemotePlayer(), never()).confirmMoveKamikaze();
-  }
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.LHTR.getGameData();
   }
 
   private IDelegateBridge newDelegateBridge(final PlayerId player) {

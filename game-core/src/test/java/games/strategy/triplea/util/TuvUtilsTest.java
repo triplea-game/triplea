@@ -7,17 +7,11 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
 class TuvUtilsTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.TWW.getGameData();
-  }
+  private GameData gameData = TestMapGameData.TWW.getGameData();
 
   @Test
   void testCostsForTuv() {

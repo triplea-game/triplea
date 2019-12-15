@@ -18,16 +18,10 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class BattleCalculatorTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.REVISED.getGameData();
-  }
+  private GameData gameData = TestMapGameData.REVISED.getGameData();
 
   @Test
   void testUnbalancedFight() {
@@ -106,7 +100,7 @@ class BattleCalculatorTest {
   }
 
   @Test
-  void testDefendingTransports() throws Exception {
+  void testDefendingTransports() {
     // use v3 rule set
     gameData = TestMapGameData.WW2V3_1942.getGameData();
     final Territory sz1 = territory("1 Sea Zone", gameData);

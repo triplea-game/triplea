@@ -39,8 +39,6 @@ public class MoveBatcherTest {
   private final Unit transport1 = transport(gameData).create(americans(gameData));
   private final Unit transport2 = transport(gameData).create(americans(gameData));
 
-  public MoveBatcherTest() throws Exception {}
-
   private static ArrayList<Unit> unitList(final Unit... units) {
     return new ArrayList<>(List.of(units));
   }

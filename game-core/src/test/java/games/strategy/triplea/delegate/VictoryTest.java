@@ -52,7 +52,7 @@ class VictoryTest {
   private MoveDelegate moveDelegate;
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     gameData = TestMapGameData.VICTORY_TEST.getGameData();
     italians = GameDataTestUtil.italians(gameData);
     germans = GameDataTestUtil.germans(gameData);

@@ -12,16 +12,10 @@ import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AiUtilsTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.REVISED.getGameData();
-  }
+  private GameData gameData = TestMapGameData.REVISED.getGameData();
 
   @Test
   void testCost() {

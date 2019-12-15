@@ -21,19 +21,13 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
 import org.triplea.test.common.TestType;
 
 @Integration(type = TestType.ACCEPTANCE)
 class ParserTest {
-  private GameData gameData;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    gameData = TestMapGameData.GAME_EXAMPLE.getGameData();
-  }
+  private GameData gameData = TestMapGameData.GAME_EXAMPLE.getGameData();
 
   @Test
   void testCanCreateData() {

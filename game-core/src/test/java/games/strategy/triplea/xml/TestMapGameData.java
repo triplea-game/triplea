@@ -55,9 +55,9 @@ public enum TestMapGameData {
    * Gets the game data for the associated map.
    *
    * @return The game data for the associated map.
-   * @throws Exception If an error occurs while loading the map.
+   * @throws RuntimeException If an error occurs while loading the map.
    */
-  public GameData getGameData() throws Exception {
+  public GameData getGameData() {
     try (InputStream is =
         new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
       return GameParser.parse(
@@ -66,6 +66,10 @@ public enum TestMapGameData {
           new XmlGameElementMapper(
               Map.of("TestDelegate", TestDelegate::new),
               Map.of("TestAttachment", TestAttachment::new)));
+    } catch (final Exception e) {
+      // Rethrow as RuntimeException as this is not expected to happen, to simplify test code
+      // to not have to catch checked exception types.
+      throw new RuntimeException(e);
     }
   }
 }

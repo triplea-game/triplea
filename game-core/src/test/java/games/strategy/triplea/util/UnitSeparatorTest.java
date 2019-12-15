@@ -26,7 +26,7 @@ class UnitSeparatorTest {
   @Mock private MapData mockMapData;
 
   @Test
-  void testGetSortedUnitCategories() throws Exception {
+  void testGetSortedUnitCategories() {
     final GameData data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
     northernGermany.getUnitCollection().clear();
@@ -61,7 +61,7 @@ class UnitSeparatorTest {
   }
 
   @Test
-  void testGetSortedUnitCategoriesDontDrawUnit() throws Exception {
+  void testGetSortedUnitCategoriesDontDrawUnit() {
     final GameData data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
     northernGermany.getUnitCollection().clear();
