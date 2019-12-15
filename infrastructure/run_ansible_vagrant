@@ -1,5 +1,6 @@
 #!/bin/bash
-set -ux
+
+set -eux
 
 CUR_FOLDER=$(basename $(pwd))
 if [ "$CUR_FOLDER" != infrastructure ]; then
@@ -8,27 +9,28 @@ if [ "$CUR_FOLDER" != infrastructure ]; then
 fi
 
 export VERSION=$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)
-echo "Parsed version number: $VERSION"
 
-function buildBotJar() {
-  local jarFile=triplea-game-headless-$VERSION.jar
-  local targetFolder=./ansible/roles/bot/files/
-  mkdir -p "$targetFolder"
-  # check if a bot jar is built, if not build it and copy to location where ansible can find it.
-  if [ ! -e $targetFolder/$jarFile ]; then
-     (
-       cd ../
-       if [ ! -e lobby/build/libs/$jarFile ]; then
-         ./gradlew shadowjar
-       fi
-       cd infrastructure
-       mkdir -p $targetFolder
-       cp ../game-headless/build/libs/$jarFile $targetFolder
-     ) 
-  fi
+function main() {
+  buildJars
+  buildMigrations
+
+  ansible-playbook -D -v \
+      "$@" \
+      ansible/site.yml \
+      -i ansible/inventory/vagrant 
 }
 
-buildBotJar
+function buildJars() {
+  (
+    cd ../
+    ./gradlew :http-server:shadowJar :game-headless:shadowJar
+    
+    local targetFolder="./infrastructure/ansible/roles"
+    mkdir -p "${targetFolder}/bot/files/" "${targetFolder}/http_server/files/"
+    cp "game-headless/build/libs/triplea-game-headless-${VERSION}.jar" "${targetFolder}/bot/files/"
+    cp "http-server/build/libs/triplea-http-server-${VERSION}.jar" "${targetFolder}/http_server/files/"
+  ) 
+}
 
 function buildMigrations() {
   local targetFolder=./ansible/roles/flyway/files/
@@ -46,9 +48,5 @@ function buildMigrations() {
   fi
 }
 
-buildMigrations
+main
 
-ansible-playbook -D -v \
-    "$@" \
-    ansible/site.yml \
-    -i ansible/inventory/vagrant 
