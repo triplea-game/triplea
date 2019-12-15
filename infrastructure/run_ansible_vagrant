@@ -10,16 +10,6 @@ fi
 
 export VERSION=$(sed 's/.*=\s*//' ../game-core/src/main/resources/META-INF/triplea/product.properties)
 
-function main() {
-  buildJars
-  buildMigrations
-
-  ansible-playbook -D -v \
-      "$@" \
-      ansible/site.yml \
-      -i ansible/inventory/vagrant 
-}
-
 function buildJars() {
   (
     cd ../
@@ -48,5 +38,11 @@ function buildMigrations() {
   fi
 }
 
-main
+buildJars
+buildMigrations
+
+ansible-playbook -D -v \
+    "$@" \
+    ansible/site.yml \
+    -i ansible/inventory/vagrant 
 
