@@ -105,19 +105,8 @@ public final class MovableUnitsFilter {
       final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependentUnits) {
     final Collection<Unit> transportsToLoad =
         getPossibleTransportsToLoad(units, dependentUnits, route);
-    List<Unit> best = new ArrayList<>(units);
-    // if the player selects a land unit and other units then
-    // only consider the non land units
-    if (route.getStart().isWater() && route.getEnd().isWater() && !route.isLoad()) {
-      best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
-    }
-    if (route.isUnload()) {
-      best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
-    }
-    if (!best.isEmpty()) {
-      best.sort(getUnitComparator(best).reversed());
-    }
 
+    List<Unit> best = getInitialUnitList(units);
     MoveValidationResultWithDependents lastResult =
         validateMoveWithDependents(best, dependentUnits, transportsToLoad);
     final MoveValidationResult allUnitsResult = lastResult.getResult();
@@ -149,6 +138,22 @@ public final class MovableUnitsFilter {
       return unitsAtEnd.getMatches(Matches.unitIsTransport().and(Matches.alliedUnit(player, data)));
     }
     return List.of();
+  }
+
+  private List<Unit> getInitialUnitList(final Collection<Unit> units) {
+    List<Unit> best = new ArrayList<>(units);
+    // if the player selects a land unit and other units then
+    // only consider the non land units
+    if (route.getStart().isWater() && route.getEnd().isWater() && !route.isLoad()) {
+      best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
+    }
+    if (route.isUnload()) {
+      best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
+    }
+    if (!best.isEmpty()) {
+      best.sort(getUnitComparator(best).reversed());
+    }
+    return best;
   }
 
   private Comparator<Unit> getUnitComparator(final List<Unit> units) {
