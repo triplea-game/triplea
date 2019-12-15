@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -31,37 +31,42 @@ import org.triplea.java.collections.CollectionUtils;
 public final class MovableUnitsFilter {
   /** The result of the filter operation. */
   @Getter
-  public static class Result {
+  public static class FilterOperationResult {
+    /** A profile defines the sounds to use for various chat events. */
+    public enum Status {
+      ALL_UNITS_CAN_MOVE,
+      SOME_UNITS_CAN_MOVE,
+      NO_UNITS_CAN_MOVE
+    }
+
     // The filtered units and dependents that can move on the route.
     private final List<Unit> unitsWithDependents;
-    // An error message, if no units could move on the route.
-    @Nullable private String errorMessage;
-    // A warning message, if some, but not all units could move on the route.
-    @Nullable private String warningMessage;
+    // The status of the move.
+    private final Status status;
+    // A warning or error message, if status is not ALL_UNITS_CAN_MOVE.
+    private Optional<String> warningOrErrorMessage;
 
-    public Result(
+    public FilterOperationResult(
         final MoveValidationResult allUnitsResult,
         final MoveValidationResultWithDependents lastResult) {
       this.unitsWithDependents = lastResult.getUnitsWithDependents();
-      if (!allUnitsResult.isMoveValid()) {
-        final @Nullable String message = getErrorOrWarningMessage(allUnitsResult);
-        if (!lastResult.getResult().isMoveValid()) {
-          this.errorMessage = message;
-        } else {
-          this.warningMessage = message;
+      if (allUnitsResult.isMoveValid()) {
+        this.status = Status.ALL_UNITS_CAN_MOVE;
+      } else if (lastResult.getResult().isMoveValid()) {
+        this.status = Status.SOME_UNITS_CAN_MOVE;
+      } else {
+        this.status = Status.NO_UNITS_CAN_MOVE;
+      }
+      if (this.status != Status.ALL_UNITS_CAN_MOVE) {
+        String message = allUnitsResult.getError();
+        if (message == null) {
+          message = allUnitsResult.getDisallowedUnitWarning(0);
         }
+        if (message == null) {
+          message = allUnitsResult.getUnresolvedUnitWarning(0);
+        }
+        this.warningOrErrorMessage = Optional.ofNullable(message);
       }
-    }
-
-    private static @Nullable String getErrorOrWarningMessage(final MoveValidationResult result) {
-      @Nullable String message = result.getError();
-      if (message == null) {
-        message = result.getDisallowedUnitWarning(0);
-      }
-      if (message == null) {
-        message = result.getUnresolvedUnitWarning(0);
-      }
-      return message;
     }
   }
 
@@ -100,7 +105,7 @@ public final class MovableUnitsFilter {
    * @param dependentUnits The dependent units map.
    * @return The result.
    */
-  public Result filterUnitsThatCanMove(
+  public FilterOperationResult filterUnitsThatCanMove(
       final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependentUnits) {
     final Collection<Unit> transportsToLoad =
         getPossibleTransportsToLoad(units, dependentUnits, route);
@@ -124,7 +129,7 @@ public final class MovableUnitsFilter {
       }
     }
 
-    return new Result(allUnitsResult, lastResult);
+    return new FilterOperationResult(allUnitsResult, lastResult);
   }
 
   private Collection<Unit> getPossibleTransportsToLoad(

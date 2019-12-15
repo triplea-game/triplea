@@ -89,9 +89,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   private MustMoveWithDetails mustMoveWithDetails = null;
   // cache this so we can update it only when territory/units change
   private List<Unit> unitsThatCanMoveOnRoute;
-  private Image currentCursorImage;
-  private final Image warningImage;
-  private final Image errorImage;
+  private @Nullable Image currentCursorImage;
+  private final @Nullable Image warningImage;
+  private final @Nullable Image errorImage;
   private Route routeCached = null;
   private String displayText = "Combat Move";
   private MoveType moveType = MoveType.DEFAULT;
@@ -1111,19 +1111,24 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     final MovableUnitsFilter unitsFilter =
         new MovableUnitsFilter(getUnitOwner(units), route, nonCombat, moveType, getUndoableMoves());
     final var result = unitsFilter.filterUnitsThatCanMove(units, dependentUnits);
-
-    if (result.getErrorMessage() != null) {
-      setStatusErrorMessage(result.getErrorMessage());
-      currentCursorImage = errorImage;
-    } else if (result.getWarningMessage() != null) {
-      setStatusErrorMessage(result.getWarningMessage());
-      currentCursorImage = warningImage;
-    } else if (result.getUnitsWithDependents().containsAll(selectedUnits)) {
-      clearStatusMessage();
-      currentCursorImage = null;
-    } else {
-      setStatusWarningMessage("Not all units can move there");
-      currentCursorImage = warningImage;
+    switch (result.getStatus()) {
+      case NO_UNITS_CAN_MOVE:
+        setStatusErrorMessage(result.getWarningOrErrorMessage().orElseThrow());
+        currentCursorImage = errorImage;
+        break;
+      case SOME_UNITS_CAN_MOVE:
+        setStatusErrorMessage(result.getWarningOrErrorMessage().orElseThrow());
+        currentCursorImage = warningImage;
+        break;
+      case ALL_UNITS_CAN_MOVE:
+        if (result.getUnitsWithDependents().containsAll(selectedUnits)) {
+          clearStatusMessage();
+          currentCursorImage = null;
+        } else {
+          setStatusWarningMessage("Not all units can move there");
+          currentCursorImage = warningImage;
+        }
+        break;
     }
 
     if (unitsThatCanMoveOnRoute.size() != new HashSet<>(unitsThatCanMoveOnRoute).size()) {

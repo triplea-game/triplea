@@ -1,16 +1,18 @@
 package games.strategy.triplea.util;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.IsNull.nullValue;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -22,6 +24,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MockDelegateBridge;
+import games.strategy.triplea.util.MovableUnitsFilter.FilterOperationResult;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +49,7 @@ public class MovableUnitsFilterTest {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
-  private MovableUnitsFilter.Result filterUnits(final Route route, final Collection<Unit> units) {
+  private FilterOperationResult filterUnits(final Route route, final Collection<Unit> units) {
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "NonCombatMove");
     final MovableUnitsFilter filter =
@@ -69,8 +72,9 @@ public class MovableUnitsFilterTest {
     assertThat(justTanks, hasSize(2));
 
     final var result = filterUnits(route, units);
-    assertThat(result.getErrorMessage(), is(nullValue()));
-    assertThat(result.getWarningMessage(), is("Not all units have enough movement"));
+    assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
+    assertThat(
+        result.getWarningOrErrorMessage(), isPresentAndIs("Not all units have enough movement"));
     assertThat(result.getUnitsWithDependents(), containsInAnyOrder(justTanks.toArray()));
   }
 
@@ -82,8 +86,9 @@ public class MovableUnitsFilterTest {
     assertThat(infantry, hasSize(3));
 
     final var result = filterUnits(route, infantry);
-    assertThat(result.getErrorMessage(), is("Not all units have enough movement"));
-    assertThat(result.getWarningMessage(), is(nullValue()));
+    assertThat(result.getStatus(), is(FilterOperationResult.Status.NO_UNITS_CAN_MOVE));
+    assertThat(
+        result.getWarningOrErrorMessage(), isPresentAndIs("Not all units have enough movement"));
     assertThat(result.getUnitsWithDependents(), is(empty()));
   }
 
@@ -95,8 +100,8 @@ public class MovableUnitsFilterTest {
     assertThat(tanks, hasSize(2));
 
     final var result = filterUnits(route, tanks);
-    assertThat(result.getErrorMessage(), is(nullValue()));
-    assertThat(result.getWarningMessage(), is(nullValue()));
+    assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
+    assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
     assertThat(result.getUnitsWithDependents(), containsInAnyOrder(tanks.toArray()));
   }
 
@@ -108,8 +113,8 @@ public class MovableUnitsFilterTest {
     assertThat(infantry, hasSize(3));
 
     final var result = filterUnits(route, infantry);
-    assertThat(result.getErrorMessage(), is(nullValue()));
-    assertThat(result.getWarningMessage(), is(nullValue()));
+    assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
+    assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
     assertThat(result.getUnitsWithDependents(), containsInAnyOrder(infantry.toArray()));
   }
 }
