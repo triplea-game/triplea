@@ -1,7 +1,9 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
+import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.load;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
@@ -54,6 +56,35 @@ final class UnitComparatorTest {
               units, new Route(seaZone5, kareliaSsr), germans));
 
       assertThat(sortedUnits.get(0), is(transportedUnits.get(0)));
+    }
+
+    @Test
+    void unitsOfSameTypeAreSortedTogether() throws Exception {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+
+      final List<Unit> units = new ArrayList<>();
+      for (int i = 0; i < 10; i++) {
+        units.add(infantry(gameData).create(germans(gameData)));
+      }
+      for (int i = 0; i < 10; i++) {
+        units.add(artillery(gameData).create(germans(gameData)));
+      }
+      for (int i = 0; i < 10; i++) {
+        units.add(armour(gameData).create(germans(gameData)));
+      }
+
+      final Territory germany = territory("Germany", gameData);
+      final Territory balkans = territory("Balkans", gameData);
+      units.sort(UnitComparator.getMovableUnitsComparator(units, new Route(germany, balkans)));
+      Unit lastUnit = units.get(0);
+      int transitions = 0;
+      for (final Unit unit : units) {
+        if (!unit.getType().equals(lastUnit.getType())) {
+          transitions++;
+        }
+        lastUnit = unit;
+      }
+      assertThat("expected 2 transitions between 3 unit types", transitions, is(2));
     }
   }
 }
