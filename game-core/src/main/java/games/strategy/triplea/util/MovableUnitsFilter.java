@@ -32,7 +32,7 @@ public final class MovableUnitsFilter {
   /** The result of the filter operation. */
   @Getter
   public static class FilterOperationResult {
-    /** A profile defines the sounds to use for various chat events. */
+    /** The status of the move filter operation. */
     public enum Status {
       ALL_UNITS_CAN_MOVE,
       SOME_UNITS_CAN_MOVE,
