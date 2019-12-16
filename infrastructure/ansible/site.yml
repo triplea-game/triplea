@@ -12,7 +12,11 @@
   strategy: free
   tags: security
   roles:
-    - apt_update
+    - role: apt_update
+      tags:
+        - bot
+        - nginx
+        - http_server
     - admin_user
     - firewall
     - security
@@ -34,8 +38,10 @@
   tags: lobby
   roles:
     - java
-    - http_server
-    - nginx
+    - role: http_server
+      tags: [ http_server ]
+    - role: nginx
+      tags: [ nginx ]
 
 - hosts: botHosts
   gather_facts: no
@@ -43,4 +49,5 @@
   tags: bots
   roles:
     - java
-    - bot
+    - role: bot
+      tags: [ bot ]
