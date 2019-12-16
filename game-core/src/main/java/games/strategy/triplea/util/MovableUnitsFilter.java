@@ -135,9 +135,9 @@ public final class MovableUnitsFilter {
       while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
         final Unit firstSkipUnit = best.get(0);
         int startIndex = 1;
-		// Check if we can skip more than unit if they are equivalent (e.g. all units of
-		// the same type that have equivalent movement left). Don't do this if there are
-		// land transports (mech infantry), though.
+        // Check if we can skip more than unit if they are equivalent (e.g. all units of
+        // the same type that have equivalent movement left). Don't do this if there are
+        // land transports (mech infantry), though.
         while (startIndex < best.size()
             && (!hasLandTransports || !isLandTransportable.test(best.get(startIndex)))
             && unitsAreEquivalentWithSameMovementLeft(firstSkipUnit, best.get(startIndex))) {
