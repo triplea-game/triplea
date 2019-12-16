@@ -31,7 +31,7 @@
 - name: create SSL keys if needed
   become: true
   when: (cert_key.stat.exists == false) or (cert.stat.exists == false)
-  command: openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -batch -subj '/CN=localhost' -sha256
+  command: openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -batch -subj '/CN=localhost' -sha256 -addext "subjectAltName = IP:127.0.0.1, IP:::1"
 
 - name: deploy nginx sites_enabled configuation
   become: true
