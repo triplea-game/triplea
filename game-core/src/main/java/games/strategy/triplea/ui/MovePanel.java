@@ -1117,7 +1117,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         currentCursorImage = errorImage;
         break;
       case SOME_UNITS_CAN_MOVE:
-        setStatusErrorMessage(result.getWarningOrErrorMessage().orElseThrow());
+        setStatusWarningMessage(result.getWarningOrErrorMessage().orElseThrow());
         currentCursorImage = warningImage;
         break;
       case ALL_UNITS_CAN_MOVE:
