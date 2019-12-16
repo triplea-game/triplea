@@ -133,11 +133,13 @@ public class MovableUnitsFilterTest {
   @Test
   @DisplayName("infantry can move 2 spaces when paired with tanks and mech infantry tech")
   void mechInfantry() {
-    final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
-    final PlayerId russians = russians(gameData);
-    final Territory russia = territory("Russia", gameData);
-    final Territory caucasus = territory("Caucasus", gameData);
-    final Territory persia = territory("Persia", gameData);
+    final GameData data = TestMapGameData.WW2V3_1942.getGameData();
+    final PlayerId russians = russians(data);
+    final Territory russia = territory("Russia", data);
+    final Territory caucasus = territory("Caucasus", data);
+    final Territory persia = territory("Persia", data);
+    final UnitType infType = infantry(data);
+    final UnitType tankType = armour(data);
 
     final Predicate<Unit> infantryAndTanks = Matches.unitIsOfTypes(infantryType, armourType);
     final Collection<Unit> units = CollectionUtils.getMatches(russia.getUnits(), infantryAndTanks);
@@ -145,12 +147,12 @@ public class MovableUnitsFilterTest {
 
     final Route route = new Route(russia, caucasus, persia);
 
-    // Without mech infantry tech, only tanks can move.
+    // Without mech infantry tech, only 2 tanks can move.
     {
       final var result = filterUnits(russians, route, units);
       assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
       assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
-      assertThat(getUnitTypes(result), containsInAnyOrder(armourType, armourType));
+      assertThat(getUnitTypes(result), containsInAnyOrder(tankType, tankType));
     }
 
     // With mech infantry tech, 2 infantry and 2 tanks can move.
@@ -159,9 +161,7 @@ public class MovableUnitsFilterTest {
       final var result = filterUnits(russians, route, units);
       assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
       assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
-      assertThat(
-          getUnitTypes(result),
-          containsInAnyOrder(infantryType, infantryType, armourType, armourType));
+      assertThat(getUnitTypes(result), containsInAnyOrder(infType, infType, tankType, tankType));
     }
   }
 }
