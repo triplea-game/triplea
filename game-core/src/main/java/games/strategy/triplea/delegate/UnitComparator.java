@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
@@ -105,6 +106,20 @@ public final class UnitComparator {
       // Sort by increasing movement normally, but by decreasing movement during loading
       if (left1.compareTo(left2) != 0) {
         return (route != null && route.isLoad()) ? left2.compareTo(left1) : left1.compareTo(left2);
+      }
+
+      // Sort units by type first.
+      final UnitType t1 = u1.getType();
+      final UnitType t2 = u2.getType();
+      if (!t1.equals(t2)) {
+        // Land transportable units should have higher priority than non-land transportable ones,
+        // when all else is equal.
+        final int isLandTransportable1 = UnitAttachment.get(t1).getIsLandTransportable() ? 1 : 0;
+        final int isLandTransportable2 = UnitAttachment.get(t2).getIsLandTransportable() ? 1 : 0;
+        if (isLandTransportable1 != isLandTransportable2) {
+          return isLandTransportable2 - isLandTransportable1;
+        }
+        return Integer.compare(t1.hashCode(), t2.hashCode());
       }
 
       return Integer.compare(u1.hashCode(), u2.hashCode());
