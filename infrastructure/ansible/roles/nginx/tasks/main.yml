@@ -16,11 +16,22 @@
     dest: "{{ nginx_ssl_dhparams }}"
     mode: 600
 
+- name: check for nginx cert key
+  stat:
+    path: "{{ nginx_ssl_certificate_key }}"
+  register: cert_key
+  changed_when: false
+
+- name: check for nginx certificate
+  stat:
+    path: "{{ nginx_ssl_certificate }}"
+  register: cert
+  changed_when: false
+
 - name: create SSL keys if needed
   become: true
+  when: (cert_key.stat.exists == false) or (cert.stat.exists == false)
   command: openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -batch -subj '/CN=localhost' -sha256
-  args:
-    creates: "{{ nginx_ssl_certificate_key }}"
 
 - name: deploy nginx sites_enabled configuation
   become: true
