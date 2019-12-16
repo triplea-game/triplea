@@ -400,20 +400,21 @@ public class MovePerformer implements Serializable {
         arrived.stream().anyMatch(paratroopNAirTransports)
             && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =
-        MoveValidator.getDependents(
-            CollectionUtils.getMatches(arrived, Matches.unitCanTransport()));
+        new HashMap<>(
+            MoveValidator.getDependents(
+                CollectionUtils.getMatches(arrived, Matches.unitCanTransport())));
     // add newly created dependents
-    if (newDependents != null) {
-      for (final Entry<Unit, Collection<Unit>> entry : newDependents.entrySet()) {
-        Collection<Unit> dependents = dependentAirTransportableUnits.get(entry.getKey());
-        if (dependents != null) {
-          dependents.addAll(entry.getValue());
-        } else {
-          dependents = entry.getValue();
-        }
-        dependentAirTransportableUnits.put(entry.getKey(), dependents);
+    for (final Entry<Unit, Collection<Unit>> entry : newDependents.entrySet()) {
+      Collection<Unit> dependents = dependentAirTransportableUnits.get(entry.getKey());
+      if (dependents != null) {
+        dependents = new ArrayList<>(dependents);
+        dependents.addAll(entry.getValue());
+      } else {
+        dependents = entry.getValue();
       }
+      dependentAirTransportableUnits.put(entry.getKey(), dependents);
     }
+
     // If paratroops moved normally (within their normal movement) remove their dependency to the
     // airTransports
     // So they can all continue to move normally

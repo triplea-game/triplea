@@ -299,7 +299,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                       candidateAirTransportsMatch);
               // candidateAirTransports.removeAll(selectedUnits);
               candidateAirTransports.removeAll(dependentUnits.keySet());
-              if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0) {
+              if (!unitsToLoad.isEmpty() && !candidateAirTransports.isEmpty()) {
                 final Collection<Unit> airTransportsToLoad =
                     getAirTransportsToLoad(candidateAirTransports);
                 selectedUnits.addAll(airTransportsToLoad);
@@ -307,12 +307,6 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                   final Collection<Unit> loadedAirTransports =
                       getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
                   selectedUnits.addAll(loadedAirTransports);
-                  final Map<Unit, Unit> unitsToTransports =
-                      TransportUtils.mapTransportsToLoad(loadedAirTransports, airTransportsToLoad);
-                  final MoveDescription message =
-                      new MoveDescription(
-                          loadedAirTransports, route, unitsToTransports, dependentUnits);
-                  setMoveMessage(message);
                 }
               }
             }
