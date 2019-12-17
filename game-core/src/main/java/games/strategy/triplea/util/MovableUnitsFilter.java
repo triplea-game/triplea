@@ -7,6 +7,8 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.Matches;
@@ -15,12 +17,14 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -123,13 +127,35 @@ public final class MovableUnitsFilter {
         best = CollectionUtils.getMatches(best, Matches.unitCanInvade());
         lastResult = validateMoveWithDependents(best, dependentUnits, transportsToLoad);
       }
+      final boolean hasLandTransports =
+          TechAttachment.isMechanizedInfantry(player)
+              && best.stream().anyMatch(Matches.unitIsLandTransport());
+      final Predicate<Unit> isLandTransportable = Matches.unitIsLandTransportable();
+
       while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
-        best = best.subList(1, best.size());
+        final Unit firstSkipUnit = best.get(0);
+        int startIndex = 1;
+        // Check if we can skip more than unit if they are equivalent (e.g. all units of
+        // the same type that have equivalent movement left). Don't do this if there are
+        // land transports (mech infantry), though.
+        while (startIndex < best.size()
+            && (!hasLandTransports || !isLandTransportable.test(best.get(startIndex)))
+            && unitsAreEquivalentWithSameMovementLeft(firstSkipUnit, best.get(startIndex))) {
+          startIndex++;
+        }
+        best = best.subList(startIndex, best.size());
         lastResult = validateMoveWithDependents(best, dependentUnits, transportsToLoad);
       }
     }
 
     return new FilterOperationResult(allUnitsResult, lastResult);
+  }
+
+  // Whether the two units are equivalent for the purposes of movement.
+  private boolean unitsAreEquivalentWithSameMovementLeft(final Unit u1, final Unit u2) {
+    final BigDecimal left1 = TripleAUnit.get(u1).getMovementLeft();
+    final BigDecimal left2 = TripleAUnit.get(u2).getMovementLeft();
+    return u1.isEquivalent(u2) && left1.equals(left2);
   }
 
   private Collection<Unit> getPossibleTransportsToLoad(
