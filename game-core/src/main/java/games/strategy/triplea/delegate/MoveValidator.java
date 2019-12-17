@@ -1038,10 +1038,9 @@ public class MoveValidator {
       final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
       final Route route,
-      final GameData data,
       final PlayerId player) {
     final Map<Unit, Collection<Unit>> alreadyLoaded =
-        mustMoveWith(units, newDependents, route.getStart(), data, player);
+        mustMoveWith(route.getStart(), units, newDependents, player);
     if (route.hasNoSteps() && alreadyLoaded.isEmpty()) {
       return false;
     }
@@ -1564,19 +1563,17 @@ public class MoveValidator {
 
   public static MustMoveWithDetails getMustMoveWith(
       final Territory start,
-      final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
-      final GameData data,
       final PlayerId player) {
-    return new MustMoveWithDetails(mustMoveWith(units, newDependents, start, data, player));
+    return new MustMoveWithDetails(mustMoveWith(start, start.getUnits(), newDependents, player));
   }
 
   private static Map<Unit, Collection<Unit>> mustMoveWith(
+      final Territory start,
       final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
-      final Territory start,
-      final GameData data,
       final PlayerId player) {
+    final GameData data = start.getData();
     final List<Unit> sortedUnits = new ArrayList<>(units);
     sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>(transportsMustMoveWith(sortedUnits));

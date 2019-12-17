@@ -383,18 +383,18 @@ class EditPanel extends ActionPanel {
           public void actionPerformed(final ActionEvent event) {
             currentAction = this;
             setWidgetActivation();
-            final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnits());
-            sortUnitsToRemove(allUnits);
             final MustMoveWithDetails mustMoveWithDetails;
             try {
               getData().acquireReadLock();
               mustMoveWithDetails =
                   MoveValidator.getMustMoveWith(
-                      selectedTerritory, allUnits, new HashMap<>(), getData(), getCurrentPlayer());
+                      selectedTerritory, new HashMap<>(), getCurrentPlayer());
             } finally {
               getData().releaseReadLock();
             }
             final boolean mustChoose;
+            final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnits());
+            sortUnitsToRemove(allUnits);
             if (selectedUnits.containsAll(allUnits)) {
               mustChoose = false;
             } else {
