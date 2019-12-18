@@ -132,13 +132,15 @@ public final class MovableUnitsFilter {
       final Route route,
       final Map<Unit, Collection<Unit>> dependentUnits,
       final Collection<Unit> transportsToLoad,
-      final MoveValidationResultWithDependents lastResult) {
+      final MoveValidationResultWithDependents initialLastResult) {
     if (!transportsToLoad.isEmpty()) {
       final List<Unit> allUnits = addMustMoveWith(units, dependentUnits);
       final Collection<Unit> loadedUnits =
           TransportUtils.mapTransports(route, allUnits, transportsToLoad).keySet();
       return validateMoveWithDependents(loadedUnits, dependentUnits, transportsToLoad);
     }
+
+    MoveValidationResultWithDependents lastResult = initialLastResult;
     List<Unit> best = units;
     // if the player is invading only consider units that can invade
     if (!nonCombat
@@ -198,9 +200,6 @@ public final class MovableUnitsFilter {
     }
     if (route.isUnload()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
-    }
-    if (!best.isEmpty()) {
-      best.sort(getUnitComparator(best).reversed());
     }
     return best;
   }
