@@ -120,35 +120,54 @@ public final class MovableUnitsFilter {
     final MoveValidationResult allUnitsResult = lastResult.getResult();
 
     if (!allUnitsResult.isMoveValid()) {
-      // if the player is invading only consider units that can invade
-      if (!nonCombat
-          && route.isUnload()
-          && Matches.isTerritoryEnemy(player, data).test(route.getEnd())) {
-        best = CollectionUtils.getMatches(best, Matches.unitCanInvade());
-        lastResult = validateMoveWithDependents(best, dependentUnits, transportsToLoad);
-      }
-      final boolean hasLandTransports =
-          TechAttachment.isMechanizedInfantry(player)
-              && best.stream().anyMatch(Matches.unitIsLandTransport());
-      final Predicate<Unit> isLandTransportable = Matches.unitIsLandTransportable();
-
-      while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
-        final Unit firstSkipUnit = best.get(0);
-        int startIndex = 1;
-        // Check if we can skip more than one unit if they are equivalent (e.g. all units
-        // of the same type that have equivalent movement left). Don't do this if there are
-        // land transports (mech infantry), though.
-        while (startIndex < best.size()
-            && (!hasLandTransports || !isLandTransportable.test(best.get(startIndex)))
-            && unitsAreEquivalentWithSameMovementLeft(firstSkipUnit, best.get(startIndex))) {
-          startIndex++;
-        }
-        best = best.subList(startIndex, best.size());
-        lastResult = validateMoveWithDependents(best, dependentUnits, transportsToLoad);
-      }
+      lastResult =
+          chooseSubsetOfUnitsThatCanMove(best, route, dependentUnits, transportsToLoad, lastResult);
     }
 
     return new FilterOperationResult(allUnitsResult, lastResult);
+  }
+
+  private MoveValidationResultWithDependents chooseSubsetOfUnitsThatCanMove(
+      final List<Unit> units,
+      final Route route,
+      final Map<Unit, Collection<Unit>> dependentUnits,
+      final Collection<Unit> transportsToLoad,
+      MoveValidationResultWithDependents lastResult) {
+    if (!transportsToLoad.isEmpty()) {
+      final List<Unit> allUnits = addMustMoveWith(units, dependentUnits);
+      final Collection<Unit> loadedUnits =
+          TransportUtils.mapTransports(route, allUnits, transportsToLoad).keySet();
+      return validateMoveWithDependents(loadedUnits, dependentUnits, transportsToLoad);
+    }
+    List<Unit> best = units;
+    // if the player is invading only consider units that can invade
+    if (!nonCombat
+        && route.isUnload()
+        && Matches.isTerritoryEnemy(player, data).test(route.getEnd())) {
+      lastResult = validateMoveWithDependents(best, dependentUnits, List.of());
+    }
+
+    final boolean hasLandTransports =
+        TechAttachment.isMechanizedInfantry(player)
+            && best.stream().anyMatch(Matches.unitIsLandTransport());
+    final Predicate<Unit> isLandTransportable = Matches.unitIsLandTransportable();
+
+    best.sort(getUnitComparator(best).reversed());
+    while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
+      final Unit firstSkipUnit = best.get(0);
+      int startIndex = 1;
+      // Check if we can skip more than one unit if they are equivalent (e.g. all units
+      // of the same type that have equivalent movement left). Don't do this if there are
+      // land transports (mech infantry), though.
+      while (startIndex < best.size()
+          && (!hasLandTransports || !isLandTransportable.test(best.get(startIndex)))
+          && unitsAreEquivalentWithSameMovementLeft(firstSkipUnit, best.get(startIndex))) {
+        startIndex++;
+      }
+      best = best.subList(startIndex, best.size());
+      lastResult = validateMoveWithDependents(best, dependentUnits, transportsToLoad);
+    }
+    return lastResult;
   }
 
   // Whether the two units are equivalent for the purposes of movement.
@@ -196,7 +215,7 @@ public final class MovableUnitsFilter {
   }
 
   private MoveValidationResultWithDependents validateMoveWithDependents(
-      final List<Unit> units,
+      final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> dependentUnits,
       final Collection<Unit> transportsToLoad) {
     final List<Unit> unitsWithDependents = addMustMoveWith(units, dependentUnits);
@@ -220,7 +239,7 @@ public final class MovableUnitsFilter {
   }
 
   private List<Unit> addMustMoveWith(
-      final List<Unit> best, final Map<Unit, Collection<Unit>> dependentUnits) {
+      final Collection<Unit> best, final Map<Unit, Collection<Unit>> dependentUnits) {
     final MustMoveWithDetails mustMoveWithDetails =
         MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
     final List<Unit> bestWithDependents = new ArrayList<>(best);
