@@ -111,10 +111,10 @@ public final class MovableUnitsFilter {
    */
   public FilterOperationResult filterUnitsThatCanMove(
       final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependentUnits) {
+    final List<Unit> best = getInitialUnitList(units);
+
     final Collection<Unit> transportsToLoad =
         getPossibleTransportsToLoad(units, dependentUnits, route);
-
-    List<Unit> best = getInitialUnitList(units);
     MoveValidationResultWithDependents lastResult =
         validateMoveWithDependents(best, dependentUnits, transportsToLoad);
     final MoveValidationResult allUnitsResult = lastResult.getResult();
@@ -132,7 +132,7 @@ public final class MovableUnitsFilter {
       final Route route,
       final Map<Unit, Collection<Unit>> dependentUnits,
       final Collection<Unit> transportsToLoad,
-      MoveValidationResultWithDependents lastResult) {
+      final MoveValidationResultWithDependents lastResult) {
     if (!transportsToLoad.isEmpty()) {
       final List<Unit> allUnits = addMustMoveWith(units, dependentUnits);
       final Collection<Unit> loadedUnits =
