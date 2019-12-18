@@ -132,7 +132,7 @@ public final class MovableUnitsFilter {
       final Route route,
       final Map<Unit, Collection<Unit>> dependentUnits,
       final Collection<Unit> transportsToLoad,
-      final MoveValidationResultWithDependents initialLastResult) {
+      final MoveValidationResultWithDependents initialResult) {
     if (!transportsToLoad.isEmpty()) {
       final List<Unit> allUnits = addMustMoveWith(units, dependentUnits);
       final Collection<Unit> loadedUnits =
@@ -140,7 +140,7 @@ public final class MovableUnitsFilter {
       return validateMoveWithDependents(loadedUnits, dependentUnits, transportsToLoad);
     }
 
-    MoveValidationResultWithDependents lastResult = initialLastResult;
+    MoveValidationResultWithDependents lastResult = initialResult;
     List<Unit> best = units;
     // if the player is invading only consider units that can invade
     if (!nonCombat
