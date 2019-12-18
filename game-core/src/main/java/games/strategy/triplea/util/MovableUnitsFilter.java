@@ -121,7 +121,7 @@ public final class MovableUnitsFilter {
 
     if (!allUnitsResult.isMoveValid()) {
       lastResult =
-          chooseSubsetOfUnitsThatCanMove(best, route, dependentUnits, transportsToLoad, lastResult);
+          chooseSubsetOfUnitsThatCanMove(best, dependentUnits, transportsToLoad, lastResult);
     }
 
     return new FilterOperationResult(allUnitsResult, lastResult);
@@ -129,7 +129,6 @@ public final class MovableUnitsFilter {
 
   private MoveValidationResultWithDependents chooseSubsetOfUnitsThatCanMove(
       final List<Unit> units,
-      final Route route,
       final Map<Unit, Collection<Unit>> dependentUnits,
       final Collection<Unit> transportsToLoad,
       final MoveValidationResultWithDependents initialResult) {
