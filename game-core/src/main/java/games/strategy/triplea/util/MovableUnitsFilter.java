@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -145,24 +144,26 @@ public final class MovableUnitsFilter {
     }
 
     final boolean hasLandTransports = hasLandTransports(units);
-    final Predicate<Unit> isLandTransportable = Matches.unitIsLandTransportable();
-
     best.sort(getUnitComparator(best).reversed());
     while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
-      final Unit firstSkipUnit = best.get(0);
-      int startIndex = 1;
-      // Check if we can skip more than one unit if they are equivalent (e.g. all units
-      // of the same type that have equivalent movement left). Don't do this if there are
-      // land transports (mech infantry), though.
-      while (startIndex < best.size()
-          && (!hasLandTransports || !isLandTransportable.test(best.get(startIndex)))
-          && unitsAreEquivalentWithSameMovementLeft(firstSkipUnit, best.get(startIndex))) {
-        startIndex++;
-      }
-      best = best.subList(startIndex, best.size());
+      best = nextSublist(best, hasLandTransports);
       lastResult = validateMoveWithDependents(best, transportsToLoad);
     }
     return lastResult;
+  }
+
+  private List<Unit> nextSublist(final List<Unit> best, final boolean hasLandTransports) {
+    final Unit firstSkipUnit = best.get(0);
+    int startIndex = 1;
+    // Check if we can skip more than one unit if they are equivalent (e.g. all units
+    // of the same type that have equivalent movement left). Don't do this if there are
+    // land transports (mech infantry), though.
+    while (startIndex < best.size()
+        && (!hasLandTransports || !Matches.unitIsLandTransportable().test(best.get(startIndex)))
+        && unitsAreEquivalentWithSameMovementLeft(firstSkipUnit, best.get(startIndex))) {
+      startIndex++;
+    }
+    return best.subList(startIndex, best.size());
   }
 
   private boolean hasLandTransports(final List<Unit> units) {
