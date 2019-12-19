@@ -232,9 +232,8 @@ public final class ProMoveUtils {
             int maxDistanceFromEnd =
                 Integer.MIN_VALUE; // Used to move to farthest away loading territory first
             for (final Territory neighbor : neighbors) {
-              if (MoveValidator.validateCanal(
-                      new Route(transportTerritory, neighbor), List.of(transport), player)
-                  != null) {
+              final Route route = new Route(transportTerritory, neighbor);
+              if (MoveValidator.validateCanal(route, List.of(transport), player) != null) {
                 continue;
               }
               int distanceFromUnloadTerritory = 0;
