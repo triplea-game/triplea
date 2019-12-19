@@ -3,6 +3,7 @@ package games.strategy.triplea.util;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
+import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
@@ -53,13 +54,14 @@ public class MovableUnitsFilterTest {
   }
 
   private FilterOperationResult filterUnits(
-      final PlayerId player, final Route route, final Collection<Unit> units) {
+      final PlayerId player, final Route route, final Collection<Unit> units,
+      final Map<Unit, Collection<Unit>> dependentUnits) {
     final IDelegateBridge bridge = newDelegateBridge(player);
     advanceToStep(bridge, "NonCombatMove");
     final MovableUnitsFilter filter =
         new MovableUnitsFilter(
             player, route, false, AbstractMoveDelegate.MoveType.DEFAULT, List.of());
-    return filter.filterUnitsThatCanMove(units, Map.of());
+    return filter.filterUnitsThatCanMove(units, dependentUnits);
   }
 
   private Collection<Unit> germanyUnits(final Predicate<Unit> predicate) {
@@ -85,7 +87,7 @@ public class MovableUnitsFilterTest {
     final Collection<Unit> justTanks = germanyUnits(Matches.unitIsOfType(armourType));
     assertThat(justTanks, hasSize(2));
 
-    final var result = filterUnits(germans, route, units);
+    final var result = filterUnits(germans, route, units, Map.of());
     assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
     assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
     assertThat(result.getUnitsWithDependents(), containsInAnyOrder(justTanks.toArray()));
@@ -98,7 +100,7 @@ public class MovableUnitsFilterTest {
     final Collection<Unit> infantry = germanyUnits(Matches.unitIsOfTypes(infantryType));
     assertThat(infantry, hasSize(3));
 
-    final var result = filterUnits(germans, route, infantry);
+    final var result = filterUnits(germans, route, infantry, Map.of());
     assertThat(result.getStatus(), is(FilterOperationResult.Status.NO_UNITS_CAN_MOVE));
     assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
     assertThat(result.getUnitsWithDependents(), is(empty()));
@@ -111,7 +113,7 @@ public class MovableUnitsFilterTest {
     final Collection<Unit> tanks = germanyUnits(Matches.unitIsOfTypes(armourType));
     assertThat(tanks, hasSize(2));
 
-    final var result = filterUnits(germans, route, tanks);
+    final var result = filterUnits(germans, route, tanks, Map.of());
     assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
     assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
     assertThat(result.getUnitsWithDependents(), containsInAnyOrder(tanks.toArray()));
@@ -124,7 +126,7 @@ public class MovableUnitsFilterTest {
     final Collection<Unit> infantry = germanyUnits(Matches.unitIsOfTypes(infantryType));
     assertThat(infantry, hasSize(3));
 
-    final var result = filterUnits(germans, route, infantry);
+    final var result = filterUnits(germans, route, infantry, Map.of());
     assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
     assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
     assertThat(result.getUnitsWithDependents(), containsInAnyOrder(infantry.toArray()));
@@ -149,7 +151,7 @@ public class MovableUnitsFilterTest {
 
     // Without mech infantry tech, only 2 tanks can move.
     {
-      final var result = filterUnits(russians, route, units);
+      final var result = filterUnits(russians, route, units, Map.of());
       assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
       assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
       assertThat(getUnitTypes(result), containsInAnyOrder(tankType, tankType));
@@ -158,10 +160,46 @@ public class MovableUnitsFilterTest {
     // With mech infantry tech, 2 infantry and 2 tanks can move.
     TechAttachment.get(russians).setMechanizedInfantry("true");
     {
-      final var result = filterUnits(russians, route, units);
+      final var result = filterUnits(russians, route, units, Map.of());
       assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
       assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
       assertThat(getUnitTypes(result), containsInAnyOrder(infType, infType, tankType, tankType));
+    }
+  }
+
+  @Test
+  @DisplayName("paratroopers tech allows paratroopers to move with bombers")
+  void paratroopers() {
+    final GameData data = TestMapGameData.WW2V3_1942.getGameData();
+    final PlayerId russians = russians(data);
+    final Territory russia = territory("Russia", data);
+    final Territory archangel = territory("Archangel", data);
+    final Territory karelia = territory("Karelia S.S.R.", data);
+    final Territory finland = territory("Finland", data);
+    final UnitType infType = infantry(data);
+    final UnitType bomberType = bomber(data);
+
+    final Collection<Unit> allUnits = russia.getUnits();
+    final Unit bomber = allUnits.stream().filter(Matches.unitIsOfTypes(bomberType)).findAny().get();
+    final Unit infantry = allUnits.stream().filter(Matches.unitIsOfTypes(infType)).findAny().get();
+    final Collection<Unit> twoUnits = List.of(bomber, infantry);
+    final Route route = new Route(russia, archangel, karelia, finland);
+
+    // Without paratroopers tech, the bomber can move on its own.
+    {
+      final var result = filterUnits(russians, route, allUnits, Map.of());
+      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
+      assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
+      assertThat(getUnitTypes(result), containsInAnyOrder(bomberType));
+    }
+
+    // With paratroopers tech, the bomber can carry an infantry.
+    TechAttachment.get(russians).setParatroopers("true");
+    {
+      final var result = filterUnits(russians, route, twoUnits, Map.of(bomber, List.of(infantry)));
+      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
+      assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
+      assertThat(getUnitTypes(result), containsInAnyOrder(infType, bomberType));
     }
   }
 }
