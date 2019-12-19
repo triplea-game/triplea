@@ -87,41 +87,39 @@ public final class MovableUnitsFilter {
   private final boolean nonCombat;
   private final MoveType moveType;
   private final List<UndoableMove> undoableMoves;
+  private final Map<Unit, Collection<Unit>> dependentUnits;
 
   public MovableUnitsFilter(
       final PlayerId player,
       final Route route,
       final boolean nonCombat,
       final MoveType moveType,
-      final List<UndoableMove> undoableMoves) {
+      final List<UndoableMove> undoableMoves,
+      final Map<Unit, Collection<Unit>> dependentUnits) {
     this.player = Preconditions.checkNotNull(player);
     this.data = player.getData();
     this.route = Preconditions.checkNotNull(route);
     this.nonCombat = nonCombat;
     this.moveType = moveType;
     this.undoableMoves = Preconditions.checkNotNull(undoableMoves);
+    this.dependentUnits = Preconditions.checkNotNull(dependentUnits);
   }
 
   /**
    * Filters the units and their dependents to a subset of units that can move on the route.
    *
    * @param units The units to filter.
-   * @param dependentUnits The dependent units map.
    * @return The result.
    */
-  public FilterOperationResult filterUnitsThatCanMove(
-      final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependentUnits) {
+  public FilterOperationResult filterUnitsThatCanMove(final Collection<Unit> units) {
     final List<Unit> best = getInitialUnitList(units);
 
-    final Collection<Unit> transportsToLoad =
-        getPossibleTransportsToLoad(units, dependentUnits, route);
+    final Collection<Unit> transportsToLoad = getPossibleTransportsToLoad(units);
     MoveValidationResultWithDependents lastResult =
-        validateMoveWithDependents(best, dependentUnits, transportsToLoad);
+        validateMoveWithDependents(best, transportsToLoad);
     final MoveValidationResult allUnitsResult = lastResult.getResult();
-
     if (!allUnitsResult.isMoveValid()) {
-      lastResult =
-          chooseSubsetOfUnitsThatCanMove(best, dependentUnits, transportsToLoad, lastResult);
+      lastResult = chooseSubsetOfUnitsThatCanMove(best, transportsToLoad, lastResult);
     }
 
     return new FilterOperationResult(allUnitsResult, lastResult);
@@ -129,29 +127,24 @@ public final class MovableUnitsFilter {
 
   private MoveValidationResultWithDependents chooseSubsetOfUnitsThatCanMove(
       final List<Unit> units,
-      final Map<Unit, Collection<Unit>> dependentUnits,
       final Collection<Unit> transportsToLoad,
       final MoveValidationResultWithDependents initialResult) {
     if (!transportsToLoad.isEmpty()) {
-      final List<Unit> allUnits = addMustMoveWith(units, dependentUnits);
+      final List<Unit> allUnits = addMustMoveWith(units);
       final Collection<Unit> loadedUnits =
           TransportUtils.mapTransports(route, allUnits, transportsToLoad).keySet();
-      return validateMoveWithDependents(loadedUnits, dependentUnits, transportsToLoad);
+      return validateMoveWithDependents(loadedUnits, transportsToLoad);
     }
 
     MoveValidationResultWithDependents lastResult = initialResult;
     List<Unit> best = units;
     // if the player is invading only consider units that can invade
-    if (!nonCombat
-        && route.isUnload()
-        && Matches.isTerritoryEnemy(player, data).test(route.getEnd())) {
+    if (isInvading()) {
       best = CollectionUtils.getMatches(best, Matches.unitCanInvade());
-      lastResult = validateMoveWithDependents(best, dependentUnits, List.of());
+      lastResult = validateMoveWithDependents(best, List.of());
     }
 
-    final boolean hasLandTransports =
-        TechAttachment.isMechanizedInfantry(player)
-            && best.stream().anyMatch(Matches.unitIsLandTransport());
+    final boolean hasLandTransports = hasLandTransports(units);
     final Predicate<Unit> isLandTransportable = Matches.unitIsLandTransportable();
 
     best.sort(getUnitComparator(best).reversed());
@@ -167,9 +160,20 @@ public final class MovableUnitsFilter {
         startIndex++;
       }
       best = best.subList(startIndex, best.size());
-      lastResult = validateMoveWithDependents(best, dependentUnits, transportsToLoad);
+      lastResult = validateMoveWithDependents(best, transportsToLoad);
     }
     return lastResult;
+  }
+
+  private boolean hasLandTransports(final List<Unit> units) {
+    return TechAttachment.isMechanizedInfantry(player)
+        && units.stream().anyMatch(Matches.unitIsLandTransport());
+  }
+
+  private boolean isInvading() {
+    return !nonCombat
+        && route.isUnload()
+        && Matches.isTerritoryEnemy(player, data).test(route.getEnd());
   }
 
   // Whether the two units are equivalent for the purposes of movement.
@@ -179,10 +183,7 @@ public final class MovableUnitsFilter {
     return u1.isEquivalent(u2) && left1.equals(left2);
   }
 
-  private Collection<Unit> getPossibleTransportsToLoad(
-      final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependentUnits,
-      final Route route) {
+  private Collection<Unit> getPossibleTransportsToLoad(final Collection<Unit> units) {
     // TODO kev check for already loaded airTransports
     if (MoveValidator.isLoad(units, dependentUnits, route, player)) {
       final UnitCollection unitsAtEnd = route.getEnd().getUnitCollection();
@@ -214,10 +215,8 @@ public final class MovableUnitsFilter {
   }
 
   private MoveValidationResultWithDependents validateMoveWithDependents(
-      final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependentUnits,
-      final Collection<Unit> transportsToLoad) {
-    final List<Unit> unitsWithDependents = addMustMoveWith(units, dependentUnits);
+      final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
+    final List<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
     data.acquireReadLock();
     try {
@@ -237,8 +236,7 @@ public final class MovableUnitsFilter {
         result, result.isMoveValid() ? unitsWithDependents : List.of());
   }
 
-  private List<Unit> addMustMoveWith(
-      final Collection<Unit> best, final Map<Unit, Collection<Unit>> dependentUnits) {
+  private List<Unit> addMustMoveWith(final Collection<Unit> best) {
     final MustMoveWithDetails mustMoveWithDetails =
         MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
     final List<Unit> bestWithDependents = new ArrayList<>(best);

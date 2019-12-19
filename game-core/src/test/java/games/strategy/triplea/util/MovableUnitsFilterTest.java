@@ -59,8 +59,8 @@ public class MovableUnitsFilterTest {
     advanceToStep(bridge, "NonCombatMove");
     final MovableUnitsFilter filter =
         new MovableUnitsFilter(
-            player, route, false, AbstractMoveDelegate.MoveType.DEFAULT, List.of());
-    return filter.filterUnitsThatCanMove(units, Map.of());
+            player, route, false, AbstractMoveDelegate.MoveType.DEFAULT, List.of(), Map.of());
+    return filter.filterUnitsThatCanMove(units);
   }
 
   private Collection<Unit> germanyUnits(final Predicate<Unit> predicate) {
