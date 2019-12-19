@@ -8,6 +8,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.load;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -26,7 +27,7 @@ import org.junit.jupiter.api.Test;
 final class UnitComparatorTest {
   private static void startCombatMoveFor(final PlayerId playerId, final GameData gameData) {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    final IDelegateBridge bridge = MockDelegateBridge.newInstance(gameData, playerId);
+    final IDelegateBridge bridge = newDelegateBridge(playerId);
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();

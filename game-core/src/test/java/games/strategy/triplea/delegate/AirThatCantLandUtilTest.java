@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,10 +26,6 @@ class AirThatCantLandUtilTest {
   private GameData gameData = TestMapGameData.REVISED.getGameData();
   private PlayerId americansPlayer = GameDataTestUtil.americans(gameData);
   private UnitType fighterType = GameDataTestUtil.fighter(gameData);
-
-  private IDelegateBridge newDelegateBridge(final PlayerId player) {
-    return MockDelegateBridge.newInstance(gameData, player);
-  }
 
   private static void fight(final IBattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :

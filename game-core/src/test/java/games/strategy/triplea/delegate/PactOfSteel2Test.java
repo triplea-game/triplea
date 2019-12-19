@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,10 +21,6 @@ import org.triplea.test.common.TestType;
 @Integration(type = TestType.ACCEPTANCE)
 class PactOfSteel2Test {
   private final GameData gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
-
-  private IDelegateBridge newDelegateBridge(final PlayerId player) {
-    return MockDelegateBridge.newInstance(gameData, player);
-  }
 
   @Test
   void testDirectOwnershipTerritories() {

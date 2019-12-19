@@ -8,6 +8,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +26,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MockDelegateBridge;
 import games.strategy.triplea.util.MovableUnitsFilter.FilterOperationResult;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -47,10 +47,6 @@ public class MovableUnitsFilterTest {
   final Territory kareliaSsr = territory("Karelia S.S.R.", gameData);
   final UnitType infantryType = infantry(gameData);
   final UnitType armourType = armour(gameData);
-
-  private IDelegateBridge newDelegateBridge(final PlayerId player) {
-    return MockDelegateBridge.newInstance(gameData, player);
-  }
 
   private FilterOperationResult filterUnits(
       final PlayerId player, final Route route, final Collection<Unit> units) {
