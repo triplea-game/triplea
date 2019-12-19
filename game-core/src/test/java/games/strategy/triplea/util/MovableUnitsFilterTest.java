@@ -149,7 +149,7 @@ public class MovableUnitsFilterTest {
   }
 
   @Test
-  @DisplayName("moving 3 infantry and 2 tanks onto one transport loads 1 tank and one infantry")
+  @DisplayName("moving 3 infantry and 2 tanks onto a transport loads 1 infantry and 1 tank")
   void filterMixedUnitsLoadingOntoTransport() throws Exception {
     final Route route = new Route(germany, sz5);
     final Collection<Unit> units = germanyTanksAndInfantry();
@@ -161,7 +161,7 @@ public class MovableUnitsFilterTest {
   }
 
   @Test
-  @DisplayName("moving 3 infantry onto one transport loads 2 infantry")
+  @DisplayName("moving 3 infantry onto a transport loads 2 infantry")
   void filterInfantryLoadingOntoTransport() throws Exception {
     final Route route = new Route(germany, sz5);
     final Collection<Unit> units = germanyInfantry();
@@ -173,7 +173,7 @@ public class MovableUnitsFilterTest {
   }
 
   @Test
-  @DisplayName("moving 2 tanks onto one transport loads 1 tank")
+  @DisplayName("moving 2 tanks onto a transport loads 1 tank")
   void filterTankLoadingOntoTransport() throws Exception {
     final Route route = new Route(germany, sz5);
     final Collection<Unit> units = germanyTanks();
@@ -185,7 +185,7 @@ public class MovableUnitsFilterTest {
   }
 
   @Test
-  @DisplayName("moving 1 tank and one infantry onto a transport loads them both")
+  @DisplayName("moving 1 tank and 1 infantry onto a transport loads them both")
   void filterFittingMixedUnitsLoadingOntoTransport() throws Exception {
     final Route route = new Route(germany, sz5);
     final Collection<Unit> units =

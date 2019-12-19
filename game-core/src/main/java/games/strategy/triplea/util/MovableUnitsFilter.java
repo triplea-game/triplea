@@ -147,7 +147,7 @@ public final class MovableUnitsFilter {
     best.sort(getUnitComparator(best).reversed());
     while (!best.isEmpty() && !lastResult.getResult().isMoveValid()) {
       best = nextSublist(best, hasLandTransports);
-      lastResult = validateMoveWithDependents(best, transportsToLoad);
+      lastResult = validateMoveWithDependents(best, List.of());
     }
     return lastResult;
   }
