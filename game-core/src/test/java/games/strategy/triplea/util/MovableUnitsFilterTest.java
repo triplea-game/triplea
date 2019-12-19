@@ -50,14 +50,14 @@ public class MovableUnitsFilterTest {
   final UnitType armourType = armour(gameData);
 
   private IDelegateBridge newDelegateBridge(final PlayerId player) {
-    return MockDelegateBridge.newInstance(gameData, player);
+    return MockDelegateBridge.newInstance(player.getData(), player);
   }
 
   private FilterOperationResult filterUnits(
       final PlayerId player, final Route route, final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> dependentUnits) {
     final IDelegateBridge bridge = newDelegateBridge(player);
-    advanceToStep(bridge, "NonCombatMove");
+    advanceToStep(bridge, "CombatMove");
     final MovableUnitsFilter filter =
         new MovableUnitsFilter(
             player, route, false, AbstractMoveDelegate.MoveType.DEFAULT, List.of());
@@ -176,30 +176,34 @@ public class MovableUnitsFilterTest {
     final Territory archangel = territory("Archangel", data);
     final Territory karelia = territory("Karelia S.S.R.", data);
     final Territory finland = territory("Finland", data);
-    final UnitType infType = infantry(data);
     final UnitType bomberType = bomber(data);
+    final UnitType infType = infantry(data);
 
     final Collection<Unit> allUnits = russia.getUnits();
     final Unit bomber = allUnits.stream().filter(Matches.unitIsOfTypes(bomberType)).findAny().get();
     final Unit infantry = allUnits.stream().filter(Matches.unitIsOfTypes(infType)).findAny().get();
     final Collection<Unit> twoUnits = List.of(bomber, infantry);
     final Route route = new Route(russia, archangel, karelia, finland);
-
-    // Without paratroopers tech, the bomber can move on its own.
-    {
-      final var result = filterUnits(russians, route, allUnits, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
-      assertThat(getUnitTypes(result), containsInAnyOrder(bomberType));
-    }
+    final Map<Unit, Collection<Unit>> dependentUnits = Map.of(bomber, List.of(infantry));
 
     // With paratroopers tech, the bomber can carry an infantry.
     TechAttachment.get(russians).setParatroopers("true");
     {
-      final var result = filterUnits(russians, route, twoUnits, Map.of(bomber, List.of(infantry)));
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
+      final var result = filterUnits(russians, route, List.of(bomber), dependentUnits);
+      assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
+      assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
       assertThat(getUnitTypes(result), containsInAnyOrder(infType, bomberType));
+    }
+
+    // Without the tech, only the bomber can move.
+    TechAttachment.get(russians).setParatroopers("false");
+    {
+      final var result = filterUnits(russians, route, List.of(bomber), dependentUnits);
+      // TODO: This should probably be SOME_UNITS_CAN_MOVE, but the UI code never actually passes
+      // invalid dependent units when the tech doesn't exist, so this does not matter much.
+      assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
+      assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
+      assertThat(getUnitTypes(result), containsInAnyOrder(bomberType));
     }
   }
 }
