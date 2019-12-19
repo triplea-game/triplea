@@ -621,7 +621,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final PlayerId player = getUnitsOwner(move.getUnits());
     final MoveValidationResult result =
         MoveValidator.validateMove(
-            move, player, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo, data);
+            move, player, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =

@@ -233,7 +233,7 @@ public final class ProMoveUtils {
                 Integer.MIN_VALUE; // Used to move to farthest away loading territory first
             for (final Territory neighbor : neighbors) {
               if (MoveValidator.validateCanal(
-                      new Route(transportTerritory, neighbor), List.of(transport), player, data)
+                      new Route(transportTerritory, neighbor), List.of(transport), player)
                   != null) {
                 continue;
               }

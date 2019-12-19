@@ -116,46 +116,35 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     final Route r = new Route(berlin, easternGermany);
     List<Unit> toMove = berlin.getUnitCollection().getMatches(Matches.unitCanMove());
     MoveValidationResult results =
-        MoveValidator.validateMove(
-            new MoveDescription(toMove, r), germans, false, null, twwGameData);
+        MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertTrue(results.isMoveValid());
 
     // Add germanTrain to units which fails since it requires germainRail
     addTo(berlin, GameDataTestUtil.germanTrain(twwGameData).create(1, germans));
     toMove = berlin.getUnitCollection().getMatches(Matches.unitCanMove());
-    results =
-        MoveValidator.validateMove(
-            new MoveDescription(toMove, r), germans, false, null, twwGameData);
+    results = MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertFalse(results.isMoveValid());
 
     // Add germanRail to only destination so it fails
     final Collection<Unit> germanRail = GameDataTestUtil.germanRail(twwGameData).create(1, germans);
     addTo(easternGermany, germanRail);
-    results =
-        MoveValidator.validateMove(
-            new MoveDescription(toMove, r), germans, false, null, twwGameData);
+    results = MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertFalse(results.isMoveValid());
 
     // Add germanRail to start so move succeeds
     addTo(berlin, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
-    results =
-        MoveValidator.validateMove(
-            new MoveDescription(toMove, r), germans, false, null, twwGameData);
+    results = MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertTrue(results.isMoveValid());
 
     // Remove germanRail from destination so move fails
     GameDataTestUtil.removeFrom(easternGermany, germanRail);
-    results =
-        MoveValidator.validateMove(
-            new MoveDescription(toMove, r), germans, false, null, twwGameData);
+    results = MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertFalse(results.isMoveValid());
 
     // Add allied owned germanRail to destination so move succeeds
     final PlayerId japan = GameDataTestUtil.japan(twwGameData);
     addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, japan));
-    results =
-        MoveValidator.validateMove(
-            new MoveDescription(toMove, r), germans, false, null, twwGameData);
+    results = MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertTrue(results.isMoveValid());
   }
 
@@ -174,42 +163,42 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     addTo(berlin, GameDataTestUtil.truck(twwGameData).create(1, germans));
     MoveValidationResult results =
         MoveValidator.validateMove(
-            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null, twwGameData);
+            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null);
     assertTrue(results.isMoveValid());
 
     // Add an infantry for truck to transport
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null, twwGameData);
+            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null);
     assertTrue(results.isMoveValid());
 
     // Add an infantry and the truck can't transport both
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null, twwGameData);
+            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null);
     assertFalse(results.isMoveValid());
 
     // Add a large truck (has capacity for 2 infantry) to transport second infantry
     addTo(berlin, GameDataTestUtil.largeTruck(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null, twwGameData);
+            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null);
     assertTrue(results.isMoveValid());
 
     // Add an infantry that the large truck can also transport
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null, twwGameData);
+            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null);
     assertTrue(results.isMoveValid());
 
     // Add an infantry that can't be transported
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
     results =
         MoveValidator.validateMove(
-            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null, twwGameData);
+            new MoveDescription(berlin.getUnitCollection(), r), germans, true, null);
     assertFalse(results.isMoveValid());
   }
 
@@ -232,8 +221,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             new MoveDescription(northernGermany.getUnitCollection(), r, unitsToTransports),
             germans,
             false,
-            null,
-            twwGameData);
+            null);
     assertTrue(results.isMoveValid());
 
     // Add USA ship to transport sea zone
@@ -246,8 +234,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             new MoveDescription(northernGermany.getUnitCollection(), r, unitsToTransports),
             germans,
             false,
-            null,
-            twwGameData);
+            null);
     assertFalse(results.isMoveValid());
 
     // Set 'Units Can Load In Hostile Sea Zones' to true
@@ -259,8 +246,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             new MoveDescription(northernGermany.getUnitCollection(), r, unitsToTransports),
             germans,
             false,
-            null,
-            twwGameData);
+            null);
     assertTrue(results.isMoveValid());
   }
 }

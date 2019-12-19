@@ -1166,8 +1166,7 @@ public class ProTerritoryManager {
               if (MoveValidator.validateCanal(
                       new Route(currentTerritory, possibleNeighborTerritory),
                       List.of(myTransportUnit),
-                      player,
-                      data)
+                      player)
                   == null) {
                 nextTerritories.add(possibleNeighborTerritory);
               }
