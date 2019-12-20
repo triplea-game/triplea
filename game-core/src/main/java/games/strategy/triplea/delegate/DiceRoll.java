@@ -1431,7 +1431,7 @@ public class DiceRoll implements Externalizable {
       if (rolls <= 0 || strength <= 0) {
         continue;
       }
-      if (rolxtestRoll())) {
+      if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
         int smallestDieIndex = 0;
         int smallestDie = data.getDiceSides();
         for (int i = 0; i < rolls; i++) {
