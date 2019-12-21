@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
@@ -42,10 +43,6 @@ import org.triplea.java.collections.CollectionUtils;
 
 class DiceRollTest {
   private GameData gameData = TestMapGameData.LHTR.getGameData();
-
-  private IDelegateBridge newDelegateBridge(final PlayerId player) {
-    return MockDelegateBridge.newInstance(gameData, player);
-  }
 
   @Test
   void testSimple() {

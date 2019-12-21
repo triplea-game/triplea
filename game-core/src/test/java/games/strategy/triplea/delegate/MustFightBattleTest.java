@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
@@ -32,7 +33,7 @@ class MustFightBattleTest extends AbstractDelegateTestCase {
     addTo(sz33, GameDataTestUtil.americanCruiser(twwGameData).create(1, usa));
     final Territory sz40 = territory("40 Sea Zone", twwGameData);
     addTo(sz40, GameDataTestUtil.germanMine(twwGameData).create(1, germany));
-    final IDelegateBridge bridge = MockDelegateBridge.newInstance(twwGameData, usa);
+    final IDelegateBridge bridge = newDelegateBridge(usa);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(twwGameData).start();
@@ -59,7 +60,7 @@ class MustFightBattleTest extends AbstractDelegateTestCase {
     celebes.getUnitCollection().clear();
     addTo(celebes, GameDataTestUtil.americanStrategicBomber(twwGameData).create(1, usa));
     addTo(celebes, GameDataTestUtil.germanInfantry(twwGameData).create(1, germany));
-    final IDelegateBridge bridge = MockDelegateBridge.newInstance(twwGameData, germany);
+    final IDelegateBridge bridge = newDelegateBridge(germany);
     battleDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(twwGameData).getBattleTracker(), bridge);
     final IBattle battle =

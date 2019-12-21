@@ -5,6 +5,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Route;
@@ -24,7 +25,7 @@ class BigWorldTest {
     final Territory sz28 = territory("SZ 28 Eastern Mediterranean", gameData);
     final Territory sz27 = territory("SZ 27 Aegean Sea", gameData);
     final Territory sz29 = territory("SZ 29 Black Sea", gameData);
-    final IDelegateBridge bridge = MockDelegateBridge.newInstance(gameData, british(gameData));
+    final IDelegateBridge bridge = newDelegateBridge(british(gameData));
     advanceToStep(bridge, "CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
