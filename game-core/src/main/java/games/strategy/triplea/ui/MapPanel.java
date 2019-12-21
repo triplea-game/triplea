@@ -677,15 +677,15 @@ public class MapPanel extends ImageScrollerLargeView {
     final Rectangle2D.Double mainBounds =
         new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
     drawTiles(g2d, images, data, mainBounds, undrawnTiles);
-    if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
-      final AffineTransform t = new AffineTransform();
-      t.translate(
-          normalizeX(routeDescription.getEnd().getX() - getXOffset()),
-          normalizeY(routeDescription.getEnd().getY() - getYOffset()));
-      t.translate(mouseShadowImage.getWidth() / -2.0, mouseShadowImage.getHeight() / -2.0);
-      g2d.drawImage(mouseShadowImage, t, this);
-    }
     if (routeDescription != null) {
+      if (mouseShadowImage != null && routeDescription.getEnd() != null) {
+        final AffineTransform t = new AffineTransform();
+        t.translate(
+            normalizeX(routeDescription.getEnd().getX() - getXOffset()),
+            normalizeY(routeDescription.getEnd().getY() - getYOffset()));
+        t.translate(mouseShadowImage.getWidth() / -2.0, mouseShadowImage.getHeight() / -2.0);
+        g2d.drawImage(mouseShadowImage, t, this);
+      }
       routeDrawer.drawRoute(
           g2d,
           routeDescription,
@@ -776,7 +776,7 @@ public class MapPanel extends ImageScrollerLargeView {
               getScaledHeight() + (2.0 * preDrawMargin));
       final List<Tile> tileList = tileManager.getTiles(extendedBounds);
       for (final Tile tile : tileList) {
-        if (tile.isDirty()) {
+        if (tile.needsRedraw()) {
           undrawnTiles.add(tile);
         }
       }
@@ -794,7 +794,7 @@ public class MapPanel extends ImageScrollerLargeView {
       tile.acquireLock();
       try {
         final Image img;
-        if (tile.isDirty()) {
+        if (tile.needsRedraw()) {
           // take what we can get to avoid screen flicker
           undrawn.add(tile);
           img = tile.getRawImage();
