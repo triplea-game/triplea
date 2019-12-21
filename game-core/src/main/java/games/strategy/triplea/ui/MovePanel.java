@@ -1103,8 +1103,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     getMap().hideMouseCursor();
 
     final MovableUnitsFilter unitsFilter =
-        new MovableUnitsFilter(getUnitOwner(units), route, nonCombat, moveType, getUndoableMoves());
-    final var result = unitsFilter.filterUnitsThatCanMove(units, dependentUnits);
+        new MovableUnitsFilter(
+            getUnitOwner(units), route, nonCombat, moveType, getUndoableMoves(), dependentUnits);
+    final var result = unitsFilter.filterUnitsThatCanMove(units);
     switch (result.getStatus()) {
       case NO_UNITS_CAN_MOVE:
         setStatusErrorMessage(result.getWarningOrErrorMessage().orElseThrow());
