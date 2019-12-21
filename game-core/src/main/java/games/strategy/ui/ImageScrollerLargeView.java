@@ -185,10 +185,10 @@ public class ImageScrollerLargeView extends JComponent {
                 insideCount = 0;
               }
               // compute the amount to move
-              final int dx = (dragScrollingLastX - x);
-              final int dy = (dragScrollingLastY - y);
+              final int dx = (int) Math.round((dragScrollingLastX - x) / scale);
+              final int dy = (int) Math.round((dragScrollingLastY - y) / scale);
               // move left and right and test for wrap
-              final int newX = (ImageScrollerLargeView.this.model.getX() + dx);
+              final int newX = ImageScrollerLargeView.this.model.getX() + dx;
               // move up and down and test for edges
               final int newY = ImageScrollerLargeView.this.model.getY() + dy;
               // update the map

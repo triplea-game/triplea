@@ -56,11 +56,6 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public void setScale(final double scale) {
-    super.setScale(scale);
-  }
-
-  @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
     resourceLoader = ResourceLoader.getMapResourceLoader(dir);
     if (mapData != null) {
