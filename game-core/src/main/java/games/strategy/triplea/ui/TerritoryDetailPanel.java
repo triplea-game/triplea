@@ -87,13 +87,17 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     add(territoryInfo);
     add(unitInfo);
     add(units);
-    showOdds.setVisible(false);
-    addAttackers.setVisible(false);
-    addDefenders.setVisible(false);
-    findTerritoryButton.setVisible(false);
-    territoryInfo.setVisible(false);
-    unitInfo.setVisible(false);
-    units.setVisible(false);
+    setElementsVisible(false);
+  }
+
+  private void setElementsVisible(final boolean visible) {
+    showOdds.setVisible(visible);
+    addAttackers.setVisible(visible);
+    addDefenders.setVisible(visible);
+    findTerritoryButton.setVisible(visible);
+    territoryInfo.setVisible(visible);
+    unitInfo.setVisible(visible);
+    units.setVisible(visible);
   }
 
   public void setGameData(final GameData data) {
@@ -107,22 +111,10 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     }
     currentTerritory = territory;
     if (territory == null) {
-      showOdds.setVisible(false);
-      addAttackers.setVisible(false);
-      addDefenders.setVisible(false);
-      findTerritoryButton.setVisible(false);
-      territoryInfo.setVisible(false);
-      unitInfo.setVisible(false);
-      units.setVisible(false);
+      setElementsVisible(false);
       return;
     }
-    showOdds.setVisible(true);
-    addAttackers.setVisible(true);
-    addDefenders.setVisible(true);
-    findTerritoryButton.setVisible(true);
-    territoryInfo.setVisible(true);
-    unitInfo.setVisible(true);
-    units.setVisible(true);
+    setElementsVisible(true);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
     if (ta == null) {
