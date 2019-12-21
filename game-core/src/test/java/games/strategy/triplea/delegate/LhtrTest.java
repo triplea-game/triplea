@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,10 +39,6 @@ class LhtrTest {
       final IDelegateBridge delegateBridge) {
     verify(delegateBridge.getRemotePlayer(), never()).confirmMoveInFaceOfAa(any());
     verify(delegateBridge.getRemotePlayer(), never()).confirmMoveKamikaze();
-  }
-
-  private IDelegateBridge newDelegateBridge(final PlayerId player) {
-    return MockDelegateBridge.newInstance(gameData, player);
   }
 
   @Test
