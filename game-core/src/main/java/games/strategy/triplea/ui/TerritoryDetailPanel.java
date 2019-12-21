@@ -131,10 +131,11 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
     territoryInfo.setText(labelText);
-    unitInfo.setText("Units: "
-        + territory.getUnits().stream()
-        .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
-        .count());
+    unitInfo.setText(
+        "Units: "
+            + territory.getUnits().stream()
+                .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
+                .count());
     units.setViewportView(unitsInTerritoryPanel(territory, uiContext));
   }
 
