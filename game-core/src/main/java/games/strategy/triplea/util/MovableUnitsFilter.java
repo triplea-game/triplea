@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -240,15 +241,10 @@ public final class MovableUnitsFilter {
   private List<Unit> addMustMoveWith(final Collection<Unit> best) {
     final MustMoveWithDetails mustMoveWithDetails =
         MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
-    final List<Unit> bestWithDependents = new ArrayList<>(best);
+    final var bestWithDependents = new HashSet<>(best);
     for (final Unit u : best) {
-      final Collection<Unit> mustMoveWith = mustMoveWithDetails.getMustMoveWithForUnit(u);
-      for (final Unit m : mustMoveWith) {
-        if (!bestWithDependents.contains(m)) {
-          bestWithDependents.addAll(mustMoveWith);
-        }
-      }
+      bestWithDependents.addAll(mustMoveWithDetails.getMustMoveWithForUnit(u));
     }
-    return bestWithDependents;
+    return new ArrayList<>(bestWithDependents);
   }
 }
