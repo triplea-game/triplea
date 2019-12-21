@@ -44,7 +44,7 @@ public final class MovableUnitsFilter {
     }
 
     // The filtered units and dependents that can move on the route.
-    private final List<Unit> unitsWithDependents;
+    private final Collection<Unit> unitsWithDependents;
     // The status of the move.
     private final Status status;
     // A warning or error message, if status is not ALL_UNITS_CAN_MOVE.
@@ -78,7 +78,7 @@ public final class MovableUnitsFilter {
   @Getter
   private static class MoveValidationResultWithDependents {
     private final MoveValidationResult result;
-    private final List<Unit> unitsWithDependents;
+    private final Collection<Unit> unitsWithDependents;
   }
 
   private final PlayerId player;
@@ -130,7 +130,7 @@ public final class MovableUnitsFilter {
       final Collection<Unit> transportsToLoad,
       final MoveValidationResultWithDependents initialResult) {
     if (!transportsToLoad.isEmpty()) {
-      final List<Unit> allUnits = addMustMoveWith(units);
+      final Collection<Unit> allUnits = addMustMoveWith(units);
       final Collection<Unit> loadedUnits =
           TransportUtils.mapTransports(route, allUnits, transportsToLoad).keySet();
       return validateMoveWithDependents(loadedUnits, transportsToLoad);
@@ -218,7 +218,7 @@ public final class MovableUnitsFilter {
 
   private MoveValidationResultWithDependents validateMoveWithDependents(
       final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
-    final List<Unit> unitsWithDependents = addMustMoveWith(units);
+    final Collection<Unit> unitsWithDependents = addMustMoveWith(units);
     final MoveValidationResult result;
     data.acquireReadLock();
     try {
@@ -238,13 +238,13 @@ public final class MovableUnitsFilter {
         result, result.isMoveValid() ? unitsWithDependents : List.of());
   }
 
-  private List<Unit> addMustMoveWith(final Collection<Unit> best) {
+  private Collection<Unit> addMustMoveWith(final Collection<Unit> best) {
     final MustMoveWithDetails mustMoveWithDetails =
         MoveValidator.getMustMoveWith(route.getStart(), dependentUnits, player);
     final var bestWithDependents = new HashSet<>(best);
     for (final Unit u : best) {
       bestWithDependents.addAll(mustMoveWithDetails.getMustMoveWithForUnit(u));
     }
-    return new ArrayList<>(bestWithDependents);
+    return bestWithDependents;
   }
 }
