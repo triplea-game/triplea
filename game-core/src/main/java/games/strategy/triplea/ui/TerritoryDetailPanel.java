@@ -9,6 +9,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
@@ -31,6 +32,9 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   private final JButton addAttackers = new JButton("Add Attackers (Ctrl-A)");
   private final JButton addDefenders = new JButton("Add Defenders (Ctrl-D)");
   private final JButton findTerritoryButton;
+  private final JLabel territoryInfo = new JLabel();
+  private final JLabel unitInfo = new JLabel();
+  private final JScrollPane units = new JScrollPane();
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
 
@@ -74,6 +78,22 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     addDefenders.addActionListener(e -> BattleCalculatorDialog.addDefenders(currentTerritory));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
         frame, 'D', () -> BattleCalculatorDialog.addDefenders(currentTerritory));
+    units.setBorder(BorderFactory.createEmptyBorder());
+    units.getVerticalScrollBar().setUnitIncrement(20);
+    add(showOdds);
+    add(addAttackers);
+    add(addDefenders);
+    add(findTerritoryButton);
+    add(territoryInfo);
+    add(unitInfo);
+    add(units);
+    showOdds.setVisible(false);
+    addAttackers.setVisible(false);
+    addDefenders.setVisible(false);
+    findTerritoryButton.setVisible(false);
+    territoryInfo.setVisible(false);
+    unitInfo.setVisible(false);
+    units.setVisible(false);
   }
 
   public void setGameData(final GameData data) {
@@ -82,16 +102,27 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   }
 
   private void territoryChanged(final Territory territory) {
-    currentTerritory = territory;
-    removeAll();
-    refresh();
-    if (territory == null) {
+    if (Objects.equals(currentTerritory, territory)) {
       return;
     }
-    add(showOdds);
-    add(addAttackers);
-    add(addDefenders);
-    add(findTerritoryButton);
+    currentTerritory = territory;
+    if (territory == null) {
+      showOdds.setVisible(false);
+      addAttackers.setVisible(false);
+      addDefenders.setVisible(false);
+      findTerritoryButton.setVisible(false);
+      territoryInfo.setVisible(false);
+      unitInfo.setVisible(false);
+      units.setVisible(false);
+      return;
+    }
+    showOdds.setVisible(true);
+    addAttackers.setVisible(true);
+    addDefenders.setVisible(true);
+    findTerritoryButton.setVisible(true);
+    territoryInfo.setVisible(true);
+    unitInfo.setVisible(true);
+    units.setVisible(true);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
     if (ta == null) {
@@ -99,18 +130,12 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     } else {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
-    add(new JLabel(labelText));
-    add(
-        new JLabel(
-            "Units: "
-                + territory.getUnits().stream()
-                    .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
-                    .count()));
-    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(territory, uiContext));
-    scroll.setBorder(BorderFactory.createEmptyBorder());
-    scroll.getVerticalScrollBar().setUnitIncrement(20);
-    add(scroll);
-    refresh();
+    territoryInfo.setText(labelText);
+    unitInfo.setText("Units: "
+        + territory.getUnits().stream()
+        .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
+        .count());
+    units.setViewportView(unitsInTerritoryPanel(territory, uiContext));
   }
 
   private static JPanel unitsInTerritoryPanel(
@@ -159,10 +184,5 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       }
     }
     return panel;
-  }
-
-  private void refresh() {
-    validate();
-    repaint();
   }
 }
