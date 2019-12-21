@@ -21,7 +21,8 @@ import org.triplea.thread.LockUtil;
 
 /** Responsible for rendering a single map tile. */
 public class Tile {
-  private boolean isDirty = true;
+  private volatile boolean isDirty = true;
+  private volatile boolean isDrawing = false;
 
   private final Image image;
   private final Rectangle bounds;
@@ -33,13 +34,8 @@ public class Tile {
     image = Util.newImage((int) bounds.getWidth(), (int) bounds.getHeight(), true);
   }
 
-  public boolean isDirty() {
-    acquireLock();
-    try {
-      return isDirty;
-    } finally {
-      releaseLock();
-    }
+  public boolean needsRedraw() {
+    return isDirty && !isDrawing;
   }
 
   public void acquireLock() {
@@ -55,6 +51,7 @@ public class Tile {
     acquireLock();
     try {
       if (isDirty) {
+        isDrawing = true;
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(
@@ -66,6 +63,7 @@ public class Tile {
             RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         draw(g, data, mapData);
         g.dispose();
+        isDrawing = false;
       }
       return image;
     } finally {
@@ -79,7 +77,12 @@ public class Tile {
    * @return the image we currently have.
    */
   public Image getRawImage() {
-    return image;
+    acquireLock();
+    try {
+      return image;
+    } finally {
+      releaseLock();
+    }
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
