@@ -48,9 +48,9 @@ public class Tile {
 
   /** Returns the image representing this tile, re-rendering it first if the tile is dirty. */
   public Image getImage(final GameData data, final MapData mapData) {
-    acquireLock();
-    try {
-      if (isDirty) {
+    if (isDirty) {
+      acquireLock();
+      try {
         isDrawing = true;
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -64,11 +64,11 @@ public class Tile {
         draw(g, data, mapData);
         g.dispose();
         isDrawing = false;
+      } finally {
+        releaseLock();
       }
-      return image;
-    } finally {
-      releaseLock();
     }
+    return image;
   }
 
   /**
