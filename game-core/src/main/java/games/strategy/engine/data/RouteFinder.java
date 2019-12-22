@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +39,7 @@ class RouteFinder {
   }
 
   Optional<Route> findRouteByDistance(final Territory start, final Territory end) {
-    return findRouteByCost(start, end, t -> BigDecimal.ONE);
+    return findRouteByCost(start, end, t -> 1D);
   }
 
   Optional<Route> findRouteByCost(final Territory start, final Territory end) {
@@ -50,7 +49,7 @@ class RouteFinder {
   private Optional<Route> findRouteByCost(
       final Territory start,
       final Territory end,
-      final Function<Territory, BigDecimal> territoryCostFunction) {
+      final Function<Territory, Double> territoryCostFunction) {
     Preconditions.checkNotNull(start);
     Preconditions.checkNotNull(end);
 
@@ -62,23 +61,23 @@ class RouteFinder {
     previous.put(start, null);
     final Queue<Territory> toVisit = new ArrayDeque<>();
     toVisit.add(start);
-    final Map<Territory, BigDecimal> routeCosts = new HashMap<>();
-    routeCosts.put(start, BigDecimal.ZERO);
-    BigDecimal minCost = new BigDecimal(Integer.MAX_VALUE);
+    final Map<Territory, Double> routeCosts = new HashMap<>();
+    routeCosts.put(start, 0D);
+    double minCost = Double.MAX_VALUE;
 
     while (!toVisit.isEmpty()) {
       final Territory currentTerritory = toVisit.remove();
-      if (routeCosts.get(currentTerritory).compareTo(minCost) >= 0) {
+      if (routeCosts.get(currentTerritory) > minCost) {
         continue;
       }
       for (final Territory neighbor :
           map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
-        final BigDecimal routeCost =
-            routeCosts.get(currentTerritory).add(territoryCostFunction.apply(neighbor));
-        if (!previous.containsKey(neighbor) || routeCost.compareTo(routeCosts.get(neighbor)) < 0) {
+        final double routeCost =
+            routeCosts.get(currentTerritory) + territoryCostFunction.apply(neighbor);
+        if (!previous.containsKey(neighbor) || routeCost < routeCosts.get(neighbor)) {
           previous.put(neighbor, currentTerritory);
           routeCosts.put(neighbor, routeCost);
-          if (neighbor.equals(end) && routeCost.compareTo(minCost) < 0) {
+          if (neighbor.equals(end) && routeCost < minCost) {
             minCost = routeCost;
             break;
           }
@@ -86,14 +85,14 @@ class RouteFinder {
         }
       }
     }
-    return (minCost.compareTo(new BigDecimal(Integer.MAX_VALUE)) == 0)
+    return (minCost == Double.MAX_VALUE)
         ? Optional.empty()
         : Optional.of(getRoute(start, end, previous));
   }
 
   @VisibleForTesting
-  BigDecimal getMaxMovementCost(final Territory t) {
-    return TerritoryEffectHelper.getMaxMovementCost(t, units);
+  double getMaxMovementCost(final Territory t) {
+    return TerritoryEffectHelper.getMaxMovementCost(t, units).doubleValue();
   }
 
   private static Route getRoute(
