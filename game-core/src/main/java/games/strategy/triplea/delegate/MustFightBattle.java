@@ -235,7 +235,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // TODO: This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
     // If attacker stops in an occupied territory, movement stops (battle is optional)
-    if (MoveValidator.onlyIgnoredUnitsOnPath(route, attacker, gameData, false)) {
+    if (MoveValidator.onlyIgnoredUnitsOnPath(route, attacker, false)) {
       return change;
     }
     change.add(ChangeFactory.markNoMovementChange(nonAir));
@@ -1140,7 +1140,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Predicate<Territory> canalMatch =
         t -> {
           final Route r = new Route(battleSite, t);
-          return MoveValidator.validateCanal(r, unitsToRetreat, defender, gameData) == null;
+          return MoveValidator.validateCanal(r, unitsToRetreat, defender) == null;
         };
     final Predicate<Territory> match =
         Matches.territoryIsWater()

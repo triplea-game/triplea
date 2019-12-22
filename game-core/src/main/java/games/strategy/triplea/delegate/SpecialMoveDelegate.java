@@ -102,7 +102,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // player.
     final PlayerId player = getUnitsOwner(units);
     // here we have our own new validation method....
-    final MoveValidationResult result = validateMove(units, route, player, data);
+    final MoveValidationResult result = validateMove(units, route, player);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
@@ -171,18 +171,18 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   static MoveValidationResult validateMove(
-      final Collection<Unit> units, final Route route, final PlayerId player, final GameData data) {
+      final Collection<Unit> units, final Route route, final PlayerId player) {
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
     }
-    if (MoveValidator.validateFirst(data, units, route, player, result).getError() != null) {
+    if (MoveValidator.validateFirst(units, route, player, result).getError() != null) {
       return result;
     }
-    if (MoveValidator.validateFuel(data, units, route, player, result).getError() != null) {
+    if (MoveValidator.validateFuel(units, route, player, result).getError() != null) {
       return result;
     }
-    final boolean isEditMode = getEditMode(data);
+    final boolean isEditMode = getEditMode(player.getData());
     if (!isEditMode) {
       // make sure all units are at least friendly
       for (final Unit unit :
@@ -190,18 +190,18 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         result.addDisallowedUnit("Can only move owned units", unit);
       }
     }
-    if (validateAirborneMovements(data, units, route, player, result).getError() != null) {
+    if (validateAirborneMovements(units, route, player, result).getError() != null) {
       return result;
     }
     return result;
   }
 
   private static MoveValidationResult validateAirborneMovements(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
       return result.setErrorReturnResult("Do Not Have Airborne Tech");
     }
