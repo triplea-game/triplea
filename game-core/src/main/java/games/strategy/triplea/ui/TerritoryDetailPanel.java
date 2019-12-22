@@ -9,7 +9,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
@@ -106,9 +105,6 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   }
 
   private void territoryChanged(final Territory territory) {
-    if (Objects.equals(currentTerritory, territory)) {
-      return;
-    }
     currentTerritory = territory;
     if (territory == null) {
       setElementsVisible(false);
