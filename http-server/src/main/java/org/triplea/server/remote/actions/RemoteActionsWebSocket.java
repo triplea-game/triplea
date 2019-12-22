@@ -7,14 +7,14 @@ import javax.websocket.OnError;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import org.triplea.http.client.remote.actions.RemoteActionsWebsocketListener;
+import org.triplea.http.client.remote.actions.RemoteActionListeners;
 
 /**
  * This websocket is available for game hosts to 'listen' to remote action events. This might be a
  * player was banned and should be disconnected, or for moderator actions like requesting a server
  * to shutdown.
  */
-@ServerEndpoint(RemoteActionsWebsocketListener.NOTIFICATIONS_WEBSOCKET_PATH)
+@ServerEndpoint(RemoteActionListeners.NOTIFICATIONS_WEBSOCKET_PATH)
 public class RemoteActionsWebSocket {
   public static final String ACTIONS_QUEUE_KEY = "remote.actions.event.queue";
 
