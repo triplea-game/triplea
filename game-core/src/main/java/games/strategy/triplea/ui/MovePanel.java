@@ -88,7 +88,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   // instead we only do so through the private setter
   private MustMoveWithDetails mustMoveWithDetails = null;
   // cache this so we can update it only when territory/units change
-  private List<Unit> unitsThatCanMoveOnRoute;
+  private Collection<Unit> unitsThatCanMoveOnRoute;
   private @Nullable Image currentCursorImage;
   private final @Nullable Image warningImage;
   private final @Nullable Image errorImage;
