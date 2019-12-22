@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import javafx.beans.property.ObjectPropertyBase;
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.commons.support.ReflectionSupport;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
@@ -45,13 +45,16 @@ class MainMenuControlsTest {
       constructor.setAccessible(true);
       final ObjectPropertyBase<Scene> propertyBase =
           (ObjectPropertyBase<Scene>) constructor.newInstance(mock);
-      FieldSetter.setField(mock, Node.class.getDeclaredField("scene"), propertyBase);
+      final Field sceneField = Node.class.getDeclaredField("scene");
+      sceneField.setAccessible(true);
+      sceneField.set(mock, propertyBase);
       propertyBase.set(scene);
     }
 
     private void injectWindow(final Scene scene, final Window window) throws Exception {
-      FieldSetter.setField(
-          scene, Scene.class.getDeclaredField("window"), new ReadOnlyObjectWrapper<>(window));
+      final Field windowField = Scene.class.getDeclaredField("window");
+      windowField.setAccessible(true);
+      windowField.set(scene, new ReadOnlyObjectWrapper<>(window));
     }
 
     @Test

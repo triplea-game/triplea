@@ -6,6 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.ClientContext;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -16,7 +18,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.util.reflection.FieldSetter;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
@@ -33,7 +34,9 @@ class MainMenuPaneTest {
   void testInitialize() throws Exception {
     final NavigationPane mock = mock(NavigationPane.class);
     final StackPane mock2 = mock(StackPane.class);
-    FieldSetter.setField(null, Application.class.getDeclaredField("userAgentStylesheet"), "");
+    final Field userAgentStyleSheetField = Application.class.getDeclaredField("userAgentStylesheet");
+    userAgentStyleSheetField.setAccessible(true);
+    userAgentStyleSheetField.set(null, "");
     final Label mock3 = mock(Label.class);
     final Node mock4 = mock(Node.class);
     final NavigationPane mock5 = mock(NavigationPane.class);
@@ -64,6 +67,8 @@ class MainMenuPaneTest {
 
   @AfterAll
   static void cleanup() throws Exception {
-    FieldSetter.setField(null, Application.class.getDeclaredField("userAgentStylesheet"), null);
+    final Field userAgentStyleSheetField = Application.class.getDeclaredField("userAgentStylesheet");
+    userAgentStyleSheetField.setAccessible(true);
+    userAgentStyleSheetField.set(null, null);
   }
 }
