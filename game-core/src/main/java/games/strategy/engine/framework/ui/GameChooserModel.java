@@ -30,6 +30,8 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
   private static class CorruptXmlFileException extends RuntimeException {
+    private static long serialVersionUID = -3711929808603654576L;
+
     CorruptXmlFileException(final String fileName) {
       super("File '" + fileName + "' was declared in zip but can't be opened.");
     }
