@@ -229,9 +229,6 @@ class EditPanel extends ActionPanel {
       new DefaultMapSelectionListener() {
         @Override
         public void territorySelected(final Territory territory, final MouseDetails md) {
-          if (territory == null) {
-            return;
-          }
           if (currentAction == changeTerritoryOwnerAction) {
             final TerritoryAttachment ta = TerritoryAttachment.get(territory);
             if (ta == null) {
