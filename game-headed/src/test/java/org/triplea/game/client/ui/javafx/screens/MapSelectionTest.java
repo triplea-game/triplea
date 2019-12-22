@@ -10,22 +10,20 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.ui.GameChooserEntry;
 import java.lang.reflect.Field;
 import java.util.List;
-
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.game.client.parser.GameDetector;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.ui.GameChooserEntry;
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 
 public class MapSelectionTest {
 

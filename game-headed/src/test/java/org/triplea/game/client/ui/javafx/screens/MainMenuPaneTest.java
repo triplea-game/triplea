@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.ClientContext;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import javafx.application.Application;
@@ -34,7 +33,8 @@ class MainMenuPaneTest {
   void testInitialize() throws Exception {
     final NavigationPane mock = mock(NavigationPane.class);
     final StackPane mock2 = mock(StackPane.class);
-    final Field userAgentStyleSheetField = Application.class.getDeclaredField("userAgentStylesheet");
+    final Field userAgentStyleSheetField =
+        Application.class.getDeclaredField("userAgentStylesheet");
     userAgentStyleSheetField.setAccessible(true);
     userAgentStyleSheetField.set(null, "");
     final Label mock3 = mock(Label.class);
@@ -67,7 +67,8 @@ class MainMenuPaneTest {
 
   @AfterAll
   static void cleanup() throws Exception {
-    final Field userAgentStyleSheetField = Application.class.getDeclaredField("userAgentStylesheet");
+    final Field userAgentStyleSheetField =
+        Application.class.getDeclaredField("userAgentStylesheet");
     userAgentStyleSheetField.setAccessible(true);
     userAgentStyleSheetField.set(null, null);
   }

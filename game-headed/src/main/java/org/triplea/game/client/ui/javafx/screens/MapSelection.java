@@ -2,7 +2,6 @@ package org.triplea.game.client.ui.javafx.screens;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.ui.GameChooserEntry;
-
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
@@ -16,7 +15,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.web.WebView;
 import lombok.AccessLevel;
 import lombok.Setter;
-
 import org.triplea.game.client.parser.DefaultGameDetector;
 import org.triplea.game.client.parser.GameDetector;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
@@ -29,18 +27,34 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
   private final GameDetector gameDetector;
   private final BiFunction<String, String, String> linkLocalizer;
 
-  @Setter(value = AccessLevel.PACKAGE, onMethod_={@VisibleForTesting})
-  @FXML private Node root;
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  @FXML
+  private Node root;
+
   @FXML private TilePane mapContainer;
-  @Setter(value = AccessLevel.PACKAGE, onMethod_={@VisibleForTesting})
-  @FXML private Node previewContainer;
-  @Setter(value = AccessLevel.PACKAGE, onMethod_={@VisibleForTesting})
-  @FXML private WebView previewWindow;
+
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  @FXML
+  private Node previewContainer;
+
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  @FXML
+  private WebView previewWindow;
+
   @FXML private Button selectButton;
   @FXML private Button detailsButton;
 
-  @Setter(value = AccessLevel.PACKAGE, onMethod_={@VisibleForTesting})
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
   private GameChooserEntry selectedGame;
+
   private boolean loaded = false;
 
   private ScreenController<FxmlManager> screenController;
@@ -53,7 +67,8 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
   }
 
   @VisibleForTesting
-  MapSelection(final GameDetector gameDetector, final BiFunction<String, String, String> linkLocalizer) {
+  MapSelection(
+      final GameDetector gameDetector, final BiFunction<String, String, String> linkLocalizer) {
     this.gameDetector = gameDetector;
     this.linkLocalizer = linkLocalizer;
   }
