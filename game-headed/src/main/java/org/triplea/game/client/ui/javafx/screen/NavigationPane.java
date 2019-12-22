@@ -17,6 +17,8 @@ import org.triplea.game.client.ui.javafx.util.FxmlManager;
 public class NavigationPane implements ScreenController<FxmlManager> {
   private final Pane root;
   private final Map<FxmlManager, Node> screens = new EnumMap<>(FxmlManager.class);
+  private final Map<FxmlManager, ControlledScreen<?>> screenControllers =
+      new EnumMap<>(FxmlManager.class);
   private ScreenController<FxmlManager> parent;
 
   public NavigationPane() {
@@ -32,6 +34,7 @@ public class NavigationPane implements ScreenController<FxmlManager> {
   void registerScreen(final FxmlManager manager, final ControlledScreen<NavigationPane> screen) {
     Preconditions.checkNotNull(screen);
     screens.put(manager, screen.getNode());
+    screenControllers.put(manager, screen);
     screen.connect(this);
   }
 
@@ -61,6 +64,7 @@ public class NavigationPane implements ScreenController<FxmlManager> {
     } else {
       root.getChildren().set(0, screen);
     }
+    screenControllers.get(identifier).onShow();
   }
 
   public void setParent(final ScreenController<FxmlManager> parent) {

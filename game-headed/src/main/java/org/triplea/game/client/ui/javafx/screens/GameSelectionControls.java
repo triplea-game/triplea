@@ -28,7 +28,9 @@ public class GameSelectionControls implements ControlledScreen<ScreenController<
 
   @SuppressWarnings("unused")
   @FXML
-  private void showLocalGameMenu() {}
+  private void showLocalGameMenu() {
+    screenController.switchScreen(FxmlManager.MAP_SELECTION);
+  }
 
   @SuppressWarnings("unused")
   @FXML

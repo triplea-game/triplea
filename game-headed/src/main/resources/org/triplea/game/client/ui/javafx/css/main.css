@@ -2,7 +2,7 @@
 	-fx-background-color: #52602F;
 	-fx-color: #000000;
 }
-.button:hover {
+.button:hover, .button.selected {
 	-fx-background-color: #2B3318;
 }
 .tab-label, .spinner, .text-field, .combo-box, .exitButton, .label, .radio-button, .normal-font-size, .button {
@@ -110,4 +110,7 @@
 }
 .combo-box-popup .list-view .list-cell:hover .text {
 	-fx-fill: WHITE;
+}
+.scroll-pane > .viewport, .scroll-pane {
+	-fx-background-color: transparent;
 }
