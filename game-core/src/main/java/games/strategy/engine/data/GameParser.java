@@ -858,7 +858,7 @@ public final class GameParser {
         parseEditableProperty(current, property, value);
       } else {
         final List<Node> children2 = getNonTextNodesIgnoringValue(current);
-        if (children2.size() == 0) {
+        if (children2.isEmpty()) {
           // we don't know what type this property is!!, it appears like only numbers and string may
           // be represented without proper type definition
 
@@ -1056,7 +1056,7 @@ public final class GameParser {
 
   private void parseCosts(final ProductionRule rule, final List<Element> elements)
       throws GameParseException {
-    if (elements.size() == 0) {
+    if (elements.isEmpty()) {
       throw newGameParseException("no costs  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
@@ -1068,7 +1068,7 @@ public final class GameParser {
 
   private void parseRepairCosts(final RepairRule rule, final List<Element> elements)
       throws GameParseException {
-    if (elements.size() == 0) {
+    if (elements.isEmpty()) {
       throw newGameParseException("no costs  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
@@ -1080,7 +1080,7 @@ public final class GameParser {
 
   private void parseResults(final ProductionRule rule, final List<Element> elements)
       throws GameParseException {
-    if (elements.size() == 0) {
+    if (elements.isEmpty()) {
       throw newGameParseException("no results  for rule:" + rule.getName());
     }
     for (final Element current : elements) {
@@ -1100,7 +1100,7 @@ public final class GameParser {
 
   private void parseRepairResults(final RepairRule rule, final List<Element> elements)
       throws GameParseException {
-    if (elements.size() == 0) {
+    if (elements.isEmpty()) {
       throw newGameParseException("no results  for rule:" + rule.getName());
     }
     for (final Element current : elements) {

@@ -2962,11 +2962,11 @@ public class UnitAttachment extends DefaultAttachment {
         + typeAa
         + "  targetsAA:"
         + (targetsAa != null
-            ? (targetsAa.size() == 0 ? "empty" : targetsAa.toString())
+            ? (targetsAa.isEmpty() ? "empty" : targetsAa.toString())
             : "all air units")
         + "  willNotFireIfPresent:"
         + (willNotFireIfPresent != null
-            ? (willNotFireIfPresent.size() == 0 ? "empty" : willNotFireIfPresent.toString())
+            ? (willNotFireIfPresent.isEmpty() ? "empty" : willNotFireIfPresent.toString())
             : "null")
         + "  isRocket:"
         + isRocket
@@ -2976,17 +2976,17 @@ public class UnitAttachment extends DefaultAttachment {
         + canProduceXUnits
         + "  createsUnitsList:"
         + (createsUnitsList != null
-            ? (createsUnitsList.size() == 0 ? "empty" : createsUnitsList.toString())
+            ? (createsUnitsList.isEmpty() ? "empty" : createsUnitsList.toString())
             : "null")
         + "  createsResourcesList:"
         + (createsResourcesList != null
-            ? (createsResourcesList.size() == 0 ? "empty" : createsResourcesList.toString())
+            ? (createsResourcesList.isEmpty() ? "empty" : createsResourcesList.toString())
             : "null")
         + "  fuelCost:"
-        + (fuelCost != null ? (fuelCost.size() == 0 ? "empty" : fuelCost.toString()) : "null")
+        + (fuelCost != null ? (fuelCost.isEmpty() ? "empty" : fuelCost.toString()) : "null")
         + "  fuelFlatCost:"
         + (fuelFlatCost != null
-            ? (fuelFlatCost.size() == 0 ? "empty" : fuelFlatCost.toString())
+            ? (fuelFlatCost.isEmpty() ? "empty" : fuelFlatCost.toString())
             : "null")
         + "  isInfrastructure:"
         + isInfrastructure
@@ -3000,13 +3000,11 @@ public class UnitAttachment extends DefaultAttachment {
         + maxConstructionsPerTypePerTerr
         + "  destroyedWhenCapturedBy:"
         + (destroyedWhenCapturedBy != null
-            ? (destroyedWhenCapturedBy.size() == 0 ? "empty" : destroyedWhenCapturedBy.toString())
+            ? (destroyedWhenCapturedBy.isEmpty() ? "empty" : destroyedWhenCapturedBy.toString())
             : "null")
         + "  canBeCapturedOnEnteringBy:"
         + (canBeCapturedOnEnteringBy != null
-            ? (canBeCapturedOnEnteringBy.size() == 0
-                ? "empty"
-                : canBeCapturedOnEnteringBy.toString())
+            ? (canBeCapturedOnEnteringBy.isEmpty() ? "empty" : canBeCapturedOnEnteringBy.toString())
             : "null")
         + "  canBeDamaged:"
         + canBeDamaged
@@ -3024,17 +3022,15 @@ public class UnitAttachment extends DefaultAttachment {
             : "null")
         + "  requiresUnits:"
         + (requiresUnits != null
-            ? (requiresUnits.size() == 0
-                ? "empty"
-                : MyFormatter.listOfArraysToString(requiresUnits))
+            ? (requiresUnits.isEmpty() ? "empty" : MyFormatter.listOfArraysToString(requiresUnits))
             : "null")
         + "  consumesUnits:"
         + (consumesUnits != null
-            ? (consumesUnits.size() == 0 ? "empty" : consumesUnits.toString())
+            ? (consumesUnits.isEmpty() ? "empty" : consumesUnits.toString())
             : "null")
         + "  requiresUnitsToMove:"
         + (requiresUnitsToMove != null
-            ? (requiresUnitsToMove.size() == 0
+            ? (requiresUnitsToMove.isEmpty()
                 ? "empty"
                 : MyFormatter.listOfArraysToString(requiresUnitsToMove))
             : "null")
@@ -3043,7 +3039,7 @@ public class UnitAttachment extends DefaultAttachment {
         + "  maxBuiltPerPlayer:"
         + maxBuiltPerPlayer
         + "  special:"
-        + (special != null ? (special.size() == 0 ? "empty" : special.toString()) : "null")
+        + (special != null ? (special.isEmpty() ? "empty" : special.toString()) : "null")
         + "  isSuicide:"
         + isSuicide
         + "  isSuicideOnHit:"
@@ -3056,15 +3052,15 @@ public class UnitAttachment extends DefaultAttachment {
             : "null")
         + "  canBeGivenByTerritoryTo:"
         + (canBeGivenByTerritoryTo != null
-            ? (canBeGivenByTerritoryTo.size() == 0 ? "empty" : canBeGivenByTerritoryTo.toString())
+            ? (canBeGivenByTerritoryTo.isEmpty() ? "empty" : canBeGivenByTerritoryTo.toString())
             : "null")
         + "  receivesAbilityWhenWith:"
         + (receivesAbilityWhenWith != null
-            ? (receivesAbilityWhenWith.size() == 0 ? "empty" : receivesAbilityWhenWith.toString())
+            ? (receivesAbilityWhenWith.isEmpty() ? "empty" : receivesAbilityWhenWith.toString())
             : "null")
         + "  whenCombatDamaged:"
         + (whenCombatDamaged != null
-            ? (whenCombatDamaged.size() == 0 ? "empty" : whenCombatDamaged.toString())
+            ? (whenCombatDamaged.isEmpty() ? "empty" : whenCombatDamaged.toString())
             : "null")
         + "  blockade:"
         + blockade
@@ -3076,7 +3072,7 @@ public class UnitAttachment extends DefaultAttachment {
         + bombingTargets
         + "  givesMovement:"
         + (givesMovement != null
-            ? (givesMovement.size() == 0 ? "empty" : givesMovement.toString())
+            ? (givesMovement.isEmpty() ? "empty" : givesMovement.toString())
             : "null")
         + "  repairsUnits:"
         + (repairsUnits != null
@@ -3094,19 +3090,19 @@ public class UnitAttachment extends DefaultAttachment {
         + maxInterceptCount
         + "  whenCapturedChangesInto:"
         + (whenCapturedChangesInto != null
-            ? (whenCapturedChangesInto.size() == 0 ? "empty" : whenCapturedChangesInto.toString())
+            ? (whenCapturedChangesInto.isEmpty() ? "empty" : whenCapturedChangesInto.toString())
             : "null")
         + " whenCapturedSustainsDamage:"
         + whenCapturedSustainsDamage
         + "  whenHitPointsDamagedChangesInto:"
         + (whenHitPointsDamagedChangesInto != null
-            ? (whenHitPointsDamagedChangesInto.size() == 0
+            ? (whenHitPointsDamagedChangesInto.isEmpty()
                 ? "empty"
                 : whenHitPointsDamagedChangesInto.toString())
             : "null")
         + "  whenHitPointsRepairedChangesInto:"
         + (whenHitPointsRepairedChangesInto != null
-            ? (whenHitPointsRepairedChangesInto.size() == 0
+            ? (whenHitPointsRepairedChangesInto.isEmpty()
                 ? "empty"
                 : whenHitPointsRepairedChangesInto.toString())
             : "null")

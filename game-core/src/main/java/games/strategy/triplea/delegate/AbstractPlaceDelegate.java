@@ -86,8 +86,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
     // nothing to place
-    return !(player == null
-        || (player.getUnitCollection().size() == 0 && getPlacementsMade() == 0));
+    return !(player == null || (player.getUnitCollection().isEmpty() && getPlacementsMade() == 0));
   }
 
   protected void removeAirThatCantLand() {
@@ -1699,7 +1698,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   private PlayerId getOriginalFactoryOwner(final Territory territory) {
     final Collection<Unit> factoryUnits =
         territory.getUnitCollection().getMatches(Matches.unitCanProduceUnits());
-    if (factoryUnits.size() == 0) {
+    if (factoryUnits.isEmpty()) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
     for (final Unit factory : factoryUnits) {

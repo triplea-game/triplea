@@ -1111,7 +1111,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         default:
           return false;
       }
-      if (allUnits.size() == 0) {
+      if (allUnits.isEmpty()) {
         numberMet += 1;
         if (numberMet >= numberNeeded) {
           satisfied = true;

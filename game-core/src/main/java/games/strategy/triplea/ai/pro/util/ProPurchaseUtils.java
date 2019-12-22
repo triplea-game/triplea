@@ -350,7 +350,7 @@ public final class ProPurchaseUtils {
 
     final Collection<Unit> factoryUnits =
         territory.getUnitCollection().getMatches(Matches.unitCanProduceUnits());
-    if (factoryUnits.size() == 0) {
+    if (factoryUnits.isEmpty()) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
     for (final Unit factory2 : factoryUnits) {

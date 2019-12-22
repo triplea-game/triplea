@@ -1518,7 +1518,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
-    if (damaged.size() == 0) {
+    if (damaged.isEmpty()) {
       return;
     }
     final IntegerMap<Unit> damagedMap = new IntegerMap<>();

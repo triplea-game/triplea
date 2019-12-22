@@ -23,7 +23,7 @@ class NodeFinder {
     if (children.size() > 1) {
       throw new GameParseException("Too many children named: " + name);
     }
-    return children.size() == 0 ? null : children.get(0);
+    return children.isEmpty() ? null : children.get(0);
   }
 
   List<Element> getChildren(final String name, final Node node) {

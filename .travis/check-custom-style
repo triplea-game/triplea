@@ -29,6 +29,7 @@ function main() {
   #databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
+  useEmptyOverSizeEqualsZero
 }
 
 function title() {
@@ -136,6 +137,16 @@ function noTabsInSql() {
     grep --color=auto -P -n "\t" "$file" && status=1 && found=1
   done <<< "$(cat "$sqlFiles")"
   
+  displayResult "$found"
+}
+
+function useEmptyOverSizeEqualsZero() {
+  title "Avoid size() == 0, use isEmpty() instead"
+  local found=0
+  while read -r file; do
+    grep --color=auto -H "size() == 0" "$file" && status=1 && found=1
+  done <<< "$(cat "$javaFiles")"
+
   displayResult "$found"
 }
 

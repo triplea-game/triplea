@@ -142,7 +142,7 @@ public class ProOddsCalculator {
         !t.isWater()
             && !attackingUnits.isEmpty()
             && attackingUnits.stream().allMatch(Matches.unitIsAir());
-    if (attackingUnits.size() == 0 || (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir)) {
+    if (attackingUnits.isEmpty() || (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir)) {
       return new ProBattleResult();
     } else if (hasNoDefenders) {
       final List<Unit> mainCombatDefenders =

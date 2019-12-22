@@ -212,7 +212,7 @@ public class MyFormatter {
    * the dice roll is {@code null} or contains no dice, {@code none} will be returned.
    */
   public static String asDice(final DiceRoll roll) {
-    if (roll == null || roll.size() == 0) {
+    if (roll == null || roll.isEmpty()) {
       return "none";
     }
     final StringBuilder buf = new StringBuilder();
@@ -249,7 +249,7 @@ public class MyFormatter {
    * <die1>,<die2>,...,<dieN>}. If the list is {@code null} or empty, {@code none} will be returned.
    */
   public static String asDice(final List<Die> rolls) {
-    if (rolls == null || rolls.size() == 0) {
+    if (rolls == null || rolls.isEmpty()) {
       return "none";
     }
     final StringBuilder buf = new StringBuilder(rolls.size() * 2);

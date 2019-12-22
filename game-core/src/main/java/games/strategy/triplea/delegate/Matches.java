@@ -811,7 +811,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsEmpty() {
-    return t -> t.getUnitCollection().size() == 0;
+    return t -> t.getUnitCollection().isEmpty();
   }
 
   /**
