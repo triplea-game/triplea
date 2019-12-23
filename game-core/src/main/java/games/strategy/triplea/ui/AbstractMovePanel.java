@@ -155,7 +155,7 @@ abstract class AbstractMovePanel extends ActionPanel {
   void undoMoves(final Set<Unit> units) {
     final Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
 
-    if (movesToUndo.size() == 0) {
+    if (movesToUndo.isEmpty()) {
       final String error =
           "Could not undo any moves, check that the unit has moved and that you "
               + "can undo the move normally";

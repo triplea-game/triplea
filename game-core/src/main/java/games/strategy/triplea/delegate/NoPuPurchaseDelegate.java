@@ -51,7 +51,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     if (isProductionPerValuedTerritoryRestricted()
         && (ra == null
             || ra.getProductionPerXTerritories() == null
-            || ra.getProductionPerXTerritories().size() == 0)) {
+            || ra.getProductionPerXTerritories().isEmpty())) {
       productionPerXTerritories.put(
           getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
     } else if (isProductionPerXTerritoriesRestricted() && ra != null) {

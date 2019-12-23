@@ -695,7 +695,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                 // check only air since that
                 // is the only one for which the route may actually change much)
                 if (unitsThatCanMoveOnRoute.size() < selectedUnits.size()
-                    && (unitsThatCanMoveOnRoute.size() == 0
+                    && (unitsThatCanMoveOnRoute.isEmpty()
                         || unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir()))) {
                   final Collection<Unit> airUnits =
                       CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
@@ -810,7 +810,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         CollectionUtils.getMatches(
             candidateTransports, Matches.transportCannotUnload(route.getEnd()));
     candidateTransports.removeAll(incapableTransports);
-    if (candidateTransports.size() == 0) {
+    if (candidateTransports.isEmpty()) {
       return List.of();
     }
 
@@ -889,7 +889,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
           // If we haven't seen all of the transports (and removed them) then there are extra
           // transports that don't fit
-          return (sortedTransports.size() == 0);
+          return (sortedTransports.isEmpty());
         };
 
     // Choosing what transports to unload
@@ -1051,7 +1051,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   /** Get the route including the territories that we are forced to move through. */
   private Route getRouteForced(
       final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
-    if (forced == null || forced.size() == 0) {
+    if (forced == null || forced.isEmpty()) {
       throw new IllegalStateException(
           "No forced territories:" + forced + " end:" + end + " start:" + start);
     }

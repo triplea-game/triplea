@@ -439,7 +439,7 @@ public class WeakAi extends AbstractAi {
               .and(Matches.territoryIsNeutralButNotWater().negate())
               .and(Matches.territoryIsLand());
       final List<Unit> units = t.getUnitCollection().getMatches(moveOfType);
-      if (units.size() == 0) {
+      if (units.isEmpty()) {
         continue;
       }
       int minDistance = Integer.MAX_VALUE;
@@ -1037,7 +1037,7 @@ public class WeakAi extends AbstractAi {
       final IAbstractPlaceDelegate placeDelegate,
       final GameData data,
       final PlayerId player) {
-    if (player.getUnitCollection().size() == 0) {
+    if (player.getUnitCollection().isEmpty()) {
       return;
     }
     final @Nullable Territory capitol =

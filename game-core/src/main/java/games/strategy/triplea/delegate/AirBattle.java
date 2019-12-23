@@ -903,7 +903,7 @@ public class AirBattle extends AbstractBattle {
 
   private void remove(
       final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite) {
-    if (killed.size() == 0) {
+    if (killed.isEmpty()) {
       return;
     }
     final Collection<Unit> dependent = getDependentUnits(killed);

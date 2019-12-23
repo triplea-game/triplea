@@ -216,7 +216,7 @@ public class MoveValidator {
         }
       }
     }
-    if (units.size() == 0) {
+    if (units.isEmpty()) {
       return result.setErrorReturnResult("No units");
     }
     for (final Unit unit : units) {
@@ -1093,7 +1093,7 @@ public class MoveValidator {
   }
 
   public static BigDecimal getMaxMovement(final Collection<Unit> units) {
-    if (units.size() == 0) {
+    if (units.isEmpty()) {
       throw new IllegalArgumentException("no units");
     }
     BigDecimal max = BigDecimal.ZERO;
@@ -1105,7 +1105,7 @@ public class MoveValidator {
   }
 
   static BigDecimal getLeastMovement(final Collection<Unit> units) {
-    if (units.size() == 0) {
+    if (units.isEmpty()) {
       throw new IllegalArgumentException("no units");
     }
     BigDecimal least = new BigDecimal(Integer.MAX_VALUE);
@@ -1352,7 +1352,7 @@ public class MoveValidator {
       if (!unitsToTransports.keySet().containsAll(land)) {
         // some units didn't get mapped to a transport
         final Collection<UnitCategory> unitsToLoadCategories = UnitSeparator.categorize(land);
-        if (unitsToTransports.size() == 0 || unitsToLoadCategories.size() == 1) {
+        if (unitsToTransports.isEmpty() || unitsToLoadCategories.size() == 1) {
           // set all unmapped units as disallowed if there are no transports or only one unit
           // category
           for (final Unit unit : land) {
