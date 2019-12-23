@@ -185,7 +185,7 @@ public class ProAi extends AbstractAi {
 
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
-          ProPurchaseUtils.findPurchaseTerritories(player);
+          ProPurchaseUtils.findPurchaseTerritories(proData, player);
       final List<Territory> possibleFactoryTerritories =
           CollectionUtils.getMatches(
               data.getMap().getTerritories(),

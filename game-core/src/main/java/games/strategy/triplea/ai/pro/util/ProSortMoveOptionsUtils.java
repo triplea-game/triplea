@@ -61,7 +61,7 @@ public final class ProSortMoveOptionsUtils {
       final Map<Unit, Set<Territory>> unitAttackOptions,
       final Map<Territory, ProTerritory> attackMap,
       final ProOddsCalculator calc) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new ArrayList<>(unitAttackOptions.entrySet());
@@ -120,7 +120,7 @@ public final class ProSortMoveOptionsUtils {
       final Map<Unit, Set<Territory>> unitAttackOptions,
       final Map<Territory, ProTerritory> attackMap,
       final ProOddsCalculator calc) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     final Map<Unit, Territory> unitTerritoryMap = proData.getUnitTerritoryMap();
 
     final List<Map.Entry<Unit, Set<Territory>>> list =

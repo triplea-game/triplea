@@ -190,7 +190,7 @@ public final class ProBattleUtils {
       final PlayerId player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     if (t == null) {
       return true;
     }
@@ -258,7 +258,7 @@ public final class ProBattleUtils {
       final int distance,
       final PlayerId player,
       final Map<Territory, ProTerritory> moveMap) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Find enemy strength
     final Set<Territory> nearbyTerritoriesForEnemy =
@@ -316,7 +316,7 @@ public final class ProBattleUtils {
       final PlayerId player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Collection<Unit> unitsToPlace) {
-    final GameData data = t.getData();
+    final GameData data = proData.getData();
 
     int landDistance = ProUtils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
     if (landDistance <= 0) {

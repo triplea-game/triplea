@@ -12,7 +12,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -45,16 +44,16 @@ public final class ProPurchaseUtils {
   private ProPurchaseUtils() {}
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(
-      final ProAi proAi,
+      final ProData proData,
       final PlayerId player,
       final List<ProPurchaseOption> purchaseOptions,
       final Territory t,
       final boolean isBid) {
-    return findPurchaseOptionsForTerritory(proAi, player, purchaseOptions, t, t, isBid);
+    return findPurchaseOptionsForTerritory(proData, player, purchaseOptions, t, t, isBid);
   }
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(
-      final ProAi proAi,
+      final ProData proData,
       final PlayerId player,
       final List<ProPurchaseOption> purchaseOptions,
       final Territory t,
@@ -62,7 +61,7 @@ public final class ProPurchaseUtils {
       final boolean isBid) {
     final List<ProPurchaseOption> result = new ArrayList<>();
     for (final ProPurchaseOption ppo : purchaseOptions) {
-      if (canTerritoryUsePurchaseOption(proAi, player, ppo, t, factoryTerritory, isBid)) {
+      if (canTerritoryUsePurchaseOption(proData, player, ppo, t, factoryTerritory, isBid)) {
         result.add(ppo);
       }
     }
@@ -70,7 +69,7 @@ public final class ProPurchaseUtils {
   }
 
   private static boolean canTerritoryUsePurchaseOption(
-      final ProAi proAi,
+      final ProData proData,
       final PlayerId player,
       final ProPurchaseOption ppo,
       final Territory t,
@@ -80,21 +79,21 @@ public final class ProPurchaseUtils {
       return false;
     }
     final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
-    return canUnitsBePlaced(proAi, units, player, t, factoryTerritory, isBid);
+    return canUnitsBePlaced(proData, units, player, t, factoryTerritory, isBid);
   }
 
   public static boolean canUnitsBePlaced(
-      final ProAi proAi,
+      final ProData proData,
       final List<Unit> units,
       final PlayerId player,
       final Territory t,
       final boolean isBid) {
-    return canUnitsBePlaced(proAi, units, player, t, t, isBid);
+    return canUnitsBePlaced(proData, units, player, t, t, isBid);
   }
 
   /** Check if units can be placed in given territory by specified factory. */
   public static boolean canUnitsBePlaced(
-      final ProAi proAi,
+      final ProData proData,
       final List<Unit> units,
       final PlayerId player,
       final Territory t,
@@ -111,7 +110,7 @@ public final class ProPurchaseUtils {
                     placeDelegate.unitsAtStartOfStepInTerritory(factoryTerritory)))) {
       return false;
     }
-    final IDelegateBridge bridge = new ProDummyDelegateBridge(proAi, player, data);
+    final IDelegateBridge bridge = new ProDummyDelegateBridge(proData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
     return isPlacingFightersOnNewCarriers(t, units)
         ? placeDelegate.canUnitsBePlaced(
@@ -218,19 +217,19 @@ public final class ProPurchaseUtils {
    * based on the specified purchase options.
    */
   public static List<Unit> findMaxPurchaseDefenders(
-      final ProAi proAi,
+      final ProData proData,
       final PlayerId player,
       final Territory t,
       final List<ProPurchaseOption> landPurchaseOptions) {
 
     ProLogger.info("Find max purchase defenders for " + t.getName());
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Determine most cost efficient defender that can be produced in this territory
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final List<ProPurchaseOption> purchaseOptionsForTerritory =
-        findPurchaseOptionsForTerritory(proAi, player, landPurchaseOptions, t, false);
+        findPurchaseOptionsForTerritory(proData, player, landPurchaseOptions, t, false);
     ProPurchaseOption bestDefenseOption = null;
     double maxDefenseEfficiency = 0;
     for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
@@ -273,7 +272,7 @@ public final class ProPurchaseUtils {
       final ProData proData, final PlayerId player) {
 
     ProLogger.info("Find all bid territories");
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Find all territories that I can place units on
     final Set<Territory> ownedOrHasUnitTerritories =
@@ -302,10 +301,10 @@ public final class ProPurchaseUtils {
 
   /** Returns all possible territories within which {@code player} can place purchased units. */
   public static Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(
-      final PlayerId player) {
+      final ProData proData, final PlayerId player) {
 
     ProLogger.info("Find all purchase territories");
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Find all territories that I can place units on
     final RulesAttachment ra = player.getRulesAttachment();

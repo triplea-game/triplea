@@ -29,7 +29,7 @@ public final class ProTerritoryValueUtils {
    */
   public static double findTerritoryAttackValue(
       final ProData proData, final PlayerId player, final Territory t) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     final int isEnemyFactory =
         ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
@@ -270,7 +270,7 @@ public final class ProTerritoryValueUtils {
 
     // Determine value based on enemy factory land distance
     final List<Double> values = new ArrayList<>();
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     final Set<Territory> nearbyEnemyCapitalsAndFactories =
         findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap);
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
@@ -345,7 +345,7 @@ public final class ProTerritoryValueUtils {
       final List<Territory> territoriesToAttack,
       final Map<Territory, Double> territoryValueMap) {
 
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     if (territoriesThatCantBeHeld.contains(t)
         || data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
       return 0.0;

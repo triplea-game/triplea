@@ -41,7 +41,7 @@ public final class ProMoveUtils {
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     // Find all amphib units
@@ -169,7 +169,7 @@ public final class ProMoveUtils {
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     final MoveBatcher moves = new MoveBatcher();
@@ -318,7 +318,7 @@ public final class ProMoveUtils {
   public static List<MoveDescription> calculateBombardMoveRoutes(
       final ProData proData, final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
 
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     final var moves = new ArrayList<MoveDescription>();
@@ -370,7 +370,7 @@ public final class ProMoveUtils {
   public static List<MoveDescription> calculateBombingRoutes(
       final ProData proData, final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
 
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     final var moves = new ArrayList<MoveDescription>();

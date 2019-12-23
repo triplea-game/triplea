@@ -1750,7 +1750,8 @@ public class ProCombatMoveAi {
     if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player, data)
         .test(myCapital)) {
       placeUnits.addAll(
-          ProPurchaseUtils.findMaxPurchaseDefenders(ai, player, myCapital, landPurchaseOptions));
+          ProPurchaseUtils.findMaxPurchaseDefenders(
+              proData, player, myCapital, landPurchaseOptions));
     }
 
     // Remove attack until capital can be defended

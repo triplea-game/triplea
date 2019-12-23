@@ -295,7 +295,7 @@ class ProNonCombatMoveAi {
               .getCantMoveUnits()
               .addAll(
                   ProPurchaseUtils.findMaxPurchaseDefenders(
-                      proData.getProAi(), player, t, landPurchaseOptions));
+                      proData, player, t, landPurchaseOptions));
         }
       }
     }
