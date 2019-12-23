@@ -1319,15 +1319,7 @@ public class ProCombatMoveAi {
         final ProTerritory patd = attackMap.get(t);
         if (!attackMap.get(t).isCurrentlyWins() && attackMap.get(t).isCanHold()) {
           if (attackMap.get(t).getBattleResult() == null) {
-            attackMap
-                .get(t)
-                .setBattleResult(
-                    calc.estimateAttackBattleResults(
-                        proData,
-                        t,
-                        patd.getUnits(),
-                        patd.getMaxEnemyDefenders(player, data),
-                        patd.getBombardTerritoryMap().keySet()));
+            patd.estimateBattleResult(calc, player);
           }
           final ProBattleResult result = attackMap.get(t).getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1385,13 +1377,7 @@ public class ProCombatMoveAi {
 
           // Check battle results
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(
-                calc.estimateAttackBattleResults(
-                    proData,
-                    t,
-                    patd.getUnits(),
-                    patd.getMaxEnemyDefenders(player, data),
-                    patd.getBombardTerritoryMap().keySet()));
+            patd.estimateBattleResult(calc, player);
           }
           final ProBattleResult result = patd.getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1462,13 +1448,7 @@ public class ProCombatMoveAi {
             continue;
           }
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(
-                calc.estimateAttackBattleResults(
-                    proData,
-                    t,
-                    patd.getUnits(),
-                    patd.getMaxEnemyDefenders(player, data),
-                    patd.getBombardTerritoryMap().keySet()));
+            patd.estimateBattleResult(calc, player);
           }
           final ProBattleResult result = patd.getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1535,13 +1515,7 @@ public class ProCombatMoveAi {
               && !TransportTracker.isTransporting(transport)
               && !defendingUnits.isEmpty()) {
             if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      proData,
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
+              patd.estimateBattleResult(calc, player);
             }
             final ProBattleResult result = patd.getBattleResult();
             if (result.getWinPercentage() < proData.getWinPercentage()
@@ -1590,13 +1564,7 @@ public class ProCombatMoveAi {
         final ProTerritory patd = attackMap.get(t);
         if (!patd.isCurrentlyWins()) {
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(
-                calc.estimateAttackBattleResults(
-                    proData,
-                    t,
-                    patd.getUnits(),
-                    patd.getMaxEnemyDefenders(player, data),
-                    patd.getBombardTerritoryMap().keySet()));
+            patd.estimateBattleResult(calc, player);
           }
           final ProBattleResult result = patd.getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1728,13 +1696,7 @@ public class ProCombatMoveAi {
       for (final Territory t : bombardOptions.get(u)) {
         final ProTerritory patd = attackMap.get(t);
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(
-              calc.estimateAttackBattleResults(
-                  proData,
-                  t,
-                  patd.getUnits(),
-                  patd.getMaxEnemyDefenders(player, data),
-                  patd.getBombardTerritoryMap().keySet()));
+          patd.estimateBattleResult(calc, player);
         }
         final ProBattleResult result = patd.getBattleResult();
         if (result.getWinPercentage() < minWinPercentage
