@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.triplea.http.client.web.socket.messages.MessageTypeListenerBinding.newBinding;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -26,9 +27,9 @@ class WebsocketMessageTypeTest {
 
   @Getter(onMethod_ = @Override)
   @AllArgsConstructor
+  @SuppressWarnings("ImmutableEnumChecker")
   private enum ExampleMessageType implements WebsocketMessageType<ExampleMessageListeners> {
-    MESSAGE_TYPE(
-        MessageTypeListenerBinding.of(Integer.class, ExampleMessageListeners::getListener));
+    MESSAGE_TYPE(newBinding(Integer.class, ExampleMessageListeners::getListener));
 
     private final MessageTypeListenerBinding<ExampleMessageListeners, ?> messageTypeListenerBinding;
   }
