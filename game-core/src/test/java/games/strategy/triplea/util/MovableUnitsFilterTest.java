@@ -251,7 +251,6 @@ public class MovableUnitsFilterTest {
           allUnits.stream().filter(Matches.unitIsOfTypes(bomberType)).findAny().get();
       final Unit infantry =
           allUnits.stream().filter(Matches.unitIsOfTypes(infType)).findAny().get();
-      final Collection<Unit> twoUnits = List.of(bomber, infantry);
       final Route route = new Route(russia, archangel, karelia, finland);
       final Map<Unit, Collection<Unit>> dependentUnits = Map.of(bomber, List.of(infantry));
 
