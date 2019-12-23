@@ -316,7 +316,10 @@ public final class ProSortMoveOptionsUtils {
   }
 
   private static void setBattleResultIfNeeded(
-      final ProData proData, final PlayerId player, final ProOddsCalculator calc, final ProTerritory patd) {
+      final ProData proData,
+      final PlayerId player,
+      final ProOddsCalculator calc,
+      final ProTerritory patd) {
     if (patd.getBattleResult() == null) {
       patd.setBattleResult(
           calc.estimateAttackBattleResults(
