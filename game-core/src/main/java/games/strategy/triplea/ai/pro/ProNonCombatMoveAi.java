@@ -2515,8 +2515,7 @@ class ProNonCombatMoveAi {
                       u,
                       player);
           final MoveValidationResult mvr =
-              MoveValidator.validateMove(
-                  new MoveDescription(List.of(u), r), player, true, null, data);
+              MoveValidator.validateMove(new MoveDescription(List.of(u), r), player, true, null);
           if (!mvr.isMoveValid()) {
             continue;
           }

@@ -39,11 +39,11 @@ public final class AirMovementValidator {
   // carriers. these would be air units that have already been moved this turn, and therefore would
   // need pickup.
   static MoveValidationResult validateAirCanLand(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     // First check if we even need to check
     if (getEditMode(data) // Edit Mode, no need to check
         || units.stream().noneMatch(Matches.unitIsAir()) // No Airunits, nothing to check

@@ -317,7 +317,7 @@ public class WeakAi extends AbstractAi {
     final Predicate<Territory> routeCond =
         Matches.territoryIsWater()
             .and(Matches.territoryHasEnemyUnits(player, data).negate())
-            .and(Matches.territoryHasNonAllowedCanal(player, null, data).negate());
+            .and(Matches.territoryHasNonAllowedCanal(player, null).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
     if (r == null || r.hasNoSteps() || !routeCond.test(destination)) {
       return null;
@@ -439,7 +439,7 @@ public class WeakAi extends AbstractAi {
               .and(Matches.territoryIsNeutralButNotWater().negate())
               .and(Matches.territoryIsLand());
       final List<Unit> units = t.getUnitCollection().getMatches(moveOfType);
-      if (units.size() == 0) {
+      if (units.isEmpty()) {
         continue;
       }
       int minDistance = Integer.MAX_VALUE;
@@ -1037,7 +1037,7 @@ public class WeakAi extends AbstractAi {
       final IAbstractPlaceDelegate placeDelegate,
       final GameData data,
       final PlayerId player) {
-    if (player.getUnitCollection().size() == 0) {
+    if (player.getUnitCollection().isEmpty()) {
       return;
     }
     final @Nullable Territory capitol =

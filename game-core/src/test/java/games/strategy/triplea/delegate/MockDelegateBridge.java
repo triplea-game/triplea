@@ -29,7 +29,8 @@ public final class MockDelegateBridge {
    *
    * @return A mock that can be configured using standard Mockito idioms.
    */
-  public static IDelegateBridge newInstance(final GameData gameData, final PlayerId playerId) {
+  public static IDelegateBridge newDelegateBridge(final PlayerId playerId) {
+    final GameData gameData = playerId.getData();
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     doAnswer(
             invocation -> {

@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 

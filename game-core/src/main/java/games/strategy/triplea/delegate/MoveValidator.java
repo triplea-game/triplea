@@ -74,8 +74,7 @@ public class MoveValidator {
       final MoveDescription move,
       final PlayerId player,
       final boolean isNonCombat,
-      final List<UndoableMove> undoableMoves,
-      final GameData data) {
+      final List<UndoableMove> undoableMoves) {
     final Collection<Unit> units = move.getUnits();
     final Route route = move.getRoute();
     final Map<Unit, Unit> unitsToTransports = move.getUnitsToTransports();
@@ -84,48 +83,47 @@ public class MoveValidator {
     if (route.hasNoSteps()) {
       return result;
     }
-    if (validateFirst(data, units, route, player, result).getError() != null) {
+    if (validateFirst(units, route, player, result).getError() != null) {
       return result;
     }
     if (isNonCombat) {
-      if (validateNonCombat(data, units, route, player, result).getError() != null) {
+      if (validateNonCombat(units, route, player, result).getError() != null) {
         return result;
       }
     } else {
-      if (validateCombat(data, units, route, player, result).getError() != null) {
+      if (validateCombat(units, route, player, result).getError() != null) {
         return result;
       }
     }
-    if (validateNonEnemyUnitsOnPath(data, units, route, player, result).getError() != null) {
+    if (validateNonEnemyUnitsOnPath(units, route, player, result).getError() != null) {
       return result;
     }
-    if (validateBasic(data, units, route, player, unitsToTransports, newDependents, result)
-            .getError()
+    if (validateBasic(units, route, player, unitsToTransports, newDependents, result).getError()
         != null) {
       return result;
     }
-    if (AirMovementValidator.validateAirCanLand(data, units, route, player, result).getError()
-        != null) {
+    if (AirMovementValidator.validateAirCanLand(units, route, player, result).getError() != null) {
       return result;
     }
     if (validateTransport(
-                isNonCombat, data, undoableMoves, units, route, player, unitsToTransports, result)
+                isNonCombat, undoableMoves, units, route, player, unitsToTransports, result)
             .getError()
         != null) {
       return result;
     }
-    if (validateParatroops(isNonCombat, data, units, route, player, result).getError() != null) {
+    if (validateParatroops(isNonCombat, units, route, player, result).getError() != null) {
       return result;
     }
-    if (validateCanal(data, units, route, player, newDependents, result).getError() != null) {
+    if (validateCanal(units, route, player, newDependents, result).getError() != null) {
       return result;
     }
-    if (validateFuel(data, units, route, player, result).getError() != null) {
+    if (validateFuel(units, route, player, result).getError() != null) {
       return result;
     }
 
     // Don't let the user move out of a battle zone, the exception is air units and unloading units
     // into a battle zone
+    final GameData data = player.getData();
     if (AbstractMoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false)
         && units.stream().anyMatch(Matches.unitIsNotAir())) {
       // if the units did not move into the territory, then they can move out this will happen if
@@ -157,11 +155,11 @@ public class MoveValidator {
   }
 
   static MoveValidationResult validateFirst(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (!units.isEmpty() && !getEditMode(data)) {
       final Collection<Unit> matches =
           CollectionUtils.getMatches(
@@ -187,7 +185,7 @@ public class MoveValidator {
       result.setError("Invalid route:" + route);
       return result;
     }
-    if (validateMovementRestrictedByTerritory(data, route, player, result).getError() != null) {
+    if (validateMovementRestrictedByTerritory(route, player, result).getError() != null) {
       return result;
     }
     // cannot enter territories owned by a player to which we are neutral towards
@@ -218,7 +216,7 @@ public class MoveValidator {
         }
       }
     }
-    if (units.size() == 0) {
+    if (units.isEmpty()) {
       return result.setErrorReturnResult("No units");
     }
     for (final Unit unit : units) {
@@ -236,11 +234,11 @@ public class MoveValidator {
   }
 
   static MoveValidationResult validateFuel(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (getEditMode(data)) {
       return result;
     }
@@ -256,17 +254,17 @@ public class MoveValidator {
   }
 
   private static MoveValidationResult validateCanal(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final Map<Unit, Collection<Unit>> newDependents,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (getEditMode(data)) {
       return result;
     }
     // TODO: merge validateCanal here and provide granular unit warnings
-    return result.setErrorReturnResult(validateCanal(route, units, newDependents, player, data));
+    return result.setErrorReturnResult(validateCanal(route, units, newDependents, player));
   }
 
   /**
@@ -275,17 +273,16 @@ public class MoveValidator {
    * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
    */
   public static String validateCanal(
-      final Route route, final Collection<Unit> units, final PlayerId player, final GameData data) {
-    return validateCanal(route, units, new HashMap<>(), player, data);
+      final Route route, final Collection<Unit> units, final PlayerId player) {
+    return validateCanal(route, units, new HashMap<>(), player);
   }
 
   private static String validateCanal(
       final Route route,
       final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents,
-      final PlayerId player,
-      final GameData data) {
-
+      final PlayerId player) {
+    final GameData data = player.getData();
     // Check each unit 1 by 1 to see if they can move through necessary canals on route
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
@@ -300,7 +297,7 @@ public class MoveValidator {
           if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
             continue; // Only check canals that are on the route
           }
-          failureMessage = canPassThroughCanal(canalAttachment, unit, player, data);
+          failureMessage = canPassThroughCanal(canalAttachment, unit, player);
           final boolean canPass = failureMessage.isEmpty();
           if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
               || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
@@ -333,23 +330,22 @@ public class MoveValidator {
                     unitsThatFailCanal.contains(unit)
                         || !Matches.unitHasEnoughMovementForRoute(route).test(unit))
             .collect(Collectors.toSet());
-    return checkLandTransports(data, player, potentialLandTransports, unitsToLandTransport)
-            .isEmpty()
+    return checkLandTransports(player, potentialLandTransports, unitsToLandTransport).isEmpty()
         ? null
         : result;
   }
 
   /**
-   * Simplified version of {@link #validateCanal(Route, Collection, PlayerId, GameData)
-   * validateCanal} used for route finding to check neighboring territories and avoid validating
-   * every unit. Performance of this method is critical.
+   * Simplified version of {@link #validateCanal(Route, Collection, PlayerId) validateCanal} used
+   * for route finding to check neighboring territories and avoid validating every unit. Performance
+   * of this method is critical.
    */
   public static boolean canAnyUnitsPassCanal(
       final Territory start,
       final Territory end,
       final Collection<Unit> units,
-      final PlayerId player,
-      final GameData data) {
+      final PlayerId player) {
+    final GameData data = player.getData();
     boolean canPass = true;
     final Route route = new Route(start, end);
     for (final CanalAttachment canalAttachment : CanalAttachment.get(start)) {
@@ -358,8 +354,7 @@ public class MoveValidator {
       }
       final Collection<Unit> unitsWithoutDependents =
           findNonDependentUnits(units, route, new HashMap<>());
-      canPass =
-          canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player, data).isEmpty();
+      canPass = canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player).isEmpty();
       if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
           || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
         break; // If need to control any canal and can pass OR need to control all canals and can't
@@ -370,11 +365,11 @@ public class MoveValidator {
   }
 
   private static MoveValidationResult validateCombat(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (getEditMode(data)) {
       return result;
     }
@@ -506,7 +501,7 @@ public class MoveValidator {
       }
     }
     // make sure no conquered territories on route
-    if (MoveValidator.hasConqueredNonBlitzedNonWaterOnRoute(route, data)) {
+    if (hasConqueredNonBlitzedNonWaterOnRoute(route, data)) {
       // unless we are all air or we are in non combat OR the route is water (was a bug in convoy
       // zone movement)
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir())) {
@@ -538,11 +533,11 @@ public class MoveValidator {
   }
 
   private static MoveValidationResult validateNonCombat(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (getEditMode(data)) {
       return result;
     }
@@ -569,7 +564,7 @@ public class MoveValidator {
     // Subs can't move under destroyers
     if (!units.isEmpty()
         && units.stream().allMatch(Matches.unitCanMoveThroughEnemies())
-        && MoveValidator.enemyDestroyerOnPath(route, player, data)) {
+        && enemyDestroyerOnPath(route, player)) {
       return result.setErrorReturnResult("Cannot move submarines under destroyers");
     }
     // Can't advance to battle unless only ignored units on route, only air units to sea, or only
@@ -577,7 +572,7 @@ public class MoveValidator {
     // territories with enemy units during NCM
     if (end.getUnitCollection()
             .anyMatch(Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate()))
-        && !onlyIgnoredUnitsOnPath(route, player, data, false)
+        && !onlyIgnoredUnitsOnPath(route, player, false)
         && !(end.isWater() && units.stream().allMatch(Matches.unitIsAir()))
         && !(Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
             && units.stream().allMatch(Matches.unitCanMoveThroughEnemies()))) {
@@ -619,10 +614,8 @@ public class MoveValidator {
 
   // Added to handle restriction of movement to listed territories
   static MoveValidationResult validateMovementRestrictedByTerritory(
-      final GameData data,
-      final Route route,
-      final PlayerId player,
-      final MoveValidationResult result) {
+      final Route route, final PlayerId player, final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (getEditMode(data)) {
       return result;
     }
@@ -654,16 +647,16 @@ public class MoveValidator {
   }
 
   private static MoveValidationResult validateNonEnemyUnitsOnPath(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     if (getEditMode(data)) {
       return result;
     }
     // check to see no enemy units on path
-    if (MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data)) {
+    if (noEnemyUnitsOnPathMiddleSteps(route, player)) {
       return result;
     }
     // if we are all air, then its ok
@@ -675,11 +668,11 @@ public class MoveValidator {
         CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate());
     if (!matches.isEmpty() && matches.stream().allMatch(Matches.unitCanMoveThroughEnemies())) {
       // this is ok unless there are destroyer on the path
-      return MoveValidator.enemyDestroyerOnPath(route, player, data)
+      return enemyDestroyerOnPath(route, player)
           ? result.setErrorReturnResult("Cannot move submarines under destroyers")
           : result;
     }
-    if (onlyIgnoredUnitsOnPath(route, player, data, true)) {
+    if (onlyIgnoredUnitsOnPath(route, player, true)) {
       return result;
     }
     // omit paratroops
@@ -690,13 +683,13 @@ public class MoveValidator {
   }
 
   private static MoveValidationResult validateBasic(
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final Map<Unit, Unit> unitToTransport,
       final Map<Unit, Collection<Unit>> newDependents,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     final boolean isEditMode = getEditMode(data);
     // make sure transports in the destination
     if (!route.getEnd().getUnitCollection().containsAll(unitToTransport.values())
@@ -732,7 +725,7 @@ public class MoveValidator {
           unitsWithoutDependents.stream()
               .filter(unit -> !Matches.unitHasEnoughMovementForRoute(route).test(unit))
               .collect(Collectors.toSet());
-      checkLandTransports(data, player, unitsWithEnoughMovement, unitsWithoutEnoughMovement)
+      checkLandTransports(player, unitsWithEnoughMovement, unitsWithoutEnoughMovement)
           .forEach(unit -> result.addDisallowedUnit("Not all units have enough movement", unit));
 
       // Can only move owned units except transported units or allied air on carriers
@@ -780,7 +773,7 @@ public class MoveValidator {
 
     // make sure that no non sea non transportable no carriable units end at sea
     if (route.getEnd().isWater()) {
-      for (final Unit unit : MoveValidator.getUnitsThatCantGoOnWater(units)) {
+      for (final Unit unit : getUnitsThatCantGoOnWater(units)) {
         result.addDisallowedUnit("Not all units can end at water", unit);
       }
     }
@@ -842,7 +835,7 @@ public class MoveValidator {
     if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
-    if (canCrossNeutralTerritory(data, route, player, result).getError() != null) {
+    if (canCrossNeutralTerritory(route, player, result).getError() != null) {
       return result;
     }
     if (isNeutralsImpassable(data)
@@ -859,7 +852,7 @@ public class MoveValidator {
       final Map<Unit, Collection<Unit>> newDependents) {
     Collection<Unit> unitsWithoutDependents = new ArrayList<>(units);
     if (route.getStart().isWater()) {
-      unitsWithoutDependents = MoveValidator.getNonLand(units);
+      unitsWithoutDependents = getNonLand(units);
     }
     final Map<Unit, Collection<Unit>> dependentsMap =
         getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
@@ -877,10 +870,10 @@ public class MoveValidator {
    * using capacity and cost
    */
   private static Set<Unit> checkLandTransports(
-      final GameData data,
       final PlayerId player,
       final Collection<Unit> possibleLandTransports,
       final Set<Unit> unitsToLandTransport) {
+    final GameData data = player.getData();
     final Set<Unit> disallowedUnits = new HashSet<>();
     data.acquireReadLock();
     try {
@@ -951,11 +944,10 @@ public class MoveValidator {
    * Checks that there are no enemy units on the route except possibly at the end. Submerged enemy
    * units are not considered as they don't affect movement. AA and factory dont count as enemy.
    */
-  static boolean noEnemyUnitsOnPathMiddleSteps(
-      final Route route, final PlayerId player, final GameData data) {
+  static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerId player) {
     final Predicate<Unit> alliedOrNonCombat =
         Matches.unitIsInfrastructure()
-            .or(Matches.enemyUnit(player, data).negate())
+            .or(Matches.enemyUnit(player, player.getData()).negate())
             .or(Matches.unitIsSubmerged());
     // Submerged units do not interfere with movement
     return route.getMiddleSteps().stream()
@@ -967,7 +959,8 @@ public class MoveValidator {
    * factory dont count as enemy.
    */
   static boolean onlyIgnoredUnitsOnPath(
-      final Route route, final PlayerId player, final GameData data, final boolean ignoreRouteEnd) {
+      final Route route, final PlayerId player, final boolean ignoreRouteEnd) {
+    final GameData data = player.getData();
     final Predicate<Unit> transportOnly =
         Matches.unitIsInfrastructure()
             .or(Matches.unitIsTransportButNotCombatTransport())
@@ -1005,8 +998,9 @@ public class MoveValidator {
     return validMove;
   }
 
-  private static boolean enemyDestroyerOnPath(
-      final Route route, final PlayerId player, final GameData data) {
+  private static boolean enemyDestroyerOnPath(final Route route, final PlayerId player) {
+    final GameData data = player.getData();
+
     final Predicate<Unit> enemyDestroyer =
         Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data));
     return route.getMiddleSteps().stream()
@@ -1099,7 +1093,7 @@ public class MoveValidator {
   }
 
   public static BigDecimal getMaxMovement(final Collection<Unit> units) {
-    if (units.size() == 0) {
+    if (units.isEmpty()) {
       throw new IllegalArgumentException("no units");
     }
     BigDecimal max = BigDecimal.ZERO;
@@ -1111,7 +1105,7 @@ public class MoveValidator {
   }
 
   static BigDecimal getLeastMovement(final Collection<Unit> units) {
-    if (units.size() == 0) {
+    if (units.isEmpty()) {
       throw new IllegalArgumentException("no units");
     }
     BigDecimal least = new BigDecimal(Integer.MAX_VALUE);
@@ -1126,14 +1120,11 @@ public class MoveValidator {
   // can't cross neutral
   // territories in WW2V2.
   private static MoveValidationResult canCrossNeutralTerritory(
-      final GameData data,
-      final Route route,
-      final PlayerId player,
-      final MoveValidationResult result) {
+      final Route route, final PlayerId player, final MoveValidationResult result) {
     // neutrals we will overfly in the first place
+    final GameData data = player.getData();
     final Collection<Territory> neutrals = MoveDelegate.getEmptyNeutral(route);
-    final int pus =
-        (player == null || player.isNull()) ? 0 : player.getResources().getQuantity(Constants.PUS);
+    final int pus = player.isNull() ? 0 : player.getResources().getQuantity(Constants.PUS);
     if (pus < getNeutralCharge(data, neutrals.size())) {
       return result.setErrorReturnResult(TOO_POOR_TO_VIOLATE_NEUTRALITY);
     }
@@ -1152,13 +1143,13 @@ public class MoveValidator {
 
   private static MoveValidationResult validateTransport(
       final boolean isNonCombat,
-      final GameData data,
       final List<UndoableMove> undoableMoves,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
       final Map<Unit, Unit> unitsToTransports,
       final MoveValidationResult result) {
+    final GameData data = player.getData();
     final boolean isEditMode = getEditMode(data);
     if (!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir())) {
       return result;
@@ -1316,7 +1307,7 @@ public class MoveValidator {
       if (!Properties.getUnitsCanLoadInHostileSeaZones(data)
           && route.getEnd().getUnitCollection().anyMatch(enemyNonSubmerged)
           && nonParatroopersPresent(player, landAndAir)
-          && !onlyIgnoredUnitsOnPath(route, player, data, false)
+          && !onlyIgnoredUnitsOnPath(route, player, false)
           && !AbstractMoveDelegate.getBattleTracker(data)
               .didAllThesePlayersJustGoToWarThisTurn(player, route.getEnd().getUnits(), data)) {
         return result.setErrorReturnResult("Cannot load when enemy sea units are present");
@@ -1361,7 +1352,7 @@ public class MoveValidator {
       if (!unitsToTransports.keySet().containsAll(land)) {
         // some units didn't get mapped to a transport
         final Collection<UnitCategory> unitsToLoadCategories = UnitSeparator.categorize(land);
-        if (unitsToTransports.size() == 0 || unitsToLoadCategories.size() == 1) {
+        if (unitsToTransports.isEmpty() || unitsToLoadCategories.size() == 1) {
           // set all unmapped units as disallowed if there are no transports or only one unit
           // category
           for (final Unit unit : land) {
@@ -1450,7 +1441,6 @@ public class MoveValidator {
 
   private static MoveValidationResult validateParatroops(
       final boolean nonCombat,
-      final GameData data,
       final Collection<Unit> units,
       final Route route,
       final PlayerId player,
@@ -1462,6 +1452,7 @@ public class MoveValidator {
         || units.stream().noneMatch(Matches.unitIsAirTransport())) {
       return result;
     }
+    final GameData data = player.getData();
     if (nonCombat && !isAirTransportableCanMoveDuringNonCombat(data)) {
       return result.setErrorReturnResult("Paratroops may not move during NonCombat");
     }
@@ -1519,29 +1510,24 @@ public class MoveValidator {
   }
 
   private static Optional<String> canPassThroughCanal(
-      final CanalAttachment canalAttachment,
-      final Unit unit,
-      final PlayerId player,
-      final GameData data) {
+      final CanalAttachment canalAttachment, final Unit unit, final PlayerId player) {
     if (unit != null && Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()).test(unit)) {
       return Optional.empty();
     }
-    return checkCanalStepAndOwnership(canalAttachment, player, data);
+    return checkCanalStepAndOwnership(canalAttachment, player);
   }
 
   private static Optional<String> canAnyPassThroughCanal(
-      final CanalAttachment canalAttachment,
-      final Collection<Unit> units,
-      final PlayerId player,
-      final GameData data) {
+      final CanalAttachment canalAttachment, final Collection<Unit> units, final PlayerId player) {
     if (units.stream().anyMatch(Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()))) {
       return Optional.empty();
     }
-    return checkCanalStepAndOwnership(canalAttachment, player, data);
+    return checkCanalStepAndOwnership(canalAttachment, player);
   }
 
   private static Optional<String> checkCanalStepAndOwnership(
-      final CanalAttachment canalAttachment, final PlayerId player, final GameData data) {
+      final CanalAttachment canalAttachment, final PlayerId player) {
+    final GameData data = player.getData();
     if (canalAttachment.getCanNotMoveThroughDuringCombatMove()
         && GameStepPropertiesHelper.isCombatMove(data, true)) {
       return Optional.of(

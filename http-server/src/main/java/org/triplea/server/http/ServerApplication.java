@@ -27,7 +27,7 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
-import org.triplea.http.client.remote.actions.RemoteActionsWebsocketListener;
+import org.triplea.http.client.remote.actions.RemoteActionListeners;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
@@ -103,8 +103,7 @@ public class ServerApplication extends Application<AppConfig> {
 
     remoteActionsConfiguration =
         ServerEndpointConfig.Builder.create(
-                RemoteActionsWebSocket.class,
-                RemoteActionsWebsocketListener.NOTIFICATIONS_WEBSOCKET_PATH)
+                RemoteActionsWebSocket.class, RemoteActionListeners.NOTIFICATIONS_WEBSOCKET_PATH)
             .build();
     bootstrap.addBundle(new WebsocketBundle(chatSocketConfiguration, remoteActionsConfiguration));
   }

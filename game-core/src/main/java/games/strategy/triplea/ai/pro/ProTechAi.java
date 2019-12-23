@@ -433,7 +433,7 @@ final class ProTechAi {
           }
           if (sea) {
             final Route r = new Route(neighbor, current);
-            if (MoveValidator.validateCanal(r, null, player, data) != null) {
+            if (MoveValidator.validateCanal(r, null, player) != null) {
               continue;
             }
           }

@@ -235,7 +235,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // TODO: This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
     // If attacker stops in an occupied territory, movement stops (battle is optional)
-    if (MoveValidator.onlyIgnoredUnitsOnPath(route, attacker, gameData, false)) {
+    if (MoveValidator.onlyIgnoredUnitsOnPath(route, attacker, false)) {
       return change;
     }
     change.add(ChangeFactory.markNoMovementChange(nonAir));
@@ -485,7 +485,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final IDelegateBridge bridge,
       final Territory battleSite,
       final Boolean defenderDying) {
-    if (killed.size() == 0) {
+    if (killed.isEmpty()) {
       return;
     }
     final Collection<Unit> dependent = getDependentUnits(killed);
@@ -1140,7 +1140,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Predicate<Territory> canalMatch =
         t -> {
           final Route r = new Route(battleSite, t);
-          return MoveValidator.validateCanal(r, unitsToRetreat, defender, gameData) == null;
+          return MoveValidator.validateCanal(r, unitsToRetreat, defender) == null;
         };
     final Predicate<Territory> match =
         Matches.territoryIsWater()
@@ -1392,7 +1392,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       attackedDefenders.removeAll(
           CollectionUtils.getMatches(attackedDefenders, Matches.unitIsAir()));
     }
-    if (suicideAttackers.size() == 0 || attackedDefenders.size() == 0) {
+    if (suicideAttackers.isEmpty() || attackedDefenders.isEmpty()) {
       return;
     }
     final boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
@@ -1433,7 +1433,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         && suicideDefenders.stream().allMatch(Matches.unitCanNotTargetAll())) {
       suicideDefenders.removeAll(CollectionUtils.getMatches(suicideDefenders, Matches.unitIsAir()));
     }
-    if (suicideDefenders.size() == 0 || attackedAttackers.size() == 0) {
+    if (suicideDefenders.isEmpty() || attackedAttackers.isEmpty()) {
       return;
     }
     final boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
@@ -1941,7 +1941,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void defendSubs(final ReturnFire returnFire) {
-    if (attackingUnits.size() == 0) {
+    if (attackingUnits.isEmpty()) {
       return;
     }
     Collection<Unit> firing = new ArrayList<>(defendingUnits);
@@ -1990,7 +1990,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   /** If there are no attacking DDs but defending SUBs, fire AIR at non-SUB forces ONLY. */
   private void attackAirOnNonSubs() {
-    if (defendingUnits.size() == 0) {
+    if (defendingUnits.isEmpty()) {
       return;
     }
     Collection<Unit> units = new ArrayList<>(attackingUnits);
@@ -2021,7 +2021,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * fired, otherwise fire all attackers.
    */
   private void attackNonSubs() {
-    if (defendingUnits.size() == 0) {
+    if (defendingUnits.isEmpty()) {
       return;
     }
     Collection<Unit> units =
@@ -2052,7 +2052,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void defendAirOnNonSubs() {
-    if (attackingUnits.size() == 0) {
+    if (attackingUnits.isEmpty()) {
       return;
     }
     Collection<Unit> units = new ArrayList<>(defendingUnits);
@@ -2078,7 +2078,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void defendNonSubs() {
-    if (attackingUnits.size() == 0) {
+    if (attackingUnits.isEmpty()) {
       return;
     }
     Collection<Unit> units = new ArrayList<>(defendingUnits);
@@ -2371,7 +2371,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       availableTerritories.clear();
       availableTerritories.add(battleSite);
     }
-    if (units.size() == 0) {
+    if (units.isEmpty()) {
       return;
     }
     final PlayerId retreatingPlayer = defender ? this.defender : attacker;

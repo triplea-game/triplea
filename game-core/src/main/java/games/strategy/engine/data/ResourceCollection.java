@@ -144,7 +144,7 @@ public class ResourceCollection extends GameDataComponent {
 
   /** Returns 10,000 if it can fit more times than 10000 or if cost is zero. */
   public int fitsHowOften(final IntegerMap<Resource> cost) {
-    if (cost.size() == 0 || (cost.totalValues() <= 0 && cost.isPositive())) {
+    if (cost.isEmpty() || (cost.totalValues() <= 0 && cost.isPositive())) {
       return 10000;
     }
     final ResourceCollection resources = new ResourceCollection(getData(), this.resources);

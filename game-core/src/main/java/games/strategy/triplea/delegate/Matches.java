@@ -811,7 +811,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsEmpty() {
-    return t -> t.getUnitCollection().size() == 0;
+    return t -> t.getUnitCollection().isEmpty();
   }
 
   /**
@@ -1515,8 +1515,8 @@ public final class Matches {
 
   // TODO: Eventually remove as only used by AI and doesn't handle canals very well
   public static Predicate<Territory> territoryHasNonAllowedCanal(
-      final PlayerId player, final Collection<Unit> unitsMoving, final GameData data) {
-    return t -> MoveValidator.validateCanal(new Route(t), unitsMoving, player, data) != null;
+      final PlayerId player, final Collection<Unit> unitsMoving) {
+    return t -> MoveValidator.validateCanal(new Route(t), unitsMoving, player) != null;
   }
 
   public static Predicate<Territory> territoryIsBlockedSea(

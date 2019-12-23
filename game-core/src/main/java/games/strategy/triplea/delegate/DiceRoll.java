@@ -1562,6 +1562,10 @@ public class DiceRoll implements Externalizable {
     return rolls.size();
   }
 
+  public boolean isEmpty() {
+    return rolls.isEmpty();
+  }
+
   public Die getDie(final int index) {
     return rolls.get(index);
   }

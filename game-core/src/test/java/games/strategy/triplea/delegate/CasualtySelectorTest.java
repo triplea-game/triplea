@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.setSelectAaCasualties;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
@@ -66,7 +67,7 @@ class CasualtySelectorTest {
   @BeforeEach
   void setUp() {
     final GameData data = TestMapGameData.REVISED.getGameData();
-    bridge = MockDelegateBridge.newInstance(data, british(data));
+    bridge = newDelegateBridge(british(data));
   }
 
   @Test

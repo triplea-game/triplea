@@ -31,6 +31,9 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   private final JButton addAttackers = new JButton("Add Attackers (Ctrl-A)");
   private final JButton addDefenders = new JButton("Add Defenders (Ctrl-D)");
   private final JButton findTerritoryButton;
+  private final JLabel territoryInfo = new JLabel();
+  private final JLabel unitInfo = new JLabel();
+  private final JScrollPane units = new JScrollPane();
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
 
@@ -74,6 +77,26 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     addDefenders.addActionListener(e -> BattleCalculatorDialog.addDefenders(currentTerritory));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
         frame, 'D', () -> BattleCalculatorDialog.addDefenders(currentTerritory));
+    units.setBorder(BorderFactory.createEmptyBorder());
+    units.getVerticalScrollBar().setUnitIncrement(20);
+    add(showOdds);
+    add(addAttackers);
+    add(addDefenders);
+    add(findTerritoryButton);
+    add(territoryInfo);
+    add(unitInfo);
+    add(units);
+    setElementsVisible(false);
+  }
+
+  private void setElementsVisible(final boolean visible) {
+    showOdds.setVisible(visible);
+    addAttackers.setVisible(visible);
+    addDefenders.setVisible(visible);
+    findTerritoryButton.setVisible(visible);
+    territoryInfo.setVisible(visible);
+    unitInfo.setVisible(visible);
+    units.setVisible(visible);
   }
 
   public void setGameData(final GameData data) {
@@ -83,15 +106,11 @@ class TerritoryDetailPanel extends AbstractStatPanel {
 
   private void territoryChanged(final Territory territory) {
     currentTerritory = territory;
-    removeAll();
-    refresh();
     if (territory == null) {
+      setElementsVisible(false);
       return;
     }
-    add(showOdds);
-    add(addAttackers);
-    add(addDefenders);
-    add(findTerritoryButton);
+    setElementsVisible(true);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
     if (ta == null) {
@@ -99,18 +118,13 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     } else {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
-    add(new JLabel(labelText));
-    add(
-        new JLabel(
-            "Units: "
-                + territory.getUnits().stream()
-                    .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
-                    .count()));
-    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(territory, uiContext));
-    scroll.setBorder(BorderFactory.createEmptyBorder());
-    scroll.getVerticalScrollBar().setUnitIncrement(20);
-    add(scroll);
-    refresh();
+    territoryInfo.setText(labelText);
+    unitInfo.setText(
+        "Units: "
+            + territory.getUnits().stream()
+                .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
+                .count());
+    units.setViewportView(unitsInTerritoryPanel(territory, uiContext));
   }
 
   private static JPanel unitsInTerritoryPanel(
@@ -159,10 +173,5 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       }
     }
     return panel;
-  }
-
-  private void refresh() {
-    validate();
-    repaint();
   }
 }

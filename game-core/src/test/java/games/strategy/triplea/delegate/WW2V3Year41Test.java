@@ -38,6 +38,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
@@ -133,10 +134,6 @@ class WW2V3Year41Test {
       final IDelegateBridge delegateBridge) {
     verify(delegateBridge.getRemotePlayer(), never())
         .retreatQuery(any(), anyBoolean(), any(), any(), any());
-  }
-
-  private IDelegateBridge newDelegateBridge(final PlayerId player) {
-    return MockDelegateBridge.newInstance(gameData, player);
   }
 
   private static void fight(final BattleDelegate battle, final Territory territory) {
@@ -1420,8 +1417,7 @@ class WW2V3Year41Test {
         france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     assertFalse(paratroopers.isEmpty());
     final MoveValidationResult results =
-        MoveValidator.validateMove(
-            new MoveDescription(paratroopers, r), germans, false, null, gameData);
+        MoveValidator.validateMove(new MoveDescription(paratroopers, r), germans, false, null);
     assertFalse(results.isMoveValid());
   }
 
@@ -1442,7 +1438,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null, gameData);
+        MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertFalse(results.isMoveValid());
   }
 
@@ -1463,7 +1459,7 @@ class WW2V3Year41Test {
     toMove.addAll(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results =
-        MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null, gameData);
+        MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertFalse(results.isMoveValid());
   }
 

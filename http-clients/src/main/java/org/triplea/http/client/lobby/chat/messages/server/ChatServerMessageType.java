@@ -1,5 +1,7 @@
 package org.triplea.http.client.lobby.chat.messages.server;
 
+import static org.triplea.http.client.web.socket.messages.MessageTypeListenerBinding.newBinding;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.domain.data.PlayerName;
@@ -11,27 +13,17 @@ import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 /** Chat message types that a server can send over websocket to client. */
 @Getter(onMethod_ = @Override)
 @AllArgsConstructor
+@SuppressWarnings("ImmutableEnumChecker")
 public enum ChatServerMessageType implements WebsocketMessageType<ChatMessageListeners> {
-  CHAT_EVENT(
-      MessageTypeListenerBinding.of(String.class, ChatMessageListeners::getChatEventListener)),
-  CHAT_MESSAGE(
-      MessageTypeListenerBinding.of(
-          ChatMessage.class, ChatMessageListeners::getChatMessageListener)),
-  PLAYER_JOINED(
-      MessageTypeListenerBinding.of(
-          ChatParticipant.class, ChatMessageListeners::getPlayerJoinedListener)),
-  PLAYER_LEFT(
-      MessageTypeListenerBinding.of(PlayerName.class, ChatMessageListeners::getPlayerLeftListener)),
-  PLAYER_LISTING(
-      MessageTypeListenerBinding.of(ChatterList.class, ChatMessageListeners::getConnectedListener)),
-  PLAYER_SLAPPED(
-      MessageTypeListenerBinding.of(
-          PlayerSlapped.class, ChatMessageListeners::getPlayerSlappedListener)),
-  SERVER_ERROR(
-      MessageTypeListenerBinding.of(String.class, ChatMessageListeners::getServerErrorListener)),
-  STATUS_CHANGED(
-      MessageTypeListenerBinding.of(
-          StatusUpdate.class, ChatMessageListeners::getPlayerStatusListener));
+  CHAT_EVENT(newBinding(String.class, ChatMessageListeners::getChatEventListener)),
+  CHAT_MESSAGE(newBinding(ChatMessage.class, ChatMessageListeners::getChatMessageListener)),
+  PLAYER_JOINED(newBinding(ChatParticipant.class, ChatMessageListeners::getPlayerJoinedListener)),
+  PLAYER_LEFT(newBinding(PlayerName.class, ChatMessageListeners::getPlayerLeftListener)),
+  PLAYER_LISTING(newBinding(ChatterList.class, ChatMessageListeners::getConnectedListener)),
+  PLAYER_SLAPPED(newBinding(PlayerSlapped.class, ChatMessageListeners::getPlayerSlappedListener)),
+  SERVER_ERROR(newBinding(String.class, ChatMessageListeners::getServerErrorListener)),
+  STATUS_CHANGED(newBinding(StatusUpdate.class, ChatMessageListeners::getPlayerStatusListener)),
+  ;
 
   private final MessageTypeListenerBinding<ChatMessageListeners, ?> messageTypeListenerBinding;
 }

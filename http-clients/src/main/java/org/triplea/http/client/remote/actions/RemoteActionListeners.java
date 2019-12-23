@@ -9,6 +9,8 @@ import lombok.Getter;
 @Builder
 @Getter
 public class RemoteActionListeners {
+  public static final String NOTIFICATIONS_WEBSOCKET_PATH = "/remote/actions/ws";
+
   /** Note, the string received when this listener is triggered will be an empty string. */
   @Nonnull private final Consumer<String> shutdownListener;
 

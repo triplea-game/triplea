@@ -92,7 +92,7 @@ public class UnifiedMessenger {
     final long number = local.takeANumber();
     final List<RemoteMethodCallResults> results =
         local.invokeLocal(remoteCall, number, getLocalNode());
-    if (results.size() == 0) {
+    if (results.isEmpty()) {
       throw new RemoteNotFoundException(
           "Not found:"
               + endPointName
