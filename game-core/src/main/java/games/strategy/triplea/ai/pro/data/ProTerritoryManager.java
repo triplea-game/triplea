@@ -471,13 +471,7 @@ public class ProTerritoryManager {
         isCheckingEnemyAttacks,
         isIgnoringRelationships);
     findBombardOptions(
-        proData,
-        player,
-        myUnitTerritories,
-        moveMap,
-        bombardMap,
-        transportMapList,
-        isCheckingEnemyAttacks);
+        player, myUnitTerritories, moveMap, bombardMap, transportMapList, isCheckingEnemyAttacks);
   }
 
   private void findBombingOptions() {
@@ -634,8 +628,7 @@ public class ProTerritoryManager {
         true,
         false,
         true);
-    findBombardOptions(
-        proData, player, myUnitTerritories, moveMap, bombardMap, transportMapList, false);
+    findBombardOptions(player, myUnitTerritories, moveMap, bombardMap, transportMapList, false);
   }
 
   private static void findDefendOptions(
@@ -1365,7 +1358,6 @@ public class ProTerritoryManager {
   }
 
   private static void findBombardOptions(
-      final ProData proData,
       final PlayerId player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
