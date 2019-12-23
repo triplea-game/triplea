@@ -72,15 +72,7 @@ public final class ProSortMoveOptionsUtils {
           int numOptions1 = 0;
           for (final Territory t : o1.getValue()) {
             final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      proData,
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
-            }
+            setBattleResultIfNeeded(proData, player, calc, patd);
             if (!patd.isCurrentlyWins()) {
               numOptions1++;
             }
@@ -88,15 +80,7 @@ public final class ProSortMoveOptionsUtils {
           int numOptions2 = 0;
           for (final Territory t : o2.getValue()) {
             final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      proData,
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
-            }
+            setBattleResultIfNeeded(proData, player, calc, patd);
             if (!patd.isCurrentlyWins()) {
               numOptions2++;
             }
@@ -144,15 +128,7 @@ public final class ProSortMoveOptionsUtils {
           int numOptions1 = 0;
           for (final Territory t : o1.getValue()) {
             final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      proData,
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
-            }
+            setBattleResultIfNeeded(proData, player, calc, patd);
             if (!patd.isCurrentlyWins()) {
               numOptions1++;
             }
@@ -160,15 +136,7 @@ public final class ProSortMoveOptionsUtils {
           int numOptions2 = 0;
           for (final Territory t : o2.getValue()) {
             final ProTerritory patd = attackMap.get(t);
-            if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      proData,
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
-            }
+            setBattleResultIfNeeded(proData, player, calc, patd);
             if (!patd.isCurrentlyWins()) {
               numOptions2++;
             }
@@ -345,5 +313,18 @@ public final class ProSortMoveOptionsUtils {
       sortedUnitAttackOptions.put(entry.getKey(), entry.getValue());
     }
     return sortedUnitAttackOptions;
+  }
+
+  private static void setBattleResultIfNeeded(
+      final ProData proData, final PlayerId player, final ProOddsCalculator calc, final ProTerritory patd) {
+    if (patd.getBattleResult() == null) {
+      patd.setBattleResult(
+          calc.estimateAttackBattleResults(
+              proData,
+              patd.getTerritory(),
+              patd.getUnits(),
+              patd.getMaxEnemyDefenders(player, player.getData()),
+              patd.getBombardTerritoryMap().keySet()));
+    }
   }
 }
