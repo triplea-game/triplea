@@ -8,14 +8,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javax.annotation.Nullable;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import lombok.extern.java.Log;
@@ -28,9 +29,12 @@ import org.triplea.swing.SwingAction;
 public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
-  private enum ZipProcessingResult {
-    SUCCESS,
-    ERROR
+  private static class CorruptXmlFileException extends RuntimeException {
+    private static long serialVersionUID = -3711929808603654576L;
+
+    CorruptXmlFileException(final String fileName) {
+      super("File '" + fileName + "' was declared in zip but can't be opened.");
+    }
   }
 
   /**
@@ -51,58 +55,47 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return super.get(i);
   }
 
-  static Set<GameChooserEntry> parseMapFiles() {
-    final Set<GameChooserEntry> parsedMapSet = new HashSet<>();
-    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
+  public static Set<GameChooserEntry> parseMapFiles() {
+    return FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
         .parallelStream()
-        .forEach(
+        .flatMap(
             map -> {
               if (map.isDirectory()) {
-                parsedMapSet.addAll(populateFromDirectory(map));
+                return getDirectoryUris(map);
               } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-                parsedMapSet.addAll(populateFromZip(map));
+                return getZipUris(map);
               }
-            });
-    return parsedMapSet;
+              return Stream.empty();
+            })
+        .map(GameChooserModel::newGameChooserEntry)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toUnmodifiableSet());
   }
 
-  private static Set<GameChooserEntry> populateFromZip(final File map) {
-    boolean badMapZip = false;
-    final Set<GameChooserEntry> entries = new HashSet<>();
-
+  private static Stream<URI> getZipUris(final File map) {
     try (ZipFile zipFile = new ZipFile(map);
         URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
-      final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
-      while (zipEntryEnumeration.hasMoreElements()) {
-        final ZipEntry entry = zipEntryEnumeration.nextElement();
-        if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
-          final ZipProcessingResult result = processZipEntry(loader, entry, entries);
-          if (result == ZipProcessingResult.ERROR) {
-            badMapZip = true;
-            break;
-          }
-        }
-      }
-    } catch (final IOException e) {
-      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.of(e.getMessage()));
+      return zipFile.stream()
+          .map(ZipEntry::getName)
+          .filter(name -> name.contains("games/"))
+          .filter(name -> name.toLowerCase().endsWith(".xml"))
+          .map(name -> getUri(loader, name))
+          // Get names before the ZipFile resource is closed
+          .collect(Collectors.toUnmodifiableSet())
+          .parallelStream();
+    } catch (final IOException | CorruptXmlFileException e) {
+      confirmWithUserAndThenDeleteCorruptZipFile(map, e.getMessage());
+      return Stream.empty();
     }
-
-    if (badMapZip) {
-      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.empty());
-    }
-    return entries;
   }
 
-  private static ZipProcessingResult processZipEntry(
-      final URLClassLoader loader, final ZipEntry entry, final Set<GameChooserEntry> entries) {
-    final URL url = loader.getResource(entry.getName());
+  private static URI getUri(final URLClassLoader loader, final String name) {
+    final URL url = loader.getResource(name);
     if (url == null) {
-      // not loading the URL means the XML is truncated or otherwise in bad shape
-      return ZipProcessingResult.ERROR;
+      throw new CorruptXmlFileException(name);
     }
 
-    newGameChooserEntry(URI.create(url.toString().replace(" ", "%20"))).ifPresent(entries::add);
-    return ZipProcessingResult.SUCCESS;
+    return URI.create(url.toString().replace(" ", "%20"));
   }
 
   /**
@@ -110,7 +103,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    * show confirmation of deletion.
    */
   private static void confirmWithUserAndThenDeleteCorruptZipFile(
-      final File map, final Optional<String> errorDetails) {
+      final File map, final @Nullable String errorDetails) {
     Interruptibles.await(
         () ->
             SwingAction.invokeAndWait(
@@ -134,7 +127,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
                           "Unable to delete file, please remove it in the file system and "
                               + "restart tripleA:\n"
                               + map.getAbsolutePath();
-                      if (errorDetails.isPresent()) {
+                      if (errorDetails != null) {
                         message += "\nError details: " + errorDetails;
                       }
                     }
@@ -168,21 +161,18 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
         .findAny();
   }
 
-  private static Set<GameChooserEntry> populateFromDirectory(final File mapDir) {
-    final Set<GameChooserEntry> entries = new HashSet<>();
-
+  private static Stream<URI> getDirectoryUris(final File mapDir) {
     // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents
     // directly
     final File mapFolder = new File(mapDir, "map");
 
     final File parentFolder = mapFolder.exists() ? mapFolder : mapDir;
     final File games = new File(parentFolder, "games");
-    for (final File game : FileUtils.listFiles(games)) {
-      if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-        newGameChooserEntry(game.toURI()).ifPresent(entries::add);
-      }
-    }
-    return entries;
+    return FileUtils.listFiles(games).stream()
+        .parallel()
+        .filter(File::isFile)
+        .filter(game -> game.getName().toLowerCase().endsWith("xml"))
+        .map(File::toURI);
   }
 
   /**
