@@ -8,7 +8,7 @@ class DefaultMapSelectionListener implements MapSelectionListener {
   public void territorySelected(final Territory territory, final MouseDetails me) {}
 
   @Override
-  public void mouseEntered(final Territory territory) {}
+  public void mouseEntered(final @Nullable Territory territory) {}
 
   @Override
   public void mouseMoved(final @Nullable Territory territory, final MouseDetails me) {}

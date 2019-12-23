@@ -104,7 +104,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     territoryChanged(null);
   }
 
-  private void territoryChanged(final Territory territory) {
+  private void territoryChanged(final @Nullable Territory territory) {
     currentTerritory = territory;
     if (territory == null) {
       setElementsVisible(false);

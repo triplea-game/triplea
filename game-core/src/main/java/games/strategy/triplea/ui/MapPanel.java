@@ -206,7 +206,7 @@ public class MapPanel extends ImageScrollerLargeView {
             final double scaledMouseY = e.getY() / scale;
             final double x = normalizeX(scaledMouseX + getXOffset());
             final double y = normalizeY(scaledMouseY + getYOffset());
-            final Territory terr = getTerritory(x, y);
+            final @Nullable Territory terr = getTerritory(x, y);
             if (terr != null) {
               notifyTerritorySelected(terr, md);
             }
@@ -506,6 +506,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
+  @Nullable
   private Territory getTerritory(final double x, final double y) {
     final String name = uiContext.getMapData().getTerritoryAt(normalizeX(x), normalizeY(y));
     if (name == null) {

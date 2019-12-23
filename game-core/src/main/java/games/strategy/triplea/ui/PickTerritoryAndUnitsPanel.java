@@ -82,9 +82,6 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       new DefaultMapSelectionListener() {
         @Override
         public void territorySelected(final Territory territory, final MouseDetails md) {
-          if (territory == null) {
-            return;
-          }
           if (currentAction == selectTerritoryAction) {
             if (!territoryChoices.contains(territory)) {
               EventThreadJOptionPane.showMessageDialog(
