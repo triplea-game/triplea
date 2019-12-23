@@ -1174,7 +1174,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             ? CollectionUtils.getMatches(
                 units, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
             : new ArrayList<>(units));
-    if (unitsCanBePlacedByThisProducer.size() <= 0) {
+    if (unitsCanBePlacedByThisProducer.isEmpty()) {
       return 0;
     }
     // if its an original factory then unlimited production

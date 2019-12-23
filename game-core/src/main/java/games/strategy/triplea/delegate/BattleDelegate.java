@@ -1350,7 +1350,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // See if the player has any attack tokens
       final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
-      if (resourcesAndAttackValues.size() <= 0) {
+      if (resourcesAndAttackValues.isEmpty()) {
         continue;
       }
       final IntegerMap<Resource> playerResourceCollection =
@@ -1362,7 +1362,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           attackTokens.put(possible, amount);
         }
       }
-      if (attackTokens.size() <= 0) {
+      if (attackTokens.isEmpty()) {
         continue;
       }
       // now let the enemy decide if they will do attacks

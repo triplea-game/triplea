@@ -127,7 +127,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           "Select Casualties showing different numbers for number of hits to take vs total "
               + "size of default casualty selections");
     }
-    if (defaultCasualties.getKilled().size() <= 0) {
+    if (defaultCasualties.getKilled().isEmpty()) {
       return new CasualtyDetails(defaultCasualties, false);
     }
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
@@ -268,7 +268,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       return null;
     }
     final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
-    if (resourcesAndAttackValues.size() <= 0) {
+    if (resourcesAndAttackValues.isEmpty()) {
       return null;
     }
     final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
@@ -279,19 +279,19 @@ public abstract class AbstractAi extends AbstractBasePlayer {
         attackTokens.put(possible, amount);
       }
     }
-    if (attackTokens.size() <= 0) {
+    if (attackTokens.isEmpty()) {
       return null;
     }
     final Map<Territory, Map<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
     for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
-      if (attackTokens.size() <= 0) {
+      if (attackTokens.isEmpty()) {
         continue;
       }
       final Territory t = entry.getKey();
       final List<Unit> targets = new ArrayList<>(entry.getValue());
       Collections.shuffle(targets);
       for (final Unit u : targets) {
-        if (attackTokens.size() <= 0) {
+        if (attackTokens.isEmpty()) {
           continue;
         }
         final IntegerMap<Resource> resourceMap = new IntegerMap<>();
