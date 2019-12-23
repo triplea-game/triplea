@@ -1247,7 +1247,7 @@ public class ProCombatMoveAi {
       }
 
       // Add units with attack options to map
-      if (canAttackTerritories.size() >= 1) {
+      if (!canAttackTerritories.isEmpty()) {
         unitAttackOptions.put(unit, canAttackTerritories);
       }
     }
