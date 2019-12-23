@@ -417,7 +417,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
         }
-        if (damagedUnits.size() > 0) {
+        if (!damagedUnits.isEmpty()) {
           final Map<Unit, IntegerMap<RepairRule>> repair =
               ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
           if (repair != null) {

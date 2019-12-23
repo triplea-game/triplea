@@ -699,7 +699,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                         || unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir()))) {
                   final Collection<Unit> airUnits =
                       CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
-                  if (airUnits.size() > 0) {
+                  if (!airUnits.isEmpty()) {
                     route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
                     updateUnitsThatCanMoveOnRoute(airUnits, route);
                   }
@@ -885,7 +885,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               }
             }
             // Repeat until there are no units left or no changes occur
-          } while (availableUnits.size() > 0 && hasChanged);
+          } while (!availableUnits.isEmpty() && hasChanged);
 
           // If we haven't seen all of the transports (and removed them) then there are extra
           // transports that don't fit

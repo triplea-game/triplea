@@ -304,7 +304,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
 
   @Override
   protected boolean doneMoveAction() {
-    if (getCurrentPlayer().getUnitCollection().size() > 0) {
+    if (!getCurrentPlayer().getUnitCollection().isEmpty()) {
       final int option =
           JOptionPane.showConfirmDialog(
               getTopLevelAncestor(),

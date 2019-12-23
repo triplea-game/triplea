@@ -36,7 +36,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     final Map<PlayerId, Collection<TechAdvance>> techMap =
         DelegateFinder.techDelegate(data).getAdvances();
     final Collection<TechAdvance> advances = techMap.get(player);
-    if ((advances != null) && (advances.size() > 0)) {
+    if ((advances != null) && (!advances.isEmpty())) {
       // Start event
       bridge
           .getHistoryWriter()

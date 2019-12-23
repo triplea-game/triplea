@@ -3238,7 +3238,7 @@ public class UnitAttachment extends DefaultAttachment {
             Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
     if (supports.size() > 3) {
       tuples.add(Tuple.of("Can Provide Support to Units", ""));
-    } else if (supports.size() > 0) {
+    } else if (!supports.isEmpty()) {
       final boolean moreThanOneSupportType = UnitSupportAttachment.get(getData()).size() > 1;
       for (final UnitSupportAttachment support : supports) {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
@@ -3457,7 +3457,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
 
     if (getRequiresUnits() != null
-        && getRequiresUnits().size() > 0
+        && !getRequiresUnits().isEmpty()
         && Properties.getUnitPlacementRestrictions(getData())) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnits()) {
@@ -3566,7 +3566,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   private static <T extends DefaultNamed> void addIntegerMapDescription(
       final String key, final IntegerMap<T> integerMap, final List<Tuple<String, String>> tuples) {
-    if (integerMap != null && integerMap.size() > 0) {
+    if (integerMap != null && !integerMap.isEmpty()) {
       final StringBuilder sb = new StringBuilder();
       if (integerMap.size() > 4) {
         sb.append(integerMap.totalValues());

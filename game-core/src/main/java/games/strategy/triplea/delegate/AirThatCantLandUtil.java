@@ -37,7 +37,7 @@ public class AirThatCantLandUtil {
     for (final Territory current : data.getMap().getTerritories()) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.unitIsOwnedBy(player));
       final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
-      if (air.size() != 0 && !AirMovementValidator.canLand(air, current, player, data)) {
+      if (!air.isEmpty() && !AirMovementValidator.canLand(air, current, player, data)) {
         cantLand.add(current);
       }
     }

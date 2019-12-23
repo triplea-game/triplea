@@ -207,7 +207,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // reverse since stacks are in reverse order
     Collections.reverse(aaTypes);
-    final boolean hasAa = defendingAa.size() > 0;
+    final boolean hasAa = !defendingAa.isEmpty();
     steps = new ArrayList<>();
     if (hasAa) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {

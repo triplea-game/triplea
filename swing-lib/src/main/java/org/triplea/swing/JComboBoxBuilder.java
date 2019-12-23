@@ -41,7 +41,7 @@ public final class JComboBoxBuilder<E> {
 
   /** Builds the swing component. */
   public JComboBox<E> build() {
-    Preconditions.checkState(items.size() > 0);
+    Preconditions.checkState(!items.isEmpty());
 
     @SuppressWarnings("unchecked")
     final E[] array = (E[]) Array.newInstance(itemType, items.size());

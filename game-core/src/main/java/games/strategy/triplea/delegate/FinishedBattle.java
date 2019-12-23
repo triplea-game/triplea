@@ -128,7 +128,7 @@ public class FinishedBattle extends AbstractBattle {
       final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
     final Collection<Unit> lost = getDependentUnits(units);
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
-    if (lost.size() != 0) {
+    if (!lost.isEmpty()) {
       attackingUnits.removeAll(lost);
       if (attackingUnits.isEmpty()) {
         final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);

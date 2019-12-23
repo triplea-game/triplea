@@ -330,7 +330,7 @@ public final class ProPurchaseUtils {
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
-        factoryUnits.size() > 0 && player.equals(getOriginalFactoryOwner(territory, player));
+        !factoryUnits.isEmpty() && player.equals(getOriginalFactoryOwner(territory, player));
     final RulesAttachment ra = player.getRulesAttachment();
     if (originalFactory && playerIsOriginalOwner) {
       if (ra != null && ra.getMaxPlacePerTerritory() != -1) {

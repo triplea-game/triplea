@@ -107,7 +107,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   public boolean hasDisallowedUnits() {
-    return disallowedUnitWarnings.size() > 0;
+    return !disallowedUnitWarnings.isEmpty();
   }
 
   public int getDisallowedUnitCount() {
@@ -115,7 +115,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   public boolean hasUnresolvedUnits() {
-    return unresolvedUnitWarnings.size() > 0;
+    return !unresolvedUnitWarnings.isEmpty();
   }
 
   public int getUnresolvedUnitCount() {

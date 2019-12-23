@@ -167,7 +167,7 @@ public class MovePerformer implements Serializable {
             change.add(Route.getFuelChanges(units, route, id, data));
 
             markTransportsMovement(arrived, transporting, route);
-            if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
+            if (route.anyMatch(mustFightThrough) && !arrived.isEmpty()) {
               boolean ignoreBattle = false;
               // could it be a bombing raid
               final Collection<Unit> enemyUnits =
@@ -365,7 +365,7 @@ public class MovePerformer implements Serializable {
     // if neutrals were taken over mark land units with 0 movement
     // if entered a non blitzed conquered territory, mark with 0 movement
     if (GameStepPropertiesHelper.isCombatMove(data)
-        && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route))) {
+        && (!MoveDelegate.getEmptyNeutral(route).isEmpty() || hasConqueredNonBlitzed(route))) {
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsLand())) {
         change.add(ChangeFactory.markNoMovementChange(Set.of(unit)));
       }

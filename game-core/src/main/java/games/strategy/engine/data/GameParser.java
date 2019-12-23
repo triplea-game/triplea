@@ -821,7 +821,7 @@ public final class GameParser {
   }
 
   private void parseRelationInitialize(final List<Element> relations) throws GameParseException {
-    if (relations.size() > 0) {
+    if (!relations.isEmpty()) {
       final RelationshipTracker tracker = data.getRelationshipTracker();
       for (final Element current : relations) {
         final PlayerId p1 = getPlayerId(current, "player1", true);

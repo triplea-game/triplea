@@ -325,7 +325,7 @@ public class CasualtySelector {
       for (final List<Unit> group : airSplit.getFirst()) {
         tempPossibleHitUnits.add(group.get(0));
       }
-      if (airSplit.getSecond().size() > 0) {
+      if (!airSplit.getSecond().isEmpty()) {
         // if we have a remainder group, we need to add some of them into the mix
         // but we have to do so randomly
         final List<Unit> remainders = new ArrayList<>(airSplit.getSecond());
@@ -802,7 +802,7 @@ public class CasualtySelector {
       if (amphibTypes.contains(unit.getType())) { // add a unit from the collection
         final List<Unit> oneAmphibUnit =
             CollectionUtils.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
-        if (oneAmphibUnit.size() > 0) {
+        if (!oneAmphibUnit.isEmpty()) {
           final Unit amphibUnit = oneAmphibUnit.iterator().next();
           killed.remove(unit);
           killed.add(amphibUnit);

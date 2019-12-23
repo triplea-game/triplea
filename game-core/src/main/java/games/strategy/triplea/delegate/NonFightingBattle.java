@@ -141,7 +141,7 @@ public class NonFightingBattle extends DependentBattle {
     Collection<Unit> lost = new ArrayList<>(getDependentUnits(units));
     lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
-    if (lost.size() != 0) {
+    if (!lost.isEmpty()) {
       final String transcriptText =
           MyFormatter.unitsToText(lost) + " lost in " + battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);
