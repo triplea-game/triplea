@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.scene.web.WebView;
@@ -76,7 +77,8 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
   private Node createMapListing(final GameChooserEntry gameChooserEntry) {
     final var button = new Button(gameChooserEntry.getGameName());
     // Placeholder image
-    final var imageView = new ImageView("https://triplea-game.org/images/missing_map.png");
+    final var imageView =
+        new ImageView(new Image("https://triplea-game.org/images/missing_map.png", true));
     imageView.setPreserveRatio(true);
     imageView.setFitHeight(150);
     imageView.setFitWidth(170);
