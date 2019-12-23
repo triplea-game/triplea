@@ -369,7 +369,7 @@ public class ProTerritoryManager {
 
   private void findScrambleOptions(
       final ProData proData, final PlayerId player, final Map<Territory, ProTerritory> moveMap) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     if (!Properties.getScrambleRulesInEffect(data)) {
       return;
@@ -417,7 +417,7 @@ public class ProTerritoryManager {
       final List<Territory> territoriesToCheck,
       final boolean isCheckingEnemyAttacks,
       final boolean isIgnoringRelationships) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<>();
     final List<Territory> territoriesThatCantBeHeld = new ArrayList<>(enemyTerritories);
@@ -471,7 +471,13 @@ public class ProTerritoryManager {
         isCheckingEnemyAttacks,
         isIgnoringRelationships);
     findBombardOptions(
-        player, myUnitTerritories, moveMap, bombardMap, transportMapList, isCheckingEnemyAttacks);
+        proData,
+        player,
+        myUnitTerritories,
+        moveMap,
+        bombardMap,
+        transportMapList,
+        isCheckingEnemyAttacks);
   }
 
   private void findBombingOptions() {
@@ -485,7 +491,7 @@ public class ProTerritoryManager {
   }
 
   private ProOtherMoveOptions findAlliedAttackOptions(final PlayerId player) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Get enemy players in order of turn
     final List<PlayerId> alliedPlayers = ProUtils.getAlliedPlayersInTurnOrder(player);
@@ -526,7 +532,7 @@ public class ProTerritoryManager {
       final PlayerId player,
       final List<Territory> clearedTerritories,
       final List<Territory> territoriesToCheck) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Get enemy players in order of turn
     final List<PlayerId> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
@@ -577,7 +583,7 @@ public class ProTerritoryManager {
       final Map<Unit, Set<Territory>> transportMoveMap,
       final Map<Unit, Set<Territory>> bombardMap,
       final List<ProTransport> transportMapList) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<>();
     final List<PlayerId> otherPlayers = ProUtils.getPotentialEnemyPlayers(player);
@@ -628,7 +634,8 @@ public class ProTerritoryManager {
         true,
         false,
         true);
-    findBombardOptions(player, myUnitTerritories, moveMap, bombardMap, transportMapList, false);
+    findBombardOptions(
+        proData, player, myUnitTerritories, moveMap, bombardMap, transportMapList, false);
   }
 
   private static void findDefendOptions(
@@ -641,7 +648,7 @@ public class ProTerritoryManager {
       final List<ProTransport> transportMapList,
       final List<Territory> clearedTerritories,
       final boolean isCheckingEnemyAttacks) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<>();
     findNavalMoveOptions(
@@ -695,7 +702,7 @@ public class ProTerritoryManager {
   }
 
   private ProOtherMoveOptions findEnemyDefendOptions(final ProData proData, final PlayerId player) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Get enemy players in order of turn
     final List<PlayerId> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
@@ -741,7 +748,7 @@ public class ProTerritoryManager {
       final List<Territory> clearedTerritories,
       final boolean isCombatMove,
       final boolean isCheckingEnemyAttacks) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     for (final Territory myUnitTerritory : myUnitTerritories) {
 
@@ -866,7 +873,7 @@ public class ProTerritoryManager {
       final boolean isCombatMove,
       final boolean isCheckingEnemyAttacks,
       final boolean isIgnoringRelationships) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     for (final Territory myUnitTerritory : myUnitTerritories) {
 
@@ -998,7 +1005,7 @@ public class ProTerritoryManager {
       final boolean isCombatMove,
       final boolean isCheckingEnemyAttacks,
       final boolean isIgnoringRelationships) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // TODO: add carriers to landing possibilities for non-enemy attacks
     // Find possible carrier landing territories
@@ -1155,7 +1162,7 @@ public class ProTerritoryManager {
       final boolean isCombatMove,
       final boolean isCheckingEnemyAttacks,
       final boolean isIgnoringRelationships) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     for (final Territory myUnitTerritory : myUnitTerritories) {
 
@@ -1358,13 +1365,14 @@ public class ProTerritoryManager {
   }
 
   private static void findBombardOptions(
+      final ProData proData,
       final PlayerId player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> bombardMap,
       final List<ProTransport> transportMapList,
       final boolean isCheckingEnemyAttacks) {
-    final GameData data = player.getData();
+    final GameData data = proData.getData();
 
     // Find all transport unload from and to territories
     final Set<Territory> unloadFromTerritories = new HashSet<>();
