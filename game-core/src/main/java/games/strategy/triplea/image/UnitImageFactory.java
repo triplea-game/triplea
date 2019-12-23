@@ -156,14 +156,14 @@ public class UnitImageFactory {
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
     Image image = null;
     if (imageLocation.isPresent()) {
-      image = Toolkit.getDefaultToolkit().getImage(getBaseImageUrl(baseImageName, id).get());
+      image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());
       Util.ensureImageLoaded(image);
       if (needToTransformImage(id, type, mapData)) {
         image = convertToBufferedImage(image);
-        if (mapData.getUnitColor(id.getName()).isPresent()) {
-          final Color color = mapData.getUnitColor(id.getName()).get();
+        final Optional<Color> unitColor = mapData.getUnitColor(id.getName());
+        if (unitColor.isPresent()) {
           final int brightness = mapData.getUnitBrightness(id.getName());
-          ImageTransformer.colorize(color, brightness, (BufferedImage) image);
+          ImageTransformer.colorize(unitColor.get(), brightness, (BufferedImage) image);
         }
         if (mapData.shouldFlipUnit(id.getName())) {
           image = ImageTransformer.flipHorizontally((BufferedImage) image);
