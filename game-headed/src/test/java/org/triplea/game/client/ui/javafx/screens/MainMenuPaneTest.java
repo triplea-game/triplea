@@ -44,13 +44,13 @@ class MainMenuPaneTest {
 
     when(mock.getNode()).thenReturn(mock4);
     when(mock2.getChildren()).thenReturn(children);
-    mock3.setText("Test String {0}");
+    when(mock3.getText()).thenReturn("Test String {0}");
 
     final MainMenuPane aboutInformation = new MainMenuPane(() -> mock, null, mock2, mock3);
 
     aboutInformation.initialize();
 
-    assertEquals("Test String " + ClientContext.engineVersion().toString(), mock3.getText());
+    verify(mock3).setText("Test String " + ClientContext.engineVersion().toString());
     assertEquals(1, children.size());
     assertEquals(mock4, children.get(0));
 
