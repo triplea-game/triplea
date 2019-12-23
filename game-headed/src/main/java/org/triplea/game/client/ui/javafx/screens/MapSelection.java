@@ -98,7 +98,7 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
   }
 
   @Override
-  public void connect(ScreenController<FxmlManager> screenController) {
+  public void connect(final ScreenController<FxmlManager> screenController) {
     this.screenController = screenController;
   }
 
