@@ -1174,7 +1174,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             ? CollectionUtils.getMatches(
                 units, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
             : new ArrayList<>(units));
-    if (unitsCanBePlacedByThisProducer.size() <= 0) {
+    if (unitsCanBePlacedByThisProducer.isEmpty()) {
       return 0;
     }
     // if its an original factory then unlimited production
@@ -1189,7 +1189,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
-        factoryUnits.size() > 0 && this.player.equals(getOriginalFactoryOwner(producer));
+        !factoryUnits.isEmpty() && this.player.equals(getOriginalFactoryOwner(producer));
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     final Collection<Unit> alreadyProducedUnits = getAlreadyProduced(producer);

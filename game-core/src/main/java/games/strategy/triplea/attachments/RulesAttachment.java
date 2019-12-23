@@ -638,7 +638,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<PlayerId> players = getPlayers();
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
-    if (conditions.size() > 0) {
+    if (!conditions.isEmpty()) {
       final Map<ICondition, Boolean> actualTestedConditions =
           Optional.ofNullable(testedConditions)
               .orElseGet(
@@ -835,7 +835,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet = checkTechs(playerAttachedTo, data);
     }
     // check for relationships
-    if (objectiveMet && relationship.size() > 0) {
+    if (objectiveMet && !relationship.isEmpty()) {
       objectiveMet = checkRelationships();
     }
     // check for battle stats
@@ -1013,7 +1013,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         default:
           return false;
       }
-      if (allUnits.size() > 0) {
+      if (!allUnits.isEmpty()) {
         if (!useSpecific) {
           numberMet += 1;
           if (numberMet >= numberNeeded) {

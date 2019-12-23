@@ -90,7 +90,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         }
         if (player.equals(whoseCapital)) {
           if (player.equals(current.getOwner())) {
-            if (data.getMap().getNeighbors(current).size() > 0) {
+            if (!data.getMap().getNeighbors(current).isEmpty()) {
               return current;
             }
             noNeighborCapitals.add(current);

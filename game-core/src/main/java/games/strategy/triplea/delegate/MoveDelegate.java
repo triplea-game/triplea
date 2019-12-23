@@ -645,7 +645,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || move.getUnits().stream().anyMatch(Matches.unitIsKamikaze())) {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
-      if (kamikazeUnits.size() > 0 && bridge.getRemotePlayer().confirmMoveKamikaze()) {
+      if (!kamikazeUnits.isEmpty() && bridge.getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
           if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
             result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);

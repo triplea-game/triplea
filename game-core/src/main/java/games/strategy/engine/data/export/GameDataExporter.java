@@ -99,7 +99,7 @@ public class GameDataExporter {
   private static String playertechs(final GameData data) {
     final StringBuilder returnValue = new StringBuilder();
     for (final PlayerId player : data.getPlayerList()) {
-      if (player.getTechnologyFrontierList().getFrontiers().size() > 0) {
+      if (!player.getTechnologyFrontierList().getFrontiers().isEmpty()) {
         returnValue
             .append("        <playerTech player=\"")
             .append(player.getName())
@@ -128,7 +128,7 @@ public class GameDataExporter {
 
   private static String technologies(final GameData data) {
     final StringBuilder returnValue = new StringBuilder();
-    if (data.getTechnologyFrontier().getTechs().size() > 0) {
+    if (!data.getTechnologyFrontier().getTechs().isEmpty()) {
       returnValue.append("        <technologies>\n");
       for (final TechAdvance tech : data.getTechnologyFrontier().getTechs()) {
         String name = tech.getName();

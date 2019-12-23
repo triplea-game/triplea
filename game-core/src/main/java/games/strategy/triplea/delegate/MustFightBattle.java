@@ -134,7 +134,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     attackingUnits = new ArrayList<>(attacking);
     bombardingUnits = new ArrayList<>(bombarding);
     amphibiousLandAttackers = new ArrayList<>(amphibious);
-    isAmphibious = amphibiousLandAttackers.size() > 0;
+    isAmphibious = !amphibiousLandAttackers.isEmpty();
     this.defender = defender;
     this.territoryEffects = territoryEffects;
   }
@@ -691,7 +691,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
     }
     // write attacking units to history
-    if (attackingUnits.size() > 0) {
+    if (!attackingUnits.isEmpty()) {
       bridge.getHistoryWriter().addChildToEvent(transcriptText.toString(), allAttackingUnits);
     }
     // find all defending players (unsorted)
@@ -723,7 +723,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       allDefendingUnits.addAll(defendingUnits);
     }
     // write defending units to history
-    if (defendingUnits.size() > 0) {
+    if (!defendingUnits.isEmpty()) {
       bridge.getHistoryWriter().addChildToEvent(transcriptBuilder.toString(), allDefendingUnits);
     }
   }
@@ -953,14 +953,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (offensiveAa == null) {
       updateOffensiveAaUnits();
     }
-    return offensiveAa.size() > 0;
+    return !offensiveAa.isEmpty();
   }
 
   private boolean canFireDefendingAa() {
     if (defendingAa == null) {
       updateDefendingAaUnits();
     }
-    return defendingAa.size() > 0;
+    return !defendingAa.isEmpty();
   }
 
   private boolean defenderSubsFireFirst() {
@@ -1350,7 +1350,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       bridge.addChange(change);
     }
     final boolean canReturnFire = Properties.getNavalBombardCasualtiesReturnFire(gameData);
-    if (bombard.size() > 0 && attacked.size() > 0) {
+    if (!bombard.isEmpty() && !attacked.isEmpty()) {
       if (!headless) {
         bridge
             .getSoundChannelBroadcaster()
@@ -1854,7 +1854,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Collection<Unit> enemyUnits =
           CollectionUtils.getMatches(battleSite.getUnits(), enemyUnitsMatch);
       // If there are attackers set their movement to 0 and kill the transports
-      if (enemyUnits.size() > 0) {
+      if (!enemyUnits.isEmpty()) {
         final Change change =
             ChangeFactory.markNoMovementChange(
                 CollectionUtils.getMatches(enemyUnits, Matches.unitIsSea()));

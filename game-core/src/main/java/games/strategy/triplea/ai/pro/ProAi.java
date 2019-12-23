@@ -373,7 +373,7 @@ public class ProAi extends AbstractAi {
           "Select Casualties showing different numbers for number of hits to take vs total "
               + "size of default casualty selections");
     }
-    if (defaultCasualties.getKilled().size() <= 0) {
+    if (defaultCasualties.getKilled().isEmpty()) {
       return new CasualtyDetails(defaultCasualties, false);
     }
 

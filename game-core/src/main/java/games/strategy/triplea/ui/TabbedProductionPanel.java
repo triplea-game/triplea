@@ -81,7 +81,7 @@ class TabbedProductionPanel extends ProductionPanel {
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
     calculateRowsAndColumns(properties, largestList(ruleLists));
     for (final Tuple<String, List<Rule>> ruleList : ruleLists) {
-      if (ruleList.getSecond().size() > 0) {
+      if (!ruleList.getSecond().isEmpty()) {
         tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
       }
     }
@@ -190,7 +190,7 @@ class TabbedProductionPanel extends ProductionPanel {
         rulesCopy.remove(rule);
       }
     }
-    if (rulesCopy.size() > 0) {
+    if (!rulesCopy.isEmpty()) {
       throw new IllegalStateException(
           "production_tabs: must include all player production rules/units");
     }

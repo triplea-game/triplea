@@ -417,7 +417,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
         }
-        if (damagedUnits.size() > 0) {
+        if (!damagedUnits.isEmpty()) {
           final Map<Unit, IntegerMap<RepairRule>> repair =
               ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
           if (repair != null) {
@@ -758,7 +758,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       return null;
     }
     final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
-    if (resourcesAndAttackValues.size() <= 0) {
+    if (resourcesAndAttackValues.isEmpty()) {
       return null;
     }
     final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
@@ -769,7 +769,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         attackTokens.put(possible, amount);
       }
     }
-    if (attackTokens.size() <= 0) {
+    if (attackTokens.isEmpty()) {
       return null;
     }
     final Map<Territory, Map<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();

@@ -573,7 +573,7 @@ public final class BattlePanel extends ActionPanel {
       }
       list = new JList<>(SwingComponents.newListModel(listElements));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      if (listElements.size() >= 1) {
+      if (!listElements.isEmpty()) {
         list.setSelectedIndex(0);
       }
       final JScrollPane scroll = new JScrollPane(list);

@@ -290,7 +290,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           if (canChangeHostBotGameData
               || (canSelectGameData
                   && model.getGameData() != null
-                  && model.getGameData().getProperties().getEditableProperties().size() > 0)) {
+                  && !model.getGameData().getProperties().getEditableProperties().isEmpty())) {
             gameOptions.setEnabled(true);
           } else {
             gameOptions.setEnabled(false);

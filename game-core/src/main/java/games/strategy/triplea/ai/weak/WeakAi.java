@@ -186,7 +186,7 @@ public class WeakAi extends AbstractAi {
           }
         }
       }
-      if (units.size() > 0) {
+      if (!units.isEmpty()) {
         final Route route = new Route(capitol, neighbor);
         moves.add(new MoveDescription(units, route, transportMap, Map.of()));
       }
@@ -679,7 +679,7 @@ public class WeakAi extends AbstractAi {
               units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units);
             }
             remainingStrengthNeeded -= AiUtils.strength(units, true, false);
-            if (units.size() > 0) {
+            if (!units.isEmpty()) {
               unitsAlreadyMoved.addAll(units);
               moves.add(new MoveDescription(units, new Route(owned, enemy)));
             }
@@ -1070,7 +1070,7 @@ public class WeakAi extends AbstractAi {
     }
     final List<Unit> seaUnits =
         new ArrayList<>(player.getUnitCollection().getMatches(Matches.unitIsSea()));
-    if (seaUnits.size() > 0) {
+    if (!seaUnits.isEmpty()) {
       final Route amphibRoute = getAmphibRoute(player, data);
       Territory seaPlaceAt = null;
       if (amphibRoute != null) {

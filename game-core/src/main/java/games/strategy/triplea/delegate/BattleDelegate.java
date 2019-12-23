@@ -1122,7 +1122,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       if (isWW2v2orIsSurvivingAirMoveToLand) {
         Territory territory;
-        while (canLandHere.size() > 1 && defendingAir.size() > 0) {
+        while (canLandHere.size() > 1 && !defendingAir.isEmpty()) {
           territory =
               getRemotePlayer(defender)
                   .selectTerritoryForAirToLand(
@@ -1153,7 +1153,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           canLandHere.remove(territory);
         }
         // Land in the last remaining territory
-        if (canLandHere.size() > 0 && defendingAir.size() > 0) {
+        if (!canLandHere.isEmpty() && !defendingAir.isEmpty()) {
           territory = canLandHere.iterator().next();
           if (territory.isWater()) {
             landPlanesOnCarriers(
@@ -1169,7 +1169,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             continue;
           }
         }
-      } else if (canLandHere.size() > 0) {
+      } else if (!canLandHere.isEmpty()) {
         // now defending air has what cant stay, is there a place we can go?
         // check for an island in this sea zone
         for (final Territory currentTerritory : canLandHere) {
@@ -1179,7 +1179,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
         }
       }
-      if (defendingAir.size() > 0) {
+      if (!defendingAir.isEmpty()) {
         // no where to go, they must die
         bridge
             .getHistoryWriter()
@@ -1350,7 +1350,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // See if the player has any attack tokens
       final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
-      if (resourcesAndAttackValues.size() <= 0) {
+      if (resourcesAndAttackValues.isEmpty()) {
         continue;
       }
       final IntegerMap<Resource> playerResourceCollection =
@@ -1362,7 +1362,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           attackTokens.put(possible, amount);
         }
       }
-      if (attackTokens.size() <= 0) {
+      if (attackTokens.isEmpty()) {
         continue;
       }
       // now let the enemy decide if they will do attacks
@@ -1405,7 +1405,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           final Unit unitUnderFire = unitEntry.getKey();
           final IntegerMap<Resource> numberOfAttacks = unitEntry.getValue();
           if (numberOfAttacks != null
-              && numberOfAttacks.size() > 0
+              && !numberOfAttacks.isEmpty()
               && numberOfAttacks.totalValues() > 0) {
             fireKamikazeSuicideAttacks(
                 unitUnderFire, numberOfAttacks, resourcesAndAttackValues, currentEnemy, location);

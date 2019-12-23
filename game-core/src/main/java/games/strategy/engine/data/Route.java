@@ -155,7 +155,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   public BigDecimal getMovementCostIgnoreEnd(final Unit unit) {
     final List<Territory> territories =
-        steps.size() > 0 ? steps.subList(0, steps.size() - 1) : steps;
+        !steps.isEmpty() ? steps.subList(0, steps.size() - 1) : steps;
     return findMovementCost(unit, territories);
   }
 

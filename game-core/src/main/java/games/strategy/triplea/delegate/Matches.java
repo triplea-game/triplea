@@ -879,7 +879,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasWaterNeighbor(final GameData data) {
-    return t -> data.getMap().getNeighbors(t, territoryIsWater()).size() > 0;
+    return t -> !data.getMap().getNeighbors(t, territoryIsWater()).isEmpty();
   }
 
   public static Predicate<Territory> territoryIsOwnedAndHasOwnedUnitMatching(
@@ -1637,7 +1637,7 @@ public final class Matches {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       return ua != null
-          && ua.getGivesMovement().size() > 0
+          && !ua.getGivesMovement().isEmpty()
           && unitIsBeingTransported().negate().test(unit);
     };
   }
@@ -1689,7 +1689,7 @@ public final class Matches {
   static Predicate<Unit> unitCreatesUnits() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0;
+      return ua != null && ua.getCreatesUnitsList() != null && !ua.getCreatesUnitsList().isEmpty();
     };
   }
 
@@ -1698,21 +1698,21 @@ public final class Matches {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       return ua != null
           && ua.getCreatesResourcesList() != null
-          && ua.getCreatesResourcesList().size() > 0;
+          && !ua.getCreatesResourcesList().isEmpty();
     };
   }
 
   public static Predicate<UnitType> unitTypeConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit);
-      return ua != null && ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+      return ua != null && ua.getConsumesUnits() != null && !ua.getConsumesUnits().isEmpty();
     };
   }
 
   static Predicate<Unit> unitConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+      return ua != null && ua.getConsumesUnits() != null && !ua.getConsumesUnits().isEmpty();
     };
   }
 
@@ -1751,7 +1751,7 @@ public final class Matches {
   public static Predicate<Unit> unitRequiresUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0;
+      return ua != null && ua.getRequiresUnits() != null && !ua.getRequiresUnits().isEmpty();
     };
   }
 
