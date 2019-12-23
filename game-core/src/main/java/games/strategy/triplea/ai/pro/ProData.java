@@ -8,7 +8,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOptionMap;
-import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
@@ -16,43 +15,53 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** Pro AI data. */
+@Getter
 public final class ProData {
   // Default values
-  public static boolean isSimulation = false;
-  public static double winPercentage = 95;
-  public static double minWinPercentage = 75;
-  public static Territory myCapital = null;
-  public static List<Territory> myUnitTerritories = new ArrayList<>();
-  public static Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
-  public static IntegerMap<UnitType> unitValueMap = new IntegerMap<>();
-  public static ProPurchaseOptionMap purchaseOptions = null;
-  public static double minCostPerHitPoint = Double.MAX_VALUE;
+  private boolean isSimulation = false;
+  private double winPercentage = 95;
+  private double minWinPercentage = 75;
+  private @Nullable Territory myCapital = null;
+  private List<Territory> myUnitTerritories = new ArrayList<>();
+  private Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
+  private IntegerMap<UnitType> unitValueMap = new IntegerMap<>();
+  private @Nullable ProPurchaseOptionMap purchaseOptions = null;
+  private double minCostPerHitPoint = Double.MAX_VALUE;
 
-  private static ProAi proAi;
-  private static GameData data;
-  private static PlayerId player;
+  private ProAi proAi;
+  private GameData data;
+  private PlayerId player;
 
-  private ProData() {}
+  public ProData() {}
 
-  public static void initialize(final ProAi proAi) {
+  public void initialize(final ProAi proAi) {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);
   }
 
-  public static void initializeSimulation(
-      final ProAi proAi, final GameData data, final PlayerId player) {
+  public void initializeSimulation(final ProAi proAi, final GameData data, final PlayerId player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
-  private static void hiddenInitialize(
+  public Territory getUnitTerritory(final Unit unit) {
+    return unitTerritoryMap.get(unit);
+  }
+
+  public int getUnitValue(final UnitType type) {
+    return unitValueMap.getInt(type);
+  }
+
+  private void hiddenInitialize(
       final ProAi proAi, final GameData data, final PlayerId player, final boolean isSimulation) {
-    ProData.proAi = proAi;
-    ProData.data = data;
-    ProData.player = player;
-    ProData.isSimulation = isSimulation;
+    this.proAi = proAi;
+    this.data = data;
+    this.player = player;
+    this.isSimulation = isSimulation;
 
     if (!Properties.getLowLuck(data)) {
       winPercentage = 90;
@@ -62,25 +71,23 @@ public final class ProData {
     myUnitTerritories =
         CollectionUtils.getMatches(
             data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-    unitTerritoryMap = ProUtils.newUnitTerritoryMap();
+    unitTerritoryMap = newUnitTerritoryMap(data);
     unitValueMap = TuvUtils.getCostsForTuv(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);
     minCostPerHitPoint = getMinCostPerHitPoint(purchaseOptions.getLandOptions());
   }
 
-  public static ProAi getProAi() {
-    return proAi;
+  private static Map<Unit, Territory> newUnitTerritoryMap(final GameData data) {
+    final Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
+    for (final Territory t : data.getMap().getTerritories()) {
+      for (final Unit u : t.getUnits()) {
+        unitTerritoryMap.put(u, t);
+      }
+    }
+    return unitTerritoryMap;
   }
 
-  public static GameData getData() {
-    return data;
-  }
-
-  public static PlayerId getPlayer() {
-    return player;
-  }
-
-  private static double getMinCostPerHitPoint(final List<ProPurchaseOption> landPurchaseOptions) {
+  private double getMinCostPerHitPoint(final List<ProPurchaseOption> landPurchaseOptions) {
     double minCostPerHitPoint = Double.MAX_VALUE;
     for (final ProPurchaseOption ppo : landPurchaseOptions) {
       if (ppo.getCostPerHitPoint() < minCostPerHitPoint) {

@@ -9,10 +9,11 @@ import games.strategy.triplea.odds.calculator.IBattleCalculator;
 public class FastAi extends ProAi {
 
   // Odds estimator
-  private static final IBattleCalculator estimator = new FastOddsEstimator();
+  private final IBattleCalculator estimator;
 
   public FastAi(final String name) {
     super(name);
+    estimator = new FastOddsEstimator(getProData());
   }
 
   @Override

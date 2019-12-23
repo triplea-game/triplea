@@ -25,18 +25,19 @@ import org.triplea.java.collections.CollectionUtils;
 class ProPoliticsAi {
 
   private final ProOddsCalculator calc;
+  private final ProData proData;
 
   ProPoliticsAi(final ProAi ai) {
     calc = ai.getCalc();
+    proData = ai.getProData();
   }
 
   List<PoliticalActionAttachment> politicalActions() {
-
-    final GameData data = ProData.getData();
-    final PlayerId player = ProData.getPlayer();
+    final GameData data = proData.getData();
+    final PlayerId player = proData.getPlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final double round = data.getSequence().getRound();
-    final ProTerritoryManager territoryManager = new ProTerritoryManager(calc);
+    final ProTerritoryManager territoryManager = new ProTerritoryManager(calc, proData);
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     ProLogger.info("Politics for " + player.getName());
 
@@ -182,7 +183,7 @@ class ProPoliticsAi {
   }
 
   void doActions(final List<PoliticalActionAttachment> actions) {
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     for (final PoliticalActionAttachment action : actions) {
       ProLogger.debug("Performing action: " + action);

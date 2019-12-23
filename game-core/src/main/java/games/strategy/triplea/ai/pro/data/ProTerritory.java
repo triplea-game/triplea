@@ -20,6 +20,7 @@ import org.triplea.java.collections.CollectionUtils;
 /** The result of an AI territory analysis. */
 public class ProTerritory {
 
+  private final ProData proData;
   private final Territory territory;
   private final List<Unit> maxUnits;
   private final List<Unit> units;
@@ -58,8 +59,9 @@ public class ProTerritory {
   // Scramble variables
   private final List<Unit> maxScrambleUnits;
 
-  public ProTerritory(final Territory territory) {
+  public ProTerritory(final Territory territory, final ProData proData) {
     this.territory = territory;
+    this.proData = proData;
     maxUnits = new ArrayList<>();
     units = new ArrayList<>();
     bombers = new ArrayList<>();
@@ -94,8 +96,9 @@ public class ProTerritory {
     maxScrambleUnits = new ArrayList<>();
   }
 
-  ProTerritory(final ProTerritory patd) {
+  ProTerritory(final ProTerritory patd, final ProData proData) {
     this.territory = patd.getTerritory();
+    this.proData = proData;
     maxUnits = new ArrayList<>(patd.getMaxUnits());
     units = new ArrayList<>(patd.getUnits());
     bombers = new ArrayList<>(patd.getBombers());
@@ -274,7 +277,7 @@ public class ProTerritory {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else if (battleResult.getWinPercentage() >= ProData.winPercentage
+    } else if (battleResult.getWinPercentage() >= proData.getWinPercentage()
         && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }

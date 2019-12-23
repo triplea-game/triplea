@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.pro.ProData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +30,10 @@ public class ProMyMoveOptions {
     bomberMoveMap = new HashMap<>();
   }
 
-  ProMyMoveOptions(final ProMyMoveOptions myMoveOptions) {
+  ProMyMoveOptions(final ProMyMoveOptions myMoveOptions, final ProData proData) {
     this();
     for (final Territory t : myMoveOptions.territoryMap.keySet()) {
-      territoryMap.put(t, new ProTerritory(myMoveOptions.territoryMap.get(t)));
+      territoryMap.put(t, new ProTerritory(myMoveOptions.territoryMap.get(t), proData));
     }
     unitMoveMap.putAll(myMoveOptions.unitMoveMap);
     transportMoveMap.putAll(myMoveOptions.transportMoveMap);

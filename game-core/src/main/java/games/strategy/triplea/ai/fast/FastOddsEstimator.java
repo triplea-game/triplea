@@ -5,6 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.odds.calculator.AggregateResults;
@@ -15,9 +16,14 @@ import java.util.List;
 
 class FastOddsEstimator implements IBattleCalculator {
 
+  private final ProData proData;
   private Territory location = null;
   private Collection<Unit> attackingUnits = new ArrayList<>();
   private Collection<Unit> defendingUnits = new ArrayList<>();
+
+  FastOddsEstimator(final ProData proData) {
+    this.proData = proData;
+  }
 
   @Override
   public void setGameData(final GameData data) {}
@@ -41,18 +47,18 @@ class FastOddsEstimator implements IBattleCalculator {
   public AggregateResults calculate() {
     final double winPercentage =
         ProBattleUtils.estimateStrengthDifference(
-            location, new ArrayList<>(attackingUnits), new ArrayList<>(defendingUnits));
+            proData, location, new ArrayList<>(attackingUnits), new ArrayList<>(defendingUnits));
     List<Unit> remainingAttackingUnits = new ArrayList<>();
     List<Unit> remainingDefendingUnits = new ArrayList<>();
     if (winPercentage > 50) {
       remainingAttackingUnits.addAll(attackingUnits);
-      remainingAttackingUnits.sort(ProPurchaseUtils.getCostComparator().reversed());
+      remainingAttackingUnits.sort(ProPurchaseUtils.getCostComparator(proData).reversed());
       final int numRemainingUnits =
           (int) Math.ceil(attackingUnits.size() * (Math.min(100, winPercentage) - 50) / 50);
       remainingAttackingUnits = remainingAttackingUnits.subList(0, numRemainingUnits);
     } else {
       remainingDefendingUnits.addAll(defendingUnits);
-      remainingDefendingUnits.sort(ProPurchaseUtils.getCostComparator().reversed());
+      remainingDefendingUnits.sort(ProPurchaseUtils.getCostComparator(proData).reversed());
       final int numRemainingUnits =
           (int) Math.ceil(defendingUnits.size() * (50 - Math.max(0, winPercentage)) / 50);
       remainingDefendingUnits = remainingDefendingUnits.subList(0, numRemainingUnits);

@@ -29,9 +29,11 @@ import org.triplea.util.Tuple;
 class ProScrambleAi {
 
   private final ProOddsCalculator calc;
+  private final ProData proData;
 
   ProScrambleAi(final ProAi ai) {
     calc = ai.getCalc();
+    proData = ai.getProData();
   }
 
   Map<Territory, Collection<Unit>> scrambleUnitsQuery(
@@ -39,8 +41,8 @@ class ProScrambleAi {
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
 
     // Get battle data
-    final GameData data = ProData.getData();
-    final PlayerId player = ProData.getPlayer();
+    final GameData data = proData.getData();
+    final PlayerId player = proData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle =
         delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
@@ -50,7 +52,7 @@ class ProScrambleAi {
     final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
     final Collection<Unit> bombardingUnits = battle.getBombardingUnits();
     final ProBattleResult minResult =
-        calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
+        calc.calculateBattleResults(proData, scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger.debug(
         scrambleTo
             + ", minTUVSwing="
@@ -58,7 +60,7 @@ class ProScrambleAi {
             + ", minWin%="
             + minResult.getWinPercentage());
     if (minResult.getTuvSwing() <= 0
-        && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
+        && minResult.getWinPercentage() < (100 - proData.getMinWinPercentage())) {
       return null;
     }
 
@@ -74,7 +76,7 @@ class ProScrambleAi {
             Comparator.<Unit>comparingDouble(
                     o ->
                         ProBattleUtils.estimateStrength(
-                            scrambleTo, List.of(o), new ArrayList<>(), false))
+                            proData, scrambleTo, List.of(o), new ArrayList<>(), false))
                 .reversed());
         canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
       }
@@ -83,7 +85,7 @@ class ProScrambleAi {
     }
     defenders.addAll(allScramblers);
     final ProBattleResult maxResult =
-        calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
+        calc.calculateBattleResults(proData, scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger.debug(
         scrambleTo
             + ", maxTUVSwing="
@@ -117,7 +119,7 @@ class ProScrambleAi {
 
     // Sort units by number of defend options and cost
     final Map<Unit, Set<Territory>> sortedUnitDefendOptions =
-        ProSortMoveOptionsUtils.sortUnitMoveOptions(unitDefendOptions);
+        ProSortMoveOptionsUtils.sortUnitMoveOptions(proData, unitDefendOptions);
 
     // Add one scramble unit at a time and check if final result is better than min result
     final List<Unit> unitsToScramble = new ArrayList<>();
@@ -127,7 +129,8 @@ class ProScrambleAi {
       final Collection<Unit> currentDefenders = new ArrayList<>(battle.getDefendingUnits());
       currentDefenders.addAll(unitsToScramble);
       result =
-          calc.calculateBattleResults(scrambleTo, attackers, currentDefenders, bombardingUnits);
+          calc.calculateBattleResults(
+              proData, scrambleTo, attackers, currentDefenders, bombardingUnits);
       ProLogger.debug(
           scrambleTo
               + ", TUVSwing="
@@ -137,7 +140,7 @@ class ProScrambleAi {
               + ", addedUnit="
               + u);
       if (result.getTuvSwing() <= 0
-          && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {
+          && result.getWinPercentage() < (100 - proData.getMinWinPercentage())) {
         break;
       }
     }

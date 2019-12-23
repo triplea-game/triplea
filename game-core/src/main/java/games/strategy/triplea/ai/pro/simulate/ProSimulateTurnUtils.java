@@ -41,6 +41,7 @@ public final class ProSimulateTurnUtils {
    * {@code delegateBridge}.
    */
   public static void simulateBattles(
+      final ProData proData,
       final GameData data,
       final PlayerId player,
       final IDelegateBridge delegateBridge,
@@ -68,7 +69,7 @@ public final class ProSimulateTurnUtils {
         ProLogger.debug("bombardingUnits=" + bombardingUnits);
 
         final ProBattleResult result =
-            calc.callBattleCalc(t, attackers, defenders, bombardingUnits);
+            calc.callBattleCalc(proData, t, attackers, defenders, bombardingUnits);
         final Collection<Unit> remainingAttackers = result.getAverageAttackersRemaining();
         final Collection<Unit> remainingDefenders = result.getAverageDefendersRemaining();
         ProLogger.debug("remainingAttackers=" + remainingAttackers);
@@ -111,17 +112,20 @@ public final class ProSimulateTurnUtils {
    * @return A collection of the results for each simulated transfer.
    */
   public static Map<Territory, ProTerritory> transferMoveMap(
-      final Map<Territory, ProTerritory> moveMap, final GameData toData, final PlayerId player) {
+      final ProData proData,
+      final Map<Territory, ProTerritory> moveMap,
+      final GameData toData,
+      final PlayerId player) {
 
     ProLogger.info("Transferring move map");
 
-    final Map<Unit, Territory> unitTerritoryMap = ProData.unitTerritoryMap;
+    final Map<Unit, Territory> unitTerritoryMap = proData.getUnitTerritoryMap();
 
     final Map<Territory, ProTerritory> result = new HashMap<>();
     final List<Unit> usedUnits = new ArrayList<>();
     for (final Territory fromTerritory : moveMap.keySet()) {
       final Territory toTerritory = toData.getMap().getTerritory(fromTerritory.getName());
-      final ProTerritory patd = new ProTerritory(toTerritory);
+      final ProTerritory patd = new ProTerritory(toTerritory, proData);
       result.put(toTerritory, patd);
       final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(fromTerritory).getAmphibAttackMap();
       final Map<Unit, Boolean> isTransportingMap =

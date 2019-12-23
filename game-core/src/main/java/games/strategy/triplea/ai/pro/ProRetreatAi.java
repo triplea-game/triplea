@@ -39,9 +39,11 @@ import java.util.UUID;
 class ProRetreatAi {
 
   private final ProOddsCalculator calc;
+  private final ProData proData;
 
   ProRetreatAi(final ProAi ai) {
     calc = ai.getCalc();
+    proData = ai.getProData();
   }
 
   Territory retreatQuery(
@@ -50,8 +52,8 @@ class ProRetreatAi {
       final Collection<Territory> possibleTerritories) {
 
     // Get battle data
-    final GameData data = ProData.getData();
-    final PlayerId player = ProData.getPlayer();
+    final GameData data = proData.getData();
+    final PlayerId player = proData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
@@ -63,7 +65,7 @@ class ProRetreatAi {
     // Calculate battle results
     final ProBattleResult result =
         calc.calculateBattleResultsNoSubmerge(
-            battleTerritory, attackers, defenders, new HashSet<>());
+            proData, battleTerritory, attackers, defenders, new HashSet<>());
 
     // Determine if it has a factory
     int isFactory = 0;
@@ -108,6 +110,7 @@ class ProRetreatAi {
         }
         final double strength =
             ProBattleUtils.estimateStrength(
+                proData,
                 t,
                 t.getUnitCollection().getMatches(Matches.isUnitAllied(player, data)),
                 new ArrayList<>(),

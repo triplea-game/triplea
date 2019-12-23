@@ -26,10 +26,11 @@ public class ProOtherMoveOptions {
   }
 
   public ProOtherMoveOptions(
+      final ProData proData,
       final List<Map<Territory, ProTerritory>> moveMapList,
       final PlayerId player,
       final boolean isAttacker) {
-    maxMoveMap = newMaxMoveMap(moveMapList, player, isAttacker);
+    maxMoveMap = newMaxMoveMap(proData, moveMapList, player, isAttacker);
     moveMaps = newMoveMaps(moveMapList);
   }
 
@@ -51,6 +52,7 @@ public class ProOtherMoveOptions {
   }
 
   private static Map<Territory, ProTerritory> newMaxMoveMap(
+      final ProData proData,
       final List<Map<Territory, ProTerritory>> moveMaps,
       final PlayerId player,
       final boolean isAttacker) {
@@ -71,7 +73,7 @@ public class ProOtherMoveOptions {
         }
 
         // Skip if checking allied moves and their turn doesn't come before territory owner's
-        if (ProData.getData().getRelationshipTracker().isAllied(player, movePlayer)
+        if (proData.getData().getRelationshipTracker().isAllied(player, movePlayer)
             && !ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
           continue;
         }
@@ -86,11 +88,11 @@ public class ProOtherMoveOptions {
           if (!maxUnits.isEmpty()) {
             maxStrength =
                 ProBattleUtils.estimateStrength(
-                    t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
+                    proData, t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
           }
           final double currentStrength =
               ProBattleUtils.estimateStrength(
-                  t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
+                  proData, t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
           final boolean currentHasLandUnits = currentUnits.stream().anyMatch(Matches.unitIsLand());
           final boolean maxHasLandUnits = maxUnits.stream().anyMatch(Matches.unitIsLand());
           if ((currentHasLandUnits
