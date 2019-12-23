@@ -28,4 +28,15 @@ class GameSelectionControlsTest {
     aboutInformation.back();
     verify(mock).switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
   }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testLocalGameButton() {
+    final ScreenController<FxmlManager> mock = mock(ScreenController.class);
+    final GameSelectionControls aboutInformation = new GameSelectionControls();
+    aboutInformation.connect(mock);
+
+    aboutInformation.showLocalGameMenu();
+    verify(mock).switchScreen(FxmlManager.MAP_SELECTION);
+  }
 }

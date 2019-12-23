@@ -20,6 +20,6 @@ public interface ControlledScreen<T extends ScreenController<?>> {
   /** A common method to retrieve the root Node to attach it to the Scene Graph. */
   Node getNode();
 
-  /** Method called whenever this screen is shown by the parent node. * */
+  /** Method called whenever this screen is shown by the parent node. */
   default void onShow() {}
 }
