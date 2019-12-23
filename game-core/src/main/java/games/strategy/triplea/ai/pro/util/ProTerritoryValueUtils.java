@@ -311,9 +311,8 @@ public final class ProTerritoryValueUtils {
       if (distance > 0) {
         double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
-          value =
-              findTerritoryAttackValue(proData, player, nearbyEnemyTerritory)
-                  / 3; // find neutral value
+          // find neutral value
+          value = findTerritoryAttackValue(proData, player, nearbyEnemyTerritory) / 3;
         } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data)
             .test(nearbyEnemyTerritory)) {
           value *= 0.1; // reduce value for can't hold amphib allied territories
