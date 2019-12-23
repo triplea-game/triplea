@@ -7,6 +7,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.util.ProMatches;
+import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
@@ -271,6 +272,16 @@ public class ProTerritory {
 
   public boolean isCurrentlyWins() {
     return currentlyWins;
+  }
+
+  public void estimateBattleResult(final ProOddsCalculator calc, final PlayerId player) {
+    setBattleResult(
+        calc.estimateAttackBattleResults(
+            proData,
+            territory,
+            getUnits(),
+            getMaxEnemyDefenders(player, player.getData()),
+            getBombardTerritoryMap().keySet()));
   }
 
   public void setBattleResult(final ProBattleResult battleResult) {
