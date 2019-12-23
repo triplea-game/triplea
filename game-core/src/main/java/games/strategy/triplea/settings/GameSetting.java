@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
@@ -41,7 +40,7 @@ public interface GameSetting<T> {
    * default value.
    */
   default T getValueOrThrow() {
-    return getValue().orElseThrow(() -> new NoSuchElementException());
+    return getValue().orElseThrow();
   }
 
   /** Resets the setting to its default value or empty if it has no default value. */
