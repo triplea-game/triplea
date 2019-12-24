@@ -50,7 +50,6 @@ import org.triplea.java.collections.IntegerMap;
 /** Pro purchase AI. */
 class ProPurchaseAi {
 
-  private final ProAi ai;
   private final ProOddsCalculator calc;
   private final ProData proData;
   private GameData data;
@@ -61,7 +60,6 @@ class ProPurchaseAi {
   private boolean isBid = false;
 
   ProPurchaseAi(final ProAi ai) {
-    this.ai = ai;
     this.calc = ai.getCalc();
     this.proData = ai.getProData();
   }
