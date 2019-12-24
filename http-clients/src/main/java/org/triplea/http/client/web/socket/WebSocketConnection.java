@@ -125,7 +125,7 @@ class WebSocketConnection {
       try {
         Awaitility.await()
             .atMost(connectTimeoutMillis, TimeUnit.MILLISECONDS)
-            .until(() -> client.isOpen());
+            .until(client::isOpen);
       } catch (final ConditionTimeoutException ignored) {
         throw new CouldNotConnect(serverUri);
       }
