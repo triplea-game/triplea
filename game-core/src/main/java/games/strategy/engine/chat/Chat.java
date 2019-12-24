@@ -49,7 +49,7 @@ public class Chat implements ChatClient {
     this.chatTransmitter = chatTransmitter;
     chatTransmitter.setChatClient(this);
     sentMessagesHistory = new SentMessagesHistory();
-    Optional.ofNullable(chatTransmitter.connect()).ifPresent(chatters::addAll);
+    chatters.addAll(chatTransmitter.connect());
     updateConnections();
   }
 
