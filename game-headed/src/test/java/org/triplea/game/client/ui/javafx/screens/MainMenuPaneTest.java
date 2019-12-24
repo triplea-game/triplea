@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javax.annotation.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
@@ -33,10 +34,7 @@ class MainMenuPaneTest {
   void testInitialize() throws Exception {
     final NavigationPane mock = mock(NavigationPane.class);
     final StackPane mock2 = mock(StackPane.class);
-    final Field userAgentStyleSheetField =
-        Application.class.getDeclaredField("userAgentStylesheet");
-    userAgentStyleSheetField.setAccessible(true);
-    userAgentStyleSheetField.set(null, "");
+    setUserAgentStylesheet("");
     final Label mock3 = mock(Label.class);
     final Node mock4 = mock(Node.class);
     final NavigationPane mock5 = mock(NavigationPane.class);
@@ -65,11 +63,21 @@ class MainMenuPaneTest {
     verify(mock).setParent(mock5);
   }
 
-  @AfterAll
-  static void cleanup() throws Exception {
+  /**
+   * This is essentially just a hack to avoid {@code java.lang.IllegalStateException: Toolkit not
+   * initialized} which occurs when mocking any subclass of {@link javafx.scene.control.Control}
+   * because of its static initializer. We could alternatively setup a "real" environment, but as
+   * long as this works there isn't really a need for it.
+   */
+  private static void setUserAgentStylesheet(final @Nullable String stylesheet) throws Exception {
     final Field userAgentStyleSheetField =
         Application.class.getDeclaredField("userAgentStylesheet");
     userAgentStyleSheetField.setAccessible(true);
-    userAgentStyleSheetField.set(null, null);
+    userAgentStyleSheetField.set(null, stylesheet);
+  }
+
+  @AfterAll
+  static void cleanup() throws Exception {
+    setUserAgentStylesheet(null);
   }
 }

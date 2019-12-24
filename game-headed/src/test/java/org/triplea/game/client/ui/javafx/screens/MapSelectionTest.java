@@ -100,6 +100,10 @@ public class MapSelectionTest {
     verify(webEngine).loadContent(mapNotes.trim() + mapName);
   }
 
+  /**
+   * {@link WebEngine} has a static initializer that expects a running JavaFX environment. To avoid
+   * exceptions we manually set a private field to skip validation when mocking.
+   */
   private WebEngine mockWebEngine() throws Exception {
     final Class<?> clazz = Class.forName("com.sun.glass.ui.Screen");
     final Field screensField = clazz.getDeclaredField("screens");
