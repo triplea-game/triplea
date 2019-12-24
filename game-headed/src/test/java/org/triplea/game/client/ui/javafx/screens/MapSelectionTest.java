@@ -26,6 +26,8 @@ import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 public class MapSelectionTest {
+  private final String mapName = "\n Test Name \n";
+  private final String mapNotes = "  \n  Test Notes  \r\n  ";
 
   private GameDetector gameDetector;
   private MapSelection mapSelection;
@@ -85,27 +87,35 @@ public class MapSelectionTest {
     mapSelection.setPreviewContainer(previewContainer);
 
     final WebView previewWindow = mock(WebView.class);
-
-    final Class<?> clazz = Class.forName("com.sun.glass.ui.Screen");
-    final Field screensField = clazz.getDeclaredField("screens");
-    screensField.setAccessible(true);
-    screensField.set(null, List.of());
-    final WebEngine webEngine = mock(WebEngine.class);
+    final var webEngine = mockWebEngine();
     when(previewWindow.getEngine()).thenReturn(webEngine);
     mapSelection.setPreviewWindow(previewWindow);
 
-    final GameChooserEntry gameChooserEntry = mock(GameChooserEntry.class);
-    final GameData gameData = mock(GameData.class);
-    final GameProperties gameProperties = mock(GameProperties.class);
-    when(gameProperties.get("mapName", "")).thenReturn("\n Test Name \n");
-    when(gameProperties.get("notes", "")).thenReturn("  \n  Test Notes  \r\n  ");
-    when(gameData.getProperties()).thenReturn(gameProperties);
-    when(gameChooserEntry.getGameData()).thenReturn(gameData);
+    final GameChooserEntry gameChooserEntry = mockGameChooserEntryWithNotes();
     mapSelection.setSelectedGame(gameChooserEntry);
 
     mapSelection.showDetails();
 
     verify(previewContainer).setVisible(true);
-    verify(webEngine).loadContent("Test Notes\n Test Name \n");
+    verify(webEngine).loadContent(mapNotes.trim() + mapName);
+  }
+
+  private WebEngine mockWebEngine() throws Exception {
+    final Class<?> clazz = Class.forName("com.sun.glass.ui.Screen");
+    final Field screensField = clazz.getDeclaredField("screens");
+    screensField.setAccessible(true);
+    screensField.set(null, List.of());
+    return mock(WebEngine.class);
+  }
+
+  private GameChooserEntry mockGameChooserEntryWithNotes() {
+    final GameChooserEntry gameChooserEntry = mock(GameChooserEntry.class);
+    final GameData gameData = mock(GameData.class);
+    final GameProperties gameProperties = mock(GameProperties.class);
+    when(gameProperties.get("mapName", "")).thenReturn(mapName);
+    when(gameProperties.get("notes", "")).thenReturn(mapNotes);
+    when(gameData.getProperties()).thenReturn(gameProperties);
+    when(gameChooserEntry.getGameData()).thenReturn(gameData);
+    return gameChooserEntry;
   }
 }
