@@ -82,8 +82,14 @@ public abstract class WebsocketListener<
   }
 
   /**
-   * Method to extract message type from a server message envelope. This will likey be a simple
-   * {@code enum.valueOf(serverMessageEnvelope.getMessageType()}.
+   * Method to extract message type from a server message envelope. This will likely be a simple
+   * {@code enum.valueOf(serverMessageEnvelope.getMessageType()}. Example:
+   *
+   * <pre>>
+   *   {@code
+   *     return WebsocketMessageTypeEnum.valueOf(serverMessageEnvelope.getMessageType())
+   * }
+   * </pre>
    */
   protected abstract MessageTypeT readMessageType(ServerMessageEnvelope serverMessageEnvelope);
 
