@@ -74,7 +74,8 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
 
   private Node createMapListing(final GameChooserEntry gameChooserEntry) {
     final var button = new Button(gameChooserEntry.getGameName());
-    // Placeholder image
+    // TODO Placeholder image, ship with engine
+    // or implement real map thumbnails
     final var imageView =
         new ImageView(new Image("https://triplea-game.org/images/missing_map.png", true));
     imageView.setPreserveRatio(true);
