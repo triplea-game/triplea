@@ -468,7 +468,7 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.delegate.TechnologyDelegate"
             display="Research Technology"/>
         <delegate name="battle"
-            javaClass="games.strategy.triplea.delegate.BattleDelegate"
+            javaClass="games.strategy.triplea.delegate.battle.BattleDelegate"
             display="Combat"/>
         <delegate name="move"
             javaClass="games.strategy.triplea.delegate.MoveDelegate"

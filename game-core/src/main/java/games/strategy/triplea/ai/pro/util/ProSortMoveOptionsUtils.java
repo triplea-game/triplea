@@ -10,7 +10,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

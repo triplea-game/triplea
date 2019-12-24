@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -15,6 +15,10 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -876,7 +880,7 @@ public class AirBattle extends AbstractBattle {
             .anyMatch(Matches.territoryHasUnitsThatMatch(defendingAirMatch));
   }
 
-  static int getAirBattleRolls(final Collection<Unit> units, final boolean defending) {
+  public static int getAirBattleRolls(final Collection<Unit> units, final boolean defending) {
     int rolls = 0;
     for (final Unit u : units) {
       rolls += getAirBattleRolls(u, defending);
@@ -884,7 +888,7 @@ public class AirBattle extends AbstractBattle {
     return rolls;
   }
 
-  static int getAirBattleRolls(final Unit unit, final boolean defending) {
+  public static int getAirBattleRolls(final Unit unit, final boolean defending) {
     if (defending) {
       if (!unitHasAirDefenseGreaterThanZero().test(unit)) {
         return 0;

@@ -1,13 +1,12 @@
 package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /** A single roll of a die. */
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor
 @EqualsAndHashCode
 @Getter
 public class Die implements Serializable {

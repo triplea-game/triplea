@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -22,8 +22,14 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.IBattle.WhoWon;
+import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.OriginalOwnerTracker;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.UndoableMove;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.BattleRecords;
@@ -138,7 +144,7 @@ public class BattleTracker implements Serializable {
     relationshipChangesThisTurn.add(Tuple.of(Tuple.of(p1, p2), Tuple.of(oldRelation, newRelation)));
   }
 
-  boolean didAllThesePlayersJustGoToWarThisTurn(
+  public boolean didAllThesePlayersJustGoToWarThisTurn(
       final PlayerId p1, final Collection<Unit> enemyUnits, final GameData data) {
     final Set<PlayerId> enemies = new HashSet<>();
     for (final Unit u : CollectionUtils.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1))) {
@@ -201,7 +207,7 @@ public class BattleTracker implements Serializable {
     }
   }
 
-  void undoBattle(
+  public void undoBattle(
       final Route route,
       final Collection<Unit> units,
       final PlayerId player,
@@ -285,7 +291,7 @@ public class BattleTracker implements Serializable {
         route, units, false, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
   }
 
-  void addBattle(
+  public void addBattle(
       final Route route,
       final Collection<Unit> units,
       final boolean bombing,
@@ -1150,7 +1156,7 @@ public class BattleTracker implements Serializable {
     return pendingBattles.stream().filter(b -> b.getBattleId().equals(uuid)).findAny().orElse(null);
   }
 
-  Collection<IBattle> getPendingBattles(final Territory t) {
+  public Collection<IBattle> getPendingBattles(final Territory t) {
     return pendingBattles.stream()
         .filter(b -> b.getTerritory().equals(t))
         .collect(Collectors.toSet());
@@ -1171,7 +1177,7 @@ public class BattleTracker implements Serializable {
     return battles;
   }
 
-  BattleListing getPendingBattleSites() {
+  public BattleListing getPendingBattleSites() {
     final Map<BattleType, Collection<Territory>> battles = new HashMap<>();
     for (final IBattle battle : pendingBattles) {
       if (battle != null && !battle.isEmpty()) {
@@ -1275,7 +1281,7 @@ public class BattleTracker implements Serializable {
     }
   }
 
-  BattleRecords getBattleRecords() {
+  public BattleRecords getBattleRecords() {
     if (battleRecords == null) {
       battleRecords = new BattleRecords();
     }

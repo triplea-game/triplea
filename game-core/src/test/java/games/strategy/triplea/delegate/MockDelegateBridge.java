@@ -51,11 +51,11 @@ public final class MockDelegateBridge {
     return delegateBridge;
   }
 
-  static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {
+  public static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {
     return when(delegateBridge.getRandom(anyInt(), anyInt(), any(), any(), anyString()));
   }
 
-  static Answer<int[]> withValues(final int... values) {
+  public static Answer<int[]> withValues(final int... values) {
     return invocation -> {
       final int count = invocation.getArgument(1);
       assertEquals(values.length, count, "count of requested random values does not match");
@@ -63,7 +63,7 @@ public final class MockDelegateBridge {
     };
   }
 
-  static void thenGetRandomShouldHaveBeenCalled(
+  public static void thenGetRandomShouldHaveBeenCalled(
       final IDelegateBridge delegateBridge, final VerificationMode verificationMode) {
     verify(delegateBridge, verificationMode)
         .getRandom(anyInt(), anyInt(), any(), any(), anyString());

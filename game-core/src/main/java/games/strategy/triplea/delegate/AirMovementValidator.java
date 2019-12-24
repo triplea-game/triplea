@@ -815,7 +815,7 @@ public final class AirMovementValidator {
     return 0;
   }
 
-  static int carrierCost(final Collection<Unit> units) {
+  public static int carrierCost(final Collection<Unit> units) {
     int sum = 0;
     for (final Unit unit : units) {
       sum += carrierCost(unit);
@@ -823,7 +823,7 @@ public final class AirMovementValidator {
     return sum;
   }
 
-  static int carrierCost(final Unit unit) {
+  public static int carrierCost(final Unit unit) {
     if (Matches.unitCanLandOnCarrier().test(unit)) {
       return UnitAttachment.get(unit.getType()).getCarrierCost();
     }

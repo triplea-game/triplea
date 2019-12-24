@@ -15,6 +15,7 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.Collection;
 import java.util.List;
@@ -323,12 +324,12 @@ public final class GameDataTestUtil {
   }
 
   /** Returns a BattleDelegate from the given GameData object. */
-  static BattleDelegate battleDelegate(final GameData data) {
+  public static BattleDelegate battleDelegate(final GameData data) {
     return (BattleDelegate) data.getDelegate("battle");
   }
 
   /** Returns a MoveDelegate from the given GameData object. */
-  static MoveDelegate moveDelegate(final GameData data) {
+  public static MoveDelegate moveDelegate(final GameData data) {
     return (MoveDelegate) data.getDelegate("move");
   }
 
@@ -369,7 +370,7 @@ public final class GameDataTestUtil {
     }
   }
 
-  static void move(final Collection<Unit> units, final Route route) {
+  public static void move(final Collection<Unit> units, final Route route) {
     if (units.isEmpty()) {
       throw new AssertionFailedError("No units");
     }
@@ -408,7 +409,7 @@ public final class GameDataTestUtil {
     return indexOfType;
   }
 
-  static void setSelectAaCasualties(final GameData data, final boolean val) {
+  public static void setSelectAaCasualties(final GameData data, final boolean val) {
     for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.CHOOSE_AA)) {
         ((BooleanProperty) property).setValue(val);
@@ -418,7 +419,7 @@ public final class GameDataTestUtil {
     throw new IllegalStateException();
   }
 
-  static void makeGameLowLuck(final GameData data) {
+  public static void makeGameLowLuck(final GameData data) {
     for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.LOW_LUCK)) {
         ((BooleanProperty) property).setValue(true);

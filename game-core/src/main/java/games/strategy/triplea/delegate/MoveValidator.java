@@ -958,7 +958,7 @@ public class MoveValidator {
    * Checks that there only transports, subs and/or allies on the route except at the end. AA and
    * factory dont count as enemy.
    */
-  static boolean onlyIgnoredUnitsOnPath(
+  public static boolean onlyIgnoredUnitsOnPath(
       final Route route, final PlayerId player, final boolean ignoreRouteEnd) {
     final GameData data = player.getData();
     final Predicate<Unit> transportOnly =
@@ -1637,7 +1637,7 @@ public class MoveValidator {
     return carrierMustMoveWith(units, start.getUnits(), data, player);
   }
 
-  static Map<Unit, Collection<Unit>> carrierMustMoveWith(
+  public static Map<Unit, Collection<Unit>> carrierMustMoveWith(
       final Collection<Unit> units,
       final Collection<Unit> startUnits,
       final GameData data,

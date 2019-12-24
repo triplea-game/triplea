@@ -10,8 +10,8 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.attachments.CanalAttachment;
-import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.TestDelegate;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Nested;
@@ -33,7 +33,7 @@ final class XmlGameElementMapperTest {
     @Test
     void shouldReturnDelegateWhenFullyQualifiedNamePresent() {
       final Optional<IDelegate> result =
-          xmlGameElementMapper.newDelegate("games.strategy.triplea.delegate.BattleDelegate");
+          xmlGameElementMapper.newDelegate("games.strategy.triplea.delegate.battle.BattleDelegate");
 
       assertThat(result, isPresent());
       assertThat(result.get(), is(instanceOf(BattleDelegate.class)));

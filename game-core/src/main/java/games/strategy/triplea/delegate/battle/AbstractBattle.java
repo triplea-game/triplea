@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.CompositeChange;
@@ -13,6 +13,9 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;

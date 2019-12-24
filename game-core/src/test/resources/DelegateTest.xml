@@ -466,7 +466,7 @@
 <gamePlay>
         <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate"/>
         <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate"/>
-        <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate"/>
+        <delegate name="battle" javaClass="games.strategy.triplea.delegate.battle.BattleDelegate"/>
         <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate"/>
         <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate"/>
         <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate"/>

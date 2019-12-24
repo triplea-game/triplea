@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
@@ -18,6 +18,13 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.AirMovementValidator;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -772,7 +779,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   @VisibleForTesting
-  List<String> determineStepStrings(final boolean showFirstRun) {
+  public List<String> determineStepStrings(final boolean showFirstRun) {
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa()) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAas(offensiveAa)) {
@@ -1037,7 +1044,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   @VisibleForTesting
-  Collection<Territory> getAttackerRetreatTerritories() {
+  public Collection<Territory> getAttackerRetreatTerritories() {
     // TODO: when attacking with paratroopers (air + carried land), there are several bugs in
     // retreating.
     // TODO: air should always be able to retreat. paratroopers can only retreat if there are other
@@ -1180,7 +1187,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * it will execute. The steps are added to the stack and then reversed at the end.
    */
   @VisibleForTesting
-  List<IExecutable> getBattleExecutables(final boolean firstRun) {
+  public List<IExecutable> getBattleExecutables(final boolean firstRun) {
     final List<IExecutable> steps = new ArrayList<>();
     addFightStartSteps(firstRun, steps);
     addFightSteps(steps);
@@ -2547,7 +2554,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   /** Added for test case calls. */
   @VisibleForTesting
-  void externalRetreat(
+  public void externalRetreat(
       final Collection<Unit> retreaters,
       final Territory retreatTo,
       final boolean defender,

@@ -13,7 +13,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.PlainRandomSource;
-import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.List;
 import java.util.Properties;
