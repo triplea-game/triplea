@@ -1,26 +1,10 @@
 package org.triplea.server.lobby.game.listing;
 
-import com.google.common.cache.CacheBuilder;
-import java.util.concurrent.TimeUnit;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class GameListingControllerFactory {
-
-  public static GameListingController buildController(final Jdbi jdbi) {
-    return GameListingController.builder()
-        .gameListing(
-            GameListing.builder()
-                .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
-                .games(
-                    CacheBuilder.newBuilder()
-                        .expireAfterWrite(GameListingClient.KEEP_ALIVE_SECONDS, TimeUnit.SECONDS)
-                        .build())
-                .build())
-        .build();
+  public static GameListingController buildController(final GameListing gameListing) {
+    return GameListingController.builder().gameListing(gameListing).build();
   }
 }
