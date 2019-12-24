@@ -37,7 +37,7 @@ public class MapSelectionTest {
   }
 
   @Test
-  void testOnShowTriggersLoadingCorrectly() {
+  void onShowTriggersLoadingCorrectly() {
     mapSelection.onShow();
 
     verify(gameDetector).discoverGames(any());
@@ -50,7 +50,7 @@ public class MapSelectionTest {
   }
 
   @Test
-  void testReturnsCorrectNode() {
+  void mapSelectionObjectReturnsCorrectNode() {
     final Node node = mock(Node.class);
     mapSelection.setRoot(node);
 
@@ -59,7 +59,7 @@ public class MapSelectionTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  void testBackKeyWorks() {
+  void backKeyWorks() {
     final ScreenController<FxmlManager> manager = mock(ScreenController.class);
 
     mapSelection.connect(manager);
@@ -70,7 +70,7 @@ public class MapSelectionTest {
   }
 
   @Test
-  void testCloseButtonClosesDetails() {
+  void closeButtonClosesDetails() {
     final Node node = mock(Pane.class);
     mapSelection.setPreviewContainer(node);
 
@@ -80,7 +80,7 @@ public class MapSelectionTest {
   }
 
   @Test
-  void testDetailsButtonShowsDetails() throws Exception {
+  void detailsButtonShowsDetails() throws Exception {
     final Node previewContainer = mock(Node.class);
     mapSelection.setPreviewContainer(previewContainer);
 
