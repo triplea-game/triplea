@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,15 +39,11 @@ public class MapSelectionTest {
 
   @Test
   void onShowTriggersLoadingCorrectly() {
-    mapSelection.onShow();
+    mapSelection.initialize();
 
     verify(gameDetector).discoverGames(any());
 
     clearInvocations(gameDetector);
-
-    mapSelection.onShow();
-
-    verify(gameDetector, never()).discoverGames(any());
   }
 
   @Test

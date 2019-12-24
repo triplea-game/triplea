@@ -56,8 +56,6 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
       onMethod_ = {@VisibleForTesting})
   private GameChooserEntry selectedGame;
 
-  private boolean loaded = false;
-
   private ScreenController<FxmlManager> screenController;
 
   // Constructor used via FXML reflection
@@ -102,12 +100,8 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
     this.screenController = screenController;
   }
 
-  @Override
-  public void onShow() {
-    if (loaded) {
-      return;
-    }
-    loaded = true;
+  @FXML
+  public void initialize() {
     gameDetector.discoverGames(
         gameChooserEntries ->
             Platform.runLater(
