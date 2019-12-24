@@ -58,11 +58,7 @@ public abstract class WebsocketListener<
    */
   protected WebsocketListener(
       final URI hostUri, final String websocketPath, final ListenersTypeT listeners) {
-    this(
-        new GenericWebSocketClient(
-            URI.create(hostUri + websocketPath),
-            "Failed to connect to " + URI.create(hostUri + websocketPath)),
-        listeners);
+    this(new GenericWebSocketClient(URI.create(hostUri + websocketPath)), listeners);
   }
 
   public void setListeners(final ListenersTypeT listeners) {

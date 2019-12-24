@@ -47,8 +47,7 @@ class GenericWebSocketClientTest {
 
   @BeforeEach
   void setup() {
-    genericWebSocketClient =
-        new GenericWebSocketClient(webSocketClient, "test-client connect error message");
+    genericWebSocketClient = new GenericWebSocketClient(webSocketClient);
     genericWebSocketClient.addMessageListener(messageListener);
     genericWebSocketClient.addConnectionLostListener(connectionLostListener);
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);

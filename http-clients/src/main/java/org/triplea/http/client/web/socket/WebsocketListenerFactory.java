@@ -43,8 +43,7 @@ public class WebsocketListenerFactory {
       WebsocketListener<MessageTypeT, ListenersTypeT> newListener(
           final URI lobbyUri, final Function<String, MessageTypeT> messageTypeExtraction) {
 
-    final GenericWebSocketClient genericWebSocketClient =
-        new GenericWebSocketClient(lobbyUri, "Unable to connect to: " + lobbyUri);
+    final GenericWebSocketClient genericWebSocketClient = new GenericWebSocketClient(lobbyUri);
 
     return new WebsocketListener<>(genericWebSocketClient) {
       @Override
