@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screens.MapSelection">
+   <children>
+      <VBox alignment="TOP_CENTER">
+         <children>
+            <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+               <children>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="NEVER">
+                     <content>
+                        <TilePane fx:id="mapContainer" alignment="CENTER" hgap="10.0" prefColumns="4" prefRows="0" prefTileHeight="200.0" prefTileWidth="200.0" tileAlignment="TOP_LEFT" vgap="10.0">
+                           <children>
+                              <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </TilePane>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </HBox>
+            <StackPane>
+               <children>
+                  <Button mnemonicParsing="false" onAction="#backToGameSelection" text="%map_selection.button.back" StackPane.alignment="BOTTOM_RIGHT">
+                     <StackPane.margin>
+                        <Insets bottom="20.0" right="10.0" />
+                     </StackPane.margin>
+                  </Button>
+                  <VBox alignment="CENTER" pickOnBounds="false">
+                     <children>
+                        <Button fx:id="selectButton" disable="true" mnemonicParsing="false" text="%map_selection.button.select">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin></Button>
+                        <Button fx:id="detailsButton" disable="true" mnemonicParsing="false" onAction="#showDetails" text="%map_selection.button.details">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin></Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+      <VBox fx:id="previewContainer" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
+         <children>
+            <WebView fx:id="previewWindow" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin></WebView>
+            <Button mnemonicParsing="false" onAction="#closeDetails" text="%map_selection.button.close">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin></Button>
+         </children>
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+         <padding>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </padding>
+      </VBox>
+   </children>
+</StackPane>

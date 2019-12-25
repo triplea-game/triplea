@@ -7,11 +7,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
-import javafx.beans.property.ObjectPropertyBase;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -20,9 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.commons.support.ReflectionSupport;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
@@ -35,36 +30,17 @@ class MainMenuControlsTest {
     private final VBox mock = mock(VBox.class);
     private final MainMenuControls aboutInformation = new MainMenuControls(mock);
 
-    @SuppressWarnings("unchecked")
-    private void injectScene(final Scene scene) throws Exception {
-      final Class<?> clazz =
-          ReflectionSupport.findNestedClasses(
-                  Node.class, ReadOnlyObjectWrapper.class::isAssignableFrom)
-              .get(0);
-      final Constructor<?> constructor = clazz.getDeclaredConstructor(Node.class);
-      constructor.setAccessible(true);
-      final ObjectPropertyBase<Scene> propertyBase =
-          (ObjectPropertyBase<Scene>) constructor.newInstance(mock);
-      FieldSetter.setField(mock, Node.class.getDeclaredField("scene"), propertyBase);
-      propertyBase.set(scene);
-    }
-
-    private void injectWindow(final Scene scene, final Window window) throws Exception {
-      FieldSetter.setField(
-          scene, Scene.class.getDeclaredField("window"), new ReadOnlyObjectWrapper<>(window));
-    }
-
     @Test
     void testGetNode() {
       assertEquals(mock, aboutInformation.getNode());
     }
 
     @Test
-    void testShowExit() throws Exception {
+    void testShowExit() {
       final Scene scene = mock(Scene.class);
-      injectScene(scene);
+      when(mock.getScene()).thenReturn(scene);
       final Window window = mock(Window.class);
-      injectWindow(scene, window);
+      when(scene.getWindow()).thenReturn(window);
       final RootActionPane rootActionPane = mock(RootActionPane.class);
       when(window.getUserData()).thenReturn(rootActionPane);
 
