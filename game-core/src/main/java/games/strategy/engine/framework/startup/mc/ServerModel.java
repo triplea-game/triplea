@@ -67,7 +67,7 @@ import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.remote.actions.RemoteActionListeners;
+import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
 import org.triplea.http.client.remote.actions.messages.server.ServerRemoteActionMessageType;
 import org.triplea.http.client.web.socket.WebsocketListener;
 import org.triplea.http.client.web.socket.WebsocketListenerFactory;

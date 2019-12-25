@@ -1,4 +1,4 @@
-package org.triplea.http.client.remote.actions;
+package org.triplea.http.client.remote.actions.messages.server;
 
 import java.net.InetAddress;
 import java.util.function.Consumer;
