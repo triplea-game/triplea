@@ -7,7 +7,7 @@ import javax.websocket.OnError;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import org.triplea.http.client.remote.actions.RemoteActionListeners;
+import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
 
 /**
  * This websocket is available for game hosts to 'listen' to remote action events. This might be a

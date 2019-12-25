@@ -27,7 +27,7 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
-import org.triplea.http.client.remote.actions.RemoteActionListeners;
+import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
