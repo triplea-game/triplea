@@ -22,8 +22,7 @@ public class LobbyChatClient
 
   public LobbyChatClient(final URI lobbyUri, final ApiKey apiKey) {
     this(
-        new GenericWebSocketClient(
-            URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH), "Failed to connect to chat."),
+        new GenericWebSocketClient(URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH)),
         new ChatClientEnvelopeFactory(apiKey));
   }
 

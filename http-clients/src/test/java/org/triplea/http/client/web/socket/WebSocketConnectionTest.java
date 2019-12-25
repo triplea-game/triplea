@@ -1,18 +1,12 @@
 package org.triplea.http.client.web.socket;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
-import java.io.IOException;
 import java.net.URI;
-import javax.net.SocketFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,50 +59,31 @@ class WebSocketConnectionTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   class SendMessageAndConnect {
-    private WebSocketClient webSocketClient;
+    @Mock private WebSocketClient webSocketClient;
 
     private WebSocketConnection webSocketConnection;
 
     @BeforeEach
     void setup() {
       webSocketConnection = new WebSocketConnection(INVALID_URI);
-      // Invoke constructor of abstract class
-      webSocketClient = mock(WebSocketClient.class, withSettings().useConstructor(INVALID_URI));
       webSocketConnection.setClient(webSocketClient);
+
+      // set connect timeout to a minimum value supported for Awaitility
+      webSocketConnection.setConnectTimeoutMillis(101);
     }
 
     @Test
-    void connect() throws Exception {
-      when(webSocketClient.connectBlocking(anyLong(), any())).thenReturn(true);
+    void connect() {
       webSocketConnection.connect();
 
-      verify(webSocketClient).connectBlocking(anyLong(), any());
+      verify(webSocketClient).connect();
     }
 
-    /**
-     * This method aims to test if a failing connection is handled correctly. In order to keep this
-     * test fast (~5 times faster), the actual IO operations are mocked. A drawback of this approach
-     * is that it makes a lot of assumptions about the call hierarchy of {@link WebSocketClient}, so
-     * this test needs to be updated if those calls ever change.
-     */
     @Test
-    @DisplayName("Verify connect fails with exception when connecting to an invalid endpoint")
-    void connectFails() throws Exception {
-      // To simulate a failing connection we need to allow
-      // the mock to call some of its methods first
-      doCallRealMethod().when(webSocketClient).connectBlocking(anyLong(), any());
-      doCallRealMethod().when(webSocketClient).connect();
-      doCallRealMethod().when(webSocketClient).run();
-
-      // Inject SocketFactory that throws an exception when creating a socket
-      // which triggers the asynchronous error mechanism.
-      final SocketFactory factory = mock(SocketFactory.class);
-      when(factory.createSocket()).thenThrow(new IOException("Test Connection Failure"));
-      doCallRealMethod().when(webSocketClient).setSocketFactory(any());
-      webSocketClient.setSocketFactory(factory);
-
+    @DisplayName("Verify connect fails with meaningful exception")
+    void connectFails() {
+      doThrow(new RuntimeException("test exception")).when(webSocketClient).connect();
       assertThrows(CouldNotConnect.class, webSocketConnection::connect);
-      verify(webSocketClient).onError(any());
     }
 
     @Test
@@ -130,7 +105,7 @@ class WebSocketConnectionTest {
     void sendMessageFailsIfConnectionNotOpened() {
       when(webSocketClient.isOpen()).thenReturn(false);
 
-      assertThrows(IllegalStateException.class, () -> webSocketConnection.sendMessage(MESSAGE));
+      assertThrows(CouldNotConnect.class, () -> webSocketConnection.sendMessage(MESSAGE));
 
       verify(webSocketClient, never()).send(MESSAGE);
     }
