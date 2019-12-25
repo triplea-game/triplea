@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
@@ -23,6 +23,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;

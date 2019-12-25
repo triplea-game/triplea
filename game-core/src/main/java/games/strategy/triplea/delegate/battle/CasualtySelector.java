@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -12,7 +12,13 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -120,7 +126,7 @@ public class CasualtySelector {
   }
 
   /** Choose plane casualties according to specified rules. */
-  static CasualtyDetails getAaCasualties(
+  public static CasualtyDetails getAaCasualties(
       final boolean defending,
       final Collection<Unit> planes,
       final Collection<Unit> allFriendlyUnits,

@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -6,6 +6,10 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;

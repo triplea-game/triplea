@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerId;

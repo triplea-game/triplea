@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.data;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,5 +1,6 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
+import games.strategy.triplea.delegate.RocketsFireHelper;
 import java.io.Serializable;
 
 class BattleExtendedDelegateState implements Serializable {

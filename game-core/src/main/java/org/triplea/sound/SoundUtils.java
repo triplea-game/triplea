@@ -4,7 +4,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MustFightBattle.RetreatType;
+import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
 import java.util.Collection;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 /** Constants for the battle steps. */
 public interface BattleStepStrings {

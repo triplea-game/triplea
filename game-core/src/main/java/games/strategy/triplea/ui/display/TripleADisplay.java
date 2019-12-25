@@ -9,7 +9,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.util.Collection;
 import java.util.List;

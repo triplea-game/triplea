@@ -15,6 +15,8 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -87,7 +89,7 @@ public class DiceRoll implements Externalizable {
     this.expectedHits = expectedHits;
   }
 
-  static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
+  public static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
       final Collection<Unit> aaUnits, final GameData data, final boolean defending) {
     return getMaxAaAttackAndDiceSides(aaUnits, data, defending, new HashMap<>());
   }
@@ -96,7 +98,7 @@ public class DiceRoll implements Externalizable {
    * Returns a Tuple, the first is the max attack, the second is the max dice sides for the AA unit
    * with that attack value.
    */
-  static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
+  public static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
       final Collection<Unit> aaUnits,
       final GameData data,
       final boolean defending,
@@ -132,7 +134,7 @@ public class DiceRoll implements Externalizable {
    * Finds total number of AA attacks that a group of units can roll against targets taking into
    * account infinite roll and overstack AA.
    */
-  static int getTotalAaAttacks(
+  public static int getTotalAaAttacks(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
       final Collection<Unit> validTargets) {
     if (unitPowerAndRollsMap.isEmpty() || validTargets.isEmpty()) {
@@ -160,7 +162,7 @@ public class DiceRoll implements Externalizable {
   }
 
   /** Used only for rolling SBR or fly over AA as they don't currently take into account support. */
-  static DiceRoll rollSbrOrFlyOverAa(
+  public static DiceRoll rollSbrOrFlyOverAa(
       final Collection<Unit> validTargets,
       final Collection<Unit> aaUnits,
       final IDelegateBridge bridge,
@@ -182,7 +184,7 @@ public class DiceRoll implements Externalizable {
    * @param defending - whether AA units are defending or attacking
    * @return DiceRoll result which includes total hits and dice that were rolled
    */
-  static DiceRoll rollAa(
+  public static DiceRoll rollAa(
       final Collection<Unit> validTargets,
       final Collection<Unit> aaUnits,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -277,7 +279,7 @@ public class DiceRoll implements Externalizable {
    *     (example: if all the rolls are at 1, we would return true, but if one roll is at 1 and
    *     another roll is at 2, then we return false)
    */
-  static Triple<Integer, Integer, Boolean>
+  public static Triple<Integer, Integer, Boolean>
       getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
           final int[] dice,
           final List<Die> sortedDice,
@@ -445,7 +447,7 @@ public class DiceRoll implements Externalizable {
    * @param aaUnits should be sorted from weakest to strongest, before the method is called, for the
    *     actual battle.
    */
-  static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
+  public static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> aaUnits,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -673,7 +675,7 @@ public class DiceRoll implements Externalizable {
    * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is
    *     called, for the actual battle.
    */
-  protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
+  public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final boolean defending,
@@ -1262,7 +1264,7 @@ public class DiceRoll implements Externalizable {
     }
   }
 
-  static DiceRoll airBattle(
+  public static DiceRoll airBattle(
       final Collection<Unit> unitsList,
       final boolean defending,
       final PlayerId player,
@@ -1513,7 +1515,7 @@ public class DiceRoll implements Externalizable {
     return annotation.split(" ", 2)[0];
   }
 
-  static String getAnnotation(
+  public static String getAnnotation(
       final Collection<Unit> units, final PlayerId player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player

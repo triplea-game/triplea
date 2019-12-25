@@ -1,9 +1,9 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.IBattle.WhoWon;
+import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import java.util.Collection;
 
 /** The results of an in-progress or complete battle. */

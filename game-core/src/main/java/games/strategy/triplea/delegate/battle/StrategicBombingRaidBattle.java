@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
@@ -20,7 +20,14 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -1045,7 +1052,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   @VisibleForTesting
-  static int getSbrRolls(final Unit unit, final PlayerId id) {
+  public static int getSbrRolls(final Unit unit, final PlayerId id) {
     return UnitAttachment.get(unit.getType()).getAttackRolls(id);
   }
 

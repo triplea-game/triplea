@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -8,7 +8,11 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.MustFightBattle.ReturnFire;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +25,10 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundUtils;
 
-/** Maintains the state of a group of AA units firing during a {@link MustFightBattle}. */
+/**
+ * Maintains the state of a group of AA units firing during a {@link
+ * games.strategy.triplea.delegate.battle.MustFightBattle}.
+ */
 public class FireAa implements IExecutable {
   private static final long serialVersionUID = -6406659798754841382L;
 

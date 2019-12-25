@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.battle;
 
 import static com.google.common.base.Predicates.not;
 
@@ -26,8 +26,16 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.IBattle.WhoWon;
+import games.strategy.triplea.delegate.AirMovementValidator;
+import games.strategy.triplea.delegate.BaseTripleADelegate;
+import games.strategy.triplea.delegate.GameDelegateBridge;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.RocketsFireHelper;
+import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.UnitComparator;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.IBattle.WhoWon;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
@@ -189,7 +197,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return true;
   }
 
-  static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge bridge) {
+  public static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge bridge) {
     setupUnitsInSameTerritoryBattles(battleTracker, bridge);
     setupTerritoriesAbandonedToTheEnemy(battleTracker, bridge);
     // these are "blitzed" and "conquered" territories without a fight, without a pending battle
@@ -246,7 +254,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   /** Add bombardment units to battles. */
   @VisibleForTesting
-  void addBombardmentSources() {
+  public void addBombardmentSources() {
     final PlayerId attacker = bridge.getPlayerId();
     final Player remotePlayer = bridge.getRemotePlayer();
     final Predicate<Unit> ownedAndCanBombard =
@@ -1517,7 +1525,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         .reportMessageToPlayers(playersInvolved, null, title + dice, title);
   }
 
-  static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
+  public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
     if (damaged.isEmpty()) {
       return;
     }

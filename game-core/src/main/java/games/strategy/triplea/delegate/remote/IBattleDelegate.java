@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate.remote;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.delegate.IBattle;
-import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
 
 /** Logic for querying and fighting pending battles. */

@@ -18,7 +18,7 @@ import java.util.Map;
 public final class UnitComparator {
   private UnitComparator() {}
 
-  static Comparator<Unit> getLowestToHighestMovementComparator() {
+  public static Comparator<Unit> getLowestToHighestMovementComparator() {
     return Comparator.comparing(
         TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft));
   }
@@ -140,7 +140,7 @@ public final class UnitComparator {
         .thenComparing(getMovableUnitsComparator(units, route));
   }
 
-  static Comparator<Unit> getDecreasingBombardComparator() {
+  public static Comparator<Unit> getDecreasingBombardComparator() {
     return Comparator.comparing(
         Unit::getType,
         Comparator.comparing(
