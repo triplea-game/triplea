@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -49,7 +48,7 @@ public class Chat implements ChatClient {
     this.chatTransmitter = chatTransmitter;
     chatTransmitter.setChatClient(this);
     sentMessagesHistory = new SentMessagesHistory();
-    Optional.ofNullable(chatTransmitter.connect()).ifPresent(chatters::addAll);
+    chatters.addAll(chatTransmitter.connect());
     updateConnections();
   }
 

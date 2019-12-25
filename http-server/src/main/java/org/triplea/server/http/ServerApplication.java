@@ -43,6 +43,8 @@ import org.triplea.server.lobby.chat.moderation.ModeratorChatControllerFactory;
 import org.triplea.server.lobby.game.ConnectivityControllerFactory;
 import org.triplea.server.lobby.game.hosting.GameHostingControllerFactory;
 import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
+import org.triplea.server.lobby.game.listing.GameListingFactory;
+import org.triplea.server.lobby.game.listing.LobbyWatcherControllerFactory;
 import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
@@ -193,6 +195,8 @@ public class ServerApplication extends Application<AppConfig> {
       final Jdbi jdbi,
       final Chatters chatters,
       final RemoteActionsEventQueue remoteActionsEventQueue) {
+    final var gameListing = GameListingFactory.buildGameListing(jdbi);
+
     return ImmutableList.of(
         AccessLogControllerFactory.buildController(jdbi),
         BadWordControllerFactory.buildController(jdbi),
@@ -200,7 +204,8 @@ public class ServerApplication extends Application<AppConfig> {
         CreateAccountControllerFactory.buildController(jdbi),
         ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
         GameHostingControllerFactory.buildController(jdbi),
-        GameListingControllerFactory.buildController(jdbi),
+        GameListingControllerFactory.buildController(gameListing),
+        LobbyWatcherControllerFactory.buildController(gameListing),
         LoginControllerFactory.buildController(jdbi, chatters),
         ModeratorChatControllerFactory.buildController(jdbi, chatters, remoteActionsEventQueue),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),

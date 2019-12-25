@@ -15,7 +15,7 @@ ext {
 }
 
 javafx {
-    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
+    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml', 'javafx.web' ]
 }
 
 dependencies {

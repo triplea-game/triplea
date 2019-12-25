@@ -58,11 +58,7 @@ public abstract class WebsocketListener<
    */
   protected WebsocketListener(
       final URI hostUri, final String websocketPath, final ListenersTypeT listeners) {
-    this(
-        new GenericWebSocketClient(
-            URI.create(hostUri + websocketPath),
-            "Failed to connect to " + URI.create(hostUri + websocketPath)),
-        listeners);
+    this(new GenericWebSocketClient(URI.create(hostUri + websocketPath)), listeners);
   }
 
   public void setListeners(final ListenersTypeT listeners) {
@@ -82,8 +78,14 @@ public abstract class WebsocketListener<
   }
 
   /**
-   * Method to extract message type from a server message envelope. This will likey be a simple
-   * {@code enum.valueOf(serverMessageEnvelope.getMessageType()}.
+   * Method to extract message type from a server message envelope. This will likely be a simple
+   * {@code enum.valueOf(serverMessageEnvelope.getMessageType()}. Example:
+   *
+   * <pre>>
+   *   {@code
+   *     return WebsocketMessageTypeEnum.valueOf(serverMessageEnvelope.getMessageType())
+   * }
+   * </pre>
    */
   protected abstract MessageTypeT readMessageType(ServerMessageEnvelope serverMessageEnvelope);
 

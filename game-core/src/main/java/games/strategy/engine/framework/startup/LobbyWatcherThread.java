@@ -14,7 +14,7 @@ import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
 
 @AllArgsConstructor
 public class LobbyWatcherThread {
@@ -32,7 +32,7 @@ public class LobbyWatcherThread {
     InGameLobbyWatcher.newInGameLobbyWatcher(
             serverMessenger,
             gameHostingResponse,
-            GameListingClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey())),
+            LobbyWatcherClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey())),
             watcherThreadMessaging::connectionLostReporter,
             watcherThreadMessaging::connectionReEstablishedReporter,
             lobbyWatcher.getInGameLobbyWatcher())

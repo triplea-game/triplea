@@ -13,19 +13,30 @@ class GameSelectionControlsTest {
 
   @Test
   void testGetNode() {
-    final BorderPane mock = mock(BorderPane.class);
-    final GameSelectionControls aboutInformation = new GameSelectionControls(mock);
-    assertEquals(mock, aboutInformation.getNode());
+    final BorderPane rootNode = mock(BorderPane.class);
+    final GameSelectionControls aboutInformation = new GameSelectionControls(rootNode);
+    assertEquals(rootNode, aboutInformation.getNode());
   }
 
   @Test
   @SuppressWarnings("unchecked")
   void testBackButton() {
-    final ScreenController<FxmlManager> mock = mock(ScreenController.class);
+    final ScreenController<FxmlManager> screenControllerMock = mock(ScreenController.class);
     final GameSelectionControls aboutInformation = new GameSelectionControls();
-    aboutInformation.connect(mock);
+    aboutInformation.connect(screenControllerMock);
 
     aboutInformation.back();
-    verify(mock).switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
+    verify(screenControllerMock).switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testLocalGameButton() {
+    final ScreenController<FxmlManager> screenControllerMock = mock(ScreenController.class);
+    final GameSelectionControls aboutInformation = new GameSelectionControls();
+    aboutInformation.connect(screenControllerMock);
+
+    aboutInformation.showLocalGameMenu();
+    verify(screenControllerMock).switchScreen(FxmlManager.MAP_SELECTION);
   }
 }

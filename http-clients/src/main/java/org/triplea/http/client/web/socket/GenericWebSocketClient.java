@@ -6,15 +6,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
-import org.triplea.java.concurrency.CompletableFutureUtils;
 
 /**
  * A generic client class for creating websocket connections to a server. This client is based
@@ -25,10 +19,8 @@ import org.triplea.java.concurrency.CompletableFutureUtils;
  * this class makes sure that all operations are non-blocking, but keep their initial dispatch
  * order.
  */
-@Log
 public class GenericWebSocketClient implements WebSocketConnectionListener {
   private static final Gson gson = new Gson();
-  private final ExecutorService threadPool = Executors.newSingleThreadExecutor();
 
   private final WebSocketConnection client;
   private Collection<Consumer<ServerMessageEnvelope>> messageListeners = new HashSet<>();
@@ -37,21 +29,15 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Consumer<String>> connectionClosedListeners = new ArrayList<>();
 
-  public GenericWebSocketClient(final URI lobbyUri, final String connectionErrorMessage) {
-    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)), connectionErrorMessage);
+  public GenericWebSocketClient(final URI lobbyUri) {
+    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)));
   }
 
   @VisibleForTesting
-  GenericWebSocketClient(
-      final WebSocketConnection webSocketClient, final String connectionErrorMessage) {
+  GenericWebSocketClient(final WebSocketConnection webSocketClient) {
     client = webSocketClient;
     client.addListener(this);
-    CompletableFutureUtils.logExceptionWhenComplete(
-        CompletableFuture.runAsync(client::connect, threadPool),
-        e -> {
-          log.log(Level.INFO, connectionErrorMessage, e);
-          log.warning(connectionErrorMessage);
-        });
+    client.connect();
   }
 
   @VisibleForTesting
@@ -73,12 +59,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
    */
   public void send(final ClientMessageEnvelope message) {
     // we get by doing the send on a new thread.
-    CompletableFutureUtils.logExceptionWhenComplete(
-        CompletableFuture.runAsync(() -> client.sendMessage(gson.toJson(message)), threadPool),
-        e -> {
-          log.log(Level.INFO, "Failed to send message to server", e);
-          log.warning("Failed to send message to server");
-        });
+    client.sendMessage(gson.toJson(message));
   }
 
   /**
@@ -86,10 +67,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
    */
   public void close() {
     connectionLostListeners.clear();
-    CompletableFutureUtils.logExceptionWhenComplete(
-        CompletableFuture.runAsync(client::close, threadPool),
-        e -> log.log(Level.WARNING, "Failed to close client", e));
-    threadPool.shutdown();
+    client.close();
   }
 
   public void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {

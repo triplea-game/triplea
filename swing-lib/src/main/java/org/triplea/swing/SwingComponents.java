@@ -495,7 +495,9 @@ public final class SwingComponents {
 
   public static void showError(
       final Component parentWindow, final String title, final String message) {
-    JOptionPane.showMessageDialog(parentWindow, message, title, JOptionPane.ERROR_MESSAGE);
+    SwingUtilities.invokeLater(
+        () ->
+            JOptionPane.showMessageDialog(parentWindow, message, title, JOptionPane.ERROR_MESSAGE));
   }
 
   /** Displays a pop-up dialog with clickable HTML links. */

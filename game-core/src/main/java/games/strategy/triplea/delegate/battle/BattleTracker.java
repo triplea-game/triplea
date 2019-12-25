@@ -819,6 +819,7 @@ public class BattleTracker implements Serializable {
             .getSoundChannelBroadcaster()
             .playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id);
       } else if (blitzed.contains(territory)
+          && arrivedUnits != null
           && arrivedUnits.stream().anyMatch(Matches.unitCanBlitz())) {
         bridge
             .getSoundChannelBroadcaster()

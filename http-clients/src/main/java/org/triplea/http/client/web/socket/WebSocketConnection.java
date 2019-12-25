@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.triplea.java.Interruptibles;
-import org.triplea.java.Interruptibles.Result;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
 
@@ -28,10 +28,15 @@ import org.triplea.java.timer.Timers;
  * </ul>
  */
 class WebSocketConnection {
-  private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
   private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
+  private final URI serverUri;
 
   private boolean closed = false;
+
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  private int connectTimeoutMillis = 5000;
 
   @Getter(
       value = AccessLevel.PACKAGE,
@@ -44,6 +49,7 @@ class WebSocketConnection {
   private final ScheduledTimer pingSender;
 
   WebSocketConnection(final URI serverUri) {
+    this.serverUri = serverUri;
     client =
         new WebSocketClient(serverUri) {
           @Override
@@ -98,13 +104,13 @@ class WebSocketConnection {
   void connect() {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
-    final Result<Boolean> connectionAttempt =
-        Interruptibles.awaitResult(
-            () -> client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
-    if (!connectionAttempt.completed || !connectionAttempt.result.orElse(false)) {
-      throw new CouldNotConnect(client.getURI());
+    try {
+      client.connect();
+      pingSender.start();
+    } catch (final Exception e) {
+      pingSender.cancel();
+      throw new CouldNotConnect(serverUri);
     }
-    pingSender.start();
   }
 
   /**
@@ -115,7 +121,15 @@ class WebSocketConnection {
    */
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
-    Preconditions.checkState(client.isOpen());
+    if (!client.isOpen()) {
+      try {
+        Awaitility.await()
+            .atMost(connectTimeoutMillis, TimeUnit.MILLISECONDS)
+            .until(client::isOpen);
+      } catch (final ConditionTimeoutException ignored) {
+        throw new CouldNotConnect(serverUri);
+      }
+    }
     client.send(message);
   }
 
