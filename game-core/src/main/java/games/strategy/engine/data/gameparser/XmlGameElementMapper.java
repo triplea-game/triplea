@@ -142,10 +142,8 @@ public final class XmlGameElementMapper {
   public Optional<IDelegate> newDelegate(final String typeName) {
     checkNotNull(typeName);
 
-    // normalize the fully qualified name to just class name, matching any classes
-    // in, or in a sub-package of, 'games.strategy.triplea.delegate'
     final String normalizedTypeName =
-        typeName.replaceAll("^games\\.strategy\\.triplea\\.delegate\\.(.*\\.)*", "");
+        typeName.replaceAll("^games\\.strategy\\.triplea\\.delegate\\.", "");
     final @Nullable Supplier<IDelegate> delegateFactory =
         delegateFactoriesByTypeName.get(normalizedTypeName);
     if (delegateFactory != null) {
