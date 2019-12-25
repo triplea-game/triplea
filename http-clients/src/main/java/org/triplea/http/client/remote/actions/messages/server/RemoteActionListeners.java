@@ -3,11 +3,12 @@ package org.triplea.http.client.remote.actions.messages.server;
 import java.net.InetAddress;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
-@Getter
+@Getter(AccessLevel.PACKAGE)
 public class RemoteActionListeners {
   public static final String NOTIFICATIONS_WEBSOCKET_PATH = "/remote/actions/ws";
 
