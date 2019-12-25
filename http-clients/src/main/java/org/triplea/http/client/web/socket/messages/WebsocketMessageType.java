@@ -10,20 +10,20 @@ import com.google.common.base.Preconditions;
  * MessageTypeListenerBinding#sendPayloadToListener(ServerMessageEnvelope, Object)} for the object
  * being returned by {@link #getMessageTypeListenerBinding()}.
  *
- * @param <T> Parameterized listener class type. The class is expected to be a data object
+ * @param <ListenersT> Parameterized listener class type. The class is expected to be a data object
  *     containing {@code Consumer<..>} objects representing per-message-type listeners.
  */
-public interface WebsocketMessageType<T> {
+public interface WebsocketMessageType<ListenersT> {
 
-  MessageTypeListenerBinding<T, ?> getMessageTypeListenerBinding();
+  MessageTypeListenerBinding<ListenersT, ?> getMessageTypeListenerBinding();
 
   default void sendPayloadToListener(
-      final ServerMessageEnvelope serverMessageEnvelope, final T listener) {
+      final ServerMessageEnvelope serverMessageEnvelope, final ListenersT listeners) {
     Preconditions.checkArgument(
         serverMessageEnvelope.getMessageType().equals(toString()),
         String.format(
             "Unexpected message type: %s, wanted message type: %s",
             serverMessageEnvelope.getMessageType(), toString()));
-    getMessageTypeListenerBinding().sendPayloadToListener(serverMessageEnvelope, listener);
+    getMessageTypeListenerBinding().sendPayloadToListener(serverMessageEnvelope, listeners);
   }
 }
