@@ -33,7 +33,7 @@ final class XmlGameElementMapperTest {
     @Test
     void shouldReturnDelegateWhenFullyQualifiedNamePresent() {
       final Optional<IDelegate> result =
-          xmlGameElementMapper.newDelegate("games.strategy.triplea.delegate.battle.BattleDelegate");
+          xmlGameElementMapper.newDelegate("games.strategy.triplea.delegate.BattleDelegate");
 
       assertThat(result, isPresent());
       assertThat(result.get(), is(instanceOf(BattleDelegate.class)));
