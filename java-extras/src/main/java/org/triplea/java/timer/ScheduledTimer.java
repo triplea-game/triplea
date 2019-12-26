@@ -3,6 +3,7 @@ package org.triplea.java.timer;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+import lombok.Getter;
 
 /**
  * Class for creating a class to be executed periodically. Sample usage:
@@ -32,6 +33,7 @@ public class ScheduledTimer {
   private final long periodMillis;
 
   private final Timer timer;
+  @Getter private boolean running;
 
   ScheduledTimer(
       final String threadName,
@@ -45,6 +47,7 @@ public class ScheduledTimer {
   }
 
   public ScheduledTimer start() {
+    running = true;
     timer.scheduleAtFixedRate(
         new TimerTask() {
           @Override
@@ -58,6 +61,7 @@ public class ScheduledTimer {
   }
 
   public void cancel() {
+    running = false;
     timer.cancel();
   }
 }

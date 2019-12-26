@@ -1,6 +1,7 @@
 package org.triplea.http.client.web.socket;
 
 import java.net.URI;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.experimental.UtilityClass;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
@@ -35,10 +36,12 @@ public class WebsocketListenerFactory {
       WebsocketListener<MessageTypeT, ListenersTypeT> newListener(
           final URI serverUri,
           final String path,
-          final Function<String, MessageTypeT> messageTypeExtraction) {
+          final Function<String, MessageTypeT> messageTypeExtraction,
+          final Consumer<String> errorHandler) {
 
     final URI websocketUri = URI.create(serverUri + path);
-    final GenericWebSocketClient genericWebSocketClient = new GenericWebSocketClient(websocketUri);
+    final GenericWebSocketClient genericWebSocketClient =
+        new GenericWebSocketClient(websocketUri, errorHandler);
 
     return new WebsocketListener<>(genericWebSocketClient) {
       @Override

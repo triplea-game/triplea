@@ -87,7 +87,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   private LobbyChatClient createModerator() {
     final LobbyChatClient moderator =
         // caution: api-key must match values in database (integration.yml)
-        new LobbyChatClient(localhost, MODERATOR_API_KEY);
+        new LobbyChatClient(localhost, MODERATOR_API_KEY, err -> {});
 
     moderator.setChatMessageListeners(
         ChatMessageListeners.builder()
@@ -107,7 +107,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   }
 
   private LobbyChatClient createChatter() {
-    final LobbyChatClient chatter = new LobbyChatClient(localhost, CHATTER_API_KEY);
+    final LobbyChatClient chatter = new LobbyChatClient(localhost, CHATTER_API_KEY, err -> {});
 
     chatter.setChatMessageListeners(
         ChatMessageListeners.builder()

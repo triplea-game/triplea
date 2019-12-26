@@ -20,9 +20,10 @@ public class LobbyChatClient
 
   private final ChatClientEnvelopeFactory outboundMessageFactory;
 
-  public LobbyChatClient(final URI lobbyUri, final ApiKey apiKey) {
+  public LobbyChatClient(
+      final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
     this(
-        new GenericWebSocketClient(URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH)),
+        new GenericWebSocketClient(URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH), errorHandler),
         new ChatClientEnvelopeFactory(apiKey));
   }
 
@@ -34,8 +35,9 @@ public class LobbyChatClient
     outboundMessageFactory = clientEventFactory;
   }
 
-  public static LobbyChatClient newClient(final URI lobbyUri, final ApiKey apiKey) {
-    return new LobbyChatClient(lobbyUri, apiKey);
+  public static LobbyChatClient newClient(
+      final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
+    return new LobbyChatClient(lobbyUri, apiKey, errorHandler);
   }
 
   public void setChatMessageListeners(final ChatMessageListeners chatMessageListeners) {

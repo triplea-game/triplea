@@ -122,7 +122,9 @@ public class LobbyLogin {
             LobbyClient.builder()
                 .httpLobbyClient(
                     HttpLobbyClient.newClient(
-                        serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())))
+                        serverProperties.getUri(),
+                        ApiKey.of(loginResponse.getApiKey()),
+                        error -> showError("Connection problem", error)))
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .moderator(loginResponse.isModerator())
@@ -142,7 +144,10 @@ public class LobbyLogin {
   }
 
   private void showError(final String title, final String message) {
-    SwingComponents.showError(parentWindow, title, message);
+    // We use 'null' parentWindow in case there is an async failure connecting to the lobby
+    // server. In the async case, we close the parent window while still connecting, the close
+    // of the parent window will close the child dialog error message as well.
+    SwingComponents.showError(null, title, message);
   }
 
   private Optional<LobbyClient> loginToServer() {
@@ -207,7 +212,9 @@ public class LobbyLogin {
       }
       return Optional.of(
           HttpLobbyClient.newClient(
-              serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())));
+              serverProperties.getUri(),
+              ApiKey.of(loginResponse.getApiKey()),
+              error -> showError("Connection problem", error)));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();

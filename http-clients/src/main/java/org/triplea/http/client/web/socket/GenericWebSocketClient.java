@@ -29,15 +29,16 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Consumer<String>> connectionClosedListeners = new ArrayList<>();
 
-  public GenericWebSocketClient(final URI lobbyUri) {
-    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)));
+  public GenericWebSocketClient(final URI lobbyUri, final Consumer<String> errorHandler) {
+    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)), errorHandler);
   }
 
   @VisibleForTesting
-  GenericWebSocketClient(final WebSocketConnection webSocketClient) {
+  GenericWebSocketClient(
+      final WebSocketConnection webSocketClient, final Consumer<String> errorHandler) {
     client = webSocketClient;
     client.addListener(this);
-    client.connect();
+    client.connect(errorHandler);
   }
 
   @VisibleForTesting

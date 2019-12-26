@@ -8,6 +8,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
 import games.strategy.net.IServerMessenger;
 import java.net.URI;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,10 +25,13 @@ public class LobbyWatcherThread {
   @Nonnull private final WatcherThreadMessaging watcherThreadMessaging;
 
   public void createLobbyWatcher(
-      final URI lobbyUri, final GameHostingResponse gameHostingResponse) {
+      final URI lobbyUri,
+      final GameHostingResponse gameHostingResponse,
+      final Consumer<String> errorHandler) {
 
     final HttpLobbyClient lobbyClient =
-        HttpLobbyClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
+        HttpLobbyClient.newClient(
+            lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()), errorHandler);
 
     InGameLobbyWatcher.newInGameLobbyWatcher(
             serverMessenger,
