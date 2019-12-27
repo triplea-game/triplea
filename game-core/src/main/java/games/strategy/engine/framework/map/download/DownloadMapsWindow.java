@@ -3,7 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Predicates.not;
+import static java.util.function.Predicate.not;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;

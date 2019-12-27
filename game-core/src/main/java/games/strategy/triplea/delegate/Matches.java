@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static com.google.common.base.Predicates.not;
+import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;

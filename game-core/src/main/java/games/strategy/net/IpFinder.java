@@ -1,6 +1,6 @@
 package games.strategy.net;
 
-import static com.google.common.base.Predicates.not;
+import static java.util.function.Predicate.not;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.net.Inet4Address;
