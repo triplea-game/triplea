@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -141,6 +142,11 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             0,
             0));
     layoutPlayerComponents(localPlayerPanel, playerTypes, gameSelectorModel.getGameData());
+  }
+
+  @Override
+  public List<Action> getUserActions() {
+    return List.of();
   }
 
   @Override

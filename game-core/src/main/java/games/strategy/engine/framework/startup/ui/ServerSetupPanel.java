@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
+import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
@@ -488,7 +489,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
               actions.add(new EditGameCommentAction(watcher, ServerSetupPanel.this));
               actions.add(new RemoveGameFromLobbyAction(watcher));
             });
-    return actions;
+    return ImmutableList.copyOf(actions);
   }
 
   @Override
