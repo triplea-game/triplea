@@ -135,25 +135,19 @@ class WebSocketConnection {
             });
   }
 
-  // Suppression: Ignoring future return values ignores any exceptions thrown by the code
-  // that completes the future. Connect blocking does not throw any exceptions, there are
-  // no exceptions to ignore, we can ignore the future returned by 'submit'.
-  @SuppressWarnings("FutureReturnValueIgnored")
   private CompletableFuture<Boolean> connectAsync() {
     final CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
     // execute the connection attempt
-    Executors.newSingleThreadExecutor()
-        .submit(
-            () -> {
-              boolean connected;
-              try {
-                connected =
-                    client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-              } catch (final InterruptedException ignored) {
-                connected = false;
-              }
-              return completableFuture.complete(connected);
-            });
+    new Thread(() -> {
+      boolean connected;
+      try {
+        connected =
+            client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+      } catch (final InterruptedException ignored) {
+        connected = false;
+      }
+      completableFuture.complete(connected);
+    }).start();
     return completableFuture;
   }
 
