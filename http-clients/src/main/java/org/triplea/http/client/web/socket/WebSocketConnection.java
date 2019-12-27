@@ -8,12 +8,13 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.triplea.java.timer.ScheduledTimer;
@@ -30,6 +31,7 @@ import org.triplea.java.timer.Timers;
  *   <li>Issuing periodic keep-alive messages (ping) to keep the websocket connection open
  * </ul>
  */
+@Log
 class WebSocketConnection {
   @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
 
@@ -115,11 +117,6 @@ class WebSocketConnection {
    * @throws IllegalStateException Thrown if connection is already open (eg: connect called twice).
    * @throws IllegalStateException Thrown if connection has been closed (ie: 'close()' was called)
    */
-  // Suppression: Ignoring future return values ignores any exceptions thrown by the code
-  // that completes the future. In this case we ignore the returned future from 'whenComplete'
-  // to avoid blocking. We would not expect the ping sender start or error handler to throw
-  // exceptions.
-  @SuppressWarnings("FutureReturnValueIgnored")
   void connect(final Consumer<String> errorHandler) {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
@@ -132,22 +129,29 @@ class WebSocketConnection {
               } else {
                 errorHandler.accept("Failed to connect to: " + serverUri);
               }
+            })
+        .exceptionally(
+            throwable -> {
+              log.log(Level.SEVERE, "Unexpected exception starting socket ping sender", throwable);
+              return false;
             });
   }
 
   private CompletableFuture<Boolean> connectAsync() {
     final CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
     // execute the connection attempt
-    new Thread(() -> {
-      boolean connected;
-      try {
-        connected =
-            client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-      } catch (final InterruptedException ignored) {
-        connected = false;
-      }
-      completableFuture.complete(connected);
-    }).start();
+    new Thread(
+            () -> {
+              boolean connected;
+              try {
+                connected =
+                    client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+              } catch (final InterruptedException ignored) {
+                connected = false;
+              }
+              completableFuture.complete(connected);
+            })
+        .start();
     return completableFuture;
   }
 
