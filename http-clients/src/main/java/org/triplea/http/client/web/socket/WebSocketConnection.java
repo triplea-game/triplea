@@ -10,7 +10,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -129,11 +128,6 @@ class WebSocketConnection {
               } else {
                 errorHandler.accept("Failed to connect to: " + serverUri);
               }
-            })
-        .exceptionally(
-            throwable -> {
-              log.log(Level.SEVERE, "Unexpected exception starting socket ping sender", throwable);
-              return false;
             });
   }
 

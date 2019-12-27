@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import lombok.extern.java.Log;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
@@ -19,6 +21,7 @@ import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
  * this class makes sure that all operations are non-blocking, but keep their initial dispatch
  * order.
  */
+@Log
 public class GenericWebSocketClient implements WebSocketConnectionListener {
   private static final Gson gson = new Gson();
 
@@ -38,7 +41,14 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
       final WebSocketConnection webSocketClient, final Consumer<String> errorHandler) {
     client = webSocketClient;
     client.addListener(this);
-    client.connect(errorHandler);
+    client
+        .connect(errorHandler)
+        .exceptionally(
+            throwable -> {
+              log.log(
+                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
+              return false;
+            });
   }
 
   @VisibleForTesting
