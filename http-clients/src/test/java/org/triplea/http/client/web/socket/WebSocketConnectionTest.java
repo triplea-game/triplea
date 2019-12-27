@@ -105,8 +105,9 @@ class WebSocketConnectionTest {
     void connectWillInitiateConnection() throws Exception {
       givenWebSocketConnects(true);
 
-      webSocketConnection.connect(errorHandler);
+      final boolean connected = webSocketConnection.connect(errorHandler).get();
 
+      assertThat(connected, is(true));
       verifyConnectWasCalled();
       verifyPingerIsStarted();
     }
@@ -135,10 +136,9 @@ class WebSocketConnectionTest {
     void connectionFailure() throws Exception {
       givenWebSocketConnects(false);
 
-      webSocketConnection.connect(errorHandler);
+      final boolean connected = webSocketConnection.connect(errorHandler).get();
 
-      // minimal amount of sleep to allow new thread to spawn up and connection attempt to fail.
-      Thread.sleep(50L);
+      assertThat(connected, is(false));
       verifyPingerNotStarted();
       verifyErrorHandlerWasCalled();
     }
@@ -157,10 +157,9 @@ class WebSocketConnectionTest {
     void connectionFailureWithInterruptedException() throws Exception {
       givenConnectionAttemptThrows();
 
-      webSocketConnection.connect(errorHandler);
+      final boolean connected = webSocketConnection.connect(errorHandler).get();
 
-      // minimal amount of sleep to allow new thread to spawn up and connection attempt to fail.
-      Thread.sleep(50L);
+      assertThat(connected, is(false));
       verifyPingerNotStarted();
       verifyErrorHandlerWasCalled();
     }

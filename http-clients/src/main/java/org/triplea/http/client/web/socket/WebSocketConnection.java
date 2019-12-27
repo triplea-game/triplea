@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -117,11 +118,11 @@ class WebSocketConnection {
    * @throws IllegalStateException Thrown if connection is already open (eg: connect called twice).
    * @throws IllegalStateException Thrown if connection has been closed (ie: 'close()' was called)
    */
-  void connect(final Consumer<String> errorHandler) {
+  CompletableFuture<Boolean> connect(final Consumer<String> errorHandler) {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
 
-    connectAsync()
+    return connectAsync()
         .whenComplete(
             (connected, throwable) -> {
               if (connected && throwable == null) {
