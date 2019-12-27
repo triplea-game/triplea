@@ -17,6 +17,7 @@ import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
+import games.strategy.engine.framework.save.game.GameDataWriter;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
@@ -40,9 +41,6 @@ import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -51,7 +49,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
-import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.ExitStatus;
 
@@ -157,15 +154,8 @@ public class ServerGame extends AbstractGame {
     randomStats = new RandomStats(messengers);
     // Import dice stats from history if there is any (e.g. loading a saved game).
     importDiceStats((HistoryNode) gameData.getHistory().getRoot());
-
     final IServerRemote serverRemote =
-        () -> {
-          try {
-            return IoUtils.writeToMemory(this::saveGame);
-          } catch (final IOException e) {
-            throw new IllegalStateException(e);
-          }
-        };
+        () -> GameDataWriter.writeToBytes(data, delegateExecutionManager);
     messengers.registerRemote(serverRemote, SERVER_REMOTE);
   }
 
@@ -207,7 +197,7 @@ public class ServerGame extends AbstractGame {
     }
     try {
       final CountDownLatch waitOnObserver = new CountDownLatch(1);
-      final byte[] bytes = IoUtils.writeToMemory(this::saveGame);
+      final byte[] bytes = GameDataWriter.writeToBytes(gameData, delegateExecutionManager);
       new Thread(
               () -> {
                 try {
@@ -387,35 +377,7 @@ public class ServerGame extends AbstractGame {
               + parentDir.getAbsolutePath());
     }
 
-    try (OutputStream fout = new FileOutputStream(file)) {
-      saveGame(fout);
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to save game to file: " + file.getAbsolutePath(), e);
-    }
-  }
-
-  private void saveGame(final OutputStream out) throws IOException {
-    final String errorMessage = "Error saving game.. ";
-
-    try {
-      // TODO: is this necessary to save a game?
-      if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-        // try again
-        if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-          log.severe(errorMessage + " could not lock delegate execution");
-          return;
-        }
-      }
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return;
-    }
-
-    try {
-      GameDataManager.saveGame(out, gameData);
-    } finally {
-      delegateExecutionManager.resumeDelegateExecution();
-    }
+    GameDataWriter.writeToFile(gameData, delegateExecutionManager, file);
   }
 
   private void runStep(final boolean stepIsRestoredFromSavedGame) {
