@@ -15,7 +15,9 @@ class GameListingControllerTest extends ProtectedEndpointTest<GameListingClient>
   private final LobbyWatcherClient lobbyWatcherClient;
 
   GameListingControllerTest() {
-    super(AllowedUserRole.HOST, GameListingClient::newClient);
+    super(
+        AllowedUserRole.HOST,
+        (uri, apiKey) -> GameListingClient.newClient(uri, apiKey, errMsg -> {}));
     lobbyWatcherClient =
         LobbyWatcherClient.newClient(localhost, AllowedUserRole.HOST.getAllowedKey());
   }

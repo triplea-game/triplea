@@ -24,7 +24,6 @@ import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
-import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -49,8 +48,7 @@ public class LobbyFrame extends JFrame {
     chatPlayers.addActionFactory(this::newModeratorActions);
 
     final LobbyGameTableModel tableModel =
-        new LobbyGameTableModel(
-            lobbyClient.isModerator(), lobbyClient.getHttpLobbyClient(), this::reportErrorMessage);
+        new LobbyGameTableModel(lobbyClient.isModerator(), lobbyClient.getHttpLobbyClient());
     final LobbyGamePanel gamePanel =
         new LobbyGamePanel(lobbyClient, serverProperties.getUri(), tableModel);
 
@@ -104,17 +102,6 @@ public class LobbyFrame extends JFrame {
             shutdown();
           }
         });
-  }
-
-  private void reportErrorMessage(final String errorMessage) {
-    DialogBuilder.builder()
-        .parent(this)
-        .title("Lobby not available")
-        .errorMessage(
-            "Failed to connect to lobby, game listing will not be updated.\n"
-                + "Error: "
-                + errorMessage)
-        .showDialog();
   }
 
   private List<Action> newModeratorActions(final ChatParticipant clickedOn) {
