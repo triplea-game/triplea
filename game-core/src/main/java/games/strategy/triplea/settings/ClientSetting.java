@@ -108,10 +108,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> proxyPort = new IntegerClientSetting("PROXY_PORT");
   public static final BooleanClientSetting rememberLoginPassword =
       new BooleanClientSetting("REMEMBER_PASSWORD", false);
-  public static final ClientSetting<Path> saveGamesFolderPath =
-      new PathClientSetting(
-          "SAVE_GAMES_FOLDER_PATH",
-          ClientFileSystemHelper.getUserRootFolder().toPath().resolve("savedGames"));
   public static final ClientSetting<Integer> serverObserverJoinWaitTime =
       new IntegerClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
   public static final ClientSetting<Integer> serverStartGameSyncWaitTime =

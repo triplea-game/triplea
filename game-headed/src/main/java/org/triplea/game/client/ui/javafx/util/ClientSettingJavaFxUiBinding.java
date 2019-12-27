@@ -140,13 +140,6 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
     }
   },
 
-  SAVE_GAMES_FOLDER_PATH_BINDING(SettingType.FOLDER_LOCATIONS) {
-    @Override
-    public SelectionComponent<Region> newSelectionComponent() {
-      return folderPath(ClientSetting.saveGamesFolderPath);
-    }
-  },
-
   USER_MAPS_FOLDER_PATH_BINDING(SettingType.FOLDER_LOCATIONS) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
