@@ -13,7 +13,6 @@ import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.triplea.java.timer.ScheduledTimer;
@@ -30,7 +29,6 @@ import org.triplea.java.timer.Timers;
  *   <li>Issuing periodic keep-alive messages (ping) to keep the websocket connection open
  * </ul>
  */
-@Log
 class WebSocketConnection {
   @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
 
