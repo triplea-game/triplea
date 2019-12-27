@@ -141,8 +141,9 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
       final JPanel cancelPanel = new JPanel();
       cancelPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
       cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-      if (!gameSetupPanel.getUserActions().isEmpty()) {
-        createUserActionMenu(gameSetupPanel, cancelPanel);
+      final List<Action> actions = gameSetupPanel.getUserActions();
+      if (!actions.isEmpty()) {
+        createUserActionMenu(gameSetupPanel, cancelPanel, actions);
       }
       cancelPanel.add(cancelButton);
       gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
@@ -162,13 +163,12 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   }
 
   private static void createUserActionMenu(
-      final SetupPanel gameSetupPanel, final JPanel cancelPanel) {
+      final SetupPanel gameSetupPanel, final JPanel cancelPanel, final List<Action> actions) {
     // if we need this for something other than network, add a way to set it
     final JButton button = new JButton("Network...");
     button.addActionListener(
         e -> {
           final JPopupMenu menu = new JPopupMenu();
-          final List<Action> actions = gameSetupPanel.getUserActions();
           for (final Action a : actions) {
             menu.add(a);
           }
