@@ -5,7 +5,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'io.github.openfeign:feign-core:10.2.0'
     implementation 'io.github.openfeign:feign-gson:10.2.0'
-    implementation "org.awaitility:awaitility:$awaitilityVersion"
     implementation 'org.java-websocket:Java-WebSocket:1.4.0'
     implementation project(":domain-data")
     implementation project(":java-extras")
