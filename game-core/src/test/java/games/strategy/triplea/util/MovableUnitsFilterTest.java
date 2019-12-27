@@ -56,9 +56,7 @@ public class MovableUnitsFilterTest {
   }
 
   private List<UnitType> getUnitTypes(final FilterOperationResult result) {
-    return result.getUnitsWithDependents().stream()
-        .map(u -> u.getType())
-        .collect(Collectors.toList());
+    return result.getUnitsWithDependents().stream().map(Unit::getType).collect(Collectors.toList());
   }
 
   private Matcher<Optional<String>> isNotAllUnitsHaveEnoughMovement() {

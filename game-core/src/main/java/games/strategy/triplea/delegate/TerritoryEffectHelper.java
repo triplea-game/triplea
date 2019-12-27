@@ -113,6 +113,6 @@ public final class TerritoryEffectHelper {
       final TerritoryEffect effect, final UnitType unitType) {
     final Map<UnitType, BigDecimal> map =
         TerritoryEffectAttachment.get(effect).getMovementCostModifier();
-    return map.containsKey(unitType) ? map.get(unitType) : BigDecimal.ZERO;
+    return map.getOrDefault(unitType, BigDecimal.ZERO);
   }
 }
