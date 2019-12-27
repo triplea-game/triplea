@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerId;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +45,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     return null;
   }
 
-  public List<Action> getUserActions() {
-    return new ArrayList<>();
-  }
+  public abstract List<Action> getUserActions();
 
   void layoutPlayerComponents(
       final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {

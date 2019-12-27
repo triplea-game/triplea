@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
+import javax.swing.Action;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.swing.SwingAction;
 
@@ -26,6 +27,11 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   private void setupListeners() {
     gameSelectorModel.addObserver(this);
+  }
+
+  @Override
+  public List<Action> getUserActions() {
+    return List.of();
   }
 
   @Override

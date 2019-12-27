@@ -8,7 +8,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 import java.util.Optional;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -272,6 +274,11 @@ public class MetaSetupPanel extends SetupPanel {
   @Override
   public boolean canGameStart() {
     return false;
+  }
+
+  @Override
+  public List<Action> getUserActions() {
+    return List.of();
   }
 
   @Override
