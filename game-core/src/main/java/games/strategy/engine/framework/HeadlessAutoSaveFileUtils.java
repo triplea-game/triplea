@@ -13,7 +13,7 @@ public class HeadlessAutoSaveFileUtils extends AutoSaveFileUtils {
     if (!prefix.isEmpty()) {
       return prefix + "_" + baseFileName;
     }
-    return baseFileName;
+    return super.getAutoSaveFileName(baseFileName);
   }
 
   @Override
