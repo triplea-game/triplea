@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.triplea.settings.ClientSetting;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.File;
@@ -27,7 +26,7 @@ public final class GameFileSelector {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(owner);
       fileDialog.setMode(FileDialog.LOAD);
-      fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
+      fileDialog.setDirectory(SaveGameFileChooser.getSaveGameFolder().toString());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

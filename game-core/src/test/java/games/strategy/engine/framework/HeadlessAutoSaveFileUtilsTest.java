@@ -4,8 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.triplea.settings.ClientSetting;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
@@ -13,19 +11,6 @@ import org.junit.jupiter.api.Test;
 
 final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   private final HeadlessAutoSaveFileUtils autoSaveFileUtils = new HeadlessAutoSaveFileUtils();
-
-  @Nested
-  final class GetAutoSaveFileTest {
-    @Test
-    void shouldReturnFileInAutoSaveFolder() {
-      ClientSetting.saveGamesFolderPath.setValue(Paths.get("path", "to", "saves"));
-
-      final String fileName = "savegame.tsvg";
-      assertThat(
-          autoSaveFileUtils.getAutoSaveFile(fileName),
-          is(Paths.get("path", "to", "saves", "autoSave", fileName).toFile()));
-    }
-  }
 
   @Nested
   final class GetAutoSaveFileNameTest {

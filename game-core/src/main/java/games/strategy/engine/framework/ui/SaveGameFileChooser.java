@@ -1,8 +1,9 @@
 package games.strategy.engine.framework.ui;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
+import java.nio.file.Path;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -12,11 +13,21 @@ public final class SaveGameFileChooser extends JFileChooser {
 
   private static SaveGameFileChooser instance;
 
+  private static final Path saveGameFolder =
+      ClientFileSystemHelper.getUserRootFolder().toPath().resolve("savedGames");
+
   private SaveGameFileChooser() {
     setFileFilter(newGameDataFileFilter());
-    final File saveGamesFolder = ClientSetting.saveGamesFolderPath.getValueOrThrow().toFile();
-    ensureDirectoryExists(saveGamesFolder);
-    setCurrentDirectory(saveGamesFolder);
+    setCurrentDirectory(getSaveGameFolder());
+  }
+
+  public static File getSaveGameFolder() {
+    final File folder = saveGameFolder.toFile();
+    if (!folder.mkdirs() && !folder.exists()) {
+      throw new IllegalStateException(
+          "Unable to create save game folder: " + folder.getAbsolutePath());
+    }
+    return folder;
   }
 
   public static SaveGameFileChooser getInstance() {
@@ -24,15 +35,6 @@ public final class SaveGameFileChooser extends JFileChooser {
       instance = new SaveGameFileChooser();
     }
     return instance;
-  }
-
-  private static void ensureDirectoryExists(final File f) {
-    if (!f.getParentFile().exists()) {
-      ensureDirectoryExists(f.getParentFile());
-    }
-    if (!f.exists()) {
-      f.mkdir();
-    }
   }
 
   private static FileFilter newGameDataFileFilter() {

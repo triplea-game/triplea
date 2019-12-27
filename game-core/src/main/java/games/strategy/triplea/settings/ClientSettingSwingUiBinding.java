@@ -241,16 +241,6 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
-  SAVE_GAMES_FOLDER_PATH_BINDING(
-      "Saved Games Folder",
-      SettingType.FOLDER_LOCATIONS,
-      "The folder where saved game files will be stored by default") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return folderPath(ClientSetting.saveGamesFolderPath);
-    }
-  },
-
   USER_MAPS_FOLDER_PATH_BINDING(
       "Maps Folder",
       SettingType.FOLDER_LOCATIONS,
