@@ -5,12 +5,14 @@ import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.awaitility.Awaitility;
-import org.awaitility.core.ConditionTimeoutException;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.triplea.java.timer.ScheduledTimer;
@@ -28,15 +30,18 @@ import org.triplea.java.timer.Timers;
  * </ul>
  */
 class WebSocketConnection {
+  @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
+
   private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
+  /**
+   * If sending messages before a connection is opened, they will be queued. When the connection is
+   * opened, the queue is flushed and messages will be sent in order.
+   */
+  private final Queue<String> queuedMessages = new ConcurrentLinkedQueue<>();
+
   private final URI serverUri;
 
   private boolean closed = false;
-
-  @Setter(
-      value = AccessLevel.PACKAGE,
-      onMethod_ = {@VisibleForTesting})
-  private int connectTimeoutMillis = 5000;
 
   @Getter(
       value = AccessLevel.PACKAGE,
@@ -46,6 +51,9 @@ class WebSocketConnection {
       onMethod_ = {@VisibleForTesting})
   private WebSocketClient client;
 
+  @Getter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
   private final ScheduledTimer pingSender;
 
   WebSocketConnection(final URI serverUri) {
@@ -53,7 +61,12 @@ class WebSocketConnection {
     client =
         new WebSocketClient(serverUri) {
           @Override
-          public void onOpen(final ServerHandshake serverHandshake) {}
+          public void onOpen(final ServerHandshake serverHandshake) {
+            synchronized (queuedMessages) {
+              queuedMessages.forEach(this::send);
+              queuedMessages.clear();
+            }
+          }
 
           @Override
           public void onMessage(final String message) {
@@ -95,53 +108,62 @@ class WebSocketConnection {
   }
 
   /**
-   * Initiates a websocket connection. Must be called before {@link #sendMessage(String)}. This
-   * method blocks until the connection has either successfully been established, or the connection
-   * failed.
+   * Initiates a non-blocking websocket connection.
    *
-   * @throws CouldNotConnect If the connection fails
+   * @param errorHandler Invoked if there is a failure to connect.
+   * @throws IllegalStateException Thrown if connection is already open (eg: connect called twice).
+   * @throws IllegalStateException Thrown if connection has been closed (ie: 'close()' was called)
    */
-  void connect() {
+  CompletableFuture<Boolean> connect(final Consumer<String> errorHandler) {
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
-    try {
-      client.connect();
-      pingSender.start();
-    } catch (final Exception e) {
-      pingSender.cancel();
-      throw new CouldNotConnect(serverUri);
-    }
+
+    return connectAsync()
+        .whenComplete(
+            (connected, throwable) -> {
+              if (connected && throwable == null) {
+                pingSender.start();
+              } else {
+                errorHandler.accept("Failed to connect to: " + serverUri);
+              }
+            });
+  }
+
+  private CompletableFuture<Boolean> connectAsync() {
+    final CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+    // execute the connection attempt
+    new Thread(
+            () -> {
+              boolean connected;
+              try {
+                connected =
+                    client.connectBlocking(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+              } catch (final InterruptedException ignored) {
+                connected = false;
+              }
+              completableFuture.complete(connected);
+            })
+        .start();
+    return completableFuture;
   }
 
   /**
-   * Sends a message asynchronously.
+   * Sends a message asynchronously. Messages are queued until a connection has been established.
    *
-   * @throws IllegalStateException If the connection hasn't been opened yet. {@link #connect()}
-   *     needs to be called first.
+   * @throws IllegalStateException If the connection has been closed.
    */
   void sendMessage(final String message) {
     Preconditions.checkState(!closed);
-    if (!client.isOpen()) {
-      try {
-        Awaitility.await()
-            .atMost(connectTimeoutMillis, TimeUnit.MILLISECONDS)
-            .until(client::isOpen);
-      } catch (final ConditionTimeoutException ignored) {
-        throw new CouldNotConnect(serverUri);
+
+    // Synchronized to make sure that the connection does not open right after we check it.
+    // If the connection is not yet open, the synchronized block should guarantee that we add
+    // to the queued message queue before we start flushing it.
+    synchronized (queuedMessages) {
+      if (!client.isOpen()) {
+        queuedMessages.add(message);
+      } else {
+        client.send(message);
       }
-    }
-    client.send(message);
-  }
-
-  /** Exception indicating connection to server failed. */
-  @VisibleForTesting
-  static final class CouldNotConnect extends RuntimeException {
-    private static final long serialVersionUID = -5403199291005160495L;
-
-    private static final String ERROR_MESSAGE = "Error, could not connect to server at %s";
-
-    CouldNotConnect(final URI uri) {
-      super(String.format(ERROR_MESSAGE, uri));
     }
   }
 }

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import lombok.extern.java.Log;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
@@ -19,6 +21,7 @@ import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
  * this class makes sure that all operations are non-blocking, but keep their initial dispatch
  * order.
  */
+@Log
 public class GenericWebSocketClient implements WebSocketConnectionListener {
   private static final Gson gson = new Gson();
 
@@ -29,15 +32,23 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Consumer<String>> connectionClosedListeners = new ArrayList<>();
 
-  public GenericWebSocketClient(final URI lobbyUri) {
-    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)));
+  public GenericWebSocketClient(final URI lobbyUri, final Consumer<String> errorHandler) {
+    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)), errorHandler);
   }
 
   @VisibleForTesting
-  GenericWebSocketClient(final WebSocketConnection webSocketClient) {
+  GenericWebSocketClient(
+      final WebSocketConnection webSocketClient, final Consumer<String> errorHandler) {
     client = webSocketClient;
     client.addListener(this);
-    client.connect();
+    client
+        .connect(errorHandler)
+        .exceptionally(
+            throwable -> {
+              log.log(
+                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
+              return false;
+            });
   }
 
   @VisibleForTesting
