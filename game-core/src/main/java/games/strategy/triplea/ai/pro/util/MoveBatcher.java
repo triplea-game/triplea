@@ -113,9 +113,9 @@ public class MoveBatcher {
     if (!canMergeMoves(move1, move2)) {
       throw new IllegalStateException("can't merge moves: " + move1 + " and " + move2);
     }
-    final var units = new ArrayList<Unit>(move1.getUnits());
+    final var units = new ArrayList<>(move1.getUnits());
     units.addAll(move2.getUnits());
-    final var unitsToTransports = new HashMap<Unit, Unit>(move1.getUnitsToTransports());
+    final var unitsToTransports = new HashMap<>(move1.getUnitsToTransports());
     unitsToTransports.putAll(move2.getUnitsToTransports());
     return new MoveDescription(units, move1.getRoute(), unitsToTransports);
   }
