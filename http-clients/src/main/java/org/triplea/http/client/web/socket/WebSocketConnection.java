@@ -43,6 +43,9 @@ class WebSocketConnection {
    * State variable to track open connection, this value is set and checked under the same
    * synchronization lock.
    */
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
   private boolean connectionIsOpen = false;
 
   private final URI serverUri;
