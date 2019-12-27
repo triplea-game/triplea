@@ -3,11 +3,11 @@ package org.triplea.http.client.web.socket;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.net.URI;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
@@ -37,7 +37,16 @@ class WebSocketConnection {
    * If sending messages before a connection is opened, they will be queued. When the connection is
    * opened, the queue is flushed and messages will be sent in order.
    */
-  private final Queue<String> queuedMessages = new ConcurrentLinkedQueue<>();
+  private final Queue<String> queuedMessages = new ArrayDeque<>();
+
+  /**
+   * State variable to track open connection, this value is set and checked under the same
+   * synchronization lock.
+   */
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  private boolean connectionIsOpen = false;
 
   private final URI serverUri;
 
@@ -63,6 +72,7 @@ class WebSocketConnection {
           @Override
           public void onOpen(final ServerHandshake serverHandshake) {
             synchronized (queuedMessages) {
+              connectionIsOpen = true;
               queuedMessages.forEach(this::send);
               queuedMessages.clear();
             }
@@ -159,7 +169,7 @@ class WebSocketConnection {
     // If the connection is not yet open, the synchronized block should guarantee that we add
     // to the queued message queue before we start flushing it.
     synchronized (queuedMessages) {
-      if (!client.isOpen()) {
+      if (!connectionIsOpen) {
         queuedMessages.add(message);
       } else {
         client.send(message);

@@ -183,22 +183,16 @@ class WebSocketConnectionTest {
     @Test
     @DisplayName("Send will send messages if connection is open")
     void sendMessage() {
-      givenWebSocketIsOpen(true);
+      webSocketConnection.setConnectionIsOpen(true);
 
       webSocketConnection.sendMessage(MESSAGE);
 
       verify(webSocketClient).send(MESSAGE);
     }
 
-    private void givenWebSocketIsOpen(final boolean isOpen) {
-      when(webSocketClient.isOpen()).thenReturn(isOpen);
-    }
-
     @Test
     @DisplayName("Send will queue messages if connection is not open")
     void sendMessageWillQueueMessagesIfConnectionIsNotOpen() {
-      givenWebSocketIsOpen(false);
-
       webSocketConnection.sendMessage(MESSAGE);
 
       verify(webSocketClient, never()).send(anyString());
