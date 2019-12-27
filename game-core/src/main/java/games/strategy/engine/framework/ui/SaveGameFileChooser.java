@@ -27,11 +27,8 @@ public final class SaveGameFileChooser extends JFileChooser {
   }
 
   private static void ensureDirectoryExists(final File f) {
-    if (!f.getParentFile().exists()) {
-      ensureDirectoryExists(f.getParentFile());
-    }
-    if (!f.exists()) {
-      f.mkdir();
+    if (!f.mkdirs() && !f.exists()) {
+      throw new IllegalStateException("Unable to create save game folder: " + f.getAbsolutePath());
     }
   }
 
