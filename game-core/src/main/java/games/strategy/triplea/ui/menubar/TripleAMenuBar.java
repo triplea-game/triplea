@@ -6,6 +6,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -64,7 +65,7 @@ public final class TripleAMenuBar extends JMenuBar {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
-      fileDialog.setDirectory(SaveGameFileChooser.getSaveGameFolder().toString());
+      fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
 

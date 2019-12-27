@@ -4,7 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 import static org.triplea.java.StringUtils.capitalize;
 
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -15,13 +16,15 @@ import java.util.Locale;
  * Provides methods for getting the names of auto-save files periodically generated during a game.
  */
 public class AutoSaveFileUtils {
+  @VisibleForTesting
   File getAutoSaveFile(final String baseFileName) {
-    return SaveGameFileChooser.getSaveGameFolder()
-        .toPath()
+    return ClientSetting.saveGamesFolderPath
+        .getValueOrThrow()
         .resolve(Paths.get("autoSave", getAutoSaveFileName(baseFileName)))
         .toFile();
   }
 
+  @VisibleForTesting
   String getAutoSaveFileName(final String baseFileName) {
     return baseFileName;
   }
