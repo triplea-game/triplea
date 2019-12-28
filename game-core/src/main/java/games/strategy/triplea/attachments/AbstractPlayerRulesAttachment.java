@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import java.util.Collection;
@@ -71,7 +71,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   /** Get condition attachment for the given player and condition name. */
   public static ICondition getCondition(
       final String playerName, final String conditionName, final GameData data) {
-    final PlayerId player = data.getPlayerList().getPlayerId(playerName);
+    final GamePlayer player = data.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
       log.severe(
@@ -81,7 +81,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
               + playerName);
       return null;
     }
-    final Collection<PlayerId> allPlayers = data.getPlayerList().getPlayers();
+    final Collection<GamePlayer> allPlayers = data.getPlayerList().getPlayers();
     final ICondition attachment;
     try {
       if (conditionName.contains(Constants.RULES_OBJECTIVE_PREFIX)

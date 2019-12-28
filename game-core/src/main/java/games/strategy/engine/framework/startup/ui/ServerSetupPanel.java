@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import com.google.common.collect.ImmutableList;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
 import games.strategy.engine.framework.network.ui.SetPasswordAction;
@@ -326,7 +326,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Map<String, String> players = model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
     final Map<String, String> reloadSelections =
-        PlayerId.currentPlayers(gameSelectorModel.getGameData());
+        GamePlayer.currentPlayers(gameSelectorModel.getGameData());
     for (final Map.Entry<String, Collection<String>> entry :
         model.getPlayerNamesAndAlliancesInTurnOrder().entrySet()) {
       final PlayerRow newPlayerRow =

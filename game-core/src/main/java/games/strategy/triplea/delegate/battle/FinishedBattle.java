@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -35,7 +35,7 @@ public class FinishedBattle extends AbstractBattle {
 
   FinishedBattle(
       final Territory battleSite,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final BattleTracker battleTracker,
       final boolean isBombingRun,
       final BattleType battleType,

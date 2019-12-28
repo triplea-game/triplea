@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -31,8 +31,8 @@ public class Fire implements IExecutable {
   private final MustFightBattle.ReturnFire canReturnFire;
   private final String text;
   private final MustFightBattle battle;
-  private final PlayerId firingPlayer;
-  private final PlayerId hitPlayer;
+  private final GamePlayer firingPlayer;
+  private final GamePlayer hitPlayer;
   private final boolean defending;
   private final Map<Unit, Collection<Unit>> dependentUnits;
   private final UUID battleId;
@@ -54,8 +54,8 @@ public class Fire implements IExecutable {
   Fire(
       final Collection<Unit> attackableUnits,
       final MustFightBattle.ReturnFire canReturnFire,
-      final PlayerId firingPlayer,
-      final PlayerId hitPlayer,
+      final GamePlayer firingPlayer,
+      final GamePlayer hitPlayer,
       final Collection<Unit> firingUnits,
       final String stepName,
       final String text,
@@ -176,7 +176,7 @@ public class Fire implements IExecutable {
       // more hits than combat units
       if (hitCount > numPossibleHits) {
         int extraHits = hitCount - numPossibleHits;
-        final Collection<PlayerId> alliedHitPlayer = new ArrayList<>();
+        final Collection<GamePlayer> alliedHitPlayer = new ArrayList<>();
         // find the players who have transports in the attackable pile
         for (final Unit unit : transportsOnly) {
           if (!alliedHitPlayer.contains(unit.getOwner())) {
@@ -185,7 +185,7 @@ public class Fire implements IExecutable {
         }
         // Leave enough transports for each defender for overflows so they can select who loses
         // them.
-        for (final PlayerId player : alliedHitPlayer) {
+        for (final GamePlayer player : alliedHitPlayer) {
           final Predicate<Unit> match =
               Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports =

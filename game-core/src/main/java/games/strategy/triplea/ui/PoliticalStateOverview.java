@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 import java.awt.Color;
@@ -36,7 +36,7 @@ public class PoliticalStateOverview extends JPanel {
   private final UiContext uiContext;
   private final GameData data;
   private final boolean editable;
-  private final Set<Triple<PlayerId, PlayerId, RelationshipType>> editChanges = new HashSet<>();
+  private final Set<Triple<GamePlayer, GamePlayer, RelationshipType>> editChanges = new HashSet<>();
   private int maxColumnWidth;
 
   public PoliticalStateOverview(
@@ -55,7 +55,7 @@ public class PoliticalStateOverview extends JPanel {
 
     int x = 1;
     int y = 1;
-    for (final PlayerId p : data.getPlayerList()) {
+    for (final GamePlayer p : data.getPlayerList()) {
       // add horizontal labels
       addCell(getPlayerLabel(p, JLabel.CENTER), insets, x++, 0);
 
@@ -93,8 +93,8 @@ public class PoliticalStateOverview extends JPanel {
     // draw cells
     x = 1;
     y = 2;
-    for (final PlayerId verticalPlayer : data.getPlayerList()) {
-      for (final PlayerId horizontalPlayer : data.getPlayerList()) {
+    for (final GamePlayer verticalPlayer : data.getPlayerList()) {
+      for (final GamePlayer horizontalPlayer : data.getPlayerList()) {
         addCell(getRelationshipLabel(verticalPlayer, horizontalPlayer), insets, x++, y);
       }
       y = y + 2;
@@ -126,7 +126,7 @@ public class PoliticalStateOverview extends JPanel {
   }
 
   /** Gets a label showing the colored relationshipName between these two players. */
-  private JPanel getRelationshipLabel(final PlayerId player1, final PlayerId player2) {
+  private JPanel getRelationshipLabel(final GamePlayer player1, final GamePlayer player2) {
     if (player1.equals(player2)) {
       return new JPanelBuilder().add(new JLabel(PoliticalStateOverview.LABEL_SELF)).build();
     }
@@ -138,9 +138,9 @@ public class PoliticalStateOverview extends JPanel {
     return panel;
   }
 
-  private RelationshipType computeRelationship(final PlayerId player1, final PlayerId player2) {
+  private RelationshipType computeRelationship(final GamePlayer player1, final GamePlayer player2) {
     RelationshipType relType = null;
-    for (final Triple<PlayerId, PlayerId, RelationshipType> changesSoFar : editChanges) {
+    for (final Triple<GamePlayer, GamePlayer, RelationshipType> changesSoFar : editChanges) {
       if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
           || (player2.equals(changesSoFar.getFirst())
               && player1.equals(changesSoFar.getSecond()))) {
@@ -159,7 +159,7 @@ public class PoliticalStateOverview extends JPanel {
   }
 
   private JComponent getRelationshipComponent(
-      final PlayerId player1, final PlayerId player2, final RelationshipType relType) {
+      final GamePlayer player1, final GamePlayer player2, final RelationshipType relType) {
     if (!editable) {
       return new JLabel(relType.getName());
     }
@@ -245,7 +245,7 @@ public class PoliticalStateOverview extends JPanel {
    * @param alignment the JLabel alignment
    * @return the label representing this player
    */
-  protected JLabel getPlayerLabel(final PlayerId player, final int alignment) {
+  protected JLabel getPlayerLabel(final GamePlayer player, final int alignment) {
     return new JLabel(
         player.getName(),
         new ImageIcon(uiContext.getFlagImageFactory().getFlag(player)),
@@ -259,7 +259,7 @@ public class PoliticalStateOverview extends JPanel {
     this.revalidate();
   }
 
-  Collection<Triple<PlayerId, PlayerId, RelationshipType>> getEditChanges() {
+  Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> getEditChanges() {
     if (!editable) {
       return null;
     }

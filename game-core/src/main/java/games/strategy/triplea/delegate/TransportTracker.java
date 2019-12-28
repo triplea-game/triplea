@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -334,7 +334,7 @@ public class TransportTracker {
   public static CompositeChange clearTransportedByForAlliedAirOnCarrier(
       final Collection<Unit> attackingUnits,
       final Territory battleSite,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final GameData data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held

@@ -6,8 +6,8 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -49,7 +49,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * been used this round. If any trigger attachment has already been marked as used, it will not be
    * modified.
    */
-  public static CompositeChange triggerSetUsedForThisRound(final PlayerId player) {
+  public static CompositeChange triggerSetUsedForThisRound(final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
       if (ta.getUsedThisRound()) {
@@ -214,7 +214,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     bridge.getHistoryWriter().startEvent(notificationMessage);
     changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, testChance, true);
     bridge
-        .getRemotePlayer(bridge.getPlayerId())
+        .getRemotePlayer(bridge.getGamePlayer())
         .reportMessage(notificationMessage, notificationMessage);
     return testChance;
   }

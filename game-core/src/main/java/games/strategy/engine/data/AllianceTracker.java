@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 public class AllianceTracker implements Serializable {
   private static final long serialVersionUID = 2815023984535209353L;
   // maps PlayerId to Collection of alliances names
-  private final Multimap<PlayerId, String> alliances;
+  private final Multimap<GamePlayer, String> alliances;
 
   public AllianceTracker() {
     this(HashMultimap.create());
   }
 
-  public AllianceTracker(final Multimap<PlayerId, String> alliances) {
+  public AllianceTracker(final Multimap<GamePlayer, String> alliances) {
     this.alliances = alliances;
   }
 
@@ -36,7 +36,7 @@ public class AllianceTracker implements Serializable {
 
   private static class SerializationProxy implements Serializable {
     private static final long serialVersionUID = -4193924040595347947L;
-    private final Multimap<PlayerId, String> alliances;
+    private final Multimap<GamePlayer, String> alliances;
 
     SerializationProxy(final AllianceTracker allianceTracker) {
       alliances = ImmutableMultimap.copyOf(allianceTracker.alliances);
@@ -53,7 +53,7 @@ public class AllianceTracker implements Serializable {
    * @param player The player to add to the alliance.
    * @param allianceName The alliance to add to.
    */
-  protected void addToAlliance(final PlayerId player, final String allianceName) {
+  protected void addToAlliance(final GamePlayer player, final String allianceName) {
     alliances.put(player, allianceName);
   }
 
@@ -71,19 +71,19 @@ public class AllianceTracker implements Serializable {
    * @param allianceName Alliance name
    * @return all the players in the given alliance
    */
-  public Set<PlayerId> getPlayersInAlliance(final String allianceName) {
+  public Set<GamePlayer> getPlayersInAlliance(final String allianceName) {
     return alliances.entries().stream()
         .filter(e -> e.getValue().equals(allianceName))
         .map(Map.Entry::getKey)
         .collect(Collectors.toSet());
   }
 
-  public Collection<String> getAlliancesPlayerIsIn(final PlayerId player) {
+  public Collection<String> getAlliancesPlayerIsIn(final GamePlayer player) {
     final Collection<String> alliancesPlayerIsIn = alliances.get(player);
     return !alliancesPlayerIsIn.isEmpty() ? alliancesPlayerIsIn : Set.of(player.getName());
   }
 
-  Set<PlayerId> getAllies(final PlayerId currentPlayer) {
+  Set<GamePlayer> getAllies(final GamePlayer currentPlayer) {
     return alliances.get(currentPlayer).stream()
         .map(this::getPlayersInAlliance)
         .flatMap(Collection::stream)

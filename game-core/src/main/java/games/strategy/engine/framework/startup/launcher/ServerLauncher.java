@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -122,7 +122,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       if (useSecureRandomSource) {
         // server game.
         // try to find an opponent to be the other side of the crypto random source.
-        final PlayerId remotePlayer =
+        final GamePlayer remotePlayer =
             serverGame.getPlayerManager().getRemoteOpponent(messengers.getLocalNode(), gameData);
         final CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, serverGame);
         serverGame.setRandomSource(randomSource);

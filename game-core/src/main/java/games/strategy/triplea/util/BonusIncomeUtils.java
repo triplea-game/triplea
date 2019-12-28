@@ -1,6 +1,6 @@
 package games.strategy.triplea.util;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -18,7 +18,7 @@ public final class BonusIncomeUtils {
    * @return string that summarizes all the changes
    */
   public static String addBonusIncome(
-      final IntegerMap<Resource> income, final IDelegateBridge bridge, final PlayerId player) {
+      final IntegerMap<Resource> income, final IDelegateBridge bridge, final GamePlayer player) {
     final StringBuilder sb = new StringBuilder();
     for (final Resource resource : income.keySet()) {
       final int amount = income.getInt(resource);

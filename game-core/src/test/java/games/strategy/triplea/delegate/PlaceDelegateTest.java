@@ -4,7 +4,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBrid
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -22,7 +22,7 @@ import org.triplea.java.collections.IntegerMap;
 class PlaceDelegateTest extends AbstractDelegateTestCase {
   private PlaceDelegate delegate;
 
-  private Collection<Unit> getInfantry(final int count, final PlayerId player) {
+  private Collection<Unit> getInfantry(final int count, final GamePlayer player) {
     return gameData
         .getUnitTypeList()
         .getUnitType(Constants.UNIT_TYPE_INFANTRY)

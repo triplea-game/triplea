@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -48,9 +48,9 @@ class ProductionRepairPanel extends JPanel {
   private final List<Rule> rules = new ArrayList<>();
   private final JLabel left = new JLabel();
   private JButton done;
-  private PlayerId id;
+  private GamePlayer gamePlayer;
   private boolean bid;
-  private Collection<PlayerId> allowedPlayersToRepair;
+  private Collection<GamePlayer> allowedPlayersToRepair;
   private GameData data;
   final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
   private final ScrollableTextFieldListener listener = stf -> calculateLimits();
@@ -60,15 +60,15 @@ class ProductionRepairPanel extends JPanel {
   }
 
   static Map<Unit, IntegerMap<RepairRule>> getProduction(
-      final PlayerId id,
-      final Collection<PlayerId> allowedPlayersToRepair,
+      final GamePlayer gamePlayer,
+      final Collection<GamePlayer> allowedPlayersToRepair,
       final JFrame parent,
       final GameData data,
       final boolean bid,
       final Map<Unit, IntegerMap<RepairRule>> initialPurchase,
       final UiContext uiContext) {
     return new ProductionRepairPanel(uiContext)
-        .show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
+        .show(gamePlayer, allowedPlayersToRepair, parent, data, bid, initialPurchase);
   }
 
   private Map<Unit, IntegerMap<RepairRule>> getProduction() {
@@ -87,8 +87,8 @@ class ProductionRepairPanel extends JPanel {
 
   /** Shows the production panel, and returns a map of selected rules. */
   Map<Unit, IntegerMap<RepairRule>> show(
-      final PlayerId id,
-      final Collection<PlayerId> allowedPlayersToRepair,
+      final GamePlayer gamePlayer,
+      final Collection<GamePlayer> allowedPlayersToRepair,
       final JFrame parent,
       final GameData data,
       final boolean bid,
@@ -102,7 +102,7 @@ class ProductionRepairPanel extends JPanel {
     this.bid = bid;
     this.allowedPlayersToRepair = allowedPlayersToRepair;
     this.data = data;
-    this.initRules(id, allowedPlayersToRepair, data, initialPurchase);
+    this.initRules(gamePlayer, allowedPlayersToRepair, data, initialPurchase);
     this.initLayout();
     this.calculateLimits();
     dialog.pack();
@@ -120,8 +120,8 @@ class ProductionRepairPanel extends JPanel {
   }
 
   private void initRules(
-      final PlayerId player,
-      final Collection<PlayerId> allowedPlayersToRepair,
+      final GamePlayer player,
+      final Collection<GamePlayer> allowedPlayersToRepair,
       final GameData data,
       final Map<Unit, IntegerMap<RepairRule>> initialPurchase) {
     if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
@@ -129,7 +129,7 @@ class ProductionRepairPanel extends JPanel {
     }
     this.data.acquireReadLock();
     try {
-      this.id = player;
+      this.gamePlayer = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       Predicate<Unit> myDamagedUnits =
           Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair)
@@ -243,7 +243,7 @@ class ProductionRepairPanel extends JPanel {
     for (final Rule current : rules) {
       spent.add(current.getCost(), current.getQuantity());
     }
-    final double discount = TechAbilityAttachment.getRepairDiscount(id, data);
+    final double discount = TechAbilityAttachment.getRepairDiscount(gamePlayer, data);
     if (discount != 1.0D) {
       spent.discount(discount);
     }
@@ -264,7 +264,7 @@ class ProductionRepairPanel extends JPanel {
       // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple
       // resources can be given?
       // (actually, bids should not cover repairing at all...)
-      final String propertyName = id.getName() + " bid";
+      final String propertyName = gamePlayer.getName() + " bid";
       final int bid = data.getProperties().get(propertyName, 0);
       final ResourceCollection bidCollection = new ResourceCollection(data);
       data.acquireReadLock();
@@ -276,7 +276,7 @@ class ProductionRepairPanel extends JPanel {
       return bidCollection;
     }
 
-    return id.getResources();
+    return gamePlayer.getResources();
   }
 
   private class Rule extends JPanel {
@@ -290,7 +290,7 @@ class ProductionRepairPanel extends JPanel {
 
     Rule(
         final RepairRule rule,
-        final PlayerId id,
+        final GamePlayer gamePlayer,
         final Unit repairUnit,
         final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
@@ -313,7 +313,7 @@ class ProductionRepairPanel extends JPanel {
               .getUnitImageFactory()
               .getIcon(
                   type,
-                  id,
+                  gamePlayer,
                   Matches.unitHasTakenSomeBombingUnitDamage().test(repairUnit),
                   Matches.unitIsDisabled().test(repairUnit));
       final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";

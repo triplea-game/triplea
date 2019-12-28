@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
@@ -48,7 +48,7 @@ class CommentPanel extends JPanel {
   private JButton save;
   private final GameData data;
   private final TripleAFrame frame;
-  private final Map<PlayerId, Icon> iconMap = new HashMap<>();
+  private final Map<GamePlayer, Icon> iconMap = new HashMap<>();
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -103,9 +103,9 @@ class CommentPanel extends JPanel {
     save = new JButton(saveAction);
     save.setMargin(inset);
     save.setFocusable(false);
-    for (final PlayerId playerId : data.getPlayerList().getPlayers()) {
-      Optional.ofNullable(frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId))
-          .ifPresent(image -> iconMap.put(playerId, new ImageIcon(image)));
+    for (final GamePlayer gamePlayer : data.getPlayerList().getPlayers()) {
+      Optional.ofNullable(frame.getUiContext().getFlagImageFactory().getSmallFlag(gamePlayer))
+          .ifPresent(image -> iconMap.put(gamePlayer, new ImageIcon(image)));
     }
   }
 
@@ -147,10 +147,10 @@ class CommentPanel extends JPanel {
             final Pattern p = Pattern.compile("^COMMENT: (.*)");
             final Matcher m = p.matcher(title);
             if (m.matches()) {
-              final PlayerId playerId = data.getSequence().getStep().getPlayerId();
+              final GamePlayer gamePlayer = data.getSequence().getStep().getPlayerId();
               final int round = data.getSequence().getRound();
-              final String player = playerId.getName();
-              final Icon icon = iconMap.get(playerId);
+              final String player = gamePlayer.getName();
+              final Icon icon = iconMap.get(gamePlayer);
               try {
                 // insert into ui document
                 final String prefix = " " + player + "(" + round + ") : ";
@@ -188,10 +188,10 @@ class CommentPanel extends JPanel {
                 if (node instanceof Round) {
                   round++;
                 } else if (node instanceof Step) {
-                  final PlayerId playerId = ((Step) node).getPlayerId();
-                  if (playerId != null) {
-                    player = playerId.getName();
-                    icon = iconMap.get(playerId);
+                  final GamePlayer gamePlayer = ((Step) node).getPlayerId();
+                  if (gamePlayer != null) {
+                    player = gamePlayer.getName();
+                    icon = iconMap.get(gamePlayer);
                   }
                 } else {
                   final String title = node.getTitle();

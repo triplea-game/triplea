@@ -2,7 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.IGame;
@@ -68,7 +68,7 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public Unit newUnit(final UnitType type, final PlayerId owner, final GameData data) {
+  public Unit newUnit(final UnitType type, final GamePlayer owner, final GameData data) {
     return new TripleAUnit(type, owner, data);
   }
 }

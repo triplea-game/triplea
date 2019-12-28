@@ -17,14 +17,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 
 /** A game player (nation, power, etc.). */
-public class PlayerId extends NamedAttachable implements NamedUnitHolder {
+public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
 
   private static final String DEFAULT_TYPE_AI = "AI";
   private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
-  public static final PlayerId NULL_PLAYERID =
-      new PlayerId(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
+  public static final GamePlayer NULL_PLAYERID =
+      new GamePlayer(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
         private static final long serialVersionUID = -6596127754502509049L;
 
         @Override
@@ -45,11 +45,11 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   private final TechnologyFrontierList technologyFrontiers;
   private String whoAmI = "null:no_one";
 
-  public PlayerId(final String name, final GameData data) {
+  public GamePlayer(final String name, final GameData data) {
     this(name, false, false, null, false, data);
   }
 
-  public PlayerId(
+  public GamePlayer(
       final String name,
       final boolean optional,
       final boolean canBeDisabled,
@@ -199,13 +199,13 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
     if (data == null) {
       return currentPlayers;
     }
-    for (final PlayerId player : data.getPlayerList().getPlayers()) {
+    for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       currentPlayers.put(player.getName(), player.getPlayerType().name);
     }
     return currentPlayers;
   }
 
-  public static Optional<PlayerId> asOptional(@Nullable final PlayerId player) {
+  public static Optional<GamePlayer> asOptional(@Nullable final GamePlayer player) {
     if (player == null || player.isNull()) {
       return Optional.empty();
     }

@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.remote;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
@@ -22,5 +22,5 @@ public interface ITechDelegate extends IRemote, IDelegate {
       int rollCount,
       TechnologyFrontier techToRollFor,
       int newTokens,
-      IntegerMap<PlayerId> whoPaysHowMuch);
+      IntegerMap<GamePlayer> whoPaysHowMuch);
 }

@@ -97,7 +97,7 @@ class ChangeTest {
   @Test
   void testUnitsAddPlayer() {
     // make sure we know where we are starting
-    final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer chretian = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(10, chretian.getUnitCollection().getUnitCount());
     // add some units
     final Change change =
@@ -114,7 +114,7 @@ class ChangeTest {
   @Test
   void testUnitsRemovePlayer() {
     // make sure we know where we are starting
-    final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer chretian = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(10, chretian.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
@@ -170,7 +170,7 @@ class ChangeTest {
 
   @Test
   void testProductionFrontierChange() {
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     final ProductionFrontier uspf =
         gameData.getProductionFrontierList().getProductionFrontier("usProd");
     final ProductionFrontier canpf =
@@ -185,7 +185,7 @@ class ChangeTest {
 
   @Test
   void testChangeResourcesChange() {
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     final Resource gold = gameData.getResourceList().getResource("gold");
     final Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
     assertEquals(100, can.getResources().getQuantity(gold));
@@ -197,7 +197,7 @@ class ChangeTest {
 
   @Test
   void testSerializeResourceChange() throws Exception {
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     final Resource gold = gameData.getResourceList().getResource("gold");
     Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
     change = serialize(change);
@@ -208,8 +208,8 @@ class ChangeTest {
 
   @Test
   void testChangeOwner() {
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
-    final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
     final Change change = ChangeFactory.changeOwner(greenland, us);
     assertEquals(greenland.getOwner(), can);
@@ -221,8 +221,8 @@ class ChangeTest {
 
   @Test
   void testChangeOwnerSerialize() throws Exception {
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
-    final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
     Change change = ChangeFactory.changeOwner(greenland, us);
     change = serialize(change);
@@ -237,8 +237,8 @@ class ChangeTest {
 
   @Test
   void testPlayerOwnerChange() {
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
-    final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
     final UnitType infantry = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
@@ -260,8 +260,8 @@ class ChangeTest {
 
   @Test
   void testPlayerOwnerChangeSerialize() throws Exception {
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
-    final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
     final UnitType infantry = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
@@ -289,7 +289,7 @@ class ChangeTest {
         gameData.getProductionFrontierList().getProductionFrontier("usProd");
     final ProductionFrontier canProd =
         gameData.getProductionFrontierList().getProductionFrontier("canProd");
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(can.getProductionFrontier(), canProd);
     Change prodChange = ChangeFactory.changeProductionFrontier(can, usProd);
     gameData.performChange(prodChange);

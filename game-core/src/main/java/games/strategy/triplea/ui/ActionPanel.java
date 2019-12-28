@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.Properties;
 import java.awt.Dimension;
 import java.util.concurrent.CountDownLatch;
@@ -32,7 +32,7 @@ public abstract class ActionPanel extends JPanel {
   private final GameData data;
 
   @Getter(AccessLevel.PROTECTED)
-  private PlayerId currentPlayer;
+  private GamePlayer currentPlayer;
 
   /** Called when the history panel shows used to disable the panel temporarily. */
   @Setter @Getter private boolean active;
@@ -113,7 +113,7 @@ public abstract class ActionPanel extends JPanel {
     }
   }
 
-  public void display(final PlayerId player) {
+  public void display(final GamePlayer player) {
     currentPlayer = player;
     setActive(true);
   }

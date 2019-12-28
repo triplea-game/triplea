@@ -2,7 +2,7 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
@@ -33,5 +33,5 @@ public interface IGameLoader extends Serializable {
 
   void shutDown();
 
-  Unit newUnit(UnitType type, PlayerId owner, GameData data);
+  Unit newUnit(UnitType type, GamePlayer owner, GameData data);
 }

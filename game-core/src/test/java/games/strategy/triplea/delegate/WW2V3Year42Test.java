@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -42,7 +42,7 @@ class WW2V3Year42Test {
   void testTransportAttack() {
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
-    final PlayerId germans = germans(gameData);
+    final GamePlayer germans = germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -59,7 +59,7 @@ class WW2V3Year42Test {
     final Territory baltic = territory("Baltic States", gameData);
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory germany = territory("Germany", gameData);
-    final PlayerId germans = germans(gameData);
+    final GamePlayer germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");

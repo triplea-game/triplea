@@ -27,7 +27,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * @param relationshipType the RelationshipType between those two players that will be set.
    */
   public void setRelationship(
-      final PlayerId p1, final PlayerId p2, final RelationshipType relationshipType) {
+      final GamePlayer p1, final GamePlayer p2, final RelationshipType relationshipType) {
     relationships.put(new RelatedPlayers(p1, p2), new Relationship(relationshipType));
   }
 
@@ -36,22 +36,22 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * Game Parser.
    */
   protected void setRelationship(
-      final PlayerId p1, final PlayerId p2, final RelationshipType r, final int roundValue) {
+      final GamePlayer p1, final GamePlayer p2, final RelationshipType r, final int roundValue) {
     relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
   }
 
   @Override
-  public RelationshipType getRelationshipType(final PlayerId p1, final PlayerId p2) {
+  public RelationshipType getRelationshipType(final GamePlayer p1, final GamePlayer p2) {
     return getRelationship(p1, p2).getRelationshipType();
   }
 
-  public Relationship getRelationship(final PlayerId p1, final PlayerId p2) {
+  public Relationship getRelationship(final GamePlayer p1, final GamePlayer p2) {
     return relationships.get(new RelatedPlayers(p1, p2));
   }
 
-  public Set<Relationship> getRelationships(final PlayerId player1) {
+  public Set<Relationship> getRelationships(final GamePlayer player1) {
     final Set<Relationship> relationships = new HashSet<>();
-    for (final PlayerId player2 : getData().getPlayerList().getPlayers()) {
+    for (final GamePlayer player2 : getData().getPlayerList().getPlayers()) {
       if (player2 == null || player2.equals(player1)) {
         continue;
       }
@@ -60,7 +60,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
     return relationships;
   }
 
-  public int getRoundRelationshipWasCreated(final PlayerId p1, final PlayerId p2) {
+  public int getRoundRelationshipWasCreated(final GamePlayer p1, final GamePlayer p2) {
     return relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
   }
 
@@ -69,10 +69,10 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * This method should only be called once.
    */
   protected void setSelfRelations() {
-    for (final PlayerId p : getData().getPlayerList().getPlayers()) {
+    for (final GamePlayer p : getData().getPlayerList().getPlayers()) {
       setRelationship(p, p, getSelfRelationshipType());
     }
-    setRelationship(PlayerId.NULL_PLAYERID, PlayerId.NULL_PLAYERID, getSelfRelationshipType());
+    setRelationship(GamePlayer.NULL_PLAYERID, GamePlayer.NULL_PLAYERID, getSelfRelationshipType());
   }
 
   /**
@@ -80,8 +80,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * should only be called once.
    */
   protected void setNullPlayerRelations() {
-    for (final PlayerId p : getData().getPlayerList().getPlayers()) {
-      setRelationship(p, PlayerId.NULL_PLAYERID, getNullRelationshipType());
+    for (final GamePlayer p : getData().getPlayerList().getPlayers()) {
+      setRelationship(p, GamePlayer.NULL_PLAYERID, getNullRelationshipType());
     }
   }
 
@@ -109,10 +109,10 @@ public class RelationshipTracker extends RelationshipInterpreter {
   public static final class RelatedPlayers implements Serializable {
     private static final long serialVersionUID = 2124258606502106751L;
 
-    private final PlayerId player1;
-    private final PlayerId player2;
+    private final GamePlayer player1;
+    private final GamePlayer player2;
 
-    RelatedPlayers(final PlayerId player1, final PlayerId player2) {
+    RelatedPlayers(final GamePlayer player1, final GamePlayer player2) {
       this.player1 = player1;
       this.player2 = player2;
     }

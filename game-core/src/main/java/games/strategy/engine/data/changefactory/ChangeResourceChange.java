@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 
@@ -14,7 +14,7 @@ class ChangeResourceChange extends Change {
   private final String resourceName;
   private final int quantity;
 
-  ChangeResourceChange(final PlayerId player, final Resource resource, final int quantity) {
+  ChangeResourceChange(final GamePlayer player, final Resource resource, final int quantity) {
     playerName = player.getName();
     resourceName = resource.getName();
     this.quantity = quantity;

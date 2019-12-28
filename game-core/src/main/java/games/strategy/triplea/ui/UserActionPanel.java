@@ -3,7 +3,7 @@ package games.strategy.triplea.ui;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
@@ -114,13 +114,13 @@ public class UserActionPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id);
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer);
     choice = null;
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          actionLabel.setText(id.getName() + " Actions and Operations");
+          actionLabel.setText(gamePlayer.getName() + " Actions and Operations");
           add(actionLabel);
           selectUserActionButton = new JButton(selectUserActionAction);
           selectUserActionButton.setEnabled(false);
@@ -274,7 +274,7 @@ public class UserActionPanel extends ActionPanel {
 
   @VisibleForTesting
   static boolean canPlayerAffordUserAction(
-      final PlayerId player, final UserActionAttachment userAction) {
+      final GamePlayer player, final UserActionAttachment userAction) {
     return player.getResources().has(userAction.getCostResources());
   }
 
@@ -286,7 +286,7 @@ public class UserActionPanel extends ActionPanel {
    */
   private JPanel getOtherPlayerFlags(final UserActionAttachment uaa) {
     final JPanel panel = new JPanel();
-    for (final PlayerId p : uaa.getOtherPlayers()) {
+    for (final GamePlayer p : uaa.getOtherPlayers()) {
       panel.add(
           new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }

@@ -5,8 +5,8 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
@@ -29,7 +29,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
-  protected List<PlayerId> players = new ArrayList<>();
+  protected List<GamePlayer> players = new ArrayList<>();
   protected int objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
   protected int uses = -1;
@@ -53,7 +53,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   private void setPlayers(final String names) throws GameParseException {
     final PlayerList pl = getData().getPlayerList();
     for (final String p : splitOnColon(names)) {
-      final PlayerId player = pl.getPlayerId(p);
+      final GamePlayer player = pl.getPlayerId(p);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + p + thisErrorMsg());
       }
@@ -61,12 +61,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
-  private void setPlayers(final List<PlayerId> value) {
+  private void setPlayers(final List<GamePlayer> value) {
     players = value;
   }
 
-  protected List<PlayerId> getPlayers() {
-    return players.isEmpty() ? new ArrayList<>(List.of((PlayerId) getAttachedTo())) : players;
+  protected List<GamePlayer> getPlayers() {
+    return players.isEmpty() ? new ArrayList<>(List.of((GamePlayer) getAttachedTo())) : players;
   }
 
   private void resetPlayers() {
@@ -237,14 +237,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * "all", "map", and turns it into an actual list of territories. Also sets territoryCount.
    */
   private Set<Territory> getTerritoriesBasedOnStringName(
-      final String name, final Collection<PlayerId> players, final GameData data) {
+      final String name, final Collection<GamePlayer> players, final GameData data) {
     final GameMap gameMap = data.getMap();
     switch (name) {
       case "original":
       case "enemy":
         // get all originally owned territories
         final Set<Territory> originalTerrs = new HashSet<>();
-        for (final PlayerId player : players) {
+        for (final GamePlayer player : players) {
           originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
         }
         setTerritoryCount(originalTerrs.size());
@@ -252,7 +252,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       case "originalNoWater":
         // get all originally owned territories, but no water or impassables
         final Set<Territory> originalTerritories = new HashSet<>();
-        for (final PlayerId player : players) {
+        for (final GamePlayer player : players) {
           originalTerritories.addAll(
               CollectionUtils.getMatches(
                   OriginalOwnerTracker.getOriginallyOwned(data, player),
@@ -264,14 +264,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
       case "controlled":
         final Set<Territory> ownedTerrs = new HashSet<>();
-        for (final PlayerId player : players) {
+        for (final GamePlayer player : players) {
           ownedTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
         }
         setTerritoryCount(ownedTerrs.size());
         return ownedTerrs;
       case "controlledNoWater":
         final Set<Territory> ownedTerrsNoWater = new HashSet<>();
-        for (final PlayerId player : players) {
+        for (final GamePlayer player : players) {
           ownedTerrsNoWater.addAll(
               CollectionUtils.getMatches(
                   gameMap.getTerritoriesOwnedBy(player),
@@ -281,7 +281,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         return ownedTerrsNoWater;
       case "all":
         final Set<Territory> allTerrs = new HashSet<>();
-        for (final PlayerId player : players) {
+        for (final GamePlayer player : players) {
           allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
           allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
         }
@@ -308,7 +308,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * territoryCount.
    */
   protected Set<Territory> getTerritoryListBasedOnInputFromXml(
-      final String[] terrs, final Collection<PlayerId> players, final GameData data) {
+      final String[] terrs, final Collection<GamePlayer> players, final GameData data) {
     // If there's only 1, it might be a 'group' (original, controlled, controlledNoWater, all)
     if (terrs.length == 1) {
       return getTerritoriesBasedOnStringName(terrs[0], players, data);

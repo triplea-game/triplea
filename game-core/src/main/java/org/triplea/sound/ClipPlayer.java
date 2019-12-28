@@ -1,7 +1,7 @@
 package org.triplea.sound;
 
 import com.google.common.base.Splitter;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
@@ -211,20 +211,20 @@ public class ClipPlayer {
    *
    * @param clipPath - the folder containing sound clips to be played. One of the sound clip files
    *     will be chosen at random.
-   * @param playerId - the name of the player, or null
+   * @param gamePlayer - the name of the player, or null
    */
-  public static void play(final String clipPath, final PlayerId playerId) {
-    getInstance().playClip(clipPath, playerId);
+  public static void play(final String clipPath, final GamePlayer gamePlayer) {
+    getInstance().playClip(clipPath, gamePlayer);
   }
 
-  private void playClip(final String clipName, final PlayerId playerId) {
+  private void playClip(final String clipName, final GamePlayer gamePlayer) {
     if (!isSoundEnabled() || isSoundClipMuted(clipName)) {
       return;
     }
     // run in a new thread, so that we do not delay the game
     String folder = clipName;
-    if (playerId != null) {
-      folder += "_" + playerId.getName();
+    if (gamePlayer != null) {
+      folder += "_" + gamePlayer.getName();
     }
 
     final URI clip = loadClip(folder).orElse(loadClip(clipName).orElse(null));

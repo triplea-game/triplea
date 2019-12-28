@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -37,7 +37,7 @@ import org.triplea.java.collections.IntegerMap;
 final class ProTechAi {
   private ProTechAi() {}
 
-  static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerId player) {
+  static void tech(final ITechDelegate techDelegate, final GameData data, final GamePlayer player) {
     if (!Properties.getWW2V3TechModel(data)) {
       return;
     }
@@ -84,13 +84,13 @@ final class ProTechAi {
    * fighters or bombers
    */
   private static float getStrengthOfPotentialAttackers(
-      final Territory location, final GameData data, final PlayerId player) {
+      final Territory location, final GameData data, final GamePlayer player) {
     final boolean transportsFirst = false;
 
-    @Nullable PlayerId enemyPlayer = null;
-    final List<PlayerId> enemyPlayers = getEnemyPlayers(data, player);
-    final Map<PlayerId, Float> enemyPlayerAttackMap = new HashMap<>();
-    final Iterator<PlayerId> playerIter = enemyPlayers.iterator();
+    @Nullable GamePlayer enemyPlayer = null;
+    final List<GamePlayer> enemyPlayers = getEnemyPlayers(data, player);
+    final Map<GamePlayer, Float> enemyPlayerAttackMap = new HashMap<>();
+    final Iterator<GamePlayer> playerIter = enemyPlayers.iterator();
     if (location == null) {
       return -1000.0F;
     }
@@ -282,13 +282,13 @@ final class ProTechAi {
       enemyPlayerAttackMap.put(enemyPlayer, strength);
     }
     float maxStrength = 0.0F;
-    for (final PlayerId enemyPlayerCandidate : enemyPlayers) {
+    for (final GamePlayer enemyPlayerCandidate : enemyPlayers) {
       if (enemyPlayerAttackMap.get(enemyPlayerCandidate) > maxStrength) {
         enemyPlayer = enemyPlayerCandidate;
         maxStrength = enemyPlayerAttackMap.get(enemyPlayerCandidate);
       }
     }
-    for (final PlayerId enemyPlayerCandidate : enemyPlayers) {
+    for (final GamePlayer enemyPlayerCandidate : enemyPlayers) {
       if (!Objects.equals(enemyPlayer, enemyPlayerCandidate)) {
         // give 40% of other players...this is will affect a lot of decisions by AI
         maxStrength += enemyPlayerAttackMap.get(enemyPlayerCandidate) * 0.40F;
@@ -360,9 +360,9 @@ final class ProTechAi {
   }
 
   /** Returns a list of all enemy players. */
-  private static List<PlayerId> getEnemyPlayers(final GameData data, final PlayerId player) {
-    final List<PlayerId> enemyPlayers = new ArrayList<>();
-    for (final PlayerId players : data.getPlayerList().getPlayers()) {
+  private static List<GamePlayer> getEnemyPlayers(final GameData data, final GamePlayer player) {
+    final List<GamePlayer> enemyPlayers = new ArrayList<>();
+    for (final GamePlayer players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
         enemyPlayers.add(players);
       }
@@ -380,7 +380,7 @@ final class ProTechAi {
       final Territory blitzHere,
       final List<Route> blitzTerrRoutes,
       final GameData data,
-      final PlayerId enemyPlayer) {
+      final GamePlayer enemyPlayer) {
     final Set<Integer> ignore = new HashSet<>();
     ignore.add(1);
     final Predicate<Unit> blitzUnit =
@@ -404,7 +404,7 @@ final class ProTechAi {
       final Territory start,
       final int maxDistance,
       final Set<Integer> ignoreDistance,
-      final PlayerId player,
+      final GamePlayer player,
       final GameData data,
       final Predicate<Unit> unitCondition,
       final Predicate<Territory> routeCondition,
@@ -473,7 +473,7 @@ final class ProTechAi {
   private static List<Unit> findPlaneAttackersThatCanLand(
       final Territory start,
       final int maxDistance,
-      final PlayerId player,
+      final GamePlayer player,
       final GameData data,
       final List<Territory> checked) {
 
@@ -553,7 +553,7 @@ final class ProTechAi {
       final Territory start,
       final Territory destination,
       final Collection<Unit> units,
-      final PlayerId player,
+      final GamePlayer player,
       final int maxDistance) {
     // note this does not care if subs are submerged or not
     // should it? does submerging affect movement of enemies?
@@ -589,7 +589,7 @@ final class ProTechAi {
    * Matches.isTerritoryAllied(player, data))
    */
   private static List<Territory> getNeighboringLandTerritories(
-      final GameData data, final PlayerId player, final Territory check) {
+      final GameData data, final GamePlayer player, final Territory check) {
     final List<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {

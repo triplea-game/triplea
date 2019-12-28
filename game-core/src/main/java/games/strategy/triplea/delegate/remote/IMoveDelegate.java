@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.remote;
 
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.UndoableMove;
 import java.util.Collection;
@@ -23,7 +23,7 @@ public interface IMoveDelegate
    * @param player referring player ID
    * @return a list of territories with air units that must move of player ID
    */
-  Collection<Territory> getTerritoriesWhereAirCantLand(PlayerId player);
+  Collection<Territory> getTerritoriesWhereAirCantLand(GamePlayer player);
 
   Collection<Territory> getTerritoriesWhereAirCantLand();
 

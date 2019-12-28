@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
   private final GameData twwGameData = TestMapGameData.TWW.getGameData();
-  private final PlayerId germanPlayer = GameDataTestUtil.germany(twwGameData);
+  private final GamePlayer germanPlayer = GameDataTestUtil.germany(twwGameData);
   private final Territory sicily = territory("Sicily", twwGameData);
 
   @Test

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.fast;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -24,8 +24,8 @@ class FastOddsEstimator implements IBattleCalculator {
 
   @Override
   public void setCalculateData(
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final Territory location,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
@@ -64,8 +64,8 @@ class FastOddsEstimator implements IBattleCalculator {
 
   @Override
   public AggregateResults setCalculateDataAndCalculate(
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final Territory location,
       final Collection<Unit> attacking,
       final Collection<Unit> defending,

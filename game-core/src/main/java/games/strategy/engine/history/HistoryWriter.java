@@ -1,7 +1,7 @@
 package games.strategy.engine.history;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import java.io.Serializable;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
@@ -29,7 +29,7 @@ public class HistoryWriter implements Serializable {
   public void startNextStep(
       final String stepName,
       final String delegateName,
-      final PlayerId player,
+      final GamePlayer player,
       final String stepDisplayName) {
     assertCorrectThread();
     // we are being called for the first time

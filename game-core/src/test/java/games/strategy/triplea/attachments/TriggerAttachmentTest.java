@@ -14,9 +14,9 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Named;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
 import games.strategy.engine.data.ProductionRule;
@@ -89,7 +89,7 @@ class TriggerAttachmentTest {
     }
 
     // Assumes 'gameData.getMap()' has the relevant parts set up.
-    private Territory addTerritoryPlayer(final String territoryName, final PlayerId player) {
+    private Territory addTerritoryPlayer(final String territoryName, final GamePlayer player) {
 
       final GameData gameData = bridge.getData();
       final GameMap gameMap = gameData.getMap();
@@ -114,7 +114,7 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment(
-              "triggerAttachment", new PlayerId("somePlayerName", gameData), gameData);
+              "triggerAttachment", new GamePlayer("somePlayerName", gameData), gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final String notificationMessageKey = "BlackIce";
@@ -183,9 +183,9 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
-      final PlayerId playerId = new PlayerId("somePlayer", gameData);
-      playerId.addAttachment("rulesAttachment", new RulesAttachment(null, null, gameData));
-      gameData.getPlayerList().addPlayerId(playerId);
+      final GamePlayer gamePlayer = new GamePlayer("somePlayer", gameData);
+      gamePlayer.addAttachment("rulesAttachment", new RulesAttachment(null, null, gameData));
+      gameData.getPlayerList().addPlayerId(gamePlayer);
 
       final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
       propertyMap.get("playerAttachmentName").setValue("rulesAttachment:RulesAttachment");
@@ -306,8 +306,8 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
-      final PlayerId playerKeoland = new PlayerId("Keoland", gameData);
-      final PlayerId playerFuryondy = new PlayerId("Furyondy", gameData);
+      final GamePlayer playerKeoland = new GamePlayer("Keoland", gameData);
+      final GamePlayer playerFuryondy = new GamePlayer("Furyondy", gameData);
       gameData.getPlayerList().addPlayerId(playerKeoland);
       gameData.getPlayerList().addPlayerId(playerFuryondy);
 
@@ -340,13 +340,13 @@ class TriggerAttachmentTest {
     void testTriggerAvailableTechChange() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final PlayerId playerId = new PlayerId("somePlayer", gameData);
-      playerId
+      final GamePlayer gamePlayer = new GamePlayer("somePlayer", gameData);
+      gamePlayer
           .getTechnologyFrontierList()
           .addTechnologyFrontier(new TechnologyFrontier("airCategory", gameData));
 
       final TriggerAttachment triggerAttachment =
-          new TriggerAttachment("triggerAttachment", playerId, gameData);
+          new TriggerAttachment("triggerAttachment", gamePlayer, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
@@ -371,10 +371,10 @@ class TriggerAttachmentTest {
     void testTriggerTechChange() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+      final GamePlayer gamePlayer = new GamePlayer("somePlayer", gameData);
 
       final TriggerAttachment triggerAttachment =
-          new TriggerAttachment("triggerAttachment", playerId, gameData);
+          new TriggerAttachment("triggerAttachment", gamePlayer, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
@@ -402,11 +402,11 @@ class TriggerAttachmentTest {
       gameData.getProductionFrontierList().addProductionFrontier(startingFrontier);
       gameData.getProductionFrontierList().addProductionFrontier(newFrontier);
 
-      final PlayerId playerId = new PlayerId("somePlayer", gameData);
-      playerId.setProductionFrontier(startingFrontier);
+      final GamePlayer gamePlayer = new GamePlayer("somePlayer", gameData);
+      gamePlayer.setProductionFrontier(startingFrontier);
 
       final TriggerAttachment triggerAttachment =
-          new TriggerAttachment("triggerAttachment", playerId, gameData);
+          new TriggerAttachment("triggerAttachment", gamePlayer, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       triggerAttachment
@@ -429,10 +429,10 @@ class TriggerAttachmentTest {
           new UnitSupportAttachment("supportAttachmentBattlefleet_Support", null, gameData));
       gameData.getUnitTypeList().addUnitType(battleshipUnitType);
 
-      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+      final GamePlayer gamePlayer = new GamePlayer("somePlayer", gameData);
 
       final TriggerAttachment triggerAttachment =
-          new TriggerAttachment("triggerAttachment", playerId, gameData);
+          new TriggerAttachment("triggerAttachment", gamePlayer, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       triggerAttachment
@@ -453,9 +453,9 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
-      final PlayerId playerChina = new PlayerId("China", gameData);
-      final PlayerId playerRussia = new PlayerId("Russia", gameData);
-      final PlayerId playerBritain = new PlayerId("Britain", gameData);
+      final GamePlayer playerChina = new GamePlayer("China", gameData);
+      final GamePlayer playerRussia = new GamePlayer("Russia", gameData);
+      final GamePlayer playerBritain = new GamePlayer("Britain", gameData);
       gameData.getPlayerList().addPlayerId(playerChina);
       gameData.getPlayerList().addPlayerId(playerRussia);
       gameData.getPlayerList().addPlayerId(playerBritain);
@@ -483,10 +483,10 @@ class TriggerAttachmentTest {
     void testTriggerPurchase() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+      final GamePlayer gamePlayer = new GamePlayer("somePlayer", gameData);
 
       final TriggerAttachment triggerAttachment =
-          new TriggerAttachment("triggerAttachment", playerId, gameData);
+          new TriggerAttachment("triggerAttachment", gamePlayer, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
 
       gameData.getUnitTypeList().addUnitType(new UnitType("brigantine", gameData));
@@ -506,7 +506,7 @@ class TriggerAttachmentTest {
     void testTriggerUnitRemoval() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final GamePlayer player = new GamePlayer("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
@@ -555,7 +555,7 @@ class TriggerAttachmentTest {
     void testTriggerUnitPlacement() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final GamePlayer player = new GamePlayer("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
@@ -580,7 +580,7 @@ class TriggerAttachmentTest {
     void testTriggerResourceChange() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final GamePlayer player = new GamePlayer("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);
@@ -603,12 +603,12 @@ class TriggerAttachmentTest {
       // The trigger to be fired is for tech: trigger option "tech", method "triggerTechChange()".
       final TriggerAttachment triggerToBeFiredTriggerAttachment;
       {
-        final PlayerId playerId = new PlayerId("somePlayer", gameData);
-        gameData.getPlayerList().addPlayerId(playerId);
+        final GamePlayer gamePlayer = new GamePlayer("somePlayer", gameData);
+        gameData.getPlayerList().addPlayerId(gamePlayer);
 
         triggerToBeFiredTriggerAttachment =
-            new TriggerAttachment("triggerToBeFired", playerId, gameData);
-        playerId.addAttachment("somekey", triggerToBeFiredTriggerAttachment);
+            new TriggerAttachment("triggerToBeFired", gamePlayer, gameData);
+        gamePlayer.addAttachment("somekey", triggerToBeFiredTriggerAttachment);
 
         final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
         gameTechnologyFrontier.addAdvance(
@@ -644,7 +644,7 @@ class TriggerAttachmentTest {
     void testTriggerVictory() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final GamePlayer player = new GamePlayer("somePlayer", gameData);
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", player, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Set.of(triggerAttachment);

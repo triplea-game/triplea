@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate;
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -41,7 +41,7 @@ import org.triplea.sound.SoundPath;
  */
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate {
   private int techCost;
-  private Map<PlayerId, Collection<TechAdvance>> techs;
+  private Map<GamePlayer, Collection<TechAdvance>> techs;
   private TechnologyFrontier techCategory;
   private boolean needToInitialize = true;
 
@@ -143,11 +143,11 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       if (pa == null) {
         return false;
       }
-      final Collection<PlayerId> helpPay = pa.getHelpPayTechCost();
+      final Collection<GamePlayer> helpPay = pa.getHelpPayTechCost();
       if (helpPay == null || helpPay.isEmpty()) {
         return false;
       }
-      for (final PlayerId p : helpPay) {
+      for (final GamePlayer p : helpPay) {
         money += p.getResources().getQuantity(Constants.PUS);
       }
       return money >= techCost;
@@ -155,7 +155,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return true;
   }
 
-  public Map<PlayerId, Collection<TechAdvance>> getAdvances() {
+  public Map<GamePlayer, Collection<TechAdvance>> getAdvances() {
     return techs;
   }
 
@@ -180,7 +180,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       final int techRolls,
       final TechnologyFrontier techToRollFor,
       final int newTokens,
-      final IntegerMap<PlayerId> whoPaysHowMuch) {
+      final IntegerMap<GamePlayer> whoPaysHowMuch) {
     int rollCount = techRolls;
     if (isWW2V3TechModel()) {
       rollCount = newTokens;
@@ -201,7 +201,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         final String transcriptText = player.getName() + " No more available tech advances.";
         bridge.getHistoryWriter().startEvent(transcriptText);
         final Change removeTokens =
-            ChangeFactory.changeResourcesChange(bridge.getPlayerId(), techTokens, -currTokens);
+            ChangeFactory.changeResourcesChange(bridge.getGamePlayer(), techTokens, -currTokens);
         bridge.addChange(removeTokens);
       }
       return new TechResults("No more available tech advances.");
@@ -261,7 +261,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
               + " research.";
       bridge.getHistoryWriter().startEvent(transcriptText);
       final Change removeTokens =
-          ChangeFactory.changeResourcesChange(bridge.getPlayerId(), techTokens, -currTokens);
+          ChangeFactory.changeResourcesChange(bridge.getGamePlayer(), techTokens, -currTokens);
       bridge.addChange(removeTokens);
     }
     final Collection<TechAdvance> advances;
@@ -305,16 +305,16 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return new TechResults(random, remainder, techHits, advancesAsString);
   }
 
-  boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerId> whoPaysHowMuch) {
+  boolean checkEnoughMoney(final int rolls, final IntegerMap<GamePlayer> whoPaysHowMuch) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final int has = bridge.getPlayerId().getResources().getQuantity(pus);
+      final int has = bridge.getGamePlayer().getResources().getQuantity(pus);
       return has >= cost;
     }
 
     int runningTotal = 0;
-    for (final Entry<PlayerId, Integer> entry : whoPaysHowMuch.entrySet()) {
+    for (final Entry<GamePlayer, Integer> entry : whoPaysHowMuch.entrySet()) {
       final int has = entry.getKey().getResources().getQuantity(pus);
       final int paying = entry.getValue();
       if (paying > has) {
@@ -325,18 +325,18 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return runningTotal >= cost;
   }
 
-  private void chargeForTechRolls(final int rolls, final IntegerMap<PlayerId> whoPaysHowMuch) {
+  private void chargeForTechRolls(final int rolls, final IntegerMap<GamePlayer> whoPaysHowMuch) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final String transcriptText =
-          bridge.getPlayerId().getName() + " spend " + cost + " on tech rolls";
+          bridge.getGamePlayer().getName() + " spend " + cost + " on tech rolls";
       bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), pus, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(bridge.getGamePlayer(), pus, -cost);
       bridge.addChange(charge);
     } else {
-      for (final Entry<PlayerId, Integer> entry : whoPaysHowMuch.entrySet()) {
-        final PlayerId p = entry.getKey();
+      for (final Entry<GamePlayer, Integer> entry : whoPaysHowMuch.entrySet()) {
+        final GamePlayer p = entry.getKey();
         final int pays = Math.min(cost, entry.getValue());
         if (pays <= 0) {
           continue;
@@ -351,7 +351,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (isWW2V3TechModel()) {
       final Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
       final Change newTokens =
-          ChangeFactory.changeResourcesChange(bridge.getPlayerId(), tokens, rolls);
+          ChangeFactory.changeResourcesChange(bridge.getGamePlayer(), tokens, rolls);
       bridge.addChange(newTokens);
     }
   }
@@ -421,10 +421,10 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private List<TechAdvance> getAvailableAdvances() {
-    return getAvailableTechs(bridge.getPlayerId(), getData());
+    return getAvailableTechs(bridge.getGamePlayer(), getData());
   }
 
-  public static List<TechAdvance> getAvailableTechs(final PlayerId player, final GameData data) {
+  public static List<TechAdvance> getAvailableTechs(final GamePlayer player, final GameData data) {
     final Collection<TechAdvance> currentAdvances =
         TechTracker.getCurrentTechAdvances(player, data);
     final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);
@@ -433,7 +433,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
     final Collection<TechAdvance> playersAdvances =
-        TechTracker.getCurrentTechAdvances(bridge.getPlayerId(), getData());
+        TechTracker.getCurrentTechAdvances(bridge.getGamePlayer(), getData());
     return CollectionUtils.difference(techCategory.getTechs(), playersAdvances);
   }
 

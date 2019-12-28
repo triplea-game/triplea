@@ -1,7 +1,7 @@
 package games.strategy.engine.stats;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import java.text.NumberFormat;
 
 /**
@@ -11,7 +11,7 @@ import java.text.NumberFormat;
 public interface IStat {
   String getName();
 
-  double getValue(PlayerId player, GameData data);
+  double getValue(GamePlayer player, GameData data);
 
   double getValue(String alliance, GameData data);
 

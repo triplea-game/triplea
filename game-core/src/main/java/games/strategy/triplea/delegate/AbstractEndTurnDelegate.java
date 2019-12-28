@@ -5,8 +5,8 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -54,7 +54,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     return Properties.getGiveUnitsByTerritory(getData());
   }
 
-  private static boolean canPlayerCollectIncome(final PlayerId player, final GameData data) {
+  private static boolean canPlayerCollectIncome(final GamePlayer player, final GameData data) {
     return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
   }
 
@@ -64,7 +64,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
    * income.
    */
   public static IntegerMap<Resource> findEstimatedIncome(
-      final PlayerId player, final GameData data) {
+      final GamePlayer player, final GameData data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
 
     // Only add territory resources if endTurn not endTurnNoPU
@@ -92,9 +92,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     // figure out our current PUs before we do anything else, including super methods
     final GameData data = bridge.getData();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
-    final int leftOverPUs = bridge.getPlayerId().getResources().getQuantity(pus);
+    final int leftOverPUs = bridge.getGamePlayer().getResources().getQuantity(pus);
     final IntegerMap<Resource> leftOverResources =
-        bridge.getPlayerId().getResources().getResourcesCopy();
+        bridge.getGamePlayer().getResources().getResourcesCopy();
     super.start();
     if (!needToInitialize) {
       return;
@@ -226,7 +226,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       }
     }
     if (GameStepPropertiesHelper.isRepairUnits(data)) {
-      MoveDelegate.repairMultipleHitPointUnits(bridge, bridge.getPlayerId());
+      MoveDelegate.repairMultipleHitPointUnits(bridge, bridge.getGamePlayer());
     }
     if (isGiveUnitsByTerritory()
         && pa != null
@@ -285,7 +285,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private int rollWarBonds(
-      final IDelegateBridge delegateBridge, final PlayerId player, final GameData data) {
+      final IDelegateBridge delegateBridge, final GamePlayer player, final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -305,7 +305,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private String rollWarBondsForFriends(
-      final IDelegateBridge delegateBridge, final PlayerId player, final GameData data) {
+      final IDelegateBridge delegateBridge, final GamePlayer player, final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -318,13 +318,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     if (playerattachment == null) {
       return "";
     }
-    final Collection<PlayerId> shareWith = playerattachment.getShareTechnology();
+    final Collection<GamePlayer> shareWith = playerattachment.getShareTechnology();
     if (shareWith == null || shareWith.isEmpty()) {
       return "";
     }
     // take first one
-    PlayerId giveWarBondsTo = null;
-    for (final PlayerId p : shareWith) {
+    GamePlayer giveWarBondsTo = null;
+    for (final GamePlayer p : shareWith) {
       final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
       final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
       if (diceSides <= 0 && diceCount <= 0) {
@@ -374,9 +374,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   }
 
   private static void changeUnitOwnership(final IDelegateBridge bridge) {
-    final PlayerId player = bridge.getPlayerId();
+    final GamePlayer player = bridge.getGamePlayer();
     final PlayerAttachment pa = PlayerAttachment.get(player);
-    final Collection<PlayerId> possibleNewOwners = pa.getGiveUnitControl();
+    final Collection<GamePlayer> possibleNewOwners = pa.getGiveUnitControl();
     final boolean inAllTerritories = pa.getGiveUnitControlInAllTerritories();
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList = new ArrayList<>();
@@ -384,12 +384,12 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory);
       // if ownership should change in this territory
       if (inAllTerritories || (ta != null && !ta.getChangeUnitOwners().isEmpty())) {
-        final List<PlayerId> newOwners =
+        final List<GamePlayer> newOwners =
             (ta != null && !ta.getChangeUnitOwners().isEmpty())
                 ? ta.getChangeUnitOwners()
                 : bridge.getData().getPlayerList().getPlayers();
         newOwners.retainAll(possibleNewOwners);
-        for (final PlayerId newOwner : newOwners) {
+        for (final GamePlayer newOwner : newOwners) {
           final Collection<Unit> units =
               currTerritory
                   .getUnitCollection()
@@ -457,7 +457,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
 
   // finds losses due to blockades, positive value returned.
   private int getBlockadeProductionLoss(
-      final PlayerId player,
+      final GamePlayer player,
       final GameData data,
       final IDelegateBridge bridge,
       final StringBuilder endTurnReport) {

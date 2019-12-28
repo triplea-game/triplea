@@ -1,6 +1,6 @@
 package games.strategy.engine.display;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IChannelSubscriber;
@@ -33,8 +33,8 @@ public interface IDisplay extends IChannelSubscriber {
    * observers or players not in the list.)
    */
   void reportMessageToPlayers(
-      Collection<PlayerId> playersToSendTo,
-      Collection<PlayerId> butNotThesePlayers,
+      Collection<GamePlayer> playersToSendTo,
+      Collection<GamePlayer> butNotThesePlayers,
       String message,
       String title);
 
@@ -61,8 +61,8 @@ public interface IDisplay extends IChannelSubscriber {
       Collection<Unit> attackingWaitingToDie,
       Collection<Unit> defendingWaitingToDie,
       Map<Unit, Collection<Unit>> dependentUnits,
-      PlayerId attacker,
-      PlayerId defender,
+      GamePlayer attacker,
+      GamePlayer defender,
       boolean isAmphibious,
       BattleType battleType,
       Collection<Unit> amphibiousLandAttackers);
@@ -83,7 +83,7 @@ public interface IDisplay extends IChannelSubscriber {
       UUID battleId,
       String step,
       DiceRoll dice,
-      PlayerId player,
+      GamePlayer player,
       Collection<Unit> killed,
       Collection<Unit> damaged,
       Map<Unit, Collection<Unit>> dependents);
@@ -91,13 +91,13 @@ public interface IDisplay extends IChannelSubscriber {
   /** Notify that the casualties occurred, and only the casualty. */
   void deadUnitNotification(
       UUID battleId,
-      PlayerId player,
+      GamePlayer player,
       Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
 
   void changedUnitsNotification(
       UUID battleId,
-      PlayerId player,
+      GamePlayer player,
       Collection<Unit> removedUnits,
       Collection<Unit> addedUnits,
       Map<Unit, Collection<Unit>> dependents);
@@ -106,7 +106,7 @@ public interface IDisplay extends IChannelSubscriber {
   void bombingResults(UUID battleId, List<Die> dice, int cost);
 
   /** Notify that the given player has retreated some or all of his units. */
-  void notifyRetreat(String shortMessage, String message, String step, PlayerId retreatingPlayer);
+  void notifyRetreat(String shortMessage, String message, String step, GamePlayer retreatingPlayer);
 
   void notifyRetreat(UUID battleId, Collection<Unit> retreating);
 

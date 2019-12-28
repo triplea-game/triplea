@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.IGame;
 import java.awt.Component;
 import javax.swing.JLabel;
@@ -19,14 +19,15 @@ public final class PlayersPanel {
   public static void showPlayers(final IGame game, final Component parent) {
     final JPanel panel = new JPanelBuilder().boxLayoutVertical().build();
     for (final String player : game.getPlayerManager().getPlayers()) {
-      final PlayerId playerId = game.getData().getPlayerList().getPlayerId(player);
-      if (playerId.isAi()) {
+      final GamePlayer gamePlayer = game.getData().getPlayerList().getPlayerId(player);
+      if (gamePlayer.isAi()) {
         panel.add(
-            new JLabel(playerId.getPlayerType().name + " is " + playerId.getName(), JLabel.RIGHT));
+            new JLabel(
+                gamePlayer.getPlayerType().name + " is " + gamePlayer.getName(), JLabel.RIGHT));
       } else {
         panel.add(
             new JLabel(
-                game.getPlayerManager().getNode(player).getName() + " is " + playerId.getName(),
+                game.getPlayerManager().getNode(player).getName() + " is " + gamePlayer.getName(),
                 JLabel.RIGHT));
       }
     }

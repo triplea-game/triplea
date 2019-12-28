@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -168,13 +168,13 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id);
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer);
     choice = null;
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          actionLabel.setText(id.getName() + " Politics");
+          actionLabel.setText(gamePlayer.getName() + " Politics");
           add(actionLabel);
           selectPoliticalActionButton = new JButton(selectPoliticalActionAction);
           selectPoliticalActionButton.setEnabled(false);
@@ -318,7 +318,7 @@ public class PoliticsPanel extends ActionPanel {
    */
   private JPanel getOtherPlayerFlags(final PoliticalActionAttachment paa) {
     final JPanel panel = new JPanel();
-    for (final PlayerId p : paa.getOtherPlayers()) {
+    for (final GamePlayer p : paa.getOtherPlayers()) {
       panel.add(
           new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }
@@ -337,9 +337,9 @@ public class PoliticsPanel extends ActionPanel {
       implements Comparator<PoliticalActionAttachment>, Serializable {
     private static final long serialVersionUID = -383223878890794945L;
     private final GameData gameData;
-    private final PlayerId player;
+    private final GamePlayer player;
 
-    PoliticalActionComparator(final PlayerId currentPlayer, final GameData data) {
+    PoliticalActionComparator(final GamePlayer currentPlayer, final GameData data) {
       gameData = data;
       player = currentPlayer;
     }
@@ -356,12 +356,12 @@ public class PoliticsPanel extends ActionPanel {
       final RelationshipType paa1NewType = paa1RelationshipChange.relationshipType;
       final RelationshipType paa2NewType = paa2RelationshipChange.relationshipType;
       // sort by player
-      final PlayerId paa1p1 = paa1RelationshipChange.player1;
-      final PlayerId paa1p2 = paa1RelationshipChange.player2;
-      final PlayerId paa2p1 = paa2RelationshipChange.player1;
-      final PlayerId paa2p2 = paa2RelationshipChange.player2;
-      final PlayerId paa1OtherPlayer = (player.equals(paa1p1) ? paa1p2 : paa1p1);
-      final PlayerId paa2OtherPlayer = (player.equals(paa2p1) ? paa2p2 : paa2p1);
+      final GamePlayer paa1p1 = paa1RelationshipChange.player1;
+      final GamePlayer paa1p2 = paa1RelationshipChange.player2;
+      final GamePlayer paa2p1 = paa2RelationshipChange.player1;
+      final GamePlayer paa2p2 = paa2RelationshipChange.player2;
+      final GamePlayer paa1OtherPlayer = (player.equals(paa1p1) ? paa1p2 : paa1p1);
+      final GamePlayer paa2OtherPlayer = (player.equals(paa2p1) ? paa2p2 : paa2p1);
       if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {
         final int order =
             new PlayerOrderComparator(gameData).compare(paa1OtherPlayer, paa2OtherPlayer);

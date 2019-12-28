@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -141,7 +141,7 @@ public class SimpleUnitPanel extends JPanel {
    *     production rule has 1 result, which is simple the number of units.
    */
   void setUnitsFromProductionRuleMap(
-      final IntegerMap<ProductionRule> units, final PlayerId player) {
+      final IntegerMap<ProductionRule> units, final GamePlayer player) {
     removeAll();
     final TreeSet<ProductionRule> productionRules = new TreeSet<>(productionRuleComparator);
     productionRules.addAll(units.keySet());
@@ -166,7 +166,7 @@ public class SimpleUnitPanel extends JPanel {
    *     has 1 result, which is simply the number of units.
    */
   public void setUnitsFromRepairRuleMap(
-      final Map<Unit, IntegerMap<RepairRule>> units, final PlayerId player, final GameData data) {
+      final Map<Unit, IntegerMap<RepairRule>> units, final GamePlayer player, final GameData data) {
     removeAll();
     final Set<Unit> entries = units.keySet();
     for (final Unit unit : entries) {
@@ -210,7 +210,7 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   private void addUnits(
-      final PlayerId player,
+      final GamePlayer player,
       final int quantity,
       final NamedAttachable unit,
       final boolean damaged,

@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.triplea.util.Tuple;
 
-final class PlayerIdTest {
-  private final PlayerId playerId = new PlayerId("name", new GameData());
+final class GamePlayerTest {
+  private final GamePlayer gamePlayer = new GamePlayer("name", new GameData());
 
   @Nested
   final class GetPlayerTypeTest {
@@ -22,11 +22,11 @@ final class PlayerIdTest {
       List.of(Tuple.of("AI", "Hard (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))
           .forEach(
               idAndName -> {
-                playerId.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
+                gamePlayer.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
 
                 assertThat(
-                    playerId.getPlayerType(),
-                    is(new PlayerId.Type(idAndName.getFirst(), idAndName.getSecond())));
+                    gamePlayer.getPlayerType(),
+                    is(new GamePlayer.Type(idAndName.getFirst(), idAndName.getSecond())));
               });
     }
   }
@@ -38,9 +38,9 @@ final class PlayerIdTest {
       List.of("AI:Hard (AI)", "ai:hard (ai)")
           .forEach(
               encodedType -> {
-                playerId.setWhoAmI(encodedType);
+                gamePlayer.setWhoAmI(encodedType);
 
-                assertThat(playerId.isAi(), is(true));
+                assertThat(gamePlayer.isAi(), is(true));
               });
     }
 
@@ -49,9 +49,9 @@ final class PlayerIdTest {
       List.of("Human:Patton", "null:Bot")
           .forEach(
               encodedType -> {
-                playerId.setWhoAmI(encodedType);
+                gamePlayer.setWhoAmI(encodedType);
 
-                assertThat(playerId.isAi(), is(false));
+                assertThat(gamePlayer.isAi(), is(false));
               });
     }
   }
@@ -69,17 +69,17 @@ final class PlayerIdTest {
               "NulL:Bot")
           .forEach(
               encodedType -> {
-                playerId.setWhoAmI(encodedType);
+                gamePlayer.setWhoAmI(encodedType);
 
-                assertThat(playerId.getWhoAmI(), is(encodedType));
+                assertThat(gamePlayer.getWhoAmI(), is(encodedType));
               });
     }
 
     @Test
     void shouldThrowExceptionWhenEncodedTypeDoesNotContainExactlyTwoTokens() {
-      assertThrowsDoesNotHaveExactlyTwoTokensException(() -> playerId.setWhoAmI("Patton"));
+      assertThrowsDoesNotHaveExactlyTwoTokensException(() -> gamePlayer.setWhoAmI("Patton"));
       assertThrowsDoesNotHaveExactlyTwoTokensException(
-          () -> playerId.setWhoAmI("Human:Patton:Third"));
+          () -> gamePlayer.setWhoAmI("Human:Patton:Third"));
     }
 
     private void assertThrowsDoesNotHaveExactlyTwoTokensException(final Executable executable) {
@@ -91,7 +91,7 @@ final class PlayerIdTest {
     void shouldThrowExceptionWhenTypeIdIsIllegal() {
       final Exception e =
           assertThrows(
-              IllegalArgumentException.class, () -> playerId.setWhoAmI("otherTypeId:Patton"));
+              IllegalArgumentException.class, () -> gamePlayer.setWhoAmI("otherTypeId:Patton"));
       assertThat(e.getMessage(), containsString("ai or human or null"));
     }
   }
@@ -100,7 +100,7 @@ final class PlayerIdTest {
   final class TypeTest {
     @Test
     void shouldBeEquatableAndHashable() {
-      EqualsVerifier.forClass(PlayerId.Type.class).verify();
+      EqualsVerifier.forClass(GamePlayer.Type.class).verify();
     }
   }
 }

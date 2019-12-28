@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -113,7 +113,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final int count,
       final String message,
       final DiceRoll dice,
-      final PlayerId hit,
+      final GamePlayer hit,
       final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits,
       final boolean amphibious,
@@ -212,11 +212,11 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   // TODO: This really needs to be rewritten with some basic logic
   @Override
   public boolean acceptAction(
-      final PlayerId playerSendingProposal,
+      final GamePlayer playerSendingProposal,
       final String acceptanceQuestion,
       final boolean politics) {
     // we are dead, just accept
-    if (!getPlayerId().amNotDeadYet(getGameData())) {
+    if (!this.getGamePlayer().amNotDeadYet(getGameData())) {
       return true;
     }
     // not related to politics? just accept i guess
@@ -224,7 +224,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       return true;
     }
     // politics from ally? accept
-    if (Matches.isAllied(getPlayerId(), getGameData()).test(playerSendingProposal)) {
+    if (Matches.isAllied(this.getGamePlayer(), getGameData()).test(playerSendingProposal)) {
       return true;
     }
     // would we normally be allies?
@@ -237,7 +237,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
             Constants.PLAYER_NAME_CHINESE,
             Constants.PLAYER_NAME_FRENCH,
             Constants.PLAYER_NAME_RUSSIANS);
-    if (allies.contains(getPlayerId().getName())
+    if (allies.contains(this.getGamePlayer().getName())
         && allies.contains(playerSendingProposal.getName())) {
       return true;
     }
@@ -247,11 +247,13 @@ public abstract class AbstractAi extends AbstractBasePlayer {
             Constants.PLAYER_NAME_ITALIANS,
             Constants.PLAYER_NAME_JAPANESE,
             Constants.PLAYER_NAME_PUPPET_STATES);
-    if (axis.contains(getPlayerId().getName()) && axis.contains(playerSendingProposal.getName())) {
+    if (axis.contains(this.getGamePlayer().getName())
+        && axis.contains(playerSendingProposal.getName())) {
       return true;
     }
     final Collection<String> myAlliances =
-        new HashSet<>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerId()));
+        new HashSet<>(
+            getGameData().getAllianceTracker().getAlliancesPlayerIsIn(this.getGamePlayer()));
     myAlliances.retainAll(
         getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
     return !myAlliances.isEmpty() || Math.random() < .5;
@@ -260,10 +262,10 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   @Override
   public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
     // we are going to just assign random attacks to each unit randomly, til we run out of tokens to
     // attack with.
-    final PlayerAttachment pa = PlayerAttachment.get(id);
+    final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
     if (pa == null) {
       return null;
     }
@@ -271,7 +273,8 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     if (resourcesAndAttackValues.isEmpty()) {
       return null;
     }
-    final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
+    final IntegerMap<Resource> playerResourceCollection =
+        gamePlayer.getResources().getResourcesCopy();
     final IntegerMap<Resource> attackTokens = new IntegerMap<>();
     for (final Resource possible : resourcesAndAttackValues.keySet()) {
       final int amount = playerResourceCollection.getInt(possible);
@@ -321,7 +324,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final List<Unit> unitChoices,
       final int unitsPerPick) {
     final GameData data = getGameData();
-    final PlayerId me = getPlayerId();
+    final GamePlayer me = this.getGamePlayer();
     final Territory picked;
     if (territoryChoices == null || territoryChoices.isEmpty()) {
       picked = null;
@@ -463,7 +466,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
 
   @Override
   public void confirmEnemyCasualties(
-      final UUID battleId, final String message, final PlayerId hitPlayer) {}
+      final UUID battleId, final String message, final GamePlayer hitPlayer) {}
 
   @Override
   public void reportError(final String error) {}
@@ -489,26 +492,26 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   @Override
   public final void start(final String name) {
     super.start(name);
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
     if (name.endsWith("Bid")) {
       final IPurchaseDelegate purchaseDelegate =
           (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-      final String propertyName = id.getName() + " bid";
+      final String propertyName = gamePlayer.getName() + " bid";
       final int bidAmount = getGameData().getProperties().get(propertyName, 0);
-      purchase(true, bidAmount, purchaseDelegate, getGameData(), id);
+      purchase(true, bidAmount, purchaseDelegate, getGameData(), gamePlayer);
     } else if (name.endsWith("Purchase")) {
       final IPurchaseDelegate purchaseDelegate =
           (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final Resource pus = getGameData().getResourceList().getResource(Constants.PUS);
-      final int leftToSpend = id.getResources().getQuantity(pus);
-      purchase(false, leftToSpend, purchaseDelegate, getGameData(), id);
+      final int leftToSpend = gamePlayer.getResources().getQuantity(pus);
+      purchase(false, leftToSpend, purchaseDelegate, getGameData(), gamePlayer);
     } else if (name.endsWith("Tech")) {
       final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
-      tech(techDelegate, getGameData(), id);
+      tech(techDelegate, getGameData(), gamePlayer);
     } else if (name.endsWith("Move")) {
       final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
       if (!name.endsWith("AirborneCombatMove")) {
-        move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
+        move(name.endsWith("NonCombatMove"), moveDel, getGameData(), gamePlayer);
       }
     } else if (name.endsWith("Battle")) {
       battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate());
@@ -517,9 +520,9 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     } else if (name.endsWith("Place")) {
       final IAbstractPlaceDelegate placeDel =
           (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      place(name.contains("Bid"), placeDel, getGameData(), id);
+      place(name.contains("Bid"), placeDel, getGameData(), gamePlayer);
     } else if (name.endsWith("EndTurn")) {
-      endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), id);
+      endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), gamePlayer);
     }
   }
 
@@ -538,7 +541,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       int pusToSpend,
       IPurchaseDelegate purchaseDelegate,
       GameData data,
-      PlayerId player);
+      GamePlayer player);
 
   /**
    * It is the AI's turn to roll for technology.
@@ -547,7 +550,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
    * @param data - the game data
    * @param player - the player to roll tech for
    */
-  protected abstract void tech(ITechDelegate techDelegate, GameData data, PlayerId player);
+  protected abstract void tech(ITechDelegate techDelegate, GameData data, GamePlayer player);
 
   /**
    * It is the AI's turn to move. Make all moves before returning from this method.
@@ -558,7 +561,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
    * @param player - the player to move with
    */
   protected abstract void move(
-      boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerId player);
+      boolean nonCombat, IMoveDelegate moveDel, GameData data, GamePlayer player);
 
   /**
    * It is the AI's turn to place units. get the units available to place with
@@ -570,7 +573,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
    * @param player - the player to place for
    */
   protected abstract void place(
-      boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerId player);
+      boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, GamePlayer player);
 
   /**
    * No need to override this.
@@ -579,7 +582,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
    * @param player The player whose turn is ending.
    */
   protected void endTurn(
-      final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final PlayerId player) {
+      final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GamePlayer player) {
     // we should not override this...
   }
 
@@ -616,14 +619,14 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     final IPoliticsDelegate remotePoliticsDelegate =
         (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     final GameData data = getGameData();
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     // We want to test the conditions each time to make sure they are still valid
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
           AiPoliticalUtils.getPoliticalActionsTowardsWar(
-              id, politicsDelegate.getTestedConditions(), data);
+              gamePlayer, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesTowardsWar.isEmpty()) {
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
@@ -633,7 +636,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
             (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((maxWarActionsPerTurn > 0)
             && CollectionUtils.countMatches(
-                        data.getRelationshipTracker().getRelationships(id),
+                        data.getRelationshipTracker().getRelationships(gamePlayer),
                         Matches.relationshipIsAtWar())
                     / numPlayers
                 < 0.4) {
@@ -662,7 +665,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     } else {
       final List<PoliticalActionAttachment> actionChoicesOther =
           AiPoliticalUtils.getPoliticalActionsOther(
-              id, politicsDelegate.getTestedConditions(), data);
+              gamePlayer, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
@@ -680,7 +683,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
               .test(action)) {
             continue;
           }
-          if (!id.getResources().has(action.getCostResources())) {
+          if (!gamePlayer.getResources().has(action.getCostResources())) {
             continue;
           }
           i++;

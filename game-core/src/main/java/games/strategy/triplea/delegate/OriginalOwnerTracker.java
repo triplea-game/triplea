@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -22,16 +22,17 @@ import javax.annotation.Nullable;
 public class OriginalOwnerTracker implements Serializable {
   private static final long serialVersionUID = 8462432412106180906L;
 
-  public static Change addOriginalOwnerChange(final Territory t, final PlayerId player) {
+  public static Change addOriginalOwnerChange(final Territory t, final GamePlayer player) {
     return ChangeFactory.attachmentPropertyChange(
         TerritoryAttachment.get(t), player, Constants.ORIGINAL_OWNER);
   }
 
-  public static Change addOriginalOwnerChange(final Unit unit, final PlayerId player) {
+  public static Change addOriginalOwnerChange(final Unit unit, final GamePlayer player) {
     return ChangeFactory.unitPropertyChange(unit, player, Constants.ORIGINAL_OWNER);
   }
 
-  public static Change addOriginalOwnerChange(final Collection<Unit> units, final PlayerId player) {
+  public static Change addOriginalOwnerChange(
+      final Collection<Unit> units, final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
       change.add(addOriginalOwnerChange(unit, player));
@@ -39,11 +40,11 @@ public class OriginalOwnerTracker implements Serializable {
     return change;
   }
 
-  public static PlayerId getOriginalOwner(final Unit unit) {
+  public static GamePlayer getOriginalOwner(final Unit unit) {
     return TripleAUnit.get(unit).getOriginalOwner();
   }
 
-  public static @Nullable PlayerId getOriginalOwner(final Territory t) {
+  public static @Nullable GamePlayer getOriginalOwner(final Territory t) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null) {
       return null;
@@ -53,12 +54,12 @@ public class OriginalOwnerTracker implements Serializable {
 
   /** Returns the territories originally owned by the specified player. */
   public static Collection<Territory> getOriginallyOwned(
-      final GameData data, final PlayerId player) {
+      final GameData data, final GamePlayer player) {
     final Collection<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {
-      PlayerId originalOwner = getOriginalOwner(t);
+      GamePlayer originalOwner = getOriginalOwner(t);
       if (originalOwner == null) {
-        originalOwner = PlayerId.NULL_PLAYERID;
+        originalOwner = GamePlayer.NULL_PLAYERID;
       }
       if (originalOwner.equals(player)) {
         territories.add(t);

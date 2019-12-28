@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -43,7 +43,7 @@ import org.triplea.java.collections.CollectionUtils;
 
 public class MovableUnitsFilterTest {
   private FilterOperationResult filterUnits(
-      final PlayerId player,
+      final GamePlayer player,
       final Route route,
       final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> dependentUnits) {
@@ -70,7 +70,7 @@ public class MovableUnitsFilterTest {
   @Nested
   public class RevisedTests {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
-    final PlayerId germans = germans(gameData);
+    final GamePlayer germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
     final Territory easternEurope = territory("Eastern Europe", gameData);
     final Territory kareliaSsr = territory("Karelia S.S.R.", gameData);
@@ -202,7 +202,7 @@ public class MovableUnitsFilterTest {
   @Nested
   public class WW2v3Tests {
     final GameData data = TestMapGameData.WW2V3_1942.getGameData();
-    final PlayerId russians = russians(data);
+    final GamePlayer russians = russians(data);
     final Territory russia = territory("Russia", data);
     final Territory caucasus = territory("Caucasus", data);
     final Territory persia = territory("Persia", data);

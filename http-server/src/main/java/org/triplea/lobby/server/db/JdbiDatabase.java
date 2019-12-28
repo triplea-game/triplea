@@ -10,7 +10,7 @@ import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.lobby.server.db.dao.access.log.AccessLogRecord;
-import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
+import org.triplea.lobby.server.db.dao.api.key.GamePlayerLookup;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.lobby.server.db.dao.user.ban.BanLookupRecord;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanRecord;
@@ -51,7 +51,7 @@ public final class JdbiDatabase {
   public static void registerRowMappers(final Jdbi jdbi) {
     jdbi.registerRowMapper(AccessLogRecord.class, AccessLogRecord.buildResultMapper());
     jdbi.registerRowMapper(BanLookupRecord.class, BanLookupRecord.buildResultMapper());
-    jdbi.registerRowMapper(PlayerIdLookup.class, PlayerIdLookup.buildResultMapper());
+    jdbi.registerRowMapper(GamePlayerLookup.class, GamePlayerLookup.buildResultMapper());
     jdbi.registerRowMapper(UserWithRoleRecord.class, UserWithRoleRecord.buildResultMapper());
     jdbi.registerRowMapper(UserBanRecord.class, UserBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UsernameBanRecord.class, UsernameBanRecord.buildResultMapper());

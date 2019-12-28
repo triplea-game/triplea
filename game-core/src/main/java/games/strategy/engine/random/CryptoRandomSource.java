@@ -1,7 +1,7 @@
 package games.strategy.engine.random;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.vault.Vault;
@@ -18,10 +18,10 @@ public class CryptoRandomSource implements IRandomSource {
   private final IRandomSource plainRandom = new PlainRandomSource();
   // the remote players who involved in rolling the dice
   // dice are rolled securely between us and her
-  private final PlayerId remotePlayer;
+  private final GamePlayer remotePlayer;
   private final IGame game;
 
-  public CryptoRandomSource(final PlayerId remotePlayer, final IGame game) {
+  public CryptoRandomSource(final GamePlayer remotePlayer, final IGame game) {
     this.remotePlayer = remotePlayer;
     this.game = game;
   }

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.GameDataTestUtil;
@@ -27,8 +27,8 @@ class BattleCalculatorTest {
   void testUnbalancedFight() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Collection<Unit> defendingUnits = new ArrayList<>(germany.getUnits());
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
-    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(100, russians);
     final List<Unit> bombardingUnits = List.of();
     final IBattleCalculator calculator = new BattleCalculator(gameData);
@@ -53,8 +53,8 @@ class BattleCalculatorTest {
     // 1 bomber and 1 infantry attacking
     // 1 fighter
     // if one attacking inf must live, the odds much worse
-    final PlayerId germans = GameDataTestUtil.germans(gameData);
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
     final List<Unit> defendingUnits = GameDataTestUtil.fighter(gameData).create(1, british, false);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(1, germans, false);

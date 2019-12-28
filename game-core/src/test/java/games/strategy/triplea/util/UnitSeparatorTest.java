@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -31,15 +31,15 @@ class UnitSeparatorTest {
     final Territory northernGermany = territory("Northern Germany", data);
     northernGermany.getUnitCollection().clear();
     final List<Unit> units = new ArrayList<>();
-    final PlayerId italians = GameDataTestUtil.italy(data);
+    final GamePlayer italians = GameDataTestUtil.italy(data);
     units.addAll(GameDataTestUtil.italianInfantry(data).create(1, italians));
     units.addAll(GameDataTestUtil.italianFactory(data).create(1, italians));
     units.addAll(GameDataTestUtil.truck(data).create(1, italians));
-    final PlayerId british = GameDataTestUtil.britain(data);
+    final GamePlayer british = GameDataTestUtil.britain(data);
     units.addAll(GameDataTestUtil.britishInfantry(data).create(1, british));
     units.addAll(GameDataTestUtil.britishFactory(data).create(1, british));
     units.addAll(GameDataTestUtil.truck(data).create(1, british));
-    final PlayerId germans = GameDataTestUtil.germany(data);
+    final GamePlayer germans = GameDataTestUtil.germany(data);
     units.addAll(GameDataTestUtil.germanInfantry(data).create(1, germans));
     units.addAll(GameDataTestUtil.germanFactory(data).create(1, germans));
     units.addAll(GameDataTestUtil.truck(data).create(1, germans));
@@ -65,7 +65,7 @@ class UnitSeparatorTest {
     final GameData data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
     northernGermany.getUnitCollection().clear();
-    final PlayerId italians = GameDataTestUtil.italy(data);
+    final GamePlayer italians = GameDataTestUtil.italy(data);
     final List<Unit> units =
         new ArrayList<>(GameDataTestUtil.italianInfantry(data).create(1, italians));
     GameDataTestUtil.addTo(northernGermany, units);
@@ -77,7 +77,7 @@ class UnitSeparatorTest {
   }
 
   private static UnitCategory newUnitCategory(
-      final String unitName, final PlayerId player, final GameData data) {
+      final String unitName, final GamePlayer player, final GameData data) {
     return new UnitCategory(new UnitType(unitName, data), player);
   }
 }

@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -49,7 +49,7 @@ public class PurchasePanel extends ActionPanel {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-          final PlayerId player = getCurrentPlayer();
+          final GamePlayer player = getCurrentPlayer();
           final GameData data = getData();
           purchase =
               TabbedProductionPanel.getProduction(
@@ -83,13 +83,13 @@ public class PurchasePanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id);
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer);
     purchase = new IntegerMap<>();
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          actionLabel.setText(id.getName() + " production");
+          actionLabel.setText(gamePlayer.getName() + " production");
           add(actionLabel);
 
           buyButton.setText(BUY);
@@ -109,15 +109,15 @@ public class PurchasePanel extends ActionPanel {
 
           add(Box.createVerticalStrut(4));
 
-          purchasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id);
+          purchasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), gamePlayer);
           add(purchasedUnits);
 
           getData().acquireReadLock();
           try {
             purchasedPreviousRoundsUnits.setUnitsFromCategories(
-                UnitSeparator.categorize(id.getUnits()));
+                UnitSeparator.categorize(gamePlayer.getUnits()));
             add(Box.createVerticalStrut(4));
-            if (!id.getUnitCollection().isEmpty()) {
+            if (!gamePlayer.getUnitCollection().isEmpty()) {
               add(purchasedPreviousRoundsLabel);
             }
             add(purchasedPreviousRoundsUnits);
@@ -171,7 +171,7 @@ public class PurchasePanel extends ActionPanel {
           }
         }
       }
-      final PlayerId player = getCurrentPlayer();
+      final GamePlayer player = getCurrentPlayer();
       final Collection<Unit> unitsNeedingFactory =
           CollectionUtils.getMatches(player.getUnits(), Matches.unitIsNotConstruction());
       if (!bid
@@ -222,7 +222,7 @@ public class PurchasePanel extends ActionPanel {
     return totalUnits;
   }
 
-  private static boolean isUnlimitedProduction(final PlayerId player) {
+  private static boolean isUnlimitedProduction(final GamePlayer player) {
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getUnlimitedProduction();

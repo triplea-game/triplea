@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -75,7 +75,7 @@ public class TerritoryNameDrawable extends AbstractDrawable {
           }
         } else if (ta.getProduction() > 0 && ta.getOriginalOwner() != null) {
           drawComments = true;
-          final PlayerId originalOwner = ta.getOriginalOwner();
+          final GamePlayer originalOwner = ta.getOriginalOwner();
           commentText = originalOwner.getName() + " Convoy Center";
         }
       }

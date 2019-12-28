@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -158,7 +158,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy.
    */
-  protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerId player) {
+  protected boolean canAfford(final IntegerMap<Resource> costs, final GamePlayer player) {
     return player.getResources().has(costs);
   }
 
@@ -334,7 +334,7 @@ public class PurchaseDelegate extends BaseTripleADelegate
   }
 
   private IntegerMap<Resource> getRepairCosts(
-      final Map<Unit, IntegerMap<RepairRule>> repairRules, final PlayerId player) {
+      final Map<Unit, IntegerMap<RepairRule>> repairRules, final GamePlayer player) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
     for (final IntegerMap<RepairRule> map : repairRules.values()) {
       for (final RepairRule rule : map.keySet()) {

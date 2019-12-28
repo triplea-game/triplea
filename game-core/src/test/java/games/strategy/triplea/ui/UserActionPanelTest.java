@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
@@ -26,8 +26,8 @@ final class UserActionPanelTest {
 
   private Resource pus;
 
-  private PlayerId newPlayer() {
-    final PlayerId player = new PlayerId("player", data);
+  private GamePlayer newPlayer() {
+    final GamePlayer player = new GamePlayer("player", data);
     player.getResources().addResource(pus, 42);
     return player;
   }
@@ -52,7 +52,7 @@ final class UserActionPanelTest {
   final class CanPlayerAffordUserActionTest {
     @Test
     void shouldReturnFalseWhenUserActionCostGreaterThanPlayerPUs() {
-      final PlayerId player = newPlayer();
+      final GamePlayer player = newPlayer();
       final UserActionAttachment userAction =
           newUserActionWithCost(player.getResources().getQuantity(pus) + 1);
 
@@ -64,7 +64,7 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostEqualToPlayerPUs() {
-      final PlayerId player = newPlayer();
+      final GamePlayer player = newPlayer();
       final UserActionAttachment userAction =
           newUserActionWithCost(player.getResources().getQuantity(pus));
 
@@ -76,7 +76,7 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostLessThanPlayerPUs() {
-      final PlayerId player = newPlayer();
+      final GamePlayer player = newPlayer();
       final UserActionAttachment userAction =
           newUserActionWithCost(player.getResources().getQuantity(pus) - 1);
 
@@ -88,7 +88,7 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostIsZeroAndPlayerPUsIsZero() {
-      final PlayerId player = newPlayer();
+      final GamePlayer player = newPlayer();
       final UserActionAttachment userAction = newUserActionWithCost(0);
 
       final boolean canAffordUserAction =

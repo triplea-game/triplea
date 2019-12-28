@@ -1,6 +1,6 @@
 package games.strategy.triplea.image;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
@@ -113,7 +113,7 @@ public class UnitImageFactory {
 
   /** Return the appropriate unit image. */
   public Optional<Image> getImage(
-      final UnitType type, final PlayerId player, final boolean damaged, final boolean disabled) {
+      final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (images.containsKey(fullName)) {
@@ -138,34 +138,36 @@ public class UnitImageFactory {
     return Optional.of(scaledImage);
   }
 
-  public Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerId id) {
-    return getBaseImageUrl(baseImageName, id, resourceLoader);
+  public Optional<URL> getBaseImageUrl(final String baseImageName, final GamePlayer gamePlayer) {
+    return getBaseImageUrl(baseImageName, gamePlayer, resourceLoader);
   }
 
   private static Optional<URL> getBaseImageUrl(
-      final String baseImageName, final PlayerId id, final ResourceLoader resourceLoader) {
+      final String baseImageName,
+      final GamePlayer gamePlayer,
+      final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
-    final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
+    final String fileName = FILE_NAME_BASE + gamePlayer.getName() + "/" + baseImageName + ".png";
     final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName, fileName2);
     return Optional.ofNullable(url);
   }
 
   private Optional<Image> getTransformedImage(
-      final String baseImageName, final PlayerId id, final UnitType type) {
-    final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
+      final String baseImageName, final GamePlayer gamePlayer, final UnitType type) {
+    final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, gamePlayer);
     Image image = null;
     if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(imageLocation.get());
       Util.ensureImageLoaded(image);
-      if (needToTransformImage(id, type, mapData)) {
+      if (needToTransformImage(gamePlayer, type, mapData)) {
         image = convertToBufferedImage(image);
-        final Optional<Color> unitColor = mapData.getUnitColor(id.getName());
+        final Optional<Color> unitColor = mapData.getUnitColor(gamePlayer.getName());
         if (unitColor.isPresent()) {
-          final int brightness = mapData.getUnitBrightness(id.getName());
+          final int brightness = mapData.getUnitBrightness(gamePlayer.getName());
           ImageTransformer.colorize(unitColor.get(), brightness, (BufferedImage) image);
         }
-        if (mapData.shouldFlipUnit(id.getName())) {
+        if (mapData.shouldFlipUnit(gamePlayer.getName())) {
           image = ImageTransformer.flipHorizontally((BufferedImage) image);
         }
       }
@@ -174,9 +176,10 @@ public class UnitImageFactory {
   }
 
   private static boolean needToTransformImage(
-      final PlayerId id, final UnitType type, final MapData mapData) {
+      final GamePlayer gamePlayer, final UnitType type, final MapData mapData) {
     return !mapData.ignoreTransformingUnit(type.getName())
-        && (mapData.getUnitColor(id.getName()).isPresent() || mapData.shouldFlipUnit(id.getName()));
+        && (mapData.getUnitColor(gamePlayer.getName()).isPresent()
+            || mapData.shouldFlipUnit(gamePlayer.getName()));
   }
 
   private static BufferedImage convertToBufferedImage(final Image image) {
@@ -194,7 +197,7 @@ public class UnitImageFactory {
    * @return The highlight image or empty if no base image is available for the specified unit.
    */
   public Optional<Image> getHighlightImage(
-      final UnitType type, final PlayerId player, final boolean damaged, final boolean disabled) {
+      final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     return getImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
   }
 
@@ -214,7 +217,7 @@ public class UnitImageFactory {
 
   /** Return a icon image for a unit. */
   public Optional<ImageIcon> getIcon(
-      final UnitType type, final PlayerId player, final boolean damaged, final boolean disabled) {
+      final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (icons.containsKey(fullName)) {
@@ -231,63 +234,66 @@ public class UnitImageFactory {
   }
 
   private static String getBaseImageName(
-      final UnitType type, final PlayerId id, final boolean damaged, final boolean disabled) {
+      final UnitType type,
+      final GamePlayer gamePlayer,
+      final boolean damaged,
+      final boolean disabled) {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
     if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
       if (type.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-        if (TechTracker.hasRocket(id) && UnitAttachment.get(type).getIsRocket()) {
+        if (TechTracker.hasRocket(gamePlayer) && UnitAttachment.get(type).getIsRocket()) {
           name = new StringBuilder("rockets");
         }
-        if (TechTracker.hasAaRadar(id) && Matches.unitTypeIsAaForAnything().test(type)) {
+        if (TechTracker.hasAaRadar(gamePlayer) && Matches.unitTypeIsAaForAnything().test(type)) {
           name.append("_r");
         }
       } else if (UnitAttachment.get(type).getIsRocket()
           && Matches.unitTypeIsAaForAnything().test(type)) {
-        if (TechTracker.hasRocket(id)) {
+        if (TechTracker.hasRocket(gamePlayer)) {
           name.append("_rockets");
         }
-        if (TechTracker.hasAaRadar(id)) {
+        if (TechTracker.hasAaRadar(gamePlayer)) {
           name.append("_r");
         }
       } else if (UnitAttachment.get(type).getIsRocket()) {
-        if (TechTracker.hasRocket(id)) {
+        if (TechTracker.hasRocket(gamePlayer)) {
           name.append("_rockets");
         }
       } else if (Matches.unitTypeIsAaForAnything().test(type)) {
-        if (TechTracker.hasAaRadar(id)) {
+        if (TechTracker.hasAaRadar(gamePlayer)) {
           name.append("_r");
         }
       }
       if (UnitAttachment.get(type).getIsAir() && !UnitAttachment.get(type).getIsStrategicBomber()) {
-        if (TechTracker.hasLongRangeAir(id)) {
+        if (TechTracker.hasLongRangeAir(gamePlayer)) {
           name.append("_lr");
         }
-        if (TechTracker.hasJetFighter(id)
-            && (UnitAttachment.get(type).getAttack(id) > 0
-                || UnitAttachment.get(type).getDefense(id) > 0)) {
+        if (TechTracker.hasJetFighter(gamePlayer)
+            && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
+                || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
           name.append("_jp");
         }
       }
       if (UnitAttachment.get(type).getIsAir() && UnitAttachment.get(type).getIsStrategicBomber()) {
-        if (TechTracker.hasLongRangeAir(id)) {
+        if (TechTracker.hasLongRangeAir(gamePlayer)) {
           name.append("_lr");
         }
-        if (TechTracker.hasHeavyBomber(id)) {
+        if (TechTracker.hasHeavyBomber(gamePlayer)) {
           name.append("_hb");
         }
       }
       if (UnitAttachment.get(type).getIsFirstStrike()
-          && (UnitAttachment.get(type).getAttack(id) > 0
-              || UnitAttachment.get(type).getDefense(id) > 0)) {
-        if (TechTracker.hasSuperSubs(id)) {
+          && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
+              || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
+        if (TechTracker.hasSuperSubs(gamePlayer)) {
           name.append("_ss");
         }
       }
       if (type.getName().equals(Constants.UNIT_TYPE_FACTORY)
           || UnitAttachment.get(type).getCanProduceUnits()) {
-        if (TechTracker.hasIndustrialTechnology(id)
-            || TechTracker.hasIncreasedFactoryProduction(id)) {
+        if (TechTracker.hasIndustrialTechnology(gamePlayer)
+            || TechTracker.hasIncreasedFactoryProduction(gamePlayer)) {
           name.append("_it");
         }
       }
@@ -300,7 +306,7 @@ public class UnitImageFactory {
     return name.toString();
   }
 
-  public Dimension getImageDimensions(final UnitType type, final PlayerId player) {
+  public Dimension getImageDimensions(final UnitType type, final GamePlayer player) {
     final String baseName = getBaseImageName(type, player, false, false);
     final Image baseImage =
         getTransformedImage(baseName, player, type)

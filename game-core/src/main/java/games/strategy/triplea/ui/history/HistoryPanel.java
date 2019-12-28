@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.history;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UiContext;
@@ -448,7 +448,7 @@ public class HistoryPanel extends JPanel {
         final int row,
         final boolean haveFocus) {
       if (value instanceof Step) {
-        final PlayerId player = ((Step) value).getPlayerId();
+        final GamePlayer player = ((Step) value).getPlayerId();
         if (player != null) {
           final String text = value.toString() + " (" + player.getName() + ")";
           if (uiContext != null) {

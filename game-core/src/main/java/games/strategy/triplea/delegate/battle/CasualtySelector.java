@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -134,7 +134,7 @@ public class CasualtySelector {
       final Collection<Unit> allEnemyUnits,
       final DiceRoll dice,
       final IDelegateBridge bridge,
-      final PlayerId hitPlayer,
+      final GamePlayer hitPlayer,
       final UUID battleId,
       final Territory terr,
       final Collection<TerritoryEffect> territoryEffects,
@@ -580,7 +580,7 @@ public class CasualtySelector {
    *     moving).
    */
   public static CasualtyDetails selectCasualties(
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> targetsToPickFrom,
       final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits,
@@ -828,7 +828,7 @@ public class CasualtySelector {
       final Collection<Unit> targetsToPickFrom,
       final int hits,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> enemyUnits,
       final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers,
@@ -895,7 +895,7 @@ public class CasualtySelector {
   private static List<Unit> sortUnitsForCasualtiesWithSupport(
       final Collection<Unit> targetsToPickFrom,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> enemyUnits,
       final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers,

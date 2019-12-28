@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.pro.util;
 
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
@@ -48,7 +48,7 @@ public final class ProTransportUtils {
    * {@code value}.
    */
   public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(
-      final PlayerId player,
+      final GamePlayer player,
       final Unit transport,
       final Set<Territory> territoriesToLoadFrom,
       final List<Unit> unitsToIgnore,
@@ -88,7 +88,7 @@ public final class ProTransportUtils {
   }
 
   public static List<Unit> getUnitsToTransportFromTerritories(
-      final PlayerId player,
+      final GamePlayer player,
       final Unit transport,
       final Set<Territory> territoriesToLoadFrom,
       final List<Unit> unitsToIgnore) {
@@ -103,7 +103,7 @@ public final class ProTransportUtils {
   /** Returns the units to transport via {@code transport} that satisfy the specified predicate. */
   // TODO: this needs fixed to consider whether a valid route exists to load all units
   public static List<Unit> getUnitsToTransportFromTerritories(
-      final PlayerId player,
+      final GamePlayer player,
       final Unit transport,
       final Set<Territory> territoriesToLoadFrom,
       final List<Unit> unitsToIgnore,
@@ -226,7 +226,7 @@ public final class ProTransportUtils {
     if (usedUnits.contains(unit)) {
       return List.of();
     }
-    final PlayerId player = unit.getOwner();
+    final GamePlayer player = unit.getOwner();
     final List<Unit> units =
         t.getUnitCollection()
             .getMatches(
@@ -256,7 +256,7 @@ public final class ProTransportUtils {
     return ImmutableList.copyOf(results);
   }
 
-  private static Comparator<Unit> getDecreasingAttackComparator(final PlayerId player) {
+  private static Comparator<Unit> getDecreasingAttackComparator(final GamePlayer player) {
     return (o1, o2) -> {
 
       // Very rough way to add support power
@@ -286,7 +286,7 @@ public final class ProTransportUtils {
    * Returns the air units in {@code units} that can't land on any carrier unit in {@code units}.
    */
   public static List<Unit> getAirThatCantLandOnCarrier(
-      final PlayerId player, final Territory t, final List<Unit> units) {
+      final GamePlayer player, final Territory t, final List<Unit> units) {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
@@ -312,7 +312,7 @@ public final class ProTransportUtils {
    * receive the air units in {@code existingUnits} in addition to {@code newUnit}.
    */
   public static boolean validateCarrierCapacity(
-      final PlayerId player,
+      final GamePlayer player,
       final Territory t,
       final List<Unit> existingUnits,
       final Unit newUnit) {
@@ -337,7 +337,7 @@ public final class ProTransportUtils {
    * carrier units in {@code unitsToPlace}.
    */
   public static int getUnusedLocalCarrierCapacity(
-      final PlayerId player, final Territory t, final List<Unit> unitsToPlace) {
+      final GamePlayer player, final Territory t, final List<Unit> unitsToPlace) {
     final GameData data = ProData.getData();
 
     // Find nearby carrier capacity
@@ -374,7 +374,7 @@ public final class ProTransportUtils {
    * {@code unitsToPlace}.
    */
   public static int getUnusedCarrierCapacity(
-      final PlayerId player, final Territory t, final List<Unit> unitsToPlace) {
+      final GamePlayer player, final Territory t, final List<Unit> unitsToPlace) {
     final List<Unit> units = new ArrayList<>(unitsToPlace);
     units.addAll(t.getUnits());
     int capacity = AirMovementValidator.carrierCapacity(units, t);

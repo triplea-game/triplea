@@ -54,12 +54,12 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return (int) units.stream().filter(u -> u.getType().equals(type)).count();
   }
 
-  public int getUnitCount(final UnitType type, final PlayerId owner) {
+  public int getUnitCount(final UnitType type, final GamePlayer owner) {
     return (int)
         units.stream().filter(u -> u.getType().equals(type) && u.getOwner().equals(owner)).count();
   }
 
-  int getUnitCount(final PlayerId owner) {
+  int getUnitCount(final GamePlayer owner) {
     return (int) units.stream().filter(u -> u.getOwner().equals(owner)).count();
   }
 
@@ -129,15 +129,11 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return units;
   }
 
-  /**
-   * Returns map of UnitType (only of units for the specified player).
-   *
-   * @param id referring player ID
-   */
-  public IntegerMap<UnitType> getUnitsByType(final PlayerId id) {
+  /** Returns map of UnitType (only of units for the specified player). */
+  public IntegerMap<UnitType> getUnitsByType(final GamePlayer gamePlayer) {
     final IntegerMap<UnitType> count = new IntegerMap<>();
     units.stream()
-        .filter(unit -> unit.getOwner().equals(id))
+        .filter(unit -> unit.getOwner().equals(gamePlayer))
         .forEach(unit -> count.add(unit.getType(), 1));
     return count;
   }
@@ -153,21 +149,21 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /** Returns a Set of all players who have units in this collection. */
-  public Set<PlayerId> getPlayersWithUnits() {
+  public Set<GamePlayer> getPlayersWithUnits() {
     // note nulls are handled by PlayerId.NULL_PLAYERID
     return units.stream().map(Unit::getOwner).collect(Collectors.toSet());
   }
 
   /** Returns the count of units each player has in this collection. */
-  public IntegerMap<PlayerId> getPlayerUnitCounts() {
-    final IntegerMap<PlayerId> count = new IntegerMap<>();
+  public IntegerMap<GamePlayer> getPlayerUnitCounts() {
+    final IntegerMap<GamePlayer> count = new IntegerMap<>();
     units.forEach(unit -> count.add(unit.getOwner(), 1));
     return count;
   }
 
-  public List<PlayerId> getPlayersByUnitCount() {
-    final IntegerMap<PlayerId> map = getPlayerUnitCounts();
-    final List<PlayerId> players = new ArrayList<>(map.keySet());
+  public List<GamePlayer> getPlayersByUnitCount() {
+    final IntegerMap<GamePlayer> map = getPlayerUnitCounts();
+    final List<GamePlayer> players = new ArrayList<>(map.keySet());
     players.sort(Comparator.comparingInt(map::getInt).reversed());
     return players;
   }

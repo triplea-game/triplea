@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -33,8 +33,8 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public PlayerId getPlayerId() {
-    return bridge.getPlayerId();
+  public GamePlayer getGamePlayer() {
+    return bridge.getGamePlayer();
   }
 
   /**
@@ -43,7 +43,7 @@ public class GameDelegateBridge implements IDelegateBridge {
    */
   @Override
   public int getRandom(
-      final int max, final PlayerId player, final DiceType diceType, final String annotation) {
+      final int max, final GamePlayer player, final DiceType diceType, final String annotation) {
     return bridge.getRandom(max, player, diceType, annotation);
   }
 
@@ -51,7 +51,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   public int[] getRandom(
       final int max,
       final int count,
-      final PlayerId player,
+      final GamePlayer player,
       final DiceType diceType,
       final String annotation) {
     return bridge.getRandom(max, count, player, diceType, annotation);
@@ -73,8 +73,8 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public Player getRemotePlayer(final PlayerId id) {
-    return bridge.getRemotePlayer(id);
+  public Player getRemotePlayer(final GamePlayer gamePlayer) {
+    return bridge.getRemotePlayer(gamePlayer);
   }
 
   @Override

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -314,7 +314,7 @@ public class TileManager {
     }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
-      final PlayerId capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
+      final GamePlayer capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (ta != null && (ta.getVictoryCity() != 0)) {

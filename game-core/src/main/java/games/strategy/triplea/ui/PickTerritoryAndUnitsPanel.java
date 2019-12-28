@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
@@ -143,8 +143,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id);
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer);
     pickedTerritory = null;
     pickedUnits = new HashSet<>();
     currentAction = null;
@@ -152,7 +152,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          actionLabel.setText(id.getName() + " Pick Territory and Units");
+          actionLabel.setText(gamePlayer.getName() + " Pick Territory and Units");
           add(actionLabel);
           selectTerritoryButton = new JButton(selectTerritoryAction);
           add(selectTerritoryButton);

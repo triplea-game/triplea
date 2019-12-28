@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
@@ -32,8 +32,8 @@ import org.triplea.test.common.TestType;
 @Integration(type = TestType.ACCEPTANCE)
 class VictoryTest {
   private GameData gameData;
-  private PlayerId italians;
-  private PlayerId germans;
+  private GamePlayer italians;
+  private GamePlayer germans;
   private IDelegateBridge testBridge;
 
   private IntegerMap<Resource> italianResources;

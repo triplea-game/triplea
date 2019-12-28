@@ -1,8 +1,8 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -56,13 +56,13 @@ class UnitInformation {
         }
         unitInformation.write(getCostInformation(currentType) + ",");
         unitInformation.write(
-            currentAttachment.getMovement(PlayerId.NULL_PLAYERID)
+            currentAttachment.getMovement(GamePlayer.NULL_PLAYERID)
                 + ","
-                + currentAttachment.getAttack(PlayerId.NULL_PLAYERID)
+                + currentAttachment.getAttack(GamePlayer.NULL_PLAYERID)
                 + ","
-                + currentAttachment.getDefense(PlayerId.NULL_PLAYERID)
+                + currentAttachment.getDefense(GamePlayer.NULL_PLAYERID)
                 + ","
-                + (!currentAttachment.getCanBlitz(PlayerId.NULL_PLAYERID) ? "-" : "true")
+                + (!currentAttachment.getCanBlitz(GamePlayer.NULL_PLAYERID) ? "-" : "true")
                 + ","
                 + (!currentAttachment.getArtillery() ? "-" : "true")
                 + ","

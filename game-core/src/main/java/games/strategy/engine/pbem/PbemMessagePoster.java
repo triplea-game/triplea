@@ -1,7 +1,7 @@
 package games.strategy.engine.pbem;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -36,13 +36,13 @@ public class PbemMessagePoster implements Serializable {
   private String turnSummary = null;
   private String turnSummaryRef = null;
   private String emailSendStatus;
-  private final PlayerId currentPlayer;
+  private final GamePlayer currentPlayer;
   private final int roundNumber;
   private final String gameNameAndInfo;
 
   public PbemMessagePoster(
       final GameData gameData,
-      final PlayerId currentPlayer,
+      final GamePlayer currentPlayer,
       final int roundNumber,
       final String title) {
     this.currentPlayer = currentPlayer;

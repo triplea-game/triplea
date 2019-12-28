@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public abstract class DependentBattle extends AbstractBattle {
 
   DependentBattle(
       final Territory battleSite,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final BattleTracker battleTracker,
       final GameData data) {
     super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);

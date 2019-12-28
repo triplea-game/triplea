@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -35,8 +35,8 @@ public class FireAa implements IExecutable {
   private final Collection<Unit> firingUnits;
   private final Collection<Unit> attackableUnits;
   private final MustFightBattle battle;
-  private final PlayerId firingPlayer;
-  private final PlayerId hitPlayer;
+  private final GamePlayer firingPlayer;
+  private final GamePlayer hitPlayer;
   private final boolean defending;
   private final Map<Unit, Collection<Unit>> dependentUnits;
   private final UUID battleId;
@@ -56,8 +56,8 @@ public class FireAa implements IExecutable {
 
   FireAa(
       final Collection<Unit> attackableUnits,
-      final PlayerId firingPlayer,
-      final PlayerId hitPlayer,
+      final GamePlayer firingPlayer,
+      final GamePlayer hitPlayer,
       final Collection<Unit> firingUnits,
       final MustFightBattle battle,
       final boolean defending,
