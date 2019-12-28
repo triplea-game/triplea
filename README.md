@@ -2,6 +2,8 @@
 [![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)
 [![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/context:java)
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
+
+
  
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
