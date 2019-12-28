@@ -96,7 +96,7 @@ subprojects {
         jaxbCoreVersion = '2.3.0'
         jaxbImplVersion = '2.3.2'
         jbcryptVersion = '0.4'
-        jdbiVersion = '3.10.1'
+        jdbiVersion = '3.12.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.5.2'
         junitPioneerVersion = '0.3.0'
