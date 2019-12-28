@@ -351,7 +351,7 @@ public class BattleDisplay extends JPanel {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final Territory[] retreatTo = new Territory[1];
+    final AtomicReference<Territory> retreatTo = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action =
         SwingAction.of(
@@ -385,7 +385,7 @@ public class BattleDisplay extends JPanel {
                 return;
               }
               // submerge
-              retreatTo[0] = battleLocation;
+              retreatTo.set(battleLocation);
               latch.countDown();
             });
     SwingUtilities.invokeLater(() -> actionButton.setAction(action));
@@ -394,14 +394,14 @@ public class BattleDisplay extends JPanel {
     Interruptibles.await(latch);
     mapPanel.getUiContext().removeShutdownLatch(latch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
-    return retreatTo[0];
+    return retreatTo.get();
   }
 
   private Territory getRetreatInternal(final String message, final Collection<Territory> possible) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final Territory[] retreatTo = new Territory[1];
+    final AtomicReference<Territory> retreatTo = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action =
         SwingAction.of(
@@ -441,7 +441,7 @@ public class BattleDisplay extends JPanel {
               // must be the truth
               // retreat
               if (possible.size() == 1) {
-                retreatTo[0] = possible.iterator().next();
+                retreatTo.set(possible.iterator().next());
                 latch.countDown();
               } else {
                 final RetreatComponent comp = new RetreatComponent(possible);
@@ -455,7 +455,7 @@ public class BattleDisplay extends JPanel {
                         null);
                 if (option == JOptionPane.OK_OPTION) {
                   if (comp.getSelection() != null) {
-                    retreatTo[0] = comp.getSelection();
+                    retreatTo.set(comp.getSelection());
                     latch.countDown();
                   }
                 }
@@ -467,7 +467,7 @@ public class BattleDisplay extends JPanel {
     Interruptibles.await(latch);
     mapPanel.getUiContext().removeShutdownLatch(latch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
-    return retreatTo[0];
+    return retreatTo.get();
   }
 
   private class RetreatComponent extends JPanel {

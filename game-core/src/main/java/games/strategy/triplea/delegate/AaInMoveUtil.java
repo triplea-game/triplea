@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
@@ -111,7 +112,7 @@ class AaInMoveUtil implements Serializable {
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing until you got the roll you wanted
       currentMove.setCantUndo("Move cannot be undone after " + currentTypeAa + " has fired.");
-      final DiceRoll[] dice = new DiceRoll[1];
+      final AtomicReference<DiceRoll> dice = new AtomicReference<>();
       final IExecutable rollDice =
           new IExecutable() {
             private static final long serialVersionUID = 4714364489659654758L;
@@ -121,13 +122,13 @@ class AaInMoveUtil implements Serializable {
               // get rid of units already killed, so we don't target them twice
               validTargetedUnitsForThisRoll.removeAll(casualties);
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
-                dice[0] =
+                dice.set(
                     DiceRoll.rollSbrOrFlyOverAa(
                         validTargetedUnitsForThisRoll,
                         currentPossibleAa,
                         AaInMoveUtil.this.bridge,
                         territory,
-                        true);
+                        true));
               }
             }
           };
@@ -138,7 +139,7 @@ class AaInMoveUtil implements Serializable {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
-                final int hitCount = dice[0].getHits();
+                final int hitCount = dice.get().getHits();
                 if (hitCount == 0) {
                   if (currentTypeAa.equals("AA")) {
                     AaInMoveUtil.this
@@ -182,7 +183,7 @@ class AaInMoveUtil implements Serializable {
                             findDefender(currentPossibleAa, territory));
                   }
                   selectCasualties(
-                      dice[0],
+                      dice.get(),
                       units,
                       validTargetedUnitsForThisRoll,
                       currentPossibleAa,
