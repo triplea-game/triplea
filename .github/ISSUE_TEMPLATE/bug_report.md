@@ -7,33 +7,30 @@ assignees: ''
 
 ---
 
-**Describe the bug**
-<!-- A clear and concise description of what the bug is. -->
+<!-- Please answer the questions below -->
 
-**Engine Version or SHA**
-<!-- Exact game engine version, or the latest SHA if building from source -->
+**How can the problem be recreated?**
 
-**To Reproduce**
 <!--
-Steps to reproduce the behavior:
+Example: 
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 -->
 
+**When the problem is fixed, what should have happened instead?**
+
+**Which Engine Version are you using?** <!-- Van be found on the TripleA launch screen-->
+
 **Expected behavior**
 <!-- A clear and concise description of what you expected to happen. -->
 
-**Screenshots**
-<!-- If applicable, add screenshots to help explain your problem. -->
+**Screenshots** <!-- If applicable, add screenshots to help explain your problem. -->
 
-**OS (please put an X in the appropriate box):**
-[] Windows
-[] Mac
-[] Linux
 
 **Zipped Save Game**
+
 <!--
 Please zip and post a save game to this bug report!
 
@@ -44,5 +41,4 @@ To zip a save game:
 Once zipped, you can post the zip file to this issue, thank you! 
 -->
 
-**Additional context**
-<!-- Add any other context about the problem here. -->
+
