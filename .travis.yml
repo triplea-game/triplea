@@ -70,16 +70,6 @@ jobs:
         - ./gradlew --parallel test integTest jacocoTestReport
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: verify
-      env: "Unit Tests"
-      jdk: openjdk12
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-      install: skip
-      script:
-        - ./gradlew --parallel test
-    - stage: verify
       env: "Master Branch: Sonar Analysis"
       jdk: openjdk11
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
