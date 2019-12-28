@@ -3,7 +3,7 @@ package games.strategy.engine.history;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -52,9 +52,9 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  public Optional<PlayerId> getActivePlayer() {
+  public Optional<GamePlayer> getActivePlayer() {
     if (currentNode instanceof Step) {
-      return PlayerId.asOptional(((Step) currentNode).getPlayerId());
+      return GamePlayer.asOptional(((Step) currentNode).getPlayerId());
     }
     return Optional.empty();
   }

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
@@ -32,17 +32,17 @@ public class BattleDrawable extends TerritoryDrawable {
       final Graphics2D graphics,
       final MapData mapData) {
     final Territory territory = data.getMap().getTerritory(territoryName);
-    final Set<PlayerId> players = new HashSet<>();
+    final Set<GamePlayer> players = new HashSet<>();
     for (final Unit u : territory.getUnitCollection()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
         players.add(u.getOwner());
       }
     }
-    PlayerId attacker = null;
+    GamePlayer attacker = null;
     boolean draw = false;
 
     if (!territory.isWater()) {
-      for (final PlayerId p : players) {
+      for (final GamePlayer p : players) {
         if (data.getRelationshipTracker().isAtWar(p, territory.getOwner())) {
           attacker = p;
           draw = true;
@@ -53,8 +53,8 @@ public class BattleDrawable extends TerritoryDrawable {
 
     if (!draw) {
       // O(n^2), but n is usually 2, and almost always < 10
-      for (final PlayerId p : players) {
-        for (final PlayerId p2 : players) {
+      for (final GamePlayer p : players) {
+        for (final GamePlayer p2 : players) {
           if (data.getRelationshipTracker().isAtWar(p, p2)) {
             draw = true;
             break;

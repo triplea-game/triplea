@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -110,7 +110,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Move regular units
-    final PlayerId germans = GameDataTestUtil.germany(twwGameData);
+    final GamePlayer germans = GameDataTestUtil.germany(twwGameData);
     final Territory berlin = territory("Berlin", twwGameData);
     final Territory easternGermany = territory("Eastern Germany", twwGameData);
     final Route r = new Route(berlin, easternGermany);
@@ -142,7 +142,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     assertFalse(results.isMoveValid());
 
     // Add allied owned germanRail to destination so move succeeds
-    final PlayerId japan = GameDataTestUtil.japan(twwGameData);
+    final GamePlayer japan = GameDataTestUtil.japan(twwGameData);
     addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, japan));
     results = MoveValidator.validateMove(new MoveDescription(toMove, r), germans, false, null);
     assertTrue(results.isMoveValid());
@@ -153,7 +153,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Move truck 2 territories
-    final PlayerId germans = GameDataTestUtil.germany(twwGameData);
+    final GamePlayer germans = GameDataTestUtil.germany(twwGameData);
     final Territory berlin = territory("Berlin", twwGameData);
     final Territory easternGermany = territory("Eastern Germany", twwGameData);
     final Territory poland = territory("Poland", twwGameData);
@@ -207,7 +207,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Load german unit in sea zone with no enemy ships
-    final PlayerId germans = GameDataTestUtil.germany(twwGameData);
+    final GamePlayer germans = GameDataTestUtil.germany(twwGameData);
     final Territory northernGermany = territory("Northern Germany", twwGameData);
     final Territory sz27 = territory("27 Sea Zone", twwGameData);
     final Route r = new Route(northernGermany, sz27);
@@ -225,7 +225,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     assertTrue(results.isMoveValid());
 
     // Add USA ship to transport sea zone
-    final PlayerId usa = GameDataTestUtil.usa(twwGameData);
+    final GamePlayer usa = GameDataTestUtil.usa(twwGameData);
     addTo(sz27, GameDataTestUtil.americanCruiser(twwGameData).create(1, usa));
     unitsToTransports =
         TransportUtils.mapTransports(r, northernGermany.getUnitCollection(), transport);

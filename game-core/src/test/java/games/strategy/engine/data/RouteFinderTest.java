@@ -23,7 +23,7 @@ import org.mockito.Mockito;
 
 class RouteFinderTest {
 
-  private final PlayerId player = mock(PlayerId.class);
+  private final GamePlayer player = mock(GamePlayer.class);
   private final GameMap map = mock(GameMap.class);
   private final List<Territory> territories = new ArrayList<>();
 

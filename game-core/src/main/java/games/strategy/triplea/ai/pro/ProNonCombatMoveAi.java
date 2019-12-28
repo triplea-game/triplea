@@ -1,8 +1,8 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -56,7 +56,7 @@ class ProNonCombatMoveAi {
 
   private final ProOddsCalculator calc;
   private GameData data;
-  private PlayerId player;
+  private GamePlayer player;
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
 
@@ -205,7 +205,7 @@ class ProNonCombatMoveAi {
       final Map<Territory, ProTerritory> moveMap,
       final IMoveDelegate moveDel,
       final GameData data,
-      final PlayerId player) {
+      final GamePlayer player) {
 
     this.data = data;
     this.player = player;

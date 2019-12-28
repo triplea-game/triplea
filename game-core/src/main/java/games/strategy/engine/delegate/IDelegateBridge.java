@@ -2,7 +2,7 @@ package games.strategy.engine.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -25,9 +25,9 @@ public interface IDelegateBridge {
   Player getRemotePlayer();
 
   /** Get a remote reference to the given player. */
-  Player getRemotePlayer(PlayerId id);
+  Player getRemotePlayer(GamePlayer gamePlayer);
 
-  PlayerId getPlayerId();
+  GamePlayer getGamePlayer();
 
   /** Returns the current step name. */
   String getStepName();
@@ -39,7 +39,7 @@ public interface IDelegateBridge {
   void addChange(Change change);
 
   /** equivalent to getRandom(max,1,annotation)[0]. */
-  int getRandom(int max, PlayerId player, DiceType diceType, String annotation);
+  int getRandom(int max, GamePlayer player, DiceType diceType, String annotation);
 
   /**
    * Return a random value to be used by the delegate.
@@ -50,7 +50,7 @@ public interface IDelegateBridge {
    *
    * @param annotation a string used to describe the random event.
    */
-  int[] getRandom(int max, int count, PlayerId player, DiceType diceType, String annotation);
+  int[] getRandom(int max, int count, GamePlayer player, DiceType diceType, String annotation);
 
   /**
    * return the delegate history writer for this game.

@@ -1,7 +1,7 @@
 package games.strategy.engine.pbem;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -138,7 +138,7 @@ public final class ForumPosterComponent extends JPanel {
   }
 
   private void updateHistoryLog() {
-    final Collection<PlayerId> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(data);
+    final Collection<GamePlayer> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(data);
     // clear first, then update
     historyLog.clear();
     historyLog.printFullTurn(data, showDetailsCheckBox.isSelected(), allowedIDs);

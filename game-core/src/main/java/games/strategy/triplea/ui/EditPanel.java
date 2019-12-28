@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
@@ -240,14 +240,14 @@ class EditPanel extends ActionPanel {
               return;
             }
             // PlayerId defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
-            final PlayerId defaultPlayer = ta.getOriginalOwner();
+            final GamePlayer defaultPlayer = ta.getOriginalOwner();
             final PlayerChooser playerChooser =
                 new PlayerChooser(
                     getData().getPlayerList(), defaultPlayer, getMap().getUiContext(), true);
             final JDialog dialog =
                 playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
             dialog.setVisible(true);
-            final PlayerId player = playerChooser.getSelected();
+            final GamePlayer player = playerChooser.getSelected();
             if (player != null) {
               final String result = frame.getEditDelegate().changeTerritoryOwner(territory, player);
               if (result != null) {
@@ -270,7 +270,7 @@ class EditPanel extends ActionPanel {
             final JDialog dialog =
                 playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
             dialog.setVisible(true);
-            final PlayerId player = playerChooser.getSelected();
+            final GamePlayer player = playerChooser.getSelected();
             if (player != null) {
               // open production panel for adding new units
               final IntegerMap<ProductionRule> production =
@@ -482,7 +482,7 @@ class EditPanel extends ActionPanel {
             final JDialog dialog =
                 playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
             dialog.setVisible(true);
-            final PlayerId player = playerChooser.getSelected();
+            final GamePlayer player = playerChooser.getSelected();
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -547,7 +547,7 @@ class EditPanel extends ActionPanel {
                 playerChooser.createDialog(
                     getTopLevelAncestor(), "Select player to get technology");
             dialog.setVisible(true);
-            final PlayerId player = playerChooser.getSelected();
+            final GamePlayer player = playerChooser.getSelected();
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -609,7 +609,7 @@ class EditPanel extends ActionPanel {
                 playerChooser.createDialog(
                     getTopLevelAncestor(), "Select player to remove technology");
             dialog.setVisible(true);
-            final PlayerId player = playerChooser.getSelected();
+            final GamePlayer player = playerChooser.getSelected();
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -681,7 +681,7 @@ class EditPanel extends ActionPanel {
               return;
             }
             // all owned by one player
-            final PlayerId player = units.get(0).getOwner();
+            final GamePlayer player = units.get(0).getOwner();
             units.retainAll(CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player)));
             if (units.isEmpty()) {
               cancelEditAction.actionPerformed(null);
@@ -760,7 +760,7 @@ class EditPanel extends ActionPanel {
               return;
             }
             // all owned by one player
-            final PlayerId player = units.get(0).getOwner();
+            final GamePlayer player = units.get(0).getOwner();
             units.retainAll(CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player)));
             if (units.isEmpty()) {
               cancelEditAction.actionPerformed(null);
@@ -880,8 +880,8 @@ class EditPanel extends ActionPanel {
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
             if (option == JOptionPane.OK_OPTION) {
-              final Collection<Triple<PlayerId, PlayerId, RelationshipType>> relationshipChanges =
-                  pui.getEditChanges();
+              final Collection<Triple<GamePlayer, GamePlayer, RelationshipType>>
+                  relationshipChanges = pui.getEditChanges();
               if (relationshipChanges != null && !relationshipChanges.isEmpty()) {
                 final String result =
                     EditPanel.this
@@ -1027,7 +1027,7 @@ class EditPanel extends ActionPanel {
   }
 
   private static boolean doesNeutralHaveUnitsOnMap(final GameData data) {
-    final PlayerId player = PlayerId.NULL_PLAYERID;
+    final GamePlayer player = GamePlayer.NULL_PLAYERID;
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {

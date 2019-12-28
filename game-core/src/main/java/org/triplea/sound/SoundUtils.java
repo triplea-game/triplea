@@ -1,6 +1,6 @@
 package org.triplea.sound;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
@@ -15,7 +15,7 @@ public final class SoundUtils {
 
   /** Plays appropriate sound clip for type of battle (land, air, sea, subs). */
   public static void playBattleType(
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final List<Unit> attackingUnits,
       final List<Unit> defendingUnits,
       final IDelegateBridge bridge) {
@@ -46,7 +46,7 @@ public final class SoundUtils {
    * Plays appropriate sound clip for firing battle AA based on type and whether it got any hits.
    */
   public static void playFireBattleAa(
-      final PlayerId firingPlayer,
+      final GamePlayer firingPlayer,
       final String aaType,
       final boolean isHit,
       final IDelegateBridge bridge) {
@@ -81,7 +81,7 @@ public final class SoundUtils {
 
   /** Plays appropriate sound clip for type of retreat (land, air, sea, subs). */
   public static void playRetreatType(
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final Collection<Unit> units,
       final RetreatType retreatType,
       final IDelegateBridge bridge) {
@@ -118,7 +118,7 @@ public final class SoundUtils {
    * land battle because a territory will be captured which has its own sound clips.
    */
   public static void playAttackerWinsAirOrSea(
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final List<Unit> attackingUnits,
       final boolean isWater,
       final IDelegateBridge bridge) {

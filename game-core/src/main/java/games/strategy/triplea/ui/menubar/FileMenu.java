@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.pbem.PbemMessagePoster;
@@ -72,11 +72,11 @@ final class FileMenu extends JMenu {
               try {
                 gameData.acquireReadLock();
                 final GameStep step = gameData.getSequence().getStep();
-                final PlayerId currentPlayer =
+                final GamePlayer currentPlayer =
                     (step == null
-                        ? PlayerId.NULL_PLAYERID
+                        ? GamePlayer.NULL_PLAYERID
                         : (step.getPlayerId() == null
-                            ? PlayerId.NULL_PLAYERID
+                            ? GamePlayer.NULL_PLAYERID
                             : step.getPlayerId()));
                 final int round = gameData.getSequence().getRound();
                 final HistoryLog historyLog = new HistoryLog();

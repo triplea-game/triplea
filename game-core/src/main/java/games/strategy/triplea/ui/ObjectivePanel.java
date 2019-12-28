@@ -4,7 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
@@ -192,7 +192,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (condition == null) {
           continue;
         }
-        final PlayerId player = gameData.getPlayerList().getPlayerId(key.get(0));
+        final GamePlayer player = gameData.getPlayerList().getPlayerId(key.get(0));
 
         // find which section
         boolean found = false;

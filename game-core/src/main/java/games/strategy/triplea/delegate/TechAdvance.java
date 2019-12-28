@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
@@ -99,7 +99,7 @@ public abstract class TechAdvance extends NamedAttachable {
 
   public abstract String getProperty();
 
-  public abstract void perform(PlayerId id, IDelegateBridge bridge);
+  public abstract void perform(GamePlayer gamePlayer, IDelegateBridge bridge);
 
   public abstract boolean hasTech(TechAttachment ta);
 
@@ -166,7 +166,7 @@ public abstract class TechAdvance extends NamedAttachable {
       frontiers.add(tas);
     }
     // add the frontiers
-    for (final PlayerId player : data.getPlayerList().getPlayers()) {
+    for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       for (final TechnologyFrontier frontier : frontiers) {
         player.getTechnologyFrontierList().addTechnologyFrontier(new TechnologyFrontier(frontier));
       }
@@ -198,7 +198,7 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   static TechAdvance findAdvance(
-      final String propertyString, final GameData data, final PlayerId player) {
+      final String propertyString, final GameData data, final GamePlayer player) {
     for (final TechAdvance t : getTechAdvances(data, player)) {
       if (t.getProperty().equals(propertyString)) {
         return t;
@@ -258,7 +258,7 @@ public abstract class TechAdvance extends NamedAttachable {
    * Returns all tech advances that this player can possibly research. (Or if Player is null,
    * returns all techs available in the game).
    */
-  public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerId player) {
+  public static List<TechAdvance> getTechAdvances(final GameData data, final GamePlayer player) {
     final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
     if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
       return (player != null)
@@ -270,7 +270,7 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /** Returns all possible tech categories for this player. */
-  public static List<TechnologyFrontier> getPlayerTechCategories(final PlayerId player) {
+  public static List<TechnologyFrontier> getPlayerTechCategories(final GamePlayer player) {
     checkNotNull(player);
 
     return player.getTechnologyFrontierList().getFrontiers();

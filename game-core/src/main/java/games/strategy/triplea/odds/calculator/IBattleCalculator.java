@@ -1,7 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -15,8 +15,8 @@ public interface IBattleCalculator {
   void setGameData(GameData data);
 
   void setCalculateData(
-      PlayerId attacker,
-      PlayerId defender,
+      GamePlayer attacker,
+      GamePlayer defender,
       Territory location,
       Collection<Unit> attacking,
       Collection<Unit> defending,
@@ -27,8 +27,8 @@ public interface IBattleCalculator {
   AggregateResults calculate();
 
   AggregateResults setCalculateDataAndCalculate(
-      PlayerId attacker,
-      PlayerId defender,
+      GamePlayer attacker,
+      GamePlayer defender,
       Territory location,
       Collection<Unit> attacking,
       Collection<Unit> defending,

@@ -10,8 +10,8 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -62,10 +62,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (this.conditions == null) {
       this.conditions = new ArrayList<>();
     }
-    final Collection<PlayerId> playerIds = getData().getPlayerList().getPlayers();
+    final Collection<GamePlayer> gamePlayers = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
       this.conditions.add(
-          playerIds.stream()
+          gamePlayers.stream()
               .map(p -> p.getAttachment(subString))
               .map(RulesAttachment.class::cast)
               .filter(Objects::nonNull)

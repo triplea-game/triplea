@@ -2,7 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -19,8 +19,8 @@ import java.util.concurrent.Callable;
 
 class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> {
   private GameData gameData;
-  private PlayerId attacker = null;
-  private PlayerId defender = null;
+  private GamePlayer attacker = null;
+  private GamePlayer defender = null;
   private Territory location = null;
   private Collection<Unit> attackingUnits = new ArrayList<>();
   private Collection<Unit> defendingUnits = new ArrayList<>();
@@ -76,8 +76,8 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
   /** Calculates odds using the stored game data. */
   @Override
   public void setCalculateData(
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final Territory location,
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
@@ -95,11 +95,13 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
     this.attacker =
         gameData
             .getPlayerList()
-            .getPlayerId(attacker == null ? PlayerId.NULL_PLAYERID.getName() : attacker.getName());
+            .getPlayerId(
+                attacker == null ? GamePlayer.NULL_PLAYERID.getName() : attacker.getName());
     this.defender =
         gameData
             .getPlayerList()
-            .getPlayerId(defender == null ? PlayerId.NULL_PLAYERID.getName() : defender.getName());
+            .getPlayerId(
+                defender == null ? GamePlayer.NULL_PLAYERID.getName() : defender.getName());
     this.location = gameData.getMap().getTerritory(location.getName());
     attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
@@ -114,8 +116,8 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
 
   @Override
   public AggregateResults setCalculateDataAndCalculate(
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final Territory location,
       final Collection<Unit> attacking,
       final Collection<Unit> defending,

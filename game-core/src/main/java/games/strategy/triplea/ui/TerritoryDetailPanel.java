@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
@@ -134,7 +134,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     final List<UnitCategory> units =
         UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
-    @Nullable PlayerId currentPlayer = null;
+    @Nullable GamePlayer currentPlayer = null;
     for (final UnitCategory item : units) {
       // separate players with a separator
       if (!item.getOwner().equals(currentPlayer)) {

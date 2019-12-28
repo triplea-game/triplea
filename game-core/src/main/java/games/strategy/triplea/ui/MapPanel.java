@@ -7,7 +7,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -129,7 +129,7 @@ public class MapPanel extends ImageScrollerLargeView {
         @Override
         public void gameDataChanged(final Change change) {
           // find the players with tech changes
-          final Set<PlayerId> playersWithTechChange = new HashSet<>();
+          final Set<GamePlayer> playersWithTechChange = new HashSet<>();
           getPlayersWithTechChanges(change, playersWithTechChange);
           if (!playersWithTechChange.isEmpty()
               || UnitIconProperties.getInstance(gameData).testIfConditionsHaveChanged(gameData)) {
@@ -142,7 +142,7 @@ public class MapPanel extends ImageScrollerLargeView {
           }
         }
 
-        private void getPlayersWithTechChanges(final Change change, final Set<PlayerId> players) {
+        private void getPlayersWithTechChanges(final Change change, final Set<GamePlayer> players) {
           if (change instanceof CompositeChange) {
             final CompositeChange composite = (CompositeChange) change;
             for (final Change item : composite.getChanges()) {
@@ -152,7 +152,7 @@ public class MapPanel extends ImageScrollerLargeView {
             if (change instanceof ChangeAttachmentChange) {
               final ChangeAttachmentChange changeAttachment = (ChangeAttachmentChange) change;
               if (changeAttachment.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME)) {
-                players.add((PlayerId) changeAttachment.getAttachedTo());
+                players.add((GamePlayer) changeAttachment.getAttachedTo());
               }
             }
           }

@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -49,10 +49,10 @@ class BattleTrackerTest {
   void verifyRaids() {
     final Territory territory = new Territory("terrName", mockGameData);
     final Route route = new Route(territory);
-    final PlayerId playerId = new PlayerId("name", mockGameData);
+    final GamePlayer gamePlayer = new GamePlayer("name", mockGameData);
 
     // need at least one attacker for there to be considered a battle.
-    final Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), playerId, mockGameData);
+    final Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), gamePlayer, mockGameData);
     final List<Unit> attackers = List.of(unit);
 
     when(mockDelegateBridge.getData()).thenReturn(mockGameData);
@@ -67,7 +67,7 @@ class BattleTrackerTest {
 
     // set up the testObj to have the bombing battle
     testObj.addBattle(
-        route, attackers, true, playerId, mockDelegateBridge, null, null, null, false);
+        route, attackers, true, gamePlayer, mockDelegateBridge, null, null, null, false);
 
     testObj.fightAirRaidsAndStrategicBombing(
         mockDelegateBridge, () -> Set.of(territory), mockGetBattleFunction);

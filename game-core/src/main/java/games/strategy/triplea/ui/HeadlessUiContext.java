@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
@@ -53,7 +53,7 @@ public class HeadlessUiContext extends AbstractUiContext {
   @Override
   public JLabel newUnitImageLabel(
       final UnitType type,
-      final PlayerId player,
+      final GamePlayer player,
       final UnitDamage damaged,
       final UnitEnable disabled) {
     return null;

@@ -1,6 +1,6 @@
 package org.triplea.sound;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.LocalPlayers;
 import java.util.Collection;
 
@@ -16,21 +16,21 @@ public class DefaultSoundChannel implements ISound {
   }
 
   @Override
-  public void playSoundForAll(final String clipName, final PlayerId playerId) {
-    ClipPlayer.play(clipName, playerId);
+  public void playSoundForAll(final String clipName, final GamePlayer gamePlayer) {
+    ClipPlayer.play(clipName, gamePlayer);
   }
 
   @Override
   public void playSoundToPlayers(
       final String clipName,
-      final Collection<PlayerId> playersToSendTo,
-      final Collection<PlayerId> butNotThesePlayers,
+      final Collection<GamePlayer> playersToSendTo,
+      final Collection<GamePlayer> butNotThesePlayers,
       final boolean includeObservers) {
     if (playersToSendTo == null || playersToSendTo.isEmpty()) {
       return;
     }
     if (butNotThesePlayers != null) {
-      for (final PlayerId p : butNotThesePlayers) {
+      for (final GamePlayer p : butNotThesePlayers) {
         if (localPlayers.playing(p)) {
           return;
         }

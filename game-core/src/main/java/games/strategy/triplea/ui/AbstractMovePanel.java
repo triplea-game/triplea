@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
@@ -232,12 +232,12 @@ abstract class AbstractMovePanel extends ActionPanel {
     SwingUtilities.invokeLater(this::cancelMove);
   }
 
-  protected final void display(final PlayerId id, final String actionLabel) {
-    super.display(id);
+  protected final void display(final GamePlayer gamePlayer, final String actionLabel) {
+    super.display(gamePlayer);
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          add(movedUnitsPanel(id, actionLabel));
+          add(movedUnitsPanel(gamePlayer, actionLabel));
           add(
               getUnitScrollerPanel(
                   frame.getLocalPlayers(),
@@ -252,11 +252,11 @@ abstract class AbstractMovePanel extends ActionPanel {
 
   protected abstract boolean setCancelButton();
 
-  private JPanel movedUnitsPanel(final PlayerId id, final String actionLabel) {
+  private JPanel movedUnitsPanel(final GamePlayer gamePlayer, final String actionLabel) {
     final JPanel movedUnitsPanel = new JPanel();
     movedUnitsPanel.setLayout(new BoxLayout(movedUnitsPanel, BoxLayout.Y_AXIS));
 
-    this.actionLabel.setText(id.getName() + actionLabel);
+    this.actionLabel.setText(gamePlayer.getName() + actionLabel);
     movedUnitsPanel.add(SwingComponents.leftBox(this.actionLabel));
     if (setCancelButton()) {
       movedUnitsPanel.add(SwingComponents.leftBox(cancelMoveButton));

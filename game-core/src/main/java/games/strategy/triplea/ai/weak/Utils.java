@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.weak;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -65,8 +65,8 @@ final class Utils {
   }
 
   static boolean hasLandRouteToEnemyOwnedCapitol(
-      final Territory t, final PlayerId us, final GameData data) {
-    for (final PlayerId player :
+      final Territory t, final GamePlayer us, final GameData data) {
+    for (final GamePlayer player :
         CollectionUtils.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
       for (final Territory capital :
           TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {

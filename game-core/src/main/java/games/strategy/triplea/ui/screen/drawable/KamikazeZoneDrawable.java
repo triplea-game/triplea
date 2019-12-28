@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -34,19 +34,19 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
     // Change so only original owner gets the kamikaze zone marker
     final Territory terr = data.getMap().getTerritory(location);
     final TerritoryAttachment ta = TerritoryAttachment.get(terr);
-    PlayerId owner;
+    GamePlayer owner;
     if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)) {
       owner = terr.getOwner();
       if (owner == null) {
-        owner = PlayerId.NULL_PLAYERID;
+        owner = GamePlayer.NULL_PLAYERID;
       }
     } else {
       if (ta == null) {
-        owner = PlayerId.NULL_PLAYERID;
+        owner = GamePlayer.NULL_PLAYERID;
       } else {
         owner = ta.getOriginalOwner();
         if (owner == null) {
-          owner = PlayerId.NULL_PLAYERID;
+          owner = GamePlayer.NULL_PLAYERID;
         }
       }
     }

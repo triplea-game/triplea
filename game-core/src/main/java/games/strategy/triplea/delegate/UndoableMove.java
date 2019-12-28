@@ -89,7 +89,7 @@ public class UndoableMove extends AbstractUndoableMove {
   protected void undoSpecific(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-    battleTracker.undoBattle(route, units, bridge.getPlayerId(), bridge);
+    battleTracker.undoBattle(route, units, bridge.getGamePlayer(), bridge);
     // clean up dependencies
     for (final UndoableMove other : dependencies) {
       other.dependents.remove(this);
@@ -121,7 +121,7 @@ public class UndoableMove extends AbstractUndoableMove {
             final Collection<Unit> enemyTargetsTotal =
                 end.getUnitCollection()
                     .getMatches(
-                        Matches.enemyUnit(bridge.getPlayerId(), data)
+                        Matches.enemyUnit(bridge.getGamePlayer(), data)
                             .and(Matches.unitCanBeDamaged())
                             .and(Matches.unitIsBeingTransported().negate()));
             final Collection<Unit> enemyTargets =
@@ -138,7 +138,7 @@ public class UndoableMove extends AbstractUndoableMove {
               while (target == null) {
                 target =
                     bridge
-                        .getRemotePlayer(bridge.getPlayerId())
+                        .getRemotePlayer(bridge.getGamePlayer())
                         .whatShouldBomberBomb(end, enemyTargets, List.of(unit));
               }
             } else if (!enemyTargets.isEmpty()) {

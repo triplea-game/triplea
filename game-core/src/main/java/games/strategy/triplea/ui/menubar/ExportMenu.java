@@ -3,7 +3,7 @@ package games.strategy.triplea.ui.menubar;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
@@ -196,12 +196,13 @@ final class ExportMenu extends JMenu {
       writer.println(',');
       writer.println();
       writer.println("Turn Order: ,");
-      final SortedSet<PlayerId> orderedPlayers = new TreeSet<>(new PlayerOrderComparator(gameData));
+      final SortedSet<GamePlayer> orderedPlayers =
+          new TreeSet<>(new PlayerOrderComparator(gameData));
       orderedPlayers.addAll(gameData.getPlayerList().getPlayers());
-      for (final PlayerId currentPlayerId : orderedPlayers) {
-        writer.append(currentPlayerId.getName()).append(',');
+      for (final GamePlayer currentGamePlayer : orderedPlayers) {
+        writer.append(currentGamePlayer.getName()).append(',');
         final Collection<String> allianceNames =
-            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerId);
+            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentGamePlayer);
         for (final String allianceName : allianceNames) {
           writer.append(allianceName).append(',');
         }
@@ -211,7 +212,7 @@ final class ExportMenu extends JMenu {
       writer.append("Winners: ,");
       final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegate("endRound");
       if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
-        for (final PlayerId p : delegateEndRound.getWinners()) {
+        for (final GamePlayer p : delegateEndRound.getWinners()) {
           writer.append(p.getName()).append(',');
         }
       } else {
@@ -261,7 +262,7 @@ final class ExportMenu extends JMenu {
       writer.println("Turn Stats: ,");
       writer.append("Round,Player Turn,Phase Name,");
       final String[] alliances = statPanel.getAlliances().toArray(new String[0]);
-      final PlayerId[] players = statPanel.getPlayers().toArray(new PlayerId[0]);
+      final GamePlayer[] players = statPanel.getPlayers().toArray(new GamePlayer[0]);
       // its important here to translate the player objects into our game data
       // the players for the stat panel are only relevant with respect to the game data they belong
       // to
@@ -274,7 +275,7 @@ final class ExportMenu extends JMenu {
           Iterables.concat(
               List.of(statPanel.getStats()), List.of(statPanel.getStatsExtended(gameData)));
       for (final IStat stat : stats) {
-        for (final PlayerId player : players) {
+        for (final GamePlayer player : players) {
           writer.append(stat.getName()).append(' ');
           writer.append(player.getName()).append(',');
         }
@@ -288,7 +289,7 @@ final class ExportMenu extends JMenu {
       @SuppressWarnings("unchecked")
       final Enumeration<TreeNode> nodes =
           ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
-      @Nullable PlayerId currentPlayer = null;
+      @Nullable GamePlayer currentPlayer = null;
       int round = 0;
       while (nodes.hasMoreElements()) {
         // we want to export on change of turn
@@ -344,7 +345,7 @@ final class ExportMenu extends JMenu {
         writer.print(round);
         writer.append(',').append(playerName).append(',').append(stepName).append(',');
         for (final IStat stat : stats) {
-          for (final PlayerId player : players) {
+          for (final GamePlayer player : players) {
             writer.append(stat.getFormatter().format(stat.getValue(player, clone))).append(',');
           }
           for (final String alliance : alliances) {

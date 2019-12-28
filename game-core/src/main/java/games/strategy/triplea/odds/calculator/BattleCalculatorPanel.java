@@ -1,7 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -86,9 +86,9 @@ class BattleCalculatorPanel extends JPanel {
   private final IBattleCalculator calculator;
   private final PlayerUnitsPanel attackingUnitsPanel;
   private final PlayerUnitsPanel defendingUnitsPanel;
-  private final JComboBox<PlayerId> attackerCombo;
-  private final JComboBox<PlayerId> defenderCombo;
-  private final JComboBox<PlayerId> swapSidesCombo;
+  private final JComboBox<GamePlayer> attackerCombo;
+  private final JComboBox<GamePlayer> defenderCombo;
+  private final JComboBox<GamePlayer> swapSidesCombo;
   private final JLabel attackerUnitsTotalNumber = new JLabel();
   private final JLabel defenderUnitsTotalNumber = new JLabel();
   private final JLabel attackerUnitsTotalTuv = new JLabel();
@@ -113,9 +113,9 @@ class BattleCalculatorPanel extends JPanel {
     calculateButton.setEnabled(false);
     data.acquireReadLock();
     try {
-      final Collection<PlayerId> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
-      if (doesPlayerHaveUnitsOnMap(PlayerId.NULL_PLAYERID, data)) {
-        playerList.add(PlayerId.NULL_PLAYERID);
+      final Collection<GamePlayer> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
+      if (doesPlayerHaveUnitsOnMap(GamePlayer.NULL_PLAYERID, data)) {
+        playerList.add(GamePlayer.NULL_PLAYERID);
       }
       attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
@@ -1073,11 +1073,11 @@ class BattleCalculatorPanel extends JPanel {
         landBattleCheckBox.setSelected(!location.isWater());
 
         // Default attacker to current player
-        final Optional<PlayerId> currentPlayer = getCurrentPlayer(history);
+        final Optional<GamePlayer> currentPlayer = getCurrentPlayer(history);
         currentPlayer.ifPresent(attackerCombo::setSelectedItem);
 
         // Get players with units sorted
-        final List<PlayerId> players = location.getUnitCollection().getPlayersByUnitCount();
+        final List<GamePlayer> players = location.getUnitCollection().getPlayersByUnitCount();
         if (currentPlayer.isPresent() && players.contains(currentPlayer.get())) {
           players.remove(currentPlayer.get());
           players.add(0, currentPlayer.get());
@@ -1086,7 +1086,7 @@ class BattleCalculatorPanel extends JPanel {
         // Check location to determine optimal attacker and defender
         if (!location.isWater()) {
           defenderCombo.setSelectedItem(location.getOwner());
-          for (final PlayerId player : players) {
+          for (final GamePlayer player : players) {
             if (Matches.isAtWar(getDefender(), data).test(player)) {
               attackerCombo.setSelectedItem(player);
               break;
@@ -1101,7 +1101,7 @@ class BattleCalculatorPanel extends JPanel {
               defenderCombo.setSelectedItem(players.get(0));
             } else {
               attackerCombo.setSelectedItem(players.get(0));
-              for (final PlayerId player : players) {
+              for (final GamePlayer player : players) {
                 if (Matches.isAtWar(getAttacker(), data).test(player)) {
                   defenderCombo.setSelectedItem(player);
                   break;
@@ -1139,12 +1139,12 @@ class BattleCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  private Optional<PlayerId> getCurrentPlayer(final History history) {
-    final Optional<PlayerId> player = history.getActivePlayer();
+  private Optional<GamePlayer> getCurrentPlayer(final History history) {
+    final Optional<GamePlayer> player = history.getActivePlayer();
     if (player.isPresent()) {
       return player;
     }
-    return PlayerId.asOptional(data.getSequence().getStep().getPlayerId());
+    return GamePlayer.asOptional(data.getSequence().getStep().getPlayerId());
   }
 
   void shutdown() {
@@ -1157,16 +1157,16 @@ class BattleCalculatorPanel extends JPanel {
     }
   }
 
-  PlayerId getAttacker() {
-    return (PlayerId) attackerCombo.getSelectedItem();
+  GamePlayer getAttacker() {
+    return (GamePlayer) attackerCombo.getSelectedItem();
   }
 
-  PlayerId getDefender() {
-    return (PlayerId) defenderCombo.getSelectedItem();
+  GamePlayer getDefender() {
+    return (GamePlayer) defenderCombo.getSelectedItem();
   }
 
-  private PlayerId getSwapSides() {
-    return (PlayerId) swapSidesCombo.getSelectedItem();
+  private GamePlayer getSwapSides() {
+    return (GamePlayer) swapSidesCombo.getSelectedItem();
   }
 
   private boolean isAmphibiousBattle() {
@@ -1370,15 +1370,15 @@ class BattleCalculatorPanel extends JPanel {
     return landBattleCheckBox.isSelected();
   }
 
-  private PlayerId getEnemy(final PlayerId player) {
-    for (final PlayerId id : data.getPlayerList()) {
-      if (data.getRelationshipTracker().isAtWar(player, id)) {
-        return id;
+  private GamePlayer getEnemy(final GamePlayer player) {
+    for (final GamePlayer gamePlayer : data.getPlayerList()) {
+      if (data.getRelationshipTracker().isAtWar(player, gamePlayer)) {
+        return gamePlayer;
       }
     }
-    for (final PlayerId id : data.getPlayerList()) {
-      if (!data.getRelationshipTracker().isAllied(player, id)) {
-        return id;
+    for (final GamePlayer gamePlayer : data.getPlayerList()) {
+      if (!data.getRelationshipTracker().isAllied(player, gamePlayer)) {
+        return gamePlayer;
       }
     }
     // TODO: do we allow fighting allies in the battle calc?
@@ -1473,9 +1473,9 @@ class BattleCalculatorPanel extends JPanel {
         final boolean isSelected,
         final boolean cellHasFocus) {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-      final PlayerId id = (PlayerId) value;
-      setText(id.getName());
-      setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(id)));
+      final GamePlayer gamePlayer = (GamePlayer) value;
+      setText(gamePlayer.getName());
+      setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(gamePlayer)));
       return this;
     }
   }
@@ -1484,7 +1484,7 @@ class BattleCalculatorPanel extends JPanel {
     calculateButton.requestFocus();
   }
 
-  private static boolean doesPlayerHaveUnitsOnMap(final PlayerId player, final GameData data) {
+  private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameData data) {
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {

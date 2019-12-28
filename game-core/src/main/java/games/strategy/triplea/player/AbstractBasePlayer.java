@@ -1,7 +1,7 @@
 package games.strategy.triplea.player;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.player.Player;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public abstract class AbstractBasePlayer implements Player {
   private final String name; // what nation are we playing? ex: "Americans"
 
   @Getter(onMethod_ = {@Override})
-  private PlayerId playerId;
+  private GamePlayer gamePlayer;
 
   @Getter private IPlayerBridge playerBridge;
 
@@ -31,9 +31,9 @@ public abstract class AbstractBasePlayer implements Player {
 
   /** Anything that overrides this MUST call super.initialize(playerBridge, playerId); */
   @Override
-  public void initialize(final IPlayerBridge playerBridge, final PlayerId playerId) {
+  public void initialize(final IPlayerBridge playerBridge, final GamePlayer gamePlayer) {
     this.playerBridge = playerBridge;
-    this.playerId = playerId;
+    this.gamePlayer = gamePlayer;
   }
 
   /** Get the GameData for the game. */
@@ -62,7 +62,7 @@ public abstract class AbstractBasePlayer implements Player {
                   + ". Player Bridge GameOver="
                   + getPlayerBridge().isGameOver()
                   + ", PlayerId: "
-                  + getPlayerId().getName()
+                  + this.getGamePlayer().getName()
                   + ", Game: "
                   + getGameData().getGameName()
                   + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
@@ -77,7 +77,7 @@ public abstract class AbstractBasePlayer implements Player {
                   + "ClassCastException very soon. Player Bridge GameOver="
                   + getPlayerBridge().isGameOver()
                   + ", PlayerId: "
-                  + getPlayerId().getName()
+                  + this.getGamePlayer().getName()
                   + ", Game: "
                   + getGameData().getGameName());
           // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)

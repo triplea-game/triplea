@@ -22,7 +22,7 @@ class RouteFinder {
   private final GameMap map;
   private final Predicate<Territory> condition;
   private final Collection<Unit> units;
-  private final PlayerId player;
+  private final GamePlayer player;
 
   RouteFinder(final GameMap map, final Predicate<Territory> condition) {
     this(map, condition, Set.of(), null);
@@ -32,7 +32,7 @@ class RouteFinder {
       final GameMap map,
       final Predicate<Territory> condition,
       final Collection<Unit> units,
-      final PlayerId player) {
+      final GamePlayer player) {
     this.map = map;
     this.condition = condition;
     this.units = units;

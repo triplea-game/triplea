@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.image.DiceImageFactory;
@@ -44,7 +44,7 @@ public interface UiContext {
   /**
    * Indicates the damaged or undamaged version of a unit image should be used.
    *
-   * @see UiContext#newUnitImageLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
+   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
    */
   enum UnitDamage {
     DAMAGED,
@@ -54,18 +54,19 @@ public interface UiContext {
   /**
    * Indicates the enabled or disabled version of a unit image should be used.
    *
-   * @see UiContext#newUnitImageLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
+   * @see UiContext#newUnitImageLabel(UnitType, GamePlayer, UnitDamage, UnitEnable)
    */
   enum UnitEnable {
     DISABLED,
     ENABLED
   }
 
-  default JLabel newUnitImageLabel(final UnitType type, final PlayerId player) {
+  default JLabel newUnitImageLabel(final UnitType type, final GamePlayer player) {
     return newUnitImageLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
-  JLabel newUnitImageLabel(UnitType type, PlayerId player, UnitDamage damaged, UnitEnable disabled);
+  JLabel newUnitImageLabel(
+      UnitType type, GamePlayer player, UnitDamage damaged, UnitEnable disabled);
 
   ResourceImageFactory getResourceImageFactory();
 

@@ -2,7 +2,7 @@ package games.strategy.triplea.ui.unit.scroller;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.LocalPlayers;
@@ -80,7 +80,7 @@ public class UnitScroller {
   private final GameData gameData;
   private final MapPanel mapPanel;
 
-  private final Supplier<PlayerId> currentPlayerSupplier;
+  private final Supplier<GamePlayer> currentPlayerSupplier;
   private final Supplier<MovePhase> movePhaseSupplier;
 
   private final AvatarPanelFactory avatarPanelFactory;

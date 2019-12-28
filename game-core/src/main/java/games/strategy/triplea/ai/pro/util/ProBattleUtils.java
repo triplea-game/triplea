@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -169,7 +169,7 @@ public final class ProBattleUtils {
   }
 
   public static boolean territoryHasLocalLandSuperiority(
-      final Territory t, final int distance, final PlayerId player) {
+      final Territory t, final int distance, final GamePlayer player) {
     return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<>());
   }
 
@@ -180,7 +180,7 @@ public final class ProBattleUtils {
   public static boolean territoryHasLocalLandSuperiority(
       final Territory t,
       final int distance,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     final GameData data = ProData.getData();
@@ -247,7 +247,7 @@ public final class ProBattleUtils {
   public static boolean territoryHasLocalLandSuperiorityAfterMoves(
       final Territory t,
       final int distance,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProTerritory> moveMap) {
     final GameData data = ProData.getData();
 
@@ -303,7 +303,7 @@ public final class ProBattleUtils {
    */
   public static boolean territoryHasLocalNavalSuperiority(
       final Territory t,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Collection<Unit> unitsToPlace) {
     final GameData data = ProData.getData();

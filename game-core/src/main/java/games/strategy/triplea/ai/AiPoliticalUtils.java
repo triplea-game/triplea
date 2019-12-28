@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
@@ -24,11 +24,13 @@ public final class AiPoliticalUtils {
   private AiPoliticalUtils() {}
 
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(
-      final PlayerId id, final Map<ICondition, Boolean> testedConditions, final GameData data) {
+      final GamePlayer gamePlayer,
+      final Map<ICondition, Boolean> testedConditions,
+      final GameData data) {
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     for (final PoliticalActionAttachment nextAction :
-        PoliticalActionAttachment.getValidActions(id, testedConditions, data)) {
-      if (wantToPerFormActionTowardsWar(nextAction, id, data)) {
+        PoliticalActionAttachment.getValidActions(gamePlayer, testedConditions, data)) {
+      if (wantToPerFormActionTowardsWar(nextAction, gamePlayer, data)) {
         acceptableActions.add(nextAction);
       }
     }
@@ -40,32 +42,34 @@ public final class AiPoliticalUtils {
    * specified conditions.
    */
   public static List<PoliticalActionAttachment> getPoliticalActionsOther(
-      final PlayerId id, final Map<ICondition, Boolean> testedConditions, final GameData data) {
+      final GamePlayer gamePlayer,
+      final Map<ICondition, Boolean> testedConditions,
+      final GameData data) {
     final List<PoliticalActionAttachment> warActions =
-        getPoliticalActionsTowardsWar(id, testedConditions, data);
+        getPoliticalActionsTowardsWar(gamePlayer, testedConditions, data);
     final Collection<PoliticalActionAttachment> validActions =
-        PoliticalActionAttachment.getValidActions(id, testedConditions, data);
+        PoliticalActionAttachment.getValidActions(gamePlayer, testedConditions, data);
     validActions.removeAll(warActions);
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     for (final PoliticalActionAttachment nextAction : validActions) {
       if (warActions.contains(nextAction)) {
         continue;
       }
-      if (goesTowardsWar(nextAction, id, data) && Math.random() < .5) {
+      if (goesTowardsWar(nextAction, gamePlayer, data) && Math.random() < .5) {
         continue;
       }
-      if (awayFromAlly(nextAction, id, data) && Math.random() < .9) {
+      if (awayFromAlly(nextAction, gamePlayer, data) && Math.random() < .9) {
         continue;
       }
       if (isFree(nextAction)) {
         acceptableActions.add(nextAction);
       } else if (CollectionUtils.countMatches(validActions, politicalActionHasNoResourceCost())
           > 1) {
-        if (Math.random() < .9 && isAcceptableCost(nextAction, id, data)) {
+        if (Math.random() < .9 && isAcceptableCost(nextAction, gamePlayer, data)) {
           acceptableActions.add(nextAction);
         }
       } else {
-        if (Math.random() < .4 && isAcceptableCost(nextAction, id, data)) {
+        if (Math.random() < .4 && isAcceptableCost(nextAction, gamePlayer, data)) {
           acceptableActions.add(nextAction);
         }
       }
@@ -78,19 +82,21 @@ public final class AiPoliticalUtils {
   }
 
   private static boolean wantToPerFormActionTowardsWar(
-      final PoliticalActionAttachment nextAction, final PlayerId id, final GameData data) {
-    return isFree(nextAction) && goesTowardsWar(nextAction, id, data);
+      final PoliticalActionAttachment nextAction,
+      final GamePlayer gamePlayer,
+      final GameData data) {
+    return isFree(nextAction) && goesTowardsWar(nextAction, gamePlayer, data);
   }
 
   // this code has a rare risk of circular loop actions.. depending on the map designer
   // only switches from a Neutral to an War state... won't go through in-between neutral states
   // TODO have another look at this part.
   private static boolean goesTowardsWar(
-      final PoliticalActionAttachment nextAction, final PlayerId p0, final GameData data) {
+      final PoliticalActionAttachment nextAction, final GamePlayer p0, final GameData data) {
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
         nextAction.getRelationshipChanges()) {
-      final PlayerId p1 = relationshipChange.player1;
-      final PlayerId p2 = relationshipChange.player2;
+      final GamePlayer p1 = relationshipChange.player1;
+      final GamePlayer p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType =
@@ -106,11 +112,11 @@ public final class AiPoliticalUtils {
   }
 
   private static boolean awayFromAlly(
-      final PoliticalActionAttachment nextAction, final PlayerId p0, final GameData data) {
+      final PoliticalActionAttachment nextAction, final GamePlayer p0, final GameData data) {
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
         nextAction.getRelationshipChanges()) {
-      final PlayerId p1 = relationshipChange.player1;
-      final PlayerId p2 = relationshipChange.player2;
+      final GamePlayer p1 = relationshipChange.player1;
+      final GamePlayer p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType =
@@ -131,7 +137,7 @@ public final class AiPoliticalUtils {
   }
 
   private static boolean isAcceptableCost(
-      final PoliticalActionAttachment nextAction, final PlayerId player, final GameData data) {
+      final PoliticalActionAttachment nextAction, final GamePlayer player, final GameData data) {
     // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then
     // it is an acceptable
     // price.

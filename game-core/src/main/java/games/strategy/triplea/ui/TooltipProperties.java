@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -52,23 +52,24 @@ public final class TooltipProperties {
   }
 
   /** Get unit type tooltip checking for custom tooltip content. */
-  public String getTooltip(final UnitType unitType, final PlayerId playerId) {
-    final String customTip = getToolTip(unitType, playerId, false);
+  public String getTooltip(final UnitType unitType, final GamePlayer gamePlayer) {
+    final String customTip = getToolTip(unitType, gamePlayer, false);
     if (!customTip.isEmpty()) {
       return LocalizeHtml.localizeImgLinksInHtml(customTip);
     }
     final String generated =
         UnitAttachment.get(unitType)
             .toStringShortAndOnlyImportantDifferences(
-                (playerId == null ? PlayerId.NULL_PLAYERID : playerId));
-    final String appendedTip = getToolTip(unitType, playerId, true);
+                (gamePlayer == null ? GamePlayer.NULL_PLAYERID : gamePlayer));
+    final String appendedTip = getToolTip(unitType, gamePlayer, true);
     if (!appendedTip.isEmpty()) {
       return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
     }
     return generated;
   }
 
-  private String getToolTip(final UnitType ut, final PlayerId playerId, final boolean isAppending) {
+  private String getToolTip(
+      final UnitType ut, final GamePlayer gamePlayer, final boolean isAppending) {
     final String append = isAppending ? ".append" : "";
     final String tooltip =
         properties.getProperty(
@@ -78,7 +79,7 @@ public final class TooltipProperties {
                 + "."
                 + ut.getName()
                 + "."
-                + (playerId == null ? PlayerId.NULL_PLAYERID.getName() : playerId.getName())
+                + (gamePlayer == null ? GamePlayer.NULL_PLAYERID.getName() : gamePlayer.getName())
                 + append,
             "");
     return (tooltip == null || tooltip.isEmpty())

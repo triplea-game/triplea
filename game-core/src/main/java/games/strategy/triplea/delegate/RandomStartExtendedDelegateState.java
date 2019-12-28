@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import java.io.Serializable;
 
 class RandomStartExtendedDelegateState implements Serializable {
@@ -8,5 +8,5 @@ class RandomStartExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  PlayerId currentPickingPlayer;
+  GamePlayer currentPickingPlayer;
 }

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -105,7 +105,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       int count = 0;
       final TechAttachment ta = TechAttachment.get(player);
       if (ta.getHeavyBomber()) {
@@ -172,7 +172,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       return player.getResources().getQuantity(name);
     }
   }
@@ -190,7 +190,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       if (ta.hasTech(TechAttachment.get(player))) {
         return 1;
       }
@@ -211,7 +211,7 @@ public class ExtendedStats extends StatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       int matchCount = 0;
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(ut));
       for (final Territory place : data.getMap().getTerritories()) {

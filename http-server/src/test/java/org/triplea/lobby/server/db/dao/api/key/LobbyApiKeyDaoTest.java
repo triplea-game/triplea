@@ -85,12 +85,13 @@ class LobbyApiKeyDaoTest extends DaoTest {
 
   @Test
   void lookupByPlayerChatId() {
-    final Optional<PlayerIdLookup> playerIdLookup = lobbyApiKeyDao.lookupByPlayerChatId("chat-id0");
+    final Optional<GamePlayerLookup> playerIdLookup =
+        lobbyApiKeyDao.lookupByPlayerChatId("chat-id0");
 
     assertThat(
         playerIdLookup,
         isPresentAndIs(
-            PlayerIdLookup.builder()
+            GamePlayerLookup.builder()
                 .playerName(PlayerName.of("registered-user"))
                 .systemId(SystemId.of("system-id0"))
                 .ip("127.0.0.1")

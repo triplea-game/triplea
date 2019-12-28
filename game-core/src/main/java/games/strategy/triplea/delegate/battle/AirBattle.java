@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate.battle;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
@@ -64,7 +64,7 @@ public class AirBattle extends AbstractBattle {
       final Territory battleSite,
       final boolean bombingRaid,
       final GameData data,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final BattleTracker battleTracker) {
     super(
         battleSite,
@@ -353,7 +353,7 @@ public class AirBattle extends AbstractBattle {
             battleSite
                 .getUnitCollection()
                 .getMatches(
-                    Matches.enemyUnit(bridge.getPlayerId(), gameData)
+                    Matches.enemyUnit(bridge.getGamePlayer(), gameData)
                         .and(Matches.unitCanBeDamaged())
                         .and(Matches.unitIsBeingTransported().negate()));
         for (final Unit unit : bombers) {
@@ -504,7 +504,7 @@ public class AirBattle extends AbstractBattle {
     if (units.isEmpty()) {
       return;
     }
-    final PlayerId retreatingPlayer = defender ? this.defender : attacker;
+    final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
     bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, step);
@@ -820,7 +820,7 @@ public class AirBattle extends AbstractBattle {
   }
 
   public static Predicate<Unit> defendingGroundSeaBattleInterceptors(
-      final PlayerId attacker, final GameData data) {
+      final GamePlayer attacker, final GameData data) {
     return PredicateBuilder.of(Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().negate())
@@ -833,7 +833,7 @@ public class AirBattle extends AbstractBattle {
    * air base requirements.
    */
   public static Predicate<Unit> defendingBombingRaidInterceptors(
-      final Territory territory, final PlayerId attacker, final GameData data) {
+      final Territory territory, final GamePlayer attacker, final GameData data) {
     final Predicate<Unit> canIntercept =
         PredicateBuilder.of(Matches.unitCanIntercept())
             .and(Matches.unitIsEnemyOf(data, attacker))
@@ -855,7 +855,7 @@ public class AirBattle extends AbstractBattle {
   /** Determines if enemy has any air units that can intercept to create an air battle. */
   public static boolean territoryCouldPossiblyHaveAirBattleDefenders(
       final Territory territory,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final GameData data,
       final boolean bombing) {
     final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
@@ -926,8 +926,8 @@ public class AirBattle extends AbstractBattle {
       final IDelegateBridge bridge,
       final String stepName,
       final DiceRoll dice,
-      final PlayerId hitPlayer,
-      final PlayerId firingPlayer,
+      final GamePlayer hitPlayer,
+      final GamePlayer firingPlayer,
       final CasualtyDetails details) {
     bridge
         .getDisplayChannelBroadcaster()

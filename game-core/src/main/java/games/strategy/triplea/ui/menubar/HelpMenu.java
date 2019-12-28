@@ -2,7 +2,7 @@ package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
@@ -158,16 +158,16 @@ final class HelpMenu extends JMenu {
     hints.append("<head><style>th, tr{color:black}</style></head>");
     try {
       gameData.acquireReadLock();
-      final Map<PlayerId, Map<UnitType, ResourceCollection>> costs =
+      final Map<GamePlayer, Map<UnitType, ResourceCollection>> costs =
           TuvUtils.getResourceCostsForTuv(gameData, true);
-      final Map<PlayerId, List<UnitType>> playerUnitTypes =
+      final Map<GamePlayer, List<UnitType>> playerUnitTypes =
           UnitType.getAllPlayerUnitsWithImages(gameData, uiContext, true);
       final String color3 = "FEECE2";
       final String color2 = "BDBDBD";
       final String color1 = "ABABAB";
       int i = 0;
-      for (final Map.Entry<PlayerId, List<UnitType>> entry : playerUnitTypes.entrySet()) {
-        final PlayerId player = entry.getKey();
+      for (final Map.Entry<GamePlayer, List<UnitType>> entry : playerUnitTypes.entrySet()) {
+        final GamePlayer player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
         hints
             .append(
@@ -216,7 +216,7 @@ final class HelpMenu extends JMenu {
   }
 
   private static String getUnitImageUrl(
-      final UnitType unitType, final PlayerId player, final UiContext uiContext) {
+      final UnitType unitType, final GamePlayer player, final UiContext uiContext) {
     final UnitImageFactory unitImageFactory = uiContext.getUnitImageFactory();
     if (player == null || unitImageFactory == null) {
       return "no image";

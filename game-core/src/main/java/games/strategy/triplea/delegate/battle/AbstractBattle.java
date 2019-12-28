@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate.battle;
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -40,8 +40,8 @@ abstract class AbstractBattle implements IBattle {
   boolean headless = false;
 
   final Territory battleSite;
-  final PlayerId attacker;
-  PlayerId defender;
+  final GamePlayer attacker;
+  GamePlayer defender;
   final BattleTracker battleTracker;
   int round = 1;
   final boolean isBombingRun;
@@ -67,7 +67,7 @@ abstract class AbstractBattle implements IBattle {
 
   AbstractBattle(
       final Territory battleSite,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final BattleTracker battleTracker,
       final boolean isBombingRun,
       final BattleType battleType,
@@ -238,12 +238,12 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public PlayerId getAttacker() {
+  public GamePlayer getAttacker() {
     return attacker;
   }
 
   @Override
-  public PlayerId getDefender() {
+  public GamePlayer getDefender() {
     return defender;
   }
 
@@ -287,19 +287,19 @@ abstract class AbstractBattle implements IBattle {
         + attackingUnits;
   }
 
-  static PlayerId findDefender(
-      final Territory battleSite, final PlayerId attacker, final GameData data) {
+  static GamePlayer findDefender(
+      final Territory battleSite, final GamePlayer attacker, final GameData data) {
     if (battleSite == null) {
-      return PlayerId.NULL_PLAYERID;
+      return GamePlayer.NULL_PLAYERID;
     }
-    PlayerId defender = null;
+    GamePlayer defender = null;
     if (!battleSite.isWater()) {
       defender = battleSite.getOwner();
     }
     if (data == null || attacker == null) {
       // This is needed for many TESTs, so do not delete
       if (defender == null) {
-        return PlayerId.NULL_PLAYERID;
+        return GamePlayer.NULL_PLAYERID;
       }
       return defender;
     }
@@ -307,9 +307,9 @@ abstract class AbstractBattle implements IBattle {
         || battleSite.isWater()
         || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
       // if water find the defender based on who has the most units in the territory
-      final IntegerMap<PlayerId> players = battleSite.getUnitCollection().getPlayerUnitCounts();
+      final IntegerMap<GamePlayer> players = battleSite.getUnitCollection().getPlayerUnitCounts();
       int max = -1;
-      for (final PlayerId current : players.keySet()) {
+      for (final GamePlayer current : players.keySet()) {
         if (current.equals(attacker) || !data.getRelationshipTracker().isAtWar(attacker, current)) {
           continue;
         }
@@ -321,19 +321,19 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     if (defender == null) {
-      return PlayerId.NULL_PLAYERID;
+      return GamePlayer.NULL_PLAYERID;
     }
     return defender;
   }
 
-  static PlayerId findPlayerWithMostUnits(final Collection<Unit> units) {
-    final IntegerMap<PlayerId> playerUnitCount = new IntegerMap<>();
+  static GamePlayer findPlayerWithMostUnits(final Collection<Unit> units) {
+    final IntegerMap<GamePlayer> playerUnitCount = new IntegerMap<>();
     for (final Unit unit : units) {
       playerUnitCount.add(unit.getOwner(), 1);
     }
     int max = -1;
-    PlayerId player = null;
-    for (final PlayerId current : playerUnitCount.keySet()) {
+    GamePlayer player = null;
+    for (final GamePlayer current : playerUnitCount.keySet()) {
       final int count = playerUnitCount.getInt(current);
       if (count > max) {
         max = count;
@@ -364,7 +364,7 @@ abstract class AbstractBattle implements IBattle {
     return bridge.getRemotePlayer();
   }
 
-  protected static Player getRemote(final PlayerId player, final IDelegateBridge bridge) {
+  protected static Player getRemote(final GamePlayer player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAi(player.getName());

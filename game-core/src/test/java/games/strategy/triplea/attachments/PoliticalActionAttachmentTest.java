@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +16,9 @@ final class PoliticalActionAttachmentTest {
   @Nested
   final class GetRelationshipChangesTest {
     private final GameData gameData = new GameData();
-    private final PlayerId player1 = new PlayerId("player1", gameData);
-    private final PlayerId player2 = new PlayerId("player2", gameData);
-    private final PlayerId player3 = new PlayerId("player3", gameData);
+    private final GamePlayer player1 = new GamePlayer("player1", gameData);
+    private final GamePlayer player2 = new GamePlayer("player2", gameData);
+    private final GamePlayer player3 = new GamePlayer("player3", gameData);
     private final RelationshipType relationshipType1 =
         new RelationshipType("relationshipType1", gameData);
     private final RelationshipType relationshipType2 =
@@ -79,9 +79,9 @@ final class PoliticalActionAttachmentTest {
       final GameData gameData = new GameData();
       EqualsVerifier.forClass(PoliticalActionAttachment.RelationshipChange.class)
           .withPrefabValues(
-              PlayerId.class,
-              new PlayerId("redPlayerId", gameData),
-              new PlayerId("blackPlayerId", gameData))
+              GamePlayer.class,
+              new GamePlayer("redPlayerId", gameData),
+              new GamePlayer("blackPlayerId", gameData))
           .withPrefabValues(
               RelationshipType.class,
               new RelationshipType("redRelationshipType", gameData),

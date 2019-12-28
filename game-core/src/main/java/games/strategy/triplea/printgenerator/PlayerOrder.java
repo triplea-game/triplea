@@ -1,8 +1,8 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.delegate.BidPlaceDelegate;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 class PlayerOrder {
-  private final List<PlayerId> playerSet = new ArrayList<>();
+  private final List<GamePlayer> playerSet = new ArrayList<>();
 
   private static <E> Set<E> removeDupes(final Collection<E> c) {
     return new LinkedHashSet<>(c);
@@ -42,9 +42,9 @@ class PlayerOrder {
               || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
-      final PlayerId currentPlayerId = currentStep.getPlayerId();
-      if (currentPlayerId != null && !currentPlayerId.isNull()) {
-        playerSet.add(currentPlayerId);
+      final GamePlayer currentGamePlayer = currentStep.getPlayerId();
+      if (currentGamePlayer != null && !currentGamePlayer.isNull()) {
+        playerSet.add(currentGamePlayer);
       }
     }
     printData.getOutDir().mkdir();
@@ -57,8 +57,8 @@ class PlayerOrder {
             StandardOpenOption.APPEND)) {
       turnWriter.write("Turn Order\r\n");
       int count = 1;
-      for (final PlayerId currentPlayerId : removeDupes(playerSet)) {
-        turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
+      for (final GamePlayer currentGamePlayer : removeDupes(playerSet)) {
+        turnWriter.write(count + ". " + currentGamePlayer.getName() + "\r\n");
         count++;
       }
     }

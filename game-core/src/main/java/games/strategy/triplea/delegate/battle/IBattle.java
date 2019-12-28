@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -148,9 +148,9 @@ public interface IBattle extends Serializable {
 
   BattleResultDescription getBattleResultDescription();
 
-  PlayerId getAttacker();
+  GamePlayer getAttacker();
 
-  PlayerId getDefender();
+  GamePlayer getDefender();
 
   UUID getBattleId();
 }

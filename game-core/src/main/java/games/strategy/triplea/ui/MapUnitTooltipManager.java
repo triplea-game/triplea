@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -101,7 +101,10 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @param count The number of units.
    */
   public static void setUnitTooltip(
-      final JComponent component, final UnitType unitType, final PlayerId player, final int count) {
+      final JComponent component,
+      final UnitType unitType,
+      final GamePlayer player,
+      final int count) {
     final String text = getTooltipTextForUnit(unitType, player, count);
     component.setToolTipText("<html>" + text + "</html>");
   }
@@ -115,7 +118,7 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @return The tooltip text.
    */
   public static String getTooltipTextForUnit(
-      final UnitType unitType, final PlayerId player, final int count) {
+      final UnitType unitType, final GamePlayer player, final int count) {
     final String firstLine =
         String.format(
             "<b>%s%s (%s)</b><br />",

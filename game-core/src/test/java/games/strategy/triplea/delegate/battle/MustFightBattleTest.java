@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -30,8 +30,8 @@ class MustFightBattleTest extends AbstractDelegateTestCase {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Create battle with 1 cruiser attacking 1 mine
-    final PlayerId usa = GameDataTestUtil.usa(twwGameData);
-    final PlayerId germany = GameDataTestUtil.germany(twwGameData);
+    final GamePlayer usa = GameDataTestUtil.usa(twwGameData);
+    final GamePlayer germany = GameDataTestUtil.germany(twwGameData);
     final Territory sz33 = territory("33 Sea Zone", twwGameData);
     addTo(sz33, GameDataTestUtil.americanCruiser(twwGameData).create(1, usa));
     final Territory sz40 = territory("40 Sea Zone", twwGameData);
@@ -57,8 +57,8 @@ class MustFightBattleTest extends AbstractDelegateTestCase {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Create TWW battle in Celebes with 1 inf attacking 1 strat where both have 0 strength
-    final PlayerId usa = GameDataTestUtil.usa(twwGameData);
-    final PlayerId germany = GameDataTestUtil.germany(twwGameData);
+    final GamePlayer usa = GameDataTestUtil.usa(twwGameData);
+    final GamePlayer germany = GameDataTestUtil.germany(twwGameData);
     final Territory celebes = territory("Celebes", twwGameData);
     celebes.getUnitCollection().clear();
     addTo(celebes, GameDataTestUtil.americanStrategicBomber(twwGameData).create(1, usa));

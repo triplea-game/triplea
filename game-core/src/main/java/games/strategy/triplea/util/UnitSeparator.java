@@ -1,7 +1,7 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -40,7 +40,7 @@ public class UnitSeparator {
     categories.sort(
         Comparator.comparing(
                 UnitCategory::getOwner,
-                Comparator.comparing((final PlayerId p) -> !p.equals(t.getOwner()))
+                Comparator.comparing((final GamePlayer p) -> !p.equals(t.getOwner()))
                     .thenComparing(p -> Matches.isAtWar(p, data).test(t.getOwner()))
                     .thenComparing(data.getPlayerList().getPlayers()::indexOf))
             .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))

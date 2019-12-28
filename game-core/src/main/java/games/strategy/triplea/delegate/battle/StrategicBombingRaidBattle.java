@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate.battle;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -66,7 +66,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   public StrategicBombingRaidBattle(
       final Territory battleSite,
       final GameData data,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
     isAmphibious = false;
@@ -1043,17 +1043,17 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
   }
 
-  private static int getSbrRolls(final Collection<Unit> units, final PlayerId id) {
+  private static int getSbrRolls(final Collection<Unit> units, final GamePlayer gamePlayer) {
     int count = 0;
     for (final Unit unit : units) {
-      count += getSbrRolls(unit, id);
+      count += getSbrRolls(unit, gamePlayer);
     }
     return count;
   }
 
   @VisibleForTesting
-  public static int getSbrRolls(final Unit unit, final PlayerId id) {
-    return UnitAttachment.get(unit.getType()).getAttackRolls(id);
+  public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
+    return UnitAttachment.get(unit.getType()).getAttackRolls(gamePlayer);
   }
 
   @Override

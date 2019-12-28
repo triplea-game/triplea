@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.pro.simulate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -42,7 +42,7 @@ public final class ProSimulateTurnUtils {
    */
   public static void simulateBattles(
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge delegateBridge,
       final ProOddsCalculator calc) {
 
@@ -111,7 +111,7 @@ public final class ProSimulateTurnUtils {
    * @return A collection of the results for each simulated transfer.
    */
   public static Map<Territory, ProTerritory> transferMoveMap(
-      final Map<Territory, ProTerritory> moveMap, final GameData toData, final PlayerId player) {
+      final Map<Territory, ProTerritory> moveMap, final GameData toData, final GamePlayer player) {
 
     ProLogger.info("Transferring move map");
 
@@ -207,10 +207,10 @@ public final class ProSimulateTurnUtils {
   private static boolean checkIfCapturedTerritoryIsAlliedCapital(
       final Territory t,
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge delegateBridge) {
 
-    final @Nullable PlayerId terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
+    final @Nullable GamePlayer terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta != null
@@ -249,7 +249,7 @@ public final class ProSimulateTurnUtils {
       final Map<Unit, Territory> unitTerritoryMap,
       final List<Unit> usedUnits,
       final GameData toData,
-      final PlayerId player) {
+      final GamePlayer player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(u);
     final List<Unit> toUnits =
@@ -274,7 +274,7 @@ public final class ProSimulateTurnUtils {
       final Map<Unit, Territory> unitTerritoryMap,
       final List<Unit> usedUnits,
       final GameData toData,
-      final PlayerId player) {
+      final GamePlayer player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(transport);
     final List<Unit> toTransports =

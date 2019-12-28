@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ai.pro.ProData;
@@ -27,7 +27,7 @@ public final class ProTerritoryValueUtils {
   /**
    * Returns the relative value of attacking the specified territory compared to other territories.
    */
-  public static double findTerritoryAttackValue(final PlayerId player, final Territory t) {
+  public static double findTerritoryAttackValue(final GamePlayer player, final Territory t) {
     final GameData data = ProData.getData();
     final int isEnemyFactory =
         ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
@@ -47,7 +47,7 @@ public final class ProTerritoryValueUtils {
 
   /** Returns the value of each territory in {@code territoriesToCheck}. */
   public static Map<Territory, Double> findTerritoryValues(
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack,
       final Set<Territory> territoriesToCheck) {
@@ -92,7 +92,7 @@ public final class ProTerritoryValueUtils {
 
   /** Returns the value of each sea territory in {@link ProData#getData()}. */
   public static Map<Territory, Double> findSeaTerritoryValues(
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToCheck) {
 
@@ -170,7 +170,7 @@ public final class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
-  private static int findMaxLandMassSize(final PlayerId player) {
+  private static int findMaxLandMassSize(final GamePlayer player) {
     int maxLandMassSize = 1;
     final GameData data = ProData.getData();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -191,7 +191,7 @@ public final class ProTerritoryValueUtils {
   }
 
   private static Map<Territory, Double> findEnemyCapitalsAndFactoriesValue(
-      final PlayerId player,
+      final GamePlayer player,
       final int maxLandMassSize,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack) {
@@ -253,7 +253,7 @@ public final class ProTerritoryValueUtils {
 
   private static double findLandValue(
       final Territory t,
-      final PlayerId player,
+      final GamePlayer player,
       final int maxLandMassSize,
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap,
       final List<Territory> territoriesThatCantBeHeld,
@@ -331,7 +331,7 @@ public final class ProTerritoryValueUtils {
 
   private static double findWaterValue(
       final Territory t,
-      final PlayerId player,
+      final GamePlayer player,
       final int maxLandMassSize,
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap,
       final List<Territory> territoriesThatCantBeHeld,

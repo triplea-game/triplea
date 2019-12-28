@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -49,7 +49,7 @@ public class ProCombatMoveAi {
   private final ProAi ai;
   private final ProOddsCalculator calc;
   private GameData data;
-  private PlayerId player;
+  private GamePlayer player;
   private ProTerritoryManager territoryManager;
   private boolean isDefensive;
   private boolean isBombing;
@@ -150,7 +150,7 @@ public class ProCombatMoveAi {
       final Map<Territory, ProTerritory> attackMap,
       final IMoveDelegate moveDel,
       final GameData data,
-      final PlayerId player) {
+      final GamePlayer player) {
     this.data = data;
     this.player = player;
 
@@ -167,7 +167,7 @@ public class ProCombatMoveAi {
   }
 
   private void prioritizeAttackOptions(
-      final PlayerId player, final List<ProTerritory> attackOptions) {
+      final GamePlayer player, final List<ProTerritory> attackOptions) {
 
     ProLogger.info("Prioritizing territories to try to attack");
 

@@ -1,7 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.battle.BattleResults;
@@ -98,9 +98,9 @@ public class AggregateResults {
    *     and defender lost, on average, equal unit value (i.e. a tie).
    */
   public double getAverageTuvSwing(
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final Collection<Unit> attackers,
-      final PlayerId defender,
+      final GamePlayer defender,
       final Collection<Unit> defenders,
       final GameData data) {
     if (results.isEmpty()) {

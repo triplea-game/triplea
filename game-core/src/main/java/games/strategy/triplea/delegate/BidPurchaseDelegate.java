@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -19,12 +19,12 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   private int spent;
   private boolean hasBid = false;
 
-  private static int getBidAmount(final GameData data, final PlayerId currentPlayer) {
+  private static int getBidAmount(final GameData data, final GamePlayer currentPlayer) {
     final String propertyName = currentPlayer.getName() + " bid";
     return data.getProperties().get(propertyName, 0);
   }
 
-  public static boolean doesPlayerHaveBid(final GameData data, final PlayerId player) {
+  public static boolean doesPlayerHaveBid(final GameData data, final GamePlayer player) {
     return getBidAmount(data, player) != 0;
   }
 
@@ -64,7 +64,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   }
 
   @Override
-  protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerId player) {
+  protected boolean canAfford(final IntegerMap<Resource> costs, final GamePlayer player) {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
     // TODO: allow bids to have more than just PUs
     bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), bid);
@@ -77,7 +77,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (hasBid) {
       return;
     }
-    bid = getBidAmount(bridge.getData(), bridge.getPlayerId());
+    bid = getBidAmount(bridge.getData(), bridge.getGamePlayer());
     spent = 0;
   }
 
@@ -98,10 +98,13 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     bridge
         .getHistoryWriter()
         .startEvent(
-            bridge.getPlayerId().getName() + " retains " + unspent + " PUS not spent in bid phase");
+            bridge.getGamePlayer().getName()
+                + " retains "
+                + unspent
+                + " PUS not spent in bid phase");
     final Change unspentChange =
         ChangeFactory.changeResourcesChange(
-            bridge.getPlayerId(),
+            bridge.getGamePlayer(),
             super.getData().getResourceList().getResource(Constants.PUS),
             unspent);
     bridge.addChange(unspentChange);

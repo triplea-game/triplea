@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.FireTriggerParams;
@@ -33,7 +33,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     // Activate techs
-    final Map<PlayerId, Collection<TechAdvance>> techMap =
+    final Map<GamePlayer, Collection<TechAdvance>> techMap =
         DelegateFinder.techDelegate(data).getAdvances();
     final Collection<TechAdvance> advances = techMap.get(player);
     if (advances != null && !advances.isEmpty()) {
@@ -102,14 +102,14 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     if (pa == null) {
       return;
     }
-    final Collection<PlayerId> shareWith = pa.getShareTechnology();
+    final Collection<GamePlayer> shareWith = pa.getShareTechnology();
     if (shareWith == null || shareWith.isEmpty()) {
       return;
     }
     final GameData data = getData();
     final Collection<TechAdvance> currentAdvances =
         TechTracker.getCurrentTechAdvances(player, data);
-    for (final PlayerId p : shareWith) {
+    for (final GamePlayer p : shareWith) {
       final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);
       final Collection<TechAdvance> toGive =
           CollectionUtils.intersection(currentAdvances, availableTechs);

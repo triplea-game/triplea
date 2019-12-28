@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * An attachment for instances of {@link PlayerId} that defines properties related to technology
+ * An attachment for instances of {@link GamePlayer} that defines properties related to technology
  * advances.
  */
 public class TechAttachment extends DefaultAttachment {
@@ -59,8 +59,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   // attaches to a PlayerId
-  public static TechAttachment get(final PlayerId id) {
-    final TechAttachment attachment = id.getTechAttachment();
+  public static TechAttachment get(final GamePlayer gamePlayer) {
+    final TechAttachment attachment = gamePlayer.getTechAttachment();
     // dont crash, as a map xml may not set the tech attachment for all players, so just create a
     // new tech attachment
     // for them
@@ -70,12 +70,12 @@ public class TechAttachment extends DefaultAttachment {
     return attachment;
   }
 
-  static TechAttachment get(final PlayerId id, final String nameOfAttachment) {
+  static TechAttachment get(final GamePlayer gamePlayer, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
       throw new IllegalStateException(
           "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
     }
-    final TechAttachment attachment = (TechAttachment) id.getAttachment(nameOfAttachment);
+    final TechAttachment attachment = (TechAttachment) gamePlayer.getAttachment(nameOfAttachment);
     // dont crash, as a map xml may not set the tech attachment for all players, so just create a
     // new tech attachment
     // for them
@@ -354,12 +354,12 @@ public class TechAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-  public static boolean isMechanizedInfantry(final PlayerId player) {
+  public static boolean isMechanizedInfantry(final GamePlayer player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     return ta != null && ta.getMechanizedInfantry();
   }
 
-  public static boolean isAirTransportable(final PlayerId player) {
+  public static boolean isAirTransportable(final GamePlayer player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     return ta != null && ta.getParatroopers();
   }

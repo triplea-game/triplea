@@ -13,7 +13,7 @@ import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
 
 @ExtendWith(MockitoExtension.class)
-class PlayerIdLookupTest {
+class GamePlayerLookupTest {
 
   private static final String PLAYER_NAME = "player-name";
   private static final String SYSTEM_ID = "player-name";
@@ -25,7 +25,7 @@ class PlayerIdLookupTest {
   void buildResultMapper() throws Exception {
     givenMockedDatabaseResults();
 
-    final PlayerIdLookup result = PlayerIdLookup.buildResultMapper().map(resultSet, null);
+    final GamePlayerLookup result = GamePlayerLookup.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getPlayerName(), is(PlayerName.of(PLAYER_NAME)));
     assertThat(result.getSystemId(), is(SystemId.of(SYSTEM_ID)));
@@ -33,8 +33,8 @@ class PlayerIdLookupTest {
   }
 
   private void givenMockedDatabaseResults() throws Exception {
-    when(resultSet.getString(PlayerIdLookup.PLAYER_NAME_COLUMN)).thenReturn(PLAYER_NAME);
-    when(resultSet.getString(PlayerIdLookup.SYSTEM_ID_COLUMN)).thenReturn(SYSTEM_ID);
-    when(resultSet.getString(PlayerIdLookup.IP_COLUMN)).thenReturn(IP);
+    when(resultSet.getString(GamePlayerLookup.PLAYER_NAME_COLUMN)).thenReturn(PLAYER_NAME);
+    when(resultSet.getString(GamePlayerLookup.SYSTEM_ID_COLUMN)).thenReturn(SYSTEM_ID);
+    when(resultSet.getString(GamePlayerLookup.IP_COLUMN)).thenReturn(IP);
   }
 }

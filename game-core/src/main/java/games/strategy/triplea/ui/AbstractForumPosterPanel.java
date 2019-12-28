@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.pbem.ForumPosterComponent;
@@ -38,11 +38,11 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id);
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer);
     SwingUtilities.invokeLater(
         () -> {
-          actionLabel.setText(id.getName() + " " + getTitle());
+          actionLabel.setText(gamePlayer.getName() + " " + getTitle());
           // defer component layout until waitForEndTurn()
         });
   }

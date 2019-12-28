@@ -13,7 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -25,9 +25,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class UnitComparatorTest {
-  private static void startCombatMoveFor(final PlayerId playerId, final GameData gameData) {
+  private static void startCombatMoveFor(final GamePlayer gamePlayer, final GameData gameData) {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    final IDelegateBridge bridge = newDelegateBridge(playerId);
+    final IDelegateBridge bridge = newDelegateBridge(gamePlayer);
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -38,7 +38,7 @@ final class UnitComparatorTest {
     @Test
     void shouldSortUnloadableUnitsFirst() {
       final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
-      final PlayerId germans = germans(gameData);
+      final GamePlayer germans = germans(gameData);
       final Territory germany = territory("Germany", gameData);
       final Territory seaZone5 = territory("5 Sea Zone", gameData);
       final Territory kareliaSsr = territory("Karelia S.S.R.", gameData);

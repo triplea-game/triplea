@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -29,25 +29,25 @@ import org.triplea.util.Tuple;
  */
 public class ScrambleLogic {
   private final GameData data;
-  private final PlayerId player;
+  private final GamePlayer player;
   private final Set<Territory> territoriesWithBattles;
   private BattleTracker battleTracker;
   @Getter private final Predicate<Unit> airbaseThatCanScramblePredicate;
   private final Predicate<Territory> canScrambleFromPredicate;
   private final int maxScrambleDistance;
 
-  public ScrambleLogic(final GameData data, final PlayerId player, final Territory territory) {
+  public ScrambleLogic(final GameData data, final GamePlayer player, final Territory territory) {
     this(data, player, Set.of(territory));
   }
 
   public ScrambleLogic(
-      final GameData data, final PlayerId player, final Set<Territory> territoriesWithBattles) {
+      final GameData data, final GamePlayer player, final Set<Territory> territoriesWithBattles) {
     this(data, player, territoriesWithBattles, new BattleTracker());
   }
 
   public ScrambleLogic(
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final Set<Territory> territoriesWithBattles,
       final BattleTracker battleTracker) {
     if (!Properties.getScrambleRulesInEffect(data)) {

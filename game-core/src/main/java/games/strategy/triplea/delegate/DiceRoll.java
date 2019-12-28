@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -221,7 +221,7 @@ public class DiceRoll implements Externalizable {
         getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
                 null, null, defending, unitPowerAndRollsMap, validTargets, data, false)
             .getFirst();
-    final PlayerId player = aaUnits.iterator().next().getOwner();
+    final GamePlayer player = aaUnits.iterator().next().getOwner();
     final String annotation = "Roll " + typeAa + " in " + location.getName();
     if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
       hits += getAaLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
@@ -566,7 +566,7 @@ public class DiceRoll implements Externalizable {
       final List<Die> sortedDice,
       final int totalPower,
       final int chosenDiceSize,
-      final PlayerId playerRolling,
+      final GamePlayer playerRolling,
       final String annotation) {
     int hits = totalPower / chosenDiceSize;
     final int hitsFractional = totalPower % chosenDiceSize;
@@ -587,7 +587,7 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll rollDice(
       final List<Unit> units,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
@@ -626,7 +626,7 @@ public class DiceRoll implements Externalizable {
       final IDelegateBridge bridge,
       final int rollCount,
       final int sides,
-      final PlayerId playerRolling,
+      final GamePlayer playerRolling,
       final DiceType diceType,
       final String annotation) {
     if (rollCount == 0) {
@@ -878,7 +878,7 @@ public class DiceRoll implements Externalizable {
   private static DiceRoll rollDiceLowLuck(
       final Collection<Unit> unitsList,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
@@ -1244,16 +1244,18 @@ public class DiceRoll implements Externalizable {
           final int unitPower2;
           if (u1.getDefence()) {
             unitPower1 =
-                ua1.getDefenseRolls(PlayerId.NULL_PLAYERID)
-                    * ua1.getDefense(PlayerId.NULL_PLAYERID);
+                ua1.getDefenseRolls(GamePlayer.NULL_PLAYERID)
+                    * ua1.getDefense(GamePlayer.NULL_PLAYERID);
             unitPower2 =
-                ua2.getDefenseRolls(PlayerId.NULL_PLAYERID)
-                    * ua2.getDefense(PlayerId.NULL_PLAYERID);
+                ua2.getDefenseRolls(GamePlayer.NULL_PLAYERID)
+                    * ua2.getDefense(GamePlayer.NULL_PLAYERID);
           } else {
             unitPower1 =
-                ua1.getAttackRolls(PlayerId.NULL_PLAYERID) * ua1.getAttack(PlayerId.NULL_PLAYERID);
+                ua1.getAttackRolls(GamePlayer.NULL_PLAYERID)
+                    * ua1.getAttack(GamePlayer.NULL_PLAYERID);
             unitPower2 =
-                ua2.getAttackRolls(PlayerId.NULL_PLAYERID) * ua2.getAttack(PlayerId.NULL_PLAYERID);
+                ua2.getAttackRolls(GamePlayer.NULL_PLAYERID)
+                    * ua2.getAttack(GamePlayer.NULL_PLAYERID);
           }
 
           return Integer.compare(unitPower2, unitPower1);
@@ -1267,7 +1269,7 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll airBattle(
       final Collection<Unit> unitsList,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final String annotation) {
 
@@ -1386,7 +1388,7 @@ public class DiceRoll implements Externalizable {
   private static DiceRoll rollDiceNormal(
       final Collection<Unit> unitsList,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
@@ -1481,7 +1483,7 @@ public class DiceRoll implements Externalizable {
     return diceRoll;
   }
 
-  private static boolean isFirstTurnLimitedRoll(final PlayerId player, final GameData data) {
+  private static boolean isFirstTurnLimitedRoll(final GamePlayer player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
     return !player.isNull()
         && data.getSequence().getRound() == 1
@@ -1489,7 +1491,7 @@ public class DiceRoll implements Externalizable {
         && isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
-  private static boolean isDominatingFirstRoundAttack(final PlayerId player) {
+  private static boolean isDominatingFirstRoundAttack(final GamePlayer player) {
     if (player == null) {
       return false;
     }
@@ -1498,7 +1500,7 @@ public class DiceRoll implements Externalizable {
     return ra != null && ra.getDominatingFirstRoundAttack();
   }
 
-  private static boolean isNegateDominatingFirstRoundAttack(final PlayerId player) {
+  private static boolean isNegateDominatingFirstRoundAttack(final GamePlayer player) {
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getNegateDominatingFirstRoundAttack();
@@ -1516,7 +1518,7 @@ public class DiceRoll implements Externalizable {
   }
 
   public static String getAnnotation(
-      final Collection<Unit> units, final PlayerId player, final IBattle battle) {
+      final Collection<Unit> units, final GamePlayer player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player
     // name via the

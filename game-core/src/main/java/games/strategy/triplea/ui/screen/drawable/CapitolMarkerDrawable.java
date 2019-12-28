@@ -3,7 +3,7 @@ package games.strategy.triplea.ui.screen.drawable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -19,7 +19,7 @@ public class CapitolMarkerDrawable extends AbstractDrawable {
   private final UiContext uiContext;
 
   public CapitolMarkerDrawable(
-      final PlayerId player, final Territory location, final UiContext uiContext) {
+      final GamePlayer player, final Territory location, final UiContext uiContext) {
     checkNotNull(player, "null player; capitol: " + location);
 
     this.player = player.getName();

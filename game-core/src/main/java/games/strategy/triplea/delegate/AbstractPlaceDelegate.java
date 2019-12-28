@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -64,7 +64,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private void doAfterEnd() {
-    final PlayerId player = bridge.getPlayerId();
+    final GamePlayer player = bridge.getGamePlayer();
     // clear all units not placed
     final Collection<Unit> units = player.getUnits();
     final GameData data = getData();
@@ -96,7 +96,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
     util.removeAirThatCantLand(player, false);
     // if edit mode has been on, we need to clean up after all players
-    for (final PlayerId player : data.getPlayerList()) {
+    for (final GamePlayer player : data.getPlayerList()) {
       if (!player.equals(this.player)) {
         util.removeAirThatCantLand(player, false);
       }
@@ -302,7 +302,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final Collection<Unit> placeableUnits,
       final Territory at,
-      final PlayerId player) {
+      final GamePlayer player) {
     final CompositeChange change = new CompositeChange();
     // make sure we can place consuming units
     final boolean didIt = canWeConsumeUnits(placeableUnits, at, true, change);
@@ -367,7 +367,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final int freeSize,
       final Collection<Unit> unitsLeftToPlace,
       final Territory at,
-      final PlayerId player) {
+      final GamePlayer player) {
     // placements of the producer that could be redone by other territories
     final List<UndoablePlacement> redoPlacements = new ArrayList<>();
     // territories the producer produced for (but not itself) and the amount of units it produced
@@ -502,7 +502,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory at,
       final Territory producer,
       final Collection<Unit> units,
-      final PlayerId player,
+      final GamePlayer player,
       final CompositeChange placeChange) {
     if (!at.isWater()) {
       return null;
@@ -559,7 +559,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * @return null if placement is valid
    */
   private String isValidPlacement(
-      final Collection<Unit> units, final Territory at, final PlayerId player) {
+      final Collection<Unit> units, final Territory at, final GamePlayer player) {
     // do we hold enough units
     String error = playerHasEnoughUnits(units, player);
     if (error != null) {
@@ -580,7 +580,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   /** Make sure the player has enough in hand to place the units. */
-  private static String playerHasEnoughUnits(final Collection<Unit> units, final PlayerId player) {
+  private static String playerHasEnoughUnits(
+      final Collection<Unit> units, final GamePlayer player) {
     // make sure the player has enough units in hand to place
     if (!player.getUnits().containsAll(units)) {
       return "Not enough units";
@@ -593,7 +594,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * AlreadyProduced maps territory->units already produced this turn by that territory.
    */
   protected String canProduce(
-      final Territory to, final Collection<Unit> units, final PlayerId player) {
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final Collection<Territory> producers = getAllProducers(to, player, units, true);
     // the only reason it could be empty is if its water and no territories adjacent have factories
     if (producers.isEmpty()) {
@@ -629,7 +630,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final Territory to,
       final Collection<Unit> units,
-      final PlayerId player) {
+      final GamePlayer player) {
     return canProduce(producer, to, units, player, false);
   }
 
@@ -649,7 +650,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final Territory to,
       final Collection<Unit> units,
-      final PlayerId player,
+      final GamePlayer player,
       final boolean simpleCheck) {
     // units can be null if we are just testing the territory itself...
     final Collection<Unit> testUnits = (units == null ? new ArrayList<>() : units);
@@ -736,7 +737,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    */
   private List<Territory> getAllProducers(
       final Territory to,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> unitsToPlace,
       final boolean simpleCheck) {
     final List<Territory> producers = new ArrayList<>();
@@ -759,7 +760,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   protected List<Territory> getAllProducers(
-      final Territory to, final PlayerId player, final Collection<Unit> unitsToPlace) {
+      final Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
     return getAllProducers(to, player, unitsToPlace, false);
   }
 
@@ -768,7 +769,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * AlreadyProduced maps territory->units already produced this turn by that territory.
    */
   protected String checkProduction(
-      final Territory to, final Collection<Unit> units, final PlayerId player) {
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
       return "No factory in or adjacent to " + to.getName();
@@ -791,7 +792,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * returns an error message explaining why the units cannot be placed in the territory.
    */
   public String canUnitsBePlaced(
-      final Territory to, final Collection<Unit> units, final PlayerId player) {
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
     if (allowedUnits == null || !allowedUnits.containsAll(units)) {
       return "Cannot place these units in " + to.getName();
@@ -897,7 +898,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   // Separate it out so we can Override it in sub classes.
   private Collection<Unit> getUnitsToBePlaced(
-      final Territory to, final Collection<Unit> units, final PlayerId player) {
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
     if (to.isWater()) {
       return getUnitsToBePlacedSea(to, units, player);
     }
@@ -906,17 +907,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private Collection<Unit> getUnitsToBePlacedSea(
-      final Territory to, final Collection<Unit> units, final PlayerId player) {
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
     return getUnitsToBePlacedAllDefault(to, units, player);
   }
 
   protected Collection<Unit> getUnitsToBePlacedLand(
-      final Territory to, final Collection<Unit> units, final PlayerId player) {
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
     return getUnitsToBePlacedAllDefault(to, units, player);
   }
 
   private Collection<Unit> getUnitsToBePlacedAllDefault(
-      final Territory to, final Collection<Unit> allUnits, final PlayerId player) {
+      final Territory to, final Collection<Unit> allUnits, final GamePlayer player) {
     final boolean water = to.isWater();
     if (water
         && (!isWW2V2() && !isUnitPlacementInEnemySeas())
@@ -1104,7 +1105,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   /** Returns -1 if can place unlimited units. */
   protected int getMaxUnitsToBePlaced(
-      final Collection<Unit> units, final Territory to, final PlayerId player) {
+      final Collection<Unit> units, final Territory to, final GamePlayer player) {
     final IntegerMap<Territory> map = getMaxUnitsToBePlacedMap(units, to, player, true);
     int production = 0;
     for (final Entry<Territory, Integer> entry : map.entrySet()) {
@@ -1121,7 +1122,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   private IntegerMap<Territory> getMaxUnitsToBePlacedMap(
       final Collection<Unit> units,
       final Territory to,
-      final PlayerId player,
+      final GamePlayer player,
       final boolean countSwitchedProductionToNeighbors) {
     final IntegerMap<Territory> maxUnitsToBePlacedMap = new IntegerMap<>();
     final List<Territory> producers = getAllProducers(to, player, units);
@@ -1156,7 +1157,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final Collection<Unit> units,
       final Territory to,
-      final PlayerId player) {
+      final GamePlayer player) {
     return getMaxUnitsToBePlacedFrom(producer, units, to, player, false, null, null);
   }
 
@@ -1165,7 +1166,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final Collection<Unit> units,
       final Territory to,
-      final PlayerId player,
+      final GamePlayer player,
       final boolean countSwitchedProductionToNeighbors,
       final Collection<Territory> notUsableAsOtherProducers,
       final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
@@ -1359,7 +1360,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory to,
       final Territory producer,
       final Collection<Unit> units,
-      final PlayerId player) {
+      final GamePlayer player) {
     // constructions can ONLY be produced BY the same territory that they are going into!
     if (!to.equals(producer)
         || units == null
@@ -1565,7 +1566,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private Comparator<Territory> getBestProducerComparator(
-      final Territory to, final Collection<Unit> units, final PlayerId player) {
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
     return (t1, t2) -> {
       if (Objects.equals(t1, t2)) {
         return 0;
@@ -1681,7 +1682,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * @param player PlayerId
    */
   private boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(
-      final Territory to, final PlayerId player) {
+      final Territory to, final GamePlayer player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
@@ -1696,7 +1697,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * There must be a factory in the territory or an illegal state exception will be thrown. return
    * value may be null.
    */
-  private PlayerId getOriginalFactoryOwner(final Territory territory) {
+  private GamePlayer getOriginalFactoryOwner(final Territory territory) {
     final Collection<Unit> factoryUnits =
         territory.getUnitCollection().getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.isEmpty()) {
@@ -1768,7 +1769,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return Properties.getUnitPlacementRestrictions(getData());
   }
 
-  private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final PlayerId player) {
+  private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final GamePlayer player) {
     if (isPlaceInAnyTerritory()) {
       final RulesAttachment ra =
           (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
@@ -1777,7 +1778,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return false;
   }
 
-  private boolean isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(final PlayerId player) {
+  private boolean isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(final GamePlayer player) {
     if (isPlaceInAnyTerritory()) {
       final RulesAttachment ra =
           (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
@@ -1786,13 +1787,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return false;
   }
 
-  private static boolean isPlacementAllowedInCapturedTerritory(final PlayerId player) {
+  private static boolean isPlacementAllowedInCapturedTerritory(final GamePlayer player) {
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getPlacementCapturedTerritory();
   }
 
-  private static boolean isPlacementInCapitalRestricted(final PlayerId player) {
+  private static boolean isPlacementInCapitalRestricted(final GamePlayer player) {
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getPlacementInCapitalRestricted();

@@ -1,7 +1,7 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.Constants;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -19,10 +19,10 @@ import javax.imageio.ImageIO;
 import org.triplea.java.collections.IntegerMap;
 
 class PuChart {
-  private final Iterable<PlayerId> players;
-  private final IntegerMap<PlayerId> moneyMap;
+  private final Iterable<GamePlayer> players;
+  private final IntegerMap<GamePlayer> moneyMap;
   private final int numPlayers;
-  private final PlayerId[] playerArray;
+  private final GamePlayer[] playerArray;
   private final Integer[] moneyArray;
   private final Map<Integer, Integer> avoidMap;
   private final Font chartFont = new Font("Serif", Font.PLAIN, 12);
@@ -35,7 +35,7 @@ class PuChart {
     players = gameData.getPlayerList();
     moneyMap = new IntegerMap<>();
     numPlayers = gameData.getPlayerList().size();
-    playerArray = new PlayerId[numPlayers];
+    playerArray = new GamePlayer[numPlayers];
     moneyArray = new Integer[numPlayers];
     avoidMap = new HashMap<>();
     puImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
@@ -45,7 +45,7 @@ class PuChart {
 
   private void initializeMap() {
     int count = 0;
-    for (final PlayerId currentPlayer : players) {
+    for (final GamePlayer currentPlayer : players) {
       moneyMap.put(currentPlayer, currentPlayer.getResources().getQuantity(Constants.PUS));
       playerArray[count] = currentPlayer;
       moneyArray[count] = currentPlayer.getResources().getQuantity(Constants.PUS);

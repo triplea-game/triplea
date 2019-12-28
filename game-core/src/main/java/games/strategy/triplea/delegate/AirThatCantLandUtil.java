@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -31,7 +31,7 @@ public class AirThatCantLandUtil {
     return Properties.getLandExistingFightersOnNewCarriers(data);
   }
 
-  Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerId player) {
+  Collection<Territory> getTerritoriesWhereAirCantLand(final GamePlayer player) {
     final GameData data = bridge.getData();
     final Collection<Territory> cantLand = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
@@ -45,7 +45,7 @@ public class AirThatCantLandUtil {
   }
 
   void removeAirThatCantLand(
-      final PlayerId player, final boolean spareAirInSeaZonesBesideFactories) {
+      final GamePlayer player, final boolean spareAirInSeaZonesBesideFactories) {
     final GameData data = bridge.getData();
     final GameMap map = data.getMap();
     for (final Territory current : getTerritoriesWhereAirCantLand(player)) {
@@ -65,7 +65,7 @@ public class AirThatCantLandUtil {
   }
 
   private void removeAirThatCantLand(
-      final PlayerId player, final Territory territory, final Collection<Unit> airUnits) {
+      final GamePlayer player, final Territory territory, final Collection<Unit> airUnits) {
     final Collection<Unit> toRemove = new ArrayList<>(airUnits.size());
     // if we cant land on land then none can
     if (!territory.isWater()) {

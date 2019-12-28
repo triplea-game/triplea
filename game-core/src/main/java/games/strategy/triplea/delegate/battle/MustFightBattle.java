@@ -4,7 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -111,7 +111,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   public MustFightBattle(
       final Territory battleSite,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final GameData data,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
@@ -123,7 +123,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             : Properties.getLandBattleRounds(data);
   }
 
-  void resetDefendingUnits(final PlayerId attacker, final GameData data) {
+  void resetDefendingUnits(final GamePlayer attacker, final GameData data) {
     defendingUnits.clear();
     defendingUnits.addAll(
         battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));
@@ -135,7 +135,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Collection<Unit> attacking,
       final Collection<Unit> bombarding,
       final Collection<Unit> amphibious,
-      final PlayerId defender,
+      final GamePlayer defender,
       final Collection<TerritoryEffect> territoryEffects) {
     defendingUnits = new ArrayList<>(defending);
     attackingUnits = new ArrayList<>(attacking);
@@ -386,7 +386,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void damagedChangeInto(
-      final PlayerId player,
+      final GamePlayer player,
       final List<Unit> units,
       final List<Unit> killedUnits,
       final IDelegateBridge bridge) {
@@ -652,10 +652,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (headless) {
       return;
     }
-    final Set<PlayerId> playerSet = battleSite.getUnitCollection().getPlayersWithUnits();
+    final Set<GamePlayer> playerSet = battleSite.getUnitCollection().getPlayersWithUnits();
     // find all attacking players (unsorted)
-    final Collection<PlayerId> attackers = new ArrayList<>();
-    for (final PlayerId current : playerSet) {
+    final Collection<GamePlayer> attackers = new ArrayList<>();
+    for (final GamePlayer current : playerSet) {
       if (gameData.getRelationshipTracker().isAllied(attacker, current)
           || current.equals(attacker)) {
         attackers.add(current);
@@ -664,8 +664,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final StringBuilder transcriptText = new StringBuilder();
     // find all attacking units (unsorted)
     final Collection<Unit> allAttackingUnits = new ArrayList<>();
-    for (final Iterator<PlayerId> attackersIter = attackers.iterator(); attackersIter.hasNext(); ) {
-      final PlayerId current = attackersIter.next();
+    for (final Iterator<GamePlayer> attackersIter = attackers.iterator();
+        attackersIter.hasNext(); ) {
+      final GamePlayer current = attackersIter.next();
       final String delim;
       if (attackersIter.hasNext()) {
         delim = "; ";
@@ -702,8 +703,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       bridge.getHistoryWriter().addChildToEvent(transcriptText.toString(), allAttackingUnits);
     }
     // find all defending players (unsorted)
-    final Collection<PlayerId> defenders = new ArrayList<>();
-    for (final PlayerId current : playerSet) {
+    final Collection<GamePlayer> defenders = new ArrayList<>();
+    for (final GamePlayer current : playerSet) {
       if (gameData.getRelationshipTracker().isAllied(defender, current)
           || current.equals(defender)) {
         defenders.add(current);
@@ -712,8 +713,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final StringBuilder transcriptBuilder = new StringBuilder();
     // find all defending units (unsorted)
     final Collection<Unit> allDefendingUnits = new ArrayList<>();
-    for (final Iterator<PlayerId> defendersIter = defenders.iterator(); defendersIter.hasNext(); ) {
-      final PlayerId current = defendersIter.next();
+    for (final Iterator<GamePlayer> defendersIter = defenders.iterator();
+        defendersIter.hasNext(); ) {
+      final GamePlayer current = defendersIter.next();
       final String delim;
       if (defendersIter.hasNext()) {
         delim = "; ";
@@ -1138,7 +1140,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private Collection<Territory> getEmptyOrFriendlySeaNeighbors(
-      final PlayerId player, final Collection<Unit> unitsToRetreat) {
+      final GamePlayer player, final Collection<Unit> unitsToRetreat) {
     Collection<Territory> possible = gameData.getMap().getNeighbors(battleSite);
     if (headless) {
       return possible;
@@ -1465,8 +1467,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final boolean defender,
       final ReturnFire returnFire,
       final String text) {
-    final PlayerId firing = defender ? this.defender : attacker;
-    final PlayerId defending = !defender ? this.defender : attacker;
+    final GamePlayer firing = defender ? this.defender : attacker;
+    final GamePlayer defending = !defender ? this.defender : attacker;
     if (firingUnits.isEmpty()) {
       return;
     }
@@ -1825,7 +1827,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /** Check for unescorted transports and kill them immediately. */
-  private void checkUndefendedTransports(final IDelegateBridge bridge, final PlayerId player) {
+  private void checkUndefendedTransports(final IDelegateBridge bridge, final GamePlayer player) {
     // if we are the attacker, we can retreat instead of dying
     if (player.equals(attacker)
         && (!getAttackerRetreatTerritories().isEmpty()
@@ -2381,7 +2383,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (units.isEmpty()) {
       return;
     }
-    final PlayerId retreatingPlayer = defender ? this.defender : attacker;
+    final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
     final String text;
     if (subs) {
       text = retreatingPlayer.getName() + " retreat subs?";
@@ -2654,7 +2656,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final List<Unit> allyOfAttackerUnits =
             battleSite.getUnitCollection().getMatches(Matches.unitIsNotInfrastructure());
         if (!allyOfAttackerUnits.isEmpty()) {
-          final PlayerId abandonedToPlayer =
+          final GamePlayer abandonedToPlayer =
               AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
           bridge
               .getHistoryWriter()

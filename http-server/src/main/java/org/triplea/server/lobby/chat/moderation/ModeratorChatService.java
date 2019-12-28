@@ -8,8 +8,8 @@ import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
+import org.triplea.lobby.server.db.dao.api.key.GamePlayerLookup;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
-import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
 import org.triplea.server.http.web.socket.MessageBroadcaster;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.remote.actions.RemoteActionsEventQueue;
@@ -29,24 +29,24 @@ class ModeratorChatService {
    * the ban through the chatter websocket disconnect message.
    */
   void banPlayer(final int moderatorUserId, final BanPlayerRequest banPlayerRequest) {
-    final PlayerIdLookup playerIdLookup =
+    final GamePlayerLookup gamePlayerLookup =
         lookupUpPlayer(PlayerChatId.of(banPlayerRequest.getPlayerChatId()));
 
     lookupUpPlayer(PlayerChatId.of(banPlayerRequest.getPlayerChatId()));
 
     chatters.disconnectPlayerSessions(
-        playerIdLookup.getPlayerName(), playerBannedMessage(banPlayerRequest));
+        gamePlayerLookup.getPlayerName(), playerBannedMessage(banPlayerRequest));
     messageBroadcaster.accept(
         chatters.fetchOpenSessions(),
         ChatServerEnvelopeFactory.newEventMessage(
-            playerBannedNotification(playerIdLookup.getPlayerName(), banPlayerRequest)));
+            playerBannedNotification(gamePlayerLookup.getPlayerName(), banPlayerRequest)));
 
     remoteActionsEventQueue.addPlayerBannedEvent(
-        IpAddressParser.fromString(playerIdLookup.getIp()));
-    moderatorActionPersistence.recordBan(moderatorUserId, playerIdLookup, banPlayerRequest);
+        IpAddressParser.fromString(gamePlayerLookup.getIp()));
+    moderatorActionPersistence.recordBan(moderatorUserId, gamePlayerLookup, banPlayerRequest);
   }
 
-  private PlayerIdLookup lookupUpPlayer(final PlayerChatId playerChatId) {
+  private GamePlayerLookup lookupUpPlayer(final PlayerChatId playerChatId) {
     return lobbyApiKeyDaoWrapper
         .lookupPlayerByChatId(playerChatId)
         .orElseThrow(
@@ -71,12 +71,13 @@ class ModeratorChatService {
    * chatters of the disconnect.
    */
   void disconnectPlayer(final int moderatorId, final PlayerChatId playerChatId) {
-    final PlayerIdLookup playerIdLookup = lookupUpPlayer(playerChatId);
-    chatters.disconnectPlayerSessions(playerIdLookup.getPlayerName(), "Disconnected by moderator");
+    final GamePlayerLookup gamePlayerLookup = lookupUpPlayer(playerChatId);
+    chatters.disconnectPlayerSessions(
+        gamePlayerLookup.getPlayerName(), "Disconnected by moderator");
     messageBroadcaster.accept(
         chatters.fetchOpenSessions(),
         ChatServerEnvelopeFactory.newEventMessage(
-            playerIdLookup.getPlayerName() + " was disconnected by moderator"));
-    moderatorActionPersistence.recordPlayerDisconnect(moderatorId, playerIdLookup);
+            gamePlayerLookup.getPlayerName() + " was disconnected by moderator"));
+    moderatorActionPersistence.recordPlayerDisconnect(moderatorId, gamePlayerLookup);
   }
 }

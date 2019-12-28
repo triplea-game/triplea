@@ -3,7 +3,7 @@ package games.strategy.triplea.odds.calculator;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHitsChange;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -27,7 +27,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final DummyPlayer attackingPlayer;
   private final DummyPlayer defendingPlayer;
-  private final PlayerId attacker;
+  private final GamePlayer attacker;
   private final DelegateHistoryWriter writer =
       new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final CompositeChange allChanges;
@@ -35,7 +35,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   private MustFightBattle battle = null;
 
   public DummyDelegateBridge(
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final GameData data,
       final CompositeChange allChanges,
       final List<Unit> attackerOrderOfLosses,
@@ -88,8 +88,8 @@ public class DummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public Player getRemotePlayer(final PlayerId id) {
-    return id.equals(attacker) ? attackingPlayer : defendingPlayer;
+  public Player getRemotePlayer(final GamePlayer gamePlayer) {
+    return gamePlayer.equals(attacker) ? attackingPlayer : defendingPlayer;
   }
 
   @Override
@@ -102,7 +102,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
   public int[] getRandom(
       final int max,
       final int count,
-      final PlayerId player,
+      final GamePlayer player,
       final IRandomStats.DiceType diceType,
       final String annotation) {
     return randomSource.getRandom(max, count, annotation);
@@ -111,14 +111,14 @@ public class DummyDelegateBridge implements IDelegateBridge {
   @Override
   public int getRandom(
       final int max,
-      final PlayerId player,
+      final GamePlayer player,
       final IRandomStats.DiceType diceType,
       final String annotation) {
     return randomSource.getRandom(max, annotation);
   }
 
   @Override
-  public PlayerId getPlayerId() {
+  public GamePlayer getGamePlayer() {
     return attacker;
   }
 

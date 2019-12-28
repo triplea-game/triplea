@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -60,8 +60,8 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
     final Map<String, Boolean> playersEnablementListing =
         data.getPlayerList().getPlayersEnabledListing();
-    final Map<String, String> reloadSelections = PlayerId.currentPlayers(data);
-    final List<PlayerId> players = data.getPlayerList().getPlayers();
+    final Map<String, String> reloadSelections = GamePlayer.currentPlayers(data);
+    final List<GamePlayer> players = data.getPlayerList().getPlayers();
 
     int gridx = 0;
     int gridy = 1;
@@ -209,7 +209,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     puIncomeBonusLabel.setVisible(false);
 
     // Add players in the order they were defined in the XML
-    for (final PlayerId player : players) {
+    for (final GamePlayer player : players) {
       final PlayerSelectorRow selector =
           new PlayerSelectorRow(
               playerRows,

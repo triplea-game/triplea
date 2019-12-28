@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.player.Player;
@@ -76,12 +76,12 @@ public final class BattlePanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id);
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer);
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          actionLabel.setText(id.getName() + " battle");
+          actionLabel.setText(gamePlayer.getName() + " battle");
           setLayout(new BorderLayout());
           final JPanel panel = new JPanelBuilder().gridLayout(0, 1).add(actionLabel).build();
           for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
@@ -229,8 +229,8 @@ public final class BattlePanel extends ActionPanel {
       final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie,
       final Collection<Unit> defendingWaitingToDie,
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final boolean isAmphibious,
       final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers) {
@@ -270,8 +270,9 @@ public final class BattlePanel extends ActionPanel {
             boolean foundHumanInBattle = false;
             for (final Player gamePlayer :
                 getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
-              if ((gamePlayer.getPlayerId().equals(attacker) && gamePlayer instanceof TripleAPlayer)
-                  || (gamePlayer.getPlayerId().equals(defender)
+              if ((gamePlayer.getGamePlayer().equals(attacker)
+                      && gamePlayer instanceof TripleAPlayer)
+                  || (gamePlayer.getGamePlayer().equals(defender)
                       && gamePlayer instanceof TripleAPlayer)) {
                 foundHumanInBattle = true;
                 break;
@@ -375,7 +376,7 @@ public final class BattlePanel extends ActionPanel {
   public void casualtyNotification(
       final String step,
       final DiceRoll dice,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> killed,
       final Collection<Unit> damaged,
       final Map<Unit, Collection<Unit>> dependents) {
@@ -388,7 +389,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   public void deadUnitNotification(
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     SwingUtilities.invokeLater(
@@ -400,7 +401,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   public void changedUnitsNotification(
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits) {
     SwingUtilities.invokeLater(
@@ -430,7 +431,7 @@ public final class BattlePanel extends ActionPanel {
       final int count,
       final String message,
       final DiceRoll dice,
-      final PlayerId hit,
+      final GamePlayer hit,
       final CasualtyList defaultCasualties,
       final UUID battleId,
       final boolean allowMultipleHitsPerUnit) {
@@ -469,7 +470,7 @@ public final class BattlePanel extends ActionPanel {
       final int count,
       final String message,
       final DiceRoll dice,
-      final PlayerId hit,
+      final GamePlayer hit,
       final CasualtyList defaultCasualties,
       final boolean allowMultipleHitsPerUnit) {
     final Supplier<CasualtyDetails> action =

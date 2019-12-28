@@ -1,6 +1,6 @@
 package games.strategy.engine.player;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -26,10 +26,10 @@ public interface Player extends IRemote {
    * Returns the id of this player. This id is initialized by the initialize method in
    * IRemotePlayer.
    */
-  PlayerId getPlayerId();
+  GamePlayer getGamePlayer();
 
   /** Called before the game starts. */
-  void initialize(IPlayerBridge bridge, PlayerId id);
+  void initialize(IPlayerBridge bridge, GamePlayer gamePlayer);
 
   /** Returns the nation name. */
   String getName();
@@ -72,7 +72,7 @@ public interface Player extends IRemote {
       int count,
       String message,
       DiceRoll dice,
-      PlayerId hit,
+      GamePlayer hit,
       Collection<Unit> friendlyUnits,
       Collection<Unit> enemyUnits,
       boolean amphibious,
@@ -230,7 +230,7 @@ public interface Player extends IRemote {
   Collection<Unit> selectUnitsQuery(Territory current, Collection<Unit> possible, String message);
 
   /** Allows the user to pause and confirm enemy casualties. */
-  void confirmEnemyCasualties(UUID battleId, String message, PlayerId hitPlayer);
+  void confirmEnemyCasualties(UUID battleId, String message, GamePlayer hitPlayer);
 
   void confirmOwnCasualties(UUID battleId, String message);
 
@@ -241,7 +241,8 @@ public interface Player extends IRemote {
    * @param politics is this from politics delegate?
    * @return whether the player accepts the action proposal
    */
-  boolean acceptAction(PlayerId playerSendingProposal, String acceptanceQuestion, boolean politics);
+  boolean acceptAction(
+      GamePlayer playerSendingProposal, String acceptanceQuestion, boolean politics);
 
   /** Asks the player if they wish to perform any kamikaze suicide attacks. */
   Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(

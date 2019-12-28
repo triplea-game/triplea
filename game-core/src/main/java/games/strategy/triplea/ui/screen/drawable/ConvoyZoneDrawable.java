@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -17,7 +17,7 @@ public class ConvoyZoneDrawable extends AbstractDrawable {
   private final UiContext uiContext;
 
   public ConvoyZoneDrawable(
-      final PlayerId player, final Territory location, final UiContext uiContext) {
+      final GamePlayer player, final Territory location, final UiContext uiContext) {
     this.player = player.getName();
     this.location = location.getName();
     this.uiContext = uiContext;

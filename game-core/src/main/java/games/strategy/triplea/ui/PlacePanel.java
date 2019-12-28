@@ -3,8 +3,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
@@ -44,7 +44,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private final CollapsiblePanel detachedCollapsiblePanel;
   private final SimpleUnitPanel unitsToPlacePanel;
 
-  private PlayerId lastPlayer;
+  private GamePlayer lastPlayer;
   private boolean postProductionStep;
 
   private final MapSelectionListener placeMapSelectionListener =
@@ -123,7 +123,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         return;
       }
       // Note: This doesn't use getCurrentPlayer() as that may not be updated yet.
-      final PlayerId player = step.getPlayerId();
+      final GamePlayer player = step.getPlayerId();
       if (player == null) {
         return;
       }
@@ -170,7 +170,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     final GameData data = getData();
     data.acquireReadLock();
     try {
-      final PlayerId player = data.getSequence().getStep().getPlayerId();
+      final GamePlayer player = data.getSequence().getStep().getPlayerId();
       unitsToPlace = UnitSeparator.categorize(player.getUnits());
     } finally {
       data.releaseReadLock();
@@ -191,8 +191,8 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id, " place");
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer, " place");
   }
 
   private void refreshActionLabelText(final boolean bid) {

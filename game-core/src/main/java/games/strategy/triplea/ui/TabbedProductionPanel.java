@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
@@ -35,13 +35,14 @@ class TabbedProductionPanel extends ProductionPanel {
   }
 
   static IntegerMap<ProductionRule> getProduction(
-      final PlayerId id,
+      final GamePlayer gamePlayer,
       final JFrame parent,
       final GameData data,
       final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase,
       final UiContext uiContext) {
-    return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
+    return new TabbedProductionPanel(uiContext)
+        .show(gamePlayer, parent, data, bid, initialPurchase);
   }
 
   @Override
@@ -77,7 +78,8 @@ class TabbedProductionPanel extends ProductionPanel {
             new Insets(8, 8, 8, 8),
             0,
             0));
-    final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(id, rules);
+    final ProductionTabsProperties properties =
+        ProductionTabsProperties.getInstance(gamePlayer, rules);
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
     calculateRowsAndColumns(properties, largestList(ruleLists));
     for (final Tuple<String, List<Rule>> ruleList : ruleLists) {

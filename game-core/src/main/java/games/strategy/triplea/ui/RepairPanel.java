@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -26,7 +26,7 @@ class RepairPanel extends ActionPanel {
   private final JLabel actionLabel = new JLabel();
   private Map<Unit, IntegerMap<RepairRule>> repair;
   private boolean bid;
-  private Collection<PlayerId> allowedPlayersToRepair;
+  private Collection<GamePlayer> allowedPlayersToRepair;
   private final SimpleUnitPanel unitsPanel;
   private final JLabel repairedSoFar = new JLabel();
   private final JButton buyButton;
@@ -35,7 +35,7 @@ class RepairPanel extends ActionPanel {
       new ActionListener() {
         @Override
         public void actionPerformed(final ActionEvent e) {
-          final PlayerId player = getCurrentPlayer();
+          final GamePlayer player = getCurrentPlayer();
           final GameData data = getData();
           repair =
               ProductionRepairPanel.getProduction(
@@ -67,13 +67,13 @@ class RepairPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerId id) {
-    super.display(id);
+  public void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer);
     repair = new HashMap<>();
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          actionLabel.setText(id.getName() + " repair");
+          actionLabel.setText(gamePlayer.getName() + " repair");
           buyButton.setText(BUY);
           add(actionLabel);
           add(buyButton);
@@ -87,7 +87,7 @@ class RepairPanel extends ActionPanel {
           add(Box.createVerticalStrut(9));
           add(repairedSoFar);
           add(Box.createVerticalStrut(4));
-          unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
+          unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), gamePlayer, getData());
           add(unitsPanel);
           add(Box.createVerticalGlue());
           refresh.run();
@@ -119,7 +119,7 @@ class RepairPanel extends ActionPanel {
   }
 
   Map<Unit, IntegerMap<RepairRule>> waitForRepair(
-      final boolean bid, final Collection<PlayerId> allowedPlayersToRepair) {
+      final boolean bid, final Collection<GamePlayer> allowedPlayersToRepair) {
     this.bid = bid;
     this.allowedPlayersToRepair = allowedPlayersToRepair;
     refreshActionLabelText();

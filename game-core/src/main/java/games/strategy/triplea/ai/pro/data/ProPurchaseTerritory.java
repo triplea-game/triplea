@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.util.ProMatches;
@@ -23,7 +23,7 @@ public class ProPurchaseTerritory {
   public ProPurchaseTerritory(
       final Territory territory,
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final int unitProduction) {
     this(territory, data, player, unitProduction, false);
   }
@@ -40,7 +40,7 @@ public class ProPurchaseTerritory {
   public ProPurchaseTerritory(
       final Territory territory,
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final int unitProduction,
       final boolean isBid) {
     this.territory = territory;

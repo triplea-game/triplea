@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -34,7 +34,7 @@ public final class GameDataTestUtil {
    *
    * @return A german PlayerId.
    */
-  public static PlayerId germans(final GameData data) {
+  public static GamePlayer germans(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_GERMANS);
   }
 
@@ -43,7 +43,7 @@ public final class GameDataTestUtil {
    *
    * @return A germany PlayerId.
    */
-  public static PlayerId germany(final GameData data) {
+  public static GamePlayer germany(final GameData data) {
     return data.getPlayerList().getPlayerId("Germany");
   }
 
@@ -52,11 +52,11 @@ public final class GameDataTestUtil {
    *
    * @return A italian PlayerId.
    */
-  static PlayerId italians(final GameData data) {
+  static GamePlayer italians(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_ITALIANS);
   }
 
-  public static PlayerId italy(final GameData data) {
+  public static GamePlayer italy(final GameData data) {
     return data.getPlayerList().getPlayerId("Italy");
   }
 
@@ -65,7 +65,7 @@ public final class GameDataTestUtil {
    *
    * @return A russian PlayerId.
    */
-  public static PlayerId russians(final GameData data) {
+  public static GamePlayer russians(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
   }
 
@@ -74,7 +74,7 @@ public final class GameDataTestUtil {
    *
    * @return A american PlayerId.
    */
-  public static PlayerId americans(final GameData data) {
+  public static GamePlayer americans(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_AMERICANS);
   }
 
@@ -83,7 +83,7 @@ public final class GameDataTestUtil {
    *
    * @return A USA PlayerId.
    */
-  public static PlayerId usa(final GameData data) {
+  public static GamePlayer usa(final GameData data) {
     return data.getPlayerList().getPlayerId("Usa");
   }
 
@@ -92,11 +92,11 @@ public final class GameDataTestUtil {
    *
    * @return A british PlayerId.
    */
-  public static PlayerId british(final GameData data) {
+  public static GamePlayer british(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_BRITISH);
   }
 
-  public static PlayerId britain(final GameData data) {
+  public static GamePlayer britain(final GameData data) {
     return data.getPlayerList().getPlayerId("Britain");
   }
 
@@ -105,7 +105,7 @@ public final class GameDataTestUtil {
    *
    * @return A japanese PlayerId.
    */
-  public static PlayerId japanese(final GameData data) {
+  public static GamePlayer japanese(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
   }
 
@@ -114,7 +114,7 @@ public final class GameDataTestUtil {
    *
    * @return A Japan PlayerId.
    */
-  public static PlayerId japan(final GameData data) {
+  public static GamePlayer japan(final GameData data) {
     return data.getPlayerList().getPlayerId("Japan");
   }
 
@@ -123,7 +123,7 @@ public final class GameDataTestUtil {
    *
    * @return A chinese PlayerId.
    */
-  public static PlayerId chinese(final GameData data) {
+  public static GamePlayer chinese(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_CHINESE);
   }
 
@@ -314,7 +314,7 @@ public final class GameDataTestUtil {
   }
 
   /** Adds all units from the given Collection to the given PlayerId. */
-  static void addTo(final PlayerId t, final Collection<Unit> units, final GameData data) {
+  static void addTo(final GamePlayer t, final Collection<Unit> units, final GameData data) {
     data.performChange(ChangeFactory.addUnits(t, units));
   }
 
@@ -429,7 +429,7 @@ public final class GameDataTestUtil {
     throw new IllegalStateException();
   }
 
-  static void givePlayerRadar(final PlayerId player) {
+  static void givePlayerRadar(final GamePlayer player) {
     TechAttachment.get(player).setAaRadar(Boolean.TRUE.toString());
   }
 

@@ -1,15 +1,15 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
 import java.io.Serializable;
 import java.util.Comparator;
 
-/** A comparator for {@link PlayerId} that sorts instances in game play order. */
-public class PlayerOrderComparator implements Comparator<PlayerId>, Serializable {
+/** A comparator for {@link GamePlayer} that sorts instances in game play order. */
+public class PlayerOrderComparator implements Comparator<GamePlayer>, Serializable {
   private static final long serialVersionUID = -6271054939349383653L;
   private final GameData gameData;
 
@@ -19,7 +19,7 @@ public class PlayerOrderComparator implements Comparator<PlayerId>, Serializable
 
   /** sort based on first step that isn't a bid related step. */
   @Override
-  public int compare(final PlayerId p1, final PlayerId p2) {
+  public int compare(final GamePlayer p1, final GamePlayer p2) {
     if (p1.equals(p2)) {
       return 0;
     }

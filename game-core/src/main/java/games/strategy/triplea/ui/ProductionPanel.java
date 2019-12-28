@@ -2,8 +2,8 @@ package games.strategy.triplea.ui;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -51,7 +51,7 @@ class ProductionPanel extends JPanel {
   protected final JLabel left = new JLabel();
   protected final JPanel remainingResources = new JPanel();
   protected JButton done;
-  protected PlayerId id;
+  protected GamePlayer gamePlayer;
   protected GameData data;
 
   private JDialog dialog;
@@ -63,13 +63,13 @@ class ProductionPanel extends JPanel {
   }
 
   static IntegerMap<ProductionRule> getProduction(
-      final PlayerId id,
+      final GamePlayer gamePlayer,
       final JFrame parent,
       final GameData data,
       final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase,
       final UiContext uiContext) {
-    return new ProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
+    return new ProductionPanel(uiContext).show(gamePlayer, parent, data, bid, initialPurchase);
   }
 
   private IntegerMap<ProductionRule> getProduction() {
@@ -85,7 +85,7 @@ class ProductionPanel extends JPanel {
 
   /** Shows the production panel, and returns a map of selected rules. */
   IntegerMap<ProductionRule> show(
-      final PlayerId id,
+      final GamePlayer gamePlayer,
       final JFrame parent,
       final GameData data,
       final boolean bid,
@@ -104,7 +104,7 @@ class ProductionPanel extends JPanel {
 
     this.bid = bid;
     this.data = data;
-    this.initRules(id, initialPurchase);
+    this.initRules(gamePlayer, initialPurchase);
     this.initLayout();
     this.calculateLimits();
     dialog.pack();
@@ -122,10 +122,10 @@ class ProductionPanel extends JPanel {
   }
 
   protected void initRules(
-      final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
+      final GamePlayer player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
-      id = player;
+      gamePlayer = player;
       for (final ProductionRule productionRule : player.getProductionFrontier()) {
         final Rule rule = new Rule(productionRule, player);
         final int initialQuantity = initialPurchase.getInt(productionRule);
@@ -260,7 +260,7 @@ class ProductionPanel extends JPanel {
     left.setText(String.format("%d total units purchased. Remaining resources: ", totalUnits));
     if (resourceCollection != null) {
       remainingResources.add(
-          uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, id));
+          uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, gamePlayer));
     }
   }
 
@@ -284,10 +284,10 @@ class ProductionPanel extends JPanel {
 
   protected ResourceCollection getResources() {
     if (bid) {
-      Preconditions.checkState(id != null, "bid was true while id is null");
+      Preconditions.checkState(gamePlayer != null, "bid was true while id is null");
       // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple
       // resources can be given?
-      final String propertyName = id.getName() + " bid";
+      final String propertyName = gamePlayer.getName() + " bid";
       final int bid = data.getProperties().get(propertyName, 0);
       final ResourceCollection bidCollection = new ResourceCollection(data);
       data.acquireReadLock();
@@ -299,14 +299,16 @@ class ProductionPanel extends JPanel {
       return bidCollection;
     }
 
-    return (id == null || id.isNull()) ? new ResourceCollection(data) : id.getResources();
+    return (gamePlayer == null || gamePlayer.isNull())
+        ? new ResourceCollection(data)
+        : gamePlayer.getResources();
   }
 
   class Rule {
     private final IntegerMap<Resource> cost;
     private int quantity;
     private final ProductionRule rule;
-    private final PlayerId id;
+    private final GamePlayer player;
     private final Set<ScrollableTextField> textFields = new HashSet<>();
     private final ScrollableTextFieldListener listener =
         new ScrollableTextFieldListener() {
@@ -324,10 +326,10 @@ class ProductionPanel extends JPanel {
           }
         };
 
-    Rule(final ProductionRule rule, final PlayerId id) {
+    Rule(final ProductionRule rule, final GamePlayer player) {
       this.rule = rule;
       cost = rule.getCosts();
-      this.id = id;
+      this.player = player;
     }
 
     protected JPanel getPanelComponent() {
@@ -347,16 +349,16 @@ class ProductionPanel extends JPanel {
         final NamedAttachable resourceOrUnit = iter.next();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
-          icon = uiContext.getUnitImageFactory().getIcon(type, id, false, false);
+          icon = uiContext.getUnitImageFactory().getIcon(type, player, false, false);
           final UnitAttachment attach = UnitAttachment.get(type);
-          final int attack = attach.getAttack(id);
-          final int movement = attach.getMovement(id);
-          final int defense = attach.getDefense(id);
+          final int attack = attach.getAttack(player);
+          final int movement = attach.getMovement(player);
+          final int defense = attach.getDefense(player);
           info.setText(attack + " | " + defense + " | " + movement);
           tooltip
               .append(type.getName())
               .append(": ")
-              .append(TooltipProperties.getInstance().getTooltip(type, id));
+              .append(TooltipProperties.getInstance().getTooltip(type, player));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);

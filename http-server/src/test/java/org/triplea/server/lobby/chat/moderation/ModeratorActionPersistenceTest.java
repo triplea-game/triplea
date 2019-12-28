@@ -14,15 +14,15 @@ import org.triplea.domain.data.SystemId;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao.AuditAction;
-import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
+import org.triplea.lobby.server.db.dao.api.key.GamePlayerLookup;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorActionPersistenceTest {
 
   private static final int MODERATOR_ID = 10;
-  private static final PlayerIdLookup PLAYER_ID_LOOKUP =
-      PlayerIdLookup.builder()
+  private static final GamePlayerLookup PLAYER_ID_LOOKUP =
+      GamePlayerLookup.builder()
           .systemId(SystemId.of("system-id"))
           .playerName(PlayerName.of("player-name"))
           .ip("ip")

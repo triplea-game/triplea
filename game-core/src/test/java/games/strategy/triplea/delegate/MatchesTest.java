@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -81,28 +81,28 @@ final class MatchesTest {
   @Nested
   final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {
     private GameData gameData;
-    private PlayerId player;
-    private PlayerId alliedPlayer;
-    private PlayerId enemyPlayer;
+    private GamePlayer player;
+    private GamePlayer alliedPlayer;
+    private GamePlayer enemyPlayer;
     private Territory territory;
 
     private Predicate<Territory> newMatch() {
       return Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, gameData);
     }
 
-    private Unit newAirUnitFor(final PlayerId player) {
+    private Unit newAirUnitFor(final GamePlayer player) {
       return GameDataTestUtil.fighter(gameData).create(player);
     }
 
-    private Unit newInfrastructureUnitFor(final PlayerId player) {
+    private Unit newInfrastructureUnitFor(final GamePlayer player) {
       return GameDataTestUtil.aaGun(gameData).create(player);
     }
 
-    private Unit newLandUnitFor(final PlayerId player) {
+    private Unit newLandUnitFor(final GamePlayer player) {
       return GameDataTestUtil.infantry(gameData).create(player);
     }
 
-    private Unit newSeaUnitFor(final PlayerId player) {
+    private Unit newSeaUnitFor(final GamePlayer player) {
       return GameDataTestUtil.battleship(gameData).create(player);
     }
 
@@ -174,7 +174,7 @@ final class MatchesTest {
   @Nested
   final class TerritoryIsNotUnownedWaterTest {
     private GameData gameData;
-    private PlayerId player;
+    private GamePlayer player;
     private Territory landTerritory;
     private Territory seaTerritory;
 
@@ -214,14 +214,14 @@ final class MatchesTest {
 
     @Test
     void shouldMatchWhenLandTerritoryIsUnownedAndHasTerritoryAttachment() {
-      landTerritory.setOwner(PlayerId.NULL_PLAYERID);
+      landTerritory.setOwner(GamePlayer.NULL_PLAYERID);
 
       assertThat(newMatch(), matches(landTerritory));
     }
 
     @Test
     void shouldMatchWhenLandTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
-      landTerritory.setOwner(PlayerId.NULL_PLAYERID);
+      landTerritory.setOwner(GamePlayer.NULL_PLAYERID);
       TerritoryAttachment.remove(landTerritory);
 
       assertThat(newMatch(), matches(landTerritory));
@@ -241,14 +241,14 @@ final class MatchesTest {
 
     @Test
     void shouldMatchWhenSeaTerritoryIsUnownedAndHasTerritoryAttachment() {
-      seaTerritory.setOwner(PlayerId.NULL_PLAYERID);
+      seaTerritory.setOwner(GamePlayer.NULL_PLAYERID);
 
       assertThat(newMatch(), matches(seaTerritory));
     }
 
     @Test
     void shouldNotMatchWhenSeaTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
-      seaTerritory.setOwner(PlayerId.NULL_PLAYERID);
+      seaTerritory.setOwner(GamePlayer.NULL_PLAYERID);
       TerritoryAttachment.remove(seaTerritory);
 
       assertThat(newMatch(), notMatches(seaTerritory));

@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
@@ -88,11 +88,11 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     PoliticsDelegate.chainAlliancesTogether(bridge);
   }
 
-  protected Player getRemotePlayer(final PlayerId player) {
+  protected Player getRemotePlayer(final GamePlayer player) {
     return getRemotePlayer(player, bridge);
   }
 
-  protected static Player getRemotePlayer(final PlayerId player, final IDelegateBridge bridge) {
+  protected static Player getRemotePlayer(final GamePlayer player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAi(player.getName());

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.ProData;
@@ -56,7 +56,7 @@ public final class ProSortMoveOptionsUtils {
    * battles which require additional units for the attacker to be successful.
    */
   public static Map<Unit, Set<Territory>> sortUnitNeededOptions(
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Unit, Set<Territory>> unitAttackOptions,
       final Map<Territory, ProTerritory> attackMap,
       final ProOddsCalculator calc) {
@@ -124,7 +124,7 @@ public final class ProSortMoveOptionsUtils {
    * attacker to be successful.
    */
   public static Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Unit, Set<Territory>> unitAttackOptions,
       final Map<Territory, ProTerritory> attackMap,
       final Map<Unit, Territory> unitTerritoryMap,
