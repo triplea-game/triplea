@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.h2database:h2:1.4.197'
+        classpath 'com.h2database:h2:1.4.200'
         classpath "org.postgresql:postgresql:$postgresqlVersion"
     }
 }
