@@ -114,7 +114,7 @@ class GameListingEventQueueTest {
     assertThat(
         "Expect the open session to be the one we broadcasted to",
         broadcastedSessions,
-        hasItem(openSession));
+        hasItem(session));
   }
 
   @Test
