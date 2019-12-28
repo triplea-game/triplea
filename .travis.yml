@@ -66,8 +66,8 @@ jobs:
       install: skip
       script:
         - .travis/setup_database
-        - .travis/launch-http-server
-        - ./gradlew --parallel test integTest jacocoTestReport
+        - .travis/launch-http-server || travis_terminate 1
+        - ./gradlew --parallel test integTest jacocoTestReport || travis_terminate 1
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: verify
       env: "Master Branch: Sonar Analysis"
@@ -176,9 +176,9 @@ jobs:
         - version=$(cat game-core/src/main/resources/META-INF/triplea/product.properties | tr -d ' ' | sed 's/.*=//')
         - eval "$(ssh-agent -s)"
         - cd infrastructure
-        - ./build_deployment_artifacts
+        - ./build_deployment_artifacts || travis_terminate 1
         - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-        - ./run_deployment "$version" -i ansible/inventory/prerelease
+        - ./run_deployment "$version" -i ansible/inventory/prerelease || travis_terminate 1
     - stage: deploy production
       env: "Deploy to Producton"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
