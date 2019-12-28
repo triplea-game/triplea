@@ -125,7 +125,7 @@ final class ExportMenu extends JMenu {
   }
 
   private JMenuItem createSaveScreenshotMenu() {
-    return new JMenuItemBuilder("Export Map Screenshot", KeyCode.E)
+    return new JMenuItemBuilder("Export Gameboard Picture", KeyCode.E)
         .actionListener(this::saveScreenshot)
         .build();
   }

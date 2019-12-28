@@ -2191,7 +2191,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                 }
               });
           popup.add(
-              new AbstractAction("Export Map Snapshot") {
+              new AbstractAction("Export Gameboard Picture") {
                 private static final long serialVersionUID = 1222760138263428443L;
 
                 @Override
