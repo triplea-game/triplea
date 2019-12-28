@@ -4,7 +4,7 @@ import static org.triplea.http.client.web.socket.messages.MessageTypeListenerBin
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.MessageTypeListenerBinding;
@@ -18,7 +18,7 @@ public enum ChatServerMessageType implements WebsocketMessageType<ChatMessageLis
   CHAT_EVENT(newBinding(String.class, ChatMessageListeners::getChatEventListener)),
   CHAT_MESSAGE(newBinding(ChatMessage.class, ChatMessageListeners::getChatMessageListener)),
   PLAYER_JOINED(newBinding(ChatParticipant.class, ChatMessageListeners::getPlayerJoinedListener)),
-  PLAYER_LEFT(newBinding(PlayerName.class, ChatMessageListeners::getPlayerLeftListener)),
+  PLAYER_LEFT(newBinding(UserName.class, ChatMessageListeners::getPlayerLeftListener)),
   PLAYER_LISTING(newBinding(ChatterList.class, ChatMessageListeners::getConnectedListener)),
   PLAYER_SLAPPED(newBinding(PlayerSlapped.class, ChatMessageListeners::getPlayerSlappedListener)),
   SERVER_ERROR(newBinding(String.class, ChatMessageListeners::getServerErrorListener)),

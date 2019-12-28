@@ -6,12 +6,12 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.NonNull;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 
 @Builder
-class AnonymousLogin implements Function<PlayerName, Optional<String>> {
+class AnonymousLogin implements Function<UserName, Optional<String>> {
   @NonNull private final Chatters chatters;
   @Nonnull private final UserJdbiDao userJdbiDao;
 
@@ -19,10 +19,10 @@ class AnonymousLogin implements Function<PlayerName, Optional<String>> {
   // TODO: Project#12 banned username check
 
   @Override
-  public Optional<String> apply(final PlayerName playerName) {
-    Preconditions.checkNotNull(playerName);
-    return (!chatters.hasPlayer(playerName)
-            && userJdbiDao.lookupUserIdByName(playerName.getValue()).isEmpty())
+  public Optional<String> apply(final UserName userName) {
+    Preconditions.checkNotNull(userName);
+    return (!chatters.hasPlayer(userName)
+            && userJdbiDao.lookupUserIdByName(userName.getValue()).isEmpty())
         ? Optional.empty()
         : Optional.of("Name is already in use, please choose another");
   }

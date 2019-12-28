@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /** Default implementation of {@link IChatController}. */
@@ -28,7 +28,7 @@ public class ChatController implements IChatController {
   private final Predicate<INode> isModerator;
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
-  private final Map<PlayerName, String> chatterStatus = new HashMap<>();
+  private final Map<UserName, String> chatterStatus = new HashMap<>();
 
   private final Object mutex = new Object();
   private final String chatChannel;
@@ -112,7 +112,7 @@ public class ChatController implements IChatController {
       getChatBroadcaster()
           .speakerAdded(
               ChatParticipant.builder()
-                  .playerName(node.getPlayerName())
+                  .userName(node.getPlayerName())
                   .isModerator(tag == Tag.MODERATOR)
                   .build());
 
@@ -121,7 +121,7 @@ public class ChatController implements IChatController {
               entry ->
                   ChatParticipant.builder()
                       .isModerator(entry.getValue() == Tag.MODERATOR)
-                      .playerName(entry.getKey().getPlayerName())
+                      .userName(entry.getKey().getPlayerName())
                       .status(chatterStatus.get(entry.getKey().getPlayerName()))
                       .build())
           .collect(Collectors.toSet());

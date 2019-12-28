@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.lobby.server.db.data.UserRole;
@@ -44,11 +44,7 @@ class ChatParticipantAdapterTest {
 
     assertThat(
         result,
-        is(
-            ChatParticipant.builder()
-                .isModerator(true)
-                .playerName(PlayerName.of(USERNAME))
-                .build()));
+        is(ChatParticipant.builder().isModerator(true).userName(UserName.of(USERNAME)).build()));
   }
 
   private UserWithRoleRecord givenUserRecordWithRole(final String userRole) {
@@ -69,10 +65,6 @@ class ChatParticipantAdapterTest {
 
     assertThat(
         result,
-        is(
-            ChatParticipant.builder()
-                .isModerator(true)
-                .playerName(PlayerName.of(USERNAME))
-                .build()));
+        is(ChatParticipant.builder().isModerator(true).userName(UserName.of(USERNAME)).build()));
   }
 }

@@ -24,7 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.triplea.domain.data.PlayerEmailValidation;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.KeyTypeValidator;
 import org.triplea.swing.SwingComponents;
@@ -276,8 +276,8 @@ public final class CreateAccountPanel extends JPanel {
       return Optional.of("Passwords must match");
     } else if (!PlayerEmailValidation.isValid(emailField.getText())) {
       return Optional.of("Email must be valid");
-    } else if (!PlayerName.isValid(usernameField.getText())) {
-      return Optional.ofNullable(PlayerName.validate(usernameField.getText()));
+    } else if (!UserName.isValid(usernameField.getText())) {
+      return Optional.ofNullable(UserName.validate(usernameField.getText()));
     } else if (emailField.getText().isEmpty()) {
       return Optional.of("You must enter an email");
     } else if (passwordField.getPassword().length == 0) {

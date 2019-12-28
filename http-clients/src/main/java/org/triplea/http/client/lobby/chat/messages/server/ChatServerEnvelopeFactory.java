@@ -2,7 +2,7 @@ package org.triplea.http.client.lobby.chat.messages.server;
 
 import java.util.List;
 import lombok.experimental.UtilityClass;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
@@ -24,7 +24,7 @@ public class ChatServerEnvelopeFactory {
         ChatServerMessageType.PLAYER_JOINED.toString(), chatParticipant);
   }
 
-  public ServerMessageEnvelope newPlayerLeft(final PlayerName playerLeft) {
+  public ServerMessageEnvelope newPlayerLeft(final UserName playerLeft) {
     return ServerMessageEnvelope.packageMessage(
         ChatServerMessageType.PLAYER_LEFT.toString(), playerLeft);
   }

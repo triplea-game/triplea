@@ -20,8 +20,8 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.test.common.Integration;
@@ -196,7 +196,7 @@ final class ChatIntegrationTest {
     final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
-    public void slapped(final String message, final PlayerName from) {}
+    public void slapped(final String message, final UserName from) {}
 
     @Override
     public void slap(final String message) {}

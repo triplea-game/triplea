@@ -20,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
@@ -162,7 +162,7 @@ class UserBanServiceTest {
                   .build());
 
       verify(chatters)
-          .disconnectPlayerSessions(eq(PlayerName.of(USER_BAN_PARAMS.getUsername())), any());
+          .disconnectPlayerSessions(eq(UserName.of(USER_BAN_PARAMS.getUsername())), any());
       verify(playerBanEvents)
           .addPlayerBannedEvent(IpAddressParser.fromString(USER_BAN_PARAMS.getIp()));
     }

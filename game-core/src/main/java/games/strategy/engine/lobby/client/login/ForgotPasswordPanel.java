@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.triplea.domain.data.PlayerEmailValidation;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -143,10 +143,10 @@ final class ForgotPasswordPanel extends JPanel {
   }
 
   private void okPressed() {
-    if (!PlayerName.isValid(userNameField.getText())) {
+    if (!UserName.isValid(userNameField.getText())) {
       JOptionPane.showMessageDialog(
           this,
-          PlayerName.validate(userNameField.getText()),
+          UserName.validate(userNameField.getText()),
           "Invalid name",
           JOptionPane.ERROR_MESSAGE);
       return;

@@ -4,14 +4,14 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.Messengers;
 import java.util.Collection;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
 public class MessengersChatTransmitter implements ChatTransmitter {
-  private final PlayerName playerName;
+  private final UserName userName;
   private final Messengers messengers;
 
   private IChatChannel chatChannelSubscriber;
@@ -20,7 +20,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
   private final String chatChannelName;
 
   public MessengersChatTransmitter(final String chatName, final Messengers messengers) {
-    this.playerName = messengers.getLocalNode().getPlayerName();
+    this.userName = messengers.getLocalNode().getPlayerName();
     this.messengers = messengers;
     this.chatName = chatName;
     this.chatChannelName = ChatController.getChatChannelName(chatName);
@@ -40,9 +40,9 @@ public class MessengersChatTransmitter implements ChatTransmitter {
       }
 
       @Override
-      public void slapOccurred(final PlayerName slappedPlayer) {
-        final PlayerName slapper = MessageContext.getSender().getPlayerName();
-        if (slappedPlayer.equals(playerName)) {
+      public void slapOccurred(final UserName slappedPlayer) {
+        final UserName slapper = MessageContext.getSender().getPlayerName();
+        if (slappedPlayer.equals(userName)) {
           chatClient.slappedBy(slapper);
         } else {
           chatClient.playerSlapped(slappedPlayer + " was slapped by " + slapper);
@@ -55,16 +55,16 @@ public class MessengersChatTransmitter implements ChatTransmitter {
       }
 
       @Override
-      public void speakerRemoved(final PlayerName playerName) {
-        chatClient.participantRemoved(playerName);
+      public void speakerRemoved(final UserName userName) {
+        chatClient.participantRemoved(userName);
       }
 
       @Override
       public void ping() {}
 
       @Override
-      public void statusChanged(final PlayerName playerName, final String status) {
-        chatClient.statusUpdated(new StatusUpdate(playerName, status));
+      public void statusChanged(final UserName userName, final String status) {
+        chatClient.statusUpdated(new StatusUpdate(userName, status));
       }
     };
   }
@@ -87,11 +87,11 @@ public class MessengersChatTransmitter implements ChatTransmitter {
   }
 
   @Override
-  public void slap(final PlayerName playerName) {
+  public void slap(final UserName userName) {
     final IChatChannel remote =
         (IChatChannel)
             messengers.getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
-    remote.slapOccurred(playerName);
+    remote.slapOccurred(userName);
   }
 
   @Override
@@ -102,7 +102,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
   }
 
   @Override
-  public PlayerName getLocalPlayerName() {
+  public UserName getLocalUserName() {
     return messengers.getLocalNode().getPlayerName();
   }
 

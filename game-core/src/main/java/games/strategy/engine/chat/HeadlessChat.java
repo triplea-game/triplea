@@ -1,7 +1,7 @@
 package games.strategy.engine.chat;
 
 import com.google.common.base.Ascii;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.java.TimeManager;
@@ -50,7 +50,7 @@ public class HeadlessChat implements ChatMessageListener, ChatModel {
   }
 
   @Override
-  public void slapped(final String message, final PlayerName from) {
+  public void slapped(final String message, final UserName from) {
     messageReceived(new ChatMessage(from, message));
   }
 

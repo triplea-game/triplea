@@ -3,7 +3,7 @@ package org.triplea.server.user.account.create;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.BadWordsDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.server.user.account.NameValidation;
@@ -27,7 +27,7 @@ public class CreateAccountControllerFactory {
                             NameValidation.builder()
                                 .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
                                 .syntaxValidation(
-                                    name -> Optional.ofNullable(PlayerName.validate(name)))
+                                    name -> Optional.ofNullable(UserName.validate(name)))
                                 .badWordsDao(jdbi.onDemand(BadWordsDao.class))
                                 .build())
                         .emailValidator(new EmailValidation())

@@ -3,7 +3,7 @@ package games.strategy.net;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 /**
  * A Node in a network.
@@ -18,8 +18,8 @@ public interface INode extends Serializable, Comparable<INode> {
   /** Returns the display/user name for the node. */
   String getName();
 
-  default PlayerName getPlayerName() {
-    return PlayerName.of(getName());
+  default UserName getPlayerName() {
+    return UserName.of(getName());
   }
 
   /**

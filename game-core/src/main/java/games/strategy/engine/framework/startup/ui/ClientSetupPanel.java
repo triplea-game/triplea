@@ -24,7 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.swing.SwingAction;
 
 /** Network client game staging panel, can be used to select sides and chat. */
@@ -69,7 +69,7 @@ public class ClientSetupPanel extends SetupPanel {
       SwingUtilities.invokeLater(
           () ->
               playerRow.update(
-                  Optional.ofNullable(players.get(name)).map(PlayerName::of).orElse(null),
+                  Optional.ofNullable(players.get(name)).map(UserName::of).orElse(null),
                   disableable.contains(name)));
     }
     SwingUtilities.invokeLater(this::layoutComponents);
@@ -205,15 +205,15 @@ public class ClientSetupPanel extends SetupPanel {
       return enabledCheckBox;
     }
 
-    public void update(final PlayerName playerName, final boolean disableable) {
-      if (playerName == null) {
+    public void update(final UserName userName, final boolean disableable) {
+      if (userName == null) {
         playerLabel.setText("-");
         final JButton button = new JButton(takeAction);
         button.setMargin(buttonInsets);
         playerComponent = button;
       } else {
-        playerLabel.setText(playerName.getValue());
-        if (playerName.equals(clientModel.getClientMessenger().getLocalNode().getPlayerName())) {
+        playerLabel.setText(userName.getValue());
+        if (userName.equals(clientModel.getClientMessenger().getLocalNode().getPlayerName())) {
           final JButton button = new JButton(dontTakeAction);
           button.setMargin(buttonInsets);
           playerComponent = button;

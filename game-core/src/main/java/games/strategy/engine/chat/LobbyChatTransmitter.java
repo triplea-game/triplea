@@ -3,7 +3,7 @@ package games.strategy.engine.chat;
 import games.strategy.engine.lobby.client.LobbyClient;
 import java.util.Collection;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
@@ -17,10 +17,10 @@ import org.triplea.http.client.lobby.chat.LobbyChatClient;
 @Log
 public class LobbyChatTransmitter implements ChatTransmitter {
   private final LobbyChatClient lobbyChatClient;
-  private final PlayerName localPlayerName;
+  private final UserName localUserName;
 
   public LobbyChatTransmitter(final LobbyClient lobbyClient) {
-    this.localPlayerName = lobbyClient.getPlayerName();
+    this.localUserName = lobbyClient.getUserName();
     this.lobbyChatClient = lobbyClient.getHttpLobbyClient().getLobbyChatClient();
   }
 
@@ -36,7 +36,7 @@ public class LobbyChatTransmitter implements ChatTransmitter {
             .chatEventListener(chatClient::eventReceived)
             .playerSlappedListener(
                 slapEvent -> {
-                  if (slapEvent.getSlapped().equals(localPlayerName)) {
+                  if (slapEvent.getSlapped().equals(localUserName)) {
                     chatClient.slappedBy(slapEvent.getSlapper());
                   } else {
                     chatClient.playerSlapped(
@@ -63,8 +63,8 @@ public class LobbyChatTransmitter implements ChatTransmitter {
   }
 
   @Override
-  public void slap(final PlayerName playerName) {
-    lobbyChatClient.slapPlayer(playerName);
+  public void slap(final UserName userName) {
+    lobbyChatClient.slapPlayer(userName);
   }
 
   @Override
@@ -73,7 +73,7 @@ public class LobbyChatTransmitter implements ChatTransmitter {
   }
 
   @Override
-  public PlayerName getLocalPlayerName() {
-    return localPlayerName;
+  public UserName getLocalUserName() {
+    return localUserName;
   }
 }

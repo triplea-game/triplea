@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
@@ -28,19 +28,19 @@ import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 @ExtendWith(MockitoExtension.class)
 class LobbyChatClientTest {
 
-  private static final PlayerName PLAYER_NAME = PlayerName.of("player_name");
+  private static final UserName PLAYER_NAME = UserName.of("player_name");
   private static final String MESSAGE = "message";
   private static final String STATUS = "status";
 
   private static final ChatterList chatters = new ChatterList(List.of());
   private static final ChatParticipant CHAT_PARTICIPANT =
       ChatParticipant.builder()
-          .playerName(PlayerName.of("player-name"))
+          .userName(UserName.of("player-name"))
           .playerChatId(PlayerChatId.newId())
           .build();
   private static final StatusUpdate STATUS_UPDATE = new StatusUpdate(PLAYER_NAME, "");
   private static final PlayerSlapped PLAYER_SLAPPED =
-      PlayerSlapped.builder().slapper(PLAYER_NAME).slapped(PlayerName.of("slapped")).build();
+      PlayerSlapped.builder().slapper(PLAYER_NAME).slapped(UserName.of("slapped")).build();
   private static final ChatMessage CHAT_MESSAGE = new ChatMessage(PLAYER_NAME, "message");
 
   @Mock private GenericWebSocketClient webSocketClient;
@@ -49,7 +49,7 @@ class LobbyChatClientTest {
 
   @Mock private ClientMessageEnvelope clientEnvelope;
   @Mock private Consumer<StatusUpdate> playerStatusListener;
-  @Mock private Consumer<PlayerName> playerLeftListener;
+  @Mock private Consumer<UserName> playerLeftListener;
   @Mock private Consumer<ChatParticipant> playerJoinedListener;
   @Mock private Consumer<PlayerSlapped> playerSlappedListener;
   @Mock private Consumer<ChatMessage> chatMessageListener;

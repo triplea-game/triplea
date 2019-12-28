@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
@@ -40,11 +40,11 @@ public class Chat implements ChatClient {
       Collections.synchronizedCollection(EvictingQueue.create(1000));
 
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
-  @Getter private final PlayerName localPlayerName;
+  @Getter private final UserName localUserName;
   private final Collection<Consumer<StatusUpdate>> statusUpdateListeners = new ArrayList<>();
 
   public Chat(final ChatTransmitter chatTransmitter) {
-    this.localPlayerName = chatTransmitter.getLocalPlayerName();
+    this.localUserName = chatTransmitter.getLocalUserName();
     this.chatTransmitter = chatTransmitter;
     chatTransmitter.setChatClient(this);
     sentMessagesHistory = new SentMessagesHistory();
@@ -55,7 +55,7 @@ public class Chat implements ChatClient {
   private void updateConnections() {
     final List<ChatParticipant> playerNames =
         chatters.stream()
-            .sorted(Comparator.comparing(c -> c.getPlayerName().getValue()))
+            .sorted(Comparator.comparing(c -> c.getUserName().getValue()))
             .collect(Collectors.toList());
 
     chatPlayerListeners.forEach(listener -> listener.updatePlayerList(playerNames));
@@ -86,25 +86,25 @@ public class Chat implements ChatClient {
     chatters.add(chatParticipant);
     updateConnections();
     chatMessageListeners.forEach(
-        listener -> listener.playerJoined(chatParticipant.getPlayerName() + " has joined"));
+        listener -> listener.playerJoined(chatParticipant.getUserName() + " has joined"));
   }
 
   @Override
-  public void participantRemoved(final PlayerName playerName) {
+  public void participantRemoved(final UserName userName) {
     chatters.stream()
-        .filter(chatter -> chatter.getPlayerName().equals(playerName))
+        .filter(chatter -> chatter.getUserName().equals(userName))
         .findAny()
         .ifPresent(
             node -> {
               chatters.remove(node);
               updateConnections();
               chatMessageListeners.forEach(
-                  listener -> listener.playerLeft(node.getPlayerName() + " has left"));
+                  listener -> listener.playerLeft(node.getUserName() + " has left"));
             });
   }
 
   @Override
-  public void slappedBy(final PlayerName from) {
+  public void slappedBy(final UserName from) {
     final String message = "You were slapped by " + from;
     chatHistory.add(new ChatMessage(from, message));
     chatMessageListeners.forEach(listener -> listener.slapped(message, from));
@@ -118,12 +118,12 @@ public class Chat implements ChatClient {
   @Override
   public void statusUpdated(final StatusUpdate statusUpdate) {
     chatters.stream()
-        .filter(chatter -> chatter.getPlayerName().equals(statusUpdate.getPlayerName()))
+        .filter(chatter -> chatter.getUserName().equals(statusUpdate.getUserName()))
         .findAny()
         .ifPresent(
             node -> {
               chatters.stream()
-                  .filter(chatter -> chatter.getPlayerName().equals(statusUpdate.getPlayerName()))
+                  .filter(chatter -> chatter.getUserName().equals(statusUpdate.getUserName()))
                   .findAny()
                   .ifPresent(chatter -> chatter.setStatus(statusUpdate.getStatus()));
               statusUpdateListeners.forEach(l -> l.accept(statusUpdate));
@@ -134,9 +134,9 @@ public class Chat implements ChatClient {
     chatTransmitter.updateStatus(status);
   }
 
-  String getStatus(final PlayerName playerName) {
+  String getStatus(final UserName userName) {
     return chatters.stream()
-        .filter(chatter -> chatter.getPlayerName().equals(playerName))
+        .filter(chatter -> chatter.getUserName().equals(userName))
         .findAny()
         .map(ChatParticipant::getStatus)
         .orElse("");
@@ -172,8 +172,8 @@ public class Chat implements ChatClient {
     chatTransmitter.disconnect();
   }
 
-  void sendSlap(final PlayerName playerName) {
-    chatTransmitter.slap(playerName);
+  void sendSlap(final UserName userName) {
+    chatTransmitter.slap(userName);
   }
 
   public void sendMessage(final String message) {
@@ -181,19 +181,19 @@ public class Chat implements ChatClient {
     sentMessagesHistory.append(message);
   }
 
-  void setIgnored(final PlayerName playerName, final boolean isIgnored) {
+  void setIgnored(final UserName userName, final boolean isIgnored) {
     if (isIgnored) {
-      ignoreList.add(playerName);
+      ignoreList.add(userName);
     } else {
-      ignoreList.remove(playerName);
+      ignoreList.remove(userName);
     }
   }
 
-  boolean isIgnored(final PlayerName playerName) {
-    return ignoreList.shouldIgnore(playerName);
+  boolean isIgnored(final UserName userName) {
+    return ignoreList.shouldIgnore(userName);
   }
 
-  Collection<PlayerName> getOnlinePlayers() {
-    return chatters.stream().map(ChatParticipant::getPlayerName).collect(Collectors.toSet());
+  Collection<UserName> getOnlinePlayers() {
+    return chatters.stream().map(ChatParticipant::getUserName).collect(Collectors.toSet());
   }
 }
