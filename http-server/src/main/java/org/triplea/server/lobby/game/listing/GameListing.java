@@ -41,7 +41,6 @@ import org.triplea.server.lobby.CacheUtils;
  */
 @Builder
 @Slf4j
-// TODO: update tests to verify events are placed into event queue.
 public class GameListing {
   @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
   @NonNull private final Cache<GameId, LobbyGame> games;
