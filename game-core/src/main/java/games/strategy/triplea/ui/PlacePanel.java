@@ -23,7 +23,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.swing.BorderFactory;
@@ -55,7 +54,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             return;
           }
           final PlaceableUnits placeableUnits = getUnitsToPlace(territory);
-          final Collection<Unit> units =  placeableUnits.getUnits();
+          final Collection<Unit> units = placeableUnits.getUnits();
           final int maxUnits = placeableUnits.getMaxUnits();
           if (units.isEmpty()) {
             return;
@@ -236,10 +235,10 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
               && !territory
                   .getUnitCollection()
                   .anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
-            return new PlaceableUnits(List.of(), 0);
+            return new PlaceableUnits();
           }
         } else {
-          return new PlaceableUnits(List.of(), 0);
+          return new PlaceableUnits();
         }
       }
       // get the units that can be placed on this territory.
@@ -259,7 +258,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         units = CollectionUtils.getMatches(units, Matches.unitIsNotSea());
       }
       if (units.isEmpty()) {
-        return new PlaceableUnits(List.of(), 0);
+        return new PlaceableUnits();
       }
       final IAbstractPlaceDelegate placeDel =
           (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
@@ -270,7 +269,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             production.getErrorMessage(),
             "No units",
             JOptionPane.INFORMATION_MESSAGE);
-        return new PlaceableUnits(List.of(), 0);
       }
       return production;
     } finally {
