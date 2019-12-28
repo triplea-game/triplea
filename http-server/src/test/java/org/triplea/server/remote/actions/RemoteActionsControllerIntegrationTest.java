@@ -3,17 +3,14 @@ package org.triplea.server.remote.actions;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.remote.actions.RemoteActionsClient;
+import org.triplea.server.http.AllowedUserRole;
 import org.triplea.server.http.ProtectedEndpointTest;
 
-// TODO: disabled until Role-checking bug is fixed in:
-//  https://github.com/triplea-game/triplea/pull/5661
-@Disabled
 class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<RemoteActionsClient> {
 
   RemoteActionsControllerIntegrationTest() {
@@ -25,6 +22,7 @@ class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<Remot
     @Test
     void sendShutdownSignal() {
       verifyEndpoint(
+          AllowedUserRole.MODERATOR,
           client -> client.sendShutdownRequest(IpAddressParser.fromString("99.99.33.33")));
     }
   }
@@ -36,6 +34,7 @@ class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<Remot
     void userIsBanned() {
       final boolean result =
           verifyEndpointReturningObject(
+              AllowedUserRole.HOST,
               client -> client.checkIfPlayerIsBanned(IpAddressParser.fromString("1.1.1.1")));
 
       assertThat(result, is(true));
@@ -46,6 +45,7 @@ class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<Remot
     void userWasBanned() {
       final boolean result =
           verifyEndpointReturningObject(
+              AllowedUserRole.HOST,
               client -> client.checkIfPlayerIsBanned(IpAddressParser.fromString("1.1.1.2")));
 
       assertThat(result, is(false));
@@ -56,6 +56,7 @@ class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<Remot
     void userWasNeverBanned() {
       final boolean result =
           verifyEndpointReturningObject(
+              AllowedUserRole.HOST,
               client -> client.checkIfPlayerIsBanned(IpAddressParser.fromString("1.1.1.3")));
 
       assertThat(result, is(false));
