@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -25,6 +26,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.server.lobby.game.listing.GameListing.GameId;
 
 /**
  * Items to test.: <br>
@@ -44,13 +46,14 @@ class GameListingTest {
   private static final ApiKey API_KEY_0 = ApiKey.of("apiKey0");
   private static final ApiKey API_KEY_1 = ApiKey.of("apiKey1");
 
-  private static final GameListing.GameId ID_0 = new GameListing.GameId(API_KEY_0, GAME_ID_0);
+  private static final GameId ID_0 = new GameId(API_KEY_0, GAME_ID_0);
 
   private static final String HOST_NAME = "host-player";
   private static final int MODERATOR_ID = 33;
 
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  @Mock private Cache<GameListing.GameId, LobbyGame> cache;
+  @Mock private Cache<GameId, LobbyGame> cache;
+  @Mock private GameListingEventQueue gameListingEventQueue;
 
   private GameListing gameListing;
 
@@ -61,7 +64,11 @@ class GameListingTest {
   @BeforeEach
   void setup() {
     gameListing =
-        GameListing.builder().auditHistoryDao(moderatorAuditHistoryDao).games(cache).build();
+        GameListing.builder()
+            .gameListingEventQueue(gameListingEventQueue)
+            .auditHistoryDao(moderatorAuditHistoryDao)
+            .games(cache)
+            .build();
   }
 
   @Nested
@@ -70,10 +77,10 @@ class GameListingTest {
     /** Basic case, no games added, expect none to be returned. */
     @Test
     void getGames() {
-      final Map<GameListing.GameId, LobbyGame> games = new HashMap<>();
+      final Map<GameId, LobbyGame> games = new HashMap<>();
       games.put(ID_0, lobbyGame0);
-      games.put(new GameListing.GameId(API_KEY_0, GAME_ID_1), lobbyGame1);
-      games.put(new GameListing.GameId(API_KEY_1, GAME_ID_2), lobbyGame2);
+      games.put(new GameId(API_KEY_0, GAME_ID_1), lobbyGame1);
+      games.put(new GameId(API_KEY_1, GAME_ID_2), lobbyGame2);
 
       when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(games));
 
@@ -124,9 +131,26 @@ class GameListingTest {
   final class RemoveGame {
     @Test
     void removeGame() {
+      final ConcurrentMap<GameId, LobbyGame> map = new ConcurrentHashMap<>();
+      map.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
+      when(cache.asMap()).thenReturn(map);
+
       gameListing.removeGame(API_KEY_0, GAME_ID_0);
 
       verify(cache).invalidate(ID_0);
+      verify(gameListingEventQueue).gameRemoved(GAME_ID_0);
+    }
+
+    @Test
+    void removeGameRequiresCorrectApiKey() {
+      final ConcurrentMap<GameId, LobbyGame> map = new ConcurrentHashMap<>();
+      map.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
+      when(cache.asMap()).thenReturn(map);
+
+      gameListing.removeGame(API_KEY_1, GAME_ID_0);
+
+      verify(cache, never()).invalidate(any(GameId.class));
+      verify(gameListingEventQueue, never()).gameRemoved(any());
     }
   }
 
@@ -137,7 +161,9 @@ class GameListingTest {
       final String id0 = gameListing.postGame(API_KEY_0, lobbyGame0);
 
       assertThat(id0, not(emptyString()));
-      verify(cache).put(new GameListing.GameId(API_KEY_0, id0), lobbyGame0);
+      verify(cache).put(new GameId(API_KEY_0, id0), lobbyGame0);
+      verify(gameListingEventQueue)
+          .gameUpdated(LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build());
     }
   }
 
@@ -151,17 +177,20 @@ class GameListingTest {
 
       assertThat(result, is(false));
       verify(cache, never()).put(ID_0, lobbyGame0);
+      verify(gameListingEventQueue, never()).gameUpdated(any());
     }
 
     @Test
     void updateGameThatDoesExist() {
-      final Map<GameListing.GameId, LobbyGame> map = new HashMap<>();
+      final Map<GameId, LobbyGame> map = new HashMap<>();
       map.put(ID_0, lobbyGame1);
       when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(map));
 
       final boolean result = gameListing.updateGame(API_KEY_0, GAME_ID_0, lobbyGame0);
 
       assertThat(result, is(true));
+      verify(gameListingEventQueue)
+          .gameUpdated(LobbyGameListing.builder().gameId(GAME_ID_0).lobbyGame(lobbyGame0).build());
     }
   }
 
@@ -169,7 +198,7 @@ class GameListingTest {
   final class BootGame {
     @Test
     void bootGame() {
-      final Map<GameListing.GameId, LobbyGame> games = new HashMap<>();
+      final Map<GameId, LobbyGame> games = new HashMap<>();
       games.put(ID_0, lobbyGame0);
       when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(games));
       when(lobbyGame0.getHostName()).thenReturn(HOST_NAME);
@@ -184,6 +213,7 @@ class GameListingTest {
                   .actionTarget(HOST_NAME)
                   .moderatorUserId(MODERATOR_ID)
                   .build());
+      verify(gameListingEventQueue).gameRemoved(GAME_ID_0);
     }
   }
 }

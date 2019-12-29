@@ -34,7 +34,7 @@ public class GameListingController extends HttpController {
   /** Returns a listing of the current games. */
   @RateLimited(
       keys = {KeyPart.IP},
-      rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.SECONDS)})
+      rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @GET
   @Path(GameListingClient.FETCH_GAMES_PATH)
   @RolesAllowed(UserRole.ANONYMOUS)
@@ -45,7 +45,7 @@ public class GameListingController extends HttpController {
   /** Moderator action to remove a game. */
   @RateLimited(
       keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.SECONDS)})
+      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(GameListingClient.BOOT_GAME_PATH)
   @RolesAllowed(UserRole.MODERATOR)
