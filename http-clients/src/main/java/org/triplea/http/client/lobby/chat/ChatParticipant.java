@@ -14,7 +14,7 @@ import org.triplea.domain.data.UserName;
 
 @Builder
 @Getter
-@EqualsAndHashCode(of = "playerName")
+@EqualsAndHashCode(of = "userName")
 @ToString
 public class ChatParticipant implements Serializable {
   private static final long serialVersionUID = 7103177780407531008L;
