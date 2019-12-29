@@ -39,7 +39,6 @@ import games.strategy.triplea.delegate.TechActivationDelegate;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.UserActionDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -66,7 +65,7 @@ public final class XmlGameElementMapper {
   private final ImmutableMap<String, AttachmentFactory> attachmentFactoriesByTypeName;
 
   public XmlGameElementMapper() {
-    this(Map.of(), Collections.emptyMap());
+    this(Map.of(), Map.of());
   }
 
   @VisibleForTesting
