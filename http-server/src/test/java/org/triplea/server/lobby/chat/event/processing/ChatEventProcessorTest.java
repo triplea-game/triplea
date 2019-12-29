@@ -19,7 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
@@ -38,13 +38,13 @@ class ChatEventProcessorTest {
   private static final String MESSAGE = "chat-message";
   private static final String STATUS = "status";
 
-  private static final PlayerName PLAYER_NAME_0 = PlayerName.of("playerName");
+  private static final UserName PLAYER_NAME_0 = UserName.of("playerName");
   private static final ChatParticipant CHAT_PARTICIPANT_0 =
-      ChatParticipant.builder().playerName(PLAYER_NAME_0).isModerator(true).build();
+      ChatParticipant.builder().userName(PLAYER_NAME_0).isModerator(true).build();
 
-  private static final PlayerName PLAYER_NAME_1 = PlayerName.of("playerName");
+  private static final UserName PLAYER_NAME_1 = UserName.of("playerName");
   private static final ChatParticipant CHAT_PARTICIPANT_1 =
-      ChatParticipant.builder().playerName(PLAYER_NAME_1).isModerator(true).build();
+      ChatParticipant.builder().userName(PLAYER_NAME_1).isModerator(true).build();
 
   private final ChatEventProcessor chatEventProcessor = new ChatEventProcessor(new Chatters());
 
@@ -124,7 +124,7 @@ class ChatEventProcessorTest {
               ServerResponse.broadcast(
                   ChatServerEnvelopeFactory.newSlap(
                       PlayerSlapped.builder()
-                          .slapper(CHAT_PARTICIPANT_0.getPlayerName())
+                          .slapper(CHAT_PARTICIPANT_0.getUserName())
                           .slapped(PLAYER_NAME_1)
                           .build()))));
     }
@@ -141,7 +141,7 @@ class ChatEventProcessorTest {
           is(
               ServerResponse.broadcast(
                   ChatServerEnvelopeFactory.newChatMessage(
-                      new ChatMessage(CHAT_PARTICIPANT_0.getPlayerName(), MESSAGE)))));
+                      new ChatMessage(CHAT_PARTICIPANT_0.getUserName(), MESSAGE)))));
     }
 
     @Test
@@ -156,7 +156,7 @@ class ChatEventProcessorTest {
           is(
               ServerResponse.broadcast(
                   ChatServerEnvelopeFactory.newStatusUpdate(
-                      new StatusUpdate(CHAT_PARTICIPANT_0.getPlayerName(), STATUS)))));
+                      new StatusUpdate(CHAT_PARTICIPANT_0.getUserName(), STATUS)))));
     }
 
     @Test

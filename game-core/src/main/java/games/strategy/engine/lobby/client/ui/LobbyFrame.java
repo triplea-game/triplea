@@ -122,7 +122,7 @@ public class LobbyFrame extends JFrame {
       return List.of();
     }
 
-    if (clickedOn.getPlayerName().equals(lobbyClient.getPlayerName())) {
+    if (clickedOn.getUserName().equals(lobbyClient.getUserName())) {
       return List.of();
     }
 
@@ -133,7 +133,7 @@ public class LobbyFrame extends JFrame {
             .parent(this)
             .moderatorLobbyClient(moderatorLobbyClient)
             .playerChatId(clickedOn.getPlayerChatId())
-            .playerName(clickedOn.getPlayerName())
+            .userName(clickedOn.getUserName())
             .build()
             .toSwingAction(),
         BanPlayerModeratorAction.builder()

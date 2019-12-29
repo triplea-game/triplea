@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 /** A server messenger. Additional methods for accepting new connections. */
 public interface IServerMessenger extends IMessenger {
@@ -32,7 +32,7 @@ public interface IServerMessenger extends IMessenger {
    * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.
    */
   @Nullable
-  String getPlayerMac(PlayerName name);
+  String getPlayerMac(UserName name);
 
   boolean isPlayerBanned(String ip, String mac);
 

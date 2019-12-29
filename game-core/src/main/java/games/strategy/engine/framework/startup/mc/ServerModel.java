@@ -62,7 +62,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
@@ -351,14 +351,14 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               .password(System.getProperty(SERVER_PASSWORD))
               .build());
     }
-    final PlayerName playerName = PlayerName.of(ClientSetting.playerName.getValueOrThrow());
+    final UserName userName = UserName.of(ClientSetting.playerName.getValueOrThrow());
     final Interruptibles.Result<ServerOptions> optionsResult =
         Interruptibles.awaitResult(
             () ->
                 SwingAction.invokeAndWaitResult(
                     () -> {
                       final ServerOptions options =
-                          new ServerOptions(ui, playerName, GameRunner.PORT, false);
+                          new ServerOptions(ui, userName, GameRunner.PORT, false);
                       options.setLocationRelativeTo(ui);
                       options.setVisible(true);
                       options.dispose();

@@ -4,11 +4,11 @@ import com.google.common.base.Preconditions;
 import java.util.Collection;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 /** Utility class that will assign a name to a newly logging in player. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PlayerNameAssigner {
+public final class UserNameAssigner {
 
   /**
    * Returns a node name, based on the specified node name, that is unique across all nodes. The
@@ -21,7 +21,7 @@ public final class PlayerNameAssigner {
    */
   public static String assignName(
       final String desiredName, final String mac, final Collection<String> loggedInNames) {
-    Preconditions.checkArgument(PlayerName.validate(desiredName) == null);
+    Preconditions.checkArgument(UserName.validate(desiredName) == null);
     Preconditions.checkNotNull(mac);
     Preconditions.checkNotNull(loggedInNames);
 

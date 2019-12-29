@@ -26,7 +26,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.swing.SwingAction;
@@ -90,7 +90,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   private void setDynamicPreferredSize() {
     int maxNameLength = 0;
     final FontMetrics fontMetrics = this.getFontMetrics(UIManager.getFont("TextField.font"));
-    for (final PlayerName onlinePlayer : chat.getOnlinePlayers()) {
+    for (final UserName onlinePlayer : chat.getOnlinePlayers()) {
       maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(onlinePlayer.getValue()));
     }
     int iconCounter = 0;
@@ -121,7 +121,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
                     setCellRenderer.getListCellRendererComponent(
                         list, getDisplayString(node), index, isSelected, cellHasFocus);
           }
-          if (chat.isIgnored(node.getPlayerName())) {
+          if (chat.isIgnored(node.getUserName())) {
             renderer.setIcon(ignoreIcon);
           }
           return renderer;
@@ -154,21 +154,20 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     actionFactories.add(
         clickedOn -> {
           // you can't slap or ignore yourself
-          if (clickedOn.getPlayerName().equals(chat.getLocalPlayerName())) {
+          if (clickedOn.getUserName().equals(chat.getLocalUserName())) {
             return List.of();
           }
-          final boolean isIgnored = chat.isIgnored(clickedOn.getPlayerName());
+          final boolean isIgnored = chat.isIgnored(clickedOn.getUserName());
           final Action ignore =
               SwingAction.of(
                   isIgnored ? "Stop Ignoring" : "Ignore",
                   e -> {
-                    chat.setIgnored(clickedOn.getPlayerName(), !isIgnored);
+                    chat.setIgnored(clickedOn.getUserName(), !isIgnored);
                     repaint();
                   });
           final Action slap =
               SwingAction.of(
-                  "Slap " + clickedOn.getPlayerName(),
-                  e -> chat.sendSlap(clickedOn.getPlayerName()));
+                  "Slap " + clickedOn.getUserName(), e -> chat.sendSlap(clickedOn.getUserName()));
           return List.of(slap, ignore);
         });
   }
@@ -222,10 +221,10 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     }
 
     final String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
-    final String status = Ascii.truncate(chat.getStatus(chatParticipant.getPlayerName()), 25, "");
+    final String status = Ascii.truncate(chat.getStatus(chatParticipant.getUserName()), 25, "");
     final String suffix = status.isEmpty() ? "" : " (" + status + ")";
 
-    return chatParticipant.getPlayerName() + extra + suffix;
+    return chatParticipant.getUserName() + extra + suffix;
   }
 
   /**

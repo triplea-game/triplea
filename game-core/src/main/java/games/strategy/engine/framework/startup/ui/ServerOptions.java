@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
 
@@ -32,7 +32,7 @@ public class ServerOptions extends JDialog {
 
   public ServerOptions(
       final Component owner,
-      final PlayerName defaultName,
+      final UserName defaultName,
       final int defaultPort,
       final boolean showComment) {
     super(owner == null ? null : JOptionPane.getFrameForComponent(owner), "Server options", true);

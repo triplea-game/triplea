@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
@@ -128,7 +128,7 @@ public class LobbyLogin {
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .moderator(loginResponse.isModerator())
-                .playerName(PlayerName.of(panel.getUserName()))
+                .userName(UserName.of(panel.getUserName()))
                 .build());
       } else {
         showError("Login Failed", loginResponse.getFailReason());
@@ -177,7 +177,7 @@ public class LobbyLogin {
             .map(
                 httpLobbyClient ->
                     LobbyClient.builder()
-                        .playerName(PlayerName.of(createAccountPanel.getUsername()))
+                        .userName(UserName.of(createAccountPanel.getUsername()))
                         .httpLobbyClient(httpLobbyClient)
                         .build());
       case CANCEL:

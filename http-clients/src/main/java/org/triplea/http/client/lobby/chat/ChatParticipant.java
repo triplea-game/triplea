@@ -10,16 +10,16 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 @Builder
 @Getter
-@EqualsAndHashCode(of = "playerName")
+@EqualsAndHashCode(of = "userName")
 @ToString
 public class ChatParticipant implements Serializable {
   private static final long serialVersionUID = 7103177780407531008L;
 
-  @NonNull private final PlayerName playerName;
+  @NonNull private final UserName userName;
   /**
    * Identifier attached to players when joining chat so that front-end can pass values to backend
    * to identify players, specifically useful example for moderator actions.

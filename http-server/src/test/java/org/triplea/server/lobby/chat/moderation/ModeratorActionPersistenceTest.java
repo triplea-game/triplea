@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao.AuditAction;
@@ -24,7 +24,7 @@ class ModeratorActionPersistenceTest {
   private static final GamePlayerLookup PLAYER_ID_LOOKUP =
       GamePlayerLookup.builder()
           .systemId(SystemId.of("system-id"))
-          .playerName(PlayerName.of("player-name"))
+          .userName(UserName.of("player-name"))
           .ip("ip")
           .build();
   private static final BanPlayerRequest BAN_PLAYER_REQUEST =
@@ -42,7 +42,7 @@ class ModeratorActionPersistenceTest {
     verify(userBanDao)
         .addBan(
             anyString(),
-            eq(PLAYER_ID_LOOKUP.getPlayerName().getValue()),
+            eq(PLAYER_ID_LOOKUP.getUserName().getValue()),
             eq(PLAYER_ID_LOOKUP.getSystemId().getValue()),
             eq(PLAYER_ID_LOOKUP.getIp()),
             eq(BAN_PLAYER_REQUEST.getBanMinutes()));
@@ -65,7 +65,7 @@ class ModeratorActionPersistenceTest {
             ModeratorAuditHistoryDao.AuditArgs.builder()
                 .moderatorUserId(MODERATOR_ID)
                 .actionName(AuditAction.DISCONNECT_USER)
-                .actionTarget(PLAYER_ID_LOOKUP.getPlayerName().getValue())
+                .actionTarget(PLAYER_ID_LOOKUP.getUserName().getValue())
                 .build());
   }
 }

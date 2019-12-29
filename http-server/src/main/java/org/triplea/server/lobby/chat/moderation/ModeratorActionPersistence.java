@@ -23,7 +23,7 @@ class ModeratorActionPersistence {
       final BanPlayerRequest banPlayerRequest) {
     userBanDao.addBan(
         UUID.randomUUID().toString(),
-        gamePlayerLookup.getPlayerName().getValue(),
+        gamePlayerLookup.getUserName().getValue(),
         gamePlayerLookup.getSystemId().getValue(),
         gamePlayerLookup.getIp(),
         banPlayerRequest.getBanMinutes());
@@ -32,7 +32,7 @@ class ModeratorActionPersistence {
             .moderatorUserId(moderatorId)
             .actionName(AuditAction.BAN_USER)
             .actionTarget(
-                gamePlayerLookup.getPlayerName().getValue()
+                gamePlayerLookup.getUserName().getValue()
                     + " "
                     + BanDurationFormatter.formatBanMinutes(banPlayerRequest.getBanMinutes()))
             .build());
@@ -43,7 +43,7 @@ class ModeratorActionPersistence {
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorUserId(moderatorId)
             .actionName(AuditAction.DISCONNECT_USER)
-            .actionTarget(gamePlayerLookup.getPlayerName().getValue())
+            .actionTarget(gamePlayerLookup.getUserName().getValue())
             .build());
   }
 }

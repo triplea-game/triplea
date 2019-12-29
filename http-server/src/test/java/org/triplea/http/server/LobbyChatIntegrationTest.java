@@ -14,7 +14,7 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
@@ -60,16 +60,16 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   private static final ApiKey MODERATOR_API_KEY = ApiKey.of("MODERATOR");
   private static final ApiKey CHATTER_API_KEY = ApiKey.of("PLAYER");
 
-  private static final PlayerName MODERATOR_NAME = PlayerName.of("mod");
+  private static final UserName MODERATOR_NAME = UserName.of("mod");
   private static final ChatParticipant MODERATOR =
-      ChatParticipant.builder().playerName(MODERATOR_NAME).isModerator(true).status("").build();
+      ChatParticipant.builder().userName(MODERATOR_NAME).isModerator(true).status("").build();
 
-  private static final PlayerName CHATTER_NAME = PlayerName.of("chatter");
+  private static final UserName CHATTER_NAME = UserName.of("chatter");
   private static final ChatParticipant CHATTER =
-      ChatParticipant.builder().playerName(CHATTER_NAME).isModerator(false).status("").build();
+      ChatParticipant.builder().userName(CHATTER_NAME).isModerator(false).status("").build();
 
   private List<StatusUpdate> modPlayerStatusEvents = new ArrayList<>();
-  private List<PlayerName> modPlayerLeftEvents = new ArrayList<>();
+  private List<UserName> modPlayerLeftEvents = new ArrayList<>();
   private List<ChatParticipant> modPlayerJoinedEvents = new ArrayList<>();
   private List<PlayerSlapped> modPlayerSlappedEvents = new ArrayList<>();
   private List<ChatMessage> modMessageEvents = new ArrayList<>();
@@ -77,7 +77,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   private LobbyChatClient moderator;
 
   private List<StatusUpdate> chatterPlayerStatusEvents = new ArrayList<>();
-  private List<PlayerName> chatterPlayerLeftEvents = new ArrayList<>();
+  private List<UserName> chatterPlayerLeftEvents = new ArrayList<>();
   private List<ChatParticipant> chatterPlayerJoinedEvents = new ArrayList<>();
   private List<PlayerSlapped> chatterPlayerSlappedEvents = new ArrayList<>();
   private List<ChatMessage> chatterMessageEvents = new ArrayList<>();
@@ -158,12 +158,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
     // moderator is notified that chatter has joined
     assertThat(
         modPlayerJoinedEvents.get(1),
-        is(
-            ChatParticipant.builder()
-                .playerName(CHATTER_NAME)
-                .isModerator(true)
-                .status("")
-                .build()));
+        is(ChatParticipant.builder().userName(CHATTER_NAME).isModerator(true).status("").build()));
     // moderator should *not* receive a connected event when chatter joins
     assertThat(modConnectedEvents, hasSize(1));
   }

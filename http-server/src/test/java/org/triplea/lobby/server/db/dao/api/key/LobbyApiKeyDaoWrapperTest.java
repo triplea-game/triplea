@@ -21,8 +21,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
 import org.triplea.lobby.server.db.data.UserRole;
@@ -33,12 +33,12 @@ class LobbyApiKeyDaoWrapperTest {
 
   private static final ApiKey API_KEY = ApiKey.of("api-key");
   private static final String HASHED_KEY = "Dead, rainy shores proud swashbuckler";
-  private static final PlayerName PLAYER_NAME = PlayerName.of("The_captain");
+  private static final UserName PLAYER_NAME = UserName.of("The_captain");
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
   private static final SystemId SYSTEM_ID = SystemId.of("system-id");
   private static final int ANONYMOUS_ROLE_ID = 123;
   private static final GamePlayerLookup PLAYER_ID_LOOKUP =
-      GamePlayerLookup.builder().playerName(PLAYER_NAME).systemId(SYSTEM_ID).ip("ip").build();
+      GamePlayerLookup.builder().userName(PLAYER_NAME).systemId(SYSTEM_ID).ip("ip").build();
 
   private static final UserRoleLookup USER_ROLE_LOOKUP =
       UserRoleLookup.builder().userId(10).userRoleId(20).build();

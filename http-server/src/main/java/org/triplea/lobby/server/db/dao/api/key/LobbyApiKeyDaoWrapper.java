@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.java.Postconditions;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.UserRoleDao;
@@ -67,23 +67,23 @@ public class LobbyApiKeyDaoWrapper {
 
   /** Creates (and stores in DB) a new API key for registered or anonymous users. */
   public ApiKey newKey(
-      final PlayerName playerName,
+      final UserName userName,
       final InetAddress ip,
       final SystemId systemId,
       final PlayerChatId playerChatId) {
-    Preconditions.checkNotNull(playerName);
+    Preconditions.checkNotNull(userName);
     Preconditions.checkNotNull(ip);
 
     final ApiKey key = keyMaker.get();
 
     userJdbiDao
-        .lookupUserIdAndRoleIdByUserName(playerName.getValue())
+        .lookupUserIdAndRoleIdByUserName(userName.getValue())
         .ifPresentOrElse(
             userRoleLookup -> {
               // insert key for registered user
               insertKey(
                   userRoleLookup.getUserId(),
-                  playerName.getValue(),
+                  userName.getValue(),
                   key,
                   ip,
                   systemId,
@@ -94,13 +94,7 @@ public class LobbyApiKeyDaoWrapper {
               // insert key for anonymous user
               final int anonymousUserRoleId = userRoleDao.lookupRoleId(UserRole.ANONYMOUS);
               insertKey(
-                  null,
-                  playerName.getValue(),
-                  key,
-                  ip,
-                  systemId,
-                  playerChatId,
-                  anonymousUserRoleId);
+                  null, userName.getValue(), key, ip, systemId, playerChatId, anonymousUserRoleId);
             });
     return key;
   }

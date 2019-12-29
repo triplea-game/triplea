@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PlayerNameAssignerTest {
+class UserNameAssignerTest {
 
   private static final String NAME_1 = "name_one";
   private static final String NAME_2 = "name_two";
@@ -25,22 +25,21 @@ class PlayerNameAssignerTest {
   @Test
   void errorCasesWithNullArguments() {
     assertThrows(
-        NullPointerException.class, () -> PlayerNameAssigner.assignName(NAME_1, null, Set.of()));
+        NullPointerException.class, () -> UserNameAssigner.assignName(NAME_1, null, Set.of()));
 
-    assertThrows(
-        NullPointerException.class, () -> PlayerNameAssigner.assignName(NAME_1, MAC, null));
+    assertThrows(NullPointerException.class, () -> UserNameAssigner.assignName(NAME_1, MAC, null));
   }
 
   @Test
   void assignNameShouldGetAssignedNameWhenNotTaken() {
     assertThat(
         "no nodes to match against, we should get the desired name",
-        PlayerNameAssigner.assignName(NAME_1, MAC, Set.of()),
+        UserNameAssigner.assignName(NAME_1, MAC, Set.of()),
         is(NAME_1));
 
     assertThat(
         "name and address do not match, should get the desired name",
-        PlayerNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2)),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2)),
         is(NAME_1));
   }
 
@@ -48,12 +47,12 @@ class PlayerNameAssignerTest {
   void assignNameWithMatchingNames() {
     assertThat(
         "name match, should be assigned a numeral name",
-        PlayerNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1)),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1)),
         is(NAME_1 + " (1)"));
 
     assertThat(
         "name match, matching against multiple nodes",
-        PlayerNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2, NAME_1)),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2, NAME_1)),
         is(NAME_1 + " (1)"));
   }
 
@@ -65,7 +64,7 @@ class PlayerNameAssignerTest {
   void assignNameMultipleNumerals() {
     assertThat(
         "name match, should get next sequential numeral appended",
-        PlayerNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (1)")),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (1)")),
         is(NAME_1 + " (2)"));
   }
 
@@ -77,24 +76,22 @@ class PlayerNameAssignerTest {
   void assignNameShouldFillInMissingNumerals() {
     assertThat(
         "name does not actually match",
-        PlayerNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (1)")),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (1)")),
         is(NAME_1));
 
     assertThat(
         "name matches and there is gap in numbering",
-        PlayerNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (2)")),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (2)")),
         is(NAME_1 + " (1)"));
 
     assertThat(
         "name matches and there is gap in numbering, ordering should not matter",
-        PlayerNameAssigner.assignName(
-            NAME_1, MAC, List.of(NAME_1 + " (3)", NAME_1 + " (1)", NAME_1)),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (3)", NAME_1 + " (1)", NAME_1)),
         is(NAME_1 + " (2)"));
 
     assertThat(
         "should get next ascending numeral",
-        PlayerNameAssigner.assignName(
-            NAME_1, MAC, List.of(NAME_1 + " (2)", NAME_1 + " (1)", NAME_1)),
+        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (2)", NAME_1 + " (1)", NAME_1)),
         is(NAME_1 + " (3)"));
   }
 }

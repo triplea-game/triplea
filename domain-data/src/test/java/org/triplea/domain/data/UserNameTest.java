@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class PlayerNameTest {
+class UserNameTest {
 
   @SuppressWarnings("unused")
   static List<String> usernameValidationWithInvalidNames() {
@@ -18,7 +18,7 @@ class PlayerNameTest {
         "",
         "a",
         "ab", // still too short
-        Strings.repeat("a", PlayerName.MAX_LENGTH + 1),
+        Strings.repeat("a", UserName.MAX_LENGTH + 1),
         "ab*", // no special characters other than '-' and '_'
         "ab$",
         ".ab",
@@ -39,32 +39,30 @@ class PlayerNameTest {
   void usernameValidationWithInvalidNames(final String invalidName) {
     assertThat(
         "Expected name to have validation error messages: " + invalidName,
-        PlayerName.validate(invalidName),
+        UserName.validate(invalidName),
         notNullValue());
     assertThat(
         "Expected name to be marked as invalid: " + invalidName,
-        PlayerName.isValid(invalidName),
+        UserName.isValid(invalidName),
         is(false));
   }
 
   @SuppressWarnings("unused")
   private static List<String> usernameValidationWithValidNames() {
-    return List.of("abc", Strings.repeat("a", PlayerName.MAX_LENGTH), "a12", "a--");
+    return List.of("abc", Strings.repeat("a", UserName.MAX_LENGTH), "a12", "a--");
   }
 
   @ParameterizedTest
   @MethodSource
   void usernameValidationWithValidNames(final String validName) {
     assertThat(
-        "Expected name to be marked as valid: " + validName,
-        PlayerName.isValid(validName),
-        is(true));
+        "Expected name to be marked as valid: " + validName, UserName.isValid(validName), is(true));
 
     assertThat(
         String.format(
             "Expected name: %s, to have no validation error messages, but had %s",
-            validName, PlayerName.validate(validName)),
-        PlayerName.validate(validName),
+            validName, UserName.validate(validName)),
+        UserName.validate(validName),
         nullValue());
   }
 }

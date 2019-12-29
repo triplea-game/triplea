@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 
 @ExtendWith(MockitoExtension.class)
 class GamePlayerLookupTest {
@@ -27,7 +27,7 @@ class GamePlayerLookupTest {
 
     final GamePlayerLookup result = GamePlayerLookup.buildResultMapper().map(resultSet, null);
 
-    assertThat(result.getPlayerName(), is(PlayerName.of(PLAYER_NAME)));
+    assertThat(result.getUserName(), is(UserName.of(PLAYER_NAME)));
     assertThat(result.getSystemId(), is(SystemId.of(SYSTEM_ID)));
     assertThat(result.getIp(), is(IP));
   }

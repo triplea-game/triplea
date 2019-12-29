@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,7 +19,7 @@ class LegacyPasswordCheckTest {
   private static final String DB_LEGACY_PASSWORD = "$1$GTV9OtVd$WKt1JeqIasr4GlAJylq2A/";
   private static final String PLAINTEXT_PASSWORD = "legacy";
 
-  private static final PlayerName PLAYER_NAME = PlayerName.of("user");
+  private static final UserName PLAYER_NAME = UserName.of("user");
 
   @Mock private UserJdbiDao userJdbiDao;
 
