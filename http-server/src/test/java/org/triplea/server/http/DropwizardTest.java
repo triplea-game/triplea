@@ -15,8 +15,7 @@ import org.triplea.test.common.Integration;
 /** Core configuration for a test that will start a dropwizard server and initialize database. */
 @Integration
 @DataSet(cleanBefore = true, value = "integration.yml")
-@ExtendWith(DBUnitExtension.class)
-@ExtendWith(DropwizardTest.DropwizardServerExtension.class)
+@ExtendWith(value = {DropwizardTest.DropwizardServerExtension.class, DBUnitExtension.class})
 @SuppressWarnings("PrivateConstructorForUtilityClass")
 public abstract class DropwizardTest {
   protected final URI localhost = URI.create("http://localhost:8080");
