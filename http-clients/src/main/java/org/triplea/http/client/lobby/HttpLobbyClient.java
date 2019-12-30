@@ -43,7 +43,7 @@ public class HttpLobbyClient {
    * Connection closed listener is invoked whenever the underlying connection is closed, whether by
    * ur or remote server.
    */
-  public void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
-    lobbyChatClient.addConnectionLostListener(connectionClosedListener);
+  public void addConnectionClosedListener(final Runnable connectionClosedListener) {
+    lobbyChatClient.addConnectionClosedListener(connectionClosedListener);
   }
 }

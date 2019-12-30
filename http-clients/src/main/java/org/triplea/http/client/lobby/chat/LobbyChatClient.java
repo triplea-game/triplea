@@ -61,11 +61,7 @@ public class LobbyChatClient
     getWebSocketClient().send(outboundMessageFactory.updateMyPlayerStatus(status));
   }
 
-  public void addConnectionLostListener(final Consumer<String> connectionLostListener) {
-    getWebSocketClient().addConnectionLostListener(connectionLostListener);
-  }
-
-  public void addConnectionClosedListener(final Consumer<String> connectionLostListener) {
+  public void addConnectionClosedListener(final Runnable connectionLostListener) {
     getWebSocketClient().addConnectionClosedListener(connectionLostListener);
   }
 

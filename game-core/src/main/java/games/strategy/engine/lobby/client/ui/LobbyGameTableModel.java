@@ -73,7 +73,7 @@ class LobbyGameTableModel extends AbstractTableModel {
 
     gameListingClient.fetchGameListing().forEach(lobbyGameBroadcaster::gameUpdated);
 
-    httpLobbyClient.addConnectionClosedListener(msg -> gameListingClient.close());
+    httpLobbyClient.addConnectionClosedListener(gameListingClient::close);
 
     try {
       final Map<String, GameDescription> games =
