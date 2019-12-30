@@ -18,6 +18,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,10 +34,12 @@ import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
 import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.access.BannedPlayerEventHandler;
 import org.triplea.server.access.BannedPlayerFilter;
 import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
+import org.triplea.server.http.web.socket.SessionSet;
 import org.triplea.server.lobby.chat.ChatWebsocket;
 import org.triplea.server.lobby.chat.MessagingServiceFactory;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
@@ -141,8 +144,25 @@ public class ServerApplication extends Application<AppConfig> {
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
 
     final var chatters = new Chatters();
-    final var remoteActionsEventQueue = RemoteActionsEventQueueFactory.newRemoteActionsEventQueue();
-    final var gameListingEventQueue = GameListingEventQueueFactory.newGameListingEventQueue();
+
+    final SessionSet remoteActionSessions = new SessionSet();
+    final SessionSet gameListingSessions = new SessionSet();
+    final SessionSet chatSessions = new SessionSet();
+    final BannedPlayerEventHandler bannedPlayerEventHandler =
+        BannedPlayerEventHandler.builder()
+            .sessionSets(
+                Set.of(
+                    remoteActionSessions, //
+                    gameListingSessions,
+                    chatSessions))
+            .build();
+
+    final var remoteActionsEventQueue =
+        RemoteActionsEventQueueFactory.newRemoteActionsEventQueue(
+            remoteActionSessions, bannedPlayerEventHandler);
+
+    final var gameListingEventQueue =
+        GameListingEventQueueFactory.newGameListingEventQueue(gameListingSessions);
 
     endPointControllers(
             configuration, jdbi, chatters, remoteActionsEventQueue, gameListingEventQueue)
@@ -151,7 +171,9 @@ public class ServerApplication extends Application<AppConfig> {
     // Inject beans into websocket endpoint
     chatSocketConfiguration
         .getUserProperties()
-        .put(ChatWebsocket.MESSAGING_SERVICE_KEY, MessagingServiceFactory.build(jdbi, chatters));
+        .put(
+            ChatWebsocket.MESSAGING_SERVICE_KEY,
+            MessagingServiceFactory.build(jdbi, chatSessions, chatters));
 
     remoteActionsConfiguration
         .getUserProperties()

@@ -104,8 +104,9 @@ class BannedPlayerFilterTest {
 
       final Response response = responseCaptor.getValue();
       assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
-      assertThat((String) response.getEntity(), StringContains.containsString("5 minutes"));
-      assertThat((String) response.getEntity(), StringContains.containsString(BAN_ID));
+      assertThat(
+          response.getStatusInfo().getReasonPhrase(), StringContains.containsString("5 minutes"));
+      assertThat(response.getStatusInfo().getReasonPhrase(), StringContains.containsString(BAN_ID));
     }
   }
 

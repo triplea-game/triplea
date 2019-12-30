@@ -21,6 +21,7 @@ import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingMessageType;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.server.TestData;
+import org.triplea.server.http.web.socket.SessionSet;
 
 @ExtendWith(MockitoExtension.class)
 class GameListingEventQueueTest {
@@ -31,43 +32,26 @@ class GameListingEventQueueTest {
 
   @Mock private Session openSession;
   @Mock private Session closedSession;
+  private SessionSet sessionSet = new SessionSet();
 
   @BeforeEach
   void setup() {
-    gameListingEventQueue = GameListingEventQueue.builder().broadcaster(broadcaster).build();
+    gameListingEventQueue =
+        GameListingEventQueue.builder().sessionSet(sessionSet).broadcaster(broadcaster).build();
   }
 
   @Test
   void hasNoListenersInitially() {
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(0));
+    assertThat(gameListingEventQueue.getSessionSet().values(), hasSize(0));
   }
 
   @Test
   void addListener() {
     when(openSession.getId()).thenReturn("id0");
+    when(openSession.isOpen()).thenReturn(true);
     gameListingEventQueue.addListener(openSession);
 
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(1));
-  }
-
-  @Test
-  void removeListener() {
-    when(openSession.getId()).thenReturn("id0");
-    gameListingEventQueue.addListener(openSession);
-
-    gameListingEventQueue.removeListener("id0");
-
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(0));
-  }
-
-  @Test
-  void removeListenerIsNoOpWhenGameIdDoesNotMatch() {
-    when(openSession.getId()).thenReturn("id0");
-    gameListingEventQueue.addListener(openSession);
-
-    gameListingEventQueue.removeListener("ID_DNE");
-
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(1));
+    assertThat(gameListingEventQueue.getSessionSet().values(), hasSize(1));
   }
 
   @Test
@@ -91,7 +75,7 @@ class GameListingEventQueueTest {
                 GameListingMessageType.GAME_REMOVED.name(), "gameId")));
     assertThat(
         "Verify closed session is removed",
-        gameListingEventQueue.getSessions().values(),
+        gameListingEventQueue.getSessionSet().values(),
         hasSize(1));
   }
 
@@ -140,7 +124,7 @@ class GameListingEventQueueTest {
                 GameListingMessageType.GAME_UPDATED.name(), lobbyGameListing)));
     assertThat(
         "Verify closed session is removed",
-        gameListingEventQueue.getSessions().values(),
+        gameListingEventQueue.getSessionSet().values(),
         hasSize(1));
   }
 }
