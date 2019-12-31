@@ -3,9 +3,8 @@ package org.triplea.server.lobby.game.listing;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import javax.websocket.Session;
@@ -24,7 +23,7 @@ public class GameListingEventQueue {
   private final BiConsumer<Collection<Session>, ServerMessageEnvelope> broadcaster;
 
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
-  private final Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
+  private final Set<Session> sessions = ConcurrentHashMap.newKeySet();
 
   void addListener(final Session session) {
     Preconditions.checkNotNull(session);
@@ -37,16 +36,12 @@ public class GameListingEventQueue {
 
   void gameRemoved(final String gameId) {
     removeClosedSessions();
-    synchronized (sessions) {
-      broadcaster.accept(sessions, GameListingMessageFactory.gameRemoved(gameId));
-    }
+    broadcaster.accept(sessions, GameListingMessageFactory.gameRemoved(gameId));
   }
 
   void gameUpdated(final LobbyGameListing gameListing) {
     removeClosedSessions();
-    synchronized (sessions) {
-      broadcaster.accept(sessions, GameListingMessageFactory.gameUpdated(gameListing));
-    }
+    broadcaster.accept(sessions, GameListingMessageFactory.gameUpdated(gameListing));
   }
 
   /** Just in case we fail to remove a closed session from listeners, remove any closed sessions. */
