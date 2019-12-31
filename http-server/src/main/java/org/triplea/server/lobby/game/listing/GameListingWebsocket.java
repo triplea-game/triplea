@@ -27,7 +27,7 @@ public class GameListingWebsocket {
 
   @OnClose
   public void close(final Session session, final CloseReason closeReason) {
-    getEventQueue(session).removeListener(session.getId());
+    getEventQueue(session).removeListener(session);
   }
 
   @OnError
