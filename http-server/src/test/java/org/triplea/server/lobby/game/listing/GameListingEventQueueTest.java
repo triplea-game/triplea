@@ -71,6 +71,7 @@ class GameListingEventQueueTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void gameRemoved() {
     givenListener(openSession, SessionParameters.builder().open(true).sessionId("id0").build());
     givenListener(closedSession, SessionParameters.builder().open(false).sessionId("id1").build());
@@ -118,6 +119,7 @@ class GameListingEventQueueTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void gameUpdated() {
     givenListener(openSession, SessionParameters.builder().open(true).sessionId("id0").build());
     givenListener(closedSession, SessionParameters.builder().open(false).sessionId("id1").build());
