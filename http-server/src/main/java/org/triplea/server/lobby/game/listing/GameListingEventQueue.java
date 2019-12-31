@@ -5,10 +5,8 @@ import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,12 +47,7 @@ public class GameListingEventQueue {
 
   /** Just in case we fail to remove a closed session from listeners, remove any closed sessions. */
   private void removeClosedSessions() {
-    // find all sessions that are not open
-    final Set<Session> closedSessions =
-        sessions.values().stream()
-            .filter(Predicate.not(Session::isOpen))
-            .collect(Collectors.toSet());
-    // remove each of the closed sessions
-    closedSessions.stream().map(Session::getId).forEach(sessions::remove);
+    // find all sessions that are not open and remove
+    sessions.values().removeIf(Predicate.not(Session::isOpen));
   }
 }
