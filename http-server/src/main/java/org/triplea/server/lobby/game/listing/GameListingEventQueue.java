@@ -37,12 +37,16 @@ public class GameListingEventQueue {
 
   void gameRemoved(final String gameId) {
     removeClosedSessions();
-    broadcaster.accept(sessions, GameListingMessageFactory.gameRemoved(gameId));
+    synchronized (sessions) {
+      broadcaster.accept(sessions, GameListingMessageFactory.gameRemoved(gameId));
+    }
   }
 
   void gameUpdated(final LobbyGameListing gameListing) {
     removeClosedSessions();
-    broadcaster.accept(sessions, GameListingMessageFactory.gameUpdated(gameListing));
+    synchronized (sessions) {
+      broadcaster.accept(sessions, GameListingMessageFactory.gameUpdated(gameListing));
+    }
   }
 
   /** Just in case we fail to remove a closed session from listeners, remove any closed sessions. */
