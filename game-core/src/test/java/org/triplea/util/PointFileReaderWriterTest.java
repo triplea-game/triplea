@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,8 +71,7 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(
-          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToOne),
-          is(Collections.emptyMap()));
+          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToOne), is(Map.of()));
     }
 
     @Test
@@ -91,7 +90,7 @@ final class PointFileReaderWriterTest {
       assertThat(
           pointsByName,
           is(
-              ImmutableMap.of(
+              Map.of(
                   "United Kingdom", new Point(1011, 1021),
                   "Germany", new Point(2011, 2021),
                   "Eastern United States", new Point(3011, 3021),
@@ -163,7 +162,7 @@ final class PointFileReaderWriterTest {
       assertThat(
           pointsByName,
           is(
-              ImmutableMap.of(
+              Map.of(
                   "United Kingdom", new Point(-1011, 1021),
                   "Germany", new Point(1234, -12424),
                   "Eastern United States", new Point(-123, -456))));
@@ -184,8 +183,7 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(
-          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToMany),
-          is(Collections.emptyMap()));
+          IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToMany), is(Map.of()));
     }
 
     @Test
@@ -202,12 +200,11 @@ final class PointFileReaderWriterTest {
       assertThat(
           pointListsByName,
           is(
-              ImmutableMap.of(
+              Map.of(
                   "Belarus",
-                      Arrays.asList(
-                          new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
-                  "54 Sea Zone", Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)),
-                  "Philippines", Collections.singletonList(new Point(3011, 3021)))));
+                      List.of(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
+                  "54 Sea Zone", List.of(new Point(2011, 2021), new Point(2012, 2022)),
+                  "Philippines", List.of(new Point(3011, 3021)))));
     }
 
     @Test
@@ -251,9 +248,9 @@ final class PointFileReaderWriterTest {
       assertThat(
           pointListsByName,
           is(
-              ImmutableMap.of(
+              Map.of(
                   "United Kingdom",
-                  Arrays.asList(
+                  List.of(
                       new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
     }
   }
@@ -273,7 +270,7 @@ final class PointFileReaderWriterTest {
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(
           IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToManyPlacements),
-          is(Collections.emptyMap()));
+          is(Map.of()));
     }
 
     @Test
@@ -292,20 +289,20 @@ final class PointFileReaderWriterTest {
       assertThat(
           pointListsByName,
           is(
-              ImmutableMap.of(
+              Map.of(
                   "Belarus",
                   Tuple.of(
                       Arrays.asList(
                           new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
                       false),
                   "54 Sea Zone",
-                  Tuple.of(Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)), true),
+                  Tuple.of(List.of(new Point(2011, 2021), new Point(2012, 2022)), true),
                   "Philippines",
-                  Tuple.of(Collections.singletonList(new Point(3011, 3021)), false),
+                  Tuple.of(List.of(new Point(3011, 3021)), false),
                   "East America",
-                  Tuple.of(Collections.singletonList(new Point(4011, 4021)), false),
+                  Tuple.of(List.of(new Point(4011, 4021)), false),
                   "East Africa",
-                  Tuple.of(Collections.singletonList(new Point(5011, 5021)), false))));
+                  Tuple.of(List.of(new Point(5011, 5021)), false))));
     }
 
     @Test
@@ -354,10 +351,10 @@ final class PointFileReaderWriterTest {
       assertThat(
           pointListsByName,
           is(
-              ImmutableMap.of(
+              Map.of(
                   "United Kingdom",
                   Tuple.of(
-                      Arrays.asList(
+                      List.of(
                           new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)),
                       Boolean.FALSE))));
     }
@@ -378,7 +375,7 @@ final class PointFileReaderWriterTest {
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(
           IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToManyPolygons),
-          is(Collections.emptyMap()));
+          is(Map.of()));
     }
 
     @Test
@@ -398,27 +395,23 @@ final class PointFileReaderWriterTest {
       assertThat(
           points(polygonListsByName.get("Belarus")),
           is(
-              Collections.singletonList(
-                  Arrays.asList(
-                      new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)))));
+              List.of(
+                  List.of(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)))));
       assertThat(polygonListsByName, hasKey("54 Sea Zone"));
       assertThat(
           points(polygonListsByName.get("54 Sea Zone")),
           is(
-              Arrays.asList(
-                  Arrays.asList(
-                      new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),
-                  Arrays.asList(
-                      new Point(2111, 2121), new Point(2112, 2122), new Point(2113, 2123)))));
+              List.of(
+                  List.of(new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),
+                  List.of(new Point(2111, 2121), new Point(2112, 2122), new Point(2113, 2123)))));
       assertThat(polygonListsByName, hasKey("Philippines"));
       assertThat(
           points(polygonListsByName.get("Philippines")),
           is(
-              Arrays.asList(
-                  Arrays.asList(
-                      new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
-                  Arrays.asList(new Point(3111, 3121), new Point(3112, 3122)),
-                  Collections.singletonList(new Point(3211, 3221)))));
+              List.of(
+                  List.of(new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
+                  List.of(new Point(3111, 3121), new Point(3112, 3122)),
+                  List.of(new Point(3211, 3221)))));
     }
 
     @Test
@@ -477,8 +470,8 @@ final class PointFileReaderWriterTest {
       assertThat(
           points(polygonListsByName.get("United Kingdom")),
           is(
-              Collections.singletonList(
-                  Arrays.asList(
+              List.of(
+                  List.of(
                       new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
     }
   }
@@ -489,7 +482,7 @@ final class PointFileReaderWriterTest {
     void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
-      PointFileReaderWriter.writeOneToOne(os, Collections.emptyMap());
+      PointFileReaderWriter.writeOneToOne(os, Map.of());
 
       verify(os, never()).close();
     }
@@ -505,13 +498,9 @@ final class PointFileReaderWriterTest {
       final String content =
           writeToString(os -> PointFileReaderWriter.writeOneToOne(os, pointsByName));
 
-      assertThat(
-          content,
-          is(
-              ""
-                  + "United Kingdom  (1011,1021) \r\n"
-                  + "Germany  (2011,2021) \r\n"
-                  + "Eastern United States  (3011,3021) "));
+      assertThat(content, containsString("United Kingdom  (1011,1021)"));
+      assertThat(content, containsString("Germany  (2011,2021)"));
+      assertThat(content, containsString("Eastern United States  (3011,3021)"));
     }
   }
 
@@ -521,7 +510,7 @@ final class PointFileReaderWriterTest {
     void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
-      PointFileReaderWriter.writeOneToMany(os, Collections.emptyMap());
+      PointFileReaderWriter.writeOneToMany(os, Map.of());
 
       verify(os, never()).close();
     }
@@ -529,23 +518,18 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldWriteMultiplePointsPerName() throws Exception {
       final Map<String, List<Point>> pointListsByName =
-          ImmutableMap.of(
+          Map.of(
               "Belarus",
-                  Arrays.asList(
-                      new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
-              "54 Sea Zone", Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)),
-              "Philippines", Collections.singletonList(new Point(3011, 3021)));
+                  List.of(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
+              "54 Sea Zone", List.of(new Point(2011, 2021), new Point(2012, 2022)),
+              "Philippines", List.of(new Point(3011, 3021)));
 
       final String content =
           writeToString(os -> PointFileReaderWriter.writeOneToMany(os, pointListsByName));
 
-      assertThat(
-          content,
-          is(
-              ""
-                  + "Belarus  (1011,1021)  (1012,1022)  (1013,1023) \r\n"
-                  + "54 Sea Zone  (2011,2021)  (2012,2022) \r\n"
-                  + "Philippines  (3011,3021) "));
+      assertThat(content, containsString("Belarus  (1011,1021)  (1012,1022)  (1013,1023)"));
+      assertThat(content, containsString("54 Sea Zone  (2011,2021)  (2012,2022)"));
+      assertThat(content, containsString("Philippines  (3011,3021) "));
     }
   }
 
@@ -555,7 +539,7 @@ final class PointFileReaderWriterTest {
     void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
-      PointFileReaderWriter.writeOneToManyPlacements(os, Collections.emptyMap());
+      PointFileReaderWriter.writeOneToManyPlacements(os, Map.of());
 
       verify(os, never()).close();
     }
@@ -563,21 +547,18 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldWriteMultiplePlacementsPerName() throws Exception {
       final Map<String, Tuple<List<Point>, Boolean>> polygonListsByName =
-          ImmutableMap.of(
+          Map.of(
               "Belarus",
                   Tuple.of(
-                      Arrays.asList(
-                          new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
+                      List.of(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
                       true),
               "54 Sea Zone",
                   Tuple.of(
-                      Arrays.asList(
-                          new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),
+                      List.of(new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),
                       false),
               "Philippines",
                   Tuple.of(
-                      Arrays.asList(
-                          new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
+                      List.of(new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
                       true));
 
       final String content =
@@ -586,11 +567,15 @@ final class PointFileReaderWriterTest {
 
       assertThat(
           content,
-          is(
-              ""
-                  + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=true\r\n"
-                  + "54 Sea Zone  (2011,2021)  (2012,2022)  (2013,2023)  | overflowToLeft=false\r\n"
-                  + "Philippines  (3011,3021)  (3012,3022)  (3013,3023)  | overflowToLeft=true"));
+          containsString("Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=true"));
+      assertThat(
+          content,
+          containsString(
+              "54 Sea Zone  (2011,2021)  (2012,2022)  (2013,2023)  | overflowToLeft=false"));
+      assertThat(
+          content,
+          containsString(
+              "Philippines  (3011,3021)  (3012,3022)  (3013,3023)  | overflowToLeft=true"));
     }
   }
 
@@ -600,7 +585,7 @@ final class PointFileReaderWriterTest {
     void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
-      PointFileReaderWriter.writeOneToManyPolygons(os, Collections.emptyMap());
+      PointFileReaderWriter.writeOneToManyPolygons(os, Map.of());
 
       verify(os, never()).close();
     }
@@ -608,31 +593,33 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldWriteMultiplePolygonsPerName() throws Exception {
       final Map<String, List<Polygon>> polygonListsByName =
-          ImmutableMap.of(
+          Map.of(
               "Belarus",
-                  Collections.singletonList(
-                      polygon(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023))),
+              List.of(polygon(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023))),
               "54 Sea Zone",
-                  Arrays.asList(
-                      polygon(new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),
-                      polygon(new Point(2111, 2121), new Point(2112, 2122), new Point(2113, 2123))),
+              List.of(
+                  polygon(new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),
+                  polygon(new Point(2111, 2121), new Point(2112, 2122), new Point(2113, 2123))),
               "Philippines",
-                  Arrays.asList(
-                      polygon(new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
-                      polygon(new Point(3111, 3121), new Point(3112, 3122)),
-                      polygon(new Point(3211, 3221))));
+              List.of(
+                  polygon(new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
+                  polygon(new Point(3111, 3121), new Point(3112, 3122)),
+                  polygon(new Point(3211, 3221))));
 
       final String content =
           writeToString(os -> PointFileReaderWriter.writeOneToManyPolygons(os, polygonListsByName));
 
+      assertThat(content, containsString("Belarus  <  (1011,1021)  (1012,1022)  (1013,1023)  > "));
+
       assertThat(
           content,
-          is(
-              ""
-                  + "Belarus  <  (1011,1021)  (1012,1022)  (1013,1023)  > \r\n"
-                  + "54 Sea Zone  <  (2011,2021)  (2012,2022)  (2013,2023)  > "
-                  + " <  (2111,2121)  (2112,2122)  (2113,2123)  > \r\n"
-                  + "Philippines  <  (3011,3021)  (3012,3022)  (3013,3023)  > "
+          containsString(
+              "54 Sea Zone  <  (2011,2021)  (2012,2022)  (2013,2023)  > "
+                  + " <  (2111,2121)  (2112,2122)  (2113,2123)  > "));
+      assertThat(
+          content,
+          containsString(
+              "Philippines  <  (3011,3021)  (3012,3022)  (3013,3023)  > "
                   + " <  (3111,3121)  (3112,3122)  >  <  (3211,3221)  > "));
     }
 
