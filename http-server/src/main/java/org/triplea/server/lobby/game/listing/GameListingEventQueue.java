@@ -3,6 +3,7 @@ package org.triplea.server.lobby.game.listing;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -23,7 +24,7 @@ public class GameListingEventQueue {
   private final BiConsumer<Collection<Session>, ServerMessageEnvelope> broadcaster;
 
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
-  private final Set<Session> sessions = new HashSet<>();
+  private final Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
 
   void addListener(final Session session) {
     Preconditions.checkNotNull(session);
