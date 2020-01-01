@@ -572,6 +572,7 @@ public class BattleDisplay extends JPanel {
 
                 @Override
                 public void actionPerformed(final ActionEvent e) {
+                  actionButton.setEnabled(false);
                   final String messageText = message + " " + btnText + ".";
                   if (chooser == null || chooserScrollPane == null) {
                     chooser =
@@ -622,6 +623,7 @@ public class BattleDisplay extends JPanel {
                           options,
                           focus);
                   if (option != 0) {
+                    actionButton.setEnabled(true);
                     return;
                   }
                   final List<Unit> killed = chooser.getSelected(false);
@@ -636,10 +638,10 @@ public class BattleDisplay extends JPanel {
                     final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
                     casualtyDetails.set(response);
                     dicePanel.removeAll();
-                    actionButton.setEnabled(false);
                     actionButton.setAction(nullAction);
                     continueLatch.countDown();
                   }
+                  actionButton.setEnabled(true);
                 }
               });
         });
