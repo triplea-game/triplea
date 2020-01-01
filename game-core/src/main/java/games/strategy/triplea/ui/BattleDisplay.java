@@ -392,11 +392,7 @@ public class BattleDisplay extends JPanel {
             options,
             cancel);
     // dialog dismissed
-    if (choice == JOptionPane.CLOSED_OPTION) {
-      return false;
-    }
-    // wait
-    if (choice == JOptionPane.CANCEL_OPTION) {
+    if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
       return false;
     }
     // remain
@@ -457,19 +453,14 @@ public class BattleDisplay extends JPanel {
             options,
             no);
     // dialog dismissed
-    if (choice == JOptionPane.CLOSED_OPTION) {
-      return false;
-    }
-    // wait
-    if (choice == JOptionPane.CANCEL_OPTION) {
+    if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
       return false;
     }
     // remain
     if (choice == JOptionPane.NO_OPTION) {
       return true;
     }
-    // if you have eliminated the impossible, whatever remains, no matter how improbable,
-    // must be the truth
+
     // retreat
     if (possible.size() == 1) {
       retreatTo.set(possible.iterator().next());
