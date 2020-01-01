@@ -51,9 +51,7 @@ public abstract class ProtectedEndpointTest<T> extends DropwizardTest {
 
   protected void verifyEndpoint(
       final AllowedUserRole allowedUserRole, final Consumer<T> methodRunner) {
-    Preconditions.checkState(
-        defaultAllowedUserRole != null,
-        "Default allowed role must be set, or use method overload that specifies an allowed role");
+    Preconditions.checkNotNull(allowedUserRole);
 
     methodRunner.accept(clientBuilder.apply(localhost, allowedUserRole.getAllowedKey()));
 

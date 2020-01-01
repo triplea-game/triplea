@@ -18,12 +18,6 @@ public interface NioSocketListener {
   void messageReceived(MessageHeader message, SocketChannel channel);
 
   /**
-   * Get the remote node id for this channel, or null if the remote node id is not yet known. The
-   * node may be unknown if the channel is still quarantined
-   */
-  INode getRemoteNode(SocketChannel channel);
-
-  /**
    * Get the node id for the local machine, or null if the remote node is not yet known. The node
    * must be known by the time we have an unquarantined channel.
    */

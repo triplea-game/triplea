@@ -341,18 +341,4 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     notifyConnectionsChanged(true, remote);
     log.info("Connection added to:" + remote);
   }
-
-  @Override
-  public INode getRemoteNode(final SocketChannel channel) {
-    return channelToNode.get(channel);
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName()
-        + " LocalNode:"
-        + node
-        + " ClientNodes:"
-        + nodeToChannel.keySet();
-  }
 }

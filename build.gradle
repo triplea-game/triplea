@@ -2,10 +2,10 @@ import net.ltgt.gradle.errorprone.CheckSeverity
 
 plugins {
     id 'java'
-    id 'com.github.ben-manes.versions' version '0.20.0'
-    id 'io.franzbecker.gradle-lombok' version '2.0' apply false
+    id 'com.github.ben-manes.versions' version '0.27.0'
+    id 'io.franzbecker.gradle-lombok' version '3.2.0' apply false
     id 'net.ltgt.errorprone' version '0.8.1' apply false
-    id 'com.diffplug.gradle.spotless' version '3.23.0' apply false
+    id 'com.diffplug.gradle.spotless' version '3.26.1' apply false
     id "org.sonarqube" version "2.8"
 }
 
@@ -76,7 +76,7 @@ subprojects {
     ext {
         awaitilityVersion = '4.0.1'
         commonsCliVersion = '1.4'
-        commonsCodecVersion = '1.11'
+        commonsCodecVersion = '1.13'
         commonsIoVersion = '2.6'
         commonsMathVersion = '3.6.1'
         databaseRiderVersion = '1.7.3'
@@ -84,12 +84,12 @@ subprojects {
         dropwizardWebsocketsVersion = '1.3.14'
         equalsVerifierVersion = '3.1.10'
         errorProneVersion = '2.3.3'
-        guavaVersion = "28.1-jre"
+        guavaVersion = "28.2-jre"
         hamcrestJsonVersion = '0.2'
         hamcrestOptionalVersion = '2.0.0'
         hamcrestVersion = '2.0.0.0'
         jakartaMailVersion = '1.6.4'
-        javafxVersion = '11'
+        javafxVersion = '13.0.1'
         javaWebsocketVersion = '1.4.0'
         javaxActivationVersion = '1.1.1'
         jaxbApiVersion = '2.3.1'
@@ -101,7 +101,7 @@ subprojects {
         junitJupiterVersion = '5.5.2'
         junitPioneerVersion = '0.3.0'
         junitPlatformLauncherVersion = '1.5.2'
-        mockitoVersion = '3.1.0'
+        mockitoVersion = '3.2.4'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.8'
         rateLimitjVersion = '0.6.0'

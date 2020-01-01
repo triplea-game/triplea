@@ -237,12 +237,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public INode getRemoteNode(final SocketChannel channel) {
-    // we only have one channel
-    return serverNode;
-  }
-
-  @Override
   public void addConnectionChangeListener(final IConnectionChangeListener listener) {}
 
   @Override
