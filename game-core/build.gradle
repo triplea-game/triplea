@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 ext {
-    apacheHttpComponentsVersion = '4.5.7'
+    apacheHttpComponentsVersion = '4.5.10'
 }
 
 dependencies {
