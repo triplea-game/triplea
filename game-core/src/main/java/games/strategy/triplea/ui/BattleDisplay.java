@@ -392,15 +392,15 @@ public class BattleDisplay extends JPanel {
             options,
             cancel);
     // dialog dismissed
-    if (choice == -1) {
+    if (choice == JOptionPane.CLOSED_OPTION) {
       return false;
     }
     // wait
-    if (choice == 2) {
+    if (choice == JOptionPane.CANCEL_OPTION) {
       return false;
     }
     // remain
-    if (choice == 1) {
+    if (choice == JOptionPane.NO_OPTION) {
       return true;
     }
     // submerge
@@ -457,7 +457,7 @@ public class BattleDisplay extends JPanel {
             options,
             no);
     // dialog dismissed
-    if (choice == -1) {
+    if (choice == JOptionPane.CLOSED_OPTION) {
       return false;
     }
     // wait
