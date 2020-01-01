@@ -25,7 +25,6 @@ public class GameListingEventQueue {
 
   void addListener(final Session session) {
     Preconditions.checkNotNull(session);
-    Preconditions.checkNotNull(session.getId());
     sessionSet.put(session);
   }
 
