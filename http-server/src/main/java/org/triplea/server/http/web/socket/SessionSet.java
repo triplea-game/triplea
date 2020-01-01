@@ -41,7 +41,7 @@ public class SessionSet {
 
   public Collection<Session> values() {
     removeClosedSessions();
-    return ImmutableSet.copyOf(sessions);
+    return Set.copyOf(sessions);
   }
 
   /** Just in case we fail to remove a closed session from listeners, remove any closed sessions. */
