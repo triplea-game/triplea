@@ -3,7 +3,7 @@ package games.strategy.engine.framework;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.Player;
@@ -12,7 +12,7 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.delegate.CasualtySelector;
+import games.strategy.triplea.delegate.battle.CasualtySelector;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class ClientGame extends AbstractGame {
           public void stepChanged(
               final String stepName,
               final String delegateName,
-              final PlayerId player,
+              final GamePlayer player,
               final int round,
               final String displayName,
               final boolean loadedFromSavedGame) {
@@ -176,7 +176,7 @@ public class ClientGame extends AbstractGame {
         };
     messengers.registerRemote(
         gameStepAdvancer, getRemoteStepAdvancerName(messengers.getLocalNode()));
-    for (final PlayerId player : this.gamePlayers.keySet()) {
+    for (final GamePlayer player : this.gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
       messengers.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
     }
@@ -202,7 +202,7 @@ public class ClientGame extends AbstractGame {
       messengers.unregisterRemote(getRemoteStepAdvancerName(messengers.getLocalNode()));
       vault.shutDown();
       for (final Player gp : gamePlayers.values()) {
-        final PlayerId player;
+        final GamePlayer player;
         gameData.acquireReadLock();
         try {
           player = gameData.getPlayerList().getPlayerId(gp.getName());
@@ -210,7 +210,7 @@ public class ClientGame extends AbstractGame {
           gameData.releaseReadLock();
         }
         gamePlayers.put(player, gp);
-        messengers.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerId()));
+        messengers.unregisterRemote(ServerGame.getRemoteName(gp.getGamePlayer()));
         messengers.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
     } catch (final RuntimeException e) {

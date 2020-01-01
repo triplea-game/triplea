@@ -8,13 +8,14 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
 import games.strategy.net.IServerMessenger;
 import java.net.URI;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
 
 @AllArgsConstructor
 public class LobbyWatcherThread {
@@ -24,15 +25,18 @@ public class LobbyWatcherThread {
   @Nonnull private final WatcherThreadMessaging watcherThreadMessaging;
 
   public void createLobbyWatcher(
-      final URI lobbyUri, final GameHostingResponse gameHostingResponse) {
+      final URI lobbyUri,
+      final GameHostingResponse gameHostingResponse,
+      final Consumer<String> errorHandler) {
 
     final HttpLobbyClient lobbyClient =
-        HttpLobbyClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()));
+        HttpLobbyClient.newClient(
+            lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()), errorHandler);
 
     InGameLobbyWatcher.newInGameLobbyWatcher(
             serverMessenger,
             gameHostingResponse,
-            GameListingClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey())),
+            LobbyWatcherClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey())),
             watcherThreadMessaging::connectionLostReporter,
             watcherThreadMessaging::connectionReEstablishedReporter,
             lobbyWatcher.getInGameLobbyWatcher())

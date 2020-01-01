@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
@@ -54,7 +54,7 @@ class ProPurchaseAi {
   private final ProData proData;
   private GameData data;
   private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
-  private PlayerId player;
+  private GamePlayer player;
   private ProResourceTracker resourceTracker;
   private ProTerritoryManager territoryManager;
   private boolean isBid = false;
@@ -68,7 +68,7 @@ class ProPurchaseAi {
       final int initialPusRemaining,
       final IPurchaseDelegate purchaseDelegate,
       final GameData data,
-      final PlayerId player) {
+      final GamePlayer player) {
     int pusRemaining = initialPusRemaining;
     ProLogger.info("Repairing factories with PUsRemaining=" + pusRemaining);
 

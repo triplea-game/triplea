@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 
 /** Changes ownership of a territory. */
@@ -16,7 +16,7 @@ class OwnerChange extends Change {
   private final String territoryName;
 
   /** newOwner can be null. */
-  OwnerChange(final Territory territory, final PlayerId newOwner) {
+  OwnerChange(final Territory territory, final GamePlayer newOwner) {
     territoryName = territory.getName();
     newOwnerName = getName(newOwner);
     oldOwnerName = getName(territory.getOwner());
@@ -29,14 +29,14 @@ class OwnerChange extends Change {
     this.oldOwnerName = oldOwnerName;
   }
 
-  private static String getName(final PlayerId player) {
+  private static String getName(final GamePlayer player) {
     if (player == null) {
       return null;
     }
     return player.getName();
   }
 
-  private static PlayerId getPlayerId(final String name, final GameData data) {
+  private static GamePlayer getPlayerId(final String name, final GameData data) {
     if (name == null) {
       return null;
     }

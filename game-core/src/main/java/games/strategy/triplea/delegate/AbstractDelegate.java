@@ -1,9 +1,10 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.battle.CasualtySelector;
 import java.io.Serializable;
 
 /**
@@ -13,7 +14,7 @@ import java.io.Serializable;
 public abstract class AbstractDelegate implements IDelegate {
   protected String name;
   protected String displayName;
-  protected PlayerId player;
+  protected GamePlayer player;
   protected IDelegateBridge bridge;
 
   @Override
@@ -25,7 +26,7 @@ public abstract class AbstractDelegate implements IDelegate {
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     bridge = delegateBridge;
-    player = delegateBridge.getPlayerId();
+    player = delegateBridge.getGamePlayer();
   }
 
   /**

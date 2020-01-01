@@ -1,11 +1,11 @@
 package org.triplea.http.client.web.socket;
 
 import com.google.common.base.Preconditions;
-import java.net.URI;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 
@@ -30,43 +30,11 @@ public abstract class WebsocketListener<
   @Getter(AccessLevel.PROTECTED)
   private final GenericWebSocketClient webSocketClient;
 
-  private ListenersTypeT listeners;
+  @Setter private ListenersTypeT listeners;
 
-  private WebsocketListener(
-      final GenericWebSocketClient genericWebSocketClient, final ListenersTypeT listeners) {
+  protected WebsocketListener(final GenericWebSocketClient genericWebSocketClient) {
     webSocketClient = genericWebSocketClient;
     webSocketClient.addMessageListener(this);
-    this.listeners = listeners;
-  }
-
-  /**
-   * Use this constructor if the listener will also be an outbound message sender. Injecting the
-   * websocket client directly allows for easier testing & mocking.
-   */
-  protected WebsocketListener(final GenericWebSocketClient genericWebSocketClient) {
-    this(genericWebSocketClient, null);
-  }
-
-  /**
-   * Constructs a websocket listener that will be connected and messages will be routed to the
-   * listeners passed in.
-   *
-   * @param hostUri Server host (base) uri.
-   * @param websocketPath Path on the server to the websocket to which we will listen.
-   * @param listeners Listener object that contains listeners for each message type we would expect
-   *     to receive from server.
-   */
-  protected WebsocketListener(
-      final URI hostUri, final String websocketPath, final ListenersTypeT listeners) {
-    this(
-        new GenericWebSocketClient(
-            URI.create(hostUri + websocketPath),
-            "Failed to connect to " + URI.create(hostUri + websocketPath)),
-        listeners);
-  }
-
-  public void setListeners(final ListenersTypeT listeners) {
-    this.listeners = listeners;
   }
 
   public void close() {
@@ -82,8 +50,14 @@ public abstract class WebsocketListener<
   }
 
   /**
-   * Method to extract message type from a server message envelope. This will likey be a simple
-   * {@code enum.valueOf(serverMessageEnvelope.getMessageType()}.
+   * Method to extract message type from a server message envelope. This will likely be a simple
+   * {@code enum.valueOf(serverMessageEnvelope.getMessageType()}. Example:
+   *
+   * <pre>>
+   *   {@code
+   *     return WebsocketMessageTypeEnum.valueOf(serverMessageEnvelope.getMessageType())
+   * }
+   * </pre>
    */
   protected abstract MessageTypeT readMessageType(ServerMessageEnvelope serverMessageEnvelope);
 

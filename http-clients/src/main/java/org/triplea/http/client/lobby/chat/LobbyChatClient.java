@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
@@ -20,10 +20,10 @@ public class LobbyChatClient
 
   private final ChatClientEnvelopeFactory outboundMessageFactory;
 
-  public LobbyChatClient(final URI lobbyUri, final ApiKey apiKey) {
+  public LobbyChatClient(
+      final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
     this(
-        new GenericWebSocketClient(
-            URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH), "Failed to connect to chat."),
+        new GenericWebSocketClient(URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH), errorHandler),
         new ChatClientEnvelopeFactory(apiKey));
   }
 
@@ -35,16 +35,17 @@ public class LobbyChatClient
     outboundMessageFactory = clientEventFactory;
   }
 
-  public static LobbyChatClient newClient(final URI lobbyUri, final ApiKey apiKey) {
-    return new LobbyChatClient(lobbyUri, apiKey);
+  public static LobbyChatClient newClient(
+      final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
+    return new LobbyChatClient(lobbyUri, apiKey, errorHandler);
   }
 
   public void setChatMessageListeners(final ChatMessageListeners chatMessageListeners) {
     setListeners(chatMessageListeners);
   }
 
-  public void slapPlayer(final PlayerName playerName) {
-    getWebSocketClient().send(outboundMessageFactory.slapMessage(playerName));
+  public void slapPlayer(final UserName userName) {
+    getWebSocketClient().send(outboundMessageFactory.slapMessage(userName));
   }
 
   public void sendChatMessage(final String message) {

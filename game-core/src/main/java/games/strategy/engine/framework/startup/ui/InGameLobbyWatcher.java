@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
 import org.triplea.lobby.common.GameDescription;
@@ -40,7 +40,7 @@ public class InGameLobbyWatcher {
   private final IConnectionChangeListener connectionChangeListener;
   private final boolean humanPlayer;
 
-  private final GameListingClient gameListingClient;
+  private final LobbyWatcherClient gameListingClient;
 
   private final IServerMessenger serverMessenger;
 
@@ -49,7 +49,7 @@ public class InGameLobbyWatcher {
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameHostingResponse gameHostingResponse,
-      final GameListingClient gameListingClient,
+      final LobbyWatcherClient gameListingClient,
       final Consumer<String> errorReporter,
       final Consumer<String> reconnectionReporter,
       @Nullable final InGameLobbyWatcher oldWatcher) {
@@ -66,7 +66,7 @@ public class InGameLobbyWatcher {
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameHostingResponse gameHostingResponse,
-      final GameListingClient gameListingClient,
+      final LobbyWatcherClient gameListingClient,
       final Consumer<String> errorReporter,
       final Consumer<String> reconnectionReporter,
       @Nullable final GameDescription oldGameDescription,
@@ -121,7 +121,7 @@ public class InGameLobbyWatcher {
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
     keepAliveTimer =
         Timers.fixedRateTimer("lobby-watcher-keep-alive")
-            .period((GameListingClient.KEEP_ALIVE_SECONDS / 2L) - 1, TimeUnit.SECONDS)
+            .period((LobbyWatcherClient.KEEP_ALIVE_SECONDS / 2L) - 1, TimeUnit.SECONDS)
             .task(
                 LobbyWatcherKeepAliveTask.builder()
                     .gameId(gameId)
@@ -162,7 +162,7 @@ public class InGameLobbyWatcher {
   public static Optional<InGameLobbyWatcher> newInGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameHostingResponse gameHostingResponse,
-      final GameListingClient gameListingClient,
+      final LobbyWatcherClient gameListingClient,
       final Consumer<String> errorReporter,
       final Consumer<String> reconnectionReporter,
       final InGameLobbyWatcher oldWatcher) {

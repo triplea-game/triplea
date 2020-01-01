@@ -1,7 +1,6 @@
 package org.triplea.http.client.lobby.game.listing;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +26,7 @@ class GameListingClientTest extends WireMockTest {
       LobbyGameListing.builder().gameId(GAME_ID).lobbyGame(LOBBY_GAME).build();
 
   private static GameListingClient newClient(final WireMockServer wireMockServer) {
-    return newClient(wireMockServer, GameListingClient::newClient);
+    return GameListingClient.newClient(buildHostUri(wireMockServer), API_KEY, errMsg -> {});
   }
 
   @Test
@@ -44,57 +43,6 @@ class GameListingClientTest extends WireMockTest {
 
     assertThat(results, hasSize(1));
     assertThat(results.get(0), is(LOBBY_GAME_LISTING));
-  }
-
-  @Test
-  void postGame(@WiremockResolver.Wiremock final WireMockServer server) {
-    server.stubFor(
-        post(GameListingClient.POST_GAME_PATH)
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalToJson(toJson(LOBBY_GAME)))
-            .willReturn(WireMock.aResponse().withStatus(200).withBody(GAME_ID)));
-
-    final String gameId = newClient(server).postGame(LOBBY_GAME);
-
-    assertThat(gameId, is(GAME_ID));
-  }
-
-  @Test
-  void updateGame(@WiremockResolver.Wiremock final WireMockServer server) {
-    server.stubFor(
-        post(GameListingClient.UPDATE_GAME_PATH)
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(
-                equalToJson(
-                    toJson(
-                        UpdateGameRequest.builder().gameId(GAME_ID).gameData(LOBBY_GAME).build())))
-            .willReturn(WireMock.aResponse().withStatus(200)));
-
-    newClient(server).updateGame(GAME_ID, LOBBY_GAME);
-  }
-
-  @Test
-  void sendKeepAlive(@WiremockResolver.Wiremock final WireMockServer server) {
-    server.stubFor(
-        post(GameListingClient.KEEP_ALIVE_PATH)
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalTo(GAME_ID))
-            .willReturn(WireMock.aResponse().withStatus(200).withBody("true")));
-
-    final boolean result = newClient(server).sendKeepAlive(GAME_ID);
-
-    assertThat(result, is(true));
-  }
-
-  @Test
-  void removeGame(@WiremockResolver.Wiremock final WireMockServer server) {
-    server.stubFor(
-        post(GameListingClient.REMOVE_GAME_PATH)
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalTo(GAME_ID))
-            .willReturn(WireMock.aResponse().withStatus(200)));
-
-    newClient(server).removeGame(GAME_ID);
   }
 
   @Test

@@ -9,8 +9,8 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
 import java.util.Arrays;
 import java.util.Properties;
@@ -21,10 +21,10 @@ import org.junit.jupiter.api.Test;
 
 final class GameStepPropertiesHelperTest {
   private final GameData gameData = new GameData();
-  private final PlayerId player1 = new PlayerId("player1", gameData);
-  private final PlayerId player2 = new PlayerId("player2", gameData);
-  private final PlayerId player3 = new PlayerId("player3", gameData);
-  private final PlayerId player4 = new PlayerId("player4", gameData);
+  private final GamePlayer player1 = new GamePlayer("player1", gameData);
+  private final GamePlayer player2 = new GamePlayer("player2", gameData);
+  private final GamePlayer player3 = new GamePlayer("player3", gameData);
+  private final GamePlayer player4 = new GamePlayer("player4", gameData);
   private final Properties gameStepProperties = new Properties();
   private final GameStep gameStep =
       new GameStep("name", "displayName", null, newDelegate(), gameData, gameStepProperties);
@@ -35,8 +35,8 @@ final class GameStepPropertiesHelperTest {
     return delegate;
   }
 
-  private static String joinPlayerNames(final PlayerId... playerIds) {
-    return Arrays.stream(playerIds).map(PlayerId::getName).collect(Collectors.joining(":"));
+  private static String joinPlayerNames(final GamePlayer... gamePlayers) {
+    return Arrays.stream(gamePlayers).map(GamePlayer::getName).collect(Collectors.joining(":"));
   }
 
   private void givenGameStepProperty(final String name, final String value) {
@@ -84,7 +84,7 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldIgnoreCombinedTurnsPlayersThatDoNotExist() {
-      final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
+      final GamePlayer unknownPlayer = new GamePlayer("unknownPlayer", gameData);
       givenGameStepProperty(
           GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(unknownPlayer, player2));
 
@@ -119,7 +119,7 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldIgnoreRepairPlayersThatDoNotExist() {
-      final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
+      final GamePlayer unknownPlayer = new GamePlayer("unknownPlayer", gameData);
       givenGameStepProperty(
           GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(unknownPlayer, player2));
 
@@ -146,7 +146,7 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldIgnoreTurnSummaryPlayersThatDoNotExist() {
-      final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
+      final GamePlayer unknownPlayer = new GamePlayer("unknownPlayer", gameData);
       givenGameStepProperty(
           GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, joinPlayerNames(unknownPlayer, player1));
 

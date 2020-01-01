@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -24,9 +24,9 @@ import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.AirBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,7 +50,7 @@ public class ProCombatMoveAi {
   private final ProData proData;
   private final ProOddsCalculator calc;
   private GameData data;
-  private PlayerId player;
+  private GamePlayer player;
   private ProTerritoryManager territoryManager;
   private boolean isDefensive;
   private boolean isBombing;
@@ -153,7 +153,7 @@ public class ProCombatMoveAi {
       final Map<Territory, ProTerritory> attackMap,
       final IMoveDelegate moveDel,
       final GameData data,
-      final PlayerId player) {
+      final GamePlayer player) {
     this.data = data;
     this.player = player;
 
@@ -174,7 +174,7 @@ public class ProCombatMoveAi {
   }
 
   private void prioritizeAttackOptions(
-      final PlayerId player, final List<ProTerritory> attackOptions) {
+      final GamePlayer player, final List<ProTerritory> attackOptions) {
 
     ProLogger.info("Prioritizing territories to try to attack");
 
@@ -1238,7 +1238,7 @@ public class ProCombatMoveAi {
       }
 
       // Add units with attack options to map
-      if (canAttackTerritories.size() >= 1) {
+      if (!canAttackTerritories.isEmpty()) {
         unitAttackOptions.put(unit, canAttackTerritories);
       }
     }

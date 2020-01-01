@@ -2,7 +2,7 @@ package org.triplea.java.collections;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.not;
+import static java.util.function.Predicate.not;
 
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;

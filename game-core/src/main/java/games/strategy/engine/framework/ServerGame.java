@@ -7,8 +7,8 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
@@ -17,6 +17,7 @@ import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
+import games.strategy.engine.framework.save.game.GameDataWriter;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
@@ -40,9 +41,6 @@ import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -51,7 +49,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
-import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.util.ExitStatus;
 
@@ -134,7 +131,7 @@ public class ServerGame extends AbstractGame {
           public void stepChanged(
               final String stepName,
               final String delegateName,
-              final PlayerId player,
+              final GamePlayer player,
               final int round,
               final String displayName,
               final boolean loadedFromSavedGame) {
@@ -157,15 +154,8 @@ public class ServerGame extends AbstractGame {
     randomStats = new RandomStats(messengers);
     // Import dice stats from history if there is any (e.g. loading a saved game).
     importDiceStats((HistoryNode) gameData.getHistory().getRoot());
-
     final IServerRemote serverRemote =
-        () -> {
-          try {
-            return IoUtils.writeToMemory(this::saveGame);
-          } catch (final IOException e) {
-            throw new IllegalStateException(e);
-          }
-        };
+        () -> GameDataWriter.writeToBytes(data, delegateExecutionManager);
     messengers.registerRemote(serverRemote, SERVER_REMOTE);
   }
 
@@ -174,14 +164,14 @@ public class ServerGame extends AbstractGame {
       final EventChild childNode = (EventChild) node;
       if (childNode.getRenderingData() instanceof DiceRoll) {
         final String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
-        final PlayerId playerId = gameData.getPlayerList().getPlayerId(playerName);
+        final GamePlayer gamePlayer = gameData.getPlayerList().getPlayerId(playerName);
 
         final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
         final int[] rolls = new int[diceRoll.size()];
         for (int i = 0; i < rolls.length; i++) {
           rolls[i] = diceRoll.getDie(i).getValue();
         }
-        randomStats.addRandom(rolls, playerId, RandomStats.DiceType.COMBAT);
+        randomStats.addRandom(rolls, gamePlayer, RandomStats.DiceType.COMBAT);
       }
     }
 
@@ -207,7 +197,7 @@ public class ServerGame extends AbstractGame {
     }
     try {
       final CountDownLatch waitOnObserver = new CountDownLatch(1);
-      final byte[] bytes = IoUtils.writeToMemory(this::saveGame);
+      final byte[] bytes = GameDataWriter.writeToBytes(gameData, delegateExecutionManager);
       new Thread(
               () -> {
                 try {
@@ -268,14 +258,15 @@ public class ServerGame extends AbstractGame {
         delegate.getRemoteType());
   }
 
-  public static RemoteName getRemoteName(final PlayerId id) {
+  public static RemoteName getRemoteName(final GamePlayer gamePlayer) {
     return new RemoteName(
-        "games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + id.getName(), Player.class);
+        "games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + gamePlayer.getName(),
+        Player.class);
   }
 
-  public static RemoteName getRemoteRandomName(final PlayerId id) {
+  public static RemoteName getRemoteRandomName(final GamePlayer gamePlayer) {
     return new RemoteName(
-        "games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName(),
+        "games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + gamePlayer.getName(),
         IRemoteRandom.class);
   }
 
@@ -354,7 +345,7 @@ public class ServerGame extends AbstractGame {
       messengers.unregisterRemote(SERVER_REMOTE);
       vault.shutDown();
       for (final Player gp : gamePlayers.values()) {
-        messengers.unregisterRemote(getRemoteName(gp.getPlayerId()));
+        messengers.unregisterRemote(getRemoteName(gp.getGamePlayer()));
       }
       for (final IDelegate delegate : gameData.getDelegates()) {
         final Class<? extends IRemote> remoteType = delegate.getRemoteType();
@@ -387,35 +378,7 @@ public class ServerGame extends AbstractGame {
               + parentDir.getAbsolutePath());
     }
 
-    try (OutputStream fout = new FileOutputStream(file)) {
-      saveGame(fout);
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to save game to file: " + file.getAbsolutePath(), e);
-    }
-  }
-
-  private void saveGame(final OutputStream out) throws IOException {
-    final String errorMessage = "Error saving game.. ";
-
-    try {
-      // TODO: is this necessary to save a game?
-      if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-        // try again
-        if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-          log.severe(errorMessage + " could not lock delegate execution");
-          return;
-        }
-      }
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return;
-    }
-
-    try {
-      GameDataManager.saveGame(out, gameData);
-    } finally {
-      delegateExecutionManager.resumeDelegateExecution();
-    }
+    GameDataWriter.writeToFile(gameData, delegateExecutionManager, file);
   }
 
   private void runStep(final boolean stepIsRestoredFromSavedGame) {
@@ -561,25 +524,25 @@ public class ServerGame extends AbstractGame {
   }
 
   private void waitForPlayerToFinishStep() {
-    final PlayerId playerId = getCurrentStep().getPlayerId();
+    final GamePlayer gamePlayer = getCurrentStep().getPlayerId();
     // no player specified for the given step
-    if (playerId == null) {
+    if (gamePlayer == null) {
       return;
     }
     if (!getCurrentStep().getDelegate().delegateCurrentlyRequiresUserInput()) {
       return;
     }
-    final Player player = gamePlayers.get(playerId);
+    final Player player = gamePlayers.get(gamePlayer);
     if (player != null) {
       // a local player
       player.start(getCurrentStep().getName());
     } else {
       // a remote player
-      final INode destination = playerManager.getNode(playerId.getName());
+      final INode destination = playerManager.getNode(gamePlayer.getName());
       final IGameStepAdvancer advancer =
           (IGameStepAdvancer)
               messengers.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
-      advancer.startPlayerStep(getCurrentStep().getName(), playerId);
+      advancer.startPlayerStep(getCurrentStep().getName(), gamePlayer);
     }
   }
 
@@ -589,10 +552,10 @@ public class ServerGame extends AbstractGame {
     final String delegateName = currentStep.getDelegate().getName();
     final String displayName = currentStep.getDisplayName();
     final int round = gameData.getSequence().getRound();
-    final PlayerId id = currentStep.getPlayerId();
+    final GamePlayer gamePlayer = currentStep.getPlayerId();
     gameData.fireGameDataEvent(GameDataEvent.GAME_STEP_CHANGED);
     getGameModifiedBroadcaster()
-        .stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
+        .stepChanged(stepName, delegateName, gamePlayer, round, displayName, loadedFromSavedGame);
   }
 
   private void addPlayerTypesToGameData(
@@ -631,7 +594,7 @@ public class ServerGame extends AbstractGame {
                       : " is")
                   + " now being played by: "
                   + player.getPlayerType().getLabel());
-      final PlayerId p = data.getPlayerList().getPlayerId(player.getName());
+      final GamePlayer p = data.getPlayerList().getPlayerId(player.getName());
       final String newWhoAmI =
           ((isHuman ? "Human" : "AI") + ":" + player.getPlayerType().getLabel());
       if (!p.getWhoAmI().equals(newWhoAmI)) {
@@ -650,7 +613,7 @@ public class ServerGame extends AbstractGame {
                       ? " are"
                       : " is")
                   + " now being played by: Human:Client");
-      final PlayerId p = data.getPlayerList().getPlayerId(player);
+      final GamePlayer p = data.getPlayerList().getPlayerId(player);
       final String newWhoAmI = "Human:Client";
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));

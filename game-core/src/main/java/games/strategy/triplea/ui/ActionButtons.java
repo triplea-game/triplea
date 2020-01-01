@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
@@ -11,7 +11,7 @@ import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
-import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
@@ -120,54 +120,54 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
             });
   }
 
-  void changeToMove(final PlayerId id, final boolean nonCombat, final String stepName) {
+  void changeToMove(final GamePlayer gamePlayer, final boolean nonCombat, final String stepName) {
     movePanel.setNonCombat(nonCombat);
     final boolean airBorne = stepName.endsWith("AirborneCombatMove");
     final String displayText = (airBorne ? " Airborne" : (nonCombat ? " Non" : ""));
     movePanel.setDisplayText(displayText + " Combat Move");
     movePanel.setMoveType(airBorne ? MoveType.SPECIAL : MoveType.DEFAULT);
-    changeTo(id, movePanel);
+    changeTo(gamePlayer, movePanel);
   }
 
-  public void changeToRepair(final PlayerId id) {
-    changeTo(id, repairPanel);
+  public void changeToRepair(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, repairPanel);
   }
 
-  public void changeToProduce(final PlayerId id) {
-    changeTo(id, purchasePanel);
+  public void changeToProduce(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, purchasePanel);
   }
 
-  public void changeToPlace(final PlayerId id) {
-    changeTo(id, placePanel);
+  public void changeToPlace(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, placePanel);
   }
 
   public void changeToBattle(
-      final PlayerId id, final Map<BattleType, Collection<Territory>> battles) {
+      final GamePlayer gamePlayer, final Map<BattleType, Collection<Territory>> battles) {
     battlePanel.setBattlesAndBombing(battles);
-    changeTo(id, battlePanel);
+    changeTo(gamePlayer, battlePanel);
   }
 
-  public void changeToPolitics(final PlayerId id) {
-    changeTo(id, politicsPanel);
+  public void changeToPolitics(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, politicsPanel);
   }
 
-  public void changeToUserActions(final PlayerId id) {
-    changeTo(id, userActionPanel);
+  public void changeToUserActions(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, userActionPanel);
   }
 
-  public void changeToTech(final PlayerId id) {
-    changeTo(id, techPanel);
+  public void changeToTech(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, techPanel);
   }
 
-  public void changeToEndTurn(final PlayerId id) {
-    changeTo(id, endTurnPanel);
+  public void changeToEndTurn(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, endTurnPanel);
   }
 
-  public void changeToMoveForumPosterPanel(final PlayerId id) {
-    changeTo(id, moveForumPosterPanel);
+  public void changeToMoveForumPosterPanel(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, moveForumPosterPanel);
   }
 
-  private void changeTo(final PlayerId id, final @Nullable ActionPanel newCurrent) {
+  private void changeTo(final GamePlayer gamePlayer, final @Nullable ActionPanel newCurrent) {
     if (actionPanel != null) {
       actionPanel.setActive(false);
     }
@@ -176,13 +176,13 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
 
     // newCurrent might be null if we are shutting down
     if (actionPanel != null) {
-      actionPanel.display(id);
+      actionPanel.display(gamePlayer);
       SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, actionPanel.toString()));
     }
   }
 
-  public void changeToPickTerritoryAndUnits(final PlayerId id) {
-    changeTo(id, pickTerritoryAndUnitsPanel);
+  public void changeToPickTerritoryAndUnits(final GamePlayer gamePlayer) {
+    changeTo(gamePlayer, pickTerritoryAndUnitsPanel);
   }
 
   /**
@@ -200,7 +200,7 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
    * @return null if no move was made.
    */
   public Map<Unit, IntegerMap<RepairRule>> waitForRepair(
-      final boolean bid, final Collection<PlayerId> allowedPlayersToRepair) {
+      final boolean bid, final Collection<GamePlayer> allowedPlayersToRepair) {
     return repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 

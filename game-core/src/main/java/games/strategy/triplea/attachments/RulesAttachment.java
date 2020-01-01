@@ -9,9 +9,9 @@ import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
@@ -39,7 +39,7 @@ import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
 /**
- * An attachment for instances of {@link PlayerId} that defines various conditions for enabling
+ * An attachment for instances of {@link GamePlayer} that defines various conditions for enabling
  * certain rules (see the class description of {@link AbstractPlayerRulesAttachment}).
  */
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
@@ -51,7 +51,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   // condition for having specific relationships
   private List<String> relationship = new ArrayList<>();
   // condition for being at war
-  private Set<PlayerId> atWarPlayers = null;
+  private Set<GamePlayer> atWarPlayers = null;
   private int atWarCount = -1;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according
   // to
@@ -87,14 +87,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @param nameOfAttachment exact full name of attachment
    * @return new rule attachment
    */
-  public static RulesAttachment get(final PlayerId player, final String nameOfAttachment) {
+  public static RulesAttachment get(final GamePlayer player, final String nameOfAttachment) {
     return get(player, nameOfAttachment, null, false);
   }
 
   static RulesAttachment get(
-      final PlayerId player,
+      final GamePlayer player,
       final String nameOfAttachment,
-      final Collection<PlayerId> playersToSearch,
+      final Collection<GamePlayer> playersToSearch,
       final boolean allowNull) {
     RulesAttachment ra = (RulesAttachment) player.getAttachment(nameOfAttachment);
     if (ra == null) {
@@ -107,7 +107,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                   + nameOfAttachment);
         }
       } else {
-        for (final PlayerId otherPlayer : playersToSearch) {
+        for (final GamePlayer otherPlayer : playersToSearch) {
           if (otherPlayer.equals(player)) {
             continue;
           }
@@ -136,7 +136,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * uses these kinds of conditions gets them a different way because they are specifically named
    * inside that trigger.
    */
-  public static Set<RulesAttachment> getNationalObjectives(final PlayerId player) {
+  public static Set<RulesAttachment> getNationalObjectives(final GamePlayer player) {
     final Set<RulesAttachment> natObjs = new HashSet<>();
     final Map<String, IAttachment> map = player.getAttachments();
     for (final Map.Entry<String, IAttachment> entry : map.entrySet()) {
@@ -190,11 +190,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..."
               + thisErrorMsg());
     }
-    final PlayerId attacker = getData().getPlayerList().getPlayerId(s[0]);
+    final GamePlayer attacker = getData().getPlayerList().getPlayerId(s[0]);
     if (attacker == null && !s[0].equalsIgnoreCase("any")) {
       throw new GameParseException("no player named: " + s[0] + thisErrorMsg());
     }
-    final PlayerId defender = getData().getPlayerList().getPlayerId(s[1]);
+    final GamePlayer defender = getData().getPlayerList().getPlayerId(s[1]);
     if (defender == null && !s[1].equalsIgnoreCase("any")) {
       throw new GameParseException("no player named: " + s[1] + thisErrorMsg());
     }
@@ -553,7 +553,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
-      final PlayerId player = getData().getPlayerList().getPlayerId(s[i]);
+      final GamePlayer player = getData().getPlayerList().getPlayerId(s[i]);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
       }
@@ -561,11 +561,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
   }
 
-  private void setAtWarPlayers(final Set<PlayerId> value) {
+  private void setAtWarPlayers(final Set<GamePlayer> value) {
     atWarPlayers = value;
   }
 
-  private Set<PlayerId> getAtWarPlayers() {
+  private Set<GamePlayer> getAtWarPlayers() {
     return atWarPlayers;
   }
 
@@ -635,10 +635,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     boolean objectiveMet = true;
-    final List<PlayerId> players = getPlayers();
+    final List<GamePlayer> players = getPlayers();
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
-    if (conditions.size() > 0) {
+    if (!conditions.isEmpty()) {
       final Map<ICondition, Boolean> actualTestedConditions =
           Optional.ofNullable(testedConditions)
               .orElseGet(
@@ -754,14 +754,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       if (terrs.length == 1) {
         switch (terrs[0]) {
           case "original":
-            final Collection<PlayerId> allies =
+            final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
                     Matches.isAlliedWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
-            final Collection<PlayerId> enemies =
+            final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
                     Matches.isAtWarWithAnyOfThesePlayers(players, data));
@@ -774,14 +774,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       } else if (terrs.length == 2) {
         switch (terrs[1]) {
           case "original":
-            final Collection<PlayerId> allies =
+            final Collection<GamePlayer> allies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
                     Matches.isAlliedWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
-            final Collection<PlayerId> enemies =
+            final Collection<GamePlayer> enemies =
                 CollectionUtils.getMatches(
                     data.getPlayerList().getPlayers(),
                     Matches.isAtWarWithAnyOfThesePlayers(players, data));
@@ -803,7 +803,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Set<Territory> listedTerritories;
       if (terrs.length == 1) {
         if ("enemy".equals(terrs[0])) {
-          final Collection<PlayerId> enemies =
+          final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
                   data.getPlayerList().getPlayers(),
                   Matches.isAtWarWithAnyOfThesePlayers(players, data));
@@ -813,7 +813,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         }
       } else if (terrs.length == 2) {
         if ("enemy".equals(terrs[1])) {
-          final Collection<PlayerId> enemies =
+          final Collection<GamePlayer> enemies =
               CollectionUtils.getMatches(
                   data.getPlayerList().getPlayers(),
                   Matches.isAtWarWithAnyOfThesePlayers(players, data));
@@ -827,7 +827,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet = checkDirectOwnership(listedTerritories, getTerritoryCount(), players);
     }
     // get attached to player
-    final PlayerId playerAttachedTo = (PlayerId) getAttachedTo();
+    final GamePlayer playerAttachedTo = (GamePlayer) getAttachedTo();
     if (objectiveMet && getAtWarPlayers() != null) {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
     }
@@ -835,7 +835,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet = checkTechs(playerAttachedTo, data);
     }
     // check for relationships
-    if (objectiveMet && relationship.size() > 0) {
+    if (objectiveMet && !relationship.isEmpty()) {
       objectiveMet = checkRelationships();
     }
     // check for battle stats
@@ -867,8 +867,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       for (final Tuple<String, List<Territory>> entry : battle) {
         final String[] type = splitOnColon(entry.getFirst());
         // they could be "any", and if they are "any" then this would be null, which is good!
-        final PlayerId attacker = data.getPlayerList().getPlayerId(type[0]);
-        final PlayerId defender = data.getPlayerList().getPlayerId(type[1]);
+        final GamePlayer attacker = data.getPlayerList().getPlayerId(type[0]);
+        final GamePlayer defender = data.getPlayerList().getPlayerId(type[1]);
         final String resultType = type[2];
         final String roundType = type[3];
         int start = 0;
@@ -930,7 +930,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         delegateBridge.getHistoryWriter().startEvent(notificationMessage);
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, true);
         delegateBridge
-            .getRemotePlayer(delegateBridge.getPlayerId())
+            .getRemotePlayer(delegateBridge.getGamePlayer())
             .reportMessage(notificationMessage, notificationMessage);
       }
     }
@@ -945,8 +945,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkRelationships() {
     for (final String encodedRelationCheck : relationship) {
       final String[] relationCheck = splitOnColon(encodedRelationCheck);
-      final PlayerId p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
-      final PlayerId p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
+      final GamePlayer p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
+      final GamePlayer p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
       final int relationshipsExistence = Integer.parseInt(relationCheck[3]);
       final Relationship currentRelationship =
           getData().getRelationshipTracker().getRelationship(p1, p2);
@@ -984,7 +984,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Collection<Territory> territories,
       final String exclType,
       final int numberNeeded,
-      final List<PlayerId> players,
+      final List<GamePlayer> players,
       final GameData data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
@@ -1013,7 +1013,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         default:
           return false;
       }
-      if (allUnits.size() > 0) {
+      if (!allUnits.isEmpty()) {
         if (!useSpecific) {
           numberMet += 1;
           if (numberMet >= numberNeeded) {
@@ -1067,7 +1067,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Collection<Territory> territories,
       final String exclType,
       final int numberNeeded,
-      final List<PlayerId> players,
+      final List<GamePlayer> players,
       final GameData data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
@@ -1162,11 +1162,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkAlliedOwnership(
       final Collection<Territory> listedTerrs,
       final int numberNeeded,
-      final Collection<PlayerId> players,
+      final Collection<GamePlayer> players,
       final GameData data) {
     int numberMet = 0;
     boolean satisfied = false;
-    final Collection<PlayerId> allies =
+    final Collection<GamePlayer> allies =
         CollectionUtils.getMatches(
             data.getPlayerList().getPlayers(),
             Matches.isAlliedWithAnyOfThesePlayers(players, data));
@@ -1195,7 +1195,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkDirectOwnership(
       final Collection<Territory> listedTerrs,
       final int numberNeeded,
-      final Collection<PlayerId> players) {
+      final Collection<GamePlayer> players) {
     int numberMet = 0;
     boolean satisfied = false;
     for (final Territory listedTerr : listedTerrs) {
@@ -1216,9 +1216,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private boolean checkAtWar(
-      final PlayerId player, final Set<PlayerId> enemies, final int count, final GameData data) {
+      final GamePlayer player,
+      final Set<GamePlayer> enemies,
+      final int count,
+      final GameData data) {
     int found = 0;
-    for (final PlayerId e : enemies) {
+    for (final GamePlayer e : enemies) {
       if (data.getRelationshipTracker().isAtWar(player, e)) {
         found++;
       }
@@ -1232,7 +1235,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return found >= count;
   }
 
-  private boolean checkTechs(final PlayerId player, final GameData data) {
+  private boolean checkTechs(final GamePlayer player, final GameData data) {
     int found = 0;
     for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, data)) {
       if (techs.contains(a)) {

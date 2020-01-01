@@ -26,8 +26,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
@@ -49,7 +49,7 @@ class LoginModuleTest {
 
   @Mock private Predicate<LoginRequest> registeredLogin;
   @Mock private Predicate<LoginRequest> tempPasswordLogin;
-  @Mock private Function<PlayerName, Optional<String>> anonymousLogin;
+  @Mock private Function<UserName, Optional<String>> anonymousLogin;
   @Mock private Function<LoginRecord, ApiKey> apiKeyGenerator;
   @Mock private Consumer<LoginRecord> accessLogUpdater;
   @Mock private UserJdbiDao userJdbiDao;
@@ -102,7 +102,7 @@ class LoginModuleTest {
   class AnonymousLogin {
     @Test
     void loginRejected() {
-      when(anonymousLogin.apply(PlayerName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
+      when(anonymousLogin.apply(UserName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
           .thenReturn(Optional.of("error"));
 
       final LobbyLoginResponse result =
@@ -116,7 +116,7 @@ class LoginModuleTest {
 
     @Test
     void loginSuccess() {
-      when(anonymousLogin.apply(PlayerName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
+      when(anonymousLogin.apply(UserName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
           .thenReturn(Optional.empty());
       when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
 

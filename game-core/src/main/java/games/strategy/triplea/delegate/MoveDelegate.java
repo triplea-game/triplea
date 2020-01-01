@@ -3,8 +3,8 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -346,7 +346,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   private static void removeMovementFromAirOnDamagedAlliedCarriers(
-      final IDelegateBridge bridge, final PlayerId player) {
+      final IDelegateBridge bridge, final GamePlayer player) {
     final GameData data = bridge.getData();
     final Predicate<Unit> crippledAlliedCarriersMatch =
         Matches.isUnitAllied(player, data)
@@ -385,7 +385,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  private static Change giveBonusMovement(final IDelegateBridge bridge, final PlayerId player) {
+  private static Change giveBonusMovement(final IDelegateBridge bridge, final GamePlayer player) {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -395,7 +395,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   static Change giveBonusMovementToUnits(
-      final PlayerId player, final GameData data, final Territory t) {
+      final GamePlayer player, final GameData data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits()) {
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
@@ -442,7 +442,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final PlayerId player) {
+  static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final GamePlayer player) {
     final GameData data = bridge.getData();
     final boolean repairOnlyOwn =
         Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
@@ -570,7 +570,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
       return 1;
     }
-    final PlayerId owner = unitToBeRepaired.getOwner();
+    final GamePlayer owner = unitToBeRepaired.getOwner();
     final Predicate<Unit> repairUnit =
         Matches.alliedUnit(owner, data)
             .and(Matches.unitCanRepairOthers())
@@ -618,7 +618,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // the reason we use this, is if we are in edit mode, we may have a different unit owner than
     // the current player
-    final PlayerId player = getUnitsOwner(move.getUnits());
+    final GamePlayer player = getUnitsOwner(move.getUnits());
     final MoveValidationResult result =
         MoveValidator.validateMove(
             move, player, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo);
@@ -645,7 +645,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || move.getUnits().stream().anyMatch(Matches.unitIsKamikaze())) {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
-      if (kamikazeUnits.size() > 0 && bridge.getRemotePlayer().confirmMoveKamikaze()) {
+      if (!kamikazeUnits.isEmpty() && bridge.getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
           if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
             result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
@@ -704,7 +704,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         AirThatCantLandUtil.isLhtrCarrierProduction(data)
             || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
-    for (final PlayerId p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
+    for (final GamePlayer p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
       if (p.getUnitCollection().anyMatch(Matches.unitIsCarrier())) {
         hasProducedCarriers = true;
         break;
@@ -714,7 +714,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     util.removeAirThatCantLand(player, lhtrCarrierProd && hasProducedCarriers);
 
     // if edit mode has been on, we need to clean up after all players
-    for (final PlayerId player : data.getPlayerList()) {
+    for (final GamePlayer player : data.getPlayerList()) {
 
       // Check if player still has units to place
       if (!player.equals(this.player)) {

@@ -213,7 +213,7 @@ public class GameSelectorModel extends Observable {
     final GameChooserModel model = new GameChooserModel();
     GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName).orElse(null);
 
-    if (selectedGame == null && model.size() > 0) {
+    if (selectedGame == null && !model.isEmpty()) {
       selectedGame = model.get(0);
     }
     if (selectedGame == null) {

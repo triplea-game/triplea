@@ -24,7 +24,7 @@ public final class TerritoryEffectHelper {
     return (ta != null) ? ta.getTerritoryEffect() : new ArrayList<>();
   }
 
-  static int getTerritoryCombatBonus(
+  public static int getTerritoryCombatBonus(
       final UnitType type, final Collection<TerritoryEffect> effects, final boolean defending) {
     if (type == null || effects == null || effects.isEmpty()) {
       return 0;
@@ -113,6 +113,6 @@ public final class TerritoryEffectHelper {
       final TerritoryEffect effect, final UnitType unitType) {
     final Map<UnitType, BigDecimal> map =
         TerritoryEffectAttachment.get(effect).getMovementCostModifier();
-    return map.containsKey(unitType) ? map.get(unitType) : BigDecimal.ZERO;
+    return map.getOrDefault(unitType, BigDecimal.ZERO);
   }
 }

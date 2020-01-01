@@ -3,7 +3,7 @@ package games.strategy.triplea.formatter;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.DefaultNamed;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -47,7 +47,7 @@ public class MyFormatter {
    * owner}, but no reference to the owner will be mentioned in the string. The returned string will
    * have the form: {@code <q1> <ut1>, <q2> <ut2>, ... and <qN> <utN>}.
    */
-  public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerId owner) {
+  public static String unitsToTextNoOwner(final Collection<Unit> units, final GamePlayer owner) {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (final Unit unit : units) {
       if (owner == null || owner.equals(unit.getOwner())) {

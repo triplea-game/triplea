@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 /** A Messenger that can have many clients connected to it. */
 @Log
@@ -51,7 +51,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
-  private final Map<PlayerName, String> cachedMacAddresses = new ConcurrentHashMap<>();
+  private final Map<UserName, String> cachedMacAddresses = new ConcurrentHashMap<>();
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
   private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
 
@@ -117,7 +117,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   @Override
-  public @Nullable String getPlayerMac(final PlayerName name) {
+  public @Nullable String getPlayerMac(final UserName name) {
     return cachedMacAddresses.get(name);
   }
 
@@ -126,8 +126,8 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
    * {@code uniquePlayerName} is the node name and may not be identical to the name of the player
    * associated with the node
    */
-  public void notifyPlayerLogin(final PlayerName uniquePlayerName, final String mac) {
-    cachedMacAddresses.put(uniquePlayerName, mac);
+  public void notifyPlayerLogin(final UserName uniqueUserName, final String mac) {
+    cachedMacAddresses.put(uniqueUserName, mac);
   }
 
   private void notifyPlayerRemoval(final INode node) {
@@ -340,19 +340,5 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     channelToNode.put(channel, remote);
     notifyConnectionsChanged(true, remote);
     log.info("Connection added to:" + remote);
-  }
-
-  @Override
-  public INode getRemoteNode(final SocketChannel channel) {
-    return channelToNode.get(channel);
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName()
-        + " LocalNode:"
-        + node
-        + " ClientNodes:"
-        + nodeToChannel.keySet();
   }
 }

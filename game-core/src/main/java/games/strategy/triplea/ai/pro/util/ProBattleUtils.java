@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -11,11 +11,11 @@ import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.delegate.CasualtySelector;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.CasualtySelector;
+import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -175,7 +175,7 @@ public final class ProBattleUtils {
   }
 
   public static boolean territoryHasLocalLandSuperiority(
-      final ProData proData, final Territory t, final int distance, final PlayerId player) {
+      final ProData proData, final Territory t, final int distance, final GamePlayer player) {
     return territoryHasLocalLandSuperiority(proData, t, distance, player, new HashMap<>());
   }
 
@@ -187,7 +187,7 @@ public final class ProBattleUtils {
       final ProData proData,
       final Territory t,
       final int distance,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     final GameData data = proData.getData();
@@ -256,7 +256,7 @@ public final class ProBattleUtils {
       final ProData proData,
       final Territory t,
       final int distance,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProTerritory> moveMap) {
     final GameData data = proData.getData();
 
@@ -313,7 +313,7 @@ public final class ProBattleUtils {
   public static boolean territoryHasLocalNavalSuperiority(
       final ProData proData,
       final Territory t,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Collection<Unit> unitsToPlace) {
     final GameData data = proData.getData();

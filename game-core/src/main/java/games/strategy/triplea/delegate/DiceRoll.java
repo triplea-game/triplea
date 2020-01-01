@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -15,6 +15,8 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
+import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -87,7 +89,7 @@ public class DiceRoll implements Externalizable {
     this.expectedHits = expectedHits;
   }
 
-  static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
+  public static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
       final Collection<Unit> aaUnits, final GameData data, final boolean defending) {
     return getMaxAaAttackAndDiceSides(aaUnits, data, defending, new HashMap<>());
   }
@@ -96,7 +98,7 @@ public class DiceRoll implements Externalizable {
    * Returns a Tuple, the first is the max attack, the second is the max dice sides for the AA unit
    * with that attack value.
    */
-  static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
+  public static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(
       final Collection<Unit> aaUnits,
       final GameData data,
       final boolean defending,
@@ -132,7 +134,7 @@ public class DiceRoll implements Externalizable {
    * Finds total number of AA attacks that a group of units can roll against targets taking into
    * account infinite roll and overstack AA.
    */
-  static int getTotalAaAttacks(
+  public static int getTotalAaAttacks(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
       final Collection<Unit> validTargets) {
     if (unitPowerAndRollsMap.isEmpty() || validTargets.isEmpty()) {
@@ -160,7 +162,7 @@ public class DiceRoll implements Externalizable {
   }
 
   /** Used only for rolling SBR or fly over AA as they don't currently take into account support. */
-  static DiceRoll rollSbrOrFlyOverAa(
+  public static DiceRoll rollSbrOrFlyOverAa(
       final Collection<Unit> validTargets,
       final Collection<Unit> aaUnits,
       final IDelegateBridge bridge,
@@ -182,7 +184,7 @@ public class DiceRoll implements Externalizable {
    * @param defending - whether AA units are defending or attacking
    * @return DiceRoll result which includes total hits and dice that were rolled
    */
-  static DiceRoll rollAa(
+  public static DiceRoll rollAa(
       final Collection<Unit> validTargets,
       final Collection<Unit> aaUnits,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -219,7 +221,7 @@ public class DiceRoll implements Externalizable {
         getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
                 null, null, defending, unitPowerAndRollsMap, validTargets, data, false)
             .getFirst();
-    final PlayerId player = aaUnits.iterator().next().getOwner();
+    final GamePlayer player = aaUnits.iterator().next().getOwner();
     final String annotation = "Roll " + typeAa + " in " + location.getName();
     if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
       hits += getAaLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
@@ -277,7 +279,7 @@ public class DiceRoll implements Externalizable {
    *     (example: if all the rolls are at 1, we would return true, but if one roll is at 1 and
    *     another roll is at 2, then we return false)
    */
-  static Triple<Integer, Integer, Boolean>
+  public static Triple<Integer, Integer, Boolean>
       getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
           final int[] dice,
           final List<Die> sortedDice,
@@ -445,7 +447,7 @@ public class DiceRoll implements Externalizable {
    * @param aaUnits should be sorted from weakest to strongest, before the method is called, for the
    *     actual battle.
    */
-  static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
+  public static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> aaUnits,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -564,7 +566,7 @@ public class DiceRoll implements Externalizable {
       final List<Die> sortedDice,
       final int totalPower,
       final int chosenDiceSize,
-      final PlayerId playerRolling,
+      final GamePlayer playerRolling,
       final String annotation) {
     int hits = totalPower / chosenDiceSize;
     final int hitsFractional = totalPower % chosenDiceSize;
@@ -585,7 +587,7 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll rollDice(
       final List<Unit> units,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
@@ -624,7 +626,7 @@ public class DiceRoll implements Externalizable {
       final IDelegateBridge bridge,
       final int rollCount,
       final int sides,
-      final PlayerId playerRolling,
+      final GamePlayer playerRolling,
       final DiceType diceType,
       final String annotation) {
     if (rollCount == 0) {
@@ -673,7 +675,7 @@ public class DiceRoll implements Externalizable {
    * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is
    *     called, for the actual battle.
    */
-  protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
+  public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final boolean defending,
@@ -876,7 +878,7 @@ public class DiceRoll implements Externalizable {
   private static DiceRoll rollDiceLowLuck(
       final Collection<Unit> unitsList,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
@@ -1242,16 +1244,18 @@ public class DiceRoll implements Externalizable {
           final int unitPower2;
           if (u1.getDefence()) {
             unitPower1 =
-                ua1.getDefenseRolls(PlayerId.NULL_PLAYERID)
-                    * ua1.getDefense(PlayerId.NULL_PLAYERID);
+                ua1.getDefenseRolls(GamePlayer.NULL_PLAYERID)
+                    * ua1.getDefense(GamePlayer.NULL_PLAYERID);
             unitPower2 =
-                ua2.getDefenseRolls(PlayerId.NULL_PLAYERID)
-                    * ua2.getDefense(PlayerId.NULL_PLAYERID);
+                ua2.getDefenseRolls(GamePlayer.NULL_PLAYERID)
+                    * ua2.getDefense(GamePlayer.NULL_PLAYERID);
           } else {
             unitPower1 =
-                ua1.getAttackRolls(PlayerId.NULL_PLAYERID) * ua1.getAttack(PlayerId.NULL_PLAYERID);
+                ua1.getAttackRolls(GamePlayer.NULL_PLAYERID)
+                    * ua1.getAttack(GamePlayer.NULL_PLAYERID);
             unitPower2 =
-                ua2.getAttackRolls(PlayerId.NULL_PLAYERID) * ua2.getAttack(PlayerId.NULL_PLAYERID);
+                ua2.getAttackRolls(GamePlayer.NULL_PLAYERID)
+                    * ua2.getAttack(GamePlayer.NULL_PLAYERID);
           }
 
           return Integer.compare(unitPower2, unitPower1);
@@ -1262,10 +1266,10 @@ public class DiceRoll implements Externalizable {
     }
   }
 
-  static DiceRoll airBattle(
+  public static DiceRoll airBattle(
       final Collection<Unit> unitsList,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final String annotation) {
 
@@ -1384,7 +1388,7 @@ public class DiceRoll implements Externalizable {
   private static DiceRoll rollDiceNormal(
       final Collection<Unit> unitsList,
       final boolean defending,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge,
       final IBattle battle,
       final String annotation,
@@ -1479,7 +1483,7 @@ public class DiceRoll implements Externalizable {
     return diceRoll;
   }
 
-  private static boolean isFirstTurnLimitedRoll(final PlayerId player, final GameData data) {
+  private static boolean isFirstTurnLimitedRoll(final GamePlayer player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
     return !player.isNull()
         && data.getSequence().getRound() == 1
@@ -1487,7 +1491,7 @@ public class DiceRoll implements Externalizable {
         && isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
-  private static boolean isDominatingFirstRoundAttack(final PlayerId player) {
+  private static boolean isDominatingFirstRoundAttack(final GamePlayer player) {
     if (player == null) {
       return false;
     }
@@ -1496,7 +1500,7 @@ public class DiceRoll implements Externalizable {
     return ra != null && ra.getDominatingFirstRoundAttack();
   }
 
-  private static boolean isNegateDominatingFirstRoundAttack(final PlayerId player) {
+  private static boolean isNegateDominatingFirstRoundAttack(final GamePlayer player) {
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getNegateDominatingFirstRoundAttack();
@@ -1513,8 +1517,8 @@ public class DiceRoll implements Externalizable {
     return annotation.split(" ", 2)[0];
   }
 
-  static String getAnnotation(
-      final Collection<Unit> units, final PlayerId player, final IBattle battle) {
+  public static String getAnnotation(
+      final Collection<Unit> units, final GamePlayer player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player
     // name via the

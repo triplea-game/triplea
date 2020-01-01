@@ -1,7 +1,7 @@
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import java.awt.Graphics2D;
@@ -50,12 +50,12 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return getResourcesPanel(resources, false, null);
   }
 
-  public JPanel getResourcesPanel(final ResourceCollection resources, final PlayerId player) {
+  public JPanel getResourcesPanel(final ResourceCollection resources, final GamePlayer player) {
     return getResourcesPanel(resources, true, player);
   }
 
   private JPanel getResourcesPanel(
-      final ResourceCollection resources, final boolean showEmpty, final PlayerId player) {
+      final ResourceCollection resources, final boolean showEmpty, final GamePlayer player) {
     final JPanel resourcePanel = new JPanel();
     final List<Resource> resourcesInOrder;
     final GameData data = resources.getData();

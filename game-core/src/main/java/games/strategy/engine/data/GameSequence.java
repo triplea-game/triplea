@@ -25,7 +25,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * at a certain point in history, for example).
    */
   public synchronized void setRoundAndStep(
-      final int currentRound, final String stepDisplayName, final PlayerId player) {
+      final int currentRound, final String stepDisplayName, final GamePlayer player) {
     round = currentRound;
     boolean found = false;
     for (int i = 0; i < steps.size(); i++) {

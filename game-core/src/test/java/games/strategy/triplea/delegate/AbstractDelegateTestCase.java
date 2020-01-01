@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
@@ -21,10 +21,10 @@ import org.junit.jupiter.api.BeforeEach;
  */
 public abstract class AbstractDelegateTestCase {
   protected GameData gameData = TestMapGameData.DELEGATE_TEST.getGameData();
-  protected PlayerId british = GameDataTestUtil.british(gameData);
-  protected PlayerId japanese = GameDataTestUtil.japanese(gameData);
-  protected PlayerId russians = GameDataTestUtil.russians(gameData);
-  protected PlayerId germans = GameDataTestUtil.germans(gameData);
+  protected GamePlayer british = GameDataTestUtil.british(gameData);
+  protected GamePlayer japanese = GameDataTestUtil.japanese(gameData);
+  protected GamePlayer russians = GameDataTestUtil.russians(gameData);
+  protected GamePlayer germans = GameDataTestUtil.germans(gameData);
   protected Territory northSea = gameData.getMap().getTerritory("North Sea Zone");
   protected Territory blackSea = gameData.getMap().getTerritory("Black Sea Zone");
   protected Territory uk = gameData.getMap().getTerritory("United Kingdom");
@@ -92,7 +92,7 @@ public abstract class AbstractDelegateTestCase {
     addTechAttachment(germans);
   }
 
-  private void addTechAttachment(final PlayerId player) {
+  private void addTechAttachment(final GamePlayer player) {
     player.addAttachment(
         Constants.TECH_ATTACHMENT_NAME,
         new TechAttachment(Constants.TECH_ATTACHMENT_NAME, player, gameData));

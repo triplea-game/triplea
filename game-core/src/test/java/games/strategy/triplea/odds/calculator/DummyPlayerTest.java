@@ -11,12 +11,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import java.util.List;
@@ -70,7 +70,7 @@ class DummyPlayerTest {
           final var gameData = mock(GameData.class);
           when(unit.getData()).thenReturn(gameData);
           when(gameData.getResourceList()).thenReturn(mock(ResourceList.class));
-          final var playerId = mock(PlayerId.class);
+          final var playerId = mock(GamePlayer.class);
           when(unit.getOwner()).thenReturn(playerId);
         }
       }

@@ -1,7 +1,7 @@
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.message.IChannelSubscriber;
 
 /** All changes to game data (Changes and History events) can be tracked through this channel. */
@@ -23,7 +23,7 @@ public interface IGameModifiedChannel extends IChannelSubscriber {
   void stepChanged(
       String stepName,
       String delegateName,
-      PlayerId player,
+      GamePlayer player,
       int round,
       String displayName,
       boolean loadedFromSavedGame);

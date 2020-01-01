@@ -2,7 +2,7 @@ package games.strategy.triplea.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
 /** The combination of a unit type and its owner. */
 public final class UnitOwner {
   private final UnitType type;
-  private final PlayerId owner;
+  private final GamePlayer owner;
 
   public UnitOwner(final Unit unit) {
     checkNotNull(unit);
@@ -44,7 +44,7 @@ public final class UnitOwner {
     return type;
   }
 
-  public PlayerId getOwner() {
+  public GamePlayer getOwner() {
     return owner;
   }
 }

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -29,8 +29,8 @@ public final class MockDelegateBridge {
    *
    * @return A mock that can be configured using standard Mockito idioms.
    */
-  public static IDelegateBridge newDelegateBridge(final PlayerId playerId) {
-    final GameData gameData = playerId.getData();
+  public static IDelegateBridge newDelegateBridge(final GamePlayer gamePlayer) {
+    final GameData gameData = gamePlayer.getData();
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     doAnswer(
             invocation -> {
@@ -43,7 +43,7 @@ public final class MockDelegateBridge {
     when(delegateBridge.getData()).thenReturn(gameData);
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
     when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
-    when(delegateBridge.getPlayerId()).thenReturn(playerId);
+    when(delegateBridge.getGamePlayer()).thenReturn(gamePlayer);
     final Player remotePlayer = mock(Player.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
@@ -51,11 +51,11 @@ public final class MockDelegateBridge {
     return delegateBridge;
   }
 
-  static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {
+  public static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {
     return when(delegateBridge.getRandom(anyInt(), anyInt(), any(), any(), anyString()));
   }
 
-  static Answer<int[]> withValues(final int... values) {
+  public static Answer<int[]> withValues(final int... values) {
     return invocation -> {
       final int count = invocation.getArgument(1);
       assertEquals(values.length, count, "count of requested random values does not match");
@@ -63,7 +63,7 @@ public final class MockDelegateBridge {
     };
   }
 
-  static void thenGetRandomShouldHaveBeenCalled(
+  public static void thenGetRandomShouldHaveBeenCalled(
       final IDelegateBridge delegateBridge, final VerificationMode verificationMode) {
     verify(delegateBridge, verificationMode)
         .getRandom(anyInt(), anyInt(), any(), any(), anyString());

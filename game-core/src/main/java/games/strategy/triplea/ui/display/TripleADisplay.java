@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui.display;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
@@ -9,7 +9,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.util.Collection;
 import java.util.List;
@@ -37,8 +37,8 @@ public class TripleADisplay implements IDisplay {
       final Collection<Unit> attackingWaitingToDie,
       final Collection<Unit> defendingWaitingToDie,
       final Map<Unit, Collection<Unit>> unitDependents,
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final boolean isAmphibious,
       final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers) {
@@ -68,7 +68,7 @@ public class TripleADisplay implements IDisplay {
       final UUID battleId,
       final String step,
       final DiceRoll dice,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> killed,
       final Collection<Unit> damaged,
       final Map<Unit, Collection<Unit>> dependents) {
@@ -78,7 +78,7 @@ public class TripleADisplay implements IDisplay {
   @Override
   public void deadUnitNotification(
       final UUID battleId,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     ui.getBattlePanel().deadUnitNotification(player, killed, dependents);
@@ -87,7 +87,7 @@ public class TripleADisplay implements IDisplay {
   @Override
   public void changedUnitsNotification(
       final UUID battleId,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits,
       final Map<Unit, Collection<Unit>> dependents) {
@@ -109,7 +109,7 @@ public class TripleADisplay implements IDisplay {
       final String shortMessage,
       final String message,
       final String step,
-      final PlayerId retreatingPlayer) {
+      final GamePlayer retreatingPlayer) {
     // we just told the game to retreat, so we already know
     if (ui.getLocalPlayers().playing(retreatingPlayer)) {
       return;
@@ -176,22 +176,22 @@ public class TripleADisplay implements IDisplay {
 
   @Override
   public void reportMessageToPlayers(
-      final Collection<PlayerId> playersToSendTo,
-      final Collection<PlayerId> butNotThesePlayers,
+      final Collection<GamePlayer> playersToSendTo,
+      final Collection<GamePlayer> butNotThesePlayers,
       final String message,
       final String title) {
     if (playersToSendTo == null || playersToSendTo.isEmpty()) {
       return;
     }
     if (butNotThesePlayers != null) {
-      for (final PlayerId p : butNotThesePlayers) {
+      for (final GamePlayer p : butNotThesePlayers) {
         if (ui.getLocalPlayers().playing(p)) {
           return;
         }
       }
     }
     boolean isPlaying = false;
-    for (final PlayerId p : playersToSendTo) {
+    for (final GamePlayer p : playersToSendTo) {
       if (ui.getLocalPlayers().playing(p)) {
         isPlaying = true;
         break;

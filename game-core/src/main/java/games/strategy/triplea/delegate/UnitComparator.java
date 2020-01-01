@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -18,7 +18,7 @@ import java.util.Map;
 public final class UnitComparator {
   private UnitComparator() {}
 
-  static Comparator<Unit> getLowestToHighestMovementComparator() {
+  public static Comparator<Unit> getLowestToHighestMovementComparator() {
     return Comparator.comparing(
         TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft));
   }
@@ -50,7 +50,7 @@ public final class UnitComparator {
 
   /** Return a Comparator that will order the specified transports in preferred load order. */
   public static Comparator<Unit> getLoadableTransportsComparator(
-      final Route route, final PlayerId player) {
+      final Route route, final GamePlayer player) {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
         .thenComparing(getDecreasingCapacityComparator())
@@ -61,7 +61,7 @@ public final class UnitComparator {
 
   /** Return a Comparator that will order the specified transports in preferred unload order. */
   public static Comparator<Unit> getUnloadableTransportsComparator(
-      final Route route, final PlayerId player, final boolean noTies) {
+      final Route route, final GamePlayer player, final boolean noTies) {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals))
         .thenComparing(getDecreasingCapacityComparator())
@@ -131,7 +131,7 @@ public final class UnitComparator {
    * may also inspect the transport holding the units.
    */
   public static Comparator<Unit> getUnloadableUnitsComparator(
-      final List<Unit> units, final Route route, final PlayerId player) {
+      final List<Unit> units, final Route route, final GamePlayer player) {
     return Comparator.comparing(
             TripleAUnit::get,
             Comparator.comparing(
@@ -140,7 +140,7 @@ public final class UnitComparator {
         .thenComparing(getMovableUnitsComparator(units, route));
   }
 
-  static Comparator<Unit> getDecreasingBombardComparator() {
+  public static Comparator<Unit> getDecreasingBombardComparator() {
     return Comparator.comparing(
         Unit::getType,
         Comparator.comparing(

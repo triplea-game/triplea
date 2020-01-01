@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -106,7 +106,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   private boolean checkEnoughMoney(final UserActionAttachment uaa) {
-    return bridge.getPlayerId().getResources().has(uaa.getCostResources());
+    return bridge.getGamePlayer().getResources().has(uaa.getCostResources());
   }
 
   /**
@@ -118,7 +118,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     final IntegerMap<Resource> cost = uaa.getCostResources();
     if (!cost.isEmpty()) {
       final String transcriptText =
-          bridge.getPlayerId().getName()
+          bridge.getGamePlayer().getName()
               + " spend "
               + ResourceCollection.toString(cost, getData())
               + " on User Action: "
@@ -126,11 +126,11 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
       bridge.getHistoryWriter().startEvent(transcriptText);
       final Change charge =
           ChangeFactory.removeResourceCollection(
-              bridge.getPlayerId(), new ResourceCollection(getData(), cost));
+              bridge.getGamePlayer(), new ResourceCollection(getData(), cost));
       bridge.addChange(charge);
     } else {
       final String transcriptText =
-          bridge.getPlayerId().getName()
+          bridge.getGamePlayer().getName()
               + " takes action: "
               + MyFormatter.attachmentNameToText(uaa.getName());
       // we must start an event anyway
@@ -187,7 +187,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * @param uaa the UserActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final UserActionAttachment uaa) {
-    for (final PlayerId player : uaa.getActionAccept()) {
+    for (final GamePlayer player : uaa.getActionAccept()) {
       if (!getRemotePlayer(player)
           .acceptAction(
               this.player,
@@ -221,8 +221,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   private void sendNotificationToPlayers(
-      final Collection<PlayerId> toPlayers,
-      final Collection<PlayerId> dontSendTo,
+      final Collection<GamePlayer> toPlayers,
+      final Collection<GamePlayer> dontSendTo,
       final String text) {
     if (!"NONE".equals(text)) {
       bridge
@@ -236,13 +236,13 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifyOtherPlayers(
       final UserActionAttachment uaa, final String notification, final String targetNotification) {
-    final Collection<PlayerId> dontSendTo = new ArrayList<>();
+    final Collection<GamePlayer> dontSendTo = new ArrayList<>();
     dontSendTo.add(player);
 
-    final Collection<PlayerId> targets = uaa.getActionAccept();
+    final Collection<GamePlayer> targets = uaa.getActionAccept();
     sendNotificationToPlayers(targets, dontSendTo, targetNotification);
 
-    final Collection<PlayerId> otherPlayers = getData().getPlayerList().getPlayers();
+    final Collection<GamePlayer> otherPlayers = getData().getPlayerList().getPlayers();
     otherPlayers.remove(player);
     otherPlayers.removeAll(targets);
     dontSendTo.addAll(targets);
@@ -275,7 +275,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     // play a sound
     bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, player);
     final String transcriptText =
-        bridge.getPlayerId().getName()
+        bridge.getGamePlayer().getName()
             + " fails on action: "
             + MyFormatter.attachmentNameToText(uaa.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);

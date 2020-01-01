@@ -1,12 +1,13 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.pbem.PbemMessagePoster;
+import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.io.Serializable;
@@ -104,7 +105,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     updateUndoableMoveIndexes();
   }
 
-  protected PlayerId getUnitsOwner(final Collection<Unit> units) {
+  protected GamePlayer getUnitsOwner(final Collection<Unit> units) {
     // if we are not in edit mode, return player. if we are in edit mode, we use whoever's units
     // these are.
     return (units.isEmpty() || !BaseEditDelegate.getEditMode(getData()))
@@ -122,7 +123,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   public static MoveValidationResult validateMove(
       final MoveType moveType,
       final MoveDescription move,
-      final PlayerId player,
+      final GamePlayer player,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves) {
     if (moveType == MoveType.SPECIAL) {
@@ -132,7 +133,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerId player) {
+  public Collection<Territory> getTerritoriesWhereAirCantLand(final GamePlayer player) {
     return new AirThatCantLandUtil(bridge).getTerritoriesWhereAirCantLand(player);
   }
 

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.unit.scroller;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -40,7 +40,7 @@ class AvatarPanelFactory {
     flagIconImageFactory = mapPanel.getUiContext().getFlagImageFactory();
   }
 
-  JPanel buildPanel(final List<Unit> units, final PlayerId currentPlayer) {
+  JPanel buildPanel(final List<Unit> units, final GamePlayer currentPlayer) {
     final Icon unitIcon;
     final Icon flagIcon;
     if (units.isEmpty()) {
@@ -66,7 +66,7 @@ class AvatarPanelFactory {
   }
 
   private static Image createUnitStackImage(
-      final UnitImageFactory unitImageFactory, final PlayerId player, final List<Unit> units) {
+      final UnitImageFactory unitImageFactory, final GamePlayer player, final List<Unit> units) {
 
     Preconditions.checkArgument(!units.isEmpty());
 

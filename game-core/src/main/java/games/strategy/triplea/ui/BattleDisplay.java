@@ -1,18 +1,18 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.CasualtySelector;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.CasualtySelector;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -83,8 +83,8 @@ public class BattleDisplay extends JPanel {
   private static final int MY_WIDTH = 100;
   private static final int MY_HEIGHT = 100;
 
-  private final PlayerId defender;
-  private final PlayerId attacker;
+  private final GamePlayer defender;
+  private final GamePlayer attacker;
 
   @Getter(AccessLevel.PACKAGE)
   private final Territory battleLocation;
@@ -111,8 +111,8 @@ public class BattleDisplay extends JPanel {
   BattleDisplay(
       final GameData data,
       final Territory territory,
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
       final Collection<Unit> killedUnits,
@@ -197,12 +197,12 @@ public class BattleDisplay extends JPanel {
    * updates the panel content according to killed units for the player.
    *
    * @param killedUnits list of units killed
-   * @param playerId player kills belongs to
+   * @param gamePlayer player kills belongs to
    */
   private Collection<Unit> updateKilledUnits(
-      final Collection<Unit> killedUnits, final PlayerId playerId) {
+      final Collection<Unit> killedUnits, final GamePlayer gamePlayer) {
     final JPanel casualtyPanel;
-    if (playerId.equals(defender)) {
+    if (gamePlayer.equals(defender)) {
       casualtyPanel = casualtiesInstantPanelDefender;
       if (!killedUnits.isEmpty()) {
         casualtyPanel.remove(labelNoneDefender);
@@ -244,7 +244,7 @@ public class BattleDisplay extends JPanel {
   void casualtyNotification(
       final String step,
       final DiceRoll dice,
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> killed,
       final Collection<Unit> damaged,
       final Map<Unit, Collection<Unit>> dependents) {
@@ -260,7 +260,7 @@ public class BattleDisplay extends JPanel {
   }
 
   void deadUnitNotification(
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     casualties.setNotificationShort(killed, dependents);
@@ -274,7 +274,7 @@ public class BattleDisplay extends JPanel {
   }
 
   void changedUnitsNotification(
-      final PlayerId player,
+      final GamePlayer player,
       final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits) {
     if (player.equals(defender)) {
@@ -351,7 +351,7 @@ public class BattleDisplay extends JPanel {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final Territory[] retreatTo = new Territory[1];
+    final AtomicReference<Territory> retreatTo = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action =
         SwingAction.of(
@@ -385,7 +385,7 @@ public class BattleDisplay extends JPanel {
                 return;
               }
               // submerge
-              retreatTo[0] = battleLocation;
+              retreatTo.set(battleLocation);
               latch.countDown();
             });
     SwingUtilities.invokeLater(() -> actionButton.setAction(action));
@@ -394,14 +394,14 @@ public class BattleDisplay extends JPanel {
     Interruptibles.await(latch);
     mapPanel.getUiContext().removeShutdownLatch(latch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
-    return retreatTo[0];
+    return retreatTo.get();
   }
 
   private Territory getRetreatInternal(final String message, final Collection<Territory> possible) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final Territory[] retreatTo = new Territory[1];
+    final AtomicReference<Territory> retreatTo = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action =
         SwingAction.of(
@@ -441,7 +441,7 @@ public class BattleDisplay extends JPanel {
               // must be the truth
               // retreat
               if (possible.size() == 1) {
-                retreatTo[0] = possible.iterator().next();
+                retreatTo.set(possible.iterator().next());
                 latch.countDown();
               } else {
                 final RetreatComponent comp = new RetreatComponent(possible);
@@ -455,7 +455,7 @@ public class BattleDisplay extends JPanel {
                         null);
                 if (option == JOptionPane.OK_OPTION) {
                   if (comp.getSelection() != null) {
-                    retreatTo[0] = comp.getSelection();
+                    retreatTo.set(comp.getSelection());
                     latch.countDown();
                   }
                 }
@@ -467,7 +467,7 @@ public class BattleDisplay extends JPanel {
     Interruptibles.await(latch);
     mapPanel.getUiContext().removeShutdownLatch(latch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
-    return retreatTo[0];
+    return retreatTo.get();
   }
 
   private class RetreatComponent extends JPanel {
@@ -519,7 +519,7 @@ public class BattleDisplay extends JPanel {
       final int count,
       final String message,
       final DiceRoll dice,
-      final PlayerId hit,
+      final GamePlayer hit,
       final CasualtyList defaultCasualties,
       final boolean allowMultipleHitsPerUnit) {
     if (SwingUtilities.isEventDispatchThread()) {
@@ -765,8 +765,8 @@ public class BattleDisplay extends JPanel {
     this.steps.listBattle(steps);
   }
 
-  private static JComponent getPlayerComponent(final PlayerId id) {
-    final JLabel player = new JLabel(id.getName());
+  private static JComponent getPlayerComponent(final GamePlayer gamePlayer) {
+    final JLabel player = new JLabel(gamePlayer.getName());
     player.setBorder(new EmptyBorder(5, 5, 5, 5));
     player.setFont(player.getFont().deriveFont((float) 14));
     return player;
@@ -982,7 +982,7 @@ public class BattleDisplay extends JPanel {
 
   private static final class TableData {
     static final TableData NULL = new TableData();
-    private PlayerId player;
+    private GamePlayer player;
     private UnitType unitType;
     private int count;
     private Optional<ImageIcon> icon;
@@ -990,7 +990,7 @@ public class BattleDisplay extends JPanel {
     private TableData() {}
 
     TableData(
-        final PlayerId player,
+        final GamePlayer player,
         final int count,
         final UnitType type,
         final boolean damaged,

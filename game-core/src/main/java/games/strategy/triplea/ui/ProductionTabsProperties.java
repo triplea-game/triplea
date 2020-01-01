@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.io.IOException;
@@ -43,10 +43,10 @@ class ProductionTabsProperties {
   private final List<Rule> rules;
   private List<Tuple<String, List<Rule>>> ruleLists;
 
-  protected ProductionTabsProperties(final PlayerId playerId, final List<Rule> rules) {
+  protected ProductionTabsProperties(final GamePlayer gamePlayer, final List<Rule> rules) {
     this.rules = rules;
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
-    URL url = loader.getResource(PROPERTY_FILE + "." + playerId.getName() + ".properties");
+    URL url = loader.getResource(PROPERTY_FILE + "." + gamePlayer.getName() + ".properties");
     if (url == null) {
       // no production_tabs.france.properties check for production_tabs.properties
       final String propertyFile = PROPERTY_FILE + ".properties";
@@ -64,8 +64,8 @@ class ProductionTabsProperties {
     }
   }
 
-  static ProductionTabsProperties getInstance(final PlayerId playerId, final List<Rule> rules) {
-    return new ProductionTabsProperties(playerId, rules);
+  static ProductionTabsProperties getInstance(final GamePlayer gamePlayer, final List<Rule> rules) {
+    return new ProductionTabsProperties(gamePlayer, rules);
   }
 
   List<Tuple<String, List<Rule>>> getRuleLists() {

@@ -1,7 +1,7 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
@@ -15,9 +15,9 @@ final class UnitOwnerTest {
       final GameData gameData = new GameData();
       EqualsVerifier.forClass(UnitOwner.class)
           .withPrefabValues(
-              PlayerId.class,
-              new PlayerId("player1Name", gameData),
-              new PlayerId("player2Name", gameData))
+              GamePlayer.class,
+              new GamePlayer("player1Name", gameData),
+              new GamePlayer("player2Name", gameData))
           .withPrefabValues(
               UnitType.class,
               new UnitType("unitType1Name", gameData),

@@ -14,14 +14,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleTracker;
+import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -302,7 +305,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(equatorialAfrica, westAfrica);
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
     assertEquals(0, westAfrica.getUnitCollection().size());
-    assertEquals(PlayerId.NULL_PLAYERID, westAfrica.getOwner());
+    assertEquals(GamePlayer.NULL_PLAYERID, westAfrica.getOwner());
     assertEquals(35, british.getResources().getQuantity(pus));
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);

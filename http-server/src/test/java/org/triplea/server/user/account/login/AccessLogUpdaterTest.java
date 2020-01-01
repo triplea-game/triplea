@@ -10,8 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.access.log.AccessLogDao;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,7 +23,7 @@ class AccessLogUpdaterTest {
           .systemId(SystemId.of("system-id"))
           .playerChatId(PlayerChatId.newId())
           .ip("ip")
-          .playerName(PlayerName.of("player-name"))
+          .userName(UserName.of("player-name"))
           .build();
 
   private static final LoginRecord ANONYMOUS_LOGIN_RECORD =
@@ -32,7 +32,7 @@ class AccessLogUpdaterTest {
           .systemId(SystemId.of("system-id"))
           .playerChatId(PlayerChatId.newId())
           .ip("ip")
-          .playerName(PlayerName.of("player-name"))
+          .userName(UserName.of("player-name"))
           .build();
 
   @Mock private AccessLogDao accessLogDao;
@@ -52,7 +52,7 @@ class AccessLogUpdaterTest {
 
     verify(accessLogDao)
         .insertRegisteredUserRecord(
-            REGISTEREDLOGIN_RECORD.getPlayerName().getValue(),
+            REGISTEREDLOGIN_RECORD.getUserName().getValue(),
             REGISTEREDLOGIN_RECORD.getIp(),
             REGISTEREDLOGIN_RECORD.getSystemId().getValue());
   }
@@ -65,7 +65,7 @@ class AccessLogUpdaterTest {
 
     verify(accessLogDao)
         .insertAnonymousUserRecord(
-            ANONYMOUS_LOGIN_RECORD.getPlayerName().getValue(),
+            ANONYMOUS_LOGIN_RECORD.getUserName().getValue(),
             ANONYMOUS_LOGIN_RECORD.getIp(),
             ANONYMOUS_LOGIN_RECORD.getSystemId().getValue());
   }

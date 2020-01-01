@@ -8,10 +8,10 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Named;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
@@ -27,13 +27,13 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
-import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
 import java.util.ArrayList;
@@ -60,15 +60,15 @@ import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
 
 /**
- * An attachment for instances of {@link PlayerId} that defines actions to be triggered upon various
- * events.
+ * An attachment for instances of {@link GamePlayer} that defines actions to be triggered upon
+ * various events.
  */
 @Log
 public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
-  private static final Map<String, BiFunction<PlayerId, String, DefaultAttachment>>
+  private static final Map<String, BiFunction<GamePlayer, String, DefaultAttachment>>
       playerPropertyChangeAttachmentNameToAttachmentGetter =
-          ImmutableMap.<String, BiFunction<PlayerId, String, DefaultAttachment>>builder()
+          ImmutableMap.<String, BiFunction<GamePlayer, String, DefaultAttachment>>builder()
               .put("PlayerAttachment", PlayerAttachment::get)
               .put("RulesAttachment", RulesAttachment::get)
               .put("TriggerAttachment", TriggerAttachment::get)
@@ -112,7 +112,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private Tuple<String, String> territoryAttachmentName =
       null; // covers TerritoryAttachment, CanalAttachment
   private List<Tuple<String, String>> territoryProperty = null;
-  private List<PlayerId> players = new ArrayList<>();
+  private List<GamePlayer> players = new ArrayList<>();
   // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment,
   // UserActionAttachment
   private Tuple<String, String> playerAttachmentName = null;
@@ -136,14 +136,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    *
    * @return a new trigger attachment
    */
-  public static TriggerAttachment get(final PlayerId player, final String nameOfAttachment) {
+  public static TriggerAttachment get(final GamePlayer player, final String nameOfAttachment) {
     return get(player, nameOfAttachment, null);
   }
 
   static TriggerAttachment get(
-      final PlayerId player,
+      final GamePlayer player,
       final String nameOfAttachment,
-      final Collection<PlayerId> playersToSearch) {
+      final Collection<GamePlayer> playersToSearch) {
     TriggerAttachment ta = (TriggerAttachment) player.getAttachment(nameOfAttachment);
     if (ta == null) {
       if (playersToSearch == null) {
@@ -154,7 +154,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 + nameOfAttachment);
       }
 
-      for (final PlayerId otherPlayer : playersToSearch) {
+      for (final GamePlayer otherPlayer : playersToSearch) {
         if (otherPlayer.equals(player)) {
           continue;
         }
@@ -179,7 +179,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    *     triggers for this player)
    */
   static Set<TriggerAttachment> getTriggers(
-      final PlayerId player, final Predicate<TriggerAttachment> cond) {
+      final GamePlayer player, final Predicate<TriggerAttachment> cond) {
     final Set<TriggerAttachment> trigs = new HashSet<>();
     for (final IAttachment a : player.getAttachments().values()) {
       if (a instanceof TriggerAttachment) {
@@ -197,7 +197,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * all the conditions which are satisfied.
    */
   public static void collectAndFireTriggers(
-      final Set<PlayerId> players,
+      final Set<GamePlayer> players,
       final Predicate<TriggerAttachment> triggerMatch,
       final IDelegateBridge bridge,
       final String beforeOrAfter,
@@ -223,9 +223,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Set<TriggerAttachment> collectForAllTriggersMatching(
-      final Set<PlayerId> players, final Predicate<TriggerAttachment> triggerMatch) {
+      final Set<GamePlayer> players, final Predicate<TriggerAttachment> triggerMatch) {
     final Set<TriggerAttachment> toFirePossible = new HashSet<>();
-    for (final PlayerId player : players) {
+    for (final GamePlayer player : players) {
       toFirePossible.addAll(TriggerAttachment.getTriggers(player, triggerMatch));
     }
     return toFirePossible;
@@ -354,7 +354,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     TriggerAttachment trigger = null;
-    for (final PlayerId player : getData().getPlayerList().getPlayers()) {
+    for (final GamePlayer player : getData().getPlayerList().getPlayers()) {
       for (final TriggerAttachment ta : getTriggers(player, null)) {
         if (ta.getName().equals(s[0])) {
           trigger = ta;
@@ -890,7 +890,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private void setPlayers(final String names) throws GameParseException {
     final String[] s = splitOnColon(names);
     for (final String element : s) {
-      final PlayerId player = getData().getPlayerList().getPlayerId(element);
+      final GamePlayer player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       }
@@ -898,12 +898,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
-  private void setPlayers(final List<PlayerId> value) {
+  private void setPlayers(final List<GamePlayer> value) {
     players = value;
   }
 
-  private List<PlayerId> getPlayers() {
-    return players.isEmpty() ? new ArrayList<>(List.of((PlayerId) getAttachedTo())) : players;
+  private List<GamePlayer> getPlayers() {
+    return players.isEmpty() ? new ArrayList<>(List.of((GamePlayer) getAttachedTo())) : players;
   }
 
   private void resetPlayers() {
@@ -1389,12 +1389,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!s[1].equalsIgnoreCase("any")) {
-      final PlayerId oldOwner = getData().getPlayerList().getPlayerId(s[1]);
+      final GamePlayer oldOwner = getData().getPlayerList().getPlayerId(s[1]);
       if (oldOwner == null) {
         throw new GameParseException("No such player: " + s[1] + thisErrorMsg());
       }
     }
-    final PlayerId newOwner = getData().getPlayerList().getPlayerId(s[2]);
+    final GamePlayer newOwner = getData().getPlayerList().getPlayerId(s[2]);
     if (newOwner == null) {
       throw new GameParseException("No such player: " + s[2] + thisErrorMsg());
     }
@@ -1418,7 +1418,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final TriggerAttachment t,
       final Territory terr,
       final IntegerMap<UnitType> utMap,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge) {
     final CompositeChange change = new CompositeChange();
     final Collection<Unit> totalRemoved = new ArrayList<>();
@@ -1452,7 +1452,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final TriggerAttachment t,
       final Territory terr,
       final IntegerMap<UnitType> utMap,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge bridge) {
     // createUnits
     final List<Unit> units = new ArrayList<>();
@@ -1670,7 +1670,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         final Tuple<Boolean, String> clearFirstNewValue =
             getClearFirstNewValue(property.getSecond());
 
-        for (final PlayerId player : t.getPlayers()) {
+        for (final GamePlayer player : t.getPlayers()) {
 
           final String attachmentName = t.getPlayerAttachmentName().getFirst();
           if (playerPropertyChangeAttachmentNameToAttachmentGetter.containsKey(attachmentName)) {
@@ -1936,8 +1936,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final String relationshipChange : t.getRelationshipChange()) {
         final String[] s = splitOnColon(relationshipChange);
-        final PlayerId player1 = data.getPlayerList().getPlayerId(s[0]);
-        final PlayerId player2 = data.getPlayerList().getPlayerId(s[1]);
+        final GamePlayer player1 = data.getPlayerList().getPlayerId(s[0]);
+        final GamePlayer player2 = data.getPlayerList().getPlayerId(s[1]);
         final RelationshipType currentRelation =
             data.getRelationshipTracker().getRelationshipType(player1, player2);
         if (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
@@ -1998,7 +1998,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         for (final String cat : t.getAvailableTech().keySet()) {
           final TechnologyFrontier tf =
               player.getTechnologyFrontierList().getTechnologyFrontier(cat);
@@ -2050,7 +2050,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         for (final TechAdvance ta : t.getTech()) {
           if (ta.hasTech(TechAttachment.get(player))) {
             continue;
@@ -2084,7 +2084,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         change.add(ChangeFactory.changeProductionFrontier(player, t.getFrontier()));
         bridge
             .getHistoryWriter()
@@ -2177,7 +2177,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         for (final String usaString : t.getSupport().keySet()) {
           UnitSupportAttachment usa = null;
           for (final UnitSupportAttachment support : UnitSupportAttachment.get(data)) {
@@ -2190,7 +2190,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             throw new IllegalStateException(
                 "Could not find unitSupportAttachment. name:" + usaString);
           }
-          final List<PlayerId> p = new ArrayList<>(usa.getPlayers());
+          final List<GamePlayer> p = new ArrayList<>(usa.getPlayers());
           if (p.contains(player)) {
             if (!t.getSupport().get(usa.getName())) {
               p.remove(player);
@@ -2252,11 +2252,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           territories.add(territorySet);
         }
         // if null, then is must be "any", so then any player
-        final PlayerId oldOwner = data.getPlayerList().getPlayerId(s[1]);
-        final PlayerId newOwner = data.getPlayerList().getPlayerId(s[2]);
+        final GamePlayer oldOwner = data.getPlayerList().getPlayerId(s[1]);
+        final GamePlayer newOwner = data.getPlayerList().getPlayerId(s[2]);
         final boolean captured = getBool(s[3]);
         for (final Territory terr : territories) {
-          final PlayerId currentOwner = terr.getOwner();
+          final GamePlayer currentOwner = terr.getOwner();
           if (TerritoryAttachment.get(terr) == null) {
             continue; // any territory that has no territory attachment should definitely not be
             // changed
@@ -2297,7 +2297,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         for (int i = 0; i < eachMultiple; ++i) {
           final List<Unit> units = new ArrayList<>();
           for (final UnitType u : t.getPurchase().keySet()) {
@@ -2334,7 +2334,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         for (final Territory ter : t.getRemoveUnits().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
             removeUnits(t, ter, t.getRemoveUnits().get(ter), player, bridge);
@@ -2359,7 +2359,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         for (final Territory ter : t.getPlacement().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
             placeUnits(t, ter, t.getPlacement().get(ter), player, bridge);
@@ -2409,7 +2409,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerId player : t.getPlayers()) {
+      for (final GamePlayer player : t.getPlayers()) {
         for (int i = 0; i < eachMultiple; ++i) {
           int toAdd = t.getResourceCount();
           if (t.getResource().equals(Constants.PUS)) {
@@ -2465,7 +2465,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       for (final Tuple<String, String> tuple : t.getActivateTrigger()) {
         // numberOfTimes:useUses:testUses:testConditions:testChance
         TriggerAttachment toFire = null;
-        for (final PlayerId player : data.getPlayerList().getPlayers()) {
+        for (final GamePlayer player : data.getPlayerList().getPlayers()) {
           for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
             if (ta.getName().equals(tuple.getFirst())) {
               toFire = ta;

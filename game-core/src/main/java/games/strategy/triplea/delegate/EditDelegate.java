@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -11,6 +11,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
@@ -42,11 +43,11 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (units.isEmpty()) {
       return null;
     }
-    final Collection<PlayerId> owners = new HashSet<>();
+    final Collection<GamePlayer> owners = new HashSet<>();
     for (final Unit u : units) {
       owners.add(u.getOwner());
     }
-    for (final PlayerId p : owners) {
+    for (final GamePlayer p : owners) {
       final List<Unit> unitsOwned = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(p));
       logEvent(
           "Removing units owned by "
@@ -76,7 +77,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return null;
     }
     // now make sure land units are put on transports properly
-    final PlayerId player = units.iterator().next().getOwner();
+    final GamePlayer player = units.iterator().next().getOwner();
     final GameData data = getData();
     Map<Unit, Unit> mapLoading = null;
     if (territory.isWater()) {
@@ -133,7 +134,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changeTerritoryOwner(final Territory territory, final PlayerId player) {
+  public String changeTerritoryOwner(final Territory territory, final GamePlayer player) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -176,7 +177,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changePUs(final PlayerId player, final int newTotal) {
+  public String changePUs(final GamePlayer player, final int newTotal) {
     final String result = checkEditMode();
     if (result != null) {
       return result;
@@ -196,7 +197,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changeTechTokens(final PlayerId player, final int newTotal) {
+  public String changeTechTokens(final GamePlayer player, final int newTotal) {
     final String result = checkEditMode();
     if (result != null) {
       return result;
@@ -218,7 +219,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String addTechAdvance(final PlayerId player, final Collection<TechAdvance> advances) {
+  public String addTechAdvance(final GamePlayer player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -234,7 +235,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String removeTechAdvance(final PlayerId player, final Collection<TechAdvance> advances) {
+  public String removeTechAdvance(final GamePlayer player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -321,7 +322,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changePoliticalRelationships(
-      final Collection<Triple<PlayerId, PlayerId, RelationshipType>> relationshipChanges) {
+      final Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> relationshipChanges) {
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
       return null;
     }
@@ -334,7 +335,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(getData());
-    for (final Triple<PlayerId, PlayerId, RelationshipType> relationshipChange :
+    for (final Triple<GamePlayer, GamePlayer, RelationshipType> relationshipChange :
         relationshipChanges) {
       final RelationshipType currentRelation =
           getData()

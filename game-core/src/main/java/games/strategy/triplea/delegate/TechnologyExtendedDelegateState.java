@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
@@ -11,5 +11,5 @@ class TechnologyExtendedDelegateState implements Serializable {
   Serializable superState;
   // add other variables here:
   boolean needToInitialize;
-  Map<PlayerId, Collection<TechAdvance>> techs;
+  Map<GamePlayer, Collection<TechAdvance>> techs;
 }

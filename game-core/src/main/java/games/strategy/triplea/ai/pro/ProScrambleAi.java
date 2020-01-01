@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -10,11 +10,11 @@ import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
-import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.IBattle;
-import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.ScrambleLogic;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -42,7 +42,7 @@ class ProScrambleAi {
 
     // Get battle data
     final GameData data = proData.getData();
-    final PlayerId player = proData.getPlayer();
+    final GamePlayer player = proData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle =
         delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);

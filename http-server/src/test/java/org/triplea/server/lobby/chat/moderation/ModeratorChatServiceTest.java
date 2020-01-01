@@ -24,15 +24,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.lobby.server.db.dao.api.key.GamePlayerLookup;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
-import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
 import org.triplea.server.http.web.socket.MessageBroadcaster;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.remote.actions.RemoteActionsEventQueue;
@@ -45,10 +45,10 @@ class ModeratorChatServiceTest {
   private static final BanPlayerRequest BAN_PLAYER_REQUEST =
       BanPlayerRequest.builder().playerChatId("chat-id").banMinutes(20).build();
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
-  private static final PlayerIdLookup PLAYER_ID_LOOKUP =
-      PlayerIdLookup.builder()
+  private static final GamePlayerLookup PLAYER_ID_LOOKUP =
+      GamePlayerLookup.builder()
           .ip("99.99.99.99")
-          .playerName(PlayerName.of("player-name"))
+          .userName(UserName.of("player-name"))
           .systemId(SystemId.of("system-id"))
           .build();
 
@@ -95,10 +95,10 @@ class ModeratorChatServiceTest {
       verifyBanMessageIsEmittedToEventQueue();
     }
 
-    private void givenPlayerLookup(final PlayerIdLookup playerIdLookup) {
+    private void givenPlayerLookup(final GamePlayerLookup gamePlayerLookup) {
       when(lobbyApiKeyDaoWrapper.lookupPlayerByChatId(
               PlayerChatId.of(BAN_PLAYER_REQUEST.getPlayerChatId())))
-          .thenReturn(Optional.of(playerIdLookup));
+          .thenReturn(Optional.of(gamePlayerLookup));
     }
 
     private void givenOpenChatterSessions(final Collection<Session> sessions) {
@@ -109,7 +109,7 @@ class ModeratorChatServiceTest {
       final ArgumentCaptor<String> disconnectMessageCaptor = ArgumentCaptor.forClass(String.class);
       verify(chatters)
           .disconnectPlayerSessions(
-              eq(PLAYER_ID_LOOKUP.getPlayerName()), disconnectMessageCaptor.capture());
+              eq(PLAYER_ID_LOOKUP.getUserName()), disconnectMessageCaptor.capture());
       assertThat(
           "Make sure ban message has the word 'banned'",
           disconnectMessageCaptor.getValue().toLowerCase(),
@@ -137,7 +137,7 @@ class ModeratorChatServiceTest {
       assertThat(
           "Make sure ban event message contains the banned players name",
           serverMessageCaptor.getValue().getPayload(String.class),
-          containsString(PLAYER_ID_LOOKUP.getPlayerName().getValue()));
+          containsString(PLAYER_ID_LOOKUP.getUserName().getValue()));
       assertThat(
           "Make sure ban event message contains the word ban",
           serverMessageCaptor.getValue().getPayload(String.class).toLowerCase(),
@@ -186,7 +186,7 @@ class ModeratorChatServiceTest {
       final ArgumentCaptor<String> disconnectMessageCaptor = ArgumentCaptor.forClass(String.class);
       verify(chatters)
           .disconnectPlayerSessions(
-              eq(PLAYER_ID_LOOKUP.getPlayerName()), disconnectMessageCaptor.capture());
+              eq(PLAYER_ID_LOOKUP.getUserName()), disconnectMessageCaptor.capture());
       assertThat(
           "Disconnect message should contain the word 'disconnect'",
           disconnectMessageCaptor.getValue().toLowerCase(),
@@ -208,7 +208,7 @@ class ModeratorChatServiceTest {
       assertThat(
           "Disconnect message contains player name",
           eventMessageCaptor.getValue().getPayload(String.class),
-          containsString(PLAYER_ID_LOOKUP.getPlayerName().getValue()));
+          containsString(PLAYER_ID_LOOKUP.getUserName().getValue()));
     }
 
     private void verifyDisconnectIsRecorded() {

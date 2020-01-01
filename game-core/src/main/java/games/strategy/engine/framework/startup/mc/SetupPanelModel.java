@@ -25,6 +25,7 @@ import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 import org.triplea.live.servers.LiveServersFetcher;
+import org.triplea.swing.SwingComponents;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
@@ -53,7 +54,12 @@ public class SetupPanelModel implements ServerSetupModel {
    * clients.
    */
   public void showServer() {
-    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui));
+    new ServerModel(
+        gameSelectorModel,
+        this,
+        ui,
+        new HeadedLaunchAction(ui),
+        error -> SwingComponents.showError(null, "Connection problem", error));
   }
 
   @Override

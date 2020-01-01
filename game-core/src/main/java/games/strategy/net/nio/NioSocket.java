@@ -37,10 +37,6 @@ public class NioSocket implements ErrorReporter {
     return listener.getLocalNode();
   }
 
-  INode getRemoteNode(final SocketChannel channel) {
-    return listener.getRemoteNode(channel);
-  }
-
   /** Stop our threads. This does not close the sockets we are connected to. */
   public void shutDown() {
     writer.shutDown();

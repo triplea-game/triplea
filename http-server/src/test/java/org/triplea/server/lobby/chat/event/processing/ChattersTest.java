@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.server.lobby.chat.event.processing.Chatters.ChatterSession;
 
@@ -35,9 +35,9 @@ import org.triplea.server.lobby.chat.event.processing.Chatters.ChatterSession;
 class ChattersTest {
 
   private static final ChatParticipant CHAT_PARTICIPANT =
-      ChatParticipant.builder().playerName(PlayerName.of("player-name")).build();
+      ChatParticipant.builder().userName(UserName.of("player-name")).build();
   private static final ChatParticipant CHAT_PARTICIPANT_2 =
-      ChatParticipant.builder().playerName(PlayerName.of("player-name2")).build();
+      ChatParticipant.builder().userName(UserName.of("player-name2")).build();
   private static final String ID = "id";
 
   private final Chatters chatters = new Chatters();
@@ -50,7 +50,7 @@ class ChattersTest {
     when(session.getId()).thenReturn(ID);
     chatters.put(session, CHAT_PARTICIPANT);
 
-    assertThat(chatters.removeSession(session), isPresentAndIs(CHAT_PARTICIPANT.getPlayerName()));
+    assertThat(chatters.removeSession(session), isPresentAndIs(CHAT_PARTICIPANT.getUserName()));
 
     assertThat(
         "Second remove should be empty, session is already removed.",
@@ -83,22 +83,22 @@ class ChattersTest {
   @Test
   void hasPlayer() {
     // no chatters added yet
-    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT.getPlayerName()), is(false));
-    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT_2.getPlayerName()), is(false));
+    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT.getUserName()), is(false));
+    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT_2.getUserName()), is(false));
 
     when(session.getId()).thenReturn(ID);
     chatters.put(session, CHAT_PARTICIPANT);
 
     // one chatter is added
-    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT.getPlayerName()), is(true));
-    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT_2.getPlayerName()), is(false));
+    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT.getUserName()), is(true));
+    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT_2.getUserName()), is(false));
 
     when(session2.getId()).thenReturn("id2");
     chatters.put(session2, CHAT_PARTICIPANT_2);
 
     // two chatters added, both should exist
-    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT.getPlayerName()), is(true));
-    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT_2.getPlayerName()), is(true));
+    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT.getUserName()), is(true));
+    assertThat(chatters.hasPlayer(CHAT_PARTICIPANT_2.getUserName()), is(true));
   }
 
   @Nested
@@ -132,7 +132,7 @@ class ChattersTest {
   class DisconnectPlayerSessions {
     @Test
     void noOpIfPlayerNotConnected() {
-      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getPlayerName(), "disconnect message");
+      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
     }
 
     @Test
@@ -140,7 +140,7 @@ class ChattersTest {
       when(session.getId()).thenReturn(ID);
       chatters.put(session, CHAT_PARTICIPANT);
 
-      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getPlayerName(), "disconnect message");
+      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
 
       verify(session).close(any(CloseReason.class));
     }
@@ -152,10 +152,10 @@ class ChattersTest {
       final ChatParticipant participant2 = givenChatParticipant(session2);
       assertThat(
           "verify test data assumption",
-          participant1.getPlayerName(),
-          is(participant2.getPlayerName()));
+          participant1.getUserName(),
+          is(participant2.getUserName()));
 
-      chatters.disconnectPlayerSessions(participant1.getPlayerName(), "disconnect message");
+      chatters.disconnectPlayerSessions(participant1.getUserName(), "disconnect message");
 
       verify(session).close(any(CloseReason.class));
       verify(session2).close(any(CloseReason.class));
@@ -165,7 +165,7 @@ class ChattersTest {
       final var chatParticipant =
           ChatParticipant.builder()
               .playerChatId(PlayerChatId.newId())
-              .playerName(PlayerName.of("player-name"))
+              .userName(UserName.of("player-name"))
               .build();
 
       when(chatterSession.getId()).thenReturn(UUID.randomUUID().toString());

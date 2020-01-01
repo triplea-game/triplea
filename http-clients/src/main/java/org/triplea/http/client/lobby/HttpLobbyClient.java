@@ -23,18 +23,20 @@ public class HttpLobbyClient {
   private final UserAccountClient userAccountClient;
   private final RemoteActionsClient remoteActionsClient;
 
-  private HttpLobbyClient(final URI lobbyUri, final ApiKey apiKey) {
+  private HttpLobbyClient(
+      final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
     connectivityCheckClient = ConnectivityCheckClient.newClient(lobbyUri, apiKey);
-    gameListingClient = GameListingClient.newClient(lobbyUri, apiKey);
+    gameListingClient = GameListingClient.newClient(lobbyUri, apiKey, errorHandler);
     httpModeratorToolboxClient = HttpModeratorToolboxClient.newClient(lobbyUri, apiKey);
-    lobbyChatClient = LobbyChatClient.newClient(lobbyUri, apiKey);
+    lobbyChatClient = LobbyChatClient.newClient(lobbyUri, apiKey, errorHandler);
     moderatorLobbyClient = ModeratorChatClient.newClient(lobbyUri, apiKey);
     userAccountClient = UserAccountClient.newClient(lobbyUri, apiKey);
     remoteActionsClient = new RemoteActionsClient(lobbyUri, apiKey);
   }
 
-  public static HttpLobbyClient newClient(final URI lobbyUri, final ApiKey apiKey) {
-    return new HttpLobbyClient(lobbyUri, apiKey);
+  public static HttpLobbyClient newClient(
+      final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
+    return new HttpLobbyClient(lobbyUri, apiKey, errorHandler);
   }
 
   /**

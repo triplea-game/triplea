@@ -80,7 +80,7 @@ final class LobbyGameTableModelTest {
 
       when(httpLobbyClient.getGameListingClient()).thenReturn(gameListingClient);
       when(gameListingClient.fetchGameListing()).thenReturn(fakeGameListing);
-      testObj = new LobbyGameTableModel(true, httpLobbyClient, errMsg -> {});
+      testObj = new LobbyGameTableModel(true, httpLobbyClient);
       waitForSwingThreads();
     }
 

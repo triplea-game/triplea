@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.ui.Util;
 import java.awt.Component;
@@ -18,9 +18,9 @@ import org.triplea.swing.SwingComponents;
 
 class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
-  private JList<PlayerId> list;
+  private JList<GamePlayer> list;
   private final PlayerList players;
-  private final PlayerId defaultPlayer;
+  private final GamePlayer defaultPlayer;
   private final UiContext uiContext;
   private final boolean allowNeutral;
 
@@ -30,7 +30,7 @@ class PlayerChooser extends JOptionPane {
 
   PlayerChooser(
       final PlayerList players,
-      final PlayerId defaultPlayer,
+      final GamePlayer defaultPlayer,
       final UiContext uiContext,
       final boolean allowNeutral) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
@@ -44,11 +44,11 @@ class PlayerChooser extends JOptionPane {
   }
 
   private void createComponents() {
-    final Collection<PlayerId> players = new ArrayList<>(this.players.getPlayers());
+    final Collection<GamePlayer> players = new ArrayList<>(this.players.getPlayers());
     if (allowNeutral) {
-      players.add(PlayerId.NULL_PLAYERID);
+      players.add(GamePlayer.NULL_PLAYERID);
     }
-    list = new JList<>(players.toArray(new PlayerId[0]));
+    list = new JList<>(players.toArray(new GamePlayer[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setSelectedValue(defaultPlayer, true);
     list.setFocusable(false);
@@ -77,7 +77,7 @@ class PlayerChooser extends JOptionPane {
    *
    * @return the player or null
    */
-  PlayerId getSelected() {
+  GamePlayer getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
     }
@@ -100,11 +100,11 @@ class PlayerChooser extends JOptionPane {
         final boolean isSelected,
         final boolean cellHasFocus) {
       super.getListCellRendererComponent(
-          list, ((PlayerId) value).getName(), index, isSelected, cellHasFocus);
-      if (uiContext == null || value == PlayerId.NULL_PLAYERID) {
+          list, ((GamePlayer) value).getName(), index, isSelected, cellHasFocus);
+      if (uiContext == null || value == GamePlayer.NULL_PLAYERID) {
         setIcon(new ImageIcon(Util.newImage(32, 32, true)));
       } else {
-        setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerId) value)));
+        setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value)));
       }
       return this;
     }

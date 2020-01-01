@@ -141,10 +141,13 @@ function noTabsInSql() {
 }
 
 function useEmptyOverSizeEqualsZero() {
-  title "Avoid size() == 0, use isEmpty() instead"
+  title "Avoid using size() to check for empty or not empty"
+  example "size() == 0 -> isEmpty(), size() > 0 -> !isEmpty()"
   local found=0
   while read -r file; do
-    grep --color=auto -H "size() == 0" "$file" && status=1 && found=1
+    grep --color=auto -EH \
+        "size\(\) == 0|size\(\) < 1|size\(\) <= 0|size\(\) > 0|size\(\) != 0|size\(\) >= 1" "$file" \
+      && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
 
   displayResult "$found"

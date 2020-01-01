@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -41,7 +41,7 @@ public final class AirMovementValidator {
   static MoveValidationResult validateAirCanLand(
       final Collection<Unit> units,
       final Route route,
-      final PlayerId player,
+      final GamePlayer player,
       final MoveValidationResult result) {
     final GameData data = player.getData();
     // First check if we even need to check
@@ -167,7 +167,7 @@ public final class AirMovementValidator {
   }
 
   private static LinkedHashMap<Unit, BigDecimal> getMovementLeftForValidatingAir(
-      final Collection<Unit> airBeingValidated, final PlayerId player, final Route route) {
+      final Collection<Unit> airBeingValidated, final GamePlayer player, final Route route) {
     final LinkedHashMap<Unit, BigDecimal> map = new LinkedHashMap<>();
     for (final Unit unit : airBeingValidated) {
       // unit must be in either start or end.
@@ -196,7 +196,7 @@ public final class AirMovementValidator {
   private static IntegerMap<Territory> populateStaticAlliedAndBuildingCarrierCapacity(
       final List<Territory> landingSpots,
       final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters,
-      final PlayerId player,
+      final GamePlayer player,
       final GameData data) {
     final IntegerMap<Territory> startingSpace = new IntegerMap<>();
     final Predicate<Unit> carrierAlliedNotOwned =
@@ -209,7 +209,7 @@ public final class AirMovementValidator {
             || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     final List<Unit> carriersInProductionQueue =
         GameStepPropertiesHelper.getCombinedTurns(data, player).stream()
-            .map(PlayerId::getUnitCollection)
+            .map(GamePlayer::getUnitCollection)
             .map(units -> units.getMatches(Matches.unitIsCarrier()))
             .flatMap(List::stream)
             .collect(Collectors.toList());
@@ -247,7 +247,7 @@ public final class AirMovementValidator {
       final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters,
       final Collection<Unit> airThatMustLandOnCarriers,
       final Collection<Unit> airNotToConsider,
-      final PlayerId player,
+      final GamePlayer player,
       final Route route,
       final GameData data) {
     final Predicate<Unit> ownedCarrierMatch =
@@ -548,7 +548,7 @@ public final class AirMovementValidator {
   }
 
   private static BigDecimal maxMovementLeftForAllOwnedCarriers(
-      final PlayerId player, final GameData data) {
+      final GamePlayer player, final GameData data) {
     BigDecimal max = BigDecimal.ZERO;
     final Predicate<Unit> ownedCarrier = Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
@@ -560,7 +560,7 @@ public final class AirMovementValidator {
   }
 
   private static BigDecimal maxMovementLeftForTheseAirUnitsBeingValidated(
-      final Collection<Unit> airUnits, final Route route, final PlayerId player) {
+      final Collection<Unit> airUnits, final Route route, final GamePlayer player) {
     BigDecimal max = BigDecimal.ZERO;
     for (final Unit u : airUnits) {
       if (Matches.unitIsOwnedBy(player).test(u)) {
@@ -610,7 +610,7 @@ public final class AirMovementValidator {
    * @param player the player owning the units
    */
   private static List<Unit> getAirUnitsToValidate(
-      final Collection<Unit> units, final Route route, final PlayerId player) {
+      final Collection<Unit> units, final Route route, final GamePlayer player) {
     final Predicate<Unit> ownedAirMatch =
         Matches.unitIsAir().and(Matches.unitOwnedBy(player)).and(Matches.unitIsKamikaze().negate());
     final List<Unit> ownedAir = new ArrayList<>();
@@ -637,7 +637,7 @@ public final class AirMovementValidator {
   private static boolean canAirReachThisSpot(
       final Unit unit,
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final Territory currentSpot,
       final BigDecimal movementLeft,
       final Territory landingSpot,
@@ -686,7 +686,7 @@ public final class AirMovementValidator {
       return false;
     }
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
-    final PlayerId player = unit.getOwner();
+    final GamePlayer player = unit.getOwner();
     final List<Territory> possibleSpots =
         CollectionUtils.getMatches(
             data.getMap()
@@ -716,7 +716,7 @@ public final class AirMovementValidator {
   public static boolean canLand(
       final Collection<Unit> airUnits,
       final Territory territory,
-      final PlayerId player,
+      final GamePlayer player,
       final GameData data) {
     if (airUnits.isEmpty() || !airUnits.stream().allMatch(Matches.unitIsAir())) {
       throw new IllegalArgumentException("can only test if air will land");
@@ -815,7 +815,7 @@ public final class AirMovementValidator {
     return 0;
   }
 
-  static int carrierCost(final Collection<Unit> units) {
+  public static int carrierCost(final Collection<Unit> units) {
     int sum = 0;
     for (final Unit unit : units) {
       sum += carrierCost(unit);
@@ -823,7 +823,7 @@ public final class AirMovementValidator {
     return sum;
   }
 
-  static int carrierCost(final Unit unit) {
+  public static int carrierCost(final Unit unit) {
     if (Matches.unitCanLandOnCarrier().test(unit)) {
       return UnitAttachment.get(unit.getType()).getCarrierCost();
     }
@@ -835,7 +835,7 @@ public final class AirMovementValidator {
   }
 
   public static Collection<Unit> getFriendly(
-      final Territory territory, final PlayerId player, final GameData data) {
+      final Territory territory, final GamePlayer player, final GameData data) {
     return territory.getUnitCollection().getMatches(Matches.alliedUnit(player, data));
   }
 

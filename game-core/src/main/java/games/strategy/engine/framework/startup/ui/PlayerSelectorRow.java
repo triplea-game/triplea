@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.triplea.Constants;
@@ -26,7 +26,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
   private final JCheckBox enabledCheckBox;
   private final String playerName;
-  private final PlayerId player;
+  private final GamePlayer player;
   private final JComboBox<String> playerTypes;
   private final JComponent incomePercentage;
   private final JLabel incomePercentageLabel;
@@ -40,7 +40,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
   PlayerSelectorRow(
       final List<PlayerSelectorRow> playerRows,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<String, String> reloadSelections,
       final Collection<String> disableable,
       final Map<String, Boolean> playersEnablementListing,

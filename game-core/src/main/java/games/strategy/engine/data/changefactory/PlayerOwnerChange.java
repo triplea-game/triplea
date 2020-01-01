@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
@@ -19,7 +19,7 @@ class PlayerOwnerChange extends Change {
   private final String territoryName;
 
   PlayerOwnerChange(
-      final Collection<Unit> units, final PlayerId newOwner, final Territory territory) {
+      final Collection<Unit> units, final GamePlayer newOwner, final Territory territory) {
     oldOwnerNamesByUnitId = new HashMap<>();
     newOwnerNamesByUnitId = new HashMap<>();
     territoryName = territory.getName();
@@ -55,7 +55,7 @@ class PlayerOwnerChange extends Change {
                 + unit.getOwner());
       }
       final String owner = newOwnerNamesByUnitId.get(id);
-      final PlayerId player = data.getPlayerList().getPlayerId(owner);
+      final GamePlayer player = data.getPlayerList().getPlayerId(owner);
       unit.setOwner(player);
     }
     data.getMap().getTerritory(territoryName).notifyChanged();

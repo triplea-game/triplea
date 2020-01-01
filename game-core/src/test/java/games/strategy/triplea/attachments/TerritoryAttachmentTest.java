@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -15,9 +15,9 @@ final class TerritoryAttachmentTest {
   @Nested
   final class GetCaptureOwnershipChangesTest {
     private final GameData gameData = new GameData();
-    private final PlayerId player1 = new PlayerId("player1", gameData);
-    private final PlayerId player2 = new PlayerId("player2", gameData);
-    private final PlayerId player3 = new PlayerId("player3", gameData);
+    private final GamePlayer player1 = new GamePlayer("player1", gameData);
+    private final GamePlayer player2 = new GamePlayer("player2", gameData);
+    private final GamePlayer player3 = new GamePlayer("player3", gameData);
     private final TerritoryAttachment territoryAttachment =
         new TerritoryAttachment("territoryAttachment", null, gameData);
 
@@ -66,9 +66,9 @@ final class TerritoryAttachmentTest {
       final GameData gameData = new GameData();
       EqualsVerifier.forClass(TerritoryAttachment.CaptureOwnershipChange.class)
           .withPrefabValues(
-              PlayerId.class,
-              new PlayerId("redPlayerId", gameData),
-              new PlayerId("blackPlayerId", gameData))
+              GamePlayer.class,
+              new GamePlayer("redPlayerId", gameData),
+              new GamePlayer("blackPlayerId", gameData))
           .verify();
     }
   }

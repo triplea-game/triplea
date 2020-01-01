@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -18,6 +18,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class RocketsFireHelper implements Serializable {
     // WW2V1, fires at end of non combat move so does not call here
     helper.needToFindRocketTargets = false;
     if ((isWW2V2(data) || isAllRocketsAttack(data))
-        && TechTracker.hasRocket(bridge.getPlayerId())) {
+        && TechTracker.hasRocket(bridge.getGamePlayer())) {
       if (Properties.getSequentiallyTargetedRockets(data)) {
         helper.needToFindRocketTargets = true;
       } else {
@@ -66,7 +67,7 @@ public class RocketsFireHelper implements Serializable {
    */
   public static void fireWW2V1IfNeeded(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final PlayerId player = bridge.getPlayerId();
+    final GamePlayer player = bridge.getGamePlayer();
     // If we don't have rockets or aren't V1 then do nothing.
     if (!TechTracker.hasRocket(player)
         || Properties.getWW2V2(data)
@@ -126,7 +127,7 @@ public class RocketsFireHelper implements Serializable {
   private void findRocketTargetsAndFireIfNeeded(
       final IDelegateBridge bridge, final boolean fireRocketsImmediately) {
     final GameData data = bridge.getData();
-    final PlayerId player = bridge.getPlayerId();
+    final GamePlayer player = bridge.getGamePlayer();
     final Map<Territory, Integer> previouslyAttackedTerritories = new LinkedHashMap<>();
     for (final Territory attackFrom : getTerritoriesWithRockets(data, player)) {
       final Set<Territory> targets = getTargetsWithinRange(attackFrom, data, player);
@@ -221,7 +222,7 @@ public class RocketsFireHelper implements Serializable {
     }
   }
 
-  static Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerId player) {
+  static Set<Territory> getTerritoriesWithRockets(final GameData data, final GamePlayer player) {
     final Set<Territory> territories = new HashSet<>();
     final Predicate<Unit> ownedRockets = rocketMatch(player);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
@@ -236,7 +237,7 @@ public class RocketsFireHelper implements Serializable {
     return territories;
   }
 
-  private static Predicate<Unit> rocketMatch(final PlayerId player) {
+  private static Predicate<Unit> rocketMatch(final GamePlayer player) {
     return Matches.unitIsRocket()
         .and(Matches.unitIsOwnedBy(player))
         .and(Matches.unitIsNotDisabled())
@@ -246,7 +247,7 @@ public class RocketsFireHelper implements Serializable {
   }
 
   private static Set<Territory> getTargetsWithinRange(
-      final Territory territory, final GameData data, final PlayerId player) {
+      final Territory territory, final GameData data, final GamePlayer player) {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
 
     final Set<Territory> hasFactory = new HashSet<>();
@@ -285,8 +286,8 @@ public class RocketsFireHelper implements Serializable {
       final GameData data,
       final Territory attackFrom,
       final Territory attackedTerritory) {
-    final PlayerId player = bridge.getPlayerId();
-    final PlayerId attacked = attackedTerritory.getOwner();
+    final GamePlayer player = bridge.getGamePlayer();
+    final GamePlayer attacked = attackedTerritory.getOwner();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean damageFromBombingDoneToUnits =
         isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);

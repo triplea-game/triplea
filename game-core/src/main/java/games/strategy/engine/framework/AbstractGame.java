@@ -1,7 +1,7 @@
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.display.IDisplay;
@@ -35,7 +35,7 @@ public abstract class AbstractGame implements IGame {
 
   IGameModifiedChannel gameModifiedChannel;
 
-  final Map<PlayerId, Player> gamePlayers = new HashMap<>();
+  final Map<GamePlayer, Player> gamePlayers = new HashMap<>();
   final PlayerManager playerManager;
 
   @Nullable private IDisplay display;
@@ -61,11 +61,11 @@ public abstract class AbstractGame implements IGame {
   private void setupLocalPlayers(final Set<Player> localPlayers) {
     final PlayerList playerList = gameData.getPlayerList();
     for (final Player gp : localPlayers) {
-      final PlayerId player = playerList.getPlayerId(gp.getName());
+      final GamePlayer player = playerList.getPlayerId(gp.getName());
       gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
-      final RemoteName descriptor = ServerGame.getRemoteName(gp.getPlayerId());
+      final RemoteName descriptor = ServerGame.getRemoteName(gp.getGamePlayer());
       messengers.registerRemote(gp, descriptor);
     }
   }

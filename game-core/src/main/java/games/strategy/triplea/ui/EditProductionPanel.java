@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -26,8 +26,12 @@ class EditProductionPanel extends ProductionPanel {
   }
 
   static IntegerMap<ProductionRule> getProduction(
-      final PlayerId id, final JFrame parent, final GameData data, final UiContext uiContext) {
-    return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<>());
+      final GamePlayer gamePlayer,
+      final JFrame parent,
+      final GameData data,
+      final UiContext uiContext) {
+    return new EditProductionPanel(uiContext)
+        .show(gamePlayer, parent, data, false, new IntegerMap<>());
   }
 
   @Override
@@ -39,10 +43,10 @@ class EditProductionPanel extends ProductionPanel {
 
   @Override
   protected void initRules(
-      final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
+      final GamePlayer player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
-      id = player;
+      gamePlayer = player;
       final Set<UnitType> unitsAllowed = new HashSet<>();
       if (player.getProductionFrontier() != null) {
         for (final ProductionRule productionRule : player.getProductionFrontier()) {

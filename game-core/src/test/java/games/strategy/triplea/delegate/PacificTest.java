@@ -9,7 +9,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -17,6 +17,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
@@ -30,8 +31,8 @@ import org.triplea.test.common.TestType;
 class PacificTest extends AbstractDelegateTestCase {
   private UnitType marine;
   // Define players
-  private PlayerId americans;
-  private PlayerId chinese;
+  private GamePlayer americans;
+  private GamePlayer chinese;
   // Define territories
   private Territory queensland;
   private Territory unitedStates;

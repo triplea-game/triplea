@@ -5,8 +5,8 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -23,7 +23,7 @@ import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
 /**
- * An attachment for instances of {@link PlayerId} that defines properties unrelated to rules (see
+ * An attachment for instances of {@link GamePlayer} that defines properties unrelated to rules (see
  * the class description of {@link AbstractPlayerRulesAttachment}).
  */
 public class PlayerAttachment extends DefaultAttachment {
@@ -36,13 +36,13 @@ public class PlayerAttachment extends DefaultAttachment {
   private int retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
   private int retainCapitalProduceNumber = 1;
-  private List<PlayerId> giveUnitControl = new ArrayList<>();
+  private List<GamePlayer> giveUnitControl = new ArrayList<>();
   private boolean giveUnitControlInAllTerritories = false;
-  private List<PlayerId> captureUnitOnEnteringBy = new ArrayList<>();
+  private List<GamePlayer> captureUnitOnEnteringBy = new ArrayList<>();
   // gives any technology researched to this player automatically
-  private List<PlayerId> shareTechnology = new ArrayList<>();
+  private List<GamePlayer> shareTechnology = new ArrayList<>();
   // allows these players to help pay for technology
-  private List<PlayerId> helpPayTechCost = new ArrayList<>();
+  private List<GamePlayer> helpPayTechCost = new ArrayList<>();
   // do we lose our money and have it disappear or is that money captured?
   private boolean destroysPus = false;
   // are we immune to being blockaded?
@@ -65,12 +65,12 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   /** Convenience method. can be null */
-  public static PlayerAttachment get(final PlayerId p) {
+  public static PlayerAttachment get(final GamePlayer p) {
     // allow null
     return p.getPlayerAttachment();
   }
 
-  static PlayerAttachment get(final PlayerId p, final String nameOfAttachment) {
+  static PlayerAttachment get(final GamePlayer p, final String nameOfAttachment) {
     final PlayerAttachment playerAttachment = p.getPlayerAttachment();
     if (playerAttachment == null) {
       throw new IllegalStateException(
@@ -213,7 +213,7 @@ public class PlayerAttachment extends DefaultAttachment {
       final String limitType,
       final Collection<Unit> unitsMoving,
       final Territory toMoveInto,
-      final PlayerId owner,
+      final GamePlayer owner,
       final GameData data) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);
     if (pa == null) {
@@ -391,7 +391,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setGiveUnitControl(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         giveUnitControl.add(tempPlayer);
       } else {
@@ -400,11 +400,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setGiveUnitControl(final List<PlayerId> value) {
+  private void setGiveUnitControl(final List<GamePlayer> value) {
     giveUnitControl = value;
   }
 
-  public List<PlayerId> getGiveUnitControl() {
+  public List<GamePlayer> getGiveUnitControl() {
     return giveUnitControl;
   }
 
@@ -423,7 +423,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         captureUnitOnEnteringBy.add(tempPlayer);
       } else {
@@ -432,11 +432,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCaptureUnitOnEnteringBy(final List<PlayerId> value) {
+  private void setCaptureUnitOnEnteringBy(final List<GamePlayer> value) {
     captureUnitOnEnteringBy = value;
   }
 
-  public List<PlayerId> getCaptureUnitOnEnteringBy() {
+  public List<GamePlayer> getCaptureUnitOnEnteringBy() {
     return captureUnitOnEnteringBy;
   }
 
@@ -447,7 +447,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setShareTechnology(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         shareTechnology.add(tempPlayer);
       } else {
@@ -456,11 +456,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setShareTechnology(final List<PlayerId> value) {
+  private void setShareTechnology(final List<GamePlayer> value) {
     shareTechnology = value;
   }
 
-  public List<PlayerId> getShareTechnology() {
+  public List<GamePlayer> getShareTechnology() {
     return shareTechnology;
   }
 
@@ -471,7 +471,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setHelpPayTechCost(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final GamePlayer tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         helpPayTechCost.add(tempPlayer);
       } else {
@@ -480,11 +480,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setHelpPayTechCost(final List<PlayerId> value) {
+  private void setHelpPayTechCost(final List<GamePlayer> value) {
     helpPayTechCost = value;
   }
 
-  public List<PlayerId> getHelpPayTechCost() {
+  public List<GamePlayer> getHelpPayTechCost() {
     return helpPayTechCost;
   }
 

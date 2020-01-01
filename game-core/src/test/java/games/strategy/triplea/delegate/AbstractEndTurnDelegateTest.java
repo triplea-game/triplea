@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
@@ -25,7 +25,7 @@ final class AbstractEndTurnDelegateTest {
     @Test
     void testFindEstimatedIncome() throws Exception {
       final GameData global40Data = TestMapGameData.GLOBAL1940.getGameData();
-      final PlayerId germans = GameDataTestUtil.germans(global40Data);
+      final GamePlayer germans = GameDataTestUtil.germans(global40Data);
       final IntegerMap<Resource> results =
           AbstractEndTurnDelegate.findEstimatedIncome(germans, global40Data);
       final int pus = results.getInt(new Resource(Constants.PUS, global40Data));

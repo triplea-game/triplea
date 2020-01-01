@@ -1,6 +1,6 @@
 package games.strategy.engine.chat;
 
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 
 /** Callback interface for a component that is interested in chat messages. */
@@ -9,7 +9,7 @@ public interface ChatMessageListener {
 
   void messageReceived(ChatMessage chatMessage);
 
-  void slapped(String message, PlayerName from);
+  void slapped(String message, UserName from);
 
   void slap(String message);
 

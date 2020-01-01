@@ -20,25 +20,25 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 @ExtendWith(MockitoExtension.class)
 class ChatServerMessageTypeTest {
   private static final StatusUpdate STATUS_UPDATE =
-      new StatusUpdate(PlayerName.of("player"), "value");
+      new StatusUpdate(UserName.of("player"), "value");
   private static final ChatMessage CHAT_MESSAGE_DATA =
-      new ChatMessage(PlayerName.of("player"), "message");
+      new ChatMessage(UserName.of("player"), "message");
   private static final PlayerSlapped PLAYER_SLAPPED_DATA =
       PlayerSlapped.builder()
-          .slapped(PlayerName.of("slapped"))
-          .slapper(PlayerName.of("slapper"))
+          .slapped(UserName.of("slapped"))
+          .slapper(UserName.of("slapper"))
           .build();
-  private static final PlayerName PLAYER_LEFT_DATA = PlayerName.of("player");
+  private static final UserName PLAYER_LEFT_DATA = UserName.of("player");
   private static final ChatParticipant PLAYER_JOINED_DATA =
       ChatParticipant.builder()
-          .playerName(PlayerName.of("player-name"))
+          .userName(UserName.of("player-name"))
           .playerChatId(PlayerChatId.newId())
           .build();
 
@@ -47,7 +47,7 @@ class ChatServerMessageTypeTest {
   @Mock private Consumer<StatusUpdate> playerStatusListener;
   @Mock private Consumer<ChatMessage> chatMessageListener;
   @Mock private Consumer<PlayerSlapped> playerSlappedListener;
-  @Mock private Consumer<PlayerName> playerLeftListener;
+  @Mock private Consumer<UserName> playerLeftListener;
   @Mock private Consumer<ChatParticipant> playerJoinedListener;
   @Mock private Consumer<ChatterList> connectedListener;
 

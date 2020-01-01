@@ -17,7 +17,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -27,6 +27,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.battle.StrategicBombingRaidBattle;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ class DiceRollTest {
   void testSimple() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final IBattle battle = mock(IBattle.class);
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> infantry = infantryType.create(1, russians);
@@ -82,7 +84,7 @@ class DiceRollTest {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final IBattle battle = mock(IBattle.class);
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> infantry = infantryType.create(1, russians);
@@ -115,7 +117,7 @@ class DiceRollTest {
   void testArtillerySupport() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final IBattle battle = mock(IBattle.class);
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> units = infantryType.create(1, russians);
@@ -141,7 +143,7 @@ class DiceRollTest {
   void testVariableArtillerySupport() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final IBattle battle = mock(IBattle.class);
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // Add 1 artillery
     final UnitType artillery =
@@ -175,7 +177,7 @@ class DiceRollTest {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
     final IBattle battle = mock(IBattle.class);
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> units = infantryType.create(3, russians);
@@ -198,7 +200,7 @@ class DiceRollTest {
   void testMarineAttackPlus1() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
-    final PlayerId americans = GameDataTestUtil.americans(gameData);
+    final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     final IDelegateBridge bridge = newDelegateBridge(americans);
@@ -224,7 +226,7 @@ class DiceRollTest {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
-    final PlayerId americans = GameDataTestUtil.americans(gameData);
+    final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(3, americans);
     final IDelegateBridge bridge = newDelegateBridge(americans);
@@ -249,7 +251,7 @@ class DiceRollTest {
   void testMarineAttackNormalIfNotAmphibious() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
-    final PlayerId americans = GameDataTestUtil.americans(gameData);
+    final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     final IDelegateBridge bridge = newDelegateBridge(americans);
@@ -273,8 +275,8 @@ class DiceRollTest {
   @Test
   void testAa() {
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
-    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
@@ -297,8 +299,8 @@ class DiceRollTest {
   void testAaLowLuck() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
-    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
@@ -361,8 +363,8 @@ class DiceRollTest {
   void testAaLowLuckDifferentMovement() {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory westRussia = gameData.getMap().getTerritory("West Russia");
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
-    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(westRussia, aaGunList);
@@ -393,8 +395,8 @@ class DiceRollTest {
     gameData = TestMapGameData.WW2V3_1941.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory finnland = gameData.getMap().getTerritory("Finland");
-    final PlayerId russians = GameDataTestUtil.russians(gameData);
-    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final UnitType aaGunType = GameDataTestUtil.aaGun(gameData);
     final List<Unit> aaGunList = aaGunType.create(1, germans);
     GameDataTestUtil.addTo(finnland, aaGunList);
@@ -459,8 +461,8 @@ class DiceRollTest {
     gameData = TestMapGameData.TWW.getGameData();
     GameDataTestUtil.makeGameLowLuck(gameData);
 
-    final PlayerId usa = GameDataTestUtil.usa(gameData);
-    final PlayerId germany = GameDataTestUtil.germany(gameData);
+    final GamePlayer usa = GameDataTestUtil.usa(gameData);
+    final GamePlayer germany = GameDataTestUtil.germany(gameData);
     final Territory westernFrance = territory("Western France", gameData);
     final List<Unit> atGuns = GameDataTestUtil.germanAntiTankGun(gameData).create(1, germany);
     GameDataTestUtil.addTo(westernFrance, atGuns);
@@ -532,7 +534,7 @@ class DiceRollTest {
   @Test
   void testHeavyBombers() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     TechTracker.addAdvance(
         british,
@@ -563,7 +565,7 @@ class DiceRollTest {
   @Test
   void testHeavyBombersDefend() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     TechTracker.addAdvance(
         british,
@@ -593,7 +595,7 @@ class DiceRollTest {
 
   @Test
   void testLhtrBomberDefend() {
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     final List<Unit> bombers =
@@ -622,7 +624,7 @@ class DiceRollTest {
   @Test
   void testHeavyBombersLhtr() {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     TechTracker.addAdvance(
         british,
@@ -655,7 +657,7 @@ class DiceRollTest {
   @Test
   void testHeavyBombersLhtr2() {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     TechTracker.addAdvance(
         british,
@@ -687,7 +689,7 @@ class DiceRollTest {
   @Test
   void testHeavyBombersDefendLhtr() {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     TechTracker.addAdvance(
         british,
@@ -719,7 +721,7 @@ class DiceRollTest {
 
   @Test
   void testSbrRolls() {
-    final PlayerId british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
     final Unit bomber =
         gameData
             .getMap()
@@ -747,7 +749,7 @@ class DiceRollTest {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Move regular units
-    final PlayerId germans = GameDataTestUtil.germany(twwGameData);
+    final GamePlayer germans = GameDataTestUtil.germany(twwGameData);
     final Territory berlin = territory("Berlin", twwGameData);
     final List<Unit> attackers = new ArrayList<>();
 

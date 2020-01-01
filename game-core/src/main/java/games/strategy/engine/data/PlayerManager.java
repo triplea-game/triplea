@@ -61,9 +61,9 @@ public class PlayerManager {
    * Get a player from an opposing side, if possible, else get a player playing at a remote
    * computer, if possible.
    */
-  public PlayerId getRemoteOpponent(final INode localNode, final GameData data) {
+  public GamePlayer getRemoteOpponent(final INode localNode, final GameData data) {
     // find a local player
-    final PlayerId local =
+    final GamePlayer local =
         playerMapping.entrySet().stream()
             .filter(e -> e.getValue().equals(localNode))
             .map(Map.Entry::getKey)
@@ -80,9 +80,9 @@ public class PlayerManager {
       final String player = entry.getKey();
       if (!entry.getValue().equals(localNode)) {
         any = player;
-        final PlayerId remotePlayerId = data.getPlayerList().getPlayerId(player);
-        if (!data.getRelationshipTracker().isAllied(local, remotePlayerId)) {
-          return remotePlayerId;
+        final GamePlayer remoteGamePlayer = data.getPlayerList().getPlayerId(player);
+        if (!data.getRelationshipTracker().isAllied(local, remoteGamePlayer)) {
+          return remoteGamePlayer;
         }
       }
     }

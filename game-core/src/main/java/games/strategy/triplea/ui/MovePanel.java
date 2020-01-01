@@ -2,8 +2,8 @@ package games.strategy.triplea.ui;
 
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -18,9 +18,9 @@ import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UnitComparator;
+import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.unit.scroller.UnitScroller;
@@ -155,7 +155,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
           final Predicate<Collection<Unit>> ownerMatch =
               unitsToCheck -> {
-                final PlayerId owner = unitsToCheck.iterator().next().getOwner();
+                final GamePlayer owner = unitsToCheck.iterator().next().getOwner();
                 for (final Unit unit : unitsToCheck) {
                   if (!owner.equals(unit.getOwner())) {
                     return false;
@@ -270,7 +270,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                 && TechAttachment.isAirTransportable(getCurrentPlayer())
                 && selectedUnits.stream()
                     .anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
-              final PlayerId player = getCurrentPlayer();
+              final GamePlayer player = getCurrentPlayer();
               // TODO Transporting allied units
               // Get the potential units to load
               final Predicate<Unit> unitsToLoadMatch =
@@ -359,7 +359,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             final Route route,
             final Collection<Unit> capableUnitsToLoad,
             final Collection<Unit> capableTransportsToLoad,
-            final PlayerId player) {
+            final GamePlayer player) {
           // Get the minimum transport cost of a candidate unit
           int minTransportCost = Integer.MAX_VALUE;
           for (final Unit unit : capableUnitsToLoad) {
@@ -618,7 +618,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         }
 
         private boolean willStartBattle(final Territory territory) {
-          final PlayerId player = getCurrentPlayer();
+          final GamePlayer player = getCurrentPlayer();
           return Matches.territoryHasUnitsOwnedBy(player)
               .negate()
               .and(Matches.territoryHasEnemyUnits(player, getData()))
@@ -662,7 +662,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           if (!getListening()) {
             return;
           }
-          final PlayerId owner = getUnitOwner(selectedUnits);
+          final GamePlayer owner = getUnitOwner(selectedUnits);
           final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
           final boolean someOwned = units.stream().anyMatch(match);
           final boolean isCorrectTerritory =
@@ -699,7 +699,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                         || unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir()))) {
                   final Collection<Unit> airUnits =
                       CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
-                  if (airUnits.size() > 0) {
+                  if (!airUnits.isEmpty()) {
                     route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
                     updateUnitsThatCanMoveOnRoute(airUnits, route);
                   }
@@ -747,7 +747,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     this.moveType = moveType;
   }
 
-  private PlayerId getUnitOwner(final Collection<Unit> units) {
+  private GamePlayer getUnitOwner(final Collection<Unit> units) {
     return (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
         ? units.iterator().next().getOwner()
         : getCurrentPlayer();
@@ -885,7 +885,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               }
             }
             // Repeat until there are no units left or no changes occur
-          } while (availableUnits.size() > 0 && hasChanged);
+          } while (!availableUnits.isEmpty() && hasChanged);
 
           // If we haven't seen all of the transports (and removed them) then there are extra
           // transports that don't fit
@@ -1019,7 +1019,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     }
     if (units != null && !units.isEmpty()) {
       // force all units to have the same owner in edit mode
-      final PlayerId owner = getUnitOwner(units);
+      final GamePlayer owner = getUnitOwner(units);
       if (BaseEditDelegate.getEditMode(getData())) {
         movableBuilder.and(Matches.unitIsOwnedBy(owner));
       }
@@ -1029,7 +1029,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   }
 
   private static Predicate<Unit> areOwnedUnitsOfType(
-      final Collection<Unit> units, final PlayerId owner) {
+      final Collection<Unit> units, final GamePlayer owner) {
     return mainUnit ->
         units.stream()
             .filter(unit -> unit.getOwner().equals(owner))
@@ -1082,7 +1082,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
     // can't rely on current player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
-    final PlayerId owner = getUnitOwner(selectedUnits);
+    final GamePlayer owner = getUnitOwner(selectedUnits);
     return MoveValidator.getBestRoute(
         start,
         end,
@@ -1158,7 +1158,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
       return List.of();
     }
-    final PlayerId unitOwner = getUnitOwner(unitsToLoad);
+    final GamePlayer unitOwner = getUnitOwner(unitsToLoad);
     final MustMoveWithDetails endMustMoveWith =
         MoveValidator.getMustMoveWith(route.getEnd(), dependentUnits, unitOwner);
     int minTransportCost = defaultMinTransportCost;
@@ -1520,8 +1520,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   }
 
   @Override
-  public final void display(final PlayerId id) {
-    super.display(id, displayText);
+  public final void display(final GamePlayer gamePlayer) {
+    super.display(gamePlayer, displayText);
   }
 
   @Override

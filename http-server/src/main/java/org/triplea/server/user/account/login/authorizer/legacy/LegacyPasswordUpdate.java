@@ -6,29 +6,29 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.java.Postconditions;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 // TODO: Md5-Deprecation - This class can be removed when MD5 is removed
 @Builder
-public class LegacyPasswordUpdate implements BiConsumer<PlayerName, String> {
+public class LegacyPasswordUpdate implements BiConsumer<UserName, String> {
 
   @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final Function<String, String> passwordBcrypter;
 
   @Override
-  public void accept(final PlayerName playerName, final String password) {
+  public void accept(final UserName userName, final String password) {
     Preconditions.checkNotNull(Strings.emptyToNull(password));
-    Preconditions.checkNotNull(playerName);
+    Preconditions.checkNotNull(userName);
 
     final int id =
         userJdbiDao
-            .lookupUserIdByName(playerName.getValue())
-            .orElseThrow(() -> new IllegalArgumentException("No user id found for: " + playerName));
+            .lookupUserIdByName(userName.getValue())
+            .orElseThrow(() -> new IllegalArgumentException("No user id found for: " + userName));
     Postconditions.assertState(id > 0);
 
     final int updateCount = userJdbiDao.updatePassword(id, passwordBcrypter.apply(password));
-    Postconditions.assertState(updateCount == 1, "Password update failed: " + playerName);
+    Postconditions.assertState(updateCount == 1, "Password update failed: " + userName);
   }
 }

@@ -18,7 +18,7 @@ class ApiKeyGenerator implements Function<LoginRecord, ApiKey> {
   public ApiKey apply(final LoginRecord loginRecord) {
     try {
       return apiKeyDaoWrapper.newKey(
-          loginRecord.getPlayerName(),
+          loginRecord.getUserName(),
           InetAddress.getByName(loginRecord.getIp()),
           loginRecord.getSystemId(),
           loginRecord.getPlayerChatId());

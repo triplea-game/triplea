@@ -2,8 +2,8 @@ package games.strategy.triplea.ui.history;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -90,9 +90,9 @@ public class HistoryLog extends JFrame {
    * Information about each step and event that occurred during the turn are included.
    */
   public void printFullTurn(
-      final GameData data, final boolean verbose, final Collection<PlayerId> playersAllowed) {
+      final GameData data, final boolean verbose, final Collection<GamePlayer> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
-    final Collection<PlayerId> players = new HashSet<>();
+    final Collection<GamePlayer> players = new HashSet<>();
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
@@ -106,7 +106,7 @@ public class HistoryLog extends JFrame {
       curNode = (HistoryNode) curNode.getPreviousNode();
     }
     if (stepNode != null) {
-      final PlayerId curPlayer = stepNode.getPlayerId();
+      final GamePlayer curPlayer = stepNode.getPlayerId();
       if (players.isEmpty()) {
         players.add(curPlayer);
       }
@@ -131,10 +131,10 @@ public class HistoryLog extends JFrame {
     }
   }
 
-  private static PlayerId getPlayerId(final HistoryNode printNode) {
+  private static GamePlayer getPlayerId(final HistoryNode printNode) {
     DefaultMutableTreeNode curNode = printNode;
     final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
-    PlayerId curPlayer = null;
+    GamePlayer curPlayer = null;
     if (parentPath != null) {
       final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
@@ -150,10 +150,10 @@ public class HistoryLog extends JFrame {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         if (node instanceof Step) {
           final String title = node.getTitle();
-          final PlayerId playerId = ((Step) node).getPlayerId();
+          final GamePlayer gamePlayer = ((Step) node).getPlayerId();
           if (!title.equals("Initializing Delegates")) {
-            if (playerId != null) {
-              curPlayer = playerId;
+            if (gamePlayer != null) {
+              curPlayer = gamePlayer;
             }
           }
         }
@@ -171,12 +171,12 @@ public class HistoryLog extends JFrame {
       final HistoryNode printNode,
       final boolean verbose,
       final int diceSides,
-      final Collection<PlayerId> playersAllowed) {
+      final Collection<GamePlayer> playersAllowed) {
     final PrintWriter logWriter = printWriter;
     final String moreIndent = "    ";
     // print out the parent nodes
     final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
-    PlayerId currentPlayer = null;
+    GamePlayer currentPlayer = null;
     if (parentPath != null) {
       final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
@@ -193,7 +193,7 @@ public class HistoryLog extends JFrame {
         }
       }
     }
-    final Collection<PlayerId> players = new HashSet<>();
+    final Collection<GamePlayer> players = new HashSet<>();
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
@@ -294,13 +294,13 @@ public class HistoryLog extends JFrame {
                           + title.substring(title.indexOf("for attacker is")));
                   conquerStr = new StringBuilder();
                   // separate units by player and show casualty summary
-                  final IntegerMap<PlayerId> unitCount = new IntegerMap<>();
+                  final IntegerMap<GamePlayer> unitCount = new IntegerMap<>();
                   unitCount.add(unit.getOwner(), 1);
                   while (objIter.hasNext()) {
                     unit = (Unit) objIter.next();
                     unitCount.add(unit.getOwner(), 1);
                   }
-                  for (final PlayerId player : unitCount.keySet()) {
+                  for (final GamePlayer player : unitCount.keySet()) {
                     logWriter.println(
                         indent
                             + "Casualties for "
@@ -361,14 +361,14 @@ public class HistoryLog extends JFrame {
             logWriter.println(indent + title);
           }
         } else if (node instanceof Step) {
-          final PlayerId playerId = ((Step) node).getPlayerId();
+          final GamePlayer gamePlayer = ((Step) node).getPlayerId();
           if (!title.equals("Initializing Delegates")) {
             logWriter.println();
             logWriter.print(indent + title);
-            if (playerId != null) {
-              currentPlayer = playerId;
+            if (gamePlayer != null) {
+              currentPlayer = gamePlayer;
               players.add(currentPlayer);
-              logWriter.print(" - " + playerId.getName());
+              logWriter.print(" - " + gamePlayer.getName());
             }
             logWriter.println();
           }
@@ -433,21 +433,21 @@ public class HistoryLog extends JFrame {
    */
   public void printTerritorySummary(final HistoryNode printNode, final GameData data) {
     final Collection<Territory> territories;
-    final PlayerId player = getPlayerId(printNode);
+    final GamePlayer player = getPlayerId(printNode);
     data.acquireReadLock();
     try {
       territories = data.getMap().getTerritories();
     } finally {
       data.releaseReadLock();
     }
-    final Collection<PlayerId> players = new HashSet<>();
+    final Collection<GamePlayer> players = new HashSet<>();
     players.add(player);
     printTerritorySummary(players, territories);
   }
 
   private void printTerritorySummary(final GameData data) {
     final Collection<Territory> territories;
-    final PlayerId player;
+    final GamePlayer player;
     data.acquireReadLock();
     try {
       player = data.getSequence().getStep().getPlayerId();
@@ -455,7 +455,7 @@ public class HistoryLog extends JFrame {
     } finally {
       data.releaseReadLock();
     }
-    final Collection<PlayerId> players = new HashSet<>();
+    final Collection<GamePlayer> players = new HashSet<>();
     players.add(player);
     printTerritorySummary(players, territories);
   }
@@ -465,7 +465,7 @@ public class HistoryLog extends JFrame {
    * includes each unit present in the territory.
    */
   public void printTerritorySummary(
-      final GameData data, final Collection<PlayerId> allowedPlayers) {
+      final GameData data, final Collection<GamePlayer> allowedPlayers) {
     if (allowedPlayers == null || allowedPlayers.isEmpty()) {
       printTerritorySummary(data);
       return;
@@ -481,7 +481,7 @@ public class HistoryLog extends JFrame {
   }
 
   private void printTerritorySummary(
-      final Collection<PlayerId> players, final Collection<Territory> territories) {
+      final Collection<GamePlayer> players, final Collection<Territory> territories) {
     if (players == null || players.isEmpty() || territories == null || territories.isEmpty()) {
       return;
     }
@@ -531,7 +531,7 @@ public class HistoryLog extends JFrame {
   /** Adds a production summary for each player in the game to the log. */
   public void printProductionSummary(final GameData data) {
     final PrintWriter logWriter = printWriter;
-    final Collection<PlayerId> players;
+    final Collection<GamePlayer> players;
     final Resource pus;
     data.acquireReadLock();
     try {
@@ -544,7 +544,7 @@ public class HistoryLog extends JFrame {
       return;
     }
     logWriter.println("Production/PUs Summary :\n");
-    for (final PlayerId player : players) {
+    for (final GamePlayer player : players) {
       final int pusQuantity = player.getResources().getQuantity(pus);
       final int production = getProduction(player, data);
       logWriter.println("    " + player.getName() + " : " + production + " / " + pusQuantity);
@@ -554,14 +554,14 @@ public class HistoryLog extends JFrame {
     textArea.setText(stringWriter.toString());
   }
 
-  private static int getProduction(final PlayerId player, final GameData data) {
+  private static int getProduction(final GamePlayer player, final GameData data) {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       boolean isConvoyOrLand = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       if (!place.isWater()
           || (ta != null
-              && !PlayerId.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
+              && !GamePlayer.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && place.getOwner().equals(player))) {
         isConvoyOrLand = true;

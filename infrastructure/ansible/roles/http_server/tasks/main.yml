@@ -7,6 +7,7 @@
 
 - name: deploy jar file
   become: true
+  register: deploy_jar_file
   copy:
     src: "{{ http_server_jar }}"
     dest: "{{ http_server_home_folder }}/{{ http_server_jar }}"
@@ -24,6 +25,7 @@
 
 - name: deploy server config file
   become: true
+  register: deploy_config_file
   template:
     src: configuration.yml.j2
     dest: "{{ http_server_home_folder}}/configuration.yml"
@@ -44,8 +46,17 @@
     daemon_reload: yes
 
 - name: enable and start service
+  when: (deploy_jar_file.changed == false) and (deploy_config_file.changed == false)
   become: true
   service:
     name: http_server
     state: started
+    enabled: yes
+
+- name: restart service if new jar file deployed
+  when: (deploy_jar_file.changed) or (deploy_config_file.changed)
+  become: true
+  service:
+    name: http_server
+    state: restarted
     enabled: yes

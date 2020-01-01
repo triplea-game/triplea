@@ -79,7 +79,7 @@ public class BattleRecordsList extends GameDataComponent {
    * battleRecordsList}.
    */
   public static int getTuvDamageCausedByPlayer(
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final BattleRecordsList battleRecordsList,
       final int beginningRound,
       final int endRound,
@@ -119,8 +119,8 @@ public class BattleRecordsList extends GameDataComponent {
    * @param defender if null then any player
    */
   public static boolean getWereThereBattlesInTerritoriesMatching(
-      final PlayerId attacker,
-      final PlayerId defender,
+      final GamePlayer attacker,
+      final GamePlayer defender,
       final String battleType,
       final Collection<Territory> anyOfTheseTerritories,
       final BattleRecordsList brl,

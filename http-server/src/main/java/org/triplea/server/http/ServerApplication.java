@@ -27,7 +27,8 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
-import org.triplea.http.client.remote.actions.RemoteActionListeners;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
@@ -42,7 +43,13 @@ import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.lobby.chat.moderation.ModeratorChatControllerFactory;
 import org.triplea.server.lobby.game.ConnectivityControllerFactory;
 import org.triplea.server.lobby.game.hosting.GameHostingControllerFactory;
+import org.triplea.server.lobby.game.listing.GameListing;
 import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
+import org.triplea.server.lobby.game.listing.GameListingEventQueue;
+import org.triplea.server.lobby.game.listing.GameListingEventQueueFactory;
+import org.triplea.server.lobby.game.listing.GameListingFactory;
+import org.triplea.server.lobby.game.listing.GameListingWebsocket;
+import org.triplea.server.lobby.game.listing.LobbyWatcherControllerFactory;
 import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
@@ -67,6 +74,7 @@ public class ServerApplication extends Application<AppConfig> {
   private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};
   private ServerEndpointConfig chatSocketConfiguration;
   private ServerEndpointConfig remoteActionsConfiguration;
+  private ServerEndpointConfig gameListingConfiguration;
 
   /**
    * Main entry-point method, launches the drop-wizard http server. If no args are passed then will
@@ -105,7 +113,16 @@ public class ServerApplication extends Application<AppConfig> {
         ServerEndpointConfig.Builder.create(
                 RemoteActionsWebSocket.class, RemoteActionListeners.NOTIFICATIONS_WEBSOCKET_PATH)
             .build();
-    bootstrap.addBundle(new WebsocketBundle(chatSocketConfiguration, remoteActionsConfiguration));
+
+    gameListingConfiguration =
+        ServerEndpointConfig.Builder.create(
+                GameListingWebsocket.class, GameListingClient.GAME_LISTING_WEBSOCKET_PATH)
+            .build();
+    bootstrap.addBundle(
+        new WebsocketBundle(
+            chatSocketConfiguration, //
+            remoteActionsConfiguration,
+            gameListingConfiguration));
   }
 
   @Override
@@ -125,8 +142,10 @@ public class ServerApplication extends Application<AppConfig> {
 
     final var chatters = new Chatters();
     final var remoteActionsEventQueue = RemoteActionsEventQueueFactory.newRemoteActionsEventQueue();
+    final var gameListingEventQueue = GameListingEventQueueFactory.newGameListingEventQueue();
 
-    endPointControllers(configuration, jdbi, chatters, remoteActionsEventQueue)
+    endPointControllers(
+            configuration, jdbi, chatters, remoteActionsEventQueue, gameListingEventQueue)
         .forEach(controller -> environment.jersey().register(controller));
 
     // Inject beans into websocket endpoint
@@ -137,6 +156,10 @@ public class ServerApplication extends Application<AppConfig> {
     remoteActionsConfiguration
         .getUserProperties()
         .put(RemoteActionsWebSocket.ACTIONS_QUEUE_KEY, remoteActionsEventQueue);
+
+    gameListingConfiguration
+        .getUserProperties()
+        .put(GameListingWebsocket.GAME_LISTING_EVENT_QUEUE, gameListingEventQueue);
   }
 
   private static void enableRequestResponseLogging(final Environment environment) {
@@ -192,7 +215,10 @@ public class ServerApplication extends Application<AppConfig> {
       final AppConfig appConfig,
       final Jdbi jdbi,
       final Chatters chatters,
-      final RemoteActionsEventQueue remoteActionsEventQueue) {
+      final RemoteActionsEventQueue remoteActionsEventQueue,
+      final GameListingEventQueue gameListingEventQueue) {
+    final GameListing gameListing =
+        GameListingFactory.buildGameListing(jdbi, gameListingEventQueue);
     return ImmutableList.of(
         AccessLogControllerFactory.buildController(jdbi),
         BadWordControllerFactory.buildController(jdbi),
@@ -200,7 +226,8 @@ public class ServerApplication extends Application<AppConfig> {
         CreateAccountControllerFactory.buildController(jdbi),
         ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
         GameHostingControllerFactory.buildController(jdbi),
-        GameListingControllerFactory.buildController(jdbi),
+        GameListingControllerFactory.buildController(gameListing),
+        LobbyWatcherControllerFactory.buildController(gameListing),
         LoginControllerFactory.buildController(jdbi, chatters),
         ModeratorChatControllerFactory.buildController(jdbi, chatters, remoteActionsEventQueue),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),

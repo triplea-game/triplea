@@ -1,13 +1,11 @@
 # Number of days of inactivity before an issue becomes stale
-daysUntilStale: 120
+daysUntilStale: 90 
 # Number of days of inactivity before a stale issue is closed
-daysUntilClose: 3 
+daysUntilClose: 1 
 # Issues with these labels will never be considered stale
 exemptLabels:
-  - "Release Blocker"
-  - "Impact: Bad Game Rules"
-  - "Impact: Game Crashing"
-  - "Impact: Incorrect UI Behavior"
+  - "Problem"
+  - "Pre-Release Problem"
 # Label to use when marking an issue as stale
 staleLabel: 'Stale'
 
@@ -23,7 +21,7 @@ markComment: >
 closeComment: false
 
 pulls:
-   daysUntilStale: 21 
+   daysUntilStale: 14 
    markComment: >
      This pull request has been automatically marked as stale because it has not had
      recent activity. We are eager to see this work completed, please update and

@@ -20,7 +20,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /**
@@ -63,26 +63,26 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final boolean cellHasFocus) {
     final ChatParticipant chatParticipant = (ChatParticipant) value;
     final List<Icon> icons =
-        iconMap.getOrDefault(chatParticipant.getPlayerName().getValue(), List.of());
+        iconMap.getOrDefault(chatParticipant.getUserName().getValue(), List.of());
     if (icons.isEmpty()) {
       super.getListCellRendererComponent(
           list,
-          getNodeLabelWithPlayers(chatParticipant.getPlayerName()),
+          getNodeLabelWithPlayers(chatParticipant.getUserName()),
           index,
           isSelected,
           cellHasFocus);
     } else {
       super.getListCellRendererComponent(
-          list, chatParticipant.getPlayerName().getValue(), index, isSelected, cellHasFocus);
+          list, chatParticipant.getUserName().getValue(), index, isSelected, cellHasFocus);
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     }
     return this;
   }
 
-  private String getNodeLabelWithPlayers(final PlayerName playerName) {
-    final Set<String> playerNames = playerMap.getOrDefault(playerName.getValue(), Set.of());
-    return playerName
+  private String getNodeLabelWithPlayers(final UserName userName) {
+    final Set<String> playerNames = playerMap.getOrDefault(userName.getValue(), Set.of());
+    return userName
         + (playerNames.isEmpty()
             ? ""
             : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));

@@ -241,7 +241,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Territory territory,
       final Predicate<Territory> neighborFilter,
       final Collection<Unit> units,
-      final PlayerId player) {
+      final GamePlayer player) {
     return getNeighbors(
         territory,
         player == null
@@ -295,14 +295,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
         .orElse(null);
   }
 
-  /** See {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, PlayerId)}. */
+  /** See {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, GamePlayer)}. */
   @Nullable
   public Route getRouteForUnit(
       final Territory start,
       final Territory end,
       final Predicate<Territory> cond,
       final Unit unit,
-      final PlayerId player) {
+      final GamePlayer player) {
     return getRouteForUnits(start, end, cond, Set.of(unit), player);
   }
 
@@ -323,7 +323,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Territory end,
       final Predicate<Territory> cond,
       final Collection<Unit> units,
-      final PlayerId player) {
+      final GamePlayer player) {
     checkNotNull(start);
     checkNotNull(end);
     return new RouteFinder(this, Matches.territoryIs(end).or(cond), units, player)
@@ -443,7 +443,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return territories.iterator();
   }
 
-  public List<Territory> getTerritoriesOwnedBy(final PlayerId player) {
+  public List<Territory> getTerritoriesOwnedBy(final GamePlayer player) {
     return territories.stream()
         .filter(t -> t.getOwner().equals(player))
         .collect(Collectors.toList());

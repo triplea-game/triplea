@@ -2,7 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerType;
@@ -10,7 +10,7 @@ import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -87,14 +87,14 @@ class DummyPlayer extends AbstractAi {
       final boolean nonCombat,
       final IMoveDelegate moveDel,
       final GameData data,
-      final PlayerId player) {}
+      final GamePlayer player) {}
 
   @Override
   protected void place(
       final boolean placeForBid,
       final IAbstractPlaceDelegate placeDelegate,
       final GameData data,
-      final PlayerId player) {}
+      final GamePlayer player) {}
 
   @Override
   protected void purchase(
@@ -102,11 +102,11 @@ class DummyPlayer extends AbstractAi {
       final int pusToSpend,
       final IPurchaseDelegate purchaseDelegate,
       final GameData data,
-      final PlayerId player) {}
+      final GamePlayer player) {}
 
   @Override
   protected void tech(
-      final ITechDelegate techDelegate, final GameData data, final PlayerId player) {}
+      final ITechDelegate techDelegate, final GameData data, final GamePlayer player) {}
 
   @Override
   public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
@@ -196,7 +196,7 @@ class DummyPlayer extends AbstractAi {
       final int count,
       final String message,
       final DiceRoll dice,
-      final PlayerId hit,
+      final GamePlayer hit,
       final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits,
       final boolean amphibious,

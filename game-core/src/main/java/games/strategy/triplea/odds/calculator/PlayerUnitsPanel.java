@@ -1,8 +1,8 @@
 package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
@@ -62,17 +62,17 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   /** Sets up components to an initial state. */
-  public void init(final PlayerId id, final List<Unit> units, final boolean land) {
+  public void init(final GamePlayer gamePlayer, final List<Unit> units, final boolean land) {
     isLand = land;
     unitPanels.clear();
-    categories = new ArrayList<>(categorize(id, units));
+    categories = new ArrayList<>(categorize(gamePlayer, units));
 
     categories.sort(
         (c1, c2) -> {
           if (!c1.getOwner().equals(c2.getOwner())) {
-            if (c1.getOwner().equals(id)) {
+            if (c1.getOwner().equals(gamePlayer)) {
               return -1;
-            } else if (c2.getOwner().equals(id)) {
+            } else if (c2.getOwner().equals(gamePlayer)) {
               return 1;
             } else {
               return c1.getOwner().getName().compareTo(c2.getOwner().getName());
@@ -89,10 +89,10 @@ public class PlayerUnitsPanel extends JPanel {
             }
             final boolean u1CanNotCombatMove =
                 Matches.unitTypeCanNotMoveDuringCombatMove().test(ut1)
-                    || !Matches.unitTypeCanMove(id).test(ut1);
+                    || !Matches.unitTypeCanMove(gamePlayer).test(ut1);
             final boolean u2CanNotCombatMove =
                 Matches.unitTypeCanNotMoveDuringCombatMove().test(ut2)
-                    || !Matches.unitTypeCanMove(id).test(ut2);
+                    || !Matches.unitTypeCanMove(gamePlayer).test(ut2);
             if (u1CanNotCombatMove != u2CanNotCombatMove) {
               return u1CanNotCombatMove ? 1 : -1;
             }
@@ -113,7 +113,7 @@ public class PlayerUnitsPanel extends JPanel {
       if (defender) {
         predicate = Matches.unitTypeIsNotSea();
       } else {
-        predicate = Matches.unitTypeIsNotSea().or(Matches.unitTypeCanBombard(id));
+        predicate = Matches.unitTypeIsNotSea().or(Matches.unitTypeCanBombard(gamePlayer));
       }
     } else {
       predicate = Matches.unitTypeIsSeaOrAir();
@@ -121,12 +121,12 @@ public class PlayerUnitsPanel extends JPanel {
     final IntegerMap<UnitType> costs;
     try {
       data.acquireReadLock();
-      costs = TuvUtils.getCostsForTuv(id, data);
+      costs = TuvUtils.getCostsForTuv(gamePlayer, data);
     } finally {
       data.releaseReadLock();
     }
 
-    PlayerId previousPlayer = null;
+    GamePlayer previousPlayer = null;
     JPanel panel = null;
     for (final UnitCategory category : categories) {
       if (predicate.test(category.getType())) {
@@ -156,18 +156,21 @@ public class PlayerUnitsPanel extends JPanel {
    * production frontier and then any unit types the player owns on the map. Then populate the list
    * of units into the categories.
    */
-  private Set<UnitCategory> categorize(final PlayerId id, final List<Unit> units) {
+  private Set<UnitCategory> categorize(final GamePlayer gamePlayer, final List<Unit> units) {
 
     // Get player unit types from production frontier and unit types on the map
     final Set<UnitCategory> categories = new LinkedHashSet<>();
-    for (final UnitType t : getUnitTypes(id)) {
-      final UnitCategory category = new UnitCategory(t, id);
+    for (final UnitType t : getUnitTypes(gamePlayer)) {
+      final UnitCategory category = new UnitCategory(t, gamePlayer);
       categories.add(category);
     }
 
     // Get unit owner unit types from production frontier and unit types on the map
-    for (final PlayerId player :
-        units.stream().map(Unit::getOwner).filter(p -> !p.equals(id)).collect(Collectors.toSet())) {
+    for (final GamePlayer player :
+        units.stream()
+            .map(Unit::getOwner)
+            .filter(p -> !p.equals(gamePlayer))
+            .collect(Collectors.toSet())) {
       for (final UnitType t : getUnitTypes(player)) {
         final UnitCategory category = new UnitCategory(t, player);
         categories.add(category);
@@ -192,7 +195,7 @@ public class PlayerUnitsPanel extends JPanel {
    * Return all the unit types available for the given player. A unit type is available if the unit
    * can be purchased or if a player has one on the map.
    */
-  private Collection<UnitType> getUnitTypes(final PlayerId player) {
+  private Collection<UnitType> getUnitTypes(final GamePlayer player) {
     Collection<UnitType> unitTypes = new LinkedHashSet<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {

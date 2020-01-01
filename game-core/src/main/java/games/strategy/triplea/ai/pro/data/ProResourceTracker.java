@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import org.triplea.java.collections.IntegerMap;
@@ -12,7 +12,7 @@ public class ProResourceTracker {
   private final IntegerMap<Resource> resources;
   private IntegerMap<Resource> tempPurchases = new IntegerMap<>();
 
-  public ProResourceTracker(final PlayerId player) {
+  public ProResourceTracker(final GamePlayer player) {
     resources = player.getResources().getResourcesCopy();
   }
 

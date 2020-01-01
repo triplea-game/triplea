@@ -17,10 +17,10 @@ final class GameSequenceTest {
     private static final String OTHER_GAME_STEP_NAME = "otherGameStep";
 
     private final GameData gameData = new GameData();
-    private final PlayerId player = new PlayerId("player", gameData);
+    private final GamePlayer player = new GamePlayer("player", gameData);
     private final GameSequence gameSequence = new GameSequence(gameData);
 
-    private GameStep newGameStep(final String displayName, final @Nullable PlayerId player) {
+    private GameStep newGameStep(final String displayName, final @Nullable GamePlayer player) {
       final IDelegate delegate = new TestDelegate();
       delegate.initialize("delegateName", "delegateDisplayName");
       return new GameStep("stepName", displayName, player, delegate, gameData, new Properties());

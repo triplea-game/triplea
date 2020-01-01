@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
@@ -122,11 +122,13 @@ public class LobbyLogin {
             LobbyClient.builder()
                 .httpLobbyClient(
                     HttpLobbyClient.newClient(
-                        serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())))
+                        serverProperties.getUri(),
+                        ApiKey.of(loginResponse.getApiKey()),
+                        error -> showError("Connection problem", error)))
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .moderator(loginResponse.isModerator())
-                .playerName(PlayerName.of(panel.getUserName()))
+                .userName(UserName.of(panel.getUserName()))
                 .build());
       } else {
         showError("Login Failed", loginResponse.getFailReason());
@@ -142,7 +144,10 @@ public class LobbyLogin {
   }
 
   private void showError(final String title, final String message) {
-    SwingComponents.showError(parentWindow, title, message);
+    // We use 'null' parentWindow in case there is an async failure connecting to the lobby
+    // server. In the async case, we close the parent window while still connecting, the close
+    // of the parent window will close the child dialog error message as well.
+    SwingComponents.showError(null, title, message);
   }
 
   private Optional<LobbyClient> loginToServer() {
@@ -172,7 +177,7 @@ public class LobbyLogin {
             .map(
                 httpLobbyClient ->
                     LobbyClient.builder()
-                        .playerName(PlayerName.of(createAccountPanel.getUsername()))
+                        .userName(UserName.of(createAccountPanel.getUsername()))
                         .httpLobbyClient(httpLobbyClient)
                         .build());
       case CANCEL:
@@ -207,7 +212,9 @@ public class LobbyLogin {
       }
       return Optional.of(
           HttpLobbyClient.newClient(
-              serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())));
+              serverProperties.getUri(),
+              ApiKey.of(loginResponse.getApiKey()),
+              error -> showError("Connection problem", error)));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();

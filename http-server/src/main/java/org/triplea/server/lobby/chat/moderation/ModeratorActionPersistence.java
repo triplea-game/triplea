@@ -8,7 +8,7 @@ import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao.AuditAction;
-import org.triplea.lobby.server.db.dao.api.key.PlayerIdLookup;
+import org.triplea.lobby.server.db.dao.api.key.GamePlayerLookup;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
 
 @AllArgsConstructor
@@ -19,31 +19,31 @@ class ModeratorActionPersistence {
 
   void recordBan(
       final int moderatorId,
-      final PlayerIdLookup playerIdLookup,
+      final GamePlayerLookup gamePlayerLookup,
       final BanPlayerRequest banPlayerRequest) {
     userBanDao.addBan(
         UUID.randomUUID().toString(),
-        playerIdLookup.getPlayerName().getValue(),
-        playerIdLookup.getSystemId().getValue(),
-        playerIdLookup.getIp(),
+        gamePlayerLookup.getUserName().getValue(),
+        gamePlayerLookup.getSystemId().getValue(),
+        gamePlayerLookup.getIp(),
         banPlayerRequest.getBanMinutes());
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorUserId(moderatorId)
             .actionName(AuditAction.BAN_USER)
             .actionTarget(
-                playerIdLookup.getPlayerName().getValue()
+                gamePlayerLookup.getUserName().getValue()
                     + " "
                     + BanDurationFormatter.formatBanMinutes(banPlayerRequest.getBanMinutes()))
             .build());
   }
 
-  void recordPlayerDisconnect(final int moderatorId, final PlayerIdLookup playerIdLookup) {
+  void recordPlayerDisconnect(final int moderatorId, final GamePlayerLookup gamePlayerLookup) {
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorUserId(moderatorId)
             .actionName(AuditAction.DISCONNECT_USER)
-            .actionTarget(playerIdLookup.getPlayerName().getValue())
+            .actionTarget(gamePlayerLookup.getUserName().getValue())
             .build());
   }
 }

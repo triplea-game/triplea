@@ -3,7 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Predicates.not;
+import static java.util.function.Predicate.not;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
@@ -406,7 +406,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    if (maps.size() > 0) {
+    if (!maps.isEmpty()) {
       final DefaultListModel<String> model = new DefaultListModel<>();
       maps.stream().map(DownloadFileDescription::getMapName).forEach(model::addElement);
 
@@ -434,7 +434,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private static DownloadFileDescription determineCurrentMapSelection(
       final List<DownloadFileDescription> maps, final Optional<String> mapToSelect) {
-    checkArgument(maps.size() > 0);
+    checkArgument(!maps.isEmpty());
     if (mapToSelect.isPresent()) {
       final Optional<DownloadFileDescription> potentialMap =
           maps.stream().filter(m -> m.getMapName().equalsIgnoreCase(mapToSelect.get())).findFirst();

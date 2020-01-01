@@ -1,6 +1,6 @@
 package org.triplea.sound;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.message.IChannelSubscriber;
 import java.util.Collection;
 
@@ -15,10 +15,10 @@ public interface ISound extends IChannelSubscriber {
    * this from user interface elements (because all users have these).
    *
    * @param clipName The name of the sound clip to play, found in SoundPath.java
-   * @param playerId The player who's sound we want to play (ie: russians infantry might make
+   * @param gamePlayer The player who's sound we want to play (ie: russians infantry might make
    *     different sounds from german infantry, etc). Can be null.
    */
-  void playSoundForAll(String clipName, PlayerId playerId);
+  void playSoundForAll(String clipName, GamePlayer gamePlayer);
 
   /**
    * You will want to call this from things that the server only runs (like delegates), and not call
@@ -34,7 +34,7 @@ public interface ISound extends IChannelSubscriber {
    */
   void playSoundToPlayers(
       String clipName,
-      Collection<PlayerId> playersToSendTo,
-      Collection<PlayerId> butNotThesePlayers,
+      Collection<GamePlayer> playersToSendTo,
+      Collection<GamePlayer> butNotThesePlayers,
       boolean includeObservers);
 }

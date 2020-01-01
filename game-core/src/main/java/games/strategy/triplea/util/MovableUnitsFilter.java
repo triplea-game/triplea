@@ -2,8 +2,8 @@ package games.strategy.triplea.util;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
@@ -81,7 +81,7 @@ public final class MovableUnitsFilter {
     private final Collection<Unit> unitsWithDependents;
   }
 
-  private final PlayerId player;
+  private final GamePlayer player;
   private final GameData data;
   private final Route route;
   private final boolean nonCombat;
@@ -90,7 +90,7 @@ public final class MovableUnitsFilter {
   private final Map<Unit, Collection<Unit>> dependentUnits;
 
   public MovableUnitsFilter(
-      final PlayerId player,
+      final GamePlayer player,
       final Route route,
       final boolean nonCombat,
       final MoveType moveType,

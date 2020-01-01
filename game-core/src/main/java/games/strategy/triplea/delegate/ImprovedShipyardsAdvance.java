@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -25,12 +25,12 @@ public final class ImprovedShipyardsAdvance extends TechAdvance {
   }
 
   @Override
-  public void perform(final PlayerId id, final IDelegateBridge bridge) {
+  public void perform(final GamePlayer gamePlayer, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     if (!Properties.getUseShipyards(data)) {
       return;
     }
-    final ProductionFrontier current = id.getProductionFrontier();
+    final ProductionFrontier current = gamePlayer.getProductionFrontier();
     // they already have it
     if (current.getName().endsWith("Shipyards")) {
       return;
@@ -43,7 +43,7 @@ public final class ImprovedShipyardsAdvance extends TechAdvance {
       log.warning("No tech named:" + industrialTechName + " not adding tech");
       return;
     }
-    final Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
+    final Change prodChange = ChangeFactory.changeProductionFrontier(gamePlayer, advancedTech);
     bridge.addChange(prodChange);
   }
 

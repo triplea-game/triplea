@@ -8,10 +8,10 @@ import java.util.prefs.Preferences;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 class ChatIgnoreListTest {
-  private static final PlayerName PLAYER_NAME = PlayerName.of("test");
+  private static final UserName PLAYER_NAME = UserName.of("test");
 
   @BeforeEach
   void setUp() throws BackingStoreException {

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -223,8 +223,8 @@ public class ProOddsCalculator {
 
     final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
     final int runCount = Math.max(16, 100 - minArmySize);
-    final PlayerId attacker = attackingUnits.iterator().next().getOwner();
-    final PlayerId defender = defendingUnits.iterator().next().getOwner();
+    final GamePlayer attacker = attackingUnits.iterator().next().getOwner();
+    final GamePlayer defender = defendingUnits.iterator().next().getOwner();
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(true);
     }

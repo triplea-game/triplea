@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 
 @ExtendWith(MockitoExtension.class)
 class AnonymousLoginTest {
-  private static final PlayerName PLAYER_NAME = PlayerName.of("Player");
+  private static final UserName PLAYER_NAME = UserName.of("Player");
 
   @Mock private UserJdbiDao userJdbiDao;
   @Mock private Chatters chatters;

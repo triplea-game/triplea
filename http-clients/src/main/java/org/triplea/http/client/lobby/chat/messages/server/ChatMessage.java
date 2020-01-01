@@ -6,7 +6,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import lombok.Value;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 @Value
 public class ChatMessage {
@@ -14,10 +14,10 @@ public class ChatMessage {
   @VisibleForTesting static final int MAX_LINE_LENGTH = 100;
   @VisibleForTesting static final String ELLIPSES = "..";
 
-  private final PlayerName from;
+  private final UserName from;
   private final String message;
 
-  public ChatMessage(final PlayerName from, final String message) {
+  public ChatMessage(final UserName from, final String message) {
     this.from = Preconditions.checkNotNull(from);
     this.message =
         Joiner.on("\n")

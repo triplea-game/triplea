@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.delegate.TechAdvance;
 
@@ -13,9 +13,10 @@ class AddAvailableTech extends Change {
 
   private final TechAdvance tech;
   private final TechnologyFrontier frontier;
-  private final PlayerId player;
+  private final GamePlayer player;
 
-  AddAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
+  AddAvailableTech(
+      final TechnologyFrontier front, final TechAdvance tech, final GamePlayer player) {
     checkNotNull(front);
     checkNotNull(tech);
 

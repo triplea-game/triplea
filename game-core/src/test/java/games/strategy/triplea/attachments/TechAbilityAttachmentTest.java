@@ -13,8 +13,8 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
@@ -175,7 +175,7 @@ class TechAbilityAttachmentTest {
         .when(mapper)
         .apply(attachment);
     final int result =
-        TechAbilityAttachment.sumIntegerMap(mapper, dummyUnitType, mock(PlayerId.class), data);
+        TechAbilityAttachment.sumIntegerMap(mapper, dummyUnitType, mock(GamePlayer.class), data);
     assertEquals(319, result);
   }
 
@@ -189,7 +189,7 @@ class TechAbilityAttachmentTest {
               return counter.getAndUpdate(i -> i * -10);
             },
             "NamedAttachable{name=test}",
-            mock(PlayerId.class),
+            mock(GamePlayer.class),
             data);
     assertEquals(101, result);
   }

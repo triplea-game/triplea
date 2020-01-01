@@ -2,8 +2,8 @@ package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -37,7 +37,7 @@ public final class ProMoveUtils {
    */
   public static List<MoveDescription> calculateMoveRoutes(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
@@ -165,7 +165,7 @@ public final class ProMoveUtils {
    */
   public static List<MoveDescription> calculateAmphibRoutes(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
@@ -316,7 +316,7 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombardMoveRoutes(
-      final ProData proData, final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
+      final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = proData.getData();
     final GameMap map = data.getMap();
@@ -368,7 +368,7 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombingRoutes(
-      final ProData proData, final PlayerId player, final Map<Territory, ProTerritory> attackMap) {
+      final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = proData.getData();
     final GameMap map = data.getMap();

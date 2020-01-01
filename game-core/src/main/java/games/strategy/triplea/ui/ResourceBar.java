@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.triplea.Constants;
@@ -51,7 +51,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
   public void gameDataChanged(final Change change) {
     gameData.acquireReadLock();
     try {
-      final PlayerId player = gameData.getSequence().getStep().getPlayerId();
+      final GamePlayer player = gameData.getSequence().getStep().getPlayerId();
       if (player != null) {
         final IntegerMap<Resource> resourceIncomes =
             AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);

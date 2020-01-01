@@ -9,9 +9,9 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -50,15 +50,15 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
-import games.strategy.triplea.delegate.AirBattle;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.ScrambleLogic;
+import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.data.TechRoll;
@@ -212,9 +212,9 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
   private List<Unit> unitsBeingMousedOver;
-  private PlayerId lastStepPlayer;
-  private PlayerId currentStepPlayer;
-  private final Map<PlayerId, Boolean> requiredTurnSeries = new HashMap<>();
+  private GamePlayer lastStepPlayer;
+  private GamePlayer currentStepPlayer;
+  private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
   private boolean isCtrlPressed = false;
@@ -643,7 +643,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
           }
           if (pane.getComponentAt(sel).equals(editPanel)) {
             data.acquireReadLock();
-            final PlayerId player1;
+            final GamePlayer player1;
             try {
               player1 = data.getSequence().getStep().getPlayerId();
             } finally {
@@ -907,21 +907,23 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     setStatus(msg, mapPanel.getWarningImage());
   }
 
-  public IntegerMap<ProductionRule> getProduction(final PlayerId player, final boolean bid) {
+  public IntegerMap<ProductionRule> getProduction(final GamePlayer player, final boolean bid) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToProduce(player);
     return actionButtons.waitForPurchase(bid);
   }
 
   public Map<Unit, IntegerMap<RepairRule>> getRepair(
-      final PlayerId player, final boolean bid, final Collection<PlayerId> allowedPlayersToRepair) {
+      final GamePlayer player,
+      final boolean bid,
+      final Collection<GamePlayer> allowedPlayersToRepair) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToRepair(player);
     return actionButtons.waitForRepair(bid, allowedPlayersToRepair);
   }
 
   public MoveDescription getMove(
-      final PlayerId player,
+      final GamePlayer player,
       final IPlayerBridge bridge,
       final boolean nonCombat,
       final String stepName) {
@@ -945,13 +947,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   }
 
   public PlaceData waitForPlace(
-      final PlayerId player, final boolean bid, final IPlayerBridge bridge) {
+      final GamePlayer player, final boolean bid, final IPlayerBridge bridge) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPlace(player);
     return actionButtons.waitForPlace(bid, bridge);
   }
 
-  public void waitForMoveForumPoster(final PlayerId player, final IPlayerBridge bridge) {
+  public void waitForMoveForumPoster(final GamePlayer player, final IPlayerBridge bridge) {
     if (actionButtons == null) {
       return;
     }
@@ -959,7 +961,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     actionButtons.waitForMoveForumPosterPanel(this, bridge);
   }
 
-  public void waitForEndTurn(final PlayerId player, final IPlayerBridge bridge) {
+  public void waitForEndTurn(final GamePlayer player, final IPlayerBridge bridge) {
     if (actionButtons == null) {
       return;
     }
@@ -968,7 +970,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   }
 
   public FightBattleDetails getBattle(
-      final PlayerId player, final Map<BattleType, Collection<Territory>> battles) {
+      final GamePlayer player, final Map<BattleType, Collection<Territory>> battles) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToBattle(player, battles);
     return actionButtons.waitForBattleSelection();
@@ -1029,7 +1031,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
    * specified territories, or if they wish to continue the current movement/placement action in
    * order to possibly move/place those units in a different territory.
    *
-   * @param id The player performing the movement/placement action.
+   * @param gamePlayer The player performing the movement/placement action.
    * @param airCantLand The collection of territories that have air units that either cannot land or
    *     be placed in them.
    * @param movePhase {@code true} if a movement action is active; otherwise {@code false} if a
@@ -1039,7 +1041,9 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
    *     current movement/placement action.
    */
   public boolean getOkToLetAirDie(
-      final PlayerId id, final Collection<Territory> airCantLand, final boolean movePhase) {
+      final GamePlayer gamePlayer,
+      final Collection<Territory> airCantLand,
+      final boolean movePhase) {
     if (airCantLand == null || airCantLand.isEmpty()) {
       return true;
     }
@@ -1053,8 +1057,8 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
         AirThatCantLandUtil.isLhtrCarrierProduction(data)
             || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     final int carrierCount =
-        GameStepPropertiesHelper.getCombinedTurns(data, id).stream()
-            .map(PlayerId::getUnitCollection)
+        GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer).stream()
+            .map(GamePlayer::getUnitCollection)
             .map(units -> units.getMatches(Matches.unitIsCarrier()))
             .mapToInt(List::size)
             .sum();
@@ -1124,7 +1128,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
 
   /** Asks a given player if they wish confirm a given political action. */
   public boolean acceptAction(
-      final PlayerId playerSendingProposal,
+      final GamePlayer playerSendingProposal,
       final String acceptanceQuestion,
       final boolean politics) {
     messageAndDialogThreadPool.waitForAll();
@@ -1419,7 +1423,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
    *     collection of selected units.
    */
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> territoryChoices,
       final List<Unit> unitChoices,
       final int unitsPerPick) {
@@ -1632,15 +1636,16 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
             chooser.setMaxAndShowMaxButton(maxAllowed);
             chooser.addChangeListener(
                 field -> {
-                  final Map<PlayerId, ResourceCollection> playerFuelCost = new HashMap<>();
+                  final Map<GamePlayer, ResourceCollection> playerFuelCost = new HashMap<>();
                   for (final Tuple<Territory, UnitChooser> tuple : choosers) {
-                    final Map<PlayerId, ResourceCollection> map =
+                    final Map<GamePlayer, ResourceCollection> map =
                         Route.getScrambleFuelCostCharge(
                             tuple.getSecond().getSelected(false),
                             tuple.getFirst(),
                             scrambleTo,
                             data);
-                    for (final Entry<PlayerId, ResourceCollection> playerAndCost : map.entrySet()) {
+                    for (final Entry<GamePlayer, ResourceCollection> playerAndCost :
+                        map.entrySet()) {
                       if (playerFuelCost.containsKey(playerAndCost.getKey())) {
                         playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
                       } else {
@@ -1651,7 +1656,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                   fuelCostPanel.removeAll();
                   boolean hasEnoughFuel = true;
                   int count = 0;
-                  for (final Entry<PlayerId, ResourceCollection> entry :
+                  for (final Entry<GamePlayer, ResourceCollection> entry :
                       playerFuelCost.entrySet()) {
                     final JLabel label = new JLabel(entry.getKey().getName() + ": ");
                     fuelCostPanel.add(
@@ -1827,7 +1832,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   }
 
   public PoliticalActionAttachment getPoliticalActionChoice(
-      final PlayerId player, final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
+      final GamePlayer player, final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPolitics(player);
     requestWindowFocus();
@@ -1835,16 +1840,18 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   }
 
   public UserActionAttachment getUserActionChoice(
-      final PlayerId player, final boolean firstRun, final IUserActionDelegate userActionDelegate) {
+      final GamePlayer player,
+      final boolean firstRun,
+      final IUserActionDelegate userActionDelegate) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToUserActions(player);
     requestWindowFocus();
     return actionButtons.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
-  public TechRoll getTechRolls(final PlayerId id) {
+  public TechRoll getTechRolls(final GamePlayer gamePlayer) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtons.changeToTech(id);
+    actionButtons.changeToTech(gamePlayer);
     // workaround for panel not receiving focus at beginning of tech phase
     requestWindowFocus();
     return actionButtons.waitForTech();
@@ -1908,7 +1915,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     }
     final int round;
     final String stepDisplayName;
-    final PlayerId player;
+    final GamePlayer player;
     data.acquireReadLock();
     try {
       round = data.getSequence().getRound();
@@ -1964,7 +1971,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
    * Invoked at the start of a player's turn to play a sound alerting the player it is their turn
    * and to center the map on the player's capital.
    */
-  public void requiredTurnSeries(final PlayerId player) {
+  public void requiredTurnSeries(final GamePlayer player) {
     if (player == null || !Interruptibles.sleep(300)) {
       return;
     }
@@ -2191,7 +2198,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                 }
               });
           popup.add(
-              new AbstractAction("Export Map Snapshot") {
+              new AbstractAction("Export Gameboard Picture") {
                 private static final long serialVersionUID = 1222760138263428443L;
 
                 @Override
@@ -2247,7 +2254,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                         enumeration.nextElement();
                         int round = 0;
                         String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
-                        PlayerId currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
+                        GamePlayer currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
                         while (enumeration.hasMoreElements()) {
                           final HistoryNode node = (HistoryNode) enumeration.nextElement();
                           if (node instanceof Round) {

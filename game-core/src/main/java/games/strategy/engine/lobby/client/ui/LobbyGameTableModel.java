@@ -10,25 +10,19 @@ import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
-import org.triplea.java.timer.ScheduledTimer;
-import org.triplea.java.timer.Timers;
+import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.LobbyGameUpdateListener;
 import org.triplea.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
-
-  private static final int GAME_POLLER_FREQUENCY_SECONDS = 3;
 
   enum Column {
     Host,
@@ -44,10 +38,10 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private final boolean admin;
-  private final transient ScheduledTimer gamePoller;
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<String, GameDescription>> gameList = new CopyOnWriteArrayList<>();
+  private final GameListingClient gameListingClient;
   private final LobbyGameUpdateListener lobbyGameBroadcaster =
       new LobbyGameUpdateListener() {
         @Override
@@ -63,27 +57,23 @@ class LobbyGameTableModel extends AbstractTableModel {
         }
       };
 
-  LobbyGameTableModel(
-      final boolean admin,
-      final HttpLobbyClient httpLobbyClient,
-      final Consumer<String> errorMessageReporter) {
+  LobbyGameTableModel(final boolean admin, final HttpLobbyClient httpLobbyClient) {
     this.admin = admin;
+    gameListingClient = httpLobbyClient.getGameListingClient();
 
     // Poll period is chosen to be somewhat frequent so that there is not too much of noticeable
     // delay when games are updated, yet still as infrequent as possible to keep server load to
     // a minimum.
-    gamePoller =
-        Timers.fixedRateTimer("game-poller")
-            .period(GAME_POLLER_FREQUENCY_SECONDS, TimeUnit.SECONDS)
-            .delay(GAME_POLLER_FREQUENCY_SECONDS, TimeUnit.SECONDS)
-            .task(
-                new GamePollerTask(
-                    lobbyGameBroadcaster,
-                    gameListingSupplier(),
-                    httpLobbyClient.getGameListingClient()::fetchGameListing,
-                    errorMessageReporter))
-            .start();
-    httpLobbyClient.addConnectionClosedListener(msg -> gamePoller.cancel());
+
+    gameListingClient.addListeners(
+        GameListingListeners.builder()
+            .gameUpdated(lobbyGameBroadcaster::gameUpdated)
+            .gameRemoved(lobbyGameBroadcaster::gameRemoved)
+            .build());
+
+    gameListingClient.fetchGameListing().forEach(lobbyGameBroadcaster::gameUpdated);
+
+    httpLobbyClient.addConnectionClosedListener(msg -> gameListingClient.close());
 
     try {
       final Map<String, GameDescription> games =
@@ -95,15 +85,8 @@ class LobbyGameTableModel extends AbstractTableModel {
         updateGame(entry.getKey(), entry.getValue());
       }
     } catch (final FeignException e) {
-      gamePoller.cancel();
       throw new CouldNotConnectToLobby(e);
     }
-  }
-
-  private Supplier<Map<String, LobbyGame>> gameListingSupplier() {
-    return () ->
-        gameList.stream()
-            .collect(Collectors.toMap(Tuple::getFirst, t -> t.getSecond().toLobbyGame()));
   }
 
   private static class CouldNotConnectToLobby extends RuntimeException {
@@ -228,6 +211,6 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   public void shutdown() {
-    gamePoller.cancel();
+    gameListingClient.close();
   }
 }

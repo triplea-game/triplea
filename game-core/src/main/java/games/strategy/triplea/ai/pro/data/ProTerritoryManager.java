@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -18,9 +18,9 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.delegate.ScrambleLogic;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class ProTerritoryManager {
 
   private final ProOddsCalculator calc;
   private final ProData proData;
-  private final PlayerId player;
+  private final GamePlayer player;
 
   private ProMyMoveOptions attackOptions;
   private ProMyMoveOptions potentialAttackOptions;
@@ -142,7 +142,7 @@ public class ProTerritoryManager {
   }
 
   private List<ProTerritory> removeTerritoriesThatCantBeConquered(
-      final PlayerId player,
+      final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap,
       final Map<Unit, Set<Territory>> unitAttackMap,
       final Map<Unit, Set<Territory>> transportAttackMap,
@@ -198,19 +198,19 @@ public class ProTerritoryManager {
         if (!alliedUnits.isEmpty()) {
 
           // Make sure allies' capital isn't next to territory
-          final PlayerId alliedPlayer = alliedUnits.iterator().next().getOwner();
+          final GamePlayer alliedPlayer = alliedUnits.iterator().next().getOwner();
           final Territory capital =
               TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(alliedPlayer, data);
           if (capital != null && !data.getMap().getNeighbors(capital).contains(t)) {
 
             // Get max enemy defenders
             final Set<Unit> additionalEnemyDefenders = new HashSet<>();
-            final List<PlayerId> players = ProUtils.getOtherPlayersInTurnOrder(player);
+            final List<GamePlayer> players = ProUtils.getOtherPlayersInTurnOrder(player);
             for (final ProTerritory enemyDefendOption : enemyDefendOptions.getAll(t)) {
               final Set<Unit> enemyUnits = new HashSet<>(enemyDefendOption.getMaxUnits());
               enemyUnits.addAll(enemyDefendOption.getMaxAmphibUnits());
               if (!enemyUnits.isEmpty()) {
-                final PlayerId enemyPlayer = enemyUnits.iterator().next().getOwner();
+                final GamePlayer enemyPlayer = enemyUnits.iterator().next().getOwner();
                 if (ProUtils.isPlayersTurnFirst(players, enemyPlayer, alliedPlayer)) {
                   additionalEnemyDefenders.addAll(enemyUnits);
                 }
@@ -368,7 +368,7 @@ public class ProTerritoryManager {
   }
 
   private void findScrambleOptions(
-      final ProData proData, final PlayerId player, final Map<Territory, ProTerritory> moveMap) {
+      final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> moveMap) {
     final GameData data = proData.getData();
 
     if (!Properties.getScrambleRulesInEffect(data)) {
@@ -405,7 +405,7 @@ public class ProTerritoryManager {
 
   private static void findAttackOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
@@ -490,16 +490,16 @@ public class ProTerritoryManager {
     }
   }
 
-  private ProOtherMoveOptions findAlliedAttackOptions(final PlayerId player) {
+  private ProOtherMoveOptions findAlliedAttackOptions(final GamePlayer player) {
     final GameData data = proData.getData();
 
     // Get enemy players in order of turn
-    final List<PlayerId> alliedPlayers = ProUtils.getAlliedPlayersInTurnOrder(player);
+    final List<GamePlayer> alliedPlayers = ProUtils.getAlliedPlayersInTurnOrder(player);
     final List<Map<Territory, ProTerritory>> alliedAttackMaps = new ArrayList<>();
 
     // Loop through each enemy to determine the maximum number of enemy units that can attack each
     // territory
-    for (final PlayerId alliedPlayer : alliedPlayers) {
+    for (final GamePlayer alliedPlayer : alliedPlayers) {
       final List<Territory> alliedUnitTerritories =
           CollectionUtils.getMatches(
               data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(alliedPlayer));
@@ -529,20 +529,20 @@ public class ProTerritoryManager {
 
   private static ProOtherMoveOptions findEnemyAttackOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> clearedTerritories,
       final List<Territory> territoriesToCheck) {
     final GameData data = proData.getData();
 
     // Get enemy players in order of turn
-    final List<PlayerId> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
+    final List<GamePlayer> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
     final List<Map<Territory, ProTerritory>> enemyAttackMaps = new ArrayList<>();
     final Set<Territory> alliedTerritories = new HashSet<>();
     final List<Territory> enemyTerritories = new ArrayList<>(clearedTerritories);
 
     // Loop through each enemy to determine the maximum number of enemy units that can attack each
     // territory
-    for (final PlayerId enemyPlayer : enemyPlayers) {
+    for (final GamePlayer enemyPlayer : enemyPlayers) {
       final List<Territory> enemyUnitTerritories =
           CollectionUtils.getMatches(
               data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(enemyPlayer));
@@ -576,7 +576,7 @@ public class ProTerritoryManager {
 
   private static void findPotentialAttackOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
@@ -586,7 +586,7 @@ public class ProTerritoryManager {
     final GameData data = proData.getData();
 
     final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<>();
-    final List<PlayerId> otherPlayers = ProUtils.getPotentialEnemyPlayers(player);
+    final List<GamePlayer> otherPlayers = ProUtils.getPotentialEnemyPlayers(player);
     findNavalMoveOptions(
         proData,
         player,
@@ -640,7 +640,7 @@ public class ProTerritoryManager {
 
   private static void findDefendOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
@@ -701,11 +701,11 @@ public class ProTerritoryManager {
         false);
   }
 
-  private ProOtherMoveOptions findEnemyDefendOptions(final ProData proData, final PlayerId player) {
+  private static ProOtherMoveOptions findEnemyDefendOptions(final ProData proData, final GamePlayer player) {
     final GameData data = proData.getData();
 
     // Get enemy players in order of turn
-    final List<PlayerId> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
+    final List<GamePlayer> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
     final List<Map<Territory, ProTerritory>> enemyMoveMaps = new ArrayList<>();
     final List<Territory> clearedTerritories =
         CollectionUtils.getMatches(
@@ -713,7 +713,7 @@ public class ProTerritoryManager {
 
     // Loop through each enemy to determine the maximum number of enemy units that can defend each
     // territory
-    for (final PlayerId enemyPlayer : enemyPlayers) {
+    for (final GamePlayer enemyPlayer : enemyPlayers) {
       final List<Territory> enemyUnitTerritories =
           CollectionUtils.getMatches(
               data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(enemyPlayer));
@@ -739,7 +739,7 @@ public class ProTerritoryManager {
 
   private static void findNavalMoveOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
@@ -862,7 +862,7 @@ public class ProTerritoryManager {
 
   private static void findLandMoveOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
@@ -995,7 +995,7 @@ public class ProTerritoryManager {
 
   private static void findAirMoveOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> unitMoveMap,
@@ -1153,7 +1153,7 @@ public class ProTerritoryManager {
 
   private static void findAmphibMoveOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final List<ProTransport> transportMapList,
@@ -1366,7 +1366,7 @@ public class ProTerritoryManager {
 
   private static void findBombardOptions(
       final ProData proData,
-      final PlayerId player,
+      final GamePlayer player,
       final List<Territory> myUnitTerritories,
       final Map<Territory, ProTerritory> moveMap,
       final Map<Unit, Set<Territory>> bombardMap,

@@ -1,19 +1,22 @@
 package org.triplea.http.client.web.socket;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
-import java.io.IOException;
 import java.net.URI;
-import javax.net.SocketFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.web.socket.WebSocketConnection.CouldNotConnect;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 class WebSocketConnectionTest {
@@ -43,6 +45,11 @@ class WebSocketConnectionTest {
       webSocketConnection.addListener(webSocketConnectionListener);
     }
 
+    @AfterEach
+    void tearDown() {
+      webSocketConnection.getPingSender().cancel();
+    }
+
     @Test
     void onMessage() {
       webSocketConnection.getClient().onMessage(MESSAGE);
@@ -60,79 +67,135 @@ class WebSocketConnectionTest {
       webSocketConnection.getClient().onError(exception);
       verify(webSocketConnectionListener).handleError(exception);
     }
+
+    @Test
+    @DisplayName("Queued messages are flushed on connection open")
+    void queuedMessagesAreFlushedOnConnectionOpen() {
+      // not connected, this message should be queued
+      webSocketConnection.sendMessage(MESSAGE);
+
+      // onOpen will trigger message send, expect the send attempt to trigger an exception
+      // because we never connected.
+      assertThrows(
+          WebsocketNotConnectedException.class, () -> webSocketConnection.getClient().onOpen(null));
+    }
   }
 
   @ExtendWith(MockitoExtension.class)
   @Nested
   class SendMessageAndConnect {
-    private WebSocketClient webSocketClient;
+    @Mock private WebSocketClient webSocketClient;
+    @Mock private Consumer<String> errorHandler;
 
     private WebSocketConnection webSocketConnection;
 
     @BeforeEach
     void setup() {
       webSocketConnection = new WebSocketConnection(INVALID_URI);
-      // Invoke constructor of abstract class
-      webSocketClient = mock(WebSocketClient.class, withSettings().useConstructor(INVALID_URI));
       webSocketConnection.setClient(webSocketClient);
     }
 
-    @Test
-    void connect() throws Exception {
-      when(webSocketClient.connectBlocking(anyLong(), any())).thenReturn(true);
-      webSocketConnection.connect();
-
-      verify(webSocketClient).connectBlocking(anyLong(), any());
-    }
-
-    /**
-     * This method aims to test if a failing connection is handled correctly. In order to keep this
-     * test fast (~5 times faster), the actual IO operations are mocked. A drawback of this approach
-     * is that it makes a lot of assumptions about the call hierarchy of {@link WebSocketClient}, so
-     * this test needs to be updated if those calls ever change.
-     */
-    @Test
-    @DisplayName("Verify connect fails with exception when connecting to an invalid endpoint")
-    void connectFails() throws Exception {
-      // To simulate a failing connection we need to allow
-      // the mock to call some of its methods first
-      doCallRealMethod().when(webSocketClient).connectBlocking(anyLong(), any());
-      doCallRealMethod().when(webSocketClient).connect();
-      doCallRealMethod().when(webSocketClient).run();
-
-      // Inject SocketFactory that throws an exception when creating a socket
-      // which triggers the asynchronous error mechanism.
-      final SocketFactory factory = mock(SocketFactory.class);
-      when(factory.createSocket()).thenThrow(new IOException("Test Connection Failure"));
-      doCallRealMethod().when(webSocketClient).setSocketFactory(any());
-      webSocketClient.setSocketFactory(factory);
-
-      assertThrows(CouldNotConnect.class, webSocketConnection::connect);
-      verify(webSocketClient).onError(any());
+    @AfterEach
+    void tearDown() {
+      webSocketConnection.getPingSender().cancel();
     }
 
     @Test
+    @DisplayName("Verify connect initiates connection and starts the pinger")
+    void connectWillInitiateConnection() throws Exception {
+      givenWebSocketConnects(true);
+
+      final boolean connected = webSocketConnection.connect(errorHandler).get();
+
+      assertThat(connected, is(true));
+      verifyConnectWasCalled();
+      verifyPingerIsStarted();
+    }
+
+    private void verifyConnectWasCalled() throws Exception {
+      verify(webSocketClient, timeout(2000))
+          .connectBlocking(
+              WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+    }
+
+    private void verifyPingerIsStarted() {
+      assertThat(
+          "Pinger should be started on successful connection",
+          webSocketConnection.getPingSender().isRunning(),
+          is(true));
+    }
+
+    private void givenWebSocketConnects(final boolean connects) throws Exception {
+      when(webSocketClient.connectBlocking(
+              WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS))
+          .thenReturn(connects);
+    }
+
+    @Test
+    @DisplayName("Verify connect failing invokes error handler and pinger is not running")
+    void connectionFailure() throws Exception {
+      givenWebSocketConnects(false);
+
+      final boolean connected = webSocketConnection.connect(errorHandler).get();
+
+      assertThat(connected, is(false));
+      verifyPingerNotStarted();
+      verifyErrorHandlerWasCalled();
+    }
+
+    private void verifyPingerNotStarted() {
+      assertThat(webSocketConnection.getPingSender().isRunning(), is(false));
+    }
+
+    private void verifyErrorHandlerWasCalled() {
+      verify(errorHandler).accept(any());
+    }
+
+    @Test
+    @DisplayName(
+        "Verify connect failing with exception invokes error handler and pinger is not running")
+    void connectionFailureWithInterruptedException() throws Exception {
+      givenConnectionAttemptThrows();
+
+      final boolean connected = webSocketConnection.connect(errorHandler).get();
+
+      assertThat(connected, is(false));
+      verifyPingerNotStarted();
+      verifyErrorHandlerWasCalled();
+    }
+
+    private void givenConnectionAttemptThrows() throws Exception {
+      doThrow(new InterruptedException("test exception"))
+          .when(webSocketClient)
+          .connectBlocking(
+              WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    @DisplayName("Close will close the underlying socket and stops the pinger")
     void close() {
       webSocketConnection.close();
 
       verify(webSocketClient).close();
+      assertThat(webSocketConnection.getPingSender().isRunning(), is(false));
     }
 
     @Test
+    @DisplayName("Send will send messages if connection is open")
     void sendMessage() {
-      when(webSocketClient.isOpen()).thenReturn(true);
+      webSocketConnection.setConnectionIsOpen(true);
+
       webSocketConnection.sendMessage(MESSAGE);
 
       verify(webSocketClient).send(MESSAGE);
     }
 
     @Test
-    void sendMessageFailsIfConnectionNotOpened() {
-      when(webSocketClient.isOpen()).thenReturn(false);
+    @DisplayName("Send will queue messages if connection is not open")
+    void sendMessageWillQueueMessagesIfConnectionIsNotOpen() {
+      webSocketConnection.sendMessage(MESSAGE);
 
-      assertThrows(IllegalStateException.class, () -> webSocketConnection.sendMessage(MESSAGE));
-
-      verify(webSocketClient, never()).send(MESSAGE);
+      verify(webSocketClient, never()).send(anyString());
     }
   }
 }

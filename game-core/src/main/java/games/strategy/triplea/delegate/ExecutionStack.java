@@ -24,7 +24,7 @@ public class ExecutionStack implements Serializable {
   private IExecutable currentStep;
   private final Deque<IExecutable> deque = new ArrayDeque<>();
 
-  void execute(final IDelegateBridge bridge) {
+  public void execute(final IDelegateBridge bridge) {
     // we were interrupted before, resume where we left off
     if (currentStep != null) {
       currentStep.execute(this, bridge);
@@ -44,7 +44,7 @@ public class ExecutionStack implements Serializable {
     deque.push(executable);
   }
 
-  boolean isExecuting() {
+  public boolean isExecuting() {
     return currentStep != null;
   }
 

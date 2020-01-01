@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -117,7 +117,7 @@ public class UnitsDrawer extends AbstractDrawable {
     if (type == null) {
       throw new IllegalStateException("Type not found:" + unitType);
     }
-    final PlayerId owner = data.getPlayerList().getPlayerId(playerName);
+    final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
     final Optional<Image> img =
         uiContext
             .getUnitImageFactory()

@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -44,7 +44,7 @@ class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
 
   IStat[] stats;
-  private final Map<PlayerId, ImageIcon> mapPlayerImage = new HashMap<>();
+  private final Map<GamePlayer, ImageIcon> mapPlayerImage = new HashMap<>();
   private final UiContext uiContext;
   private final StatTableModel dataModel;
   private final TechTableModel techModel;
@@ -100,7 +100,7 @@ class StatPanel extends AbstractStatPanel {
    * @param player the player to get the flag for
    * @return ImageIcon small flag
    */
-  protected ImageIcon getIcon(final PlayerId player) {
+  protected ImageIcon getIcon(final GamePlayer player) {
     ImageIcon icon = mapPlayerImage.get(player);
     if (icon == null && uiContext != null) {
       final Image img = uiContext.getFlagImageFactory().getSmallFlag(player);
@@ -112,7 +112,7 @@ class StatPanel extends AbstractStatPanel {
   }
 
   protected ImageIcon getIcon(final String playerName) {
-    final PlayerId player = gameData.getPlayerList().getPlayerId(playerName);
+    final GamePlayer player = gameData.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       return null;
     }
@@ -120,7 +120,7 @@ class StatPanel extends AbstractStatPanel {
   }
 
   private void fillPlayerIcons() {
-    for (final PlayerId p : gameData.getPlayerList().getPlayers()) {
+    for (final GamePlayer p : gameData.getPlayerList().getPlayers()) {
       getIcon(p);
     }
   }
@@ -170,11 +170,11 @@ class StatPanel extends AbstractStatPanel {
     private synchronized void loadData() {
       gameData.acquireReadLock();
       try {
-        final List<PlayerId> players = getPlayers();
+        final List<GamePlayer> players = getPlayers();
         final Collection<String> alliances = getAlliances();
         collectedData = new String[players.size() + alliances.size()][stats.length + 1];
         int row = 0;
-        for (final PlayerId player : players) {
+        for (final GamePlayer player : players) {
           collectedData[row][0] = player.getName();
           for (int i = 0; i < stats.length; i++) {
             collectedData[row][i + 1] =
@@ -320,7 +320,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     private void initColList() {
-      final List<PlayerId> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
+      final List<GamePlayer> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
       colList = new String[players.size()];
       for (int i = 0; i < players.size(); i++) {
         colList[i] = players.get(i).getName();
@@ -334,7 +334,7 @@ class StatPanel extends AbstractStatPanel {
       final GameData gameData = StatPanel.this.gameData;
       gameData.acquireReadLock();
       try {
-        for (final PlayerId pid : gameData.getPlayerList().getPlayers()) {
+        for (final GamePlayer pid : gameData.getPlayerList().getPlayers()) {
           if (colMap.get(pid.getName()) == null) {
             throw new IllegalStateException(
                 "Unexpected player in GameData.getPlayerList()" + pid.getName());
@@ -419,7 +419,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       final int production =
           data.getMap().getTerritories().stream()
               .filter(place -> place.getOwner().equals(player))
@@ -447,7 +447,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player);
       // sum the total match count
       return data.getMap().getTerritories().stream()
@@ -464,7 +464,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
       final Predicate<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
       return data.getMap().getTerritories().stream()
@@ -482,7 +482,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       // return sum of victory cities
       return data.getMap().getTerritories().stream()
           .filter(place -> place.getOwner().equals(player))
@@ -500,7 +500,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     @Override
-    public double getValue(final PlayerId player, final GameData data) {
+    public double getValue(final GamePlayer player, final GameData data) {
       final PlayerAttachment pa = PlayerAttachment.get(player);
       if (pa != null) {
         return pa.getVps();

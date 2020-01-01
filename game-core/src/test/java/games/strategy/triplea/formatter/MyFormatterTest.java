@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import java.util.Collection;
@@ -17,11 +17,11 @@ final class MyFormatterTest {
   final class UnitsToTextTest {
     private final GameData gameData = new GameData();
 
-    private PlayerId newPlayerId(final String name) {
-      return new PlayerId(name, gameData);
+    private GamePlayer newPlayerId(final String name) {
+      return new GamePlayer(name, gameData);
     }
 
-    private Unit newUnit(final UnitType unitType, final PlayerId owner) {
+    private Unit newUnit(final UnitType unitType, final GamePlayer owner) {
       return new Unit(unitType, owner, gameData);
     }
 
@@ -36,16 +36,16 @@ final class MyFormatterTest {
 
     @Test
     void shouldReturnOneEntryPerUnitTypeAndPlayerCombination() {
-      final PlayerId playerId1 = newPlayerId("playerId1");
-      final PlayerId playerId2 = newPlayerId("playerId2");
+      final GamePlayer gamePlayer1 = newPlayerId("playerId1");
+      final GamePlayer gamePlayer2 = newPlayerId("playerId2");
       final UnitType unitType1 = newUnitType("unitType1");
       final UnitType unitType2 = newUnitType("unitType2");
       final Collection<Unit> units =
           List.of(
-              newUnit(unitType1, playerId1),
-              newUnit(unitType2, playerId1),
-              newUnit(unitType1, playerId2),
-              newUnit(unitType2, playerId2));
+              newUnit(unitType1, gamePlayer1),
+              newUnit(unitType2, gamePlayer1),
+              newUnit(unitType1, gamePlayer2),
+              newUnit(unitType2, gamePlayer2));
 
       assertThat(
           MyFormatter.unitsToText(units),
@@ -59,10 +59,10 @@ final class MyFormatterTest {
 
     @Test
     void shouldPluralizeTextWhenMultipleUnitsOwnedBySamePlayer() {
-      final PlayerId playerId = newPlayerId("playerId");
+      final GamePlayer gamePlayer = newPlayerId("playerId");
       final UnitType unitType = newUnitType("unitType");
       final Collection<Unit> units =
-          List.of(newUnit(unitType, playerId), newUnit(unitType, playerId));
+          List.of(newUnit(unitType, gamePlayer), newUnit(unitType, gamePlayer));
 
       assertThat(MyFormatter.unitsToText(units), is("2 unitTypes owned by the playerId"));
     }

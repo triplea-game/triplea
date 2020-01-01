@@ -1,7 +1,7 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +18,11 @@ import lombok.extern.java.Log;
 
 @Log
 class PuInfo {
-  private final Map<PlayerId, Map<Resource, Integer>> infoMap = new HashMap<>();
+  private final Map<GamePlayer, Map<Resource, Integer>> infoMap = new HashMap<>();
 
   void saveToFile(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
-    for (final PlayerId currentPlayer : gameData.getPlayerList()) {
+    for (final GamePlayer currentPlayer : gameData.getPlayerList()) {
       infoMap.put(
           currentPlayer,
           gameData.getResourceList().getResources().stream()
@@ -55,7 +55,7 @@ class PuInfo {
         }
         resourceWriter.write("\r\n");
         // Print Player's and Resource Amount's
-        for (final PlayerId currentPlayer : gameData.getPlayerList()) {
+        for (final GamePlayer currentPlayer : gameData.getPlayerList()) {
           resourceWriter.write(currentPlayer.getName());
           final Map<Resource, Integer> resourceMap = infoMap.get(currentPlayer);
           for (final int amountResource : resourceMap.values()) {

@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -36,15 +36,15 @@ public final class ProData {
 
   private ProAi proAi;
   private GameData data;
-  private PlayerId player;
+  private GamePlayer player;
 
   public ProData() {}
 
   public void initialize(final ProAi proAi) {
-    hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);
+    hiddenInitialize(proAi, proAi.getGameData(), proAi.getGamePlayer(), false);
   }
 
-  public void initializeSimulation(final ProAi proAi, final GameData data, final PlayerId player) {
+  public void initializeSimulation(final ProAi proAi, final GameData data, final GamePlayer player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
@@ -57,7 +57,7 @@ public final class ProData {
   }
 
   private void hiddenInitialize(
-      final ProAi proAi, final GameData data, final PlayerId player, final boolean isSimulation) {
+      final ProAi proAi, final GameData data, final GamePlayer player, final boolean isSimulation) {
     this.proAi = proAi;
     this.data = data;
     this.player = player;

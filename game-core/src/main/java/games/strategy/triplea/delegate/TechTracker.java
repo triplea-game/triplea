@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -19,9 +19,9 @@ public final class TechTracker {
    * may not be in their tech frontier).
    */
   public static Collection<TechAdvance> getCurrentTechAdvances(
-      final PlayerId id, final GameData data) {
+      final GamePlayer gamePlayer, final GameData data) {
     final Collection<TechAdvance> techAdvances = new ArrayList<>();
-    final TechAttachment attachment = TechAttachment.get(id);
+    final TechAttachment attachment = TechAttachment.get(gamePlayer);
     // search all techs
     for (final TechAdvance ta : TechAdvance.getTechAdvances(data)) {
       if (ta.hasTech(attachment)) {
@@ -36,10 +36,10 @@ public final class TechTracker {
    * have been successfully researched already.
    */
   public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(
-      final PlayerId id) {
+      final GamePlayer gamePlayer) {
     final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
-    final TechAttachment attachment = TechAttachment.get(id);
-    for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(id)) {
+    final TechAttachment attachment = TechAttachment.get(gamePlayer);
+    for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(gamePlayer)) {
       boolean has = true;
       for (final TechAdvance t : tf.getTechs()) {
         has = t.hasTech(attachment);
@@ -56,7 +56,7 @@ public final class TechTracker {
 
   /** Grants or adds a tech advance to a given player. */
   public static void addAdvance(
-      final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
+      final GamePlayer player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance
         && ((GenericTechAdvance) advance).getAdvance() == null) {
@@ -72,7 +72,7 @@ public final class TechTracker {
   }
 
   static void removeAdvance(
-      final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
+      final GamePlayer player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance) {
       if (((GenericTechAdvance) advance).getAdvance() == null) {
@@ -92,48 +92,48 @@ public final class TechTracker {
     bridge.addChange(attachmentChange);
   }
 
-  public static int getTechCost(final PlayerId id) {
-    final TechAttachment ta = TechAttachment.get(id);
+  public static int getTechCost(final GamePlayer gamePlayer) {
+    final TechAttachment ta = TechAttachment.get(gamePlayer);
     return ta.getTechCost();
   }
 
-  public static boolean hasLongRangeAir(final PlayerId player) {
+  public static boolean hasLongRangeAir(final GamePlayer player) {
     return TechAttachment.get(player).getLongRangeAir();
   }
 
-  public static boolean hasHeavyBomber(final PlayerId player) {
+  public static boolean hasHeavyBomber(final GamePlayer player) {
     return TechAttachment.get(player).getHeavyBomber();
   }
 
-  public static boolean hasSuperSubs(final PlayerId player) {
+  public static boolean hasSuperSubs(final GamePlayer player) {
     return TechAttachment.get(player).getSuperSub();
   }
 
-  public static boolean hasJetFighter(final PlayerId player) {
+  public static boolean hasJetFighter(final GamePlayer player) {
     return TechAttachment.get(player).getJetPower();
   }
 
-  public static boolean hasRocket(final PlayerId player) {
+  public static boolean hasRocket(final GamePlayer player) {
     return TechAttachment.get(player).getRocket();
   }
 
-  public static boolean hasIndustrialTechnology(final PlayerId player) {
+  public static boolean hasIndustrialTechnology(final GamePlayer player) {
     return TechAttachment.get(player).getIndustrialTechnology();
   }
 
-  public static boolean hasImprovedArtillerySupport(final PlayerId player) {
+  public static boolean hasImprovedArtillerySupport(final GamePlayer player) {
     return TechAttachment.get(player).getImprovedArtillerySupport();
   }
 
-  public static boolean hasParatroopers(final PlayerId player) {
+  public static boolean hasParatroopers(final GamePlayer player) {
     return TechAttachment.get(player).getParatroopers();
   }
 
-  public static boolean hasIncreasedFactoryProduction(final PlayerId player) {
+  public static boolean hasIncreasedFactoryProduction(final GamePlayer player) {
     return TechAttachment.get(player).getIncreasedFactoryProduction();
   }
 
-  public static boolean hasAaRadar(final PlayerId player) {
+  public static boolean hasAaRadar(final GamePlayer player) {
     return TechAttachment.get(player).getAaRadar();
   }
 }

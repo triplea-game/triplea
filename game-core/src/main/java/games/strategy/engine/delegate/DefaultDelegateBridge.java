@@ -4,7 +4,7 @@ import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.AbstractGame;
 import games.strategy.engine.framework.IGame;
@@ -46,7 +46,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public PlayerId getPlayerId() {
+  public GamePlayer getGamePlayer() {
     return gameData.getSequence().getStep().getPlayerId();
   }
 
@@ -60,7 +60,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
    */
   @Override
   public int getRandom(
-      final int max, final PlayerId player, final DiceType diceType, final String annotation) {
+      final int max, final GamePlayer player, final DiceType diceType, final String annotation) {
     final int random = randomSource.getRandom(max, annotation);
     randomStats.addRandom(random, player, diceType);
     return random;
@@ -70,7 +70,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   public int[] getRandom(
       final int max,
       final int count,
-      final PlayerId player,
+      final GamePlayer player,
       final DiceType diceType,
       final String annotation) {
     final int[] randomValues = randomSource.getRandom(max, count, annotation);
@@ -109,13 +109,14 @@ public class DefaultDelegateBridge implements IDelegateBridge {
 
   @Override
   public Player getRemotePlayer() {
-    return getRemotePlayer(getPlayerId());
+    return getRemotePlayer(getGamePlayer());
   }
 
   @Override
-  public Player getRemotePlayer(final PlayerId id) {
+  public Player getRemotePlayer(final GamePlayer gamePlayer) {
     try {
-      final Object implementor = game.getMessengers().getRemote(ServerGame.getRemoteName(id));
+      final Object implementor =
+          game.getMessengers().getRemote(ServerGame.getRemoteName(gamePlayer));
       return (Player) getOutbound(implementor);
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof MessengerException) {

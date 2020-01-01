@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.net.UnknownHostException;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 /** Implementation of {@link IServerMessenger} for a local game server. */
 public class LocalNoOpMessenger implements IServerMessenger {
@@ -77,7 +77,7 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public void banPlayer(final String ip, final String mac) {}
 
   @Override
-  public @Nullable String getPlayerMac(final PlayerName name) {
+  public @Nullable String getPlayerMac(final UserName name) {
     return null;
   }
 

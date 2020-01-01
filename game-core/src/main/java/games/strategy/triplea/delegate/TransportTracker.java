@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -78,7 +78,7 @@ public class TransportTracker {
    * {@link #transporting(Collection)} except that it considers all elements in {@code units} as the
    * possible units to transport (see {@link #transporting(Unit, Collection)}).
    */
-  static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(
+  public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(
       final Collection<Unit> units) {
     return transporting(units, transport -> transporting(transport, units));
   }
@@ -140,7 +140,7 @@ public class TransportTracker {
     return change;
   }
 
-  static Change unloadAirTransportChange(
+  public static Change unloadAirTransportChange(
       final TripleAUnit unit, final Territory territory, final boolean dependentBattle) {
     final CompositeChange change = new CompositeChange();
     final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
@@ -176,7 +176,7 @@ public class TransportTracker {
     return change;
   }
 
-  static void reloadTransports(final Collection<Unit> units, final CompositeChange change) {
+  public static void reloadTransports(final Collection<Unit> units, final CompositeChange change) {
     final Collection<Unit> transports =
         CollectionUtils.getMatches(units, Matches.unitCanTransport());
     // Put units back on their transports
@@ -306,7 +306,7 @@ public class TransportTracker {
    * determine why we can't unload an additional unit. Since transports only hold up to two units,
    * we only need to return one territory, not multiple territories.
    */
-  static Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
+  public static Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
     final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
     if (unloaded.isEmpty()) {
       return null;
@@ -331,10 +331,10 @@ public class TransportTracker {
         && taUnit.getWasInCombat();
   }
 
-  static CompositeChange clearTransportedByForAlliedAirOnCarrier(
+  public static CompositeChange clearTransportedByForAlliedAirOnCarrier(
       final Collection<Unit> attackingUnits,
       final Territory battleSite,
-      final PlayerId attacker,
+      final GamePlayer attacker,
       final GameData data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held

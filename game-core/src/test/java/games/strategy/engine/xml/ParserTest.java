@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.RelationshipTracker;
@@ -76,8 +76,8 @@ class ParserTest {
   @Test
   void testAllianceMade() {
     final PlayerList players = gameData.getPlayerList();
-    final PlayerId castro = players.getPlayerId("castro");
-    final PlayerId chretian = players.getPlayerId("chretian");
+    final GamePlayer castro = players.getPlayerId("castro");
+    final GamePlayer chretian = players.getPlayerId("chretian");
     final RelationshipTracker alliances = gameData.getRelationshipTracker();
     assertTrue(alliances.isAllied(castro, chretian));
   }
@@ -107,7 +107,7 @@ class ParserTest {
   void testPlayerProduction() {
     final ProductionFrontier cf =
         gameData.getProductionFrontierList().getProductionFrontier("canProd");
-    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(cf, can.getProductionFrontier());
   }
 
@@ -152,7 +152,7 @@ class ParserTest {
 
   @Test
   void testUnitsHeldInitialized() {
-    final PlayerId bush = gameData.getPlayerList().getPlayerId("bush");
+    final GamePlayer bush = gameData.getPlayerList().getPlayerId("bush");
     assertEquals(20, bush.getUnitCollection().getUnitCount());
   }
 
@@ -164,7 +164,7 @@ class ParserTest {
 
   @Test
   void testResourcesGiven() {
-    final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
+    final GamePlayer chretian = gameData.getPlayerList().getPlayerId("chretian");
     final Resource resource = gameData.getResourceList().getResource("silver");
     assertEquals(200, chretian.getResources().getQuantity(resource));
   }

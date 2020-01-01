@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -10,10 +10,10 @@ import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.IBattle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -53,7 +53,7 @@ class ProRetreatAi {
 
     // Get battle data
     final GameData data = proData.getData();
-    final PlayerId player = proData.getPlayer();
+    final GamePlayer player = proData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 

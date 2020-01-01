@@ -60,6 +60,6 @@ class ModeratorAuditHistoryControllerTest {
             PagingParams.builder().rowNumber(ROW_NUMBER).pageSize(ROW_COUNT).build());
 
     assertThat(response.getStatus(), is(200));
-    assertThat(((List) response.getEntity()).get(0), is(EVENT_1));
+    assertThat(((List<?>) response.getEntity()).get(0), is(EVENT_1));
   }
 }

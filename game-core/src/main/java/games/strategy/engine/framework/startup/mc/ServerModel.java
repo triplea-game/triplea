@@ -15,7 +15,7 @@ import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.MessengersChatTransmitter;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
@@ -55,19 +55,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.remote.actions.RemoteActionListeners;
+import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
 import org.triplea.http.client.remote.actions.messages.server.ServerRemoteActionMessageType;
 import org.triplea.http.client.web.socket.WebsocketListener;
 import org.triplea.http.client.web.socket.WebsocketListenerFactory;
@@ -269,13 +270,14 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       final GameSelectorModel gameSelectorModel,
       final ServerSetupModel serverSetupModel,
       @Nullable final JFrame ui,
-      final LaunchAction launchAction) {
+      final LaunchAction launchAction,
+      final Consumer<String> errorHandler) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.ui = ui;
     this.launchAction = launchAction;
-    getServerProps().ifPresent(this::createServerMessenger);
+    getServerProps().ifPresent(props -> this.createServerMessenger(props, errorHandler));
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -310,7 +312,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         playersAllowedToBeDisabled =
             new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-        for (final PlayerId player : data.getPlayerList().getPlayers()) {
+        for (final GamePlayer player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
           if (ui == null) {
             if (player.getIsDisabled()) {
@@ -349,14 +351,14 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               .password(System.getProperty(SERVER_PASSWORD))
               .build());
     }
-    final PlayerName playerName = PlayerName.of(ClientSetting.playerName.getValueOrThrow());
+    final UserName userName = UserName.of(ClientSetting.playerName.getValueOrThrow());
     final Interruptibles.Result<ServerOptions> optionsResult =
         Interruptibles.awaitResult(
             () ->
                 SwingAction.invokeAndWaitResult(
                     () -> {
                       final ServerOptions options =
-                          new ServerOptions(ui, playerName, GameRunner.PORT, false);
+                          new ServerOptions(ui, userName, GameRunner.PORT, false);
                       options.setLocationRelativeTo(ui);
                       options.setVisible(true);
                       options.dispose();
@@ -393,7 +395,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 .build());
   }
 
-  private void createServerMessenger(final ServerConnectionProps props) {
+  private void createServerMessenger(
+      final ServerConnectionProps props, final Consumer<String> errorHandler) {
     try {
       this.serverMessenger =
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
@@ -412,7 +415,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             WebsocketListenerFactory.newListener(
                 lobbyUri,
                 RemoteActionListeners.NOTIFICATIONS_WEBSOCKET_PATH,
-                ServerRemoteActionMessageType::valueOf);
+                ServerRemoteActionMessageType::valueOf,
+                errorHandler);
         remoteActionsListener.setListeners(
             RemoteActionListeners.builder()
                 .bannedPlayerListener(new PlayerDisconnectAction(serverMessenger, this::cancel))
@@ -430,7 +434,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 ui == null
                     ? new WatcherThreadMessaging.HeadlessWatcherThreadMessaging()
                     : new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui));
-        lobbyWatcherThread.createLobbyWatcher(lobbyUri, gameHostingResponse);
+        lobbyWatcherThread.createLobbyWatcher(lobbyUri, gameHostingResponse, errorHandler);
       } else {
         gameHostingResponse = null;
       }

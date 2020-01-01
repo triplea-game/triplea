@@ -2,7 +2,7 @@ package games.strategy.engine.chat;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 /**
  * Simple flood control, only allow so many events per window of time. During each rolling time
@@ -15,7 +15,7 @@ class ChatFloodControl {
   static final int WINDOW = ONE_MINUTE;
 
   private final Object lock = new Object();
-  private final Map<PlayerName, Integer> messageCount = new HashMap<>();
+  private final Map<UserName, Integer> messageCount = new HashMap<>();
   private long clearTime;
 
   ChatFloodControl() {
@@ -26,7 +26,7 @@ class ChatFloodControl {
     clearTime = initialClearTime;
   }
 
-  boolean allow(final PlayerName from, final long now) {
+  boolean allow(final UserName from, final long now) {
     synchronized (lock) {
       // reset the window
       if (now > clearTime) {

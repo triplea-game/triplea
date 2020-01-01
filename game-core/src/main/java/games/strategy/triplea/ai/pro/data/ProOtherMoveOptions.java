@@ -1,6 +1,6 @@
 package games.strategy.triplea.ai.pro.data;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.ProData;
@@ -28,7 +28,7 @@ public class ProOtherMoveOptions {
   public ProOtherMoveOptions(
       final ProData proData,
       final List<Map<Territory, ProTerritory>> moveMapList,
-      final PlayerId player,
+      final GamePlayer player,
       final boolean isAttacker) {
     maxMoveMap = newMaxMoveMap(proData, moveMapList, player, isAttacker);
     moveMaps = newMoveMaps(moveMapList);
@@ -54,18 +54,18 @@ public class ProOtherMoveOptions {
   private static Map<Territory, ProTerritory> newMaxMoveMap(
       final ProData proData,
       final List<Map<Territory, ProTerritory>> moveMaps,
-      final PlayerId player,
+      final GamePlayer player,
       final boolean isAttacker) {
 
     final Map<Territory, ProTerritory> result = new HashMap<>();
-    final List<PlayerId> players = ProUtils.getOtherPlayersInTurnOrder(player);
+    final List<GamePlayer> players = ProUtils.getOtherPlayersInTurnOrder(player);
     for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
       for (final Territory t : moveMap.keySet()) {
 
         // Get current player
         final Set<Unit> currentUnits = new HashSet<>(moveMap.get(t).getMaxUnits());
         currentUnits.addAll(moveMap.get(t).getMaxAmphibUnits());
-        final PlayerId movePlayer;
+        final GamePlayer movePlayer;
         if (!currentUnits.isEmpty()) {
           movePlayer = currentUnits.iterator().next().getOwner();
         } else {

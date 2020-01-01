@@ -1,9 +1,9 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.MoveDescription;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -126,7 +126,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     // We should never touch the game data directly. All changes to game data are done through the
     // remote,
     // which then changes the game using the DelegateBridge -> change factory
-    ui.requiredTurnSeries(getPlayerId());
+    ui.requiredTurnSeries(this.getGamePlayer());
     enableEditModeMenu();
     boolean badStep = false;
     if (name.endsWith("Tech")) {
@@ -134,14 +134,14 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     } else if (GameStep.isPurchaseOrBidStep(name)) {
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
       if (!GameStepPropertiesHelper.isBid(getGameData())) {
-        ui.waitForMoveForumPoster(getPlayerId(), getPlayerBridge());
+        ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
     } else if (name.endsWith("Move")) {
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
       move(nonCombat, name);
       if (!nonCombat) {
-        ui.waitForMoveForumPoster(getPlayerId(), getPlayerBridge());
+        ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
     } else if (name.endsWith("Battle")) {
@@ -211,7 +211,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     }
 
     final PoliticalActionAttachment actionChoice =
-        ui.getPoliticalActionChoice(getPlayerId(), firstRun, politicsDelegate);
+        ui.getPoliticalActionChoice(this.getGamePlayer(), firstRun, politicsDelegate);
     if (actionChoice != null) {
       politicsDelegate.attemptAction(actionChoice);
       politics(false);
@@ -235,7 +235,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       throw new IllegalStateException(errorContext, e);
     }
     final UserActionAttachment actionChoice =
-        ui.getUserActionChoice(getPlayerId(), firstRun, userActionDelegate);
+        ui.getUserActionChoice(this.getGamePlayer(), firstRun, userActionDelegate);
     if (actionChoice != null) {
       userActionDelegate.attemptAction(actionChoice);
       userActions(false);
@@ -244,15 +244,15 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
 
   @Override
   public boolean acceptAction(
-      final PlayerId playerSendingProposal,
+      final GamePlayer playerSendingProposal,
       final String acceptanceQuestion,
       final boolean politics) {
     final GameData data = getGameData();
-    return !getPlayerId().amNotDeadYet(data)
+    return !this.getGamePlayer().amNotDeadYet(data)
         || getPlayerBridge().isGameOver()
         || ui.acceptAction(
             playerSendingProposal,
-            "To " + getPlayerId().getName() + ": " + acceptanceQuestion,
+            "To " + this.getGamePlayer().getName() + ": " + acceptanceQuestion,
             politics);
   }
 
@@ -274,12 +274,12 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
     if (!soundPlayedAlreadyTechnology) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id);
+      ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, gamePlayer);
       soundPlayedAlreadyTechnology = true;
     }
-    final TechRoll techRoll = ui.getTechRolls(id);
+    final TechRoll techRoll = ui.getTechRolls(gamePlayer);
     if (techRoll != null) {
       final TechResults techResults =
           techDelegate.rollTech(
@@ -314,23 +314,24 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
 
     if (nonCombat && !soundPlayedAlreadyNonCombatMove) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
+      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, gamePlayer);
       soundPlayedAlreadyNonCombatMove = true;
     }
 
     if (!nonCombat && !soundPlayedAlreadyCombatMove) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, id);
+      ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, gamePlayer);
       soundPlayedAlreadyCombatMove = true;
     }
     // getMove will block until all moves are done. We recursively call this same method until
     // getMove stops blocking.
-    final MoveDescription moveDescription = ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
+    final MoveDescription moveDescription =
+        ui.getMove(gamePlayer, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
-        if (!canAirLand(true, id)) {
+        if (!canAirLand(true, gamePlayer)) {
           // continue with the move loop
           move(nonCombat, stepName);
         }
@@ -347,7 +348,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     move(nonCombat, stepName);
   }
 
-  private boolean canAirLand(final boolean movePhase, final PlayerId player) {
+  private boolean canAirLand(final boolean movePhase, final GamePlayer player) {
     final Collection<Territory> airCantLand;
     try {
       if (movePhase) {
@@ -368,7 +369,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       log.log(Level.SEVERE, errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
-    return airCantLand.isEmpty() || ui.getOkToLetAirDie(getPlayerId(), airCantLand, movePhase);
+    return airCantLand.isEmpty()
+        || ui.getOkToLetAirDie(this.getGamePlayer(), airCantLand, movePhase);
   }
 
   private boolean canUnitsFight() {
@@ -394,22 +396,22 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       return;
     }
 
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
     // play a sound for this phase
     if (!bid && !soundPlayedAlreadyPurchase) {
-      ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id);
+      ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, gamePlayer);
       soundPlayedAlreadyPurchase = true;
     }
     // Check if any factories need to be repaired
     final GameData data = getGameData();
     final boolean isOnlyRepairIfDisabled = GameStepPropertiesHelper.isOnlyRepairIfDisabled(data);
-    if (id.getRepairFrontier() != null
-        && id.getRepairFrontier().getRules() != null
-        && !id.getRepairFrontier().getRules().isEmpty()) {
+    if (gamePlayer.getRepairFrontier() != null
+        && gamePlayer.getRepairFrontier().getRules() != null
+        && !gamePlayer.getRepairFrontier().getRules().isEmpty()) {
 
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         Predicate<Unit> myDamaged =
-            Matches.unitIsOwnedBy(id).and(Matches.unitHasTakenSomeBombingUnitDamage());
+            Matches.unitIsOwnedBy(gamePlayer).and(Matches.unitHasTakenSomeBombingUnitDamage());
         if (isOnlyRepairIfDisabled) {
           myDamaged = myDamaged.and(Matches.unitIsDisabled());
         }
@@ -417,9 +419,10 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
         }
-        if (damagedUnits.size() > 0) {
+        if (!damagedUnits.isEmpty()) {
           final Map<Unit, IntegerMap<RepairRule>> repair =
-              ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
+              ui.getRepair(
+                  gamePlayer, bid, GameStepPropertiesHelper.getRepairPlayers(data, gamePlayer));
           if (repair != null) {
             final IPurchaseDelegate purchaseDel;
             try {
@@ -448,7 +451,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     if (isOnlyRepairIfDisabled) {
       return;
     }
-    final IntegerMap<ProductionRule> prod = ui.getProduction(id, bid);
+    final IntegerMap<ProductionRule> prod = ui.getProduction(gamePlayer, bid);
     if (prod == null) {
       return;
     }
@@ -489,7 +492,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
     while (true) {
       if (getPlayerBridge().isGameOver()) {
         return;
@@ -499,10 +502,10 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         return;
       }
       if (!soundPlayedAlreadyBattle) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, id);
+        ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, gamePlayer);
         soundPlayedAlreadyBattle = true;
       }
-      final FightBattleDetails details = ui.getBattle(id, battles.getBattles());
+      final FightBattleDetails details = ui.getBattle(gamePlayer, battles.getBattles());
       if (getPlayerBridge().isGameOver()) {
         return;
       }
@@ -522,7 +525,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final PlayerId id = getPlayerId();
+    final GamePlayer gamePlayer = this.getGamePlayer();
     final IAbstractPlaceDelegate placeDel;
     try {
       placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
@@ -537,14 +540,14 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     }
     while (true) {
       if (!soundPlayedAlreadyPlacement) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, id);
+        ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, gamePlayer);
         soundPlayedAlreadyPlacement = true;
       }
-      final PlaceData placeData = ui.waitForPlace(id, bid, getPlayerBridge());
+      final PlaceData placeData = ui.waitForPlace(gamePlayer, bid, getPlayerBridge());
       if (placeData == null) {
         // this only happens in lhtr rules
         if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())
-            || canAirLand(false, id)
+            || canAirLand(false, gamePlayer)
             || getPlayerBridge().isGameOver()) {
           return;
         }
@@ -580,14 +583,14 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       throw new IllegalStateException(errorContext, e);
     }
     if (!soundPlayedAlreadyEndTurn
-        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerId(), data)) {
+        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(this.getGamePlayer(), data)) {
       // do not play if we are reloading a savegame from pbem (gets annoying)
       if (!endTurnDelegate.getHasPostedTurnSummary()) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerId());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, this.getGamePlayer());
       }
       soundPlayedAlreadyEndTurn = true;
     }
-    ui.waitForEndTurn(getPlayerId(), getPlayerBridge());
+    ui.waitForEndTurn(this.getGamePlayer(), getPlayerBridge());
   }
 
   @Override
@@ -597,7 +600,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       final int count,
       final String message,
       final DiceRoll dice,
-      final PlayerId hit,
+      final GamePlayer hit,
       final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits,
       final boolean amphibious,
@@ -728,7 +731,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
 
   @Override
   public void confirmEnemyCasualties(
-      final UUID battleId, final String message, final PlayerId hitPlayer) {
+      final UUID battleId, final String message, final GamePlayer hitPlayer) {
     // no need, we have already confirmed since we are firing player
     if (ui.getLocalPlayers().playing(hitPlayer)) {
       return;
@@ -752,16 +755,17 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
   @Override
   public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
-    final PlayerId id = getPlayerId();
-    final PlayerAttachment pa = PlayerAttachment.get(id);
+    final GamePlayer gamePlayer = this.getGamePlayer();
+    final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
     if (pa == null) {
       return null;
     }
     final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
-    if (resourcesAndAttackValues.size() <= 0) {
+    if (resourcesAndAttackValues.isEmpty()) {
       return null;
     }
-    final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
+    final IntegerMap<Resource> playerResourceCollection =
+        gamePlayer.getResources().getResourcesCopy();
     final IntegerMap<Resource> attackTokens = new IntegerMap<>();
     for (final Resource possible : resourcesAndAttackValues.keySet()) {
       final int amount = playerResourceCollection.getInt(possible);
@@ -769,7 +773,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         attackTokens.put(possible, amount);
       }
     }
-    if (attackTokens.size() <= 0) {
+    if (attackTokens.isEmpty()) {
       return null;
     }
     final Map<Territory, Map<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
@@ -804,6 +808,6 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       return Tuple.of(null, new HashSet<>());
     }
     return ui.pickTerritoryAndUnits(
-        this.getPlayerId(), territoryChoices, unitChoices, unitsPerPick);
+        this.getGamePlayer(), territoryChoices, unitChoices, unitsPerPick);
   }
 }

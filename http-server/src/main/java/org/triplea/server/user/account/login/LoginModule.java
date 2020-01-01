@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
@@ -20,7 +20,7 @@ import org.triplea.lobby.server.db.data.UserRole;
 class LoginModule {
   @Nonnull private Predicate<LoginRequest> registeredLogin;
   @Nonnull private Predicate<LoginRequest> tempPasswordLogin;
-  @Nonnull private Function<PlayerName, Optional<String>> anonymousLogin;
+  @Nonnull private Function<UserName, Optional<String>> anonymousLogin;
   @Nonnull private Consumer<LoginRecord> accessLogUpdater;
   @Nonnull private final Function<LoginRecord, ApiKey> apiKeyGenerator;
   @Nonnull private final UserJdbiDao userJdbiDao;
@@ -34,7 +34,7 @@ class LoginModule {
     }
 
     final SystemId playerSystemId = SystemId.of(systemId);
-    final String nameValidation = PlayerName.validate(loginRequest.getName());
+    final String nameValidation = UserName.validate(loginRequest.getName());
     if (nameValidation != null) {
       return LobbyLoginResponse.builder().failReason("Invalid name: " + nameValidation).build();
     }
@@ -64,7 +64,7 @@ class LoginModule {
           .build();
     } else { // anonymous login
       final Optional<String> errorMessage =
-          anonymousLogin.apply(PlayerName.of(loginRequest.getName()));
+          anonymousLogin.apply(UserName.of(loginRequest.getName()));
       if (errorMessage.isPresent()) {
         return LobbyLoginResponse.builder().failReason(errorMessage.get()).build();
       } else {
@@ -102,7 +102,7 @@ class LoginModule {
       final boolean isRegistered) {
     final var loginRecord =
         LoginRecord.builder()
-            .playerName(PlayerName.of(loginRequest.getName()))
+            .userName(UserName.of(loginRequest.getName()))
             .systemId(systemId)
             .playerChatId(playerchatId)
             .ip(ip)

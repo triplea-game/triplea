@@ -1,7 +1,7 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -28,7 +28,7 @@ class InitialSetup {
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
     new UnitInformation().saveToFile(printData, unitInfoMap);
-    for (final PlayerId currentPlayer : gameData.getPlayerList()) {
+    for (final GamePlayer currentPlayer : gameData.getPlayerList()) {
       new CountryChart().saveToFile(currentPlayer, printData);
     }
     new PuInfo().saveToFile(printData);

@@ -9,8 +9,8 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.PlayerName;
 import org.triplea.domain.data.SystemId;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.DaoTest;
 import org.triplea.lobby.server.db.data.UserRole;
 
@@ -85,13 +85,14 @@ class LobbyApiKeyDaoTest extends DaoTest {
 
   @Test
   void lookupByPlayerChatId() {
-    final Optional<PlayerIdLookup> playerIdLookup = lobbyApiKeyDao.lookupByPlayerChatId("chat-id0");
+    final Optional<GamePlayerLookup> playerIdLookup =
+        lobbyApiKeyDao.lookupByPlayerChatId("chat-id0");
 
     assertThat(
         playerIdLookup,
         isPresentAndIs(
-            PlayerIdLookup.builder()
-                .playerName(PlayerName.of("registered-user"))
+            GamePlayerLookup.builder()
+                .userName(UserName.of("registered-user"))
                 .systemId(SystemId.of("system-id0"))
                 .ip("127.0.0.1")
                 .build()));

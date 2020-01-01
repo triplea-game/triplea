@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.pro.simulate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -15,14 +15,14 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.delegate.BattleDelegate;
-import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.IBattle;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleTracker;
+import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public final class ProSimulateTurnUtils {
   public static void simulateBattles(
       final ProData proData,
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge delegateBridge,
       final ProOddsCalculator calc) {
 
@@ -115,7 +115,7 @@ public final class ProSimulateTurnUtils {
       final ProData proData,
       final Map<Territory, ProTerritory> moveMap,
       final GameData toData,
-      final PlayerId player) {
+      final GamePlayer player) {
 
     ProLogger.info("Transferring move map");
 
@@ -211,10 +211,10 @@ public final class ProSimulateTurnUtils {
   private static boolean checkIfCapturedTerritoryIsAlliedCapital(
       final Territory t,
       final GameData data,
-      final PlayerId player,
+      final GamePlayer player,
       final IDelegateBridge delegateBridge) {
 
-    final @Nullable PlayerId terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
+    final @Nullable GamePlayer terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta != null
@@ -253,7 +253,7 @@ public final class ProSimulateTurnUtils {
       final Map<Unit, Territory> unitTerritoryMap,
       final List<Unit> usedUnits,
       final GameData toData,
-      final PlayerId player) {
+      final GamePlayer player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(u);
     final List<Unit> toUnits =
@@ -278,7 +278,7 @@ public final class ProSimulateTurnUtils {
       final Map<Unit, Territory> unitTerritoryMap,
       final List<Unit> usedUnits,
       final GameData toData,
-      final PlayerId player) {
+      final GamePlayer player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(transport);
     final List<Unit> toTransports =

@@ -27,17 +27,17 @@ public class UnitType extends NamedAttachable {
     super(name, data);
   }
 
-  public List<Unit> create(final int quantity, final PlayerId owner) {
+  public List<Unit> create(final int quantity, final GamePlayer owner) {
     return create(quantity, owner, false);
   }
 
-  public List<Unit> create(final int quantity, final PlayerId owner, final boolean isTemp) {
+  public List<Unit> create(final int quantity, final GamePlayer owner, final boolean isTemp) {
     return create(quantity, owner, isTemp, 0, 0);
   }
 
   List<Unit> create(
       final int quantity,
-      final PlayerId owner,
+      final GamePlayer owner,
       final boolean isTemp,
       final int hitsTaken,
       final int bombingUnitDamage) {
@@ -47,7 +47,7 @@ public class UnitType extends NamedAttachable {
   }
 
   private Unit create(
-      final PlayerId owner,
+      final GamePlayer owner,
       final boolean isTemp,
       final int hitsTaken,
       final int bombingUnitDamage) {
@@ -62,7 +62,7 @@ public class UnitType extends NamedAttachable {
     return u;
   }
 
-  public Unit create(final PlayerId owner) {
+  public Unit create(final GamePlayer owner) {
     return create(owner, false, 0, 0);
   }
 
@@ -77,12 +77,12 @@ public class UnitType extends NamedAttachable {
   }
 
   /** Will return a key of NULL for any units which we do not have art for. */
-  public static Map<PlayerId, List<UnitType>> getAllPlayerUnitsWithImages(
+  public static Map<GamePlayer, List<UnitType>> getAllPlayerUnitsWithImages(
       final GameData data, final UiContext uiContext, final boolean forceIncludeNeutralPlayer) {
-    final LinkedHashMap<PlayerId, List<UnitType>> unitTypes = new LinkedHashMap<>();
+    final LinkedHashMap<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
-      for (final PlayerId p : data.getPlayerList().getPlayers()) {
+      for (final GamePlayer p : data.getPlayerList().getPlayers()) {
         unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
       }
       final Set<UnitType> unitsSoFar = new HashSet<>();
@@ -93,9 +93,9 @@ public class UnitType extends NamedAttachable {
       all.removeAll(unitsSoFar);
       if (forceIncludeNeutralPlayer || !all.isEmpty()) {
         unitTypes.put(
-            PlayerId.NULL_PLAYERID,
-            getPlayerUnitsWithImages(PlayerId.NULL_PLAYERID, data, uiContext));
-        unitsSoFar.addAll(unitTypes.get(PlayerId.NULL_PLAYERID));
+            GamePlayer.NULL_PLAYERID,
+            getPlayerUnitsWithImages(GamePlayer.NULL_PLAYERID, data, uiContext));
+        unitsSoFar.addAll(unitTypes.get(GamePlayer.NULL_PLAYERID));
         all.removeAll(unitsSoFar);
         if (!all.isEmpty()) {
           unitTypes.put(null, new ArrayList<>(all));
@@ -108,7 +108,7 @@ public class UnitType extends NamedAttachable {
   }
 
   private static List<UnitType> getPlayerUnitsWithImages(
-      final PlayerId player, final GameData data, final UiContext uiContext) {
+      final GamePlayer player, final GameData data, final UiContext uiContext) {
     final List<UnitType> unitTypes = new ArrayList<>();
     data.acquireReadLock();
     try {

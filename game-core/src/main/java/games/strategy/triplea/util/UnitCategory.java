@@ -1,6 +1,6 @@
 package games.strategy.triplea.util;
 
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -36,14 +36,14 @@ public class UnitCategory implements Comparable<UnitCategory> {
   private final BigDecimal movement;
   // movement of the units
   private final int transportCost;
-  private final PlayerId owner;
+  private final GamePlayer owner;
   // the units in the category, may be duplicates.
   private final List<Unit> units = new ArrayList<>();
   private int damaged = 0;
   private int bombingDamage = 0;
   private boolean disabled = false;
 
-  public UnitCategory(final UnitType type, final PlayerId owner) {
+  public UnitCategory(final UnitType type, final GamePlayer owner) {
     this.type = type;
     dependents = List.of();
     movement = new BigDecimal(-1);
@@ -162,7 +162,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return transportCost;
   }
 
-  public PlayerId getOwner() {
+  public GamePlayer getOwner() {
     return owner;
   }
 
@@ -177,7 +177,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   @Override
   public int compareTo(final UnitCategory other) {
     return Comparator.nullsLast(
-            Comparator.comparing(UnitCategory::getOwner, Comparator.comparing(PlayerId::getName))
+            Comparator.comparing(UnitCategory::getOwner, Comparator.comparing(GamePlayer::getName))
                 .thenComparing(UnitCategory::getType, new UnitTypeComparator())
                 .thenComparing(UnitCategory::getMovement)
                 .thenComparing(

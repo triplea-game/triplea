@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class UnitsThatCantFightUtil {
     gameData = data;
   }
 
-  Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerId player) {
+  Collection<Territory> getTerritoriesWhereUnitsCantFight(final GamePlayer player) {
     final Predicate<Unit> enemyAttackUnits =
         Matches.enemyUnit(player, gameData).and(Matches.unitCanAttack(player));
     final Collection<Territory> cantFight = new ArrayList<>();

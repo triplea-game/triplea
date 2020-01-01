@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @ExtendWith(MockitoExtension.class)
 class LegacyPasswordUpdateTest {
-  private static final PlayerName PLAYER_NAME = PlayerName.of("player-name");
+  private static final UserName PLAYER_NAME = UserName.of("player-name");
   private static final int USER_ID = 100;
 
   private static final String PASSWORD = "password";

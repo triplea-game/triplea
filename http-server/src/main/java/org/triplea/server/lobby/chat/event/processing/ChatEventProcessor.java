@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.websocket.Session;
 import lombok.AllArgsConstructor;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeType;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
@@ -72,24 +72,24 @@ public class ChatEventProcessor {
 
   private ServerResponse playerSlappedMessage(
       final ChatParticipant sender, final ClientMessageEnvelope clientMessageEnvelope) {
-    final PlayerName slapped = PlayerName.of(clientMessageEnvelope.getPayload());
+    final UserName slapped = UserName.of(clientMessageEnvelope.getPayload());
     return ServerResponse.broadcast(
         ChatServerEnvelopeFactory.newSlap(
-            PlayerSlapped.builder().slapper(sender.getPlayerName()).slapped(slapped).build()));
+            PlayerSlapped.builder().slapper(sender.getUserName()).slapped(slapped).build()));
   }
 
   private ServerResponse chatMessage(
       final ChatParticipant sender, final ClientMessageEnvelope clientMessageEnvelope) {
     return ServerResponse.broadcast(
         ChatServerEnvelopeFactory.newChatMessage(
-            new ChatMessage(sender.getPlayerName(), clientMessageEnvelope.getPayload())));
+            new ChatMessage(sender.getUserName(), clientMessageEnvelope.getPayload())));
   }
 
   private ServerResponse statusUpdateMessage(
       final ChatParticipant sender, final ClientMessageEnvelope clientMessageEnvelope) {
     return ServerResponse.broadcast(
         ChatServerEnvelopeFactory.newStatusUpdate(
-            new StatusUpdate(sender.getPlayerName(), clientMessageEnvelope.getPayload())));
+            new StatusUpdate(sender.getUserName(), clientMessageEnvelope.getPayload())));
   }
 
   public Optional<ServerMessageEnvelope> disconnect(final Session session) {

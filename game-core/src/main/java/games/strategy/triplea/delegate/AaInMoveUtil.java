@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -11,6 +11,9 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleTracker;
+import games.strategy.triplea.delegate.battle.CasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
@@ -31,7 +35,7 @@ class AaInMoveUtil implements Serializable {
   private static final long serialVersionUID = 1787497998642717678L;
 
   private transient IDelegateBridge bridge;
-  private transient PlayerId player;
+  private transient GamePlayer player;
   private Collection<Unit> casualties = new ArrayList<>();
   private final ExecutionStack executionStack = new ExecutionStack();
 
@@ -39,7 +43,7 @@ class AaInMoveUtil implements Serializable {
 
   public void initialize(final IDelegateBridge bridge) {
     this.bridge = bridge;
-    this.player = bridge.getPlayerId();
+    this.player = bridge.getGamePlayer();
   }
 
   private GameData getData() {
@@ -73,7 +77,7 @@ class AaInMoveUtil implements Serializable {
     if (units.isEmpty()) {
       return;
     }
-    final PlayerId movingPlayer = movingPlayer(units);
+    final GamePlayer movingPlayer = movingPlayer(units);
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, getData());
     final List<Unit> defendingAa =
@@ -108,7 +112,7 @@ class AaInMoveUtil implements Serializable {
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing until you got the roll you wanted
       currentMove.setCantUndo("Move cannot be undone after " + currentTypeAa + " has fired.");
-      final DiceRoll[] dice = new DiceRoll[1];
+      final AtomicReference<DiceRoll> dice = new AtomicReference<>();
       final IExecutable rollDice =
           new IExecutable() {
             private static final long serialVersionUID = 4714364489659654758L;
@@ -118,13 +122,13 @@ class AaInMoveUtil implements Serializable {
               // get rid of units already killed, so we don't target them twice
               validTargetedUnitsForThisRoll.removeAll(casualties);
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
-                dice[0] =
+                dice.set(
                     DiceRoll.rollSbrOrFlyOverAa(
                         validTargetedUnitsForThisRoll,
                         currentPossibleAa,
                         AaInMoveUtil.this.bridge,
                         territory,
-                        true);
+                        true));
               }
             }
           };
@@ -135,7 +139,7 @@ class AaInMoveUtil implements Serializable {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               if (!validTargetedUnitsForThisRoll.isEmpty()) {
-                final int hitCount = dice[0].getHits();
+                final int hitCount = dice.get().getHits();
                 if (hitCount == 0) {
                   if (currentTypeAa.equals("AA")) {
                     AaInMoveUtil.this
@@ -179,7 +183,7 @@ class AaInMoveUtil implements Serializable {
                             findDefender(currentPossibleAa, territory));
                   }
                   selectCasualties(
-                      dice[0],
+                      dice.get(),
                       units,
                       validTargetedUnitsForThisRoll,
                       currentPossibleAa,
@@ -234,7 +238,7 @@ class AaInMoveUtil implements Serializable {
     }
     // can't rely on player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
-    final PlayerId movingPlayer = movingPlayer(units);
+    final GamePlayer movingPlayer = movingPlayer(units);
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, data);
     // don't iterate over the end
@@ -281,7 +285,7 @@ class AaInMoveUtil implements Serializable {
     return DelegateFinder.battleDelegate(getData()).getBattleTracker();
   }
 
-  private PlayerId movingPlayer(final Collection<Unit> units) {
+  private GamePlayer movingPlayer(final Collection<Unit> units) {
     if (units.stream().anyMatch(Matches.unitIsOwnedBy(player))) {
       return player;
     }
@@ -291,16 +295,16 @@ class AaInMoveUtil implements Serializable {
         .map(Unit::getOwner)
         .filter(Objects::nonNull)
         .findAny()
-        .orElse(PlayerId.NULL_PLAYERID);
+        .orElse(GamePlayer.NULL_PLAYERID);
   }
 
-  private static PlayerId findDefender(
+  private static GamePlayer findDefender(
       final Collection<Unit> defendingUnits, final Territory territory) {
     if (defendingUnits == null || defendingUnits.isEmpty()) {
       if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()) {
         return territory.getOwner();
       }
-      return PlayerId.NULL_PLAYERID;
+      return GamePlayer.NULL_PLAYERID;
     } else if (territory != null
         && territory.getOwner() != null
         && !territory.getOwner().isNull()
@@ -312,7 +316,7 @@ class AaInMoveUtil implements Serializable {
         .map(Unit::getOwner)
         .filter(Objects::nonNull)
         .findAny()
-        .orElse(PlayerId.NULL_PLAYERID);
+        .orElse(GamePlayer.NULL_PLAYERID);
   }
 
   /**

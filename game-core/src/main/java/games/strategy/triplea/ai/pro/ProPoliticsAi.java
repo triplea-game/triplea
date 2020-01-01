@@ -1,7 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.ai.AiPoliticalUtils;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -34,7 +34,7 @@ class ProPoliticsAi {
 
   List<PoliticalActionAttachment> politicalActions() {
     final GameData data = proData.getData();
-    final PlayerId player = proData.getPlayer();
+    final GamePlayer player = proData.getPlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final double round = data.getSequence().getRound();
     final ProTerritoryManager territoryManager = new ProTerritoryManager(calc, proData);
@@ -54,21 +54,21 @@ class ProPoliticsAi {
     ProLogger.trace("Valid War options: " + validWarActions);
 
     // Divide war actions into enemy and neutral
-    final Map<PoliticalActionAttachment, List<PlayerId>> enemyMap = new HashMap<>();
-    final Map<PoliticalActionAttachment, List<PlayerId>> neutralMap = new HashMap<>();
+    final Map<PoliticalActionAttachment, List<GamePlayer>> enemyMap = new HashMap<>();
+    final Map<PoliticalActionAttachment, List<GamePlayer>> neutralMap = new HashMap<>();
     for (final PoliticalActionAttachment action : validWarActions) {
-      final List<PlayerId> warPlayers = new ArrayList<>();
+      final List<GamePlayer> warPlayers = new ArrayList<>();
       for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
           action.getRelationshipChanges()) {
-        final PlayerId player1 = relationshipChange.player1;
-        final PlayerId player2 = relationshipChange.player2;
+        final GamePlayer player1 = relationshipChange.player1;
+        final GamePlayer player2 = relationshipChange.player2;
         final RelationshipType oldRelation =
             data.getRelationshipTracker().getRelationshipType(player1, player2);
         final RelationshipType newRelation = relationshipChange.relationshipType;
         if (!oldRelation.equals(newRelation)
             && Matches.relationshipTypeIsAtWar().test(newRelation)
             && (player1.equals(player) || player2.equals(player))) {
-          PlayerId warPlayer = player2;
+          GamePlayer warPlayer = player2;
           if (warPlayer.equals(player)) {
             warPlayer = player1;
           }
@@ -103,7 +103,7 @@ class ProPoliticsAi {
       final Map<PoliticalActionAttachment, Double> attackPercentageMap = new HashMap<>();
       for (final PoliticalActionAttachment action : enemyMap.keySet()) {
         int count = 0;
-        final List<PlayerId> enemyPlayers = enemyMap.get(action);
+        final List<GamePlayer> enemyPlayers = enemyMap.get(action);
         for (final ProTerritory patd : attackOptions) {
           if (Matches.isTerritoryOwnedBy(enemyPlayers).test(patd.getTerritory())
               || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers))

@@ -155,7 +155,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   public BigDecimal getMovementCostIgnoreEnd(final Unit unit) {
     final List<Territory> territories =
-        steps.size() > 0 ? steps.subList(0, steps.size() - 1) : steps;
+        !steps.isEmpty() ? steps.subList(0, steps.size() - 1) : steps;
     return findMovementCost(unit, territories);
   }
 
@@ -319,7 +319,7 @@ public class Route implements Serializable, Iterable<Territory> {
   public boolean hasNeutralBeforeEnd() {
     for (final Territory current : getMiddleSteps()) {
       // neutral is owned by null and is not sea
-      if (!current.isWater() && current.getOwner().equals(PlayerId.NULL_PLAYERID)) {
+      if (!current.isWater() && current.getOwner().equals(GamePlayer.NULL_PLAYERID)) {
         return true;
       }
     }
@@ -340,7 +340,10 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /** Returns a change object that removes fuel after a given set of units crosses a given route. */
   public static Change getFuelChanges(
-      final Collection<Unit> units, final Route route, final PlayerId player, final GameData data) {
+      final Collection<Unit> units,
+      final Route route,
+      final GamePlayer player,
+      final GameData data) {
     final CompositeChange changes = new CompositeChange();
     final Tuple<ResourceCollection, Set<Unit>> tuple =
         Route.getFuelCostsAndUnitsChargedFlatFuelCost(units, route, player, data, false);
@@ -356,7 +359,10 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   public static ResourceCollection getMovementFuelCostCharge(
-      final Collection<Unit> units, final Route route, final PlayerId player, final GameData data) {
+      final Collection<Unit> units,
+      final Route route,
+      final GamePlayer player,
+      final GameData data) {
     return Route.getFuelCostsAndUnitsChargedFlatFuelCost(units, route, player, data, false)
         .getFirst();
   }
@@ -365,13 +371,13 @@ public class Route implements Serializable, Iterable<Territory> {
    * Calculates how much fuel each player needs to scramble the specified units. ONLY SUPPORTS 1
    * territory distance scrambles properly as otherwise a route needs to be calculated.
    */
-  public static Map<PlayerId, ResourceCollection> getScrambleFuelCostCharge(
+  public static Map<GamePlayer, ResourceCollection> getScrambleFuelCostCharge(
       final Collection<Unit> units, final Territory from, final Territory to, final GameData data) {
-    final Map<PlayerId, ResourceCollection> map = new HashMap<>();
+    final Map<GamePlayer, ResourceCollection> map = new HashMap<>();
     final Route toRoute = new Route(from, to);
     final Route returnRoute = new Route(to, from);
     for (final Unit unit : units) {
-      final PlayerId player = unit.getOwner();
+      final GamePlayer player = unit.getOwner();
       final ResourceCollection cost = new ResourceCollection(data);
       cost.add(getMovementFuelCostCharge(Set.of(unit), toRoute, player, data));
       cost.add(
@@ -393,7 +399,7 @@ public class Route implements Serializable, Iterable<Territory> {
   private static Tuple<ResourceCollection, Set<Unit>> getFuelCostsAndUnitsChargedFlatFuelCost(
       final Collection<Unit> units,
       final Route route,
-      final PlayerId player,
+      final GamePlayer player,
       final GameData data,
       final boolean ignoreFlat) {
 

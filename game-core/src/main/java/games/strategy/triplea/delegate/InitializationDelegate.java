@@ -3,9 +3,9 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -176,7 +176,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     if (!Properties.getDisabledPlayersAssetsDeleted(data)) {
       return;
     }
-    for (final PlayerId player : data.getPlayerList().getPlayers()) {
+    for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       if (player.isNull() || !player.getIsDisabled()) {
         continue;
       }
@@ -225,7 +225,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initTech(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    for (final PlayerId player : data.getPlayerList().getPlayers()) {
+    for (final GamePlayer player : data.getPlayerList().getPlayers()) {
       final Collection<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data);
       if (!advances.isEmpty()) {
         bridge

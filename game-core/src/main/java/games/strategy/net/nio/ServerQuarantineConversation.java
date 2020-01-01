@@ -4,8 +4,8 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.INode;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
-import games.strategy.net.PlayerNameAssigner;
 import games.strategy.net.ServerMessenger;
+import games.strategy.net.UserNameAssigner;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 /** Server-side implementation of {@link QuarantineConversation}. */
 @Log
@@ -97,7 +97,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                             remoteName,
                             remoteMac,
                             (InetSocketAddress) channel.socket().getRemoteSocketAddress()))
-                    .orElseGet(() -> PlayerName.validate(remoteName));
+                    .orElseGet(() -> UserName.validate(remoteName));
             if (error != null && !error.equals(CHANGE_PASSWORD)) {
               step = Step.ACK_ERROR;
               send(error);
@@ -114,7 +114,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
             // address)
             final Collection<String> names =
                 serverMessenger.getNodes().stream().map(INode::getName).collect(Collectors.toSet());
-            remoteName = PlayerNameAssigner.assignName(remoteName, remoteMac, names);
+            remoteName = UserNameAssigner.assignName(remoteName, remoteMac, names);
           }
 
           // send the node its assigned name, our name, an error message that could contain a magic
@@ -130,7 +130,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
               });
 
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          serverMessenger.notifyPlayerLogin(PlayerName.of(remoteName), remoteMac);
+          serverMessenger.notifyPlayerLogin(UserName.of(remoteName), remoteMac);
           // We are good
           return Action.UNQUARANTINE;
         case ACK_ERROR:
