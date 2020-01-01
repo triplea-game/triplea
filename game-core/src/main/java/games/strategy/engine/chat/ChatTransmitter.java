@@ -1,7 +1,7 @@
 package games.strategy.engine.chat;
 
 import java.util.Collection;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /**
@@ -21,10 +21,10 @@ public interface ChatTransmitter {
   void sendMessage(String message);
 
   /** Sends a slap to a target player. */
-  void slap(PlayerName playerName);
+  void slap(UserName userName);
 
   /** Updates the status of current player. */
   void updateStatus(String status);
 
-  PlayerName getLocalPlayerName();
+  UserName getLocalUserName();
 }

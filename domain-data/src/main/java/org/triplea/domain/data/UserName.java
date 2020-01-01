@@ -16,16 +16,16 @@ import lombok.Getter;
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
-public class PlayerName implements Serializable {
+public class UserName implements Serializable {
   @VisibleForTesting static final int MAX_LENGTH = 40;
 
   private static final long serialVersionUID = 8356372044000232198L;
   private static final int MIN_LENGTH = 3;
   @Getter private final String value;
 
-  public static PlayerName of(final String name) {
+  public static UserName of(final String name) {
     Preconditions.checkNotNull(name);
-    return new PlayerName(name);
+    return new UserName(name);
   }
 
   @Override

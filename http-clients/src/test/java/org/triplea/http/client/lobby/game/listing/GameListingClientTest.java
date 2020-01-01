@@ -26,7 +26,7 @@ class GameListingClientTest extends WireMockTest {
       LobbyGameListing.builder().gameId(GAME_ID).lobbyGame(LOBBY_GAME).build();
 
   private static GameListingClient newClient(final WireMockServer wireMockServer) {
-    return newClient(wireMockServer, GameListingClient::newClient);
+    return GameListingClient.newClient(buildHostUri(wireMockServer), API_KEY, errMsg -> {});
   }
 
   @Test

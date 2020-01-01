@@ -35,7 +35,7 @@ public abstract class WireMockTest {
     return factoryFunction.apply(hostUri);
   }
 
-  private static URI buildHostUri(final WireMockServer wireMockServer) {
+  protected static URI buildHostUri(final WireMockServer wireMockServer) {
     return URI.create(wireMockServer.url(""));
   }
 

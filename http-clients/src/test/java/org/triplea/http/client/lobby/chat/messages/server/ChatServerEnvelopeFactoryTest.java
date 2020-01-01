@@ -6,7 +6,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
@@ -14,14 +14,14 @@ class ChatServerEnvelopeFactoryTest {
   private static final String STATUS = "status";
   private static final String MESSAGE = "message";
 
-  private static final PlayerName PLAYER_NAME = PlayerName.of("player");
+  private static final UserName PLAYER_NAME = UserName.of("player");
   private static final ChatParticipant CHAT_PARTICIPANT =
-      ChatParticipant.builder().playerName(PLAYER_NAME).isModerator(true).build();
+      ChatParticipant.builder().userName(PLAYER_NAME).isModerator(true).build();
 
   private static final StatusUpdate STATUS_UPDATE = new StatusUpdate(PLAYER_NAME, STATUS);
   private static final ChatMessage CHAT_MESSAGE = new ChatMessage(PLAYER_NAME, MESSAGE);
   private static final PlayerSlapped PLAYER_SLAPPED =
-      PlayerSlapped.builder().slapper(PLAYER_NAME).slapped(PlayerName.of("slapped")).build();
+      PlayerSlapped.builder().slapper(PLAYER_NAME).slapped(UserName.of("slapped")).build();
   private static final ChatterList PLAYER_LISTING = new ChatterList(List.of(CHAT_PARTICIPANT));
 
   @Test
@@ -51,7 +51,7 @@ class ChatServerEnvelopeFactoryTest {
 
     assertThat(
         serverEventEnvelope.getMessageType(), is(ChatServerMessageType.PLAYER_LEFT.toString()));
-    assertThat(serverEventEnvelope.getPayload(PlayerName.class), is(PLAYER_NAME));
+    assertThat(serverEventEnvelope.getPayload(UserName.class), is(PLAYER_NAME));
   }
 
   @Test

@@ -16,11 +16,11 @@ class AccessLogUpdater implements Consumer<LoginRecord> {
     final int updateCount =
         loginRecord.isRegistered()
             ? accessLogDao.insertRegisteredUserRecord(
-                loginRecord.getPlayerName().getValue(),
+                loginRecord.getUserName().getValue(),
                 loginRecord.getIp(),
                 loginRecord.getSystemId().getValue())
             : accessLogDao.insertAnonymousUserRecord(
-                loginRecord.getPlayerName().getValue(),
+                loginRecord.getUserName().getValue(),
                 loginRecord.getIp(),
                 loginRecord.getSystemId().getValue());
 

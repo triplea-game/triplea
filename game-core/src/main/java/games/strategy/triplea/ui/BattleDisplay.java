@@ -357,44 +357,51 @@ public class BattleDisplay extends JPanel {
         SwingAction.of(
             "Submerge Subs?",
             e -> {
-              final String ok = "Submerge";
-              final String cancel = "Remain";
-              final String wait = "Ask Me Later";
-              final String[] options = {ok, cancel, wait};
-              final int choice =
-                  JOptionPane.showOptionDialog(
-                      BattleDisplay.this,
-                      message,
-                      "Submerge Subs?",
-                      JOptionPane.OK_CANCEL_OPTION,
-                      JOptionPane.PLAIN_MESSAGE,
-                      null,
-                      options,
-                      cancel);
-              // dialog dismissed
-              if (choice == -1) {
-                return;
-              }
-              // wait
-              if (choice == 2) {
-                return;
-              }
-              // remain
-              if (choice == 1) {
+              actionButton.setEnabled(false);
+              if (showSubmergeDialog(message, retreatTo)) {
+                actionButton.setAction(nullAction);
                 latch.countDown();
-                return;
               }
-              // submerge
-              retreatTo.set(battleLocation);
-              latch.countDown();
+              actionButton.setEnabled(true);
             });
-    SwingUtilities.invokeLater(() -> actionButton.setAction(action));
-    SwingUtilities.invokeLater(() -> action.actionPerformed(null));
+    SwingUtilities.invokeLater(
+        () -> {
+          actionButton.setAction(action);
+          action.actionPerformed(null);
+        });
     mapPanel.getUiContext().addShutdownLatch(latch);
     Interruptibles.await(latch);
     mapPanel.getUiContext().removeShutdownLatch(latch);
-    SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
     return retreatTo.get();
+  }
+
+  private boolean showSubmergeDialog(
+      final String message, final AtomicReference<Territory> retreatTo) {
+    final String ok = "Submerge";
+    final String cancel = "Remain";
+    final String wait = "Ask Me Later";
+    final String[] options = {ok, cancel, wait};
+    final int choice =
+        JOptionPane.showOptionDialog(
+            BattleDisplay.this,
+            message,
+            "Submerge Subs?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            options,
+            cancel);
+    // dialog dismissed
+    if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
+      return false;
+    }
+    // remain
+    if (choice == JOptionPane.NO_OPTION) {
+      return true;
+    }
+    // submerge
+    retreatTo.set(battleLocation);
+    return true;
   }
 
   private Territory getRetreatInternal(final String message, final Collection<Territory> possible) {
@@ -407,67 +414,76 @@ public class BattleDisplay extends JPanel {
         SwingAction.of(
             "Retreat?",
             e -> {
-              final String yes =
-                  possible.size() == 1
-                      ? "Retreat to " + possible.iterator().next().getName()
-                      : "Retreat";
-              final String no = "Remain";
-              final String cancel = "Ask Me Later";
-              final String[] options = {yes, no, cancel};
-              final int choice =
-                  JOptionPane.showOptionDialog(
-                      BattleDisplay.this,
-                      message,
-                      "Retreat?",
-                      JOptionPane.YES_NO_CANCEL_OPTION,
-                      JOptionPane.PLAIN_MESSAGE,
-                      null,
-                      options,
-                      no);
-              // dialog dismissed
-              if (choice == -1) {
-                return;
-              }
-              // wait
-              if (choice == JOptionPane.CANCEL_OPTION) {
-                return;
-              }
-              // remain
-              if (choice == JOptionPane.NO_OPTION) {
+              actionButton.setEnabled(false);
+              if (showRetreatDialog(message, possible, retreatTo)) {
+                actionButton.setAction(nullAction);
                 latch.countDown();
-                return;
               }
-              // if you have eliminated the impossible, whatever remains, no matter how improbable,
-              // must be the truth
-              // retreat
-              if (possible.size() == 1) {
-                retreatTo.set(possible.iterator().next());
-                latch.countDown();
-              } else {
-                final RetreatComponent comp = new RetreatComponent(possible);
-                final int option =
-                    JOptionPane.showConfirmDialog(
-                        BattleDisplay.this,
-                        comp,
-                        message,
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.PLAIN_MESSAGE,
-                        null);
-                if (option == JOptionPane.OK_OPTION) {
-                  if (comp.getSelection() != null) {
-                    retreatTo.set(comp.getSelection());
-                    latch.countDown();
-                  }
-                }
-              }
+              actionButton.setEnabled(true);
             });
-    SwingUtilities.invokeLater(() -> actionButton.setAction(action));
-    SwingUtilities.invokeLater(() -> action.actionPerformed(null));
+    SwingUtilities.invokeLater(
+        () -> {
+          actionButton.setAction(action);
+          action.actionPerformed(null);
+        });
     mapPanel.getUiContext().addShutdownLatch(latch);
     Interruptibles.await(latch);
     mapPanel.getUiContext().removeShutdownLatch(latch);
-    SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
+
     return retreatTo.get();
+  }
+
+  private boolean showRetreatDialog(
+      final String message,
+      final Collection<Territory> possible,
+      final AtomicReference<Territory> retreatTo) {
+    final String yes =
+        possible.size() == 1 ? "Retreat to " + possible.iterator().next().getName() : "Retreat";
+    final String no = "Remain";
+    final String cancel = "Ask Me Later";
+    final String[] options = {yes, no, cancel};
+    final int choice =
+        JOptionPane.showOptionDialog(
+            BattleDisplay.this,
+            message,
+            "Retreat?",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            options,
+            no);
+    // dialog dismissed
+    if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
+      return false;
+    }
+    // remain
+    if (choice == JOptionPane.NO_OPTION) {
+      return true;
+    }
+
+    // retreat
+    if (possible.size() == 1) {
+      retreatTo.set(possible.iterator().next());
+      return true;
+    }
+
+    final RetreatComponent comp = new RetreatComponent(possible);
+    final int option =
+        JOptionPane.showConfirmDialog(
+            BattleDisplay.this,
+            comp,
+            message,
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null);
+    if (option == JOptionPane.OK_OPTION) {
+      if (comp.getSelection() != null) {
+        retreatTo.set(comp.getSelection());
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private class RetreatComponent extends JPanel {
@@ -547,6 +563,7 @@ public class BattleDisplay extends JPanel {
 
                 @Override
                 public void actionPerformed(final ActionEvent e) {
+                  actionButton.setEnabled(false);
                   final String messageText = message + " " + btnText + ".";
                   if (chooser == null || chooserScrollPane == null) {
                     chooser =
@@ -597,6 +614,7 @@ public class BattleDisplay extends JPanel {
                           options,
                           focus);
                   if (option != 0) {
+                    actionButton.setEnabled(true);
                     return;
                   }
                   final List<Unit> killed = chooser.getSelected(false);
@@ -611,10 +629,10 @@ public class BattleDisplay extends JPanel {
                     final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
                     casualtyDetails.set(response);
                     dicePanel.removeAll();
-                    actionButton.setEnabled(false);
                     actionButton.setAction(nullAction);
                     continueLatch.countDown();
                   }
+                  actionButton.setEnabled(true);
                 }
               });
         });

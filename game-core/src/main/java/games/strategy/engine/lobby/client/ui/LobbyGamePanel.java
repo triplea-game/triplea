@@ -178,13 +178,13 @@ class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final GameDescription description =
         gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-    GameRunner.joinGame(description, lobbyClient.getPlayerName());
+    GameRunner.joinGame(description, lobbyClient.getUserName());
   }
 
   private void hostGame(final URI lobbyUri) {
     final ServerOptions options =
         new ServerOptions(
-            JOptionPane.getFrameForComponent(this), lobbyClient.getPlayerName(), 3300, true);
+            JOptionPane.getFrameForComponent(this), lobbyClient.getUserName(), 3300, true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
     options.setNameEditable(false);
     options.setVisible(true);

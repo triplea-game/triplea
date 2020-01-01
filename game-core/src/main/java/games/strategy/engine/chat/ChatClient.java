@@ -1,6 +1,6 @@
 package games.strategy.engine.chat;
 
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
@@ -33,14 +33,14 @@ public interface ChatClient {
   void participantAdded(ChatParticipant chatParticipant);
 
   /** A chatter has left chat. */
-  void participantRemoved(PlayerName playerName);
+  void participantRemoved(UserName userName);
 
   /**
    * This method being called indicates the current player has been slapped.
    *
    * @param slapper The player that issued the slap.
    */
-  void slappedBy(PlayerName slapper);
+  void slappedBy(UserName slapper);
 
   /** A message that notifies players that another player has been slapped, eg: "x slapped y". */
   void playerSlapped(String eventMessage);

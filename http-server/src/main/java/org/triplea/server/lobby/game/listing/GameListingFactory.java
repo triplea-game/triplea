@@ -9,9 +9,11 @@ import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 
 @UtilityClass
 public final class GameListingFactory {
-  public static GameListing buildGameListing(final Jdbi jdbi) {
+  public static GameListing buildGameListing(
+      final Jdbi jdbi, final GameListingEventQueue gameListingEventQueue) {
     return GameListing.builder()
         .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
+        .gameListingEventQueue(gameListingEventQueue)
         .games(
             CacheBuilder.newBuilder()
                 .expireAfterWrite(LobbyWatcherClient.KEEP_ALIVE_SECONDS, TimeUnit.SECONDS)

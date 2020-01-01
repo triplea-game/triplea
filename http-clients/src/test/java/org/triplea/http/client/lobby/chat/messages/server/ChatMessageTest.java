@@ -8,7 +8,7 @@ import static org.hamcrest.core.StringEndsWith.endsWith;
 import com.google.common.base.Strings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 
 class ChatMessageTest {
 
@@ -74,6 +74,6 @@ class ChatMessageTest {
   }
 
   private static String chatMessage(final String inputMessage) {
-    return new ChatMessage(PlayerName.of("player-name"), inputMessage).getMessage();
+    return new ChatMessage(UserName.of("player-name"), inputMessage).getMessage();
   }
 }

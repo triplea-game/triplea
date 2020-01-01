@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.login.LoginRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,9 +23,9 @@ class RegisteredLoginTest {
   private static final LoginRequest LOGIN_REQUEST =
       LoginRequest.builder().name("name").password("password").build();
 
-  @Mock private BiPredicate<PlayerName, String> passwordCheck;
-  @Mock private BiPredicate<PlayerName, String> legacyPasswordCheck;
-  @Mock private BiConsumer<PlayerName, String> legacyPasswordUpdater;
+  @Mock private BiPredicate<UserName, String> passwordCheck;
+  @Mock private BiPredicate<UserName, String> legacyPasswordCheck;
+  @Mock private BiConsumer<UserName, String> legacyPasswordUpdater;
 
   private RegisteredLogin registeredLogin;
 
@@ -50,19 +50,19 @@ class RegisteredLoginTest {
   @Test
   void legacyPasswordMatches() {
     when(legacyPasswordCheck.test(
-            PlayerName.of(LOGIN_REQUEST.getName()), LOGIN_REQUEST.getPassword()))
+            UserName.of(LOGIN_REQUEST.getName()), LOGIN_REQUEST.getPassword()))
         .thenReturn(true);
 
     final boolean result = registeredLogin.test(LOGIN_REQUEST);
 
     assertThat(result, is(true));
     verify(legacyPasswordUpdater)
-        .accept(PlayerName.of(LOGIN_REQUEST.getName()), LOGIN_REQUEST.getPassword());
+        .accept(UserName.of(LOGIN_REQUEST.getName()), LOGIN_REQUEST.getPassword());
   }
 
   @Test
   void passwordMatches() {
-    when(passwordCheck.test(PlayerName.of(LOGIN_REQUEST.getName()), LOGIN_REQUEST.getPassword()))
+    when(passwordCheck.test(UserName.of(LOGIN_REQUEST.getName()), LOGIN_REQUEST.getPassword()))
         .thenReturn(true);
 
     final boolean result = registeredLogin.test(LOGIN_REQUEST);

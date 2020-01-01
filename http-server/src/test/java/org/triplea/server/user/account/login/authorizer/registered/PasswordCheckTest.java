@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @ExtendWith(MockitoExtension.class)
 class PasswordCheckTest {
-  private static final PlayerName PLAYER_NAME = PlayerName.of("player-name");
+  private static final UserName PLAYER_NAME = UserName.of("player-name");
   private static final String PASSWORD = "plaintext-pass";
   private static final String DB_PASSWORD = "db-pass";
 

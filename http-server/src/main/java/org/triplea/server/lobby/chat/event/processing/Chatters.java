@@ -15,7 +15,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 @Slf4j
@@ -32,10 +32,10 @@ public class Chatters {
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final Map<String, ChatterSession> participants = new HashMap<>();
 
-  Optional<PlayerName> removeSession(final Session session) {
+  Optional<UserName> removeSession(final Session session) {
     return Optional.ofNullable(participants.remove(session.getId()))
         .map(ChatterSession::getChatParticipant)
-        .map(ChatParticipant::getPlayerName);
+        .map(ChatParticipant::getUserName);
   }
 
   void put(final Session session, final ChatParticipant chatter) {
@@ -48,11 +48,11 @@ public class Chatters {
         .collect(Collectors.toSet());
   }
 
-  public boolean hasPlayer(final PlayerName playerName) {
+  public boolean hasPlayer(final UserName userName) {
     return participants.values().stream()
         .map(ChatterSession::getChatParticipant)
-        .map(ChatParticipant::getPlayerName)
-        .anyMatch(playerName::equals);
+        .map(ChatParticipant::getUserName)
+        .anyMatch(userName::equals);
   }
 
   public Collection<Session> fetchOpenSessions() {
@@ -68,16 +68,15 @@ public class Chatters {
    * Disconnects all sessions belonging to a given player identified by name. A disconnected session
    * is closed, the closure will trigger a notification on the client of the disconnected player.
    *
-   * @param playerName The name of the player whose sessions will be disconnected.
+   * @param userName The name of the player whose sessions will be disconnected.
    * @param disconnectMessage Message that will be displayed to the disconnected player.
    */
-  public void disconnectPlayerSessions(
-      final PlayerName playerName, final String disconnectMessage) {
+  public void disconnectPlayerSessions(final UserName userName, final String disconnectMessage) {
     final Set<Session> sessions =
         participants.values().stream()
             .filter(
                 chatterSession ->
-                    chatterSession.getChatParticipant().getPlayerName().equals(playerName))
+                    chatterSession.getChatParticipant().getUserName().equals(userName))
             .map(ChatterSession::getSession)
             .collect(Collectors.toSet());
 

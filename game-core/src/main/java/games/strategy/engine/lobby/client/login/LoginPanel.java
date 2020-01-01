@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
@@ -222,7 +222,7 @@ final class LoginPanel extends JPanel {
   }
 
   private void logonPressed() {
-    final String validationMessage = PlayerName.validate(username.getText());
+    final String validationMessage = UserName.validate(username.getText());
 
     if (validationMessage != null) {
       JOptionPane.showMessageDialog(

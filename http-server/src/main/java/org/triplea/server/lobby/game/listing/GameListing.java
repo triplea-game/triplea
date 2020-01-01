@@ -41,9 +41,10 @@ import org.triplea.server.lobby.CacheUtils;
  */
 @Builder
 @Slf4j
-class GameListing {
+public class GameListing {
   @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
   @NonNull private final Cache<GameId, LobbyGame> games;
+  @NonNull private final GameListingEventQueue gameListingEventQueue;
 
   @AllArgsConstructor
   @EqualsAndHashCode
@@ -59,6 +60,8 @@ class GameListing {
   String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
     final String id = UUID.randomUUID().toString();
     games.put(new GameId(apiKey, id), lobbyGame);
+    gameListingEventQueue.gameUpdated(
+        LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build());
     log.info("Posted game: {}", id);
     return id;
   }
@@ -66,13 +69,24 @@ class GameListing {
   /** Adds or updates a game. Returns true if game is updated, false if game was not found. */
   boolean updateGame(final ApiKey apiKey, final String id, final LobbyGame lobbyGame) {
     final var listedGameId = new GameId(apiKey, id);
-    final var existingValue = games.asMap().replace(listedGameId, lobbyGame);
-    return existingValue != null;
+    final LobbyGame existingValue = games.asMap().replace(listedGameId, lobbyGame);
+
+    if (existingValue != null) {
+      gameListingEventQueue.gameUpdated(
+          LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build());
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void removeGame(final ApiKey apiKey, final String id) {
     log.info("Removing game: {}", id);
-    games.invalidate(new GameId(apiKey, id));
+    final GameId key = new GameId(apiKey, id);
+    if (games.asMap().containsKey(key)) {
+      games.invalidate(key);
+      gameListingEventQueue.gameRemoved(id);
+    }
   }
 
   List<LobbyGameListing> getGames() {

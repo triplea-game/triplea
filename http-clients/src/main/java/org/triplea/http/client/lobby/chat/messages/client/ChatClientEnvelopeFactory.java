@@ -2,7 +2,7 @@ package org.triplea.http.client.lobby.chat.messages.client;
 
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 
 /**
@@ -15,7 +15,7 @@ import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 public class ChatClientEnvelopeFactory {
   private final ApiKey apiKey;
 
-  public ClientMessageEnvelope slapMessage(final PlayerName playerToSlap) {
+  public ClientMessageEnvelope slapMessage(final UserName playerToSlap) {
     return packageMessage(ChatClientEnvelopeType.SLAP, playerToSlap.getValue());
   }
 

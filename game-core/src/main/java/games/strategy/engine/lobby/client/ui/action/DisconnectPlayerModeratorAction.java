@@ -5,7 +5,7 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import lombok.Builder;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.swing.SwingAction;
 
@@ -13,14 +13,14 @@ import org.triplea.swing.SwingAction;
 public class DisconnectPlayerModeratorAction {
   @Nonnull private final JFrame parent;
   @Nonnull private final ModeratorChatClient moderatorLobbyClient;
-  @Nonnull private final PlayerName playerName;
+  @Nonnull private final UserName userName;
   @Nonnull private final PlayerChatId playerChatId;
 
   public Action toSwingAction() {
     return SwingAction.of(
-        "Disconnect " + playerName,
+        "Disconnect " + userName,
         e -> {
-          if (new ActionConfirmation(parent).confirm(("Disconnect " + playerName))) {
+          if (new ActionConfirmation(parent).confirm(("Disconnect " + userName))) {
             moderatorLobbyClient.disconnectPlayer(playerChatId);
           }
         });

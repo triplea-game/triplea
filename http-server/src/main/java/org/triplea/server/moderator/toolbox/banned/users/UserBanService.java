@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
@@ -76,7 +76,7 @@ public class UserBanService {
     }
 
     chatters.disconnectPlayerSessions(
-        PlayerName.of(banUserParams.getUsername()),
+        UserName.of(banUserParams.getUsername()),
         "You have been banned for " + banUserParams.getHoursToBan() + " hours");
 
     remoteActionsEventQueue.addPlayerBannedEvent(IpAddressParser.fromString(banUserParams.getIp()));

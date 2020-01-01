@@ -26,7 +26,7 @@ public class HttpLobbyClient {
   private HttpLobbyClient(
       final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
     connectivityCheckClient = ConnectivityCheckClient.newClient(lobbyUri, apiKey);
-    gameListingClient = GameListingClient.newClient(lobbyUri, apiKey);
+    gameListingClient = GameListingClient.newClient(lobbyUri, apiKey, errorHandler);
     httpModeratorToolboxClient = HttpModeratorToolboxClient.newClient(lobbyUri, apiKey);
     lobbyChatClient = LobbyChatClient.newClient(lobbyUri, apiKey, errorHandler);
     moderatorLobbyClient = ModeratorChatClient.newClient(lobbyUri, apiKey);

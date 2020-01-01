@@ -26,7 +26,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerName;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.TimeManager;
@@ -231,7 +231,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   @Override
-  public void slapped(final String message, final PlayerName from) {
+  public void slapped(final String message, final UserName from) {
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
   }
 
@@ -240,8 +240,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     addGenericMessage(message);
   }
 
-  private void addMessageWithSound(
-      final String message, final PlayerName from, final String sound) {
+  private void addMessageWithSound(final String message, final UserName from, final String sound) {
     SwingAction.invokeNowOrLater(
         () -> {
           if (from == null || chat == null) {
@@ -249,9 +248,9 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
             return;
           }
           if (!floodControl.allow(from, System.currentTimeMillis())) {
-            if (from.equals(chat.getLocalPlayerName())) {
+            if (from.equals(chat.getLocalUserName())) {
               addChatMessage(
-                  "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", PlayerName.of("ADMIN_FLOOD_CONTROL"));
+                  "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", UserName.of("ADMIN_FLOOD_CONTROL"));
             }
             return;
           }
@@ -265,7 +264,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
         });
   }
 
-  private void addChatMessage(final String originalMessage, final PlayerName from) {
+  private void addChatMessage(final String originalMessage, final UserName from) {
     final String message = Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
