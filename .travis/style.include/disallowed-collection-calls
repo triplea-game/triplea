@@ -1,9 +1,6 @@
 Collections.singleton
 Collections.singletonList
 Collections.singletonMap
-Collections.unmodifiableSet
-Collections.unmodifiableList
-Collections.unmodifiableMap
 Collections.emptyList
 collections.emptySet
 Collections.emptyMap

@@ -26,7 +26,6 @@ import games.strategy.triplea.util.UnitSeparator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -286,10 +285,10 @@ public class MoveValidator {
     // Check each unit 1 by 1 to see if they can move through necessary canals on route
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
+    final Set<Unit> setWithNull = new HashSet<>();
+    setWithNull.add(null);
     final Collection<Unit> unitsWithoutDependents =
-        (units == null)
-            ? Collections.singleton(null)
-            : findNonDependentUnits(units, route, newDependents);
+        (units == null) ? setWithNull : findNonDependentUnits(units, route, newDependents);
     for (final Unit unit : unitsWithoutDependents) {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();

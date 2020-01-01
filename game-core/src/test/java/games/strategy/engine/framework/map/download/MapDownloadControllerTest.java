@@ -2,7 +2,6 @@ package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,7 +15,7 @@ import games.strategy.engine.framework.map.download.MapDownloadController.UserMa
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -55,12 +54,7 @@ final class MapDownloadControllerTest {
     }
 
     private Collection<DownloadFileDescription> givenLatestMapVersionIs(final Version version) {
-      return givenDownload(newDownloadWithVersion(version));
-    }
-
-    private Collection<DownloadFileDescription> givenDownload(
-        final DownloadFileDescription download) {
-      return Collections.singletonList(download);
+      return List.of(newDownloadWithVersion(version));
     }
 
     private DownloadFileDescription newDownloadWithVersion(final Version version) {
@@ -119,15 +113,6 @@ final class MapDownloadControllerTest {
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
 
       assertThat(outOfDateMapNames, not(contains(mapName)));
-    }
-
-    @Test
-    void shouldExcludeMapWhenDownloadIsNull() {
-      final Collection<DownloadFileDescription> downloads = givenDownload(null);
-
-      final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
-
-      assertThat(outOfDateMapNames, empty());
     }
   }
 
