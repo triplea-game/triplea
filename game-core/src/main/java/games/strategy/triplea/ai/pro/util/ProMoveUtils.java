@@ -316,7 +316,9 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombardMoveRoutes(
-      final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
+      final ProData proData,
+      final GamePlayer player,
+      final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = proData.getData();
     final GameMap map = data.getMap();
@@ -368,7 +370,9 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombingRoutes(
-      final ProData proData, final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
+      final ProData proData,
+      final GamePlayer player,
+      final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = proData.getData();
     final GameMap map = data.getMap();

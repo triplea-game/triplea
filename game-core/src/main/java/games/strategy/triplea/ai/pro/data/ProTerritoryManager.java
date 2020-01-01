@@ -701,7 +701,8 @@ public class ProTerritoryManager {
         false);
   }
 
-  private static ProOtherMoveOptions findEnemyDefendOptions(final ProData proData, final GamePlayer player) {
+  private static ProOtherMoveOptions findEnemyDefendOptions(
+      final ProData proData, final GamePlayer player) {
     final GameData data = proData.getData();
 
     // Get enemy players in order of turn

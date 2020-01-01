@@ -44,7 +44,8 @@ public final class ProData {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getGamePlayer(), false);
   }
 
-  public void initializeSimulation(final ProAi proAi, final GameData data, final GamePlayer player) {
+  public void initializeSimulation(
+      final ProAi proAi, final GameData data, final GamePlayer player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
