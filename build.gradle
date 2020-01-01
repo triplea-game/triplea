@@ -93,7 +93,7 @@ subprojects {
         javaWebsocketVersion = '1.4.0'
         javaxActivationVersion = '1.1.1'
         jaxbApiVersion = '2.3.1'
-        jaxbCoreVersion = '2.3.0'
+        jaxbCoreVersion = '2.3.0.1'
         jaxbImplVersion = '2.3.2'
         jbcryptVersion = '0.4'
         jdbiVersion = '3.12.0'
