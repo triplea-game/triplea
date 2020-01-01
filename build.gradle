@@ -76,7 +76,7 @@ subprojects {
     ext {
         awaitilityVersion = '4.0.1'
         commonsCliVersion = '1.4'
-        commonsCodecVersion = '1.11'
+        commonsCodecVersion = '1.13'
         commonsIoVersion = '2.6'
         commonsMathVersion = '3.6.1'
         databaseRiderVersion = '1.7.3'
