@@ -131,7 +131,7 @@ public class LobbyFrame extends JFrame {
             .toSwingAction());
   }
 
-  public void shutdown() {
+  public boolean shutdown() {
     setVisible(false);
     dispose();
     new Thread(
@@ -140,5 +140,6 @@ public class LobbyFrame extends JFrame {
               GameRunner.exitGameIfFinished();
             })
         .start();
+    return true;
   }
 }

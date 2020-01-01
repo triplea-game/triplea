@@ -836,7 +836,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
    * If the frame is visible, prompts the user if they wish to exit the application. If they answer
    * yes or the frame is not visible, the game will be stopped, and the process will be terminated.
    */
-  public void shutdown() {
+  public boolean shutdown() {
     if (isVisible()) {
       final int selectedOption =
           EventThreadJOptionPane.showConfirmDialog(
@@ -846,12 +846,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
               JOptionPane.YES_NO_OPTION,
               getUiContext().getCountDownLatchHandler());
       if (selectedOption != JOptionPane.OK_OPTION) {
-        return;
+        return false;
       }
     }
 
     stopGame();
     ExitStatus.SUCCESS.exit();
+    return true;
   }
 
   /**

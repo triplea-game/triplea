@@ -26,7 +26,7 @@ public final class LobbyMenu extends JMenuBar {
     if (!SystemProperties.isMac()) {
       add(new JMenuBuilder("File", 'F').addMenuItem("Exit", 'X', lobbyFrame::shutdown).build());
     } else {
-      MacOsIntegration.setQuitHandler(lobbyFrame::shutdown);
+      MacOsIntegration.setQuitHandler(() -> lobbyFrame.shutdown());
     }
 
     if (!lobbyFrame.getLobbyClient().isAnonymousLogin()) {
