@@ -1,12 +1,11 @@
 package org.triplea.server.http.web.socket;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.websocket.Session;
@@ -33,7 +32,7 @@ import org.triplea.server.lobby.chat.InetExtractor;
 public class SessionSet {
 
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
-  private final Set<Session> sessions = new HashSet<>();
+  private final Set<Session> sessions = ConcurrentHashMap.newKeySet();
 
   public void put(final Session session) {
     sessions.add(session);
