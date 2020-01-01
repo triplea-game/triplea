@@ -8,14 +8,11 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,19 +25,9 @@ import org.triplea.java.collections.CollectionUtils;
 public final class ProUtils {
   private ProUtils() {}
 
-  public static Map<Unit, Territory> newUnitTerritoryMap() {
-    final Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
-    for (final Territory t : ProData.getData().getMap().getTerritories()) {
-      for (final Unit u : t.getUnits()) {
-        unitTerritoryMap.put(u, t);
-      }
-    }
-    return unitTerritoryMap;
-  }
-
   /** Returns a list of all players in turn order excluding {@code player}. */
   public static List<GamePlayer> getOtherPlayersInTurnOrder(final GamePlayer player) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     final List<GamePlayer> players = new ArrayList<>();
     final GameSequence sequence = data.getSequence();
     final int startIndex = sequence.getStepIndex();
@@ -62,7 +49,7 @@ public final class ProUtils {
   }
 
   public static List<GamePlayer> getAlliedPlayersInTurnOrder(final GamePlayer player) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     final List<GamePlayer> players = getOtherPlayersInTurnOrder(player);
     players.removeIf(
         currentPlayer -> !data.getRelationshipTracker().isAllied(player, currentPlayer));
@@ -70,7 +57,7 @@ public final class ProUtils {
   }
 
   public static List<GamePlayer> getEnemyPlayersInTurnOrder(final GamePlayer player) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     final List<GamePlayer> players = getOtherPlayersInTurnOrder(player);
     players.removeIf(
         currentPlayer -> data.getRelationshipTracker().isAllied(player, currentPlayer));
@@ -90,7 +77,7 @@ public final class ProUtils {
   }
 
   public static List<GamePlayer> getEnemyPlayers(final GamePlayer player) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     final List<GamePlayer> enemyPlayers = new ArrayList<>();
     for (final GamePlayer players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
@@ -101,7 +88,7 @@ public final class ProUtils {
   }
 
   private static List<GamePlayer> getAlliedPlayers(final GamePlayer player) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     final List<GamePlayer> alliedPlayers = new ArrayList<>();
     for (final GamePlayer players : data.getPlayerList().getPlayers()) {
       if (data.getRelationshipTracker().isAllied(player, players)) {
@@ -113,7 +100,7 @@ public final class ProUtils {
 
   /** Given a player, finds all non-allied (enemy) players. */
   public static List<GamePlayer> getPotentialEnemyPlayers(final GamePlayer player) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     final List<GamePlayer> otherPlayers = data.getPlayerList().getPlayers();
     for (final Iterator<GamePlayer> it = otherPlayers.iterator(); it.hasNext(); ) {
       final GamePlayer otherPlayer = it.next();

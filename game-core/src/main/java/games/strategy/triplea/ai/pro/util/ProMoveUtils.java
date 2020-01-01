@@ -36,11 +36,12 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateMoveRoutes(
+      final ProData proData,
       final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     // Find all amphib units
@@ -66,7 +67,7 @@ public final class ProMoveUtils {
         }
 
         // Skip if unit is already in move to territory
-        final Territory startTerritory = ProData.unitTerritoryMap.get(u);
+        final Territory startTerritory = proData.getUnitTerritory(u);
         if (startTerritory == null || startTerritory.equals(t)) {
           continue;
         }
@@ -163,11 +164,12 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateAmphibRoutes(
+      final ProData proData,
       final GamePlayer player,
       final Map<Territory, ProTerritory> attackMap,
       final boolean isCombatMove) {
 
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     final MoveBatcher moves = new MoveBatcher();
@@ -179,7 +181,7 @@ public final class ProMoveUtils {
       final Map<Unit, List<Unit>> amphibAttackMap = attackMap.get(t).getAmphibAttackMap();
       for (final Unit transport : amphibAttackMap.keySet()) {
         int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
-        Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
+        Territory transportTerritory = proData.getUnitTerritory(transport);
         moves.newSequence();
 
         // Check if units are already loaded or not
@@ -199,7 +201,7 @@ public final class ProMoveUtils {
           if (Matches.territoryHasEnemyUnits(player, data).negate().test(transportTerritory)) {
             final var unitsToRemove = new ArrayList<Unit>();
             for (final Unit amphibUnit : remainingUnitsToLoad) {
-              final Territory unitTerritory = ProData.unitTerritoryMap.get(amphibUnit);
+              final Territory unitTerritory = proData.getUnitTerritory(amphibUnit);
               if (map.getDistance(transportTerritory, unitTerritory) == 1) {
                 final Route route = new Route(unitTerritory, transportTerritory);
                 moves.addTransportLoad(amphibUnit, route, transport);
@@ -254,7 +256,7 @@ public final class ProMoveUtils {
               }
               int maxUnitDistance = 0;
               for (final Unit u : remainingUnitsToLoad) {
-                final int distance = map.getDistance(neighbor, ProData.unitTerritoryMap.get(u));
+                final int distance = map.getDistance(neighbor, proData.getUnitTerritory(u));
                 if (distance > maxUnitDistance) {
                   maxUnitDistance = distance;
                 }
@@ -314,9 +316,11 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombardMoveRoutes(
-      final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
+      final ProData proData,
+      final GamePlayer player,
+      final Map<Territory, ProTerritory> attackMap) {
 
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     final var moves = new ArrayList<MoveDescription>();
@@ -329,7 +333,7 @@ public final class ProMoveUtils {
         final Territory bombardFromTerritory = t.getBombardTerritoryMap().get(u);
 
         // Skip if unit is already in move to territory
-        final Territory startTerritory = ProData.unitTerritoryMap.get(u);
+        final Territory startTerritory = proData.getUnitTerritory(u);
         if (startTerritory.equals(bombardFromTerritory)) {
           continue;
         }
@@ -366,9 +370,11 @@ public final class ProMoveUtils {
    * @return The list of moves to perform.
    */
   public static List<MoveDescription> calculateBombingRoutes(
-      final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
+      final ProData proData,
+      final GamePlayer player,
+      final Map<Territory, ProTerritory> attackMap) {
 
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     final GameMap map = data.getMap();
 
     final var moves = new ArrayList<MoveDescription>();
@@ -380,7 +386,7 @@ public final class ProMoveUtils {
       for (final Unit u : attackMap.get(t).getBombers()) {
 
         // Skip if unit is already in move to territory
-        final Territory startTerritory = ProData.unitTerritoryMap.get(u);
+        final Territory startTerritory = proData.getUnitTerritory(u);
         if (startTerritory == null || startTerritory.equals(t)) {
           continue;
         }
@@ -410,8 +416,9 @@ public final class ProMoveUtils {
    * Moves the specified groups of units along the specified routes, possibly using the specified
    * transports.
    */
-  public static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
-    final GameData data = ProData.getData();
+  public static void doMove(
+      final ProData proData, final List<MoveDescription> moves, final IMoveDelegate moveDel) {
+    final GameData data = proData.getData();
 
     // Group non-amphib units of the same type moving on the same route
     // TODO: #5499 Use MoveBatcher here - or ideally at the time the moves are being generated.
@@ -450,7 +457,7 @@ public final class ProMoveUtils {
                 + " because: "
                 + result);
       }
-      if (!ProData.isSimulation) {
+      if (!proData.isSimulation()) {
         ProUtils.pause();
       }
     }

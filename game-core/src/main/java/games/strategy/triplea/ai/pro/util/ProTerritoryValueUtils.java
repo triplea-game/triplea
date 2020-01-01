@@ -27,18 +27,19 @@ public final class ProTerritoryValueUtils {
   /**
    * Returns the relative value of attacking the specified territory compared to other territories.
    */
-  public static double findTerritoryAttackValue(final GamePlayer player, final Territory t) {
-    final GameData data = ProData.getData();
+  public static double findTerritoryAttackValue(
+      final ProData proData, final GamePlayer player, final Territory t) {
+    final GameData data = proData.getData();
     final int isEnemyFactory =
         ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
           ProBattleUtils.estimateStrength(
-              t, new ArrayList<>(t.getUnits()), new ArrayList<>(), false);
+              proData, t, new ArrayList<>(t.getUnits()), new ArrayList<>(), false);
 
       // Estimate TUV swing as number of casualties * cost
-      final double tuvSwing = -(strength / 8) * ProData.minCostPerHitPoint;
+      final double tuvSwing = -(strength / 8) * proData.getMinCostPerHitPoint();
       value += tuvSwing;
     }
 
@@ -47,6 +48,7 @@ public final class ProTerritoryValueUtils {
 
   /** Returns the value of each territory in {@code territoriesToCheck}. */
   public static Map<Territory, Double> findTerritoryValues(
+      final ProData proData,
       final GamePlayer player,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack,
@@ -62,6 +64,7 @@ public final class ProTerritoryValueUtils {
       if (!t.isWater()) {
         final double value =
             findLandValue(
+                proData,
                 t,
                 player,
                 maxLandMassSize,
@@ -76,6 +79,7 @@ public final class ProTerritoryValueUtils {
       if (t.isWater()) {
         final double value =
             findWaterValue(
+                proData,
                 t,
                 player,
                 maxLandMassSize,
@@ -98,7 +102,7 @@ public final class ProTerritoryValueUtils {
 
     // Determine value for water territories
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     for (final Territory t : territoriesToCheck) {
       if (!territoriesThatCantBeHeld.contains(t)
           && t.isWater()
@@ -172,7 +176,7 @@ public final class ProTerritoryValueUtils {
 
   private static int findMaxLandMassSize(final GamePlayer player) {
     int maxLandMassSize = 1;
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     for (final Territory t : data.getMap().getTerritories()) {
       if (!t.isWater()) {
         final int landMassSize =
@@ -198,7 +202,7 @@ public final class ProTerritoryValueUtils {
 
     // Get all enemy factories and capitals (check if most territories have factories and if so
     // remove them)
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
     final Set<Territory> enemyCapitalsAndFactories =
         new HashSet<>(
@@ -252,6 +256,7 @@ public final class ProTerritoryValueUtils {
   }
 
   private static double findLandValue(
+      final ProData proData,
       final Territory t,
       final GamePlayer player,
       final int maxLandMassSize,
@@ -265,7 +270,7 @@ public final class ProTerritoryValueUtils {
 
     // Determine value based on enemy factory land distance
     final List<Double> values = new ArrayList<>();
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     final Set<Territory> nearbyEnemyCapitalsAndFactories =
         findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap);
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
@@ -306,7 +311,8 @@ public final class ProTerritoryValueUtils {
       if (distance > 0) {
         double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
-          value = findTerritoryAttackValue(player, nearbyEnemyTerritory) / 3; // find neutral value
+          // find neutral value
+          value = findTerritoryAttackValue(proData, player, nearbyEnemyTerritory) / 3;
         } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data)
             .test(nearbyEnemyTerritory)) {
           value *= 0.1; // reduce value for can't hold amphib allied territories
@@ -330,6 +336,7 @@ public final class ProTerritoryValueUtils {
   }
 
   private static double findWaterValue(
+      final ProData proData,
       final Territory t,
       final GamePlayer player,
       final int maxLandMassSize,
@@ -338,7 +345,7 @@ public final class ProTerritoryValueUtils {
       final List<Territory> territoriesToAttack,
       final Map<Territory, Double> territoryValueMap) {
 
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     if (territoriesThatCantBeHeld.contains(t)
         || data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
       return 0.0;
@@ -399,13 +406,14 @@ public final class ProTerritoryValueUtils {
             .test(nearbyLandTerritory)) {
           double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
           if (ProUtils.isNeutralLand(nearbyLandTerritory)) {
-            value = findTerritoryAttackValue(player, nearbyLandTerritory);
+            value = findTerritoryAttackValue(proData, player, nearbyLandTerritory);
           }
           nearbyLandValue += value;
         }
         if (!territoryValueMap.containsKey(nearbyLandTerritory)) {
           final double value =
               findLandValue(
+                  proData,
                   nearbyLandTerritory,
                   player,
                   maxLandMassSize,
@@ -426,7 +434,7 @@ public final class ProTerritoryValueUtils {
 
     Set<Territory> nearbyEnemyCapitalsAndFactories = new HashSet<>();
     for (int i = MIN_FACTORY_CHECK_DISTANCE; i <= MAX_FACTORY_CHECK_DISTANCE; i++) {
-      nearbyEnemyCapitalsAndFactories = ProData.getData().getMap().getNeighbors(t, i);
+      nearbyEnemyCapitalsAndFactories = t.getData().getMap().getNeighbors(t, i);
       nearbyEnemyCapitalsAndFactories.retainAll(enemyCapitalsAndFactoriesMap.keySet());
       if (!nearbyEnemyCapitalsAndFactories.isEmpty()) {
         break;

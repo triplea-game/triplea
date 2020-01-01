@@ -26,7 +26,7 @@ public final class ProSortMoveOptionsUtils {
    * unit, then by unit type name.
    */
   public static Map<Unit, Set<Territory>> sortUnitMoveOptions(
-      final Map<Unit, Set<Territory>> unitAttackOptions) {
+      final ProData proData, final Map<Unit, Set<Territory>> unitAttackOptions) {
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new ArrayList<>(unitAttackOptions.entrySet());
@@ -36,10 +36,10 @@ public final class ProSortMoveOptionsUtils {
           // Sort by number of move options then cost of unit then unit type
           if (o1.getValue().size() != o2.getValue().size()) {
             return (o1.getValue().size() - o2.getValue().size());
-          } else if (ProData.unitValueMap.getInt(o1.getKey().getType())
-              != ProData.unitValueMap.getInt(o2.getKey().getType())) {
-            return (ProData.unitValueMap.getInt(o1.getKey().getType())
-                - ProData.unitValueMap.getInt(o2.getKey().getType()));
+          } else if (proData.getUnitValue(o1.getKey().getType())
+              != proData.getUnitValue(o2.getKey().getType())) {
+            return (proData.getUnitValue(o1.getKey().getType())
+                - proData.getUnitValue(o2.getKey().getType()));
           }
           return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
         });
@@ -56,12 +56,11 @@ public final class ProSortMoveOptionsUtils {
    * battles which require additional units for the attacker to be successful.
    */
   public static Map<Unit, Set<Territory>> sortUnitNeededOptions(
+      final ProData proData,
       final GamePlayer player,
       final Map<Unit, Set<Territory>> unitAttackOptions,
       final Map<Territory, ProTerritory> attackMap,
       final ProOddsCalculator calc) {
-    final GameData data = ProData.getData();
-
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new ArrayList<>(unitAttackOptions.entrySet());
     list.sort(
@@ -72,12 +71,7 @@ public final class ProSortMoveOptionsUtils {
           for (final Territory t : o1.getValue()) {
             final ProTerritory patd = attackMap.get(t);
             if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
+              patd.estimateBattleResult(calc, player);
             }
             if (!patd.isCurrentlyWins()) {
               numOptions1++;
@@ -87,12 +81,7 @@ public final class ProSortMoveOptionsUtils {
           for (final Territory t : o2.getValue()) {
             final ProTerritory patd = attackMap.get(t);
             if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
+              patd.estimateBattleResult(calc, player);
             }
             if (!patd.isCurrentlyWins()) {
               numOptions2++;
@@ -103,10 +92,10 @@ public final class ProSortMoveOptionsUtils {
           if (numOptions1 != numOptions2) {
             return (numOptions1 - numOptions2);
           }
-          if (ProData.unitValueMap.getInt(o1.getKey().getType())
-              != ProData.unitValueMap.getInt(o2.getKey().getType())) {
-            return (ProData.unitValueMap.getInt(o1.getKey().getType())
-                - ProData.unitValueMap.getInt(o2.getKey().getType()));
+          if (proData.getUnitValue(o1.getKey().getType())
+              != proData.getUnitValue(o2.getKey().getType())) {
+            return (proData.getUnitValue(o1.getKey().getType())
+                - proData.getUnitValue(o2.getKey().getType()));
           }
           return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
         });
@@ -124,12 +113,13 @@ public final class ProSortMoveOptionsUtils {
    * attacker to be successful.
    */
   public static Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(
+      final ProData proData,
       final GamePlayer player,
       final Map<Unit, Set<Territory>> unitAttackOptions,
       final Map<Territory, ProTerritory> attackMap,
-      final Map<Unit, Territory> unitTerritoryMap,
       final ProOddsCalculator calc) {
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
+    final Map<Unit, Territory> unitTerritoryMap = proData.getUnitTerritoryMap();
 
     final List<Map.Entry<Unit, Set<Territory>>> list =
         new ArrayList<>(unitAttackOptions.entrySet());
@@ -141,12 +131,7 @@ public final class ProSortMoveOptionsUtils {
           for (final Territory t : o1.getValue()) {
             final ProTerritory patd = attackMap.get(t);
             if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
+              patd.estimateBattleResult(calc, player);
             }
             if (!patd.isCurrentlyWins()) {
               numOptions1++;
@@ -156,12 +141,7 @@ public final class ProSortMoveOptionsUtils {
           for (final Territory t : o2.getValue()) {
             final ProTerritory patd = attackMap.get(t);
             if (patd.getBattleResult() == null) {
-              patd.setBattleResult(
-                  calc.estimateAttackBattleResults(
-                      t,
-                      patd.getUnits(),
-                      patd.getMaxEnemyDefenders(player, data),
-                      patd.getBombardTerritoryMap().keySet()));
+              patd.estimateBattleResult(calc, player);
             }
             if (!patd.isCurrentlyWins()) {
               numOptions2++;
@@ -184,7 +164,7 @@ public final class ProSortMoveOptionsUtils {
               sortedUnitsList.sort(
                   new UnitBattleComparator(
                           false,
-                          ProData.unitValueMap,
+                          proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
                           data,
                           false,
@@ -206,7 +186,7 @@ public final class ProSortMoveOptionsUtils {
               sortedUnitsList.sort(
                   new UnitBattleComparator(
                           false,
-                          ProData.unitValueMap,
+                          proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
                           data,
                           false,
@@ -235,7 +215,7 @@ public final class ProSortMoveOptionsUtils {
             minPower1 *= 10;
           }
           final double attackEfficiency1 =
-              (double) minPower1 / ProData.unitValueMap.getInt(o1.getKey().getType());
+              (double) minPower1 / proData.getUnitValue(o1.getKey().getType());
           int minPower2 = Integer.MAX_VALUE;
           for (final Territory t : o2.getValue()) {
             if (!attackMap.get(t).isCurrentlyWins()) {
@@ -245,7 +225,7 @@ public final class ProSortMoveOptionsUtils {
               sortedUnitsList.sort(
                   new UnitBattleComparator(
                           false,
-                          ProData.unitValueMap,
+                          proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
                           data,
                           false,
@@ -267,7 +247,7 @@ public final class ProSortMoveOptionsUtils {
               sortedUnitsList.sort(
                   new UnitBattleComparator(
                           false,
-                          ProData.unitValueMap,
+                          proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
                           data,
                           false,
@@ -296,7 +276,7 @@ public final class ProSortMoveOptionsUtils {
             minPower2 *= 10;
           }
           final double attackEfficiency2 =
-              (double) minPower2 / ProData.unitValueMap.getInt(o2.getKey().getType());
+              (double) minPower2 / proData.getUnitValue(o2.getKey().getType());
           if (attackEfficiency1 != attackEfficiency2) {
             return (attackEfficiency1 < attackEfficiency2) ? 1 : -1;
           }
