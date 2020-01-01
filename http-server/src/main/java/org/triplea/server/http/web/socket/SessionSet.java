@@ -46,11 +46,8 @@ public class SessionSet {
 
   /** Just in case we fail to remove a closed session from listeners, remove any closed sessions. */
   private void removeClosedSessions() {
-    // find all sessions that are not open
-    final Set<Session> closedSessions =
-        sessions.stream().filter(Predicate.not(Session::isOpen)).collect(Collectors.toSet());
-    // remove each of the closed sessions
-    closedSessions.forEach(sessions::remove);
+    // remove any closed sessions
+    sessions.removeIf(Predicate.not(Session::isOpen));
   }
 
   public Collection<Session> getSessionsByIp(final InetAddress serverIp) {
