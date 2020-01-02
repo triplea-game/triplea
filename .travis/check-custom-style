@@ -22,7 +22,7 @@ status=0
 
 
 function main() {
-  #favorJava9CollectionsApi
+  favorJava9CollectionsApi
   #referToCollectionsByInterfaceType
   avoidLegacyApi
   removeUnusedLogAnnotations
