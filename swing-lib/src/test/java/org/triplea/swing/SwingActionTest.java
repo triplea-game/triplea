@@ -27,14 +27,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SwingActionTest {
   private static final Object VALUE = new Object();
 
-  private static Object throwException() {
-    throw new IllegalStateException();
-  }
-
   @Mock private Runnable action;
   @Mock private ActionEvent event;
   @Mock private ActionListener listener;
   @Mock private Consumer<KeyEvent> consumer;
+
+  private static Object throwException() {
+    throw new IllegalStateException();
+  }
 
   @Test
   void testActionOf() {
