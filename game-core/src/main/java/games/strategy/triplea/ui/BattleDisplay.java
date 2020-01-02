@@ -461,6 +461,11 @@ public class BattleDisplay extends JPanel {
       return RetreatResult.retreatTo(possible.iterator().next());
     }
 
+    return showRetreatOptions(message, possible);
+  }
+
+  private RetreatResult showRetreatOptions(
+      final String message, final Collection<Territory> possible) {
     final RetreatComponent comp = new RetreatComponent(possible);
     final int option =
         JOptionPane.showConfirmDialog(
