@@ -12,7 +12,6 @@ import static org.triplea.test.common.TestDataFileReader.readContents;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,10 +19,11 @@ import org.triplea.util.Version;
 
 class ServerYamlParserTest {
 
-  private static final Supplier<InputStream> SAMPLE_FILE_INPUT =
-      () -> asInputStream(readContents("live.servers.yaml.examples/servers_example.yaml"));
-
   private final ServerYamlParser serverYamlParser = new ServerYamlParser();
+
+  private static InputStream sampleFileInput() {
+    return asInputStream(readContents("live.servers.yaml.examples/servers_example.yaml"));
+  }
 
   @MethodSource
   @ParameterizedTest
@@ -38,14 +38,14 @@ class ServerYamlParserTest {
 
   @Test
   void parsingLatestVersion() {
-    final LiveServers liveServers = serverYamlParser.apply(SAMPLE_FILE_INPUT.get());
+    final LiveServers liveServers = serverYamlParser.apply(sampleFileInput());
 
     assertThat(liveServers.getLatestEngineVersion(), is(new Version("1.0.300")));
   }
 
   @Test
   void parsingProperties() {
-    final LiveServers liveServers = serverYamlParser.apply(SAMPLE_FILE_INPUT.get());
+    final LiveServers liveServers = serverYamlParser.apply(sampleFileInput());
 
     assertThat(liveServers.getServers(), hasSize(3));
     assertThat(liveServers.getServers().get(0).getMinEngineVersion(), is(new Version("2.0")));

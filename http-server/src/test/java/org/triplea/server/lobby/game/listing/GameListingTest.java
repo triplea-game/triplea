@@ -10,11 +10,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.cache.Cache;
-import java.util.HashMap;
+import com.google.common.cache.CacheBuilder;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -51,8 +49,9 @@ class GameListingTest {
   private static final String HOST_NAME = "host-player";
   private static final int MODERATOR_ID = 33;
 
+  private final Cache<GameId, LobbyGame> cache = CacheBuilder.newBuilder().build();
+
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  @Mock private Cache<GameId, LobbyGame> cache;
   @Mock private GameListingEventQueue gameListingEventQueue;
 
   private GameListing gameListing;
@@ -77,16 +76,13 @@ class GameListingTest {
     /** Basic case, no games added, expect none to be returned. */
     @Test
     void getGames() {
-      final Map<GameId, LobbyGame> games = new HashMap<>();
-      games.put(ID_0, lobbyGame0);
-      games.put(new GameId(API_KEY_0, GAME_ID_1), lobbyGame1);
-      games.put(new GameId(API_KEY_1, GAME_ID_2), lobbyGame2);
-
-      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(games));
+      cache.put(ID_0, lobbyGame0);
+      cache.put(new GameId(API_KEY_0, GAME_ID_1), lobbyGame1);
+      cache.put(new GameId(API_KEY_1, GAME_ID_2), lobbyGame2);
 
       final List<LobbyGameListing> result = gameListing.getGames();
 
-      assertThat(result.size(), is(games.size()));
+      assertThat((long) result.size(), is(cache.size()));
       assertThat(
           result,
           IsCollectionContaining.hasItem(
@@ -108,22 +104,20 @@ class GameListingTest {
   final class KeepAlive {
     @Test
     void noGamesPresent() {
-      when(cache.getIfPresent(ID_0)).thenReturn(null);
-
       final boolean result = gameListing.keepAlive(API_KEY_0, GAME_ID_0);
       assertThat("Game not found, keep alive should return false", result, is(false));
 
-      verify(cache, never()).put(any(), any());
+      assertThat(cache.asMap(), is(Map.of()));
     }
 
     @Test
     void gameExists() {
-      when(cache.getIfPresent(ID_0)).thenReturn(lobbyGame0);
+      cache.put(ID_0, lobbyGame0);
 
       final boolean result = gameListing.keepAlive(API_KEY_0, GAME_ID_0);
 
       assertThat("Game found, keep alive should return true", result, is(true));
-      verify(cache).put(ID_0, lobbyGame0);
+      assertThat(cache.asMap(), is(Map.of(ID_0, lobbyGame0)));
     }
   }
 
@@ -131,25 +125,21 @@ class GameListingTest {
   final class RemoveGame {
     @Test
     void removeGame() {
-      final ConcurrentMap<GameId, LobbyGame> map = new ConcurrentHashMap<>();
-      map.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
-      when(cache.asMap()).thenReturn(map);
+      cache.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
 
       gameListing.removeGame(API_KEY_0, GAME_ID_0);
 
-      verify(cache).invalidate(ID_0);
+      assertThat(cache.asMap(), is(Map.of()));
       verify(gameListingEventQueue).gameRemoved(GAME_ID_0);
     }
 
     @Test
     void removeGameRequiresCorrectApiKey() {
-      final ConcurrentMap<GameId, LobbyGame> map = new ConcurrentHashMap<>();
-      map.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
-      when(cache.asMap()).thenReturn(map);
+      cache.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
 
       gameListing.removeGame(API_KEY_1, GAME_ID_0);
 
-      verify(cache, never()).invalidate(any(GameId.class));
+      assertThat(cache.asMap(), is(Map.of(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0)));
       verify(gameListingEventQueue, never()).gameRemoved(any());
     }
   }
@@ -161,7 +151,7 @@ class GameListingTest {
       final String id0 = gameListing.postGame(API_KEY_0, lobbyGame0);
 
       assertThat(id0, not(emptyString()));
-      verify(cache).put(new GameId(API_KEY_0, id0), lobbyGame0);
+      assertThat(cache.asMap(), is(Map.of(new GameId(API_KEY_0, id0), lobbyGame0)));
       verify(gameListingEventQueue)
           .gameUpdated(LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build());
     }
@@ -171,20 +161,16 @@ class GameListingTest {
   final class UpdateGame {
     @Test
     void updateGameThatDoesNotExist() {
-      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>());
-
       final boolean result = gameListing.updateGame(API_KEY_0, GAME_ID_0, lobbyGame0);
 
       assertThat(result, is(false));
-      verify(cache, never()).put(ID_0, lobbyGame0);
+      assertThat(cache.asMap(), is(Map.of()));
       verify(gameListingEventQueue, never()).gameUpdated(any());
     }
 
     @Test
     void updateGameThatDoesExist() {
-      final Map<GameId, LobbyGame> map = new HashMap<>();
-      map.put(ID_0, lobbyGame1);
-      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(map));
+      cache.put(ID_0, lobbyGame1);
 
       final boolean result = gameListing.updateGame(API_KEY_0, GAME_ID_0, lobbyGame0);
 
@@ -198,14 +184,12 @@ class GameListingTest {
   final class BootGame {
     @Test
     void bootGame() {
-      final Map<GameId, LobbyGame> games = new HashMap<>();
-      games.put(ID_0, lobbyGame0);
-      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(games));
+      cache.put(ID_0, lobbyGame0);
       when(lobbyGame0.getHostName()).thenReturn(HOST_NAME);
 
       gameListing.bootGame(MODERATOR_ID, GAME_ID_0);
 
-      verify(cache).invalidate(ID_0);
+      assertThat(cache.asMap(), is(Map.of()));
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(
               ModeratorAuditHistoryDao.AuditArgs.builder()

@@ -6,10 +6,10 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -237,7 +237,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   /** Does a busy wait loop until the given collection is at least a given size. */
   private static <T> void waitForMessage(final Collection<T> messageBuffer, final int minCount) {
     Awaitility.await()
-        .atMost(MESSAGE_TIMEOUT, TimeUnit.MILLISECONDS)
+        .atMost(Duration.ofMillis(MESSAGE_TIMEOUT))
         .until(() -> messageBuffer.size() >= minCount);
   }
 }
