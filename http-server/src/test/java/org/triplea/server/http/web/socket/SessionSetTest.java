@@ -76,6 +76,22 @@ class SessionSetTest {
     }
 
     @Test
+    @DisplayName("Add a session, then remove, should be no sessions present")
+    void removeSession() {
+      sessionSet.put(session);
+      sessionSet.remove(session);
+
+      assertThat(sessionSet.values(), hasSize(0));
+    }
+
+    @Test
+    void removeSessionThatDoesNotExistIsNoOp() {
+      sessionSet.remove(session);
+
+      assertThat(sessionSet.values(), hasSize(0));
+    }
+
+    @Test
     @DisplayName("Verify a closed session is not returned")
     void closedSessionsArePruned() {
       when(session.isOpen()).thenReturn(false);

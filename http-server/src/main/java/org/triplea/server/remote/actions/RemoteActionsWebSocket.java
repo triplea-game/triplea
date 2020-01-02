@@ -1,6 +1,8 @@
 package org.triplea.server.remote.actions;
 
 import com.google.common.base.Preconditions;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -25,6 +27,11 @@ public class RemoteActionsWebSocket {
   private RemoteActionsEventQueue getEventQueue(final Session session) {
     return Preconditions.checkNotNull(
         (RemoteActionsEventQueue) session.getUserProperties().get(ACTIONS_QUEUE_KEY));
+  }
+
+  @OnClose
+  public void onClose(final Session session, final CloseReason closeReason) {
+    getEventQueue(session).removeSession(session);
   }
 
   /**

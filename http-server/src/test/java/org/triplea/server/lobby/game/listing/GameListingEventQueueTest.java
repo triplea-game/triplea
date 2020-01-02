@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 import javax.websocket.Session;
-import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -47,7 +47,6 @@ class GameListingEventQueueTest {
 
   @Test
   void addListener() {
-    when(openSession.getId()).thenReturn("id0");
     when(openSession.isOpen()).thenReturn(true);
     gameListingEventQueue.addListener(openSession);
 
@@ -55,9 +54,20 @@ class GameListingEventQueueTest {
   }
 
   @Test
+  void removeListener() {
+    gameListingEventQueue.addListener(openSession);
+
+    gameListingEventQueue.removeListener(openSession);
+
+    assertThat(gameListingEventQueue.getSessionSet().values(), hasSize(0));
+  }
+
+  @Test
   void gameRemoved() {
-    givenListener(openSession, SessionParameters.builder().open(true).sessionId("id0").build());
-    givenListener(closedSession, SessionParameters.builder().open(false).sessionId("id1").build());
+    when(openSession.isOpen()).thenReturn(true);
+    gameListingEventQueue.addListener(openSession);
+    when(closedSession.isOpen()).thenReturn(false);
+    gameListingEventQueue.addListener(closedSession);
 
     gameListingEventQueue.gameRemoved("gameId");
 
@@ -79,19 +89,6 @@ class GameListingEventQueueTest {
         hasSize(1));
   }
 
-  @Builder
-  private static class SessionParameters {
-    private boolean open;
-    private String sessionId;
-  }
-
-  private void givenListener(final Session session, final SessionParameters sessionParameters) {
-    when(session.isOpen()).thenReturn(sessionParameters.open);
-    when(session.getId()).thenReturn(sessionParameters.sessionId);
-
-    gameListingEventQueue.addListener(session);
-  }
-
   private void verifyBroadcastToSession(
       final Collection<Session> broadcastedSessions, final Session session) {
     assertThat("Expect broadcast to just the open session", broadcastedSessions, hasSize(1));
@@ -102,10 +99,12 @@ class GameListingEventQueueTest {
   }
 
   @Test
+  @DisplayName("Update game, verify update game message is sent to open sessions")
   void gameUpdated() {
-    givenListener(openSession, SessionParameters.builder().open(true).sessionId("id0").build());
-    givenListener(closedSession, SessionParameters.builder().open(false).sessionId("id1").build());
-
+    when(openSession.isOpen()).thenReturn(true);
+    gameListingEventQueue.addListener(openSession);
+    when(closedSession.isOpen()).thenReturn(false);
+    gameListingEventQueue.addListener(closedSession);
     final LobbyGameListing lobbyGameListing =
         LobbyGameListing.builder().gameId("gameId").lobbyGame(TestData.LOBBY_GAME).build();
 

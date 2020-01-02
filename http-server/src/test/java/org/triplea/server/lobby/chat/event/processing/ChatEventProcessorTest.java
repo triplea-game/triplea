@@ -67,6 +67,7 @@ class ChatEventProcessorTest {
   class ProcessConnectMessage {
     @Test
     void connect() {
+      when(session.getId()).thenReturn("id");
       final List<ServerResponse> responses =
           chatEventProcessor.processAndComputeServerResponses(
               session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
@@ -90,6 +91,7 @@ class ChatEventProcessorTest {
 
     @Test
     void multiplePlayersConnect() {
+      when(session.getId()).thenReturn("id");
       chatEventProcessor.processAndComputeServerResponses(
           session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
 

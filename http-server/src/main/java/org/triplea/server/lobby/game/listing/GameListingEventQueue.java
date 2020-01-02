@@ -1,7 +1,6 @@
 package org.triplea.server.lobby.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 import javax.websocket.Session;
@@ -24,8 +23,11 @@ public class GameListingEventQueue {
   private final SessionSet sessionSet;
 
   void addListener(final Session session) {
-    Preconditions.checkNotNull(session);
     sessionSet.put(session);
+  }
+
+  void removeListener(final Session session) {
+    sessionSet.remove(session);
   }
 
   void gameRemoved(final String gameId) {

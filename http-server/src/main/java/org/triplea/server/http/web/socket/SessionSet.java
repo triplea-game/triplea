@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.websocket.Session;
 import lombok.AccessLevel;
@@ -38,22 +37,18 @@ public class SessionSet {
     sessions.add(session);
   }
 
-  public Collection<Session> values() {
-    removeClosedSessions();
-    return Set.copyOf(sessions);
+  public void remove(final Session session) {
+    sessions.remove(session);
   }
 
-  /** Just in case we fail to remove a closed session from listeners, remove any closed sessions. */
-  private void removeClosedSessions() {
-    // remove any closed sessions
-    sessions.removeIf(Predicate.not(Session::isOpen));
+  public Collection<Session> values() {
+    return sessions.stream().filter(Session::isOpen).collect(Collectors.toSet());
   }
 
   public Collection<Session> getSessionsByIp(final InetAddress serverIp) {
-    removeClosedSessions();
     return sessions.stream()
-        .filter(s -> InetExtractor.extract(s.getUserProperties()).equals(serverIp))
         .filter(Session::isOpen)
+        .filter(s -> InetExtractor.extract(s.getUserProperties()).equals(serverIp))
         .collect(Collectors.toSet());
   }
 
@@ -70,7 +65,5 @@ public class SessionSet {
                 log.warn("Could not close session (session is still open? {}", s.isOpen(), e);
               }
             });
-
-    removeClosedSessions();
   }
 }

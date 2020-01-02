@@ -37,6 +37,10 @@ public class RemoteActionsEventQueue {
     sessionSet.put(session);
   }
 
+  void removeSession(final Session session) {
+    sessionSet.remove(session);
+  }
+
   public void addPlayerBannedEvent(final InetAddress bannedIP) {
     final ServerMessageEnvelope playerBanned =
         RemoteActionsEnvelopeFactory.newBannedPlayer(bannedIP);
