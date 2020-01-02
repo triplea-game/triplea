@@ -72,3 +72,6 @@ task release(group: 'release', dependsOn: portableInstaller) {
         publishArtifacts(portableInstaller.outputs.files)
     }
 }
+shadowJar {
+    archiveClassifier.set ''
+}
