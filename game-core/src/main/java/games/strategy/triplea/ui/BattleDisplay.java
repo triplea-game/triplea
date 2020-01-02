@@ -351,25 +351,31 @@ public class BattleDisplay extends JPanel {
         : getSubmerge(message);
   }
 
+  private Action getSubmergeAction(
+      final String message,
+      final AtomicReference<Territory> retreatTo,
+      final CountDownLatch latch) {
+    return SwingAction.of(
+        "Submerge Subs?",
+        e -> {
+          actionButton.setEnabled(false);
+          final RetreatResult retreatResult = showSubmergeDialog(message);
+          if (retreatResult.isConfirmed()) {
+            retreatTo.set(retreatResult.getTarget());
+            actionButton.setAction(nullAction);
+            latch.countDown();
+          }
+          actionButton.setEnabled(true);
+        });
+  }
+
   private Territory getSubmerge(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
     final AtomicReference<Territory> retreatTo = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
-    final Action action =
-        SwingAction.of(
-            "Submerge Subs?",
-            e -> {
-              actionButton.setEnabled(false);
-              final RetreatResult retreatResult = showSubmergeDialog(message);
-              if (retreatResult.isConfirmed()) {
-                retreatTo.set(retreatResult.getTarget());
-                actionButton.setAction(nullAction);
-                latch.countDown();
-              }
-              actionButton.setEnabled(true);
-            });
+    final Action action = getSubmergeAction(message, retreatTo, latch);
     SwingUtilities.invokeLater(
         () -> {
           actionButton.setAction(action);
@@ -408,25 +414,32 @@ public class BattleDisplay extends JPanel {
     return RetreatResult.retreatTo(battleLocation);
   }
 
+  private Action getRetreatAction(
+      final String message,
+      final Collection<Territory> possible,
+      final AtomicReference<Territory> retreatTo,
+      final CountDownLatch latch) {
+    return SwingAction.of(
+        "Retreat?",
+        e -> {
+          actionButton.setEnabled(false);
+          final RetreatResult retreatResult = showRetreatDialog(message, possible);
+          if (retreatResult.isConfirmed()) {
+            retreatTo.set(retreatResult.getTarget());
+            actionButton.setAction(nullAction);
+            latch.countDown();
+          }
+          actionButton.setEnabled(true);
+        });
+  }
+
   private Territory getRetreatInternal(final String message, final Collection<Territory> possible) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
     final AtomicReference<Territory> retreatTo = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
-    final Action action =
-        SwingAction.of(
-            "Retreat?",
-            e -> {
-              actionButton.setEnabled(false);
-              final RetreatResult retreatResult = showRetreatDialog(message, possible);
-              if (retreatResult.isConfirmed()) {
-                retreatTo.set(retreatResult.getTarget());
-                actionButton.setAction(nullAction);
-                latch.countDown();
-              }
-              actionButton.setEnabled(true);
-            });
+    final Action action = getRetreatAction(message, possible, retreatTo, latch);
     SwingUtilities.invokeLater(
         () -> {
           actionButton.setAction(action);
