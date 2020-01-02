@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -30,11 +29,11 @@ public abstract class AbstractPropertyReaderTestCase {
       throws Exception;
 
   private PropertyReader newEmptyPropertyReader() throws Exception {
-    return newPropertyReader(Collections.emptyMap());
+    return newPropertyReader(Map.of());
   }
 
   private PropertyReader newSingletonPropertyReader(final String value) throws Exception {
-    return newPropertyReader(Collections.singletonMap(PRESENT_PROPERTY_KEY, value));
+    return newPropertyReader(Map.of(PRESENT_PROPERTY_KEY, value));
   }
 
   /** Test cases for {@link PropertyReader#readProperty(String)}. */
