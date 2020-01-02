@@ -46,6 +46,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -366,15 +367,16 @@ public class BattleDisplay extends JPanel {
     return retreatTo.get();
   }
 
-  private Action getSubmergeAction(
-      final String message,
+  private Action getPlayerAction(
+      final String title,
+      final Supplier<RetreatResult> showDialog,
       final AtomicReference<Territory> retreatTo,
       final CountDownLatch latch) {
     return SwingAction.of(
-        "Submerge Subs?",
+        title,
         e -> {
           actionButton.setEnabled(false);
-          final RetreatResult retreatResult = showSubmergeDialog(message);
+          final RetreatResult retreatResult = showDialog.get();
           if (retreatResult.isConfirmed()) {
             retreatTo.set(retreatResult.getTarget());
             actionButton.setAction(nullAction);
@@ -382,6 +384,13 @@ public class BattleDisplay extends JPanel {
           }
           actionButton.setEnabled(true);
         });
+  }
+
+  private Action getSubmergeAction(
+      final String message,
+      final AtomicReference<Territory> retreatTo,
+      final CountDownLatch latch) {
+    return getPlayerAction("Submerge Subs?", () -> showSubmergeDialog(message), retreatTo, latch);
   }
 
   private RetreatResult showSubmergeDialog(final String message) {
@@ -416,18 +425,8 @@ public class BattleDisplay extends JPanel {
       final Collection<Territory> possible,
       final AtomicReference<Territory> retreatTo,
       final CountDownLatch latch) {
-    return SwingAction.of(
-        "Retreat?",
-        e -> {
-          actionButton.setEnabled(false);
-          final RetreatResult retreatResult = showRetreatDialog(message, possible);
-          if (retreatResult.isConfirmed()) {
-            retreatTo.set(retreatResult.getTarget());
-            actionButton.setAction(nullAction);
-            latch.countDown();
-          }
-          actionButton.setEnabled(true);
-        });
+    return getPlayerAction(
+        "Retreat?", () -> showRetreatDialog(message, possible), retreatTo, latch);
   }
 
   private RetreatResult showRetreatDialog(
