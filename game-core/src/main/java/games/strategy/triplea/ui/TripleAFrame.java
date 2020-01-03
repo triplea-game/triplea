@@ -170,7 +170,7 @@ import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
 @Log
-public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
+public final class TripleAFrame extends JFrame implements KeyBindingSupplier, QuitHandler {
   private static final long serialVersionUID = 7640069668264418976L;
 
   private final LocalPlayers localPlayers;
@@ -836,6 +836,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
    * If the frame is visible, prompts the user if they wish to exit the application. If they answer
    * yes or the frame is not visible, the game will be stopped, and the process will be terminated.
    */
+  @Override
   public boolean shutdown() {
     if (isVisible()) {
       final int selectedOption =

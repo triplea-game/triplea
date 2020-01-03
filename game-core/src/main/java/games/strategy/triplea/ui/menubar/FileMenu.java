@@ -112,7 +112,7 @@ final class FileMenu extends JMenu {
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (isMac) {
-      MacOsIntegration.setQuitHandler(() -> frame.shutdown());
+      MacOsIntegration.setQuitHandler(frame);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
       final JMenuItem menuFileExit =
           new JMenuItem(SwingAction.of("Exit Program", e -> frame.shutdown()));

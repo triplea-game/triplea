@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 /** Utility class to add macOS integration. */
@@ -41,12 +40,12 @@ public final class MacOsIntegration {
   }
 
   /** Sets the specified quit handler to the application. */
-  public static void setQuitHandler(final BooleanSupplier handler) {
+  public static void setQuitHandler(final QuitHandler handler) {
     checkNotNull(handler);
     Desktop.getDesktop()
         .setQuitHandler(
             (quitEvent, quitResponse) -> {
-              if (handler.getAsBoolean()) {
+              if (handler.shutdown()) {
                 quitResponse.performQuit();
               } else {
                 quitResponse.cancelQuit();
