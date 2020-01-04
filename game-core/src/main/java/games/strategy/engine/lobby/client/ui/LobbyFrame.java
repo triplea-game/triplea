@@ -11,6 +11,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
+import games.strategy.triplea.ui.QuitHandler;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -28,7 +29,7 @@ import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** The top-level frame window for the lobby client UI. */
-public class LobbyFrame extends JFrame {
+public class LobbyFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = -388371674076362572L;
 
   @Getter private final LobbyClient lobbyClient;
@@ -131,7 +132,8 @@ public class LobbyFrame extends JFrame {
             .toSwingAction());
   }
 
-  public void shutdown() {
+  @Override
+  public boolean shutdown() {
     setVisible(false);
     dispose();
     new Thread(
@@ -140,5 +142,6 @@ public class LobbyFrame extends JFrame {
               GameRunner.exitGameIfFinished();
             })
         .start();
+    return true;
   }
 }
