@@ -28,7 +28,7 @@ class PasswordBCrypterTest {
     final String crypted = new PasswordBCrypter().apply("password");
 
     final boolean result =
-        BCrypt.verifyer(BCrypt.Version.VERSION_2A, LongPasswordStrategies.none())
+        BCrypt.verifyer(null, LongPasswordStrategies.none())
             .verify(
                 PasswordBCrypter.hashPasswordWithSalt("password").toCharArray(),
                 crypted.toCharArray())

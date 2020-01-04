@@ -10,7 +10,7 @@ public class BCryptHashVerifier implements BiPredicate<String, String> {
   public boolean test(final String password, final String databaseBcrypted) {
     // TODO: Md5-Deprecation Move SHA512 hashing to client side
     final String hashedPassword = PasswordBCrypter.hashPasswordWithSalt(password);
-    return BCrypt.verifyer(BCrypt.Version.VERSION_2A, LongPasswordStrategies.none())
+    return BCrypt.verifyer(null, LongPasswordStrategies.none())
         .verify(hashedPassword.toCharArray(), databaseBcrypted.toCharArray())
         .verified;
   }
