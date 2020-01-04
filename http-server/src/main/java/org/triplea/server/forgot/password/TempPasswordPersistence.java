@@ -1,6 +1,7 @@
 package org.triplea.server.forgot.password;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.LongPasswordStrategies;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -27,7 +28,8 @@ class TempPasswordPersistence {
     return new TempPasswordPersistence(
         jdbi.onDemand(TempPasswordDao.class),
         Sha512Hasher::hashPasswordWithSalt,
-        hashedPass -> BCrypt.withDefaults().hashToString(10, hashedPass.toCharArray()));
+        hashedPass ->
+            BCrypt.with(LongPasswordStrategies.none()).hashToString(10, hashedPass.toCharArray()));
   }
 
   boolean storeTempPassword(

@@ -1,6 +1,7 @@
 package org.triplea.server.user.account;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.LongPasswordStrategies;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
@@ -18,7 +19,7 @@ public class PasswordBCrypter implements Function<String, String> {
   public String apply(final String password) {
     // TODO: Md5-Deprecation remove hashing here, move to client-side
     final String hashed = hashPasswordWithSalt(password);
-    return BCrypt.withDefaults().hashToString(10, hashed.toCharArray());
+    return BCrypt.with(LongPasswordStrategies.none()).hashToString(10, hashed.toCharArray());
   }
 
   @VisibleForTesting

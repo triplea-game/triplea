@@ -6,6 +6,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.LongPasswordStrategies;
 import org.junit.jupiter.api.Test;
 
 class PasswordBCrypterTest {
@@ -27,7 +28,7 @@ class PasswordBCrypterTest {
     final String crypted = new PasswordBCrypter().apply("password");
 
     final boolean result =
-        BCrypt.verifyer()
+        BCrypt.verifyer(BCrypt.Version.VERSION_2A, LongPasswordStrategies.none())
             .verify(
                 PasswordBCrypter.hashPasswordWithSalt("password").toCharArray(),
                 crypted.toCharArray())
