@@ -1,5 +1,6 @@
 package org.triplea.server.user.account;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
@@ -7,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.function.Function;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordBCrypter implements Function<String, String> {
   // TODO: Md5-Deprecation This value needs to be kept in sync with Sha512Hasher
@@ -18,7 +18,7 @@ public class PasswordBCrypter implements Function<String, String> {
   public String apply(final String password) {
     // TODO: Md5-Deprecation remove hashing here, move to client-side
     final String hashed = hashPasswordWithSalt(password);
-    return BCrypt.hashpw(hashed, BCrypt.gensalt());
+    return BCrypt.withDefaults().hashToString(10, hashed.toCharArray());
   }
 
   @VisibleForTesting

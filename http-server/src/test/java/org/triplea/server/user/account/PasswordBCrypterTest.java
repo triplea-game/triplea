@@ -5,8 +5,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.junit.jupiter.api.Test;
-import org.mindrot.jbcrypt.BCrypt;
 
 class PasswordBCrypterTest {
 
@@ -27,7 +27,11 @@ class PasswordBCrypterTest {
     final String crypted = new PasswordBCrypter().apply("password");
 
     final boolean result =
-        BCrypt.checkpw(PasswordBCrypter.hashPasswordWithSalt("password"), crypted);
+        BCrypt.verifyer()
+            .verify(
+                PasswordBCrypter.hashPasswordWithSalt("password").toCharArray(),
+                crypted.toCharArray())
+            .verified;
 
     assertThat(
         "Verify BCrypt to match a plaintext password against a crypted password", result, is(true));

@@ -1,12 +1,12 @@
 package org.triplea.server.forgot.password;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
@@ -27,7 +27,7 @@ class TempPasswordPersistence {
     return new TempPasswordPersistence(
         jdbi.onDemand(TempPasswordDao.class),
         Sha512Hasher::hashPasswordWithSalt,
-        hashedPass -> BCrypt.hashpw(hashedPass, BCrypt.gensalt()));
+        hashedPass -> BCrypt.withDefaults().hashToString(10, hashedPass.toCharArray()));
   }
 
   boolean storeTempPassword(
