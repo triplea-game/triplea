@@ -190,16 +190,17 @@ public final class ProTransportUtils {
   }
 
   public static List<Unit> getUnitsToAdd(
-      final Unit unit, final Map<Territory, ProTerritory> moveMap) {
-    return getUnitsToAdd(unit, new ArrayList<>(), moveMap);
+      final ProData proData, final Unit unit, final Map<Territory, ProTerritory> moveMap) {
+    return getUnitsToAdd(proData, unit, new ArrayList<>(), moveMap);
   }
 
   public static List<Unit> getUnitsToAdd(
+      final ProData proData,
       final Unit unit,
       final List<Unit> alreadyMovedUnits,
       final Map<Territory, ProTerritory> moveMap) {
     final List<Unit> movedUnits = getMovedUnits(alreadyMovedUnits, moveMap);
-    return findBestUnitsToLandTransport(unit, ProData.unitTerritoryMap.get(unit), movedUnits);
+    return findBestUnitsToLandTransport(unit, proData.getUnitTerritory(unit), movedUnits);
   }
 
   public static List<Unit> getMovedUnits(
@@ -287,7 +288,7 @@ public final class ProTransportUtils {
    */
   public static List<Unit> getAirThatCantLandOnCarrier(
       final GamePlayer player, final Territory t, final List<Unit> units) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
     final Collection<Unit> airUnits =
@@ -316,7 +317,7 @@ public final class ProTransportUtils {
       final Territory t,
       final List<Unit> existingUnits,
       final Unit newUnit) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
     final Collection<Unit> airUnits =
@@ -338,7 +339,7 @@ public final class ProTransportUtils {
    */
   public static int getUnusedLocalCarrierCapacity(
       final GamePlayer player, final Territory t, final List<Unit> unitsToPlace) {
-    final GameData data = ProData.getData();
+    final GameData data = player.getData();
 
     // Find nearby carrier capacity
     final Set<Territory> nearbyTerritories =

@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,27 +23,32 @@ final class MapPropertyTest {
 
     @Test
     void shouldReturnTrueWhenValueIsMapAndPropertyMapIsEmpty() {
-      final MapProperty<Integer> mapProperty = newMapProperty(ImmutableMap.of());
+      final MapProperty<Integer> mapProperty = newMapProperty(Map.of());
 
-      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, "11", KEY_2, "22")), is(true));
+      assertThat(mapProperty.validate(Map.of(KEY_1, "11", KEY_2, "22")), is(true));
     }
 
     @Test
     void shouldReturnTrueWhenValueIsMapAndPropertyMapContainsNullKey() {
-      final MapProperty<Integer> mapProperty = newMapProperty(Collections.singletonMap(null, 42));
+      final Map<String, Integer> map = new HashMap<>();
+      map.put(null, 42);
 
-      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, 11, KEY_2, 22)), is(true));
+      final MapProperty<Integer> mapProperty = newMapProperty(map);
+
+      assertThat(mapProperty.validate(Map.of(KEY_1, 11, KEY_2, 22)), is(true));
     }
 
     @Test
     void shouldReturnTrueWhenValueIsMapAndEmpty() {
-      assertThat(mapProperty.validate(ImmutableMap.of()), is(true));
+      assertThat(mapProperty.validate(Map.of()), is(true));
     }
 
     @Test
     void shouldReturnTrueWhenValueIsMapAndKeysAreCompatibleAndValuesAreCompatible() {
-      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, 11, KEY_2, 22)), is(true));
-      assertThat(mapProperty.validate(Collections.singletonMap(null, 33)), is(true));
+      assertThat(mapProperty.validate(Map.of(KEY_1, 11, KEY_2, 22)), is(true));
+      final Map<String, Integer> map = new HashMap<>();
+      map.put(null, 33);
+      assertThat(mapProperty.validate(map), is(true));
     }
 
     @Test
@@ -53,7 +58,9 @@ final class MapPropertyTest {
 
     @Test
     void shouldReturnFalseWhenValueIsMapAndContainsNullValue() {
-      assertThat(mapProperty.validate(Collections.singletonMap(KEY_1, null)), is(false));
+      final Map<String, Integer> map = new HashMap<>();
+      map.put(KEY_1, null);
+      assertThat(mapProperty.validate(map), is(false));
     }
 
     @Test

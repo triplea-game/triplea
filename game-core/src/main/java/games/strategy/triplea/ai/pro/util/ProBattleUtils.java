@@ -40,17 +40,18 @@ public final class ProBattleUtils {
    * or within a single round of combat.
    */
   public static boolean checkForOverwhelmingWin(
+      final ProData proData,
       final Territory t,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits) {
-    final GameData data = ProData.getData();
+    final GameData data = t.getData();
 
     if (defendingUnits.isEmpty() && !attackingUnits.isEmpty()) {
       return true;
     }
 
     // Check that defender has at least 1 power
-    final double power = estimatePower(t, defendingUnits, attackingUnits, false);
+    final double power = estimatePower(proData, t, defendingUnits, attackingUnits, false);
     if (power == 0 && !attackingUnits.isEmpty()) {
       return true;
     }
@@ -60,7 +61,7 @@ public final class ProBattleUtils {
     sortedUnitsList.sort(
         new UnitBattleComparator(
                 false,
-                ProData.unitValueMap,
+                proData.getUnitValueMap(),
                 TerritoryEffectHelper.getEffects(t),
                 data,
                 false,
@@ -93,6 +94,7 @@ public final class ProBattleUtils {
    *     indicates equal attacker and defender strength.
    */
   public static double estimateStrengthDifference(
+      final ProData proData,
       final Territory t,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits) {
@@ -103,8 +105,10 @@ public final class ProBattleUtils {
     if (defendingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
       return 99999;
     }
-    final double attackerStrength = estimateStrength(t, attackingUnits, defendingUnits, true);
-    final double defenderStrength = estimateStrength(t, defendingUnits, attackingUnits, false);
+    final double attackerStrength =
+        estimateStrength(proData, t, attackingUnits, defendingUnits, true);
+    final double defenderStrength =
+        estimateStrength(proData, t, defendingUnits, attackingUnits, false);
     return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
   }
 
@@ -114,11 +118,12 @@ public final class ProBattleUtils {
    * @return The larger the result, the stronger {@code myUnits} are relative to {@code enemyUnits}.
    */
   public static double estimateStrength(
+      final ProData proData,
       final Territory t,
       final Collection<Unit> myUnits,
       final Collection<Unit> enemyUnits,
       final boolean attacking) {
-    final GameData data = ProData.getData();
+    final GameData data = t.getData();
 
     List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(
@@ -129,16 +134,17 @@ public final class ProBattleUtils {
               unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
     }
     final int myHitPoints = CasualtySelector.getTotalHitpointsLeft(unitsThatCanFight);
-    final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);
+    final double myPower = estimatePower(proData, t, myUnits, enemyUnits, attacking);
     return (2.0 * myHitPoints) + myPower;
   }
 
   private static double estimatePower(
+      final ProData proData,
       final Territory t,
       final Collection<Unit> myUnits,
       final Collection<Unit> enemyUnits,
       final boolean attacking) {
-    final GameData data = ProData.getData();
+    final GameData data = t.getData();
 
     final List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(
@@ -147,7 +153,7 @@ public final class ProBattleUtils {
     sortedUnitsList.sort(
         new UnitBattleComparator(
                 !attacking,
-                ProData.unitValueMap,
+                proData.getUnitValueMap(),
                 TerritoryEffectHelper.getEffects(t),
                 data,
                 false,
@@ -169,8 +175,8 @@ public final class ProBattleUtils {
   }
 
   public static boolean territoryHasLocalLandSuperiority(
-      final Territory t, final int distance, final GamePlayer player) {
-    return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<>());
+      final ProData proData, final Territory t, final int distance, final GamePlayer player) {
+    return territoryHasLocalLandSuperiority(proData, t, distance, player, new HashMap<>());
   }
 
   /**
@@ -178,12 +184,13 @@ public final class ProBattleUtils {
    * of {@code t}.
    */
   public static boolean territoryHasLocalLandSuperiority(
+      final ProData proData,
       final Territory t,
       final int distance,
       final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
     if (t == null) {
       return true;
     }
@@ -222,7 +229,8 @@ public final class ProBattleUtils {
       }
 
       // Determine strength difference
-      final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
+      final double strengthDifference =
+          estimateStrengthDifference(proData, t, enemyUnits, alliedUnits);
       ProLogger.trace(
           t
               + ", current enemy land strengthDifference="
@@ -245,11 +253,12 @@ public final class ProBattleUtils {
    * of {@code t} after the specified moves are performed.
    */
   public static boolean territoryHasLocalLandSuperiorityAfterMoves(
+      final ProData proData,
       final Territory t,
       final int distance,
       final GamePlayer player,
       final Map<Territory, ProTerritory> moveMap) {
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
 
     // Find enemy strength
     final Set<Territory> nearbyTerritoriesForEnemy =
@@ -285,7 +294,7 @@ public final class ProBattleUtils {
 
     // Determine strength difference
     final double strengthDifference =
-        estimateStrengthDifference(t, enemyUnits, new ArrayList<>(alliedUnits));
+        estimateStrengthDifference(proData, t, enemyUnits, new ArrayList<>(alliedUnits));
     ProLogger.trace(
         t
             + ", current enemy land strengthDifference="
@@ -302,11 +311,12 @@ public final class ProBattleUtils {
    * {@code t}.
    */
   public static boolean territoryHasLocalNavalSuperiority(
+      final ProData proData,
       final Territory t,
       final GamePlayer player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final Collection<Unit> unitsToPlace) {
-    final GameData data = ProData.getData();
+    final GameData data = proData.getData();
 
     int landDistance = ProUtils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
     if (landDistance <= 0) {
@@ -386,7 +396,8 @@ public final class ProBattleUtils {
     myUnits.addAll(alliedUnitsInSeaTerritories);
     final List<Unit> enemyAttackers = new ArrayList<>(enemyUnitsInSeaTerritories);
     enemyAttackers.addAll(enemyUnitsInLandTerritories);
-    final double defenseStrengthDifference = estimateStrengthDifference(t, enemyAttackers, myUnits);
+    final double defenseStrengthDifference =
+        estimateStrengthDifference(proData, t, enemyAttackers, myUnits);
     ProLogger.trace(
         t
             + ", current enemy naval attack strengthDifference="
@@ -398,11 +409,11 @@ public final class ProBattleUtils {
 
     // Find current naval attack strength
     double attackStrengthDifference =
-        estimateStrengthDifference(t, myUnits, enemyUnitsInSeaTerritories);
+        estimateStrengthDifference(proData, t, myUnits, enemyUnitsInSeaTerritories);
     attackStrengthDifference +=
         0.5
             * estimateStrengthDifference(
-                t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
+                proData, t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
     ProLogger.trace(
         t
             + ", current allied naval attack strengthDifference="

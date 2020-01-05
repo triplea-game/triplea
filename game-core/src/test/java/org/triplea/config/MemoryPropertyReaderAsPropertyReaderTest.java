@@ -7,6 +7,8 @@ import org.triplea.test.common.ExtendedUnitTest;
 final class MemoryPropertyReaderAsPropertyReaderTest extends AbstractPropertyReaderTestCase {
   @Override
   protected PropertyReader newPropertyReader(final Map<String, String> properties) {
-    return new MemoryPropertyReader(properties);
+    final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();
+    properties.forEach(memoryPropertyReader::setProperty);
+    return memoryPropertyReader;
   }
 }

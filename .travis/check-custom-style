@@ -22,7 +22,7 @@ status=0
 
 
 function main() {
-  #favorJava9CollectionsApi
+  favorJava9CollectionsApi
   #referToCollectionsByInterfaceType
   avoidLegacyApi
   removeUnusedLogAnnotations
@@ -57,8 +57,8 @@ function favorJava9CollectionsApi() {
   local found=0
 
   while read -r file; do
-    grep --color=auto -H -f .travis/style.include/disallowed-collection-calls "$file" && status=1 && found=1
-    grep --color=auto -H -f .travis/style.include/disallowed-collection-imports "$file" && status=1 && found=1
+    grep --color=auto -Hn -f .travis/style.include/disallowed-collection-calls "$file" && status=1 && found=1
+    grep --color=auto -Hn -f .travis/style.include/disallowed-collection-imports "$file" && status=1 && found=1
   done <<< "$(cat "$javaFiles")"
 
   displayResult "$found"
