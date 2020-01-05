@@ -14,22 +14,16 @@ import org.triplea.domain.data.SystemId;
 class SystemIdHeaderTest {
   private static final String SYSTEM_ID = "system-id";
 
-  private static SystemId systemIdSupplier() {
-    return SystemId.of(SYSTEM_ID);
-  }
-
   @Test
   void headerHasExpectedKey() {
-    final Map<String, Object> headers =
-        SystemIdHeader.headers(SystemIdHeaderTest::systemIdSupplier);
+    final Map<String, Object> headers = SystemIdHeader.headers(() -> SystemId.of(SYSTEM_ID));
 
     assertThat(headers.keySet(), hasItem(SystemIdHeader.SYSTEM_ID_HEADER));
   }
 
   @Test
   void headersHasExpectedValue() {
-    final Map<String, Object> headers =
-        SystemIdHeader.headers(SystemIdHeaderTest::systemIdSupplier);
+    final Map<String, Object> headers = SystemIdHeader.headers(() -> SystemId.of(SYSTEM_ID));
 
     assertThat(headers.get(SystemIdHeader.SYSTEM_ID_HEADER), is(SYSTEM_ID));
   }
