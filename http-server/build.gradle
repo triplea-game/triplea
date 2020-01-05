@@ -73,6 +73,3 @@ task release(group: 'release', dependsOn: portableInstaller) {
     }
 }
 
-shadowJar {
-    archiveClassifier.set ''
-}

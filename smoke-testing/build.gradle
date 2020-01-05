@@ -11,7 +11,3 @@ dependencies {
     implementation project(':game-core')
     implementation project(':http-clients')
 }
-
-shadowJar {
-    archiveClassifier.set ''
-}

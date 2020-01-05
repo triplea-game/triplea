@@ -112,7 +112,3 @@ task release(group: 'release', dependsOn: [portableInstaller, platformInstallers
         ])
     }
 }
-
-shadowJar {
-    archiveClassifier.set ''
-}

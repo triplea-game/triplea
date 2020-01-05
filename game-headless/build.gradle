@@ -47,7 +47,3 @@ task copyShadow(dependsOn: shadowJar) {
         }
     }
 }
-
-shadowJar {
-    archiveClassifier.set ''
-}
