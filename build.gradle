@@ -174,12 +174,6 @@ subprojects {
         }
     }
 
-    if (!getTasksByName('shadowJar', false).isEmpty()) {
-        shadowJar {
-            archiveClassifier.set ''
-        }
-    }
-
     check {
         dependsOn 'integTest'
     }
