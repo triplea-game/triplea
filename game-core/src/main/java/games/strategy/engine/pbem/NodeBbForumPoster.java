@@ -26,8 +26,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.triplea.awt.OpenFileUtility;
 
 /**
@@ -39,7 +39,7 @@ import org.triplea.awt.OpenFileUtility;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 abstract class NodeBbForumPoster implements IForumPoster {
 
-  private final Load load = new Load(new LoadSettingsBuilder().build());
+  private final Load load = new Load(LoadSettings.builder().build());
   private final int topicId;
   private final String username;
   private final String password;
