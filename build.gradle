@@ -74,7 +74,7 @@ subprojects {
     version = getProductVersion()
 
     ext {
-        awaitilityVersion = '4.0.1'
+        awaitilityVersion = '4.0.2'
         commonsCliVersion = '1.4'
         commonsCodecVersion = '1.13'
         commonsIoVersion = '2.6'
