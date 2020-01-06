@@ -356,16 +356,26 @@ public class BattleDisplay extends JPanel {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
     final CompletableFuture<Territory> future = new CompletableFuture<>();
-    final Action action =
-        (!submerge || possible.size() > 1)
-            ? getRetreatAction(message, possible, future)
-            : getSubmergeAction(message, future);
+    final String title;
+    final Supplier<RetreatResult> supplier;
+    if (!submerge || possible.size() > 1) {
+      title = "Retreat?";
+      supplier = () -> showRetreatDialog(message, possible);
+    } else {
+      title = "Submerge Subs?";
+      supplier = () -> showSubmergeDialog(message);
+    }
+    final Action action = getPlayerAction(title, supplier, future);
     SwingUtilities.invokeLater(
         () -> {
           actionButton.setAction(action);
           action.actionPerformed(null);
         });
 
+    return awaitUserInput(future);
+  }
+
+  private Territory awaitUserInput(final CompletableFuture<Territory> future) {
     final Active rejectionCallback =
         () -> future.completeExceptionally(new RuntimeException("Shutting down"));
     try {
@@ -398,11 +408,6 @@ public class BattleDisplay extends JPanel {
         });
   }
 
-  private Action getSubmergeAction(
-      final String message, final CompletableFuture<Territory> future) {
-    return getPlayerAction("Submerge Subs?", () -> showSubmergeDialog(message), future);
-  }
-
   private RetreatResult showSubmergeDialog(final String message) {
     final String ok = "Submerge";
     final String cancel = "Remain";
@@ -428,13 +433,6 @@ public class BattleDisplay extends JPanel {
     }
     // submerge
     return RetreatResult.retreatTo(battleLocation);
-  }
-
-  private Action getRetreatAction(
-      final String message,
-      final Collection<Territory> possible,
-      final CompletableFuture<Territory> future) {
-    return getPlayerAction("Retreat?", () -> showRetreatDialog(message, possible), future);
   }
 
   private RetreatResult showRetreatDialog(
