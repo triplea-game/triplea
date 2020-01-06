@@ -5,8 +5,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
-import at.favre.lib.crypto.bcrypt.LongPasswordStrategies;
 import org.junit.jupiter.api.Test;
 
 class PasswordBCrypterTest {
@@ -28,11 +26,7 @@ class PasswordBCrypterTest {
     final String crypted = new PasswordBCrypter().apply("password");
 
     final boolean result =
-        BCrypt.verifyer(null, LongPasswordStrategies.none())
-            .verify(
-                PasswordBCrypter.hashPasswordWithSalt("password").toCharArray(),
-                crypted.toCharArray())
-            .verified;
+        PasswordBCrypter.verifyHash(PasswordBCrypter.hashPasswordWithSalt("password"), crypted);
 
     assertThat(
         "Verify BCrypt to match a plaintext password against a crypted password", result, is(true));

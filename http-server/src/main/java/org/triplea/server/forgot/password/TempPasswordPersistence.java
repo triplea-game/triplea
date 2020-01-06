@@ -1,7 +1,5 @@
 package org.triplea.server.forgot.password;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
-import at.favre.lib.crypto.bcrypt.LongPasswordStrategies;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -11,6 +9,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
+import org.triplea.server.user.account.PasswordBCrypter;
 
 /**
  * Stores a user temporary password in database. When we generate a new temporary password, all
@@ -28,8 +27,7 @@ class TempPasswordPersistence {
     return new TempPasswordPersistence(
         jdbi.onDemand(TempPasswordDao.class),
         Sha512Hasher::hashPasswordWithSalt,
-        hashedPass ->
-            BCrypt.with(LongPasswordStrategies.none()).hashToString(10, hashedPass.toCharArray()));
+        PasswordBCrypter::hashPassword);
   }
 
   boolean storeTempPassword(
