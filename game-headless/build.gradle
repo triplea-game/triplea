@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 archivesBaseName = "$group-$name"
@@ -46,4 +46,8 @@ task copyShadow(dependsOn: shadowJar) {
             into "../infrastructure/ansible/roles/bot/files/"
         }
     }
+}
+
+shadowJar {
+    archiveClassifier.set ''
 }

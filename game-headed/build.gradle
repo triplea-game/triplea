@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'com.install4j.gradle' version '8.0.3'
     id 'org.openjfx.javafxplugin' version '0.0.8'
     id 'de.undercouch.download' version '4.0.2'
@@ -111,4 +111,8 @@ task release(group: 'release', dependsOn: [portableInstaller, platformInstallers
             file("$releasesDir/TripleA_${version}_windows-64bit.exe")
         ])
     }
+}
+
+shadowJar {
+    archiveClassifier.set ''
 }

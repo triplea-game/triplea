@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 archivesBaseName = "$group-$name"
@@ -71,4 +71,8 @@ task release(group: 'release', dependsOn: portableInstaller) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files)
     }
+}
+
+shadowJar {
+    archiveClassifier.set ''
 }
