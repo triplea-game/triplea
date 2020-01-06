@@ -44,9 +44,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -72,6 +75,7 @@ import javax.swing.table.TableCellRenderer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingAction;
@@ -79,6 +83,7 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
 
 /** Displays a running battle. */
+@Log
 public class BattleDisplay extends JPanel {
   private static final long serialVersionUID = -7939993104972562765L;
   private static final String DICE_KEY = "D";
@@ -350,47 +355,52 @@ public class BattleDisplay extends JPanel {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final AtomicReference<Territory> retreatTo = new AtomicReference<>();
-    final CountDownLatch latch = new CountDownLatch(1);
+    final CompletableFuture<Territory> future = new CompletableFuture<>();
     final Action action =
         (!submerge || possible.size() > 1)
-            ? getRetreatAction(message, possible, retreatTo, latch)
-            : getSubmergeAction(message, retreatTo, latch);
+            ? getRetreatAction(message, possible, future)
+            : getSubmergeAction(message, future);
     SwingUtilities.invokeLater(
         () -> {
           actionButton.setAction(action);
           action.actionPerformed(null);
         });
-    mapPanel.getUiContext().addShutdownLatch(latch);
-    Interruptibles.await(latch);
-    mapPanel.getUiContext().removeShutdownLatch(latch);
-    return retreatTo.get();
+
+    final Active rejectionCallback =
+        () -> future.completeExceptionally(new RuntimeException("Shutting down"));
+    try {
+      mapPanel.getUiContext().addActive(rejectionCallback);
+      return future.get();
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } catch (final ExecutionException e) {
+      log.log(Level.INFO, "UiContext shut down before supplying result", e);
+    } finally {
+      mapPanel.getUiContext().removeActive(rejectionCallback);
+    }
+    return null;
   }
 
   private Action getPlayerAction(
       final String title,
       final Supplier<RetreatResult> showDialog,
-      final AtomicReference<Territory> retreatTo,
-      final CountDownLatch latch) {
+      final CompletableFuture<Territory> future) {
     return SwingAction.of(
         title,
         e -> {
           actionButton.setEnabled(false);
           final RetreatResult retreatResult = showDialog.get();
           if (retreatResult.isConfirmed()) {
-            retreatTo.set(retreatResult.getTarget());
+            future.complete(retreatResult.getTarget());
             actionButton.setAction(nullAction);
-            latch.countDown();
           }
           actionButton.setEnabled(true);
         });
   }
 
   private Action getSubmergeAction(
-      final String message,
-      final AtomicReference<Territory> retreatTo,
-      final CountDownLatch latch) {
-    return getPlayerAction("Submerge Subs?", () -> showSubmergeDialog(message), retreatTo, latch);
+      final String message, final CompletableFuture<Territory> future) {
+    return getPlayerAction("Submerge Subs?", () -> showSubmergeDialog(message), future);
   }
 
   private RetreatResult showSubmergeDialog(final String message) {
@@ -423,10 +433,8 @@ public class BattleDisplay extends JPanel {
   private Action getRetreatAction(
       final String message,
       final Collection<Territory> possible,
-      final AtomicReference<Territory> retreatTo,
-      final CountDownLatch latch) {
-    return getPlayerAction(
-        "Retreat?", () -> showRetreatDialog(message, possible), retreatTo, latch);
+      final CompletableFuture<Territory> future) {
+    return getPlayerAction("Retreat?", () -> showRetreatDialog(message, possible), future);
   }
 
   private RetreatResult showRetreatDialog(
