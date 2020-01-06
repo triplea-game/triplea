@@ -1,5 +1,6 @@
 package org.triplea.http.client.web.socket;
 
+import com.google.common.base.Preconditions;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
@@ -42,8 +43,7 @@ public abstract class WebsocketListener<
 
   @Override
   public void accept(final ServerMessageEnvelope serverMessageEnvelope) {
-    // TODO: Project#12 fix race condition and re-enable checkState condition
-    //    Preconditions.checkState(listeners != null);
+    Preconditions.checkState(listeners != null);
     readMessageTypeValue(serverMessageEnvelope)
         .ifPresent(
             messageType -> messageType.sendPayloadToListener(serverMessageEnvelope, listeners));
