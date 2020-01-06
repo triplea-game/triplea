@@ -42,11 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -313,22 +312,15 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> actionButton.setAction(buttonAction));
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
 
-    // Set a auto-wait expiration if the option is set.
+    // Set a auto-wait expiration if the option is set or
+    // waits for the button to be pressed otherwise.
     if (!ClientSetting.confirmDefensiveRolls.getValueOrThrow()) {
       final int maxWaitTime = 1500;
-      final Timer t = new Timer();
-      t.schedule(
-          new TimerTask() {
-            @Override
-            public void run() {
-              continueLatch.countDown();
-            }
-          },
-          maxWaitTime);
+      Interruptibles.await(() -> continueLatch.await(maxWaitTime, TimeUnit.MILLISECONDS));
+    } else {
+      Interruptibles.await(continueLatch);
     }
 
-    // wait for the button to be pressed.
-    Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
   }
