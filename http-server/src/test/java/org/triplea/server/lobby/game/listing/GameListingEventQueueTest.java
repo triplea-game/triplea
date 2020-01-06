@@ -63,6 +63,7 @@ class GameListingEventQueueTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void gameRemoved() {
     when(openSession.isOpen()).thenReturn(true);
     gameListingEventQueue.addListener(openSession);
@@ -100,6 +101,7 @@ class GameListingEventQueueTest {
 
   @Test
   @DisplayName("Update game, verify update game message is sent to open sessions")
+  @SuppressWarnings("unchecked")
   void gameUpdated() {
     when(openSession.isOpen()).thenReturn(true);
     gameListingEventQueue.addListener(openSession);
