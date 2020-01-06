@@ -322,9 +322,6 @@ public class BattleDisplay extends JPanel {
             @Override
             public void run() {
               continueLatch.countDown();
-              if (continueLatch.getCount() > 0) {
-                SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
-              }
             }
           },
           maxWaitTime);
