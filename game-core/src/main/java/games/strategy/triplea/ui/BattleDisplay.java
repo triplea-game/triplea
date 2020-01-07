@@ -355,7 +355,6 @@ public class BattleDisplay extends JPanel {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final CompletableFuture<Territory> future = new CompletableFuture<>();
     final String title;
     final Supplier<RetreatResult> supplier;
     if (!submerge || possible.size() > 1) {
@@ -365,6 +364,7 @@ public class BattleDisplay extends JPanel {
       title = "Submerge Subs?";
       supplier = () -> showSubmergeDialog(message);
     }
+    final CompletableFuture<Territory> future = new CompletableFuture<>();
     final Action action = getPlayerAction(title, supplier, future);
     SwingUtilities.invokeLater(
         () -> {
