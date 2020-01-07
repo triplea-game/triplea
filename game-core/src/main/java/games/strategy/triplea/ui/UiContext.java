@@ -82,9 +82,9 @@ public interface UiContext {
 
   DiceImageFactory getDiceImageFactory();
 
-  void removeActive(Active actor);
+  void addShutdownHook(Runnable hook);
 
-  void addActive(Active actor);
+  void removeShutdownHook(Runnable hook);
 
   void addShutdownLatch(CountDownLatch latch);
 

@@ -291,7 +291,7 @@ public class MapPanel extends ImageScrollerLargeView {
           }
         });
     executor.execute(() -> recreateTiles(data, uiContext));
-    uiContext.addActive(
+    uiContext.addShutdownHook(
         () -> {
           deactivate();
           clearPendingDrawOperations();

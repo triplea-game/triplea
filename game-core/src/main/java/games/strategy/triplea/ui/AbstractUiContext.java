@@ -53,7 +53,7 @@ public abstract class AbstractUiContext implements UiContext {
   private boolean isShutDown = false;
 
   private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
-  private final List<Active> activeToDeactivate = new ArrayList<>();
+  private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
   @Override
@@ -120,28 +120,29 @@ public abstract class AbstractUiContext implements UiContext {
   protected abstract void internalSetMapDir(String dir, GameData data);
 
   @Override
-  public void removeActive(final Active actor) {
+  public void removeShutdownHook(final Runnable hook) {
     if (isShutDown) {
       return;
     }
     synchronized (this) {
-      activeToDeactivate.remove(actor);
+      activeToDeactivate.remove(hook);
     }
   }
 
-  /** Add a latch that will be released when the game shuts down. */
+  /** Add a latch that will be released when the game shuts down.
+   * @param hook*/
   @Override
-  public void addActive(final Active actor) {
+  public void addShutdownHook(final Runnable hook) {
     if (isShutDown) {
-      closeActor(actor);
+      runHook(hook);
       return;
     }
     synchronized (this) {
       if (isShutDown) {
-        closeActor(actor);
+        runHook(hook);
         return;
       }
-      activeToDeactivate.add(actor);
+      activeToDeactivate.add(hook);
     }
   }
 
@@ -211,8 +212,8 @@ public abstract class AbstractUiContext implements UiContext {
       for (final Window window : windowsToCloseOnShutdown) {
         closeWindow(window);
       }
-      for (final Active actor : activeToDeactivate) {
-        closeActor(actor);
+      for (final Runnable actor : activeToDeactivate) {
+        runHook(actor);
       }
       activeToDeactivate.clear();
       windowsToCloseOnShutdown.clear();
@@ -247,9 +248,9 @@ public abstract class AbstractUiContext implements UiContext {
         && !mapSkin.endsWith("properties");
   }
 
-  private static void closeActor(final Active actor) {
+  private static void runHook(final Runnable hook) {
     try {
-      actor.deactivate();
+      hook.run();
     } catch (final RuntimeException e) {
       log.log(Level.SEVERE, "Failed to deactivate actor", e);
     }

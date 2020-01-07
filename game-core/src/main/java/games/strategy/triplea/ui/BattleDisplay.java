@@ -184,8 +184,8 @@ public class BattleDisplay extends JPanel {
 
   void cleanUp() {
     actionButton.setAction(nullAction);
-    steps.deactivate();
-    mapPanel.getUiContext().removeActive(steps);
+    steps.wakeAll();
+    mapPanel.getUiContext().removeShutdownHook(steps::wakeAll);
     steps = null;
   }
 
@@ -365,17 +365,17 @@ public class BattleDisplay extends JPanel {
   }
 
   private Territory awaitUserInput(final CompletableFuture<Territory> future) {
-    final Active rejectionCallback =
+    final Runnable rejectionCallback =
         () -> future.completeExceptionally(new RuntimeException("Shutting down"));
     try {
-      mapPanel.getUiContext().addActive(rejectionCallback);
+      mapPanel.getUiContext().addShutdownHook(rejectionCallback);
       return future.get();
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     } catch (final ExecutionException e) {
       log.log(Level.INFO, "UiContext shut down before supplying result", e);
     } finally {
-      mapPanel.getUiContext().removeActive(rejectionCallback);
+      mapPanel.getUiContext().removeShutdownHook(rejectionCallback);
     }
     return null;
   }
@@ -657,7 +657,7 @@ public class BattleDisplay extends JPanel {
     messagePanel.setLayout(new BorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     steps = new BattleStepsPanel();
-    mapPanel.getUiContext().addActive(steps);
+    mapPanel.getUiContext().addShutdownHook(steps::wakeAll);
     steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
     dicePanel = new DicePanel(mapPanel.getUiContext(), gameData);
     actionPanel = new JPanel();
