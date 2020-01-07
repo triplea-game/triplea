@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -129,8 +132,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /** Add a latch that will be released when the game shuts down.
-   * @param hook*/
+  /** Add a latch that will be released when the game shuts down. */
   @Override
   public void addShutdownHook(final Runnable hook) {
     if (isShutDown) {
@@ -144,6 +146,23 @@ public abstract class AbstractUiContext implements UiContext {
       }
       activeToDeactivate.add(hook);
     }
+  }
+
+  @Override
+  public <T> Optional<T> awaitUserInput(final CompletableFuture<T> future) {
+    final Runnable rejectionCallback =
+        () -> future.completeExceptionally(new RuntimeException("Shutting down"));
+    try {
+      addShutdownHook(rejectionCallback);
+      return Optional.ofNullable(future.get());
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } catch (final ExecutionException e) {
+      log.log(Level.INFO, "UiContext shut down before supplying result", e);
+    } finally {
+      removeShutdownHook(rejectionCallback);
+    }
+    return Optional.empty();
   }
 
   /** Add a latch that will be released when the game shuts down. */

@@ -44,11 +44,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -361,23 +358,7 @@ public class BattleDisplay extends JPanel {
           action.actionPerformed(null);
         });
 
-    return awaitUserInput(future);
-  }
-
-  private Territory awaitUserInput(final CompletableFuture<Territory> future) {
-    final Runnable rejectionCallback =
-        () -> future.completeExceptionally(new RuntimeException("Shutting down"));
-    try {
-      mapPanel.getUiContext().addShutdownHook(rejectionCallback);
-      return future.get();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    } catch (final ExecutionException e) {
-      log.log(Level.INFO, "UiContext shut down before supplying result", e);
-    } finally {
-      mapPanel.getUiContext().removeShutdownHook(rejectionCallback);
-    }
-    return null;
+    return mapPanel.getUiContext().awaitUserInput(future).orElse(null);
   }
 
   private Action getPlayerAction(
