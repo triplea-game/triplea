@@ -44,11 +44,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -184,8 +182,8 @@ public class BattleDisplay extends JPanel {
 
   void cleanUp() {
     actionButton.setAction(nullAction);
-    steps.deactivate();
-    mapPanel.getUiContext().removeActive(steps);
+    steps.wakeAll();
+    mapPanel.getUiContext().removeShutdownHook(steps::wakeAll);
     steps = null;
   }
 
@@ -361,23 +359,7 @@ public class BattleDisplay extends JPanel {
           action.actionPerformed(null);
         });
 
-    return awaitUserInput(future);
-  }
-
-  private Territory awaitUserInput(final CompletableFuture<Territory> future) {
-    final Active rejectionCallback =
-        () -> future.completeExceptionally(new RuntimeException("Shutting down"));
-    try {
-      mapPanel.getUiContext().addActive(rejectionCallback);
-      return future.get();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    } catch (final ExecutionException e) {
-      log.log(Level.INFO, "UiContext shut down before supplying result", e);
-    } finally {
-      mapPanel.getUiContext().removeActive(rejectionCallback);
-    }
-    return null;
+    return mapPanel.getUiContext().awaitUserInput(future).orElse(null);
   }
 
   private Action getPlayerAction(
@@ -657,7 +639,7 @@ public class BattleDisplay extends JPanel {
     messagePanel.setLayout(new BorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     steps = new BattleStepsPanel();
-    mapPanel.getUiContext().addActive(steps);
+    mapPanel.getUiContext().addShutdownHook(steps::wakeAll);
     steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
     dicePanel = new DicePanel(mapPanel.getUiContext(), gameData);
     actionPanel = new JPanel();

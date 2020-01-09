@@ -91,7 +91,7 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
     // since it removes a lot of links between objects and if there is a memory leak, this will
     // minimize the damage
     map.getUiContext()
-        .addActive(
+        .addShutdownHook(
             () -> {
               removeAll();
               actionPanel = null;
