@@ -59,17 +59,12 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   LobbyGameTableModel(final boolean admin, final HttpLobbyClient httpLobbyClient) {
     this.admin = admin;
-    gameListingClient = httpLobbyClient.getGameListingClient();
-
-    // Poll period is chosen to be somewhat frequent so that there is not too much of noticeable
-    // delay when games are updated, yet still as infrequent as possible to keep server load to
-    // a minimum.
-
-    gameListingClient.addListeners(
-        GameListingListeners.builder()
-            .gameUpdated(lobbyGameBroadcaster::gameUpdated)
-            .gameRemoved(lobbyGameBroadcaster::gameRemoved)
-            .build());
+    gameListingClient =
+        httpLobbyClient.newGameListingClient(
+            GameListingListeners.builder()
+                .gameUpdated(lobbyGameBroadcaster::gameUpdated)
+                .gameRemoved(lobbyGameBroadcaster::gameRemoved)
+                .build());
 
     gameListingClient.fetchGameListing().forEach(lobbyGameBroadcaster::gameUpdated);
 
@@ -77,7 +72,7 @@ class LobbyGameTableModel extends AbstractTableModel {
 
     try {
       final Map<String, GameDescription> games =
-          httpLobbyClient.getGameListingClient().fetchGameListing().stream()
+          gameListingClient.fetchGameListing().stream()
               .collect(
                   Collectors.toMap(LobbyGameListing::getGameId, GameDescription::fromLobbyGame));
 
@@ -212,5 +207,10 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   public void shutdown() {
     gameListingClient.close();
+  }
+
+  public void bootGame(final int selectedIndex) {
+    final String gameId = getGameIdForRow(selectedIndex);
+    gameListingClient.bootGame(gameId);
   }
 }

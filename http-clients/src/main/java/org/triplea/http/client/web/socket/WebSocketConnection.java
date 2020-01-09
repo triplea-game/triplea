@@ -4,8 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +32,8 @@ import org.triplea.java.timer.Timers;
 class WebSocketConnection {
   @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
 
-  private final Collection<WebSocketConnectionListener> listeners = new HashSet<>();
+  private WebSocketConnectionListener listener;
+
   /**
    * If sending messages before a connection is opened, they will be queued. When the connection is
    * opened, the queue is flushed and messages will be sent in order.
@@ -82,7 +81,7 @@ class WebSocketConnection {
 
           @Override
           public void onMessage(final String message) {
-            listeners.forEach(listener -> listener.messageReceived(message));
+            listener.messageReceived(message);
           }
 
           @Override
@@ -91,12 +90,12 @@ class WebSocketConnection {
               log.severe("Connection to server closed: " + reason);
             }
             pingSender.cancel();
-            listeners.forEach(listener -> listener.connectionClosed(reason));
+            listener.connectionClosed(reason);
           }
 
           @Override
           public void onError(final Exception exception) {
-            listeners.forEach(listener -> listener.handleError(exception));
+            listener.handleError(exception);
           }
         };
     pingSender =
@@ -109,11 +108,6 @@ class WebSocketConnection {
                     client.sendPing();
                   }
                 });
-  }
-
-  void addListener(final WebSocketConnectionListener listener) {
-    Preconditions.checkState(!closed);
-    listeners.add(listener);
   }
 
   /** Does an async close of the current websocket connection. */
@@ -129,7 +123,9 @@ class WebSocketConnection {
    * @throws IllegalStateException Thrown if connection is already open (eg: connect called twice).
    * @throws IllegalStateException Thrown if connection has been closed (ie: 'close()' was called)
    */
-  CompletableFuture<Boolean> connect(final Consumer<String> errorHandler) {
+  CompletableFuture<Boolean> connect(
+      final WebSocketConnectionListener listener, final Consumer<String> errorHandler) {
+    this.listener = Preconditions.checkNotNull(listener);
     Preconditions.checkState(!client.isOpen());
     Preconditions.checkState(!closed);
 

@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
@@ -26,9 +25,11 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   private static final Gson gson = new Gson();
 
   private final WebSocketConnection client;
-  private Collection<Consumer<ServerMessageEnvelope>> messageListeners = new HashSet<>();
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Runnable> connectionClosedListeners = new ArrayList<>();
+
+  private final Consumer<String> errorHandler;
+  private Consumer<ServerMessageEnvelope> messageListener;
 
   public GenericWebSocketClient(final URI lobbyUri, final Consumer<String> errorHandler) {
     this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)), errorHandler);
@@ -38,15 +39,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   GenericWebSocketClient(
       final WebSocketConnection webSocketClient, final Consumer<String> errorHandler) {
     client = webSocketClient;
-    client.addListener(this);
-    client
-        .connect(errorHandler)
-        .exceptionally(
-            throwable -> {
-              log.log(
-                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
-              return false;
-            });
+    this.errorHandler = errorHandler;
   }
 
   @VisibleForTesting
@@ -56,8 +49,16 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
         : uri;
   }
 
-  public void addMessageListener(final Consumer<ServerMessageEnvelope> messageListener) {
-    messageListeners.add(messageListener);
+  public void registerListenerAndConnect(final Consumer<ServerMessageEnvelope> messageListener) {
+    this.messageListener = messageListener;
+    client
+        .connect(this, errorHandler)
+        .exceptionally(
+            throwable -> {
+              log.log(
+                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
+              return false;
+            });
   }
 
   /**
@@ -85,7 +86,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   @Override
   public void messageReceived(final String message) {
     final ServerMessageEnvelope converted = gson.fromJson(message, ServerMessageEnvelope.class);
-    messageListeners.forEach(listener -> listener.accept(converted));
+    messageListener.accept(converted);
   }
 
   @Override

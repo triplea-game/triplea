@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 
@@ -23,18 +22,20 @@ import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
  * @param <MessageTypeT> Websocket message type enum.
  * @param <ListenersTypeT> Listener class, holds a set of consumers, each is an individual consumer.
  */
-public abstract class WebsocketListener<
+public abstract class WebsocketListenerBinding<
         MessageTypeT extends WebsocketMessageType<ListenersTypeT>, ListenersTypeT>
     implements Consumer<ServerMessageEnvelope> {
 
   @Getter(AccessLevel.PROTECTED)
   private final GenericWebSocketClient webSocketClient;
 
-  @Setter private ListenersTypeT listeners;
+  private final ListenersTypeT listeners;
 
-  protected WebsocketListener(final GenericWebSocketClient genericWebSocketClient) {
+  protected WebsocketListenerBinding(
+      final GenericWebSocketClient genericWebSocketClient, final ListenersTypeT listeners) {
     webSocketClient = genericWebSocketClient;
-    webSocketClient.addMessageListener(this);
+    this.listeners = listeners;
+    webSocketClient.registerListenerAndConnect(this);
   }
 
   public void close() {

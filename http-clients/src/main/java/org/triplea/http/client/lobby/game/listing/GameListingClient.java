@@ -10,7 +10,7 @@ import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingMessageType;
-import org.triplea.http.client.web.socket.WebsocketListener;
+import org.triplea.http.client.web.socket.WebsocketListenerBinding;
 import org.triplea.http.client.web.socket.WebsocketListenerFactory;
 
 /**
@@ -27,10 +27,14 @@ public class GameListingClient {
   @Nonnull private final GameListingFeignClient gameListingFeignClient;
 
   @Nonnull
-  private final WebsocketListener<GameListingMessageType, GameListingListeners> websocketListener;
+  private final WebsocketListenerBinding<GameListingMessageType, GameListingListeners>
+      websocketListener;
 
   public static GameListingClient newClient(
-      final URI serverUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
+      final URI serverUri,
+      final ApiKey apiKey,
+      final Consumer<String> errorHandler,
+      final GameListingListeners gameListingListeners) {
     return GameListingClient.builder()
         .authenticationHeaders(new AuthenticationHeaders(apiKey))
         .gameListingFeignClient(new HttpClient<>(GameListingFeignClient.class, serverUri).get())
@@ -39,7 +43,8 @@ public class GameListingClient {
                 serverUri,
                 GAME_LISTING_WEBSOCKET_PATH,
                 GameListingMessageType::valueOf,
-                errorHandler))
+                errorHandler,
+                gameListingListeners))
         .build();
   }
 
@@ -49,10 +54,6 @@ public class GameListingClient {
 
   public void bootGame(final String gameId) {
     gameListingFeignClient.bootGame(authenticationHeaders.createHeaders(), gameId);
-  }
-
-  public void addListeners(final GameListingListeners gameListingListeners) {
-    websocketListener.setListeners(gameListingListeners);
   }
 
   public void close() {
