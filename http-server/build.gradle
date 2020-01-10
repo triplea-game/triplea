@@ -35,7 +35,7 @@ dependencies {
     implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
-    implementation "org.mindrot:jbcrypt:$jbcryptVersion"
+    implementation "at.favre.lib:bcrypt:$bcryptVersion"
     implementation project(':domain-data')
     implementation project(':http-clients')
     implementation project(':java-extras')
