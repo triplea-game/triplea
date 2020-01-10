@@ -9,8 +9,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
@@ -36,7 +34,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * the MainPanel are swapped out until a new game has been started (TODO: check if the lobby uses
  * MainPanel at all).
  */
-public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> {
+public class MainPanel extends JPanel {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
@@ -111,7 +109,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
         new JPanelBuilder().borderEtched().add(playButton).add(quitButton).build();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
-    setWidgetActivation();
+    updatePlayButtonState();
   }
 
   private void addChat(final Component chatComponent) {
@@ -126,16 +124,18 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   }
 
   /** This method will 'change' screens, swapping out one setup panel for another. */
-  @Override
-  public void accept(final SetupPanel panel) {
+  public void setSetupPanel(final SetupPanel panel) {
     if (gameSetupPanel != null) {
       gameSetupPanel.setPanelChangedListener(null);
     }
     gameSetupPanel = panel;
+    // Note: The listener on the panel itself only updates widgets and doesn't
+    // rebuild the UI components (this method), as that would cause focus to be lost.
+    panel.setPanelChangedListener(setupPanel -> updatePlayButtonState());
+    updatePlayButtonState();
+
     gameSetupPanelHolder.removeAll();
     gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
-    panel.setPanelChangedListener(this);
-    setWidgetActivation();
     // add the cancel button if we are not choosing the type.
     if (panel.isCancelButtonVisible()) {
       final JPanel cancelPanel = new JPanel();
@@ -176,13 +176,8 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     cancelPanel.add(button);
   }
 
-  private void setWidgetActivation() {
+  public void updatePlayButtonState() {
     SwingAction.invokeNowOrLater(
         () -> playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart()));
-  }
-
-  @Override
-  public void update(final Observable o, final Object arg) {
-    setWidgetActivation();
   }
 }
