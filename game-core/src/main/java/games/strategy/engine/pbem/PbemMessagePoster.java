@@ -105,8 +105,8 @@ public class PbemMessagePoster implements Serializable {
       saveGameSb.append(gameProperties.get(IForumPoster.TOPIC_ID)).append("_");
     }
     saveGameSb
-        .append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1))
-        .append(roundNumber);
+        .append(roundNumber)
+        .append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1));
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
     Future<String> forumSuccess = null;
     if (forumPoster.isPresent()) {
