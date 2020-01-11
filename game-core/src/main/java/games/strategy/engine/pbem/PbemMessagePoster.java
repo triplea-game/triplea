@@ -40,13 +40,21 @@ public class PbemMessagePoster implements Serializable {
   private final int roundNumber;
   private final String gameNameAndInfo;
 
-  public PbemMessagePoster(final GameData gameData, final GamePlayer currentPlayer,
-      final int roundNumber, final String title) {
+  public PbemMessagePoster(
+      final GameData gameData,
+      final GamePlayer currentPlayer,
+      final int roundNumber,
+      final String title) {
     this.currentPlayer = currentPlayer;
     this.roundNumber = roundNumber;
     gameProperties = gameData.getProperties();
-    gameNameAndInfo = "TripleA " + title + " for game: " + gameData.getGameName() + ", version: "
-        + gameData.getGameVersion();
+    gameNameAndInfo =
+        "TripleA "
+            + title
+            + " for game: "
+            + gameData.getGameName()
+            + ", version: "
+            + gameData.getGameVersion();
   }
 
   public boolean hasMessengers() {
@@ -55,8 +63,9 @@ public class PbemMessagePoster implements Serializable {
   }
 
   public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
-    return gameData != null && (gameData.getProperties().get(IForumPoster.NAME) != null
-        || gameData.getProperties().get(IEmailSender.SUBJECT) != null);
+    return gameData != null
+        && (gameData.getProperties().get(IForumPoster.NAME) != null
+            || gameData.getProperties().get(IEmailSender.SUBJECT) != null);
   }
 
   public void setSaveGame(final File saveGameFile) {
@@ -68,8 +77,8 @@ public class PbemMessagePoster implements Serializable {
     if (name.isEmpty()) {
       return Optional.empty();
     }
-    return Optional
-        .of(IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
+    return Optional.of(
+        IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
   }
 
   private Optional<IEmailSender> newEmailSender() {
@@ -77,15 +86,15 @@ public class PbemMessagePoster implements Serializable {
     if (subject.isEmpty()) {
       return Optional.empty();
     }
-    return Optional
-        .of(IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.RECIPIENTS, "")));
+    return Optional.of(
+        IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.RECIPIENTS, "")));
   }
 
   /**
    * Post summary to form and/or email, and writes the action performed to the history writer.
    *
    * @param historyWriter the history writer (which has no effect since save game has already be
-   *        generated) // todo (kg)
+   *     generated) // todo (kg)
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
@@ -95,15 +104,20 @@ public class PbemMessagePoster implements Serializable {
     if (forumPoster.isPresent()) {
       saveGameSb.append(gameProperties.get(IForumPoster.TOPIC_ID)).append("_");
     }
-    saveGameSb.append(roundNumber).append(currentPlayer.getName(), 0,
-        Math.min(3, currentPlayer.getName().length() - 1));
+    saveGameSb
+        .append(roundNumber)
+        .append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1));
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
     Future<String> forumSuccess = null;
     if (forumPoster.isPresent()) {
       try {
-        forumSuccess = forumPoster.get().postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
-            "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber,
-            saveGameFile.toPath());
+        forumSuccess =
+            forumPoster
+                .get()
+                .postTurnSummary(
+                    (gameNameAndInfo + "\n\n" + turnSummary),
+                    "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber,
+                    saveGameFile.toPath());
         turnSummaryRef = forumSuccess.get();
         if (turnSummaryRef != null && historyWriter != null) {
           historyWriter.startEvent("Turn Summary: " + turnSummaryRef);
@@ -113,27 +127,38 @@ public class PbemMessagePoster implements Serializable {
       }
     }
     final Optional<IEmailSender> emailSender = newEmailSender();
-    final boolean emailSuccess = emailSender.map(sender -> {
-      try {
-        sender.sendEmail(currentPlayer.getName() + " - round " + roundNumber,
-            convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)), saveGameFile, saveGameName);
-        emailSendStatus = "Success, sent to " + gameProperties.get(IEmailSender.RECIPIENTS);
-        return true;
-      } catch (final IOException e) {
-        emailSendStatus = "Failed! Error " + e.getMessage();
-        log.log(Level.SEVERE, "Failed to send game via email", e);
-        return false;
-      }
-    }).orElse(false);
+    final boolean emailSuccess =
+        emailSender
+            .map(
+                sender -> {
+                  try {
+                    sender.sendEmail(
+                        currentPlayer.getName() + " - round " + roundNumber,
+                        convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)),
+                        saveGameFile,
+                        saveGameName);
+                    emailSendStatus =
+                        "Success, sent to " + gameProperties.get(IEmailSender.RECIPIENTS);
+                    return true;
+                  } catch (final IOException e) {
+                    emailSendStatus = "Failed! Error " + e.getMessage();
+                    log.log(Level.SEVERE, "Failed to send game via email", e);
+                    return false;
+                  }
+                })
+            .orElse(false);
     if (historyWriter != null) {
       final StringBuilder sb = new StringBuilder("Post Turn Summary");
       if (forumSuccess != null) {
-        sb.append(" to ").append(forumPoster.get().getDisplayName()).append(" success = ")
+        sb.append(" to ")
+            .append(forumPoster.get().getDisplayName())
+            .append(" success = ")
             .append(forumSuccess.isDone() && !forumSuccess.isCancelled());
       }
       if (emailSender.isPresent()) {
         sb.append(forumPoster.isPresent() ? " and to " : " to ");
-        sb.append(gameProperties.get(IEmailSender.RECIPIENTS)).append(" success = ")
+        sb.append(gameProperties.get(IEmailSender.RECIPIENTS))
+            .append(" success = ")
             .append(emailSuccess);
       }
       historyWriter.startEvent(sb.toString());
@@ -152,8 +177,8 @@ public class PbemMessagePoster implements Serializable {
   }
 
   public boolean alsoPostMoveSummary() {
-    return gameProperties.get(IForumPoster.POST_AFTER_COMBAT,
-        gameProperties.get(IEmailSender.POST_AFTER_COMBAT, false));
+    return gameProperties.get(
+        IForumPoster.POST_AFTER_COMBAT, gameProperties.get(IEmailSender.POST_AFTER_COMBAT, false));
   }
 
   /**
@@ -161,9 +186,13 @@ public class PbemMessagePoster implements Serializable {
    * service (if provided) and forum (if provided). The user is first prompted to confirm they wish
    * to perform the action before the turn is posted.
    */
-  public void postTurn(final String title, final HistoryLog historyLog,
-      final boolean includeSaveGame, final IAbstractForumPosterDelegate postingDelegate,
-      final TripleAFrame frame, final JComponent postButton) {
+  public void postTurn(
+      final String title,
+      final HistoryLog historyLog,
+      final boolean includeSaveGame,
+      final IAbstractForumPosterDelegate postingDelegate,
+      final TripleAFrame frame,
+      final JComponent postButton) {
     String message = "";
     final String displayName = gameProperties.get(IForumPoster.NAME, "");
     final StringBuilder sb = new StringBuilder();
@@ -179,8 +208,14 @@ public class PbemMessagePoster implements Serializable {
       sb.append("Send email to ").append(opponent).append("?\n");
     }
     message = sb.toString();
-    final int choice = JOptionPane.showConfirmDialog(frame, message, "Post " + title + "?",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+    final int choice =
+        JOptionPane.showConfirmDialog(
+            frame,
+            message,
+            "Post " + title + "?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null);
     if (choice == 0) {
       if (postButton != null) {
         postButton.setEnabled(false);
@@ -188,68 +223,76 @@ public class PbemMessagePoster implements Serializable {
       final ProgressWindow progressWindow = new ProgressWindow(frame, "Posting " + title + "...");
       progressWindow.setVisible(true);
       // start a new thread for posting the summary.
-      new Thread(() -> {
-        boolean postOk = true;
-        File saveGameFile = null;
-        if (postingDelegate != null) {
-          postingDelegate.setHasPostedTurnSummary(true);
-        }
-        try {
-          saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
-          frame.getGame().saveGame(saveGameFile);
-          setSaveGame(saveGameFile);
-        } catch (final Exception e) {
-          postOk = false;
-          log.log(Level.SEVERE, "Failed to create save game", e);
-        }
-        turnSummary = historyLog.toString();
-        try {
-          // forward the poster to the delegate which invokes post() on the poster
-          if (postingDelegate != null) {
-            if (!postingDelegate.postTurnSummary(this, title)) {
-              postOk = false;
-            }
-          } else {
-            if (!post(null, title)) {
-              postOk = false;
-            }
-          }
-        } catch (final Exception e) {
-          postOk = false;
-          log.log(Level.SEVERE, "Failed to post save game to forum", e);
-        }
-        if (postingDelegate != null) {
-          postingDelegate.setHasPostedTurnSummary(postOk);
-        }
-        final StringBuilder sb1 = new StringBuilder();
-        if (gameProperties.get(IForumPoster.NAME) != null) {
-          if (this.turnSummaryRef != null) {
-            sb1.append("\nSummary Text: ").append(this.turnSummaryRef);
-          }
-        }
-        if (gameProperties.get(IEmailSender.SUBJECT) != null) {
-          sb1.append("\nEmails: ").append(emailSendStatus);
-        }
-        historyLog.getWriter().println(sb1.toString());
-        if (historyLog.isVisible()) {
-          historyLog.setVisible(true);
-        }
-        if (saveGameFile != null) {
-          saveGameFile.delete();
-        }
-        progressWindow.setVisible(false);
-        progressWindow.removeAll();
-        progressWindow.dispose();
-        final boolean finalPostOk = postOk;
-        final String finalMessage = sb1.toString();
-        SwingUtilities.invokeLater(() -> {
-          if (postButton != null) {
-            postButton.setEnabled(!finalPostOk);
-          }
-          JOptionPane.showMessageDialog(frame, finalMessage, title + " Posted",
-              finalPostOk ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
-        });
-      }).start();
+      new Thread(
+              () -> {
+                boolean postOk = true;
+                File saveGameFile = null;
+                if (postingDelegate != null) {
+                  postingDelegate.setHasPostedTurnSummary(true);
+                }
+                try {
+                  saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
+                  frame.getGame().saveGame(saveGameFile);
+                  setSaveGame(saveGameFile);
+                } catch (final Exception e) {
+                  postOk = false;
+                  log.log(Level.SEVERE, "Failed to create save game", e);
+                }
+                turnSummary = historyLog.toString();
+                try {
+                  // forward the poster to the delegate which invokes post() on the poster
+                  if (postingDelegate != null) {
+                    if (!postingDelegate.postTurnSummary(this, title)) {
+                      postOk = false;
+                    }
+                  } else {
+                    if (!post(null, title)) {
+                      postOk = false;
+                    }
+                  }
+                } catch (final Exception e) {
+                  postOk = false;
+                  log.log(Level.SEVERE, "Failed to post save game to forum", e);
+                }
+                if (postingDelegate != null) {
+                  postingDelegate.setHasPostedTurnSummary(postOk);
+                }
+                final StringBuilder sb1 = new StringBuilder();
+                if (gameProperties.get(IForumPoster.NAME) != null) {
+                  if (this.turnSummaryRef != null) {
+                    sb1.append("\nSummary Text: ").append(this.turnSummaryRef);
+                  }
+                }
+                if (gameProperties.get(IEmailSender.SUBJECT) != null) {
+                  sb1.append("\nEmails: ").append(emailSendStatus);
+                }
+                historyLog.getWriter().println(sb1.toString());
+                if (historyLog.isVisible()) {
+                  historyLog.setVisible(true);
+                }
+                if (saveGameFile != null) {
+                  saveGameFile.delete();
+                }
+                progressWindow.setVisible(false);
+                progressWindow.removeAll();
+                progressWindow.dispose();
+                final boolean finalPostOk = postOk;
+                final String finalMessage = sb1.toString();
+                SwingUtilities.invokeLater(
+                    () -> {
+                      if (postButton != null) {
+                        postButton.setEnabled(!finalPostOk);
+                      }
+                      JOptionPane.showMessageDialog(
+                          frame,
+                          finalMessage,
+                          title + " Posted",
+                          finalPostOk
+                              ? JOptionPane.INFORMATION_MESSAGE
+                              : JOptionPane.ERROR_MESSAGE);
+                    });
+              })
+          .start();
     }
   }
 
