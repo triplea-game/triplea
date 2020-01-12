@@ -21,7 +21,6 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
@@ -474,11 +473,8 @@ public final class ProPurchaseUtils {
       final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions) {
     final IntegerMap<String> constructionTypesPerTurn = new IntegerMap<>();
     for (final ProPurchaseOption ppo : zeroMoveDefensePurchaseOptions) {
-      final UnitAttachment ua = UnitAttachment.get(ppo.getUnitType());
-      if (ua.getIsConstruction()) {
-        final String constructionType = ua.getConstructionType();
-        final int constructionTypePerTurn = ua.getConstructionsPerTerrPerTypePerTurn();
-        constructionTypesPerTurn.put(constructionType, constructionTypePerTurn);
+      if (ppo.isConstruction()) {
+        constructionTypesPerTurn.put(ppo.getConstructionType(), ppo.getConstructionTypePerTurn());
       }
     }
     return constructionTypesPerTurn.totalValues();
