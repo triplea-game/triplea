@@ -23,6 +23,7 @@ public class ProPurchaseOptionMap {
   private final List<ProPurchaseOption> landFodderOptions;
   private final List<ProPurchaseOption> landAttackOptions;
   private final List<ProPurchaseOption> landDefenseOptions;
+  private final List<ProPurchaseOption> landZeroMoveOptions;
   private final List<ProPurchaseOption> airOptions;
   private final List<ProPurchaseOption> seaDefenseOptions;
   private final List<ProPurchaseOption> seaTransportOptions;
@@ -40,6 +41,7 @@ public class ProPurchaseOptionMap {
     landFodderOptions = new ArrayList<>();
     landAttackOptions = new ArrayList<>();
     landDefenseOptions = new ArrayList<>();
+    landZeroMoveOptions = new ArrayList<>();
     airOptions = new ArrayList<>();
     seaDefenseOptions = new ArrayList<>();
     seaTransportOptions = new ArrayList<>();
@@ -64,9 +66,7 @@ public class ProPurchaseOptionMap {
       final UnitType unitType = (UnitType) resourceOrUnit;
 
       // Add rule to appropriate purchase option list
-      if ((UnitAttachment.get(unitType).getMovement(player) <= 0
-              && !UnitAttachment.get(unitType).getCanProduceUnits())
-          || Matches.unitTypeConsumesUnitsOnCreation().test(unitType)
+      if (Matches.unitTypeConsumesUnitsOnCreation().test(unitType)
           || UnitAttachment.get(unitType).getIsSuicide()
           || UnitAttachment.get(unitType).getIsSuicideOnHit()) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
@@ -77,6 +77,11 @@ public class ProPurchaseOptionMap {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         factoryOptions.add(ppo);
         ProLogger.debug("Factory: " + ppo);
+      } else if (UnitAttachment.get(unitType).getMovement(player) <= 0
+          && Matches.unitTypeIsLand().test(unitType)) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+        landZeroMoveOptions.add(ppo);
+        ProLogger.debug("Zero Move Land: " + ppo);
       } else if (Matches.unitTypeIsLand().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         if (!Matches.unitTypeIsInfrastructure().test(unitType)) {
@@ -127,6 +132,7 @@ public class ProPurchaseOptionMap {
     logOptions(landFodderOptions, "Land Fodder Options: ");
     logOptions(landAttackOptions, "Land Attack Options: ");
     logOptions(landDefenseOptions, "Land Defense Options: ");
+    logOptions(landZeroMoveOptions, "Land Zero Move Options: ");
     logOptions(airOptions, "Air Options: ");
     logOptions(seaDefenseOptions, "Sea Defense Options: ");
     logOptions(seaTransportOptions, "Sea Transport Options: ");
@@ -140,6 +146,7 @@ public class ProPurchaseOptionMap {
   public List<ProPurchaseOption> getAllOptions() {
     final Set<ProPurchaseOption> allOptions = new HashSet<>();
     allOptions.addAll(getLandOptions());
+    allOptions.addAll(landZeroMoveOptions);
     allOptions.addAll(airOptions);
     allOptions.addAll(getSeaOptions());
     allOptions.addAll(aaOptions);
@@ -175,6 +182,10 @@ public class ProPurchaseOptionMap {
 
   public List<ProPurchaseOption> getLandDefenseOptions() {
     return landDefenseOptions;
+  }
+
+  public List<ProPurchaseOption> getLandZeroMoveOptions() {
+    return landZeroMoveOptions;
   }
 
   public List<ProPurchaseOption> getAirOptions() {

@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI purchase analysis for a single territory. */
 @ToString
@@ -64,7 +65,8 @@ public class ProPurchaseTerritory {
   public int getRemainingUnitProduction() {
     int remainingUnitProduction = unitProduction;
     for (final ProPlaceTerritory ppt : canPlaceTerritories) {
-      remainingUnitProduction -= ppt.getPlaceUnits().size();
+      remainingUnitProduction -=
+          CollectionUtils.countMatches(ppt.getPlaceUnits(), Matches.unitIsConstruction().negate());
     }
     return remainingUnitProduction;
   }

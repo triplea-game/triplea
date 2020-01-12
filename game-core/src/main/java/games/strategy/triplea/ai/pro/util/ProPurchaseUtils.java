@@ -21,6 +21,7 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
@@ -38,6 +39,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /** Pro AI purchase utilities. */
 public final class ProPurchaseUtils {
@@ -126,7 +128,6 @@ public final class ProPurchaseUtils {
         && units.stream().anyMatch(Matches.unitIsCarrier());
   }
 
-  /** Removes any invalid purchase options from {@code purchaseOptions}. */
   public static void removeInvalidPurchaseOptions(
       final GamePlayer player,
       final GameData data,
@@ -135,45 +136,149 @@ public final class ProPurchaseUtils {
       final int remainingUnitProduction,
       final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+    ProPurchaseUtils.removeInvalidPurchaseOptions(
+        player,
+        data,
+        purchaseOptions,
+        resourceTracker,
+        remainingUnitProduction,
+        unitsToPlace,
+        purchaseTerritories,
+        0,
+        null);
+  }
+
+  /** Removes any invalid purchase options from {@code purchaseOptions}. */
+  public static void removeInvalidPurchaseOptions(
+      final GamePlayer player,
+      final GameData data,
+      final List<ProPurchaseOption> purchaseOptions,
+      final ProResourceTracker resourceTracker,
+      final int remainingUnitProduction,
+      final List<Unit> unitsToPlace,
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final int remainingConstructions,
+      final Territory territory) {
 
     for (final Iterator<ProPurchaseOption> it = purchaseOptions.iterator(); it.hasNext(); ) {
       final ProPurchaseOption purchaseOption = it.next();
-
-      // Check PU cost and production
-      if (!resourceTracker.hasEnough(purchaseOption)
-          || purchaseOption.getQuantity() > remainingUnitProduction) {
+      if (!hasEnoughResourcesAndProduction(
+          purchaseOption, resourceTracker, remainingUnitProduction, remainingConstructions)) {
         it.remove();
         continue;
       }
-
-      // Check max unit limits (-1 is unlimited)
-      final int maxBuilt = purchaseOption.getMaxBuiltPerPlayer();
-      final UnitType type = purchaseOption.getUnitType();
-      if (maxBuilt == 0) {
+      if (hasReachedMaxUnitBuiltPerPlayer(
+          purchaseOption, player, data, unitsToPlace, purchaseTerritories)) {
         it.remove();
-      } else if (maxBuilt > 0) {
-
-        // Find number of unit type that are already built and about to be placed
-        int currentlyBuilt = 0;
-        final Predicate<Unit> unitTypeOwnedBy =
-            Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
-        final List<Territory> allTerritories = data.getMap().getTerritories();
-        for (final Territory t : allTerritories) {
-          currentlyBuilt += t.getUnitCollection().countMatches(unitTypeOwnedBy);
-        }
-        currentlyBuilt += CollectionUtils.countMatches(unitsToPlace, unitTypeOwnedBy);
-        for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
-          for (final ProPlaceTerritory placeTerritory : t.getCanPlaceTerritories()) {
-            currentlyBuilt +=
-                CollectionUtils.countMatches(placeTerritory.getPlaceUnits(), unitTypeOwnedBy);
-          }
-        }
-        final int allowedBuild = maxBuilt - currentlyBuilt;
-        if (allowedBuild - purchaseOption.getQuantity() < 0) {
-          it.remove();
-        }
+        continue;
+      }
+      if (hasReachedConstructionLimits(
+          purchaseOption, data, unitsToPlace, purchaseTerritories, territory)) {
+        it.remove();
       }
     }
+  }
+
+  private static boolean hasEnoughResourcesAndProduction(
+      final ProPurchaseOption purchaseOption,
+      final ProResourceTracker resourceTracker,
+      final int remainingUnitProduction,
+      final int remainingConstructions) {
+    return resourceTracker.hasEnough(purchaseOption)
+        && purchaseOption.getQuantity()
+            <= (purchaseOption.isConstruction() ? remainingConstructions : remainingUnitProduction);
+  }
+
+  private static boolean hasReachedMaxUnitBuiltPerPlayer(
+      final ProPurchaseOption purchaseOption,
+      final GamePlayer player,
+      final GameData data,
+      final List<Unit> unitsToPlace,
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+
+    // Check max unit limits (-1 is unlimited)
+    final int maxBuilt = purchaseOption.getMaxBuiltPerPlayer();
+    final UnitType type = purchaseOption.getUnitType();
+    if (maxBuilt == 0) {
+      return true;
+    } else if (maxBuilt > 0) {
+
+      // Find number of unit type that are already built and about to be placed
+      int currentlyBuilt = 0;
+      final Predicate<Unit> unitTypeOwnedBy =
+          Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
+      final List<Territory> allTerritories = data.getMap().getTerritories();
+      for (final Territory t : allTerritories) {
+        currentlyBuilt += t.getUnitCollection().countMatches(unitTypeOwnedBy);
+      }
+      currentlyBuilt += CollectionUtils.countMatches(unitsToPlace, unitTypeOwnedBy);
+      for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+        for (final ProPlaceTerritory placeTerritory : t.getCanPlaceTerritories()) {
+          currentlyBuilt +=
+              CollectionUtils.countMatches(placeTerritory.getPlaceUnits(), unitTypeOwnedBy);
+        }
+      }
+      final int allowedBuild = maxBuilt - currentlyBuilt;
+      if (allowedBuild - purchaseOption.getQuantity() < 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static boolean hasReachedConstructionLimits(
+      final ProPurchaseOption purchaseOption,
+      final GameData data,
+      final List<Unit> unitsToPlace,
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final Territory territory) {
+
+    // Check construction limits
+    if (purchaseOption.isConstruction() && territory != null) {
+
+      // Check constructions per turn
+      int numConstructionTypeToPlace =
+          CollectionUtils.countMatches(
+              unitsToPlace, Matches.unitIsOfType(purchaseOption.getUnitType()));
+      for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+        for (final ProPlaceTerritory placeTerritory : t.getCanPlaceTerritories()) {
+          if (placeTerritory.getTerritory().equals(territory)) {
+            numConstructionTypeToPlace +=
+                CollectionUtils.countMatches(
+                    placeTerritory.getPlaceUnits(),
+                    Matches.unitIsOfType(purchaseOption.getUnitType()));
+          }
+        }
+      }
+      if (numConstructionTypeToPlace >= purchaseOption.getConstructionTypePerTurn()) {
+        return true;
+      }
+
+      // Check max constructions (assumes constructions being placed at a factory)
+      int maxConstructionType = purchaseOption.getMaxConstructionType();
+      final String constructionType = purchaseOption.getConstructionType();
+      if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+          && !constructionType.endsWith("structure")) {
+        if (Properties.getUnlimitedConstructions(data)) {
+          maxConstructionType = Integer.MAX_VALUE;
+        } else if (Properties.getMoreConstructionsWithFactory(data)) {
+          int production = 0;
+          final TerritoryAttachment terrAttachment = TerritoryAttachment.get(territory);
+          if (terrAttachment != null) {
+            production = terrAttachment.getProduction();
+          }
+          maxConstructionType = Math.max(maxConstructionType, production);
+        }
+      }
+      final int numTotalConstructionType =
+          numConstructionTypeToPlace
+              + CollectionUtils.countMatches(
+                  territory.getUnits(), Matches.unitIsOfType(purchaseOption.getUnitType()));
+      if (numTotalConstructionType >= maxConstructionType) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -356,6 +461,47 @@ public final class ProPurchaseUtils {
     }
     return TripleAUnit.getProductionPotentialOfTerritory(
         territory.getUnits(), territory, player, data, true, true);
+  }
+
+  /**
+   * Calculates how many of each of the specified construction units can be placed in the specified
+   * territory.
+   */
+  public static int getMaxConstructions(
+      final Territory territory,
+      final GameData data,
+      final GamePlayer player,
+      final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions) {
+    final IntegerMap<String> constructionTypesPerTurn = new IntegerMap<>();
+    //    final boolean wasFactoryThereAtStart =
+    //        ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player,
+    // data).test(territory);
+    //    int production = 0;
+    //    final TerritoryAttachment terrAttachment = TerritoryAttachment.get(territory);
+    //    if (terrAttachment != null) {
+    //      production = terrAttachment.getProduction();
+    //    }
+    for (final ProPurchaseOption ppo : zeroMoveDefensePurchaseOptions) {
+      final UnitAttachment ua = UnitAttachment.get(ppo.getUnitType());
+      if (ua.getIsConstruction()) {
+        final String constructionType = ua.getConstructionType();
+        final int constructionTypePerTurn = ua.getConstructionsPerTerrPerTypePerTurn();
+        //        if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
+        //            && !constructionType.endsWith("structure")) {
+        //          if (Properties.getUnlimitedConstructions(data)) {
+        //            constructionTypePerTurn = Integer.MAX_VALUE;
+        //          } else if (wasFactoryThereAtStart &&
+        // Properties.getMoreConstructionsWithFactory(data)) {
+        //            constructionTypePerTurn = Math.max(constructionTypePerTurn, production);
+        //          } else if (!wasFactoryThereAtStart
+        //              && Properties.getMoreConstructionsWithoutFactory(data)) {
+        //            constructionTypePerTurn = Math.max(constructionTypePerTurn, production);
+        //          }
+        //        }
+        constructionTypesPerTurn.put(constructionType, constructionTypePerTurn);
+      }
+    }
+    return constructionTypesPerTurn.totalValues();
   }
 
   private static GamePlayer getOriginalFactoryOwner(

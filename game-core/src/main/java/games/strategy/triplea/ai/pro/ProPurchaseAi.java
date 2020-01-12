@@ -174,6 +174,7 @@ class ProPurchaseAi {
           purchaseTerritories,
           needToDefendLandTerritories,
           purchaseOptions.getLandFodderOptions(),
+          purchaseOptions.getLandZeroMoveOptions(),
           purchaseOptions.getAirOptions(),
           true);
 
@@ -210,6 +211,7 @@ class ProPurchaseAi {
           purchaseTerritories,
           needToDefendSeaTerritories,
           purchaseOptions.getSeaDefenseOptions(),
+          List.of(),
           purchaseOptions.getAirOptions(),
           false);
 
@@ -295,6 +297,7 @@ class ProPurchaseAi {
         purchaseTerritories,
         needToDefendLandTerritories,
         purchaseOptions.getLandFodderOptions(),
+        purchaseOptions.getLandZeroMoveOptions(),
         purchaseOptions.getAirOptions(),
         true);
 
@@ -331,6 +334,7 @@ class ProPurchaseAi {
         purchaseTerritories,
         needToDefendSeaTerritories,
         purchaseOptions.getSeaDefenseOptions(),
+        List.of(),
         purchaseOptions.getAirOptions(),
         false);
 
@@ -653,6 +657,7 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final List<ProPlaceTerritory> needToDefendTerritories,
       final List<ProPurchaseOption> defensePurchaseOptions,
+      final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions,
       final List<ProPurchaseOption> airPurchaseOptions,
       final boolean isLand) {
 
@@ -707,20 +712,28 @@ class ProPurchaseAi {
 
         // Check remaining production
         int remainingUnitProduction = purchaseTerritory.getRemainingUnitProduction();
+        int remainingConstructions =
+            ProPurchaseUtils.getMaxConstructions(
+                purchaseTerritory.getTerritory(), data, player, zeroMoveDefensePurchaseOptions);
         ProLogger.debug(
             purchaseTerritory.getTerritory()
                 + ", remainingUnitProduction="
-                + remainingUnitProduction);
-        if (remainingUnitProduction <= 0) {
+                + remainingUnitProduction
+                + ", remainingConstructions="
+                + remainingConstructions);
+        if (remainingUnitProduction <= 0 && remainingConstructions <= 0) {
           continue;
         }
 
         // Find defenders that can be produced in this territory
+        final List<ProPurchaseOption> allDefensePurchaseOptions =
+            new ArrayList<>(defensePurchaseOptions);
+        allDefensePurchaseOptions.addAll(zeroMoveDefensePurchaseOptions);
         final List<ProPurchaseOption> purchaseOptionsForTerritory =
             ProPurchaseUtils.findPurchaseOptionsForTerritory(
                 proData,
                 player,
-                defensePurchaseOptions,
+                allDefensePurchaseOptions,
                 t,
                 purchaseTerritory.getTerritory(),
                 isBid);
@@ -737,12 +750,14 @@ class ProPurchaseAi {
               resourceTracker,
               remainingUnitProduction,
               unitsToPlace,
-              purchaseTerritories);
+              purchaseTerritories,
+              remainingConstructions,
+              t);
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
             if (isLand) {
               defenseEfficiencies.put(
-                  ppo, ppo.getDefenseEfficiency2(1, data, ownedLocalUnits, unitsToPlace));
+                  ppo, ppo.getDefenseEfficiency(1, data, ownedLocalUnits, unitsToPlace));
             } else {
               defenseEfficiencies.put(
                   ppo,
@@ -767,7 +782,11 @@ class ProPurchaseAi {
 
           // Create new temp units
           resourceTracker.tempPurchase(selectedOption);
-          remainingUnitProduction -= selectedOption.getQuantity();
+          if (selectedOption.isConstruction()) {
+            remainingConstructions -= selectedOption.getQuantity();
+          } else {
+            remainingUnitProduction -= selectedOption.getQuantity();
+          }
           unitsToPlace.addAll(
               selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
           if (selectedOption.isCarrier() || selectedOption.isAir()) {
@@ -1106,7 +1125,7 @@ class ProPurchaseAi {
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landDefenseOptions) {
             defenseEfficiencies.put(
-                ppo, ppo.getDefenseEfficiency2(enemyDistance, data, ownedLocalUnits, unitsToPlace));
+                ppo, ppo.getDefenseEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
           optionalSelectedOption =
               ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
@@ -1114,7 +1133,7 @@ class ProPurchaseAi {
           final Map<ProPurchaseOption, Double> attackEfficiencies = new HashMap<>();
           for (final ProPurchaseOption ppo : landAttackOptions) {
             attackEfficiencies.put(
-                ppo, ppo.getAttackEfficiency2(enemyDistance, data, ownedLocalUnits, unitsToPlace));
+                ppo, ppo.getAttackEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
           optionalSelectedOption =
               ProPurchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack");
@@ -2192,7 +2211,7 @@ class ProPurchaseAi {
           defenseEfficiencies.put(
               ppo,
               Math.pow(ppo.getCost(), 2)
-                  * ppo.getDefenseEfficiency2(
+                  * ppo.getDefenseEfficiency(
                       1, data, ownedLocalUnits, placeTerritory.getPlaceUnits()));
         }
         final Optional<ProPurchaseOption> optionalSelectedOption =
@@ -2551,6 +2570,10 @@ class ProPurchaseAi {
                 isBid)) {
 
           // Place max number of units
+          final List<Unit> constructions =
+              CollectionUtils.getMatches(unitsToPlace, Matches.unitIsConstruction());
+          unitsToPlace.removeAll(constructions);
+          ppt.getPlaceUnits().addAll(constructions);
           final int numUnits =
               Math.min(purchaseTerritory.getRemainingUnitProduction(), unitsToPlace.size());
           final List<Unit> units = unitsToPlace.subList(0, numUnits);
