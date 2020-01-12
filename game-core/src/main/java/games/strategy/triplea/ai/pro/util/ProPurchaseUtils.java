@@ -473,31 +473,11 @@ public final class ProPurchaseUtils {
       final GamePlayer player,
       final List<ProPurchaseOption> zeroMoveDefensePurchaseOptions) {
     final IntegerMap<String> constructionTypesPerTurn = new IntegerMap<>();
-    //    final boolean wasFactoryThereAtStart =
-    //        ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player,
-    // data).test(territory);
-    //    int production = 0;
-    //    final TerritoryAttachment terrAttachment = TerritoryAttachment.get(territory);
-    //    if (terrAttachment != null) {
-    //      production = terrAttachment.getProduction();
-    //    }
     for (final ProPurchaseOption ppo : zeroMoveDefensePurchaseOptions) {
       final UnitAttachment ua = UnitAttachment.get(ppo.getUnitType());
       if (ua.getIsConstruction()) {
         final String constructionType = ua.getConstructionType();
         final int constructionTypePerTurn = ua.getConstructionsPerTerrPerTypePerTurn();
-        //        if (!constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
-        //            && !constructionType.endsWith("structure")) {
-        //          if (Properties.getUnlimitedConstructions(data)) {
-        //            constructionTypePerTurn = Integer.MAX_VALUE;
-        //          } else if (wasFactoryThereAtStart &&
-        // Properties.getMoreConstructionsWithFactory(data)) {
-        //            constructionTypePerTurn = Math.max(constructionTypePerTurn, production);
-        //          } else if (!wasFactoryThereAtStart
-        //              && Properties.getMoreConstructionsWithoutFactory(data)) {
-        //            constructionTypePerTurn = Math.max(constructionTypePerTurn, production);
-        //          }
-        //        }
         constructionTypesPerTurn.put(constructionType, constructionTypePerTurn);
       }
     }
