@@ -1439,7 +1439,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         int unitMax = unitMapMaxType.getInt(constructionType);
         if (wasFactoryThereAtStart
             && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
-            && !constructionType.endsWith("structure")) {
+            && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
           unitMax =
               Math.max(
                   Math.max(unitMax, (moreWithFactory ? toProduction : 0)),
@@ -1447,7 +1447,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         }
         if (!wasFactoryThereAtStart
             && !constructionType.equals(Constants.CONSTRUCTION_TYPE_FACTORY)
-            && !constructionType.endsWith("structure")) {
+            && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
           unitMax =
               Math.max(
                   Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)),

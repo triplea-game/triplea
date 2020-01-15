@@ -23,6 +23,7 @@ import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
+import games.strategy.triplea.ai.pro.util.ProPurchaseValidationUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
@@ -730,7 +731,7 @@ class ProPurchaseAi {
             new ArrayList<>(defensePurchaseOptions);
         allDefensePurchaseOptions.addAll(zeroMoveDefensePurchaseOptions);
         final List<ProPurchaseOption> purchaseOptionsForTerritory =
-            ProPurchaseUtils.findPurchaseOptionsForTerritory(
+            ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
                 proData,
                 player,
                 allDefensePurchaseOptions,
@@ -743,7 +744,7 @@ class ProPurchaseAi {
         while (true) {
 
           // Select purchase option
-          ProPurchaseUtils.removeInvalidPurchaseOptions(
+          ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
               player,
               startOfTurnData,
               purchaseOptionsForTerritory,
@@ -959,9 +960,9 @@ class ProPurchaseAi {
 
       // Remove options that cost too much PUs or production
       final List<ProPurchaseOption> purchaseOptionsForTerritory =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, specialPurchaseOptions, t, isBid);
-      ProPurchaseUtils.removeInvalidPurchaseOptions(
+      ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
           player,
           startOfTurnData,
           purchaseOptionsForTerritory,
@@ -1046,13 +1047,13 @@ class ProPurchaseAi {
 
       // Determine most cost efficient units that can be produced in this territory
       final List<ProPurchaseOption> landFodderOptions =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, purchaseOptions.getLandFodderOptions(), t, isBid);
       final List<ProPurchaseOption> landAttackOptions =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, purchaseOptions.getLandAttackOptions(), t, isBid);
       final List<ProPurchaseOption> landDefenseOptions =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, purchaseOptions.getLandDefenseOptions(), t, isBid);
 
       // Determine enemy distance and locally owned units
@@ -1079,7 +1080,7 @@ class ProPurchaseAi {
       for (final Iterator<Unit> it = unplacedUnits.iterator(); it.hasNext(); ) {
         final Unit u = it.next();
         if (remainingUnitProduction > 0
-            && ProPurchaseUtils.canUnitsBePlaced(proData, List.of(u), player, t, isBid)) {
+            && ProPurchaseValidationUtils.canUnitsBePlaced(proData, List.of(u), player, t, isBid)) {
           remainingUnitProduction--;
           unitsToPlace.add(u);
           it.remove();
@@ -1094,7 +1095,7 @@ class ProPurchaseAi {
       while (true) {
 
         // Remove options that cost too much PUs or production
-        ProPurchaseUtils.removeInvalidPurchaseOptions(
+        ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
             player,
             startOfTurnData,
             landFodderOptions,
@@ -1102,7 +1103,7 @@ class ProPurchaseAi {
             remainingUnitProduction,
             unitsToPlace,
             purchaseTerritories);
-        ProPurchaseUtils.removeInvalidPurchaseOptions(
+        ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
             player,
             startOfTurnData,
             landAttackOptions,
@@ -1110,7 +1111,7 @@ class ProPurchaseAi {
             remainingUnitProduction,
             unitsToPlace,
             purchaseTerritories);
-        ProPurchaseUtils.removeInvalidPurchaseOptions(
+        ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
             player,
             startOfTurnData,
             landDefenseOptions,
@@ -1336,10 +1337,10 @@ class ProPurchaseAi {
 
       // Determine units that can be produced in this territory
       final List<ProPurchaseOption> purchaseOptionsForTerritory =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, purchaseOptions.getFactoryOptions(), maxTerritory, isBid);
       resourceTracker.removeTempPurchase(maxPlacedOption);
-      ProPurchaseUtils.removeInvalidPurchaseOptions(
+      ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
           player,
           startOfTurnData,
           purchaseOptionsForTerritory,
@@ -1560,7 +1561,7 @@ class ProPurchaseAi {
 
           // Determine sea and transport units that can be produced in this territory
           final List<ProPurchaseOption> seaPurchaseOptionsForTerritory =
-              ProPurchaseUtils.findPurchaseOptionsForTerritory(
+              ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
                   proData,
                   player,
                   purchaseOptions.getSeaDefenseOptions(),
@@ -1580,7 +1581,7 @@ class ProPurchaseAi {
             }
 
             // Select purchase option
-            ProPurchaseUtils.removeInvalidPurchaseOptions(
+            ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
                 player,
                 startOfTurnData,
                 seaPurchaseOptionsForTerritory,
@@ -1788,7 +1789,7 @@ class ProPurchaseAi {
 
         // Determine sea and transport units that can be produced in this territory
         final List<ProPurchaseOption> seaPurchaseOptionsForTerritory =
-            ProPurchaseUtils.findPurchaseOptionsForTerritory(
+            ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
                 proData,
                 player,
                 purchaseOptions.getSeaDefenseOptions(),
@@ -1805,7 +1806,7 @@ class ProPurchaseAi {
           }
 
           // Select purchase option
-          ProPurchaseUtils.removeInvalidPurchaseOptions(
+          ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
               player,
               startOfTurnData,
               seaPurchaseOptionsForTerritory,
@@ -1906,10 +1907,10 @@ class ProPurchaseAi {
 
         // Determine sea and transport units that can be produced in this territory
         final List<ProPurchaseOption> seaTransportPurchaseOptionsForTerritory =
-            ProPurchaseUtils.findPurchaseOptionsForTerritory(
+            ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
                 proData, player, purchaseOptions.getSeaTransportOptions(), t, landTerritory, isBid);
         final List<ProPurchaseOption> amphibPurchaseOptionsForTerritory =
-            ProPurchaseUtils.findPurchaseOptionsForTerritory(
+            ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
                 proData, player, purchaseOptions.getLandOptions(), landTerritory, isBid);
 
         // Find transports that need loaded and units to ignore that are already paired up
@@ -1988,7 +1989,7 @@ class ProPurchaseAi {
             while (transportCapacity > 0) {
 
               // Select amphib purchase option and add units
-              ProPurchaseUtils.removeInvalidPurchaseOptions(
+              ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
                   player,
                   startOfTurnData,
                   amphibPurchaseOptionsForTerritory,
@@ -2024,7 +2025,7 @@ class ProPurchaseAi {
           } else {
 
             // Select purchase option
-            ProPurchaseUtils.removeInvalidPurchaseOptions(
+            ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
                 player,
                 startOfTurnData,
                 seaTransportPurchaseOptionsForTerritory,
@@ -2122,7 +2123,7 @@ class ProPurchaseAi {
       final List<ProPurchaseOption> airAndLandPurchaseOptions = new ArrayList<>(airPurchaseOptions);
       airAndLandPurchaseOptions.addAll(landPurchaseOptions);
       final List<ProPurchaseOption> purchaseOptionsForTerritory =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, airAndLandPurchaseOptions, t, isBid);
 
       // Purchase long range attack units for any remaining production
@@ -2130,7 +2131,7 @@ class ProPurchaseAi {
       while (true) {
 
         // Remove options that cost too much PUs or production
-        ProPurchaseUtils.removeInvalidPurchaseOptions(
+        ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
             player,
             startOfTurnData,
             purchaseOptionsForTerritory,
@@ -2190,7 +2191,7 @@ class ProPurchaseAi {
       final List<ProPurchaseOption> airAndLandPurchaseOptions = new ArrayList<>(airPurchaseOptions);
       airAndLandPurchaseOptions.addAll(landPurchaseOptions);
       final List<ProPurchaseOption> purchaseOptionsForTerritory =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, airAndLandPurchaseOptions, t, isBid);
 
       // Purchase defense units for any remaining production
@@ -2198,7 +2199,7 @@ class ProPurchaseAi {
       while (true) {
 
         // Select purchase option
-        ProPurchaseUtils.removeInvalidPurchaseOptions(
+        ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
             player,
             startOfTurnData,
             purchaseOptionsForTerritory,
@@ -2267,7 +2268,7 @@ class ProPurchaseAi {
           new ArrayList<>(purchaseOptions.getAirOptions());
       airAndLandPurchaseOptions.addAll(purchaseOptions.getLandOptions());
       final List<ProPurchaseOption> purchaseOptionsForTerritory =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(
+          ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, airAndLandPurchaseOptions, t, isBid);
 
       // Purchase long range attack units for any remaining production
@@ -2293,7 +2294,7 @@ class ProPurchaseAi {
 
         // Remove options that cost too much PUs or production
         resourceTracker.removeTempPurchase(minPurchaseOption);
-        ProPurchaseUtils.removeInvalidPurchaseOptions(
+        ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
             player,
             startOfTurnData,
             purchaseOptionsForTerritory,
@@ -2561,7 +2562,7 @@ class ProPurchaseAi {
         // If place territory is equal to the current place territory and has remaining production
         if (placeTerritory.equals(ppt)
             && purchaseTerritory.getRemainingUnitProduction() > 0
-            && ProPurchaseUtils.canUnitsBePlaced(
+            && ProPurchaseValidationUtils.canUnitsBePlaced(
                 proData,
                 unitsToPlace,
                 player,
