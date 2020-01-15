@@ -91,7 +91,8 @@ public final class ProPurchaseUtils {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final List<ProPurchaseOption> purchaseOptionsForTerritory =
-        ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(proData, player, landPurchaseOptions, t, false);
+        ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
+            proData, player, landPurchaseOptions, t, false);
     ProPurchaseOption bestDefenseOption = null;
     double maxDefenseEfficiency = 0;
     for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
