@@ -31,12 +31,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /** Pro AI purchase utilities. */
+@UtilityClass
 public final class ProPurchaseUtils {
-  private ProPurchaseUtils() {}
 
   /**
    * Randomly selects one of the specified purchase options of the specified type.

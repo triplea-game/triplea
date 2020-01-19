@@ -66,7 +66,7 @@ public class ProPurchaseTerritory {
     int remainingUnitProduction = unitProduction;
     for (final ProPlaceTerritory ppt : canPlaceTerritories) {
       remainingUnitProduction -=
-          CollectionUtils.countMatches(ppt.getPlaceUnits(), Matches.unitIsConstruction().negate());
+          CollectionUtils.countMatches(ppt.getPlaceUnits(), Matches.unitIsNotConstruction());
     }
     return remainingUnitProduction;
   }

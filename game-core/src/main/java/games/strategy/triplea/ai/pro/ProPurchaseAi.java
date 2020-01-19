@@ -2569,8 +2569,6 @@ class ProPurchaseAi {
                 ppt.getTerritory(),
                 purchaseTerritory.getTerritory(),
                 isBid)) {
-
-          // Place max number of units
           final List<Unit> constructions =
               CollectionUtils.getMatches(unitsToPlace, Matches.unitIsConstruction());
           unitsToPlace.removeAll(constructions);

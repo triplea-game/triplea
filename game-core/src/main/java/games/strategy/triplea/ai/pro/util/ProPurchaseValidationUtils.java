@@ -22,11 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 
-/** Pro AI purchase utilities. */
+/**
+ * Pro AI utility methods for finding purchase options and validating which ones a territory can
+ * use.
+ */
+@UtilityClass
 public final class ProPurchaseValidationUtils {
-  private ProPurchaseValidationUtils() {}
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(
       final ProData proData,
