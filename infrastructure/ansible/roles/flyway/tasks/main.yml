@@ -5,52 +5,6 @@
     create_home: yes
     system: yes
 
-- name: Create user on DB for application use
-  become: true
-  become_user: postgres
-  postgresql_user:
-    name: "{{ flyway_db_user }}"
-    password: "{{ flyway_db_password }}"
-    login_password: "{{ flyway_db_password }}"
-    encrypted: yes
-    state: "present"
-
-- name: Ensure database is created
-  become: true
-  become_user: postgres
-  postgresql_db:
-    name: "{{ flyway_db_name }}"
-    owner: "{{ flyway_db_user }}"
-
-- name: Ensure user has access to the database
-  become: true
-  become_user: postgres
-  postgresql_user:
-    db: "{{ flyway_db_name }}"
-    name: "{{ flyway_db_user }}"
-    password: "{{ flyway_db_password }}"
-    login_password: "{{ flyway_db_password }}"
-    encrypted: yes
-    priv: "ALL"
-    role_attr_flags: NOSUPERUSER,NOCREATEDB
-    state: "present"
-
-- name: check if password is valid
-  shell: echo "select 1" |  psql -h localhost -U {{ flyway_db_user }} {{ flyway_db_name }}
-  environment:
-    PGPASSWORD: "{{ flyway_db_password }}"
-  register: password_check
-  changed_when: false
-
-# This is a hack because the previous tasks were supposed to set
-# the DB level password for our DB user, but it typically does not.
-# To achieve this, we'll run the native SQL commands to set the
-# user DB password.
-- name: "Hack, set password of {{ flyway_db_user }}"
-  when: password_check.rc != 0
-  shell: echo "alter role {{ flyway_db_user }} with password '{{ flyway_db_password }}';"  | sudo -u postgres psql
-  become_user: postgres
-
 - name: Download flyway CLI
   become: true
   become_user: flyway
