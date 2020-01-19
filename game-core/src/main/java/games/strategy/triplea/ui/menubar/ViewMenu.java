@@ -442,7 +442,6 @@ final class ViewMenu extends JMenu {
 
     final JRadioButtonMenuItem noFlags =
         new JMenuItemBuilder("Off", KeyCode.O)
-            .accelerator(KeyEvent.VK_1)
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -451,7 +450,6 @@ final class ViewMenu extends JMenu {
 
     final JRadioButtonMenuItem smallFlags =
         new JMenuItemBuilder("Small", KeyCode.S)
-            .accelerator(KeyEvent.VK_2)
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -460,7 +458,6 @@ final class ViewMenu extends JMenu {
 
     final JRadioButtonMenuItem largeFlags =
         new JMenuItemBuilder("Large", KeyCode.L)
-            .accelerator(KeyEvent.VK_3)
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
