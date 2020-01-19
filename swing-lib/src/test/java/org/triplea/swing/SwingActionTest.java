@@ -15,7 +15,6 @@ import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Test;
@@ -28,19 +27,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SwingActionTest {
   private static final Object VALUE = new Object();
 
-  private static final Runnable RUNNABLE_THROWING_EXCEPTION =
-      () -> {
-        throw new IllegalStateException();
-      };
-
-  private static final Supplier<?> SUPPLIER_THROWING_EXCEPTION =
-      () -> {
-        throw new IllegalStateException();
-      };
   @Mock private Runnable action;
   @Mock private ActionEvent event;
   @Mock private ActionListener listener;
   @Mock private Consumer<KeyEvent> consumer;
+
+  private static Object throwException() {
+    throw new IllegalStateException();
+  }
 
   @Test
   void testActionOf() {
@@ -75,7 +69,8 @@ class SwingActionTest {
   @Test
   void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
     assertThrows(
-        IllegalStateException.class, () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION));
+        IllegalStateException.class,
+        () -> SwingAction.invokeAndWait(SwingActionTest::throwException));
   }
 
   @Test
@@ -84,7 +79,7 @@ class SwingActionTest {
         () ->
             assertThrows(
                 IllegalStateException.class,
-                () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION)));
+                () -> SwingAction.invokeAndWait(SwingActionTest::throwException)));
   }
 
   @Test
@@ -108,7 +103,7 @@ class SwingActionTest {
   void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
     assertThrows(
         IllegalStateException.class,
-        () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION));
+        () -> SwingAction.invokeAndWaitResult(SwingActionTest::throwException));
   }
 
   @Test
@@ -118,7 +113,7 @@ class SwingActionTest {
         () ->
             assertThrows(
                 IllegalStateException.class,
-                () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION)));
+                () -> SwingAction.invokeAndWaitResult(SwingActionTest::throwException)));
   }
 
   @Test

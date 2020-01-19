@@ -17,9 +17,9 @@ import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.server.ServerEndpointConfig;
@@ -226,7 +226,7 @@ public class ServerApplication extends Application<AppConfig> {
     return new CachingAuthenticator<>(
         metrics,
         new ApiKeyAuthenticator(new LobbyApiKeyDaoWrapper(jdbi)),
-        CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).maximumSize(10000));
+        CacheBuilder.newBuilder().expireAfterAccess(Duration.ofMinutes(10)).maximumSize(10000));
   }
 
   private List<Object> exceptionMappers() {

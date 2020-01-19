@@ -16,8 +16,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class CollectionUtilsTest {
+  @SuppressWarnings("UnnecessaryLambda")
   private static final Predicate<Integer> ALWAYS = it -> true;
+
+  @SuppressWarnings("UnnecessaryLambda")
   private static final Predicate<Integer> NEVER = it -> false;
+
+  @SuppressWarnings("UnnecessaryLambda")
   private static final Predicate<Integer> IS_ZERO = it -> it == 0;
 
   @Nested

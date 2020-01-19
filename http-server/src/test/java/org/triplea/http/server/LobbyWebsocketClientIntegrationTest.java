@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ class LobbyWebsocketClientIntegrationTest extends DropwizardTest {
     assertThat(client.isOpen(), is(false));
     client.connect();
 
-    await().pollDelay(10, TimeUnit.MILLISECONDS).atMost(1, TimeUnit.SECONDS).until(client::isOpen);
+    await().pollDelay(Duration.ofMillis(10)).atMost(Duration.ofSeconds(1)).until(client::isOpen);
     client.send("sending! Just to make sure there are no exception here.");
 
     // small wait to process any responses
@@ -46,8 +46,8 @@ class LobbyWebsocketClientIntegrationTest extends DropwizardTest {
 
     client.close();
     await()
-        .pollDelay(10, TimeUnit.MILLISECONDS)
-        .atMost(100, TimeUnit.MILLISECONDS)
+        .pollDelay(Duration.ofMillis(10))
+        .atMost(Duration.ofMillis(100))
         .until(() -> !client.isOpen());
   }
 }

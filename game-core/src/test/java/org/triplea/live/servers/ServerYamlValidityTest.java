@@ -12,7 +12,6 @@ import feign.template.UriUtils;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Objects;
-import java.util.function.Supplier;
 import org.hamcrest.core.StringEndsWith;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
@@ -33,9 +32,11 @@ import org.triplea.util.Version;
  */
 @Integration(type = TestType.ACCEPTANCE)
 class ServerYamlValidityTest {
-  private static final Supplier<InputStream> SERVERS_YML =
-      () -> asInputStream(readContents("servers.yml"));
-  private static final LiveServers liveServers = new ServerYamlParser().apply(SERVERS_YML.get());
+  private static final LiveServers liveServers = new ServerYamlParser().apply(serversYml());
+
+  private static InputStream serversYml() {
+    return asInputStream(readContents("servers.yml"));
+  }
 
   @Test
   void verifyLatestVersion() {

@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@SuppressWarnings({"InnerClassMayBeStatic", "OptionalGetWithoutIsPresent"})
+@SuppressWarnings({"InnerClassMayBeStatic", "OptionalGetWithoutIsPresent", "DoNotMock"})
 class CacheUtilsTest {
 
   private static final String KEY = "key-value";

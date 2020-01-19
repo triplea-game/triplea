@@ -1,7 +1,7 @@
 package org.triplea.server.lobby.game.listing;
 
 import com.google.common.cache.CacheBuilder;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
@@ -16,7 +16,7 @@ public final class GameListingFactory {
         .gameListingEventQueue(gameListingEventQueue)
         .games(
             CacheBuilder.newBuilder()
-                .expireAfterWrite(LobbyWatcherClient.KEEP_ALIVE_SECONDS, TimeUnit.SECONDS)
+                .expireAfterWrite(Duration.ofSeconds(LobbyWatcherClient.KEEP_ALIVE_SECONDS))
                 .build())
         .build();
   }
