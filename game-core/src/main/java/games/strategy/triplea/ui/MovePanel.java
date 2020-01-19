@@ -543,7 +543,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           final var units = new ArrayList<>(unitsThatCanMoveOnRoute);
           final boolean paratroopsLanding = units.stream().anyMatch(paratroopNBombers);
           if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
-            transports = getTransportsToLoad(route, units, false);
+            transports = getTransportsToLoad(route, units);
             if (transports.isEmpty()) {
               cancelMove();
               return;
@@ -1151,7 +1151,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
    * canceled.
    */
   private Collection<Unit> getTransportsToLoad(
-      final Route route, final Collection<Unit> unitsToLoad, final boolean disablePrompts) {
+      final Route route, final Collection<Unit> unitsToLoad) {
     if (!route.isLoad()) {
       return List.of();
     }
@@ -1257,11 +1257,6 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       availableUnits.removeAll(unitsToIncapableTransports.keySet());
     } else {
       candidateTransports.removeAll(incapableTransports);
-    }
-
-    // return defaults if we aren't allowed to prompt
-    if (disablePrompts) {
-      return defaultSelections;
     }
 
     // force UnitChooser to pop up if we are choosing allied transports
@@ -1370,7 +1365,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     if (mustQueryUser) {
       final List<Unit> defaultSelections = new ArrayList<>(units.size());
       if (route.isLoad()) {
-        final Collection<Unit> transportsToLoad = getTransportsToLoad(route, units, false);
+        final Collection<Unit> transportsToLoad = getTransportsToLoad(route, units);
         defaultSelections.addAll(
             TransportUtils.mapTransports(route, units, transportsToLoad).keySet());
       } else {
