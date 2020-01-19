@@ -70,30 +70,6 @@ jobs:
         - ./gradlew --parallel test integTest jacocoTestReport || travis_terminate 1
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: verify
-      env: "Master Branch: Sonar Analysis"
-      jdk: openjdk11
-      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-          - '~/jdk-11.0.5+10'
-      git:
-        depth: false
-      addons:
-        sonarcloud:
-          organization: "triplea-game"
-          token:
-            secure: "FQ7dfyxK45ZhQizY0VV6vCboKCWh1WIMNx42qrNtTITrWQgONK5agh1i7AqGTSGuLLLPWGRzEWlcJcROyHv5Q2Oh/TINh4Zb7vWUVBJn3ydqMGM201xnPrcLTQNrhHk0bw3StN3bYO+or5lzEuYPSpZCz2GdD5Fc+bTr4EZfhA4YOIHayEEnI0unErTnl5lbIs9U0jnm1ojPp3+V4gg5+7lVEImReTeZCfHX2BwVNocezDQt69QuGz0ajK90pawvzBDZ7SpVIRK1KZRQmWM5e2HPkeV0KdbdINKarsmSL1wLQ1Tb8Iww7LTUomyKgi0XFDpdTPdwyhmXoCWESzVZV0WG6i3POc8SoCFOzY2JZ9UdEDh6YUgGHTBpChZ8hmPNjp5y+0BibrmRi6KdULol2u1mtwC4M+ej4x5S9XSbKBbKtmZALzv0PdZdnBlV0Si533+ZuLy4E1XBupEhNKtmJFi3zbX4M0qlxMNQToqtBJ+0wT5OREnDIu3PLx3nQo+fd1QSZJFR5ZI3hhQkcnjsR+jx8EZ6fRO7wjbU1E08wUNo0tWhrJqV+CklYx5lrax86o0veJIb3jls0aMmyUibMfO/1ha5wuM1O5mlJANf4wcWCo6HHIe6+eShgf1lF/u2+q/izTnGzdpFemhblS3ZMm0R+LVB9kmosEIRakhcqEc="
-      before_install:
-        - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5+10
-        - export PATH=${JAVA_HOME}/bin:$PATH
-        - java --version
-      install: skip
-      script:
-        - ./gradlew --parallel sonarqube
-    - stage: verify
       env: "Smoke Test"
       jdk: openjdk11
       cache:
