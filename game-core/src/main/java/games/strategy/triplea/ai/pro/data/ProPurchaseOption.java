@@ -258,7 +258,7 @@ public class ProPurchaseOption {
 
   private double calculateLandDistanceFactor(final int enemyDistance) {
     if (movement <= 0) {
-      return 0.1;
+      return 0.1; // Set 0 move units to an order of magnitude less than 1 move units
     }
     final double distance = Math.max(0, enemyDistance - 1.5);
     final int moveValue = isLandTransport ? (movement + 1) : movement;
