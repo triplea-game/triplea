@@ -47,12 +47,6 @@ public class UnitsDrawer extends AbstractDrawable {
   private final String territoryName;
   private final UiContext uiContext;
 
-  /** The keys for {@link UnitsDrawer} preferences. */
-  public enum PreferenceKeys {
-    DRAW_MODE,
-    DRAWING_ENABLED
-  }
-
   /** Identifies the location where a nation flag is drawn relative to a unit. */
   public enum UnitFlagDrawMode {
     NONE,
