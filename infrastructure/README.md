@@ -144,8 +144,7 @@ by ansible when ansible is run. To encrypt a variable:
 1. Create a file named: 'vault_password' and place the vault_password in that file
 1. Create a file named: 'secret' and place the secret value to be encrypted in that file
 ```
-VARIABLE_NAME="name_of_the_secret_variable"
-ansible-vault encrypt_string --vault-password-file vault_password "$(cat secret)" --name "$VARIABLE_NAME"
+./create_secret "name_of_variable"
 ```
 
 [Ansible-Vault Docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)

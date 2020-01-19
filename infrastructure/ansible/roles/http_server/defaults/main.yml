@@ -14,7 +14,6 @@ http_server_db_port: "5432"
 
 http_server_db_name: "{{ lobby_db_name }}"
 http_server_db_user: "{{ lobby_db_user }}"
-http_server_db_password: "{{ lobby_db_password }}"
 
-## TODO: encrypt all of the below variables
-http_server_bcrypt_salt: $2a$10$IhIXWg4HkQRWrZqjj9kV0u
+create_issues_github_api_token: test
+
