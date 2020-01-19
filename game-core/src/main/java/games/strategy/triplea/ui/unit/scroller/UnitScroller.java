@@ -70,8 +70,6 @@ public class UnitScroller {
 
   private static final String HIGHLIGHT_MOVABLE_TOOLTIP =
       "Press 'F' key or click this button to highlight movable units";
-  private static final String FLAG_TOGGLE_BUTTON_TOOLTIP =
-      "Press 'L' key or click this button to toggle flags";
 
   private Collection<Unit> skippedUnits = new HashSet<>();
   private final Collection<Unit> sleepingUnits = new HashSet<>();
@@ -178,10 +176,7 @@ public class UnitScroller {
   }
 
   /** Constructs a UI component for the UnitScroller. */
-  public Component build(
-      final LocalPlayers localPlayers,
-      final Runnable highlightUnitsAction,
-      final Runnable toggleFlags) {
+  public Component build(final LocalPlayers localPlayers, final Runnable highlightUnitsAction) {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     updateMovesLeftLabel();
@@ -206,11 +201,6 @@ public class UnitScroller {
 
     topPanel.add(highlightMovableToggle);
     topPanel.add(Box.createHorizontalStrut(HORIZONTAL_BUTTON_GAP));
-
-    final JButton flagToggle = new JButton(UnitScrollerIcon.UNIT_FLAGS.get());
-    flagToggle.addActionListener(e -> toggleFlags.run());
-    flagToggle.setToolTipText(FLAG_TOGGLE_BUTTON_TOOLTIP);
-    topPanel.add(flagToggle);
 
     panel.add(topPanel, BorderLayout.NORTH);
     panel.add(Box.createVerticalStrut(2));

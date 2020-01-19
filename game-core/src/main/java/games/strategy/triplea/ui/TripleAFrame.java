@@ -725,9 +725,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
                         <= gameCenterPanel.getMaximumDividerLocation())
                     ? 1.0
                     : gameCenterPanel.getLastDividerLocation()));
-    bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_L),
-        () -> FlagDrawMode.toggleNextDrawMode(mapPanel));
     return bindings;
   }
 

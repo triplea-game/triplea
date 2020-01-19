@@ -58,7 +58,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     }
   }
 
-  abstract Component getUnitScrollerPanel(LocalPlayers localPlayers, Runnable toggleFlagsAction);
+  abstract Component getUnitScrollerPanel(LocalPlayers localPlayers);
 
   /*
    * sub-classes method for done handling
@@ -238,10 +238,7 @@ abstract class AbstractMovePanel extends ActionPanel {
         () -> {
           removeAll();
           add(movedUnitsPanel(gamePlayer, actionLabel));
-          add(
-              getUnitScrollerPanel(
-                  frame.getLocalPlayers(),
-                  () -> FlagDrawMode.toggleNextDrawMode(frame.getMapPanel())));
+          add(getUnitScrollerPanel(frame.getLocalPlayers()));
           refresh.run();
         });
   }

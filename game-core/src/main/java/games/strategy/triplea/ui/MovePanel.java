@@ -1620,8 +1620,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   }
 
   @Override
-  Component getUnitScrollerPanel(
-      final LocalPlayers localPlayers, final Runnable toggleFlagsAction) {
-    return unitScroller.build(localPlayers, this::highlightMovableUnits, toggleFlagsAction);
+  Component getUnitScrollerPanel(final LocalPlayers localPlayers) {
+    return unitScroller.build(localPlayers, this::highlightMovableUnits);
   }
 }

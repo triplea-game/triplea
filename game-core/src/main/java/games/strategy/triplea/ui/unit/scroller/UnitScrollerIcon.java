@@ -15,7 +15,6 @@ class UnitScrollerIcon implements Supplier<Icon> {
 
   static final UnitScrollerIcon CENTER_ON_UNIT = new UnitScrollerIcon("center.png");
   static final UnitScrollerIcon UNIT_HIGHLIGHT = new UnitScrollerIcon("highlight.png");
-  static final UnitScrollerIcon UNIT_FLAGS = new UnitScrollerIcon("flag.png");
 
   static final UnitScrollerIcon LEFT_ARROW = new UnitScrollerIcon("left_arrow.png");
   static final UnitScrollerIcon RIGHT_ARROW = new UnitScrollerIcon("right_arrow.png");
