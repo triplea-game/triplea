@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 ext {
@@ -16,7 +14,6 @@ dependencies {
     implementation "org.apache.commons:commons-math3:$commonsMathVersion"
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
-    implementation "org.mindrot:jbcrypt:$jbcryptVersion"
     implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
     implementation project(":domain-data")
     implementation project(":http-clients")

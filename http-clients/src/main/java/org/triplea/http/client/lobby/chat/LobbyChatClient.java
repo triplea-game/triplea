@@ -10,15 +10,15 @@ import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
-import org.triplea.http.client.web.socket.WebsocketListener;
+import org.triplea.http.client.web.socket.WebsocketListenerBinding;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 /** Core websocket client to communicate with lobby chat API. */
-public class LobbyChatClient
-    extends WebsocketListener<ChatServerMessageType, ChatMessageListeners> {
+public class LobbyChatClient {
   public static final String LOBBY_CHAT_WEBSOCKET_PATH = "/lobby/chat/websocket";
 
   private final ChatClientEnvelopeFactory outboundMessageFactory;
+  private final GenericWebSocketClient webSocketClient;
 
   public LobbyChatClient(
       final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
@@ -31,7 +31,7 @@ public class LobbyChatClient
   LobbyChatClient(
       final GenericWebSocketClient webSocketClient,
       final ChatClientEnvelopeFactory clientEventFactory) {
-    super(webSocketClient);
+    this.webSocketClient = webSocketClient;
     outboundMessageFactory = clientEventFactory;
   }
 
@@ -41,37 +41,37 @@ public class LobbyChatClient
   }
 
   public void setChatMessageListeners(final ChatMessageListeners chatMessageListeners) {
-    setListeners(chatMessageListeners);
+    new WebsocketListenerBinding<>(webSocketClient, chatMessageListeners) {
+      @Override
+      protected ChatServerMessageType readMessageType(
+          final ServerMessageEnvelope serverMessageEnvelope) {
+        return ChatServerMessageType.valueOf(serverMessageEnvelope.getMessageType());
+      }
+    };
   }
 
   public void slapPlayer(final UserName userName) {
-    getWebSocketClient().send(outboundMessageFactory.slapMessage(userName));
+    webSocketClient.send(outboundMessageFactory.slapMessage(userName));
   }
 
   public void sendChatMessage(final String message) {
-    getWebSocketClient().send(outboundMessageFactory.sendMessage(message));
+    webSocketClient.send(outboundMessageFactory.sendMessage(message));
   }
 
   public Collection<ChatParticipant> connect() {
-    getWebSocketClient().send(outboundMessageFactory.connectToChat());
+    webSocketClient.send(outboundMessageFactory.connectToChat());
     return new HashSet<>();
   }
 
   public void updateStatus(final String status) {
-    getWebSocketClient().send(outboundMessageFactory.updateMyPlayerStatus(status));
+    webSocketClient.send(outboundMessageFactory.updateMyPlayerStatus(status));
   }
 
-  public void addConnectionLostListener(final Consumer<String> connectionLostListener) {
-    getWebSocketClient().addConnectionLostListener(connectionLostListener);
+  public void addConnectionClosedListener(final Runnable connectionLostListener) {
+    webSocketClient.addConnectionClosedListener(connectionLostListener);
   }
 
-  public void addConnectionClosedListener(final Consumer<String> connectionLostListener) {
-    getWebSocketClient().addConnectionClosedListener(connectionLostListener);
-  }
-
-  @Override
-  protected ChatServerMessageType readMessageType(
-      final ServerMessageEnvelope serverMessageEnvelope) {
-    return ChatServerMessageType.valueOf(serverMessageEnvelope.getMessageType());
+  public void close() {
+    webSocketClient.close();
   }
 }

@@ -9,9 +9,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
-import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
 import org.triplea.util.Version;
 
 /**
@@ -41,7 +41,7 @@ final class DownloadFileParser {
   }
 
   private static List<DownloadFileDescription> parseImpl(final InputStream is) {
-    final Load load = new Load(new LoadSettingsBuilder().build());
+    final Load load = new Load(LoadSettings.builder().build());
     final List<?> yamlData = (List<?>) load.loadFromInputStream(is);
 
     final List<DownloadFileDescription> downloads = new ArrayList<>();

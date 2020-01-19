@@ -16,6 +16,8 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Cursor;
 import java.awt.Window;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.JLabel;
 import org.triplea.java.concurrency.CountDownLatchHandler;
@@ -82,9 +84,20 @@ public interface UiContext {
 
   DiceImageFactory getDiceImageFactory();
 
-  void removeActive(Active actor);
+  void addShutdownHook(Runnable hook);
 
-  void addActive(Active actor);
+  void removeShutdownHook(Runnable hook);
+
+  /**
+   * Utility method to wait for user input, that can optionally be aborted when the UiContext shuts
+   * down.
+   *
+   * @param future The future to wait for.
+   * @param <T> The return type of the future.
+   * @return An optional result in case the future completes. In case the future completes with
+   *     null, is completed exceptionally or aborted in any other way, the optional will be empty.
+   */
+  <T> Optional<T> awaitUserInput(CompletableFuture<T> future);
 
   void addShutdownLatch(CountDownLatch latch);
 

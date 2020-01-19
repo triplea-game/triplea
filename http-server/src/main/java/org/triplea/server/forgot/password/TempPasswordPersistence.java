@@ -6,10 +6,10 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
+import org.triplea.server.user.account.PasswordBCrypter;
 
 /**
  * Stores a user temporary password in database. When we generate a new temporary password, all
@@ -27,7 +27,7 @@ class TempPasswordPersistence {
     return new TempPasswordPersistence(
         jdbi.onDemand(TempPasswordDao.class),
         Sha512Hasher::hashPasswordWithSalt,
-        hashedPass -> BCrypt.hashpw(hashedPass, BCrypt.gensalt()));
+        PasswordBCrypter::hashPassword);
   }
 
   boolean storeTempPassword(

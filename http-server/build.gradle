@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 archivesBaseName = "$group-$name"
@@ -35,7 +35,7 @@ dependencies {
     implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
     implementation "org.jdbi:jdbi3-core:$jdbiVersion"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbiVersion"
-    implementation "org.mindrot:jbcrypt:$jbcryptVersion"
+    implementation "at.favre.lib:bcrypt:$bcryptVersion"
     implementation project(':domain-data')
     implementation project(':http-clients')
     implementation project(':java-extras')
@@ -71,4 +71,8 @@ task release(group: 'release', dependsOn: portableInstaller) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files)
     }
+}
+
+shadowJar {
+    archiveClassifier.set ''
 }

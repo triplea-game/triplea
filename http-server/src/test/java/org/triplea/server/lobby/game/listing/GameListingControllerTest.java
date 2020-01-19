@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
 import org.triplea.server.TestData;
 import org.triplea.server.http.AllowedUserRole;
 import org.triplea.server.http.ProtectedEndpointTest;
@@ -17,7 +18,15 @@ class GameListingControllerTest extends ProtectedEndpointTest<GameListingClient>
   GameListingControllerTest() {
     super(
         AllowedUserRole.HOST,
-        (uri, apiKey) -> GameListingClient.newClient(uri, apiKey, errMsg -> {}));
+        (uri, apiKey) ->
+            GameListingClient.newClient(
+                uri,
+                apiKey,
+                errMsg -> {},
+                GameListingListeners.builder()
+                    .gameRemoved(id -> {})
+                    .gameUpdated(listing -> {})
+                    .build()));
     lobbyWatcherClient =
         LobbyWatcherClient.newClient(localhost, AllowedUserRole.HOST.getAllowedKey());
   }

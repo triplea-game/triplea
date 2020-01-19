@@ -70,7 +70,7 @@ import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
 import org.triplea.http.client.remote.actions.messages.server.ServerRemoteActionMessageType;
-import org.triplea.http.client.web.socket.WebsocketListener;
+import org.triplea.http.client.web.socket.WebsocketListenerBinding;
 import org.triplea.http.client.web.socket.WebsocketListenerFactory;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
@@ -111,7 +111,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
   @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;
-  private @Nullable WebsocketListener<ServerRemoteActionMessageType, RemoteActionListeners>
+  private @Nullable WebsocketListenerBinding<ServerRemoteActionMessageType, RemoteActionListeners>
       remoteActionsListener;
 
   private final IServerStartupRemote serverStartupRemote =
@@ -292,7 +292,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
     Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
     Optional.ofNullable(chatModelCancel).ifPresent(Runnable::run);
-    Optional.ofNullable(remoteActionsListener).ifPresent(WebsocketListener::close);
+    Optional.ofNullable(remoteActionsListener).ifPresent(WebsocketListenerBinding::close);
   }
 
   public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
@@ -416,16 +416,15 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 lobbyUri,
                 RemoteActionListeners.NOTIFICATIONS_WEBSOCKET_PATH,
                 ServerRemoteActionMessageType::valueOf,
-                errorHandler);
-        remoteActionsListener.setListeners(
-            RemoteActionListeners.builder()
-                .bannedPlayerListener(new PlayerDisconnectAction(serverMessenger, this::cancel))
-                .shutdownListener(
-                    emptyStringMessage -> {
-                      cancel();
-                      ExitStatus.SUCCESS.exit();
-                    })
-                .build());
+                errorHandler,
+                RemoteActionListeners.builder()
+                    .bannedPlayerListener(new PlayerDisconnectAction(serverMessenger, this::cancel))
+                    .shutdownListener(
+                        emptyStringMessage -> {
+                          cancel();
+                          ExitStatus.SUCCESS.exit();
+                        })
+                    .build());
 
         lobbyWatcherThread =
             new LobbyWatcherThread(

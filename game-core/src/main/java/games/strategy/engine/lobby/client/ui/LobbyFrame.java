@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.ui;
 
-import com.google.common.base.Strings;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
@@ -11,13 +10,13 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
+import games.strategy.triplea.ui.QuitHandler;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-import java.util.Optional;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -25,10 +24,9 @@ import lombok.Getter;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.SwingComponents;
 
 /** The top-level frame window for the lobby client UI. */
-public class LobbyFrame extends JFrame {
+public class LobbyFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = -388371674076362572L;
 
   @Getter private final LobbyClient lobbyClient;
@@ -68,27 +66,11 @@ public class LobbyFrame extends JFrame {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    // show an error if connection is lost
-    lobbyClient
-        .getHttpLobbyClient()
-        .getLobbyChatClient()
-        .addConnectionLostListener(
-            disconnectMessage -> {
-              SwingComponents.showError(
-                  this,
-                  "Disconnected from Chat",
-                  Optional.ofNullable(Strings.emptyToNull(disconnectMessage))
-                      .orElse("Disconnected from chat"));
-              tableModel.shutdown();
-              dispose();
-              shutdown();
-            });
-    // shutdown cleanly if client initiates the disconnect
     lobbyClient
         .getHttpLobbyClient()
         .getLobbyChatClient()
         .addConnectionClosedListener(
-            errMsg -> {
+            () -> {
               tableModel.shutdown();
               dispose();
               shutdown();
@@ -131,7 +113,8 @@ public class LobbyFrame extends JFrame {
             .toSwingAction());
   }
 
-  public void shutdown() {
+  @Override
+  public boolean shutdown() {
     setVisible(false);
     dispose();
     new Thread(
@@ -140,5 +123,6 @@ public class LobbyFrame extends JFrame {
               GameRunner.exitGameIfFinished();
             })
         .start();
+    return true;
   }
 }

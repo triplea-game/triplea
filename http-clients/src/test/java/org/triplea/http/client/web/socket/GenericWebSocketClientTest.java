@@ -41,18 +41,16 @@ class GenericWebSocketClientTest {
   private final Gson gson = new Gson();
 
   @Mock private Consumer<ServerMessageEnvelope> messageListener;
-  @Mock private Consumer<String> connectionLostListener;
-  @Mock private Consumer<String> connectionClosedListener;
+  @Mock private Runnable connectionClosedListener;
   @Mock private WebSocketConnection webSocketClient;
 
   private GenericWebSocketClient genericWebSocketClient;
 
   @BeforeEach
   void setup() {
-    when(webSocketClient.connect(any())).thenReturn(new CompletableFuture<>());
+    when(webSocketClient.connect(any(), any())).thenReturn(new CompletableFuture<>());
     genericWebSocketClient = new GenericWebSocketClient(webSocketClient, errMsg -> {});
-    genericWebSocketClient.addMessageListener(messageListener);
-    genericWebSocketClient.addConnectionLostListener(connectionLostListener);
+    genericWebSocketClient.registerListenerAndConnect(messageListener);
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
   }
 
@@ -64,32 +62,30 @@ class GenericWebSocketClientTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify connection closed by socket triggers calls to connection lost and closed listeners")
+  @DisplayName("Verify connection closed by socket triggers calls to connection closed listener")
   void connectionLost() {
     genericWebSocketClient.connectionClosed(REASON);
 
-    verify(connectionLostListener).accept(REASON);
-    verify(connectionClosedListener).accept(REASON);
+    verify(connectionClosedListener).run();
   }
 
   @Test
-  @DisplayName("Verify client close removes connection lost listeners")
+  @DisplayName("Verify client close calls connection closed listener")
   void connectionClosed() {
     // this call is expected to remove connection lost listeners
     genericWebSocketClient.close();
     genericWebSocketClient.connectionClosed(REASON);
 
     verify(webSocketClient, timeout(500)).close();
-    verify(connectionClosedListener).accept(REASON);
-    verify(connectionLostListener, never()).accept(any());
+    verify(connectionClosedListener).run();
   }
 
   @Test
+  @DisplayName("Verify handle error should just do logging, connection should remain open")
   void handleError() {
     genericWebSocketClient.handleError(exception);
 
-    verify(connectionLostListener).accept(exception.getMessage());
+    verify(connectionClosedListener, never()).run();
   }
 
   @Test

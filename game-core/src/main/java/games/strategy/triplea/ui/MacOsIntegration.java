@@ -40,8 +40,16 @@ public final class MacOsIntegration {
   }
 
   /** Sets the specified quit handler to the application. */
-  public static void setQuitHandler(final Runnable handler) {
+  public static void setQuitHandler(final QuitHandler handler) {
     checkNotNull(handler);
-    Desktop.getDesktop().setQuitHandler((quitEvent, quitResponse) -> handler.run());
+    Desktop.getDesktop()
+        .setQuitHandler(
+            (quitEvent, quitResponse) -> {
+              if (handler.shutdown()) {
+                quitResponse.performQuit();
+              } else {
+                quitResponse.cancelQuit();
+              }
+            });
   }
 }

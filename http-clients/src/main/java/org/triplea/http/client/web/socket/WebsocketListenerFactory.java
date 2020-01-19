@@ -33,17 +33,18 @@ public class WebsocketListenerFactory {
    *     respective message types that a server can send.
    */
   public static <MessageTypeT extends WebsocketMessageType<ListenersTypeT>, ListenersTypeT>
-      WebsocketListener<MessageTypeT, ListenersTypeT> newListener(
+      WebsocketListenerBinding<MessageTypeT, ListenersTypeT> newListener(
           final URI serverUri,
           final String path,
           final Function<String, MessageTypeT> messageTypeExtraction,
-          final Consumer<String> errorHandler) {
+          final Consumer<String> errorHandler,
+          final ListenersTypeT listeners) {
 
     final URI websocketUri = URI.create(serverUri + path);
     final GenericWebSocketClient genericWebSocketClient =
         new GenericWebSocketClient(websocketUri, errorHandler);
 
-    return new WebsocketListener<>(genericWebSocketClient) {
+    return new WebsocketListenerBinding<>(genericWebSocketClient, listeners) {
       @Override
       protected MessageTypeT readMessageType(final ServerMessageEnvelope serverMessageEnvelope) {
         return messageTypeExtraction.apply(serverMessageEnvelope.getMessageType());

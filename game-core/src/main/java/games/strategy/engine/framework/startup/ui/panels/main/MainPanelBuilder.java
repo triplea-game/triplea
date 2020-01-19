@@ -52,8 +52,8 @@ public class MainPanelBuilder {
                 .map(SetupModel::getChatModel)
                 .orElse(null),
             setupPanelModel::showSelectType);
-    setupPanelModel.setPanelChangeListener(mainPanel);
-    gameSelectorModel.addObserver(mainPanel);
+    setupPanelModel.setPanelChangeListener(setupPanel -> mainPanel.setSetupPanel(setupPanel));
+    gameSelectorModel.addObserver((observable, arg) -> mainPanel.updatePlayButtonState());
     return mainPanel;
   }
 }

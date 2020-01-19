@@ -4,10 +4,10 @@ import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
@@ -30,7 +30,7 @@ public class Chatters {
   }
 
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
-  private final Map<String, ChatterSession> participants = new HashMap<>();
+  private final Map<String, ChatterSession> participants = new ConcurrentHashMap<>();
 
   Optional<UserName> removeSession(final Session session) {
     return Optional.ofNullable(participants.remove(session.getId()))

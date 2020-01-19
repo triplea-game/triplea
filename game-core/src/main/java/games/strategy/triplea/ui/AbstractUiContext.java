@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -53,7 +56,7 @@ public abstract class AbstractUiContext implements UiContext {
   private boolean isShutDown = false;
 
   private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
-  private final List<Active> activeToDeactivate = new ArrayList<>();
+  private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 
   @Override
@@ -120,29 +123,46 @@ public abstract class AbstractUiContext implements UiContext {
   protected abstract void internalSetMapDir(String dir, GameData data);
 
   @Override
-  public void removeActive(final Active actor) {
+  public void removeShutdownHook(final Runnable hook) {
     if (isShutDown) {
       return;
     }
     synchronized (this) {
-      activeToDeactivate.remove(actor);
+      activeToDeactivate.remove(hook);
     }
   }
 
   /** Add a latch that will be released when the game shuts down. */
   @Override
-  public void addActive(final Active actor) {
+  public void addShutdownHook(final Runnable hook) {
     if (isShutDown) {
-      closeActor(actor);
+      runHook(hook);
       return;
     }
     synchronized (this) {
       if (isShutDown) {
-        closeActor(actor);
+        runHook(hook);
         return;
       }
-      activeToDeactivate.add(actor);
+      activeToDeactivate.add(hook);
     }
+  }
+
+  @Override
+  public <T> Optional<T> awaitUserInput(final CompletableFuture<T> future) {
+    final Runnable rejectionCallback =
+        () -> future.completeExceptionally(new RuntimeException("Shutting down"));
+    try {
+      addShutdownHook(rejectionCallback);
+      return Optional.ofNullable(future.get());
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } catch (final ExecutionException e) {
+      log.log(Level.INFO, "UiContext shut down before supplying result", e);
+    } finally {
+      removeShutdownHook(rejectionCallback);
+    }
+    return Optional.empty();
   }
 
   /** Add a latch that will be released when the game shuts down. */
@@ -211,8 +231,8 @@ public abstract class AbstractUiContext implements UiContext {
       for (final Window window : windowsToCloseOnShutdown) {
         closeWindow(window);
       }
-      for (final Active actor : activeToDeactivate) {
-        closeActor(actor);
+      for (final Runnable actor : activeToDeactivate) {
+        runHook(actor);
       }
       activeToDeactivate.clear();
       windowsToCloseOnShutdown.clear();
@@ -247,9 +267,9 @@ public abstract class AbstractUiContext implements UiContext {
         && !mapSkin.endsWith("properties");
   }
 
-  private static void closeActor(final Active actor) {
+  private static void runHook(final Runnable hook) {
     try {
-      actor.deactivate();
+      hook.run();
     } catch (final RuntimeException e) {
       log.log(Level.SEVERE, "Failed to deactivate actor", e);
     }

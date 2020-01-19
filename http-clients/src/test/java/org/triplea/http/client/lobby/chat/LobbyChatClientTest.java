@@ -2,23 +2,19 @@ package org.triplea.http.client.lobby.chat;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFactory;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
 import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
 import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
@@ -31,17 +27,6 @@ class LobbyChatClientTest {
   private static final UserName PLAYER_NAME = UserName.of("player_name");
   private static final String MESSAGE = "message";
   private static final String STATUS = "status";
-
-  private static final ChatterList chatters = new ChatterList(List.of());
-  private static final ChatParticipant CHAT_PARTICIPANT =
-      ChatParticipant.builder()
-          .userName(UserName.of("player-name"))
-          .playerChatId(PlayerChatId.newId())
-          .build();
-  private static final StatusUpdate STATUS_UPDATE = new StatusUpdate(PLAYER_NAME, "");
-  private static final PlayerSlapped PLAYER_SLAPPED =
-      PlayerSlapped.builder().slapper(PLAYER_NAME).slapped(UserName.of("slapped")).build();
-  private static final ChatMessage CHAT_MESSAGE = new ChatMessage(PLAYER_NAME, "message");
 
   @Mock private GenericWebSocketClient webSocketClient;
   @Mock private ChatClientEnvelopeFactory clientEventFactory;
@@ -71,11 +56,6 @@ class LobbyChatClientTest {
             .chatEventListener(chatEventListener)
             .serverErrorListener(serverErrorListener)
             .build());
-  }
-
-  @Test
-  void verifyConstructorRegistersItselfAsWebsocketListener() {
-    verify(webSocketClient).addMessageListener(lobbyChatClient);
   }
 
   @Test
@@ -125,61 +105,5 @@ class LobbyChatClientTest {
     lobbyChatClient.updateStatus(STATUS);
 
     verify(webSocketClient).send(clientEnvelope);
-  }
-
-  @Test
-  void playerListing() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerListing(List.of()));
-
-    verify(connectedListener).accept(chatters);
-  }
-
-  @Test
-  void statusChanged() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newStatusUpdate(STATUS_UPDATE));
-
-    verify(playerStatusListener).accept(STATUS_UPDATE);
-  }
-
-  @Test
-  void playerJoined() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerJoined(CHAT_PARTICIPANT));
-
-    verify(playerJoinedListener).accept(CHAT_PARTICIPANT);
-  }
-
-  @Test
-  void playerLeft() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newPlayerLeft(PLAYER_NAME));
-
-    verify(playerLeftListener).accept(PLAYER_NAME);
-  }
-
-  @Test
-  void playerSlapped() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newSlap(PLAYER_SLAPPED));
-
-    verify(playerSlappedListener).accept(PLAYER_SLAPPED);
-  }
-
-  @Test
-  void chatMessage() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newChatMessage(CHAT_MESSAGE));
-
-    verify(chatMessageListener).accept(CHAT_MESSAGE);
-  }
-
-  @Test
-  void chatEvent() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newEventMessage("event"));
-
-    verify(chatEventListener).accept("event");
-  }
-
-  @Test
-  void serverError() {
-    lobbyChatClient.accept(ChatServerEnvelopeFactory.newErrorMessage());
-
-    verify(serverErrorListener).accept(anyString());
   }
 }

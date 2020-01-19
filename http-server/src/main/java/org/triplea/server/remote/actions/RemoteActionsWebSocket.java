@@ -30,7 +30,7 @@ public class RemoteActionsWebSocket {
   }
 
   @OnClose
-  public void close(final Session session, final CloseReason closeReason) {
+  public void onClose(final Session session, final CloseReason closeReason) {
     getEventQueue(session).removeSession(session);
   }
 

@@ -4,8 +4,8 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.27.0'
     id 'io.franzbecker.gradle-lombok' version '3.2.0' apply false
-    id 'net.ltgt.errorprone' version '0.8.1' apply false
-    id 'com.diffplug.gradle.spotless' version '3.26.1' apply false
+    id 'net.ltgt.errorprone' version '1.1.1' apply false
+    id 'com.diffplug.gradle.spotless' version '3.27.1' apply false
     id "org.sonarqube" version "2.8"
 }
 
@@ -74,9 +74,10 @@ subprojects {
     version = getProductVersion()
 
     ext {
-        awaitilityVersion = '4.0.1'
+        awaitilityVersion = '4.0.2'
+        bcryptVersion = '0.9.0'
         commonsCliVersion = '1.4'
-        commonsCodecVersion = '1.13'
+        commonsCodecVersion = '1.14'
         commonsIoVersion = '2.6'
         commonsMathVersion = '3.6.1'
         databaseRiderVersion = '1.7.3'
@@ -95,18 +96,17 @@ subprojects {
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '2.3.0.1'
         jaxbImplVersion = '2.3.2'
-        jbcryptVersion = '0.4'
         jdbiVersion = '3.12.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.5.2'
-        junitPioneerVersion = '0.3.0'
+        junitPioneerVersion = '0.5.1'
         junitPlatformLauncherVersion = '1.5.2'
         mockitoVersion = '3.2.4'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.9'
         rateLimitjVersion = '0.6.0'
         slf4jSimpleVersion = '1.7.28'
-        snakeYamlVersion = '1.0'
+        snakeYamlVersion = '2.0'
         sonatypeGoodiesPrefsVersion = '2.3.1'
         substanceVersion = '2.5.1'
     }

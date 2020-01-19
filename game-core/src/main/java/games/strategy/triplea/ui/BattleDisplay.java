@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -41,10 +42,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -67,7 +70,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingAction;
@@ -75,6 +80,7 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
 
 /** Displays a running battle. */
+@Log
 public class BattleDisplay extends JPanel {
   private static final long serialVersionUID = -7939993104972562765L;
   private static final String DICE_KEY = "D";
@@ -176,8 +182,8 @@ public class BattleDisplay extends JPanel {
 
   void cleanUp() {
     actionButton.setAction(nullAction);
-    steps.deactivate();
-    mapPanel.getUiContext().removeActive(steps);
+    steps.wakeAll();
+    mapPanel.getUiContext().removeShutdownHook(steps::wakeAll);
     steps = null;
   }
 
@@ -304,25 +310,15 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> actionButton.setAction(buttonAction));
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
 
-    // Set a auto-wait expiration if the option is set.
+    // Set a auto-wait expiration if the option is set or
+    // waits for the button to be pressed otherwise.
     if (!ClientSetting.confirmDefensiveRolls.getValueOrThrow()) {
       final int maxWaitTime = 1500;
-      final Timer t = new Timer();
-      t.schedule(
-          new TimerTask() {
-            @Override
-            public void run() {
-              continueLatch.countDown();
-              if (continueLatch.getCount() > 0) {
-                SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
-              }
-            }
-          },
-          maxWaitTime);
+      Interruptibles.await(() -> continueLatch.await(maxWaitTime, TimeUnit.MILLISECONDS));
+    } else {
+      Interruptibles.await(continueLatch);
     }
 
-    // wait for the button to be pressed.
-    Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
   }
@@ -340,43 +336,50 @@ public class BattleDisplay extends JPanel {
     attackerModel.notifyRetreat(retreating);
   }
 
+  @Nullable
   Territory getRetreat(
       final String message, final Collection<Territory> possible, final boolean submerge) {
-    return (!submerge || possible.size() > 1)
-        ? getRetreatInternal(message, possible)
-        : getSubmerge(message);
-  }
-
-  private Territory getSubmerge(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
-    final AtomicReference<Territory> retreatTo = new AtomicReference<>();
-    final CountDownLatch latch = new CountDownLatch(1);
-    final Action action =
-        SwingAction.of(
-            "Submerge Subs?",
-            e -> {
-              actionButton.setEnabled(false);
-              if (showSubmergeDialog(message, retreatTo)) {
-                actionButton.setAction(nullAction);
-                latch.countDown();
-              }
-              actionButton.setEnabled(true);
-            });
+    final String title;
+    final Supplier<RetreatResult> supplier;
+    if (!submerge || possible.size() > 1) {
+      title = "Retreat?";
+      supplier = () -> showRetreatDialog(message, possible);
+    } else {
+      title = "Submerge Subs?";
+      supplier = () -> showSubmergeDialog(message);
+    }
+    final CompletableFuture<Territory> future = new CompletableFuture<>();
+    final Action action = getPlayerAction(title, supplier, future);
     SwingUtilities.invokeLater(
         () -> {
           actionButton.setAction(action);
           action.actionPerformed(null);
         });
-    mapPanel.getUiContext().addShutdownLatch(latch);
-    Interruptibles.await(latch);
-    mapPanel.getUiContext().removeShutdownLatch(latch);
-    return retreatTo.get();
+
+    return mapPanel.getUiContext().awaitUserInput(future).orElse(null);
   }
 
-  private boolean showSubmergeDialog(
-      final String message, final AtomicReference<Territory> retreatTo) {
+  private Action getPlayerAction(
+      final String title,
+      final Supplier<RetreatResult> showDialog,
+      final CompletableFuture<Territory> future) {
+    return SwingAction.of(
+        title,
+        e -> {
+          actionButton.setEnabled(false);
+          final RetreatResult retreatResult = showDialog.get();
+          if (retreatResult.isConfirmed()) {
+            future.complete(retreatResult.getTarget());
+            actionButton.setAction(nullAction);
+          }
+          actionButton.setEnabled(true);
+        });
+  }
+
+  private RetreatResult showSubmergeDialog(final String message) {
     final String ok = "Submerge";
     final String cancel = "Remain";
     final String wait = "Ask Me Later";
@@ -393,50 +396,18 @@ public class BattleDisplay extends JPanel {
             cancel);
     // dialog dismissed
     if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
-      return false;
+      return RetreatResult.noResult();
     }
     // remain
     if (choice == JOptionPane.NO_OPTION) {
-      return true;
+      return RetreatResult.remain();
     }
     // submerge
-    retreatTo.set(battleLocation);
-    return true;
+    return RetreatResult.retreatTo(battleLocation);
   }
 
-  private Territory getRetreatInternal(final String message, final Collection<Territory> possible) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Should not be called from dispatch thread");
-    }
-    final AtomicReference<Territory> retreatTo = new AtomicReference<>();
-    final CountDownLatch latch = new CountDownLatch(1);
-    final Action action =
-        SwingAction.of(
-            "Retreat?",
-            e -> {
-              actionButton.setEnabled(false);
-              if (showRetreatDialog(message, possible, retreatTo)) {
-                actionButton.setAction(nullAction);
-                latch.countDown();
-              }
-              actionButton.setEnabled(true);
-            });
-    SwingUtilities.invokeLater(
-        () -> {
-          actionButton.setAction(action);
-          action.actionPerformed(null);
-        });
-    mapPanel.getUiContext().addShutdownLatch(latch);
-    Interruptibles.await(latch);
-    mapPanel.getUiContext().removeShutdownLatch(latch);
-
-    return retreatTo.get();
-  }
-
-  private boolean showRetreatDialog(
-      final String message,
-      final Collection<Territory> possible,
-      final AtomicReference<Territory> retreatTo) {
+  private RetreatResult showRetreatDialog(
+      final String message, final Collection<Territory> possible) {
     final String yes =
         possible.size() == 1 ? "Retreat to " + possible.iterator().next().getName() : "Retreat";
     final String no = "Remain";
@@ -454,19 +425,23 @@ public class BattleDisplay extends JPanel {
             no);
     // dialog dismissed
     if (choice == JOptionPane.CLOSED_OPTION || choice == JOptionPane.CANCEL_OPTION) {
-      return false;
+      return RetreatResult.noResult();
     }
     // remain
     if (choice == JOptionPane.NO_OPTION) {
-      return true;
+      return RetreatResult.remain();
     }
 
     // retreat
     if (possible.size() == 1) {
-      retreatTo.set(possible.iterator().next());
-      return true;
+      return RetreatResult.retreatTo(possible.iterator().next());
     }
 
+    return showRetreatOptions(message, possible);
+  }
+
+  private RetreatResult showRetreatOptions(
+      final String message, final Collection<Territory> possible) {
     final RetreatComponent comp = new RetreatComponent(possible);
     final int option =
         JOptionPane.showConfirmDialog(
@@ -478,12 +453,11 @@ public class BattleDisplay extends JPanel {
             null);
     if (option == JOptionPane.OK_OPTION) {
       if (comp.getSelection() != null) {
-        retreatTo.set(comp.getSelection());
-        return true;
+        return RetreatResult.retreatTo(comp.getSelection());
       }
     }
 
-    return false;
+    return RetreatResult.noResult();
   }
 
   private class RetreatComponent extends JPanel {
@@ -665,7 +639,7 @@ public class BattleDisplay extends JPanel {
     messagePanel.setLayout(new BorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     steps = new BattleStepsPanel();
-    mapPanel.getUiContext().addActive(steps);
+    mapPanel.getUiContext().addShutdownHook(steps::wakeAll);
     steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
     dicePanel = new DicePanel(mapPanel.getUiContext(), gameData);
     actionPanel = new JPanel();
@@ -1119,6 +1093,25 @@ public class BattleDisplay extends JPanel {
           killed.add(panel);
         }
       }
+    }
+  }
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  private static class RetreatResult {
+    private final boolean confirmed;
+    @Nullable private final Territory target;
+
+    static RetreatResult noResult() {
+      return new RetreatResult(false, null);
+    }
+
+    static RetreatResult remain() {
+      return new RetreatResult(true, null);
+    }
+
+    static RetreatResult retreatTo(final Territory territory) {
+      return new RetreatResult(true, Preconditions.checkNotNull(territory));
     }
   }
 }

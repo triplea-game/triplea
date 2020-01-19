@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.triplea.util.Version;
 
 public class ServerYamlParser implements Function<InputStream, LiveServers> {
@@ -18,7 +18,7 @@ public class ServerYamlParser implements Function<InputStream, LiveServers> {
   @SuppressWarnings("unchecked")
   @Override
   public LiveServers apply(final InputStream inputStream) {
-    final Load load = new Load(new LoadSettingsBuilder().build());
+    final Load load = new Load(LoadSettings.builder().build());
     final Map<?, ?> yamlProps;
     try {
       yamlProps = (Map<?, ?>) load.loadFromInputStream(inputStream);

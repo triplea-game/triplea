@@ -18,7 +18,7 @@ import org.triplea.java.Interruptibles;
  * progression. Users of this class should deactivate it after they are done.
  */
 @Log
-class BattleStepsPanel extends JPanel implements Active {
+class BattleStepsPanel extends JPanel {
   private static final long serialVersionUID = 911638924664810435L;
   // if this is the target step, we want to walk to the last step
   private static final String LAST_STEP = "NULL MARKER FOR LAST STEP";
@@ -40,12 +40,7 @@ class BattleStepsPanel extends JPanel implements Active {
     list.setSelectionModel(listSelectionModel);
   }
 
-  @Override
-  public void deactivate() {
-    wakeAll();
-  }
-
-  private void wakeAll() {
+  void wakeAll() {
     synchronized (mutex) {
       for (final CountDownLatch l : waiters) {
         l.countDown();

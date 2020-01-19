@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.TestData;
 import org.triplea.http.client.WireMockTest;
+import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
 class GameListingClientTest extends WireMockTest {
@@ -26,7 +27,14 @@ class GameListingClientTest extends WireMockTest {
       LobbyGameListing.builder().gameId(GAME_ID).lobbyGame(LOBBY_GAME).build();
 
   private static GameListingClient newClient(final WireMockServer wireMockServer) {
-    return GameListingClient.newClient(buildHostUri(wireMockServer), API_KEY, errMsg -> {});
+    return GameListingClient.newClient(
+        buildHostUri(wireMockServer),
+        API_KEY,
+        errMsg -> {},
+        GameListingListeners.builder()
+            .gameRemoved(gameId -> {})
+            .gameUpdated(lobbyGameListing -> {})
+            .build());
   }
 
   @Test
