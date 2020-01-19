@@ -1,6 +1,9 @@
 package org.triplea.server.lobby.game.listing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
+import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.text.IsEmptyString.emptyString;
@@ -82,7 +85,7 @@ class GameListingTest {
 
       final List<LobbyGameListing> result = gameListing.getGames();
 
-      assertThat((long) result.size(), is(cache.size()));
+      assertThat(result.size(), is((int) cache.size()));
       assertThat(
           result,
           IsCollectionContaining.hasItem(
@@ -107,7 +110,7 @@ class GameListingTest {
       final boolean result = gameListing.keepAlive(API_KEY_0, GAME_ID_0);
       assertThat("Game not found, keep alive should return false", result, is(false));
 
-      assertThat(cache.asMap(), is(Map.of()));
+      assertThat(cache.asMap(), is(anEmptyMap()));
     }
 
     @Test
@@ -117,7 +120,8 @@ class GameListingTest {
       final boolean result = gameListing.keepAlive(API_KEY_0, GAME_ID_0);
 
       assertThat("Game found, keep alive should return true", result, is(true));
-      assertThat(cache.asMap(), is(Map.of(ID_0, lobbyGame0)));
+      assertThat(cache.asMap(), is(aMapWithSize(1)));
+      assertThat(cache.asMap(), hasEntry(ID_0, lobbyGame0));
     }
   }
 
@@ -129,7 +133,7 @@ class GameListingTest {
 
       gameListing.removeGame(API_KEY_0, GAME_ID_0);
 
-      assertThat(cache.asMap(), is(Map.of()));
+      assertThat(cache.asMap(), is(anEmptyMap()));
       verify(gameListingEventQueue).gameRemoved(GAME_ID_0);
     }
 
@@ -139,7 +143,8 @@ class GameListingTest {
 
       gameListing.removeGame(API_KEY_1, GAME_ID_0);
 
-      assertThat(cache.asMap(), is(Map.of(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0)));
+      assertThat(cache.asMap(), is(aMapWithSize(1)));
+      assertThat(cache.asMap(), hasEntry(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0));
       verify(gameListingEventQueue, never()).gameRemoved(any());
     }
   }
@@ -164,7 +169,7 @@ class GameListingTest {
       final boolean result = gameListing.updateGame(API_KEY_0, GAME_ID_0, lobbyGame0);
 
       assertThat(result, is(false));
-      assertThat(cache.asMap(), is(Map.of()));
+      assertThat(cache.asMap(), is(anEmptyMap()));
       verify(gameListingEventQueue, never()).gameUpdated(any());
     }
 
@@ -189,7 +194,7 @@ class GameListingTest {
 
       gameListing.bootGame(MODERATOR_ID, GAME_ID_0);
 
-      assertThat(cache.asMap(), is(Map.of()));
+      assertThat(cache.asMap(), is(anEmptyMap()));
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(
               ModeratorAuditHistoryDao.AuditArgs.builder()
