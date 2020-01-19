@@ -2,6 +2,7 @@ package org.triplea.server.access;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -104,8 +104,8 @@ class BannedPlayerFilterTest {
 
       final Response response = responseCaptor.getValue();
       assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
-      assertThat((String) response.getEntity(), StringContains.containsString("5 minutes"));
-      assertThat((String) response.getEntity(), StringContains.containsString(BAN_ID));
+      assertThat(response.getStatusInfo().getReasonPhrase(), containsString("5 minutes"));
+      assertThat(response.getStatusInfo().getReasonPhrase(), containsString(BAN_ID));
     }
   }
 

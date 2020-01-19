@@ -21,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.remote.actions.messages.server.RemoteActionsEnvelopeFactory;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.server.access.BannedPlayerEventHandler;
+import org.triplea.server.http.web.socket.SessionSet;
 
 @ExtendWith(MockitoExtension.class)
 class RemoteActionsEventQueueTest {
@@ -28,12 +30,14 @@ class RemoteActionsEventQueueTest {
 
   @Mock private BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
   @Mock private BiConsumer<Session, ServerMessageEnvelope> messageSender;
-  @Mock private SessionTracker sessionTracker;
+  @Mock private SessionSet sessionSet;
 
   private RemoteActionsEventQueue remoteActionsEventQueue;
 
   @Mock private Session session1;
   @Mock private Session session2;
+
+  @Mock private BannedPlayerEventHandler bannedPlayerEventHandler;
 
   @BeforeEach
   void setup() {
@@ -41,7 +45,8 @@ class RemoteActionsEventQueueTest {
         RemoteActionsEventQueue.builder()
             .messageBroadcaster(messageBroadcaster)
             .messageSender(messageSender)
-            .sessionTracker(sessionTracker)
+            .sessionSet(sessionSet)
+            .bannedPlayerEventHandler(bannedPlayerEventHandler)
             .build();
   }
 
@@ -51,14 +56,7 @@ class RemoteActionsEventQueueTest {
     @DisplayName("Adding a session adds to the session tracker")
     void addSession() {
       remoteActionsEventQueue.addSession(session1);
-      verify(sessionTracker).addSession(session1);
-    }
-
-    @Test
-    @DisplayName("Removing a session removes the session from the session tracker")
-    void removeListener() {
-      remoteActionsEventQueue.removeSession(session1);
-      verify(sessionTracker).removeSession(session1);
+      verify(sessionSet).put(session1);
     }
   }
 
@@ -67,12 +65,13 @@ class RemoteActionsEventQueueTest {
     @Test
     @DisplayName("Player bans are broadcasted to all sessions")
     void addPlayerBannedEvent() {
-      when(sessionTracker.getSessions()).thenReturn(Set.of(session1, session2));
+      when(sessionSet.values()).thenReturn(Set.of(session1, session2));
 
       remoteActionsEventQueue.addPlayerBannedEvent(IP);
 
       verify(messageBroadcaster)
           .accept(Set.of(session1, session2), RemoteActionsEnvelopeFactory.newBannedPlayer(IP));
+      verify(bannedPlayerEventHandler).fireBannedEvent(IP);
     }
   }
 
@@ -81,7 +80,7 @@ class RemoteActionsEventQueueTest {
     @Test
     @DisplayName("Shutdown requests are sent only to the target IP")
     void shutdownRequest() {
-      when(sessionTracker.getSessionsByIp(IP)).thenReturn(Set.of(session1));
+      when(sessionSet.getSessionsByIp(IP)).thenReturn(Set.of(session1));
 
       remoteActionsEventQueue.addShutdownRequestEvent(IP);
 
@@ -96,7 +95,7 @@ class RemoteActionsEventQueueTest {
     @Test
     @DisplayName("Shutdown requests are sent to each session identified by an IP")
     void shutdownRequestWithMultipleSessionsOnAnIp() {
-      when(sessionTracker.getSessionsByIp(IP)).thenReturn(Set.of(session1, session2));
+      when(sessionSet.getSessionsByIp(IP)).thenReturn(Set.of(session1, session2));
 
       remoteActionsEventQueue.addShutdownRequestEvent(IP);
 
@@ -107,7 +106,7 @@ class RemoteActionsEventQueueTest {
     @Test
     @DisplayName("Shutdown requests for non-existent IPs is a no-op")
     void verifyNoOpForNonExistentSession() {
-      when(sessionTracker.getSessionsByIp(IP)).thenReturn(Set.of());
+      when(sessionSet.getSessionsByIp(IP)).thenReturn(Set.of());
 
       remoteActionsEventQueue.addShutdownRequestEvent(IP);
 

@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.ui;
 
-import com.google.common.base.Strings;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
@@ -18,7 +17,6 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-import java.util.Optional;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -26,7 +24,6 @@ import lombok.Getter;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.SwingComponents;
 
 /** The top-level frame window for the lobby client UI. */
 public class LobbyFrame extends JFrame implements QuitHandler {
@@ -69,27 +66,11 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    // show an error if connection is lost
-    lobbyClient
-        .getHttpLobbyClient()
-        .getLobbyChatClient()
-        .addConnectionLostListener(
-            disconnectMessage -> {
-              SwingComponents.showError(
-                  this,
-                  "Disconnected from Chat",
-                  Optional.ofNullable(Strings.emptyToNull(disconnectMessage))
-                      .orElse("Disconnected from chat"));
-              tableModel.shutdown();
-              dispose();
-              shutdown();
-            });
-    // shutdown cleanly if client initiates the disconnect
     lobbyClient
         .getHttpLobbyClient()
         .getLobbyChatClient()
         .addConnectionClosedListener(
-            errMsg -> {
+            () -> {
               tableModel.shutdown();
               dispose();
               shutdown();

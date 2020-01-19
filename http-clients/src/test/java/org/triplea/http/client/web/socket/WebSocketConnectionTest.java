@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@SuppressWarnings("InnerClassMayBeStatic")
+@SuppressWarnings({"InnerClassMayBeStatic", "FutureReturnValueIgnored"})
 class WebSocketConnectionTest {
   private static final URI INVALID_URI = URI.create("wss://server.invalid");
   private static final String MESSAGE = "message";
@@ -42,7 +42,7 @@ class WebSocketConnectionTest {
     @BeforeEach
     void setup() {
       webSocketConnection = new WebSocketConnection(INVALID_URI);
-      webSocketConnection.addListener(webSocketConnectionListener);
+      webSocketConnection.connect(webSocketConnectionListener, err -> {});
     }
 
     @AfterEach
@@ -86,6 +86,7 @@ class WebSocketConnectionTest {
   class SendMessageAndConnect {
     @Mock private WebSocketClient webSocketClient;
     @Mock private Consumer<String> errorHandler;
+    @Mock private WebSocketConnectionListener webSocketConnectionListener;
 
     private WebSocketConnection webSocketConnection;
 
@@ -105,7 +106,8 @@ class WebSocketConnectionTest {
     void connectWillInitiateConnection() throws Exception {
       givenWebSocketConnects(true);
 
-      final boolean connected = webSocketConnection.connect(errorHandler).get();
+      final boolean connected =
+          webSocketConnection.connect(webSocketConnectionListener, errorHandler).get();
 
       assertThat(connected, is(true));
       verifyConnectWasCalled();
@@ -136,7 +138,8 @@ class WebSocketConnectionTest {
     void connectionFailure() throws Exception {
       givenWebSocketConnects(false);
 
-      final boolean connected = webSocketConnection.connect(errorHandler).get();
+      final boolean connected =
+          webSocketConnection.connect(webSocketConnectionListener, errorHandler).get();
 
       assertThat(connected, is(false));
       verifyPingerNotStarted();
@@ -157,7 +160,8 @@ class WebSocketConnectionTest {
     void connectionFailureWithInterruptedException() throws Exception {
       givenConnectionAttemptThrows();
 
-      final boolean connected = webSocketConnection.connect(errorHandler).get();
+      final boolean connected =
+          webSocketConnection.connect(webSocketConnectionListener, errorHandler).get();
 
       assertThat(connected, is(false));
       verifyPingerNotStarted();

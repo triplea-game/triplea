@@ -15,11 +15,13 @@ import javax.ws.rs.ext.Provider;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.jetty.http.HttpStatus;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.lobby.server.db.dao.user.ban.BanLookupRecord;
 import org.triplea.lobby.server.db.dao.user.ban.UserBanDao;
+import org.triplea.server.http.ResponseStatus;
 
 @Provider
 @PreMatching
@@ -51,7 +53,12 @@ public class BannedPlayerFilter implements ContainerRequestFilter {
           .ifPresent(
               banMessage ->
                   requestContext.abortWith(
-                      Response.status(Status.UNAUTHORIZED).entity(banMessage).build()));
+                      Response.status(
+                              ResponseStatus.builder()
+                                  .statusCode(HttpStatus.UNAUTHORIZED_401)
+                                  .reasonPhrase(banMessage)
+                                  .build())
+                          .build()));
     }
   }
 
@@ -60,6 +67,6 @@ public class BannedPlayerFilter implements ContainerRequestFilter {
         Duration.between(clock.instant(), banLookupRecord.getBanExpiry()).toMinutes();
     final String banDuration = BanDurationFormatter.formatBanMinutes(banMinutes);
 
-    return String.format("Banned %s, (ID: %s)", banDuration, banLookupRecord.getPublicBanId());
+    return String.format("Banned %s,  Ban-ID: %s", banDuration, banLookupRecord.getPublicBanId());
   }
 }

@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
@@ -26,11 +25,11 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   private static final Gson gson = new Gson();
 
   private final WebSocketConnection client;
-  private Collection<Consumer<ServerMessageEnvelope>> messageListeners = new HashSet<>();
-  /** These are called if connection is disconnected (by server). */
-  private final Collection<Consumer<String>> connectionLostListeners = new ArrayList<>();
   /** These are called whenever connection is closed, whether by us or server. */
-  private final Collection<Consumer<String>> connectionClosedListeners = new ArrayList<>();
+  private final Collection<Runnable> connectionClosedListeners = new ArrayList<>();
+
+  private final Consumer<String> errorHandler;
+  private Consumer<ServerMessageEnvelope> messageListener;
 
   public GenericWebSocketClient(final URI lobbyUri, final Consumer<String> errorHandler) {
     this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)), errorHandler);
@@ -40,15 +39,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   GenericWebSocketClient(
       final WebSocketConnection webSocketClient, final Consumer<String> errorHandler) {
     client = webSocketClient;
-    client.addListener(this);
-    client
-        .connect(errorHandler)
-        .exceptionally(
-            throwable -> {
-              log.log(
-                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
-              return false;
-            });
+    this.errorHandler = errorHandler;
   }
 
   @VisibleForTesting
@@ -58,8 +49,16 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
         : uri;
   }
 
-  public void addMessageListener(final Consumer<ServerMessageEnvelope> messageListener) {
-    messageListeners.add(messageListener);
+  public void registerListenerAndConnect(final Consumer<ServerMessageEnvelope> messageListener) {
+    this.messageListener = messageListener;
+    client
+        .connect(this, errorHandler)
+        .exceptionally(
+            throwable -> {
+              log.log(
+                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
+              return false;
+            });
   }
 
   /**
@@ -77,42 +76,26 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
    * Removes connection lost listeners and starts a non-blocking close of the websocket connection.
    */
   public void close() {
-    connectionLostListeners.clear();
     client.close();
   }
 
-  public void addConnectionClosedListener(final Consumer<String> connectionClosedListener) {
+  public void addConnectionClosedListener(final Runnable connectionClosedListener) {
     connectionClosedListeners.add(connectionClosedListener);
-  }
-
-  public void addConnectionLostListener(final Consumer<String> connectionLostListener) {
-    connectionLostListeners.add(connectionLostListener);
   }
 
   @Override
   public void messageReceived(final String message) {
     final ServerMessageEnvelope converted = gson.fromJson(message, ServerMessageEnvelope.class);
-    messageListeners.forEach(listener -> listener.accept(converted));
+    messageListener.accept(converted);
   }
 
   @Override
   public void connectionClosed(final String reason) {
-    connectionClosedListeners.forEach(
-        connectionLostListener -> connectionLostListener.accept(reason));
-    // note, if client closed the connection, '#close' would have been
-    // called first, removing the connection lost listeners. Then when the
-    // socket becomes closed, this method will be invoked automatically
-    // and the call to connectino lost listeners will be a no-op.
-    // On the other hand if the server closes the connection, then this
-    // method will be invoked and we'll expect to have a non-empty set of
-    // connectListListeners.
-    connectionLostListeners.forEach(
-        connectionLostListener -> connectionLostListener.accept(reason));
+    connectionClosedListeners.forEach(Runnable::run);
   }
 
   @Override
   public void handleError(final Exception exception) {
-    connectionLostListeners.forEach(
-        connectionLostListener -> connectionLostListener.accept(exception.getMessage()));
+    log.log(Level.SEVERE, "Websocket error", exception);
   }
 }

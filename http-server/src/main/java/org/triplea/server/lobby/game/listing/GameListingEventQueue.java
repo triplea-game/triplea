@@ -1,14 +1,8 @@
 package org.triplea.server.lobby.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingMessageFactory;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.server.http.web.socket.SessionSet;
 
 /** Receives game listing events and dispatches event messages to listeners. */
 @Builder
@@ -25,36 +20,21 @@ public class GameListingEventQueue {
   private final BiConsumer<Collection<Session>, ServerMessageEnvelope> broadcaster;
 
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
-  private final Map<String, Session> sessions = new HashMap<>();
+  private final SessionSet sessionSet;
 
   void addListener(final Session session) {
-    Preconditions.checkNotNull(session);
-    Preconditions.checkNotNull(session.getId());
-    sessions.put(session.getId(), session);
+    sessionSet.put(session);
   }
 
-  void removeListener(final String sessionId) {
-    sessions.remove(sessionId);
+  void removeListener(final Session session) {
+    sessionSet.remove(session);
   }
 
   void gameRemoved(final String gameId) {
-    removeClosedSessions();
-    broadcaster.accept(sessions.values(), GameListingMessageFactory.gameRemoved(gameId));
+    broadcaster.accept(sessionSet.values(), GameListingMessageFactory.gameRemoved(gameId));
   }
 
   void gameUpdated(final LobbyGameListing gameListing) {
-    removeClosedSessions();
-    broadcaster.accept(sessions.values(), GameListingMessageFactory.gameUpdated(gameListing));
-  }
-
-  /** Just in case we fail to remove a closed session from listeners, remove any closed sessions. */
-  private void removeClosedSessions() {
-    // find all sessions that are not open
-    final Set<Session> closedSessions =
-        sessions.values().stream()
-            .filter(Predicate.not(Session::isOpen))
-            .collect(Collectors.toSet());
-    // remove each of the closed sessions
-    closedSessions.stream().map(Session::getId).forEach(sessions::remove);
+    broadcaster.accept(sessionSet.values(), GameListingMessageFactory.gameUpdated(gameListing));
   }
 }

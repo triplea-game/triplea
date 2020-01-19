@@ -135,7 +135,7 @@ public class LobbyLogin {
         return loginToServer();
       }
     } catch (final FeignException e) {
-      showError("Could Not Connect", "Could not connect to lobby: " + e.getMessage());
+      showError("Could Not Connect To Lobby", "Error: " + e.getMessage());
       return Optional.empty();
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();

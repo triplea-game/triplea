@@ -14,6 +14,7 @@ import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.server.http.web.socket.SessionSet;
 
 /**
  * Handles processing logic when receiving chat messages and retains state of the currently
@@ -24,6 +25,7 @@ import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 public class ChatEventProcessor {
 
   private final Chatters chatters;
+  private final SessionSet sessionSet;
 
   public List<ServerResponse> processAndComputeServerResponses(
       final Session session,
@@ -39,6 +41,7 @@ public class ChatEventProcessor {
 
     switch (chatClientEnvelopeType.get()) {
       case CONNECT:
+        sessionSet.put(session);
         chatters.put(session, sender);
         return playerConnectedMessages(sender);
       case SLAP:

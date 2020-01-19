@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.google.common.util.concurrent.Runnables;
@@ -78,7 +79,7 @@ final class LobbyGameTableModelTest {
               .lobbyGame(gameDescription0.toLobbyGame())
               .build());
 
-      when(httpLobbyClient.getGameListingClient()).thenReturn(gameListingClient);
+      when(httpLobbyClient.newGameListingClient(any())).thenReturn(gameListingClient);
       when(gameListingClient.fetchGameListing()).thenReturn(fakeGameListing);
       testObj = new LobbyGameTableModel(true, httpLobbyClient);
       waitForSwingThreads();

@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 import javax.websocket.Session;
-import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +21,7 @@ import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingMessageType;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.server.TestData;
+import org.triplea.server.http.web.socket.SessionSet;
 
 @ExtendWith(MockitoExtension.class)
 class GameListingEventQueueTest {
@@ -31,49 +32,43 @@ class GameListingEventQueueTest {
 
   @Mock private Session openSession;
   @Mock private Session closedSession;
+  private SessionSet sessionSet = new SessionSet();
 
   @BeforeEach
   void setup() {
-    gameListingEventQueue = GameListingEventQueue.builder().broadcaster(broadcaster).build();
+    gameListingEventQueue =
+        GameListingEventQueue.builder().sessionSet(sessionSet).broadcaster(broadcaster).build();
   }
 
   @Test
   void hasNoListenersInitially() {
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(0));
+    assertThat(gameListingEventQueue.getSessionSet().values(), hasSize(0));
   }
 
   @Test
   void addListener() {
-    when(openSession.getId()).thenReturn("id0");
+    when(openSession.isOpen()).thenReturn(true);
     gameListingEventQueue.addListener(openSession);
 
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(1));
+    assertThat(gameListingEventQueue.getSessionSet().values(), hasSize(1));
   }
 
   @Test
   void removeListener() {
-    when(openSession.getId()).thenReturn("id0");
     gameListingEventQueue.addListener(openSession);
 
-    gameListingEventQueue.removeListener("id0");
+    gameListingEventQueue.removeListener(openSession);
 
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(0));
+    assertThat(gameListingEventQueue.getSessionSet().values(), hasSize(0));
   }
 
   @Test
-  void removeListenerIsNoOpWhenGameIdDoesNotMatch() {
-    when(openSession.getId()).thenReturn("id0");
-    gameListingEventQueue.addListener(openSession);
-
-    gameListingEventQueue.removeListener("ID_DNE");
-
-    assertThat(gameListingEventQueue.getSessions().values(), hasSize(1));
-  }
-
-  @Test
+  @SuppressWarnings("unchecked")
   void gameRemoved() {
-    givenListener(openSession, SessionParameters.builder().open(true).sessionId("id0").build());
-    givenListener(closedSession, SessionParameters.builder().open(false).sessionId("id1").build());
+    when(openSession.isOpen()).thenReturn(true);
+    gameListingEventQueue.addListener(openSession);
+    when(closedSession.isOpen()).thenReturn(false);
+    gameListingEventQueue.addListener(closedSession);
 
     gameListingEventQueue.gameRemoved("gameId");
 
@@ -91,21 +86,8 @@ class GameListingEventQueueTest {
                 GameListingMessageType.GAME_REMOVED.name(), "gameId")));
     assertThat(
         "Verify closed session is removed",
-        gameListingEventQueue.getSessions().values(),
+        gameListingEventQueue.getSessionSet().values(),
         hasSize(1));
-  }
-
-  @Builder
-  private static class SessionParameters {
-    private boolean open;
-    private String sessionId;
-  }
-
-  private void givenListener(final Session session, final SessionParameters sessionParameters) {
-    when(session.isOpen()).thenReturn(sessionParameters.open);
-    when(session.getId()).thenReturn(sessionParameters.sessionId);
-
-    gameListingEventQueue.addListener(session);
   }
 
   private void verifyBroadcastToSession(
@@ -118,10 +100,13 @@ class GameListingEventQueueTest {
   }
 
   @Test
+  @DisplayName("Update game, verify update game message is sent to open sessions")
+  @SuppressWarnings("unchecked")
   void gameUpdated() {
-    givenListener(openSession, SessionParameters.builder().open(true).sessionId("id0").build());
-    givenListener(closedSession, SessionParameters.builder().open(false).sessionId("id1").build());
-
+    when(openSession.isOpen()).thenReturn(true);
+    gameListingEventQueue.addListener(openSession);
+    when(closedSession.isOpen()).thenReturn(false);
+    gameListingEventQueue.addListener(closedSession);
     final LobbyGameListing lobbyGameListing =
         LobbyGameListing.builder().gameId("gameId").lobbyGame(TestData.LOBBY_GAME).build();
 
@@ -140,7 +125,7 @@ class GameListingEventQueueTest {
                 GameListingMessageType.GAME_UPDATED.name(), lobbyGameListing)));
     assertThat(
         "Verify closed session is removed",
-        gameListingEventQueue.getSessions().values(),
+        gameListingEventQueue.getSessionSet().values(),
         hasSize(1));
   }
 }

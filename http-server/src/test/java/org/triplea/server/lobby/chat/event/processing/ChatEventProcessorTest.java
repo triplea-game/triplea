@@ -29,6 +29,7 @@ import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.server.http.web.socket.SessionSet;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -46,9 +47,14 @@ class ChatEventProcessorTest {
   private static final ChatParticipant CHAT_PARTICIPANT_1 =
       ChatParticipant.builder().userName(PLAYER_NAME_1).isModerator(true).build();
 
-  private final ChatEventProcessor chatEventProcessor = new ChatEventProcessor(new Chatters());
+  private final ChatEventProcessor chatEventProcessor =
+      new ChatEventProcessor(new Chatters(), new SessionSet());
 
   @Mock private Chatters chatters;
+
+  @SuppressWarnings("unused")
+  @Mock
+  private SessionSet sessionSet;
 
   @InjectMocks private ChatEventProcessor chatEventProcessorWithMocks;
 
@@ -61,6 +67,7 @@ class ChatEventProcessorTest {
   class ProcessConnectMessage {
     @Test
     void connect() {
+      when(session.getId()).thenReturn("id");
       final List<ServerResponse> responses =
           chatEventProcessor.processAndComputeServerResponses(
               session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
@@ -84,6 +91,7 @@ class ChatEventProcessorTest {
 
     @Test
     void multiplePlayersConnect() {
+      when(session.getId()).thenReturn("id");
       chatEventProcessor.processAndComputeServerResponses(
           session, CHAT_PARTICIPANT_0, clientEventFactory.connectToChat());
 

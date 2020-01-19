@@ -73,8 +73,9 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
    * are printed, but in addition, if present, any server response body message is also printed.
    */
   private static Exception errorDecoder(final String methodKey, final Response response) {
-
-    final String firstLine = String.format("Status %s reading %s", response.status(), methodKey);
+    final String firstLine =
+        String.format(
+            "Status %s reading %s\nReason: %s", response.status(), methodKey, response.reason());
 
     throw Optional.ofNullable(response.body())
         .map(
