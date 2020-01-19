@@ -26,17 +26,15 @@ class GameListingWebsocketIntegrationTest extends DropwizardTest {
   @Mock private Consumer<String> gameRemovedListener;
 
   private LobbyWatcherClient lobbyWatcherClient;
-  private GameListingClient gameListingClient;
 
   @BeforeEach
   void setup() {
     lobbyWatcherClient =
         LobbyWatcherClient.newClient(localhost, AllowedUserRole.HOST.getAllowedKey());
-    gameListingClient =
-        GameListingClient.newClient(
-            localhost, AllowedUserRole.PLAYER.getAllowedKey(), errMsg -> {});
-
-    gameListingClient.addListeners(
+    GameListingClient.newClient(
+        localhost,
+        AllowedUserRole.PLAYER.getAllowedKey(),
+        errMsg -> {},
         GameListingListeners.builder()
             .gameUpdated(gameUpdatedListener)
             .gameRemoved(gameRemovedListener)

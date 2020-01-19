@@ -48,9 +48,9 @@ class GenericWebSocketClientTest {
 
   @BeforeEach
   void setup() {
-    when(webSocketClient.connect(any())).thenReturn(new CompletableFuture<>());
+    when(webSocketClient.connect(any(), any())).thenReturn(new CompletableFuture<>());
     genericWebSocketClient = new GenericWebSocketClient(webSocketClient, errMsg -> {});
-    genericWebSocketClient.addMessageListener(messageListener);
+    genericWebSocketClient.registerListenerAndConnect(messageListener);
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
   }
 
