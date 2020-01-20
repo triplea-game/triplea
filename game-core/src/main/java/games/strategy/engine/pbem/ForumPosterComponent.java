@@ -90,10 +90,7 @@ public final class ForumPosterComponent extends JPanel {
       final IAbstractForumPosterDelegate forumPosterDelegate,
       final TripleAFrame frame,
       final boolean hasPosted,
-      final boolean allowIncludeTerritorySummary,
-      final boolean allowIncludeProductionSummary,
-      final boolean allowDiceBattleDetails,
-      final boolean allowDiceStatistics) {
+      final boolean includeDetailsAndSummary) {
     this.forumPosterDelegate = forumPosterDelegate;
     this.frame = frame;
     this.poster = poster;
@@ -102,17 +99,11 @@ public final class ForumPosterComponent extends JPanel {
     // only show widgets if there are PBEM messengers
     removeAll();
 
-    if (allowIncludeTerritorySummary) {
+    if (includeDetailsAndSummary) {
       add(includeTerritoryCheckBox);
-    }
-    if (allowIncludeProductionSummary) {
       add(includeProductionCheckBox);
-    }
-    if (allowDiceBattleDetails) {
       showDetailsCheckBox.setSelected(true);
       add(showDetailsCheckBox);
-    }
-    if (allowDiceStatistics) {
       add(showDiceStatisticsCheckBox);
     }
 
@@ -126,7 +117,7 @@ public final class ForumPosterComponent extends JPanel {
     add(
         new JButtonBuilder()
             .title("Done")
-            .actionListener(doneAction::run)
+            .actionListener(doneAction)
             .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
             .build());
     validate();

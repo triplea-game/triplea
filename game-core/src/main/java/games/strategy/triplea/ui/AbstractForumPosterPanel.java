@@ -48,19 +48,13 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
         });
   }
 
-  protected abstract boolean allowIncludeTerritorySummary();
-
-  protected abstract boolean allowIncludeProductionSummary();
-
-  protected abstract boolean allowDiceBattleDetails();
-
-  protected abstract boolean allowDiceStatistics();
+  protected abstract boolean includeDetailsAndSummary();
 
   protected abstract boolean skipPosting();
 
   protected abstract String getTitle();
 
-  protected void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge) {
+  void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge) {
     tripleAFrame = frame;
     playerBridge = bridge;
     // Nothing to do if there are no PBEM messengers
@@ -74,8 +68,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
     }
 
     final boolean hasPosted =
-          ((IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate())
-              .getHasPostedTurnSummary();
+        ((IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate()).getHasPostedTurnSummary();
 
     SwingUtilities.invokeLater(
         () -> {
@@ -84,13 +77,10 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
           add(
               forumPosterComponent.layoutComponents(
                   pbemMessagePoster,
-                 (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate(),
+                  (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate(),
                   tripleAFrame,
                   hasPosted,
-                  allowIncludeTerritorySummary(),
-                  allowIncludeProductionSummary(),
-                  allowDiceBattleDetails(),
-                  allowDiceStatistics()));
+                  includeDetailsAndSummary()));
           validate();
         });
     waitForRelease();

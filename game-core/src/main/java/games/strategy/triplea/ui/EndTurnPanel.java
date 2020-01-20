@@ -29,22 +29,7 @@ class EndTurnPanel extends AbstractForumPosterPanel {
   }
 
   @Override
-  protected boolean allowIncludeTerritorySummary() {
-    return true;
-  }
-
-  @Override
-  protected boolean allowIncludeProductionSummary() {
-    return true;
-  }
-
-  @Override
-  protected boolean allowDiceBattleDetails() {
-    return true;
-  }
-
-  @Override
-  protected boolean allowDiceStatistics() {
+  protected boolean includeDetailsAndSummary() {
     return true;
   }
 

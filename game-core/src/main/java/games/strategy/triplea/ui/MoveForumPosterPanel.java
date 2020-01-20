@@ -20,22 +20,7 @@ class MoveForumPosterPanel extends AbstractForumPosterPanel {
   }
 
   @Override
-  protected boolean allowIncludeTerritorySummary() {
-    return false;
-  }
-
-  @Override
-  protected boolean allowIncludeProductionSummary() {
-    return false;
-  }
-
-  @Override
-  protected boolean allowDiceBattleDetails() {
-    return false;
-  }
-
-  @Override
-  protected boolean allowDiceStatistics() {
+  protected boolean includeDetailsAndSummary() {
     return false;
   }
 
