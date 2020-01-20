@@ -33,8 +33,8 @@ To zip a save game:
  - use a 'zip' program like winzip (file compression, 
    example: https://www.wikihow.com/Make-a-Zip-File)
 
-Once zipped, you can post the zip file to this issue by clicking 
-"attach files" at the bottom of this window or dragging and dropping 
+Once zipped, you can post the zip file to this issue by clicking
+"attach files" at the bottom of this window or dragging and dropping
 them into this text area. Thank you!
 -->
 
