@@ -30,9 +30,12 @@ Please zip and post a save game to this bug report!
 
 To zip a save game:
  - find the save game file ending with '.tsvg'
- - use a 'zip' program like winzip (file compression, example: https://www.wikihow.com/Make-a-Zip-File)
+ - use a 'zip' program like winzip (file compression, 
+   example: https://www.wikihow.com/Make-a-Zip-File)
 
-Once zipped, you can post the zip file to this issue by clicking "attach files" at the bottom of this window or dragging and dropping them into this text area. Thank you! 
+Once zipped, you can post the zip file to this issue by clicking 
+"attach files" at the bottom of this window or dragging and dropping 
+them into this text area. Thank you!
 -->
 
 
