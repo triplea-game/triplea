@@ -248,6 +248,7 @@ public interface Constants {
   String PROPERTY_FALSE = "false";
 
   String CONSTRUCTION_TYPE_FACTORY = "factory";
+  String CONSTRUCTION_TYPE_STRUCTURE = "structure";
 
   static String getIncomePercentageFor(final GamePlayer gamePlayer) {
     return gamePlayer.getName() + " Income Percentage";
