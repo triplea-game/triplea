@@ -1,7 +1,7 @@
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 ext {
-    apacheHttpComponentsVersion = '4.5.10'
+    apacheHttpComponentsVersion = '4.5.11'
 }
 
 dependencies {
