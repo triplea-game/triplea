@@ -185,8 +185,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   @Override
-  Component getUnitScrollerPanel(
-      final LocalPlayers localPlayers, final Runnable toggleFlagsAction) {
+  Component getUnitScrollerPanel(final LocalPlayers localPlayers) {
     return new JPanel();
   }
 

@@ -454,30 +454,31 @@ final class ViewMenu extends JMenu {
     flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
     flagDisplayMenu.setText("Flag Display Mode");
     final ButtonGroup flagsDisplayGroup = new ButtonGroup();
+
     final JRadioButtonMenuItem noFlags =
-        newRadioMenuItem(
-            flagsDisplayGroup,
-            "Off",
-            KeyCode.O,
-            () ->
-                FlagDrawMode.toggleDrawMode(
-                    UnitsDrawer.UnitFlagDrawMode.NONE, frame.getMapPanel()));
+        new JMenuItemBuilder("Off", KeyCode.O)
+            .actionListener(
+                () ->
+                    FlagDrawMode.toggleDrawMode(
+                        UnitsDrawer.UnitFlagDrawMode.NONE, frame.getMapPanel()))
+            .buildRadio(flagsDisplayGroup);
+
     final JRadioButtonMenuItem smallFlags =
-        newRadioMenuItem(
-            flagsDisplayGroup,
-            "Small",
-            KeyCode.S,
-            () ->
-                FlagDrawMode.toggleDrawMode(
-                    UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel()));
+        new JMenuItemBuilder("Small", KeyCode.S)
+            .actionListener(
+                () ->
+                    FlagDrawMode.toggleDrawMode(
+                        UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel()))
+            .buildRadio(flagsDisplayGroup);
+
     final JRadioButtonMenuItem largeFlags =
-        newRadioMenuItem(
-            flagsDisplayGroup,
-            "Large",
-            KeyCode.L,
-            () ->
-                FlagDrawMode.toggleDrawMode(
-                    UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel()));
+        new JMenuItemBuilder("Large", KeyCode.L)
+            .actionListener(
+                () ->
+                    FlagDrawMode.toggleDrawMode(
+                        UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel()))
+            .buildRadio(flagsDisplayGroup);
+
     flagDisplayMenu.add(noFlags);
     flagDisplayMenu.add(smallFlags);
     flagDisplayMenu.add(largeFlags);
@@ -501,11 +502,6 @@ final class ViewMenu extends JMenu {
           public void menuCanceled(final MenuEvent e) {}
         });
     add(flagDisplayMenu);
-  }
-
-  private static JRadioButtonMenuItem newRadioMenuItem(
-      final ButtonGroup group, final String text, final KeyCode mnemonic, final Runnable action) {
-    return new JMenuItemBuilder(text, mnemonic).actionListener(action).buildRadio(group);
   }
 
   private void addChatTimeMenu() {

@@ -23,7 +23,7 @@ public class JMenuItemBuilder {
   private final String title;
   private final KeyCode mnemonic;
   private Runnable actionListener;
-  private KeyCode acceleratorKey;
+  private int acceleratorKey;
   private boolean selected;
 
   public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
@@ -64,8 +64,7 @@ public class JMenuItemBuilder {
             accelerator ->
                 menuItem.setAccelerator(
                     KeyStroke.getKeyStroke(
-                        accelerator.getKeyEvent(),
-                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())));
+                        accelerator, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())));
   }
 
   /**
@@ -88,7 +87,12 @@ public class JMenuItemBuilder {
    *     key will fire the action bound to this menu item.
    */
   public JMenuItemBuilder accelerator(final KeyCode acceleratorKey) {
-    this.acceleratorKey = acceleratorKey;
+    this.acceleratorKey = acceleratorKey.getKeyEvent();
+    return this;
+  }
+
+  public JMenuItemBuilder accelerator(final int keyEvent) {
+    this.acceleratorKey = keyEvent;
     return this;
   }
 
