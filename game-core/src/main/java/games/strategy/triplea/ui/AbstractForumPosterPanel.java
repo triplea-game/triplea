@@ -17,13 +17,14 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
 
   IPlayerBridge playerBridge;
   PbemMessagePoster pbemMessagePoster;
-  ForumPosterComponent forumPosterComponent;
+  final ForumPosterComponent forumPosterComponent;
   private final JLabel actionLabel;
   private TripleAFrame tripleAFrame;
 
   AbstractForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
     actionLabel = new JLabel();
+    forumPosterComponent = new ForumPosterComponent(data, this::performDone, getTitle());
   }
 
   private int getRound() {
@@ -55,16 +56,9 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
 
   protected abstract boolean allowDiceStatistics();
 
-  protected abstract IAbstractForumPosterDelegate getForumPosterDelegate();
-
-  protected abstract boolean getHasPostedTurnSummary();
-
   protected abstract boolean skipPosting();
 
   protected abstract String getTitle();
-
-  @Override
-  public abstract String toString();
 
   protected void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge) {
     tripleAFrame = frame;
@@ -78,7 +72,11 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
     if (skipPosting() || GameStepPropertiesHelper.isSkipPosting(getData())) {
       return;
     }
-    final boolean hasPosted = getHasPostedTurnSummary();
+
+    final boolean hasPosted =
+          ((IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate())
+              .getHasPostedTurnSummary();
+
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
@@ -86,7 +84,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
           add(
               forumPosterComponent.layoutComponents(
                   pbemMessagePoster,
-                  getForumPosterDelegate(),
+                 (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate(),
                   tripleAFrame,
                   hasPosted,
                   allowIncludeTerritorySummary(),
