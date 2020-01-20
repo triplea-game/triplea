@@ -27,13 +27,14 @@ import org.triplea.java.collections.IntegerMap;
 public class ProPurchaseOption {
 
   @Getter private final ProductionRule productionRule;
-
   @Getter private final UnitType unitType;
   private final GamePlayer player;
-
   @Getter private final int cost;
-
   @Getter private final IntegerMap<Resource> costs;
+  @Getter private final boolean isConstruction;
+  @Getter private final String constructionType;
+  @Getter private final int constructionTypePerTurn;
+  @Getter private final int maxConstructionType;
   @Getter private final int movement;
   @Getter private final int quantity;
   @Getter private int hitPoints;
@@ -71,6 +72,10 @@ public class ProPurchaseOption {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     cost = productionRule.getCosts().getInt(pus);
     costs = productionRule.getCosts();
+    isConstruction = unitAttachment.getIsConstruction();
+    constructionType = unitAttachment.getConstructionType();
+    constructionTypePerTurn = unitAttachment.getConstructionsPerTerrPerTypePerTurn();
+    maxConstructionType = unitAttachment.getMaxConstructionsPerTypePerTerr();
     movement = unitAttachment.getMovement(player);
     quantity = productionRule.getResults().totalValues();
     final boolean isInfra = unitAttachment.getIsInfrastructure();
@@ -170,7 +175,7 @@ public class ProPurchaseOption {
         0.25, 0.25, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
   }
 
-  public double getAttackEfficiency2(
+  public double getAttackEfficiency(
       final int enemyDistance,
       final GameData data,
       final List<Unit> ownedLocalUnits,
@@ -184,7 +189,7 @@ public class ProPurchaseOption {
         1.25, 0.75, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
   }
 
-  public double getDefenseEfficiency2(
+  public double getDefenseEfficiency(
       final int enemyDistance,
       final GameData data,
       final List<Unit> ownedLocalUnits,
@@ -252,6 +257,9 @@ public class ProPurchaseOption {
   }
 
   private double calculateLandDistanceFactor(final int enemyDistance) {
+    if (movement <= 0) {
+      return 0.1; // Set 0 move units to an order of magnitude less than 1 move units
+    }
     final double distance = Math.max(0, enemyDistance - 1.5);
     final int moveValue = isLandTransport ? (movement + 1) : movement;
     // 1, 2, 2.5, 2.75, etc

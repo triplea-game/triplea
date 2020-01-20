@@ -99,10 +99,12 @@ public final class ProBattleUtils {
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits) {
 
-    if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
+    if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())
+        || estimatePower(proData, t, attackingUnits, defendingUnits, true) <= 0) {
       return 0;
     }
-    if (defendingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
+    if (defendingUnits.stream().allMatch(Matches.unitIsInfrastructure())
+        || estimatePower(proData, t, defendingUnits, attackingUnits, false) <= 0) {
       return 99999;
     }
     final double attackerStrength =
