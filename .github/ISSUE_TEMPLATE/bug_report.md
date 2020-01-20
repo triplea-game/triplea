@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-<!-- Please answer the questions below -->
-
 **How can the problem be recreated?**
 
 <!--
@@ -21,13 +19,9 @@ Example:
 
 **When the problem is fixed, what should have happened instead?**
 
-**Which Engine Version are you using?** <!-- Van be found on the TripleA launch screen-->
-
-**Expected behavior**
-<!-- A clear and concise description of what you expected to happen. -->
+**Which Engine Version are you using?** <!-- Can be found on the TripleA launch screen-->
 
 **Screenshots** <!-- If applicable, add screenshots to help explain your problem. -->
-
 
 **Zipped Save Game**
 
@@ -38,7 +32,7 @@ To zip a save game:
  - find the save game file ending with '.tsvg'
  - use a 'zip' program like winzip (file compression, example: https://www.wikihow.com/Make-a-Zip-File)
 
-Once zipped, you can post the zip file to this issue, thank you! 
+Once zipped, you can post the zip file to this issue by clicking "attach files" at the bottom of this window or dragging and dropping them into this text area. Thank you! 
 -->
 
 
