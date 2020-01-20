@@ -28,4 +28,9 @@ class MoveForumPosterPanel extends AbstractForumPosterPanel {
   protected boolean skipPosting() {
     return !pbemMessagePoster.alsoPostMoveSummary();
   }
+
+  @Override
+  public String toString() {
+    return "MoveForumPosterPanel";
+  }
 }

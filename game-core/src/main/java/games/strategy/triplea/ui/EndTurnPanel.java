@@ -34,6 +34,11 @@ class EndTurnPanel extends AbstractForumPosterPanel {
   }
 
   @Override
+  public String toString() {
+    return "EndTurnPanel";
+  }
+
+  @Override
   protected boolean skipPosting() {
     return false;
   }
