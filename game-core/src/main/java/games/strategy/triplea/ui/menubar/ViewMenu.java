@@ -26,6 +26,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -435,6 +437,19 @@ final class ViewMenu extends JMenu {
   }
 
   private void addFlagDisplayModeMenu() {
+    // 2.0 to 1.9 compatibility hack. Can be removed when all players that have played a 2.0
+    // prelease have launched a game containing this patch. When going from 2.0 to 1.9,
+    // 1.9 will crash due to an enum value not found error when loading 'DRAW_MODE'
+    final Preferences prefs = Preferences.userNodeForPackage(getClass());
+    if (prefs.get("DRAW_MODE", null) != null) {
+      prefs.remove("DRAW_MODE");
+      try {
+        prefs.flush();
+      } catch (final BackingStoreException ignored) {
+        // ignore
+      }
+    }
+
     final JMenu flagDisplayMenu = new JMenu();
     flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
     flagDisplayMenu.setText("Flag Display Mode");
