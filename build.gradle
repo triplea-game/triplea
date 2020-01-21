@@ -100,7 +100,7 @@ subprojects {
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.5.2'
         junitPioneerVersion = '0.5.1'
-        junitPlatformLauncherVersion = '1.5.2'
+        junitPlatformLauncherVersion = '1.6.0'
         mockitoVersion = '3.2.4'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.9'
