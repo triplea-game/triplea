@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.pbem.ForumPosterComponent;
-import games.strategy.engine.player.IPlayerBridge;
-import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import javax.swing.JOptionPane;
 
 class EndTurnPanel extends AbstractForumPosterPanel {
@@ -11,7 +8,6 @@ class EndTurnPanel extends AbstractForumPosterPanel {
 
   EndTurnPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    forumPosterComponent = new ForumPosterComponent(getData(), this::performDone, getTitle());
   }
 
   @Override
@@ -33,48 +29,17 @@ class EndTurnPanel extends AbstractForumPosterPanel {
   }
 
   @Override
+  protected boolean includeDetailsAndSummary() {
+    return true;
+  }
+
+  @Override
   public String toString() {
     return "EndTurnPanel";
   }
 
   @Override
-  protected boolean allowIncludeTerritorySummary() {
-    return true;
-  }
-
-  @Override
-  protected boolean allowIncludeProductionSummary() {
-    return true;
-  }
-
-  @Override
-  protected boolean allowDiceBattleDetails() {
-    return true;
-  }
-
-  @Override
-  protected boolean allowDiceStatistics() {
-    return true;
-  }
-
-  @Override
-  protected IAbstractForumPosterDelegate getForumPosterDelegate() {
-    return (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
-  }
-
-  @Override
-  protected boolean getHasPostedTurnSummary() {
-    final IAbstractForumPosterDelegate delegate =
-        (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
-    return delegate.getHasPostedTurnSummary();
-  }
-
-  @Override
   protected boolean skipPosting() {
     return false;
-  }
-
-  public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge) {
-    super.waitForDone(frame, bridge);
   }
 }

@@ -253,7 +253,7 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
 
   /** Blocks until the user selects an end-of-turn action. */
   public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge) {
-    endTurnPanel.waitForEndTurn(frame, bridge);
+    endTurnPanel.waitForDone(frame, bridge);
   }
 
   public void waitForMoveForumPosterPanel(final TripleAFrame frame, final IPlayerBridge bridge) {
