@@ -409,6 +409,16 @@ public class MyFormatter {
     return buf.toString().replaceFirst(separator, "");
   }
 
+  /**
+   * Adds HTML line breaks and indentation to a string so it wraps for things like long tooltips.
+   *
+   * <pre>
+   * string part 1
+   *           string part 2
+   *           ...
+   *           string part X
+   * </pre>
+   */
   public static String addHtmlBreaksAndIndents(
       final String target, final int firstLineMaxLength, final int maxLength) {
     final StringBuilder sb = new StringBuilder();
