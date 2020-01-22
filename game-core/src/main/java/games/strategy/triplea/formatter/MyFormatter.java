@@ -10,6 +10,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.util.UnitOwner;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -406,5 +407,29 @@ public class MyFormatter {
       }
     }
     return buf.toString().replaceFirst(separator, "");
+  }
+
+  public static String addHtmlBreaksAndIndents(
+      final String target, final int firstLineMaxLength, final int maxLength) {
+    final StringBuilder sb = new StringBuilder();
+    final BreakIterator breakIterator = BreakIterator.getLineInstance();
+    breakIterator.setText(target);
+    int start = breakIterator.first();
+    int end = breakIterator.next();
+    int lineLength = 0;
+    int currentMaxLength = firstLineMaxLength;
+    while (end != BreakIterator.DONE) {
+      final String word = target.substring(start, end);
+      lineLength = lineLength + word.length();
+      if (lineLength >= currentMaxLength) {
+        sb.append("<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        lineLength = word.length() + 5; // Add 5 for the indent
+        currentMaxLength = maxLength;
+      }
+      sb.append(word);
+      start = end;
+      end = breakIterator.next();
+    }
+    return sb.toString();
   }
 }
