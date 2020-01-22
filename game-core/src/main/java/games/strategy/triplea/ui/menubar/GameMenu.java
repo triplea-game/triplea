@@ -12,6 +12,7 @@ import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
+import games.strategy.triplea.ui.statistics.StatisticsDialog;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
@@ -71,6 +72,9 @@ final class GameMenu extends JMenu {
     addNotificationSettings();
     addShowDiceStats();
     addRollDice();
+    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
+      addStatistics();
+    }
     addMenuItemWithHotkey(
         SwingAction.of(
             "Battle Calculator",
@@ -291,5 +295,17 @@ final class GameMenu extends JMenu {
           }
         });
     add(rollDiceBox);
+  }
+
+  private void addStatistics() {
+    add(
+        SwingAction.of(
+            "Game statistics",
+            e ->
+                JOptionPane.showMessageDialog(
+                    frame,
+                    new StatisticsDialog(gameData),
+                    "Game statistics",
+                    JOptionPane.INFORMATION_MESSAGE)));
   }
 }
