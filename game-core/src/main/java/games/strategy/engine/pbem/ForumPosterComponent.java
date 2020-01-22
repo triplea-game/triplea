@@ -148,6 +148,10 @@ public final class ForumPosterComponent extends JPanel {
     historyLog.requestFocus();
   }
 
+  public boolean canPostTurnSummary() {
+    return forumPosterDelegate != null;
+  }
+
   public boolean getHasPostedTurnSummary() {
     return forumPosterDelegate.getHasPostedTurnSummary();
   }
