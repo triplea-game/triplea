@@ -71,7 +71,9 @@ final class GameMenu extends JMenu {
     addNotificationSettings();
     addShowDiceStats();
     addRollDice();
-    addStatistics();
+    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
+      addStatistics();
+    }
     addMenuItemWithHotkey(
         SwingAction.of(
             "Battle Calculator",
