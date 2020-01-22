@@ -304,7 +304,7 @@ final class GameMenu extends JMenu {
             e ->
                 JOptionPane.showMessageDialog(
                     frame,
-                    new StatisticsDialog(),
+                    new StatisticsDialog(gameData),
                     "Game statistics",
                     JOptionPane.INFORMATION_MESSAGE)));
   }
