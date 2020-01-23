@@ -72,6 +72,7 @@ public final class ProBattleUtils {
             DiceRoll.getUnitPowerAndRollsForNormalBattles(
                 sortedUnitsList,
                 defendingUnits,
+                sortedUnitsList,
                 false,
                 data,
                 t,
@@ -166,6 +167,7 @@ public final class ProBattleUtils {
             DiceRoll.getUnitPowerAndRollsForNormalBattles(
                 sortedUnitsList,
                 enemyUnits,
+                sortedUnitsList,
                 !attacking,
                 data,
                 t,

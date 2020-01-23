@@ -446,7 +446,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             battle,
             "",
             TerritoryEffectHelper.getEffects(balticSeaZone),
-            null);
+            null,
+            attackList);
     assertEquals(2, roll.getHits());
     advanceToStep(bridge, "russianNonCombatMove");
     // Test the move
@@ -871,7 +872,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             mock(IBattle.class),
             "",
             TerritoryEffectHelper.getEffects(balticSeaZone),
-            null);
+            null,
+            defendList);
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
@@ -945,7 +947,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             mock(IBattle.class),
             "",
             TerritoryEffectHelper.getEffects(balticSeaZone),
-            null);
+            null,
+            defendList);
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = finlandNorway.getUnitCollection().size();
@@ -1009,7 +1012,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             mock(IBattle.class),
             "",
             TerritoryEffectHelper.getEffects(balticSeaZone),
-            null);
+            null,
+            defendList);
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();
@@ -1073,7 +1077,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             mock(IBattle.class),
             "",
             TerritoryEffectHelper.getEffects(balticSeaZone),
-            null);
+            null,
+            defendList);
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
     final int preCountInt = karelia.getUnitCollection().size();

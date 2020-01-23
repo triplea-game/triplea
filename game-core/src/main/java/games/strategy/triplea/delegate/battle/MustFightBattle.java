@@ -1364,14 +1364,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             .getSoundChannelBroadcaster()
             .playSoundForAll(SoundPath.CLIP_BATTLE_BOMBARD, attacker);
       }
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-      allEnemyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
       fire(
           SELECT_NAVAL_BOMBARDMENT_CASUALTIES,
           bombard,
           attacked,
           allEnemyUnitsAliveOrWaitingToDie,
+          bombard,
           false,
           canReturnFire ? ReturnFire.ALL : ReturnFire.NONE,
           "Bombard");
@@ -1405,14 +1405,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     final boolean canReturnFire = (!Properties.getSuicideAndMunitionCasualtiesRestricted(gameData));
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-    allEnemyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
     fire(
         defender.getName() + SELECT_CASUALTIES_SUICIDE,
         suicideAttackers,
         attackedDefenders,
         allEnemyUnitsAliveOrWaitingToDie,
+        suicideAttackers,
         false,
         canReturnFire ? ReturnFire.ALL : ReturnFire.NONE,
         SUICIDE_ATTACK);
@@ -1444,14 +1444,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     final boolean canReturnFire = (!Properties.getSuicideAndMunitionCasualtiesRestricted(gameData));
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-    allEnemyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
     fire(
         attacker.getName() + SELECT_CASUALTIES_SUICIDE,
         suicideDefenders,
         attackedAttackers,
         allEnemyUnitsAliveOrWaitingToDie,
+        suicideDefenders,
         true,
         canReturnFire ? ReturnFire.ALL : ReturnFire.NONE,
         SUICIDE_DEFEND);
@@ -1461,7 +1461,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final String stepName,
       final Collection<Unit> firingUnits,
       final Collection<Unit> attackableUnits,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defender,
       final ReturnFire returnFire,
       final String text) {
@@ -1489,7 +1490,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               headless,
               battleSite,
               territoryEffects,
-              allEnemyUnitsAliveOrWaitingToDie));
+              allEnemyUnitsAliveOrWaitingToDie,
+              allFriendlyUnitsAliveOrWaitingToDie));
     }
   }
 
@@ -1955,11 +1957,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
+    final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
+    allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
     fire(
         attacker.getName() + SELECT_SUB_CASUALTIES,
         firing,
         attacked,
         allEnemyUnitsAliveOrWaitingToDie,
+        allFriendlyUnitsAliveOrWaitingToDie,
         true,
         returnFire,
         "Subs defend, ");
@@ -1973,14 +1978,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final Collection<Unit> attacked =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotAir());
-    // if there are destroyers in the attacked units, we can return fire.
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+    final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
+    allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
     fire(
         defender.getName() + SELECT_SUB_CASUALTIES,
         firing,
         attacked,
         allEnemyUnitsAliveOrWaitingToDie,
+        allFriendlyUnitsAliveOrWaitingToDie,
         false,
         returnFire,
         "Subs fire,");
@@ -2003,11 +2010,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           CollectionUtils.getMatches(defendingUnits, Matches.unitCanNotBeTargetedByAll().negate());
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
+      allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
       fire(
           defender.getName() + SELECT_CASUALTIES,
           units,
           enemyUnitsNotSubs,
           allEnemyUnitsAliveOrWaitingToDie,
+          allFriendlyUnitsAliveOrWaitingToDie,
           false,
           ReturnFire.ALL,
           "Attacker's aircraft fire,");
@@ -2039,11 +2049,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+    final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
+    allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
     fire(
         defender.getName() + SELECT_CASUALTIES,
         units,
         defendingUnits,
         allEnemyUnitsAliveOrWaitingToDie,
+        allFriendlyUnitsAliveOrWaitingToDie,
         false,
         ReturnFire.ALL,
         "Attackers fire,");
@@ -2064,11 +2077,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
+      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
+      allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
       fire(
           attacker.getName() + SELECT_CASUALTIES,
           units,
           enemyUnitsNotSubs,
           allEnemyUnitsAliveOrWaitingToDie,
+          allFriendlyUnitsAliveOrWaitingToDie,
           true,
           ReturnFire.ALL,
           "Defender's aircraft fire,");
@@ -2091,11 +2107,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
+    final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
+    allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
     fire(
         attacker.getName() + SELECT_CASUALTIES,
         units,
         attackingUnits,
         allEnemyUnitsAliveOrWaitingToDie,
+        allFriendlyUnitsAliveOrWaitingToDie,
         true,
         ReturnFire.ALL,
         "Defenders fire, ");
@@ -2171,6 +2190,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
                           attackingUnits,
                           defendingUnits,
+                          attackingUnits,
                           false,
                           gameData,
                           battleSite,
@@ -2183,6 +2203,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
                           defendingUnits,
                           attackingUnits,
+                          defendingUnits,
                           true,
                           gameData,
                           battleSite,

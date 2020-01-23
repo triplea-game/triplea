@@ -1381,6 +1381,7 @@ public class BattleTracker implements Serializable {
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(
                       sortedUnitsList,
                       defenders,
+                      sortedUnitsList,
                       true,
                       gameData,
                       territory,

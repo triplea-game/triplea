@@ -884,6 +884,7 @@ public class BattleDisplay extends JPanel {
               DiceRoll.getUnitPowerAndRollsForNormalBattles(
                   units,
                   new ArrayList<>(enemyBattleModel.getUnits()),
+                  units,
                   !attack,
                   gameData,
                   location,

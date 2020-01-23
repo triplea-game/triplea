@@ -39,7 +39,8 @@ public class Fire implements IExecutable {
   private final boolean headless;
   private final Territory battleSite;
   private final Collection<TerritoryEffect> territoryEffects;
-  private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
+  private final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie;
+  private final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie;
   private final Collection<Unit> allFriendlyUnitsNotIncludingWaitingToDie;
   private final Collection<Unit> allEnemyUnitsNotIncludingWaitingToDie;
   private final boolean isAmphibious;
@@ -65,7 +66,8 @@ public class Fire implements IExecutable {
       final boolean headless,
       final Territory battleSite,
       final Collection<TerritoryEffect> territoryEffects,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
     this.attackableUnits =
         CollectionUtils.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
     this.canReturnFire = canReturnFire;
@@ -82,6 +84,7 @@ public class Fire implements IExecutable {
     this.battleSite = battleSite;
     this.territoryEffects = territoryEffects;
     this.allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
+    this.allFriendlyUnitsAliveOrWaitingToDie = allFriendlyUnitsAliveOrWaitingToDie;
     allFriendlyUnitsNotIncludingWaitingToDie =
         this.defending ? this.battle.getDefendingUnits() : this.battle.getAttackingUnits();
     allEnemyUnitsNotIncludingWaitingToDie =
@@ -153,7 +156,8 @@ public class Fire implements IExecutable {
             battle,
             annotation,
             territoryEffects,
-            allEnemyUnitsAliveOrWaitingToDie);
+            allEnemyUnitsAliveOrWaitingToDie,
+            allFriendlyUnitsAliveOrWaitingToDie);
   }
 
   private void selectCasualties(final IDelegateBridge bridge) {

@@ -704,7 +704,8 @@ class WW2V3Year41Test {
             mock(IBattle.class),
             "",
             territoryEffects,
-            null);
+            null,
+            germanFighter);
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
@@ -716,7 +717,8 @@ class WW2V3Year41Test {
             mock(IBattle.class),
             "",
             territoryEffects,
-            null);
+            null,
+            germanFighter);
     assertEquals(0, roll2.getHits());
   }
 

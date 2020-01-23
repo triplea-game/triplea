@@ -583,7 +583,20 @@ public class DiceRoll implements Externalizable {
     return hits;
   }
 
-  /** Roll dice for units. */
+  /**
+   * Used to roll dice for attackers and defenders in battles.
+   *
+   * @param units - units that could potentially be rolling
+   * @param defending - whether units are defending or attacking
+   * @param player - that will be rolling the dice
+   * @param bridge - delegate bridge
+   * @param battle - which the dice are being rolled for
+   * @param annotation - description of the battle being rolled for
+   * @param territoryEffects - list of territory effects for the battle
+   * @param allEnemyUnitsAliveOrWaitingToDie - all enemy units to check for support
+   * @param allFriendlyUnitsAliveOrWaitingToDie - all allied units to check for support
+   * @return DiceRoll result which includes total hits and dice that were rolled
+   */
   public static DiceRoll rollDice(
       final List<Unit> units,
       final boolean defending,
@@ -592,9 +605,9 @@ public class DiceRoll implements Externalizable {
       final IBattle battle,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
 
-    // Decide whether to use low luck rules or normal rules.
     if (Properties.getLowLuck(bridge.getData())) {
       return rollDiceLowLuck(
           units,
@@ -604,7 +617,8 @@ public class DiceRoll implements Externalizable {
           battle,
           annotation,
           territoryEffects,
-          allEnemyUnitsAliveOrWaitingToDie);
+          allEnemyUnitsAliveOrWaitingToDie,
+          allFriendlyUnitsAliveOrWaitingToDie);
     }
     return rollDiceNormal(
         units,
@@ -614,7 +628,8 @@ public class DiceRoll implements Externalizable {
         battle,
         annotation,
         territoryEffects,
-        allEnemyUnitsAliveOrWaitingToDie);
+        allEnemyUnitsAliveOrWaitingToDie,
+        allFriendlyUnitsAliveOrWaitingToDie);
   }
 
   /**
@@ -649,6 +664,7 @@ public class DiceRoll implements Externalizable {
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
       final GameData data,
       final Territory location,
@@ -659,6 +675,7 @@ public class DiceRoll implements Externalizable {
     return getUnitPowerAndRollsForNormalBattles(
         unitsGettingPowerFor,
         allEnemyUnitsAliveOrWaitingToDie,
+        allFriendlyUnitsAliveOrWaitingToDie,
         defending,
         data,
         location,
@@ -678,6 +695,7 @@ public class DiceRoll implements Externalizable {
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
       final GameData data,
       final Territory location,
@@ -697,7 +715,7 @@ public class DiceRoll implements Externalizable {
     final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
     final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly = new HashMap<>();
     getSortedSupport(
-        unitsGettingPowerFor,
+        allFriendlyUnitsAliveOrWaitingToDie,
         supportRulesFriendly,
         supportLeftFriendly,
         supportUnitsLeftFriendly,
@@ -859,8 +877,7 @@ public class DiceRoll implements Externalizable {
         final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
         if (lhtrBombers || ua.getChooseBestRoll()) {
           // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead,
-          // we will just add
-          // +1 onto the power to simulate the gains of having the best die picked.
+          // we will just add +1 onto the power to simulate the gains of having the best die picked.
           unitStrength += extraRollBonus * (unitRolls - 1);
           totalPower += Math.min(unitStrength, diceSides);
           totalRolls += unitRolls;
@@ -883,7 +900,8 @@ public class DiceRoll implements Externalizable {
       final IBattle battle,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
@@ -894,6 +912,7 @@ public class DiceRoll implements Externalizable {
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
             allEnemyUnitsAliveOrWaitingToDie,
+            allFriendlyUnitsAliveOrWaitingToDie,
             defending,
             data,
             location,
@@ -1393,7 +1412,8 @@ public class DiceRoll implements Externalizable {
       final IBattle battle,
       final String annotation,
       final Collection<TerritoryEffect> territoryEffects,
-      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
 
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
@@ -1405,6 +1425,7 @@ public class DiceRoll implements Externalizable {
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
             allEnemyUnitsAliveOrWaitingToDie,
+            allFriendlyUnitsAliveOrWaitingToDie,
             defending,
             data,
             location,
