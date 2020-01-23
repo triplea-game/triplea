@@ -11,7 +11,6 @@ import org.triplea.swing.JTabbedPaneBuilder;
 public class StatisticsDialog extends JPanel {
   public StatisticsDialog(final GameData game) {
     final Statistics statistics = StatisticsAggregator.aggregate(game);
-    // transform statistics object to interesting charts and show them
     JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
     tabbedPane.addTab("Lines", createDummyXYGraph(statistics));
     tabbedPane.addTab("Pie", createDummyPieChart(statistics));
