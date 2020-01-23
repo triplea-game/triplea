@@ -66,5 +66,35 @@ final class MyFormatterTest {
 
       assertThat(MyFormatter.unitsToText(units), is("2 unitTypes owned by the playerId"));
     }
+
+    @Test
+    void addHtmlBreaksAndIndentsWithEmptyString() {
+      assertThat(MyFormatter.addHtmlBreaksAndIndents("", 80, 100), is(""));
+    }
+
+    @Test
+    void addHtmlBreaksAndIndentsWithNoBreak() {
+      final String target = "unitType, unitType";
+      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(target));
+    }
+
+    @Test
+    void addHtmlBreaksAndIndentsWithBreak() {
+      final String target =
+          "unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType";
+      final String result =
+          "unitType, unitType, unitType, unitType, unitType, unitType, unitType, "
+              + "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unitType, unitType, unitType, unitType, unitType";
+      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(result));
+    }
+
+    @Test
+    void addHtmlBreaksAndIndentsWithVeryLongWord() {
+      final String target =
+          "aVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongUnitType";
+      final String result =
+          "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongUnitType";
+      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(result));
+    }
   }
 }
