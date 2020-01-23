@@ -6,7 +6,6 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -146,9 +145,9 @@ public class ProPurchaseOptionMap {
 
   private boolean canUnitTypeSuicide(
       final UnitType unitType, final GamePlayer player, final GameData data) {
-    return UnitAttachment.get(unitType).getIsSuicide()
-        && (UnitAttachment.get(unitType).getMovement(player) > 0
-            || !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(data));
+    return (UnitAttachment.get(unitType).getIsSuicideOnAttack()
+            && UnitAttachment.get(unitType).getMovement(player) > 0)
+        || UnitAttachment.get(unitType).getIsSuicideOnDefense();
   }
 
   public List<ProPurchaseOption> getAllOptions() {

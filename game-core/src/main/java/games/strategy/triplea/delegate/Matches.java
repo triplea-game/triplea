@@ -493,8 +493,12 @@ public final class Matches {
             && !unitCanBeCapturedOnEnteringToInThisTerritory(player, terr, data).test(unit);
   }
 
-  public static Predicate<Unit> unitIsSuicide() {
-    return unit -> UnitAttachment.get(unit.getType()).getIsSuicide();
+  public static Predicate<Unit> unitIsSuicideOnAttack() {
+    return unit -> UnitAttachment.get(unit.getType()).getIsSuicideOnAttack();
+  }
+
+  public static Predicate<Unit> unitIsSuicideOnDefense() {
+    return unit -> UnitAttachment.get(unit.getType()).getIsSuicideOnDefense();
   }
 
   public static Predicate<Unit> unitIsSuicideOnHit() {

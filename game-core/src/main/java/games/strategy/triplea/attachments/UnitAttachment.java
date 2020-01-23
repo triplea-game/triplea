@@ -68,7 +68,8 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean artillerySupportable = false;
   private int unitSupportCount = -1;
   private int isMarine = 0;
-  private boolean isSuicide = false;
+  private boolean isSuicideOnAttack = false;
+  private boolean isSuicideOnDefense = false;
   private boolean isSuicideOnHit = false;
   private Tuple<Integer, String> attackingLimit = null;
   private int attackRolls = 1;
@@ -1752,19 +1753,45 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setIsSuicide(final String s) {
-    isSuicide = getBool(s);
+    setIsSuicide(getBool(s));
   }
 
   private void setIsSuicide(final Boolean s) {
-    isSuicide = s;
+    setIsSuicideOnAttack(s);
+    setIsSuicideOnDefense(s && !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(getData()));
+    setIsFirstStrike(s);
   }
 
-  public boolean getIsSuicide() {
-    return isSuicide;
+  private void setIsSuicideOnAttack(final String s) {
+    isSuicideOnAttack = getBool(s);
   }
 
-  private void resetIsSuicide() {
-    isSuicide = false;
+  private void setIsSuicideOnAttack(final Boolean s) {
+    isSuicideOnAttack = s;
+  }
+
+  public boolean getIsSuicideOnAttack() {
+    return isSuicideOnAttack;
+  }
+
+  private void resetIsSuicideOnAttack() {
+    isSuicideOnAttack = false;
+  }
+
+  private void setIsSuicideOnDefense(final String s) {
+    isSuicideOnDefense = getBool(s);
+  }
+
+  private void setIsSuicideOnDefense(final Boolean s) {
+    isSuicideOnDefense = s;
+  }
+
+  public boolean getIsSuicideOnDefense() {
+    return isSuicideOnDefense;
+  }
+
+  private void resetIsSuicideOnDefense() {
+    isSuicideOnDefense = false;
   }
 
   private void setIsSuicideOnHit(final String s) {
@@ -3040,8 +3067,10 @@ public class UnitAttachment extends DefaultAttachment {
         + maxBuiltPerPlayer
         + "  special:"
         + (special != null ? (special.isEmpty() ? "empty" : special.toString()) : "null")
-        + "  isSuicide:"
-        + isSuicide
+        + "  isSuicideOnAttack:"
+        + isSuicideOnAttack
+        + "  isSuicideOnDefense:"
+        + isSuicideOnDefense
         + "  isSuicideOnHit:"
         + isSuicideOnHit
         + "  isCombatTransport:"
@@ -3361,8 +3390,11 @@ public class UnitAttachment extends DefaultAttachment {
       tuples.add(Tuple.of("Blockade Loss", String.valueOf(getBlockade())));
     }
 
-    if (getIsSuicide()) {
-      tuples.add(Tuple.of("Suicide/Munition Unit", ""));
+    if (getIsSuicideOnAttack()) {
+      tuples.add(Tuple.of("Suicide on Attack Unit", ""));
+    }
+    if (getIsSuicideOnDefense()) {
+      tuples.add(Tuple.of("Suicide on Defense Unit", ""));
     }
     if (getIsSuicideOnHit()) {
       tuples.add(Tuple.of("Suicide on Hit Unit", ""));
@@ -3785,8 +3817,21 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsMarine, this::setIsMarine, this::getIsMarine, this::resetIsMarine))
         .put(
             "isSuicide",
+            MutableProperty.<Boolean>ofWriteOnly(this::setIsSuicide, this::setIsSuicide))
+        .put(
+            "isSuicideOnAttack",
             MutableProperty.of(
-                this::setIsSuicide, this::setIsSuicide, this::getIsSuicide, this::resetIsSuicide))
+                this::setIsSuicideOnAttack,
+                this::setIsSuicideOnAttack,
+                this::getIsSuicideOnAttack,
+                this::resetIsSuicideOnAttack))
+        .put(
+            "isSuicideOnDefense",
+            MutableProperty.of(
+                this::setIsSuicideOnDefense,
+                this::setIsSuicideOnDefense,
+                this::getIsSuicideOnDefense,
+                this::resetIsSuicideOnDefense))
         .put(
             "isSuicideOnHit",
             MutableProperty.of(

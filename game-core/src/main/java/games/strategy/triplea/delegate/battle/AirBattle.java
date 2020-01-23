@@ -198,20 +198,20 @@ public class AirBattle extends AbstractBattle {
               defendingWaitingToDie.clear();
               // kill any suicide attackers (veqryn)
               final Predicate<Unit> attackerSuicide =
-                  PredicateBuilder.of(Matches.unitIsSuicide())
+                  PredicateBuilder.of(Matches.unitIsSuicideOnAttack())
                       .andIf(isBombingRun, Matches.unitIsNotStrategicBomber())
                       .build();
               if (attackingUnits.stream().anyMatch(attackerSuicide)) {
                 final List<Unit> suicideUnits =
-                    CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicide());
+                    CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack());
                 attackingUnits.removeAll(suicideUnits);
                 remove(suicideUnits, bridge, battleSite);
                 tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, attackerCosts, gameData);
                 attackerLostTuv += tuvLostAttacker;
               }
-              if (defendingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
+              if (defendingUnits.stream().anyMatch(Matches.unitIsSuicideOnDefense())) {
                 final List<Unit> suicideUnits =
-                    CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicide());
+                    CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicideOnDefense());
                 defendingUnits.removeAll(suicideUnits);
                 remove(suicideUnits, bridge, battleSite);
                 tuvLostDefender = TuvUtils.getTuv(suicideUnits, defender, defenderCosts, gameData);
