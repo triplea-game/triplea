@@ -109,6 +109,7 @@ subprojects {
         snakeYamlVersion = '2.0'
         sonatypeGoodiesPrefsVersion = '2.3.1'
         substanceVersion = '2.5.1'
+        xchartVersion = '3.6.1'
     }
 
     repositories {
