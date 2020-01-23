@@ -68,7 +68,7 @@ public class ProPurchaseOptionMap {
       // Add rule to appropriate purchase option list
       if (Matches.unitTypeConsumesUnitsOnCreation().test(unitType)
           || UnitAttachment.get(unitType).getIsSuicideOnHit()
-          || canUnitTypeSuicide(unitType, player, data)) {
+          || canUnitTypeSuicide(unitType, player)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         ProLogger.debug("Special: " + ppo);
@@ -143,8 +143,7 @@ public class ProPurchaseOptionMap {
     logOptions(specialOptions, "Special Options: ");
   }
 
-  private boolean canUnitTypeSuicide(
-      final UnitType unitType, final GamePlayer player, final GameData data) {
+  private boolean canUnitTypeSuicide(final UnitType unitType, final GamePlayer player) {
     return (UnitAttachment.get(unitType).getIsSuicideOnAttack()
             && UnitAttachment.get(unitType).getMovement(player) > 0)
         || UnitAttachment.get(unitType).getIsSuicideOnDefense();
