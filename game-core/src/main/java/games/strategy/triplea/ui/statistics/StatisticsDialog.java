@@ -4,19 +4,21 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.stats.Statistics;
 import games.strategy.engine.stats.StatisticsAggregator;
 import javax.swing.*;
-import org.knowm.xchart.XChartPanel;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
+import org.triplea.swing.JTabbedPaneBuilder;
 
 public class StatisticsDialog extends JPanel {
   public StatisticsDialog(final GameData game) {
     final Statistics statistics = StatisticsAggregator.aggregate(game);
     // transform statistics object to interesting charts and show them
-    this.add(createDummyGraph(statistics));
+    JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
+    tabbedPane.addTab("Lines", createDummyXYGraph(statistics));
+    tabbedPane.addTab("Pie", createDummyPieChart(statistics));
+    this.add(tabbedPane.build());
   }
 
-  private JPanel createDummyGraph(Statistics statistics) {
+  private JPanel createDummyXYGraph(Statistics statistics) {
     XYChart sample_chart =
         new XYChartBuilder()
             .theme(Styler.ChartTheme.Matlab)
@@ -30,5 +32,18 @@ public class StatisticsDialog extends JPanel {
     sample_chart.addSeries("some value6", new double[] {7.0, 5.0, 45.0});
     sample_chart.addSeries("some value7", new double[] {8.0, 6.0, 46.0});
     return new XChartPanel<>(sample_chart);
+  }
+
+  private JPanel createDummyPieChart(Statistics statistics) {
+    PieChart chart =
+        new PieChartBuilder()
+            .theme(Styler.ChartTheme.XChart)
+            .title("Sample Chart: " + statistics.toString())
+            .build();
+    chart.addSeries("Value 1", 27);
+    chart.addSeries("Value 2", 63);
+    chart.addSeries("Value 3", 1);
+    chart.addSeries("Value 4", 9);
+    return new XChartPanel<>(chart);
   }
 }
