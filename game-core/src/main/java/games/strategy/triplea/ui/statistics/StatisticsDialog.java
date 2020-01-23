@@ -43,6 +43,7 @@ public class StatisticsDialog extends JPanel {
     chart.addSeries("Value 2", 63);
     chart.addSeries("Value 3", 1);
     chart.addSeries("Value 4", 9);
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
     return new XChartPanel<>(chart);
   }
 }
