@@ -85,8 +85,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final List<MouseOverUnitListener> mouseOverUnitsListeners = new ArrayList<>();
   private GameData gameData;
   // the territory that the mouse is currently over
-  @Getter
-  private @Nullable Territory currentTerritory;
+  @Getter private @Nullable Territory currentTerritory;
 
   private @Nullable Territory highlightedTerritory;
   private final TerritoryHighlighter territoryHighlighter = new TerritoryHighlighter();
@@ -334,6 +333,10 @@ public class MapPanel extends ImageScrollerLargeView {
     this.tileManager.resetTiles(data, uiContext.getMapData());
   }
 
+  public List<Unit> getMouseHoverUnits() {
+    return Optional.ofNullable(currentUnits).map(Tuple::getSecond).orElse(List.of());
+  }
+
   public GameData getData() {
     return gameData;
   }
@@ -440,7 +443,8 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   /** Set the route, could be null. */
-  public void setRoute(final Route route, final Point start, final Point end, final Image cursorImage) {
+  public void setRoute(
+      final Route route, final Point start, final Point end, final Image cursorImage) {
     if (route == null) {
       routeDescription = null;
       SwingUtilities.invokeLater(this::repaint);

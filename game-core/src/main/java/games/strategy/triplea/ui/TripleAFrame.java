@@ -214,7 +214,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
-  private List<Unit> unitsBeingMousedOver;
   private GamePlayer lastStepPlayer;
   private GamePlayer currentStepPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
@@ -481,10 +480,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(mapSelectionListener);
     mapPanel.addMouseOverUnitListener(
-        (units, territory) -> {
-          unitsBeingMousedOver = units;
-          tooltipManager.updateTooltip(getUnitInfo());
-        });
+        (units, territory) -> tooltipManager.updateTooltip(getUnitInfo()));
     // link the small and large images
     SwingUtilities.invokeLater(mapPanel::initSmallMap);
     mapAndChatPanel = new JPanel();
@@ -2002,10 +1998,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   }
 
   private String getUnitInfo() {
-    if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
-      final Unit unit = unitsBeingMousedOver.get(0);
+    if (!mapPanel.getMouseHoverUnits().isEmpty()) {
+      final Unit unit = mapPanel.getMouseHoverUnits().get(0);
       return MapUnitTooltipManager.getTooltipTextForUnit(
-          unit.getType(), unit.getOwner(), unitsBeingMousedOver.size());
+          unit.getType(), unit.getOwner(), mapPanel.getMouseHoverUnits().size());
     }
     return "";
   }
