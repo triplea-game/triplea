@@ -19,7 +19,7 @@ public class ResponseStatus implements Response.StatusType {
 
   @Getter(onMethod_ = @Override)
   @NonNull
-  private final int statusCode;
+  private final Integer statusCode;
 
   @Override
   public Family getFamily() {
