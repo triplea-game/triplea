@@ -14,6 +14,7 @@ dependencies {
     implementation "org.apache.commons:commons-math3:$commonsMathVersion"
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
+    implementation "org.knowm.xchart:xchart:$xchartVersion"
     implementation "org.snakeyaml:snakeyaml-engine:$snakeYamlVersion"
     implementation project(":domain-data")
     implementation project(":http-clients")
