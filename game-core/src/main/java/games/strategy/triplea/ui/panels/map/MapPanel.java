@@ -16,6 +16,7 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
@@ -339,6 +340,18 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public GameData getData() {
     return gameData;
+  }
+
+  public boolean getEditMode() {
+    final boolean isEditMode;
+    // use GameData from mapPanel since it will follow current history node
+    gameData.acquireReadLock();
+    try {
+      isEditMode = BaseEditDelegate.getEditMode(gameData);
+    } finally {
+      gameData.releaseReadLock();
+    }
+    return isEditMode;
   }
 
   // Beagle Code used to change map skin

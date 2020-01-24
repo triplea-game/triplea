@@ -365,7 +365,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
                   if (uiContext == null) {
                     return;
                   }
-                  if (getEditMode()) {
+                  if (mapPanel.getEditMode()) {
                     if (tabsPanel.indexOfComponent(editPanel) == -1) {
                       showEditMode();
                     }
@@ -2154,7 +2154,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           }
           addTab("Notes", notesPanel, 'N');
           addTab("Territory", details, 'T');
-          if (getEditMode()) {
+          if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
@@ -2335,7 +2335,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           }
           addTab("Notes", notesPanel, 'N');
           addTab("Territory", details, 'T');
-          if (getEditMode()) {
+          if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
@@ -2413,18 +2413,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     setWidgetActivation();
-  }
-
-  private boolean getEditMode() {
-    final boolean isEditMode;
-    // use GameData from mapPanel since it will follow current history node
-    mapPanel.getData().acquireReadLock();
-    try {
-      isEditMode = BaseEditDelegate.getEditMode(mapPanel.getData());
-    } finally {
-      mapPanel.getData().releaseReadLock();
-    }
-    return isEditMode;
   }
 
   /**
