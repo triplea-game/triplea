@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.panels.map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,9 +15,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.ui.panels.map.MapRouteDrawer;
-import games.strategy.triplea.ui.panels.map.RouteDescription;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;

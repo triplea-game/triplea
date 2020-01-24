@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.panels.map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.is;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.panels.map.RouteDescription;
 import java.awt.Image;
 import java.awt.Point;
 import org.junit.jupiter.api.Nested;
