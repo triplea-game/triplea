@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.panels.map;
 
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -7,6 +7,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;

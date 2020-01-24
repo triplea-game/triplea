@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import javax.annotation.Nullable;
 
 class DefaultMapSelectionListener implements MapSelectionListener {

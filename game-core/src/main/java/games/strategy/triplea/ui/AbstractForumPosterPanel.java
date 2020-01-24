@@ -9,6 +9,7 @@ import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 

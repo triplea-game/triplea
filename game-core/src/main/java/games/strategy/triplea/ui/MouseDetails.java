@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
-class MouseDetails {
+public class MouseDetails {
   private final MouseEvent mouseEvent;
   // the x position of the event on the map
   // this is in absolute pixels of the unscaled map
@@ -15,30 +15,30 @@ class MouseDetails {
   @SuppressWarnings("checkstyle:MemberName")
   private final double y;
 
-  MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
+  public MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
     this.mouseEvent = mouseEvent;
     this.x = x;
     this.y = y;
   }
 
-  boolean isRightButton() {
+  public boolean isRightButton() {
     return SwingUtilities.isRightMouseButton(mouseEvent);
   }
 
-  boolean isControlDown() {
+  public boolean isControlDown() {
     return mouseEvent.isControlDown();
   }
 
-  boolean isShiftDown() {
+  public boolean isShiftDown() {
     return mouseEvent.isShiftDown();
   }
 
-  boolean isAltDown() {
+  public boolean isAltDown() {
     return mouseEvent.isAltDown();
   }
 
   /** Returns this point is in the map coordinates, unscaled. */
-  Point getMapPoint() {
+  public Point getMapPoint() {
     return new Point((int) x, (int) y);
   }
 

@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import javax.swing.JOptionPane;
 
 class EndTurnPanel extends AbstractForumPosterPanel {

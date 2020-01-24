@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;

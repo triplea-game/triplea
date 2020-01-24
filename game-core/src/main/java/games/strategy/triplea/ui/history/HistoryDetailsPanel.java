@@ -9,7 +9,7 @@ import games.strategy.engine.history.Renderable;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.PlacementDescription;
 import games.strategy.triplea.ui.DicePanel;
-import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
