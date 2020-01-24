@@ -7,7 +7,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
