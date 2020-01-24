@@ -17,12 +17,15 @@ public class ResponseStatus implements Response.StatusType {
   @NonNull
   private final String reasonPhrase;
 
-  @Getter(onMethod_ = @Override)
-  @NonNull
-  private final Integer statusCode;
+  @NonNull private final Integer statusCode;
 
   @Override
   public Family getFamily() {
     return Family.familyOf(getStatusCode());
+  }
+
+  @Override
+  public int getStatusCode() {
+    return statusCode;
   }
 }
