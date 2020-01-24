@@ -103,7 +103,7 @@ public class UnitScroller {
 
   private void unitMoved() {
     updateMovesLeftLabel();
-    if(lastFocusedTerritory == null) {
+    if (lastFocusedTerritory == null) {
       focusCapital();
     } else {
       drawUnitAvatarPane(lastFocusedTerritory);
