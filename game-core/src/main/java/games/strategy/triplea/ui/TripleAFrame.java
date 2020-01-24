@@ -2324,7 +2324,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(
         () -> {
-          showHistoryAction.setEnabled(!(inHistory.get()));
+          showHistoryAction.setEnabled(!inHistory.get());
           showGameAction.setEnabled(!inGame.get());
           if (editModeButtonModel != null) {
             editModeButtonModel.setEnabled(editDelegate != null);
