@@ -29,6 +29,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
+import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -89,7 +90,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   private @Nullable Territory highlightedTerritory;
   private final TerritoryHighlighter territoryHighlighter = new TerritoryHighlighter();
-  private final MapPanelSmallView smallView;
+  private final ImageScrollerSmallView smallView;
   // units the mouse is currently over
   private Tuple<Territory, List<Unit>> currentUnits;
   private final SmallMapImageManager smallMapImageManager;
@@ -164,7 +165,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public MapPanel(
       final GameData data,
-      final MapPanelSmallView smallView,
+      final ImageScrollerSmallView smallView,
       final UiContext uiContext,
       final ImageScrollModel model,
       final Supplier<Integer> computeScrollSpeed) {
