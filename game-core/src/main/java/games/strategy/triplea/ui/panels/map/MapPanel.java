@@ -140,7 +140,7 @@ public class MapPanel extends ImageScrollerLargeView {
             tileManager.resetTiles(gameData, uiContext.getMapData());
             SwingUtilities.invokeLater(
                 () -> {
-                  recreateTiles(getData(), uiContext);
+                  recreateTiles(gameData, uiContext);
                   repaint();
                 });
           }
@@ -838,20 +838,20 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public Image getTerritoryImage(final Territory territory) {
-    getData().acquireReadLock();
+    gameData.acquireReadLock();
     try {
       return tileManager.newTerritoryImage(territory, gameData, uiContext.getMapData());
     } finally {
-      getData().releaseReadLock();
+      gameData.releaseReadLock();
     }
   }
 
   public Image getTerritoryImage(final Territory territory, final Territory focusOn) {
-    getData().acquireReadLock();
+    gameData.acquireReadLock();
     try {
       return tileManager.newTerritoryImage(territory, focusOn, gameData, uiContext.getMapData());
     } finally {
-      getData().releaseReadLock();
+      gameData.releaseReadLock();
     }
   }
 
@@ -917,7 +917,7 @@ public class MapPanel extends ImageScrollerLargeView {
     g.setRenderingHint(
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     final Rectangle bounds = new Rectangle(0, 0, 0, 0);
-    getData().acquireReadLock();
+    gameData.acquireReadLock();
     try {
       int i = 0;
       for (final UnitCategory category : categories) {
@@ -938,7 +938,7 @@ public class MapPanel extends ImageScrollerLargeView {
         i++;
       }
     } finally {
-      getData().releaseReadLock();
+      gameData.releaseReadLock();
     }
     mouseShadowImage = img;
     SwingUtilities.invokeLater(this::repaint);
