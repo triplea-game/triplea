@@ -46,7 +46,6 @@ public class HeadedUiContext extends AbstractUiContext {
   private final PuImageFactory puImageFactory = new PuImageFactory();
   private boolean drawUnits = true;
   private boolean drawTerritoryEffects = false;
-  private boolean drawMapOnly = false;
 
   @Getter(onMethod_ = {@Override})
   private Cursor cursor = Cursor.getDefaultCursor();
@@ -198,16 +197,6 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public boolean getShowTerritoryEffects() {
     return drawTerritoryEffects;
-  }
-
-  @Override
-  public boolean getShowMapOnly() {
-    return drawMapOnly;
-  }
-
-  @Override
-  public void setShowMapOnly(final boolean showMapOnly) {
-    drawMapOnly = showMapOnly;
   }
 
   @Override

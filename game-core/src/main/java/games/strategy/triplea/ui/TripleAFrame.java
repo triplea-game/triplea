@@ -33,15 +33,12 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
-import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.player.IPlayerBridge;
-import games.strategy.engine.player.Player;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
@@ -372,26 +369,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
                       hideEditMode();
                     }
                   }
-                  if (uiContext.getShowMapOnly()) {
-                    hideRightHandSidePanel();
-                    // display troop movement
-                    final HistoryNode node = data.getHistory().getLastNode();
-                    if (node instanceof Renderable) {
-                      final Object details1 = ((Renderable) node).getRenderingData();
-                      if (details1 instanceof MoveDescription) {
-                        final MoveDescription moveMessage = (MoveDescription) details1;
-                        final Route route = moveMessage.getRoute();
-                        mapPanel.setRoute(null);
-                        mapPanel.setRoute(route);
-                        final Territory terr = route.getEnd();
-                        if (!mapPanel.isShowing(terr)) {
-                          mapPanel.centerOn(terr);
-                        }
-                      }
-                    }
-                  } else {
-                    showRightHandSidePanel();
-                  }
+                  showRightHandSidePanel();
                 });
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to process game data change", e);
@@ -421,14 +399,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
         }
       };
-
-  private final Action showMapOnlyAction =
-      SwingAction.of(
-          "Show map only",
-          e -> {
-            showMapOnly();
-            dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-          });
 
   private TripleAFrame(
       final IGame game,
@@ -1959,7 +1929,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           showGame();
         }
       } else {
-        if (!uiContext.getShowMapOnly() && inHistory.compareAndSet(false, true)) {
+        if (inHistory.compareAndSet(false, true)) {
           showHistory();
         }
       }
@@ -2305,7 +2275,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
 
   private void showGame() {
     inGame.set(true);
-    uiContext.setShowMapOnly(false);
     // Are we coming from showHistory mode or showMapOnly mode?
     SwingUtilities.invokeLater(
         () -> {
@@ -2352,58 +2321,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     mapPanel.setRoute(null);
   }
 
-  private void showMapOnly() {
-    // Are we coming from showHistory mode or showGame mode?
-    if (inHistory.compareAndSet(true, false)) {
-      if (historySyncher != null) {
-        historySyncher.deactivate();
-        historySyncher = null;
-      }
-      historyPanel.goToEnd();
-      historyPanel = null;
-      mapPanel.getData().removeDataChangeListener(dataChangeListener);
-      mapPanel.setGameData(data);
-      data.addDataChangeListener(dataChangeListener);
-      gameMainPanel.removeAll();
-      gameMainPanel.setLayout(new BorderLayout());
-      gameMainPanel.add(mapAndChatPanel, BorderLayout.CENTER);
-      gameMainPanel.add(rightHandSidePanel, BorderLayout.EAST);
-      gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-      getContentPane().removeAll();
-      getContentPane().add(gameMainPanel, BorderLayout.CENTER);
-      mapPanel.setRoute(null);
-    } else {
-      inGame.set(false);
-    }
-    uiContext.setShowMapOnly(true);
-    setWidgetActivation();
-    validate();
-  }
-
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(
         () -> {
-          showHistoryAction.setEnabled(!(inHistory.get() || uiContext.getShowMapOnly()));
+          showHistoryAction.setEnabled(!(inHistory.get()));
           showGameAction.setEnabled(!inGame.get());
-          // We need to check and make sure there are no local human players
-          boolean foundHuman = false;
-          for (final Player gamePlayer : localPlayers.getLocalPlayers()) {
-            if (gamePlayer instanceof TripleAPlayer) {
-              foundHuman = true;
-              break;
-            }
-          }
-          if (!foundHuman) {
-            showMapOnlyAction.setEnabled(inGame.get() || inHistory.get());
-          } else {
-            showMapOnlyAction.setEnabled(false);
-          }
           if (editModeButtonModel != null) {
-            if (editDelegate == null || uiContext.getShowMapOnly()) {
-              editModeButtonModel.setEnabled(false);
-            } else {
-              editModeButtonModel.setEnabled(true);
-            }
+            editModeButtonModel.setEnabled(editDelegate != null);
           }
         });
   }
@@ -2492,10 +2416,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
 
   public Action getShowHistoryAction() {
     return showHistoryAction;
-  }
-
-  public Action getShowMapOnlyAction() {
-    return showMapOnlyAction;
   }
 
   public UiContext getUiContext() {
