@@ -103,7 +103,11 @@ public class UnitScroller {
 
   private void unitMoved() {
     updateMovesLeftLabel();
-    drawUnitAvatarPane(lastFocusedTerritory);
+    if (lastFocusedTerritory == null) {
+      focusCapital();
+    } else {
+      drawUnitAvatarPane(lastFocusedTerritory);
+    }
 
     // remove any moved units from the sleeping units
     sleepingUnits.removeAll(
