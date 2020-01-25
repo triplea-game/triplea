@@ -11,7 +11,7 @@ import java.util.function.Function;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-class TerritoryContainsTerritoryAnalyzer {
+class IslandTerritoryFinder {
 
   /**
    * Finds all island territories given a set of territory names and their corresponding polygons.
