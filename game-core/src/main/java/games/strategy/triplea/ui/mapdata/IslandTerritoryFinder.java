@@ -38,11 +38,11 @@ class IslandTerritoryFinder {
     final Map<String, Set<String>> contains = new HashMap<>();
 
     for (final String seaTerritory : seaTerritories) {
-      final Set<String> contained =
+      final Set<String> islands =
           findIslandsForSeaTerritory(seaTerritory, landTerritories, polygonLookup);
 
-      if (!contained.isEmpty()) {
-        contains.put(seaTerritory, contained);
+      if (!islands.isEmpty()) {
+        contains.put(seaTerritory, islands);
       }
     }
     return contains;
