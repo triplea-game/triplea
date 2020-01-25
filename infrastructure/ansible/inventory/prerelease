@@ -11,3 +11,7 @@ prerelease.triplea-game.org
 postgresHosts
 dropwizardHosts
 botHosts
+
+[linode:children]
+prerelease
+

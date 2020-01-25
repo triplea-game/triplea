@@ -14,3 +14,7 @@ bot04.triplea-game.org
 postgresHosts
 dropwizardHosts
 botHosts
+
+[linode:children]
+production
+

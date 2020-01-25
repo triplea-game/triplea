@@ -1,16 +1,15 @@
 githubRepo: triplea
-githubApiToken: ${GITHUB_API_TOKEN}
+githubApiToken: {{ create_issues_github_api_token }}
 # if we are using any stubbing, we'll assert that this value is false.
 # this is to help guarantee that we do not accidently use test configuration in prod.
 prod: true
 logRequestAndResponses: false
 logSqlStatements: false
-bcryptSalt: {{ http_server_bcrypt_salt }}
 
 database:
   driverClass: org.postgresql.Driver
   user: {{ http_server_db_user }}
-  password: {{ http_server_db_password }}
+  password: {{ lobby_db_password }}
   url: jdbc:postgresql://{{ http_server_db_host }}:{{ http_server_db_port }}/{{ http_server_db_name }}
   properties:
     charSet: UTF-8

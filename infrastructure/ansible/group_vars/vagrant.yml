@@ -3,6 +3,6 @@ ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
 ansible_host: 127.0.0.1
 ansible_python_interpreter: /usr/bin/python3
 lobby_uri: "http://localhost:8080"
-
+lobby_db_password: "vagrant-db-password"
 nginx_ssl_certificate: "/vagrant/.vagrant/{{ lookup('env','CRT_FILE') }}"
 
