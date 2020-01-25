@@ -19,7 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -169,7 +168,7 @@ public class MapData implements Closeable {
         log.log(Level.SEVERE, "Error reading map.properties", e);
       }
 
-      initializeContains();
+      contains.putAll(TerritoryContainsTerritoryAnalyzer.initializeContains(polys));
     } catch (final IOException ex) {
       log.log(Level.SEVERE, "Failed to initialize map data", ex);
     }
