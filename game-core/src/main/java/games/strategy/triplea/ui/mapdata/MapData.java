@@ -475,28 +475,6 @@ public class MapData implements Closeable {
         mapProperties.getProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA, "0.0f"));
   }
 
-  private void initializeContains() {
-    for (final String seaTerritory : getTerritories()) {
-      if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
-        continue;
-      }
-      final List<String> contained = new ArrayList<>();
-      for (final String landTerritory : getTerritories()) {
-        if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
-          continue;
-        }
-        final Polygon landPoly = getPolygons(landTerritory).iterator().next();
-        final Polygon seaPoly = getPolygons(seaTerritory).iterator().next();
-        if (seaPoly.contains(landPoly.getBounds())) {
-          contained.add(landTerritory);
-        }
-      }
-      if (!contained.isEmpty()) {
-        contains.put(seaTerritory, contained);
-      }
-    }
-  }
-
   public boolean getBooleanProperty(final String propertiesKey) {
     return Boolean.parseBoolean(mapProperties.getProperty(propertiesKey, "true"));
   }
