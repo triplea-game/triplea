@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.mapdata;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
-import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
 import static org.hamcrest.core.Is.is;
 
 import games.strategy.ui.Util;
