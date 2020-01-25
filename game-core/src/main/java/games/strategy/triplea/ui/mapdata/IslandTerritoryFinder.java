@@ -48,11 +48,13 @@ class IslandTerritoryFinder {
     return contains;
   }
 
+  /** Returns a subset of territories matching a given filter. */
   private static Set<String> filterTerritories(
       final Set<String> territoryNames, final Predicate<String> territoryFilter) {
     return territoryNames.stream().filter(territoryFilter).collect(Collectors.toSet());
   }
 
+  /** Find all land territories contained by a given sea territory. */
   private static Set<String> findIslandsForSeaTerritory(
       final String seaTerritory,
       final Set<String> landTerritories,
@@ -61,11 +63,16 @@ class IslandTerritoryFinder {
     final Polygon seaPoly = polygonLookup.apply(seaTerritory);
 
     return landTerritories.stream()
-        .filter(
-            land -> {
-              final Rectangle landBounds = polygonLookup.apply(land).getBounds();
-              return seaPoly.contains(landBounds);
-            })
+        .filter(isLandContainedBySeaPolygon(seaPoly, polygonLookup))
         .collect(Collectors.toSet());
+  }
+
+  /** Checks that a given land territory would be contained by a given sea polygon. */
+  private Predicate<String> isLandContainedBySeaPolygon(
+      final Polygon seaPoly, final Function<String, Polygon> polygonLookup) {
+    return land -> {
+      final Rectangle landBounds = polygonLookup.apply(land).getBounds();
+      return seaPoly.contains(landBounds);
+    };
   }
 }
