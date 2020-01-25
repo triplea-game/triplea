@@ -278,15 +278,14 @@ public final class AutoPlacementFinder {
                   mapData.getBoundingRect(name),
                   mapData.getCenter(name),
                   containedPolygons);
-          placements.put(name, points);
         } else {
           points =
               getPlacementsStartingAtMiddle(
                   mapData.getPolygons(name),
                   mapData.getBoundingRect(name),
                   mapData.getCenter(name));
-          placements.put(name, points);
         }
+        placements.put(name, points);
         textOptionPane.appendNewLine(name + ": " + points.size());
       }
       textOptionPane.appendNewLine("\r\nAll Finished!");
