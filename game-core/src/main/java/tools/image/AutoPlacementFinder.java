@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -268,27 +267,19 @@ public final class AutoPlacementFinder {
       textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
       final Map<String, List<Point>> placements = new HashMap<>();
       for (final String name : mapData.getTerritories()) {
-        final List<Point> points;
-        if (mapData.hasContainedTerritory(name)) {
-          final Set<Polygon> containedPolygons = new HashSet<>();
-          for (final String containedName : mapData.getContainedTerritory(name)) {
-            containedPolygons.addAll(mapData.getPolygons(containedName));
-          }
-          points =
-              getPlacementsStartingAtTopLeft(
-                  mapData.getPolygons(name),
-                  mapData.getBoundingRect(name),
-                  mapData.getCenter(name),
-                  containedPolygons);
-          placements.put(name, points);
-        } else {
-          points =
-              getPlacementsStartingAtMiddle(
-                  mapData.getPolygons(name),
-                  mapData.getBoundingRect(name),
-                  mapData.getCenter(name));
-          placements.put(name, points);
-        }
+        final Set<Polygon> containedPolygons = mapData.getContainedTerritoryPolygons(name);
+        final List<Point> points =
+            containedPolygons.isEmpty()
+                ? getPlacementsStartingAtMiddle(
+                    mapData.getPolygons(name),
+                    mapData.getBoundingRect(name),
+                    mapData.getCenter(name))
+                : getPlacementsStartingAtTopLeft(
+                    mapData.getPolygons(name),
+                    mapData.getBoundingRect(name),
+                    mapData.getCenter(name),
+                    containedPolygons);
+        placements.put(name, points);
         textOptionPane.appendNewLine(name + ": " + points.size());
       }
       textOptionPane.appendNewLine("\r\nAll Finished!");

@@ -19,7 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.extern.java.Log;
@@ -119,7 +119,7 @@ public class MapData implements Closeable {
   private final Map<String, Point> namePlace = new HashMap<>();
   private final Map<String, Point> kamikazePlace = new HashMap<>();
   private final Map<String, Point> capitolPlace = new HashMap<>();
-  private final Map<String, List<String>> contains = new HashMap<>();
+  private final Map<String, Set<String>> contains = new HashMap<>();
   private final Properties mapProperties = new Properties();
   private final Map<String, List<Point>> territoryEffects = new HashMap<>();
   private Set<String> undrawnUnits;
@@ -169,7 +169,7 @@ public class MapData implements Closeable {
         log.log(Level.SEVERE, "Error reading map.properties", e);
       }
 
-      initializeContains();
+      contains.putAll(IslandTerritoryFinder.findIslands(polys));
     } catch (final IOException ex) {
       log.log(Level.SEVERE, "Failed to initialize map data", ex);
     }
@@ -475,28 +475,6 @@ public class MapData implements Closeable {
         mapProperties.getProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA, "0.0f"));
   }
 
-  private void initializeContains() {
-    for (final String seaTerritory : getTerritories()) {
-      if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
-        continue;
-      }
-      final List<String> contained = new ArrayList<>();
-      for (final String landTerritory : getTerritories()) {
-        if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
-          continue;
-        }
-        final Polygon landPoly = getPolygons(landTerritory).iterator().next();
-        final Polygon seaPoly = getPolygons(seaTerritory).iterator().next();
-        if (seaPoly.contains(landPoly.getBounds())) {
-          contained.add(landTerritory);
-        }
-      }
-      if (!contained.isEmpty()) {
-        contains.put(seaTerritory, contained);
-      }
-    }
-  }
-
   public boolean getBooleanProperty(final String propertiesKey) {
     return Boolean.parseBoolean(mapProperties.getProperty(propertiesKey, "true"));
   }
@@ -552,19 +530,17 @@ public class MapData implements Closeable {
     return polys.keySet();
   }
 
-  /** Does this territory have any territories contained within it. */
-  public boolean hasContainedTerritory(final String territoryName) {
-    return contains.containsKey(territoryName);
-  }
-
   /**
-   * returns the name of the territory contained in the given territory. This applies to islands
-   * within sea zones.
+   * Returns the polygons for any territories contained within a given territory.
    *
-   * @return possibly null
+   * @param territoryName Name of the territory, expected to be a sea territory, where we will be
+   *     checking for any contained 'island' territories.
    */
-  public List<String> getContainedTerritory(final String territoryName) {
-    return contains.get(territoryName);
+  public Set<Polygon> getContainedTerritoryPolygons(final String territoryName) {
+    return contains.get(territoryName).stream()
+        .map(this::getPolygons)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public void verify(final GameData data) {
