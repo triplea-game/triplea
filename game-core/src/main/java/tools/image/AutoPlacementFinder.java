@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -268,23 +267,18 @@ public final class AutoPlacementFinder {
       textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
       final Map<String, List<Point>> placements = new HashMap<>();
       for (final String name : mapData.getTerritories()) {
-        final List<Point> points;
-
         final Set<Polygon> containedPolygons = mapData.getContainedTerritoryPolygons(name);
-        if (!containedPolygons.isEmpty()) {
-          points =
-              getPlacementsStartingAtTopLeft(
-                  mapData.getPolygons(name),
-                  mapData.getBoundingRect(name),
-                  mapData.getCenter(name),
-                  containedPolygons);
-        } else {
-          points =
-              getPlacementsStartingAtMiddle(
-                  mapData.getPolygons(name),
-                  mapData.getBoundingRect(name),
-                  mapData.getCenter(name));
-        }
+        final List<Point> points =
+            containedPolygons.isEmpty()
+                ? getPlacementsStartingAtMiddle(
+                    mapData.getPolygons(name),
+                    mapData.getBoundingRect(name),
+                    mapData.getCenter(name))
+                : getPlacementsStartingAtTopLeft(
+                    mapData.getPolygons(name),
+                    mapData.getBoundingRect(name),
+                    mapData.getCenter(name),
+                    containedPolygons);
         placements.put(name, points);
         textOptionPane.appendNewLine(name + ": " + points.size());
       }
