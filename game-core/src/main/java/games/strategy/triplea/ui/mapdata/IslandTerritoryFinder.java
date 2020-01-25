@@ -15,7 +15,11 @@ class IslandTerritoryFinder {
 
   /**
    * Finds all island territories given a set of territory names and their corresponding polygons.
-   * An island is defined as a land territory that is contained within a sea territory.
+   * An island is defined as a land territory that is totally contained within a single sea
+   * territory.
+   *
+   * <p>Note: Sea territories can overlap, an land territory may be an island for multiple sea
+   * territories.
    *
    * <p>Warning: territories may consist of multiple polygons, only the first polygon is checked.
    *
