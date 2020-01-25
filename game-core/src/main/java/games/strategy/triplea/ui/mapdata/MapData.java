@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.extern.java.Log;
@@ -529,19 +530,17 @@ public class MapData implements Closeable {
     return polys.keySet();
   }
 
-  /** Does this territory have any territories contained within it. */
-  public boolean hasContainedTerritory(final String territoryName) {
-    return contains.containsKey(territoryName);
-  }
-
   /**
-   * returns the name of the territory contained in the given territory. This applies to islands
-   * within sea zones.
+   * Returns the polygons for any territories contained within a given territory.
    *
-   * @return possibly null
+   * @param territoryName Name of the territory, expected to be a sea territory, where we will be
+   *     checking for any contained 'island' territories.
    */
-  public List<String> getContainedTerritory(final String territoryName) {
-    return contains.get(territoryName);
+  public Set<Polygon> getContainedTerritoryPolygons(final String territoryName) {
+    return Optional.ofNullable(contains.get(territoryName)).orElse(List.of()).stream()
+        .map(this::getPolygons)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public void verify(final GameData data) {

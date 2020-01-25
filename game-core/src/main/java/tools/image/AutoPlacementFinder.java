@@ -269,11 +269,9 @@ public final class AutoPlacementFinder {
       final Map<String, List<Point>> placements = new HashMap<>();
       for (final String name : mapData.getTerritories()) {
         final List<Point> points;
-        if (mapData.hasContainedTerritory(name)) {
-          final Set<Polygon> containedPolygons = new HashSet<>();
-          for (final String containedName : mapData.getContainedTerritory(name)) {
-            containedPolygons.addAll(mapData.getPolygons(containedName));
-          }
+
+        final Set<Polygon> containedPolygons = mapData.getContainedTerritoryPolygons(name);
+        if (!containedPolygons.isEmpty()) {
           points =
               getPlacementsStartingAtTopLeft(
                   mapData.getPolygons(name),
