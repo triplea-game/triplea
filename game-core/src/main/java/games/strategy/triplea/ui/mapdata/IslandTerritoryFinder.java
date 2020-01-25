@@ -2,12 +2,14 @@ package games.strategy.triplea.ui.mapdata;
 
 import games.strategy.ui.Util;
 import java.awt.Polygon;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -23,22 +25,21 @@ class IslandTerritoryFinder {
    * @return A mapping of sea territory names to the name of land territories that are islands
    *     contained by each corresponding sea territory.
    */
-  static Map<String, List<String>> findIslands(final Map<String, List<Polygon>> polygons) {
-    final Set<String> territoryNames = polygons.keySet();
+  static Map<String, Set<String>> findIslands(final Map<String, List<Polygon>> polygons) {
+    final Set<String> seaTerritories =
+        filterTerritories(polygons.keySet(), Util::isTerritoryNameIndicatingWater);
+
+    final Set<String> landTerritories =
+        filterTerritories(polygons.keySet(), Predicate.not(Util::isTerritoryNameIndicatingWater));
+
     final Function<String, Polygon> polygonLookup =
         territoryName -> polygons.get(territoryName).iterator().next();
 
-    final Map<String, List<String>> contains = new HashMap<>();
+    final Map<String, Set<String>> contains = new HashMap<>();
 
-    for (final String seaTerritory : territoryNames) {
-      if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
-        continue;
-      }
-      final List<String> contained = new ArrayList<>();
-      for (final String landTerritory : territoryNames) {
-        if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
-          continue;
-        }
+    for (final String seaTerritory : seaTerritories) {
+      final Set<String> contained = new HashSet<>();
+      for (final String landTerritory : landTerritories) {
         final Polygon landPoly = polygonLookup.apply(landTerritory);
         final Polygon seaPoly = polygonLookup.apply(seaTerritory);
         if (seaPoly.contains(landPoly.getBounds())) {
@@ -50,5 +51,10 @@ class IslandTerritoryFinder {
       }
     }
     return contains;
+  }
+
+  private static Set<String> filterTerritories(
+      final Set<String> territoryNames, final Predicate<String> territoryFilter) {
+    return territoryNames.stream().filter(territoryFilter).collect(Collectors.toSet());
   }
 }

@@ -119,7 +119,7 @@ public class MapData implements Closeable {
   private final Map<String, Point> namePlace = new HashMap<>();
   private final Map<String, Point> kamikazePlace = new HashMap<>();
   private final Map<String, Point> capitolPlace = new HashMap<>();
-  private final Map<String, List<String>> contains = new HashMap<>();
+  private final Map<String, Set<String>> contains = new HashMap<>();
   private final Properties mapProperties = new Properties();
   private final Map<String, List<Point>> territoryEffects = new HashMap<>();
   private Set<String> undrawnUnits;
@@ -537,7 +537,7 @@ public class MapData implements Closeable {
    *     checking for any contained 'island' territories.
    */
   public Set<Polygon> getContainedTerritoryPolygons(final String territoryName) {
-    return Optional.ofNullable(contains.get(territoryName)).orElse(List.of()).stream()
+    return Optional.ofNullable(contains.get(territoryName)).orElse(Set.of()).stream()
         .map(this::getPolygons)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());

@@ -10,6 +10,7 @@ import games.strategy.ui.Util;
 import java.awt.Polygon;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,15 +57,15 @@ final class IslandTerritoryFinderTest {
   @Test
   @DisplayName("Basic case with a single island contained by a sea territory")
   void simpleFindIsland() {
-    final Map<String, List<String>> seaToIslands =
+    final Map<String, Set<String>> seaToIslands =
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(outer), LAND_TERR, List.of(inner)));
 
     assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, List.of(LAND_TERR)));
+    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
 
     // inversion of land and sea should yield an empty map
-    final Map<String, List<String>> inversion =
+    final Map<String, Set<String>> inversion =
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(outer)));
 
@@ -74,18 +75,18 @@ final class IslandTerritoryFinderTest {
   @Test
   @DisplayName("If island coordinates match the sea coordinates, then the island is contained")
   void overlapTerritoriesAreIslands() {
-    final Map<String, List<String>> seaToIslands =
+    final Map<String, Set<String>> seaToIslands =
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(inner)));
 
     assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, List.of(LAND_TERR)));
+    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
   }
 
   @Test
   @DisplayName("Sea containing two islands")
   void seaContainingTwoIslands() {
-    final Map<String, List<String>> seaToIslands =
+    final Map<String, Set<String>> seaToIslands =
         IslandTerritoryFinder.findIslands(
             Map.of(
                 SEA_TERR,
@@ -96,13 +97,13 @@ final class IslandTerritoryFinderTest {
                 List.of(adjacentInner)));
 
     assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, List.of(LAND_TERR, LAND_TERR_1)));
+    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR, LAND_TERR_1)));
   }
 
   @Test
   @DisplayName("Two sea territories containing the same island")
   void twoSeaTerritoriesContainingTheSameIsland() {
-    final Map<String, List<String>> seaToIslands =
+    final Map<String, Set<String>> seaToIslands =
         IslandTerritoryFinder.findIslands(
             Map.of(
                 SEA_TERR,
@@ -113,14 +114,14 @@ final class IslandTerritoryFinderTest {
                 List.of(adjacentInner)));
 
     assertThat(seaToIslands, is(aMapWithSize(2)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, List.of(LAND_TERR)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR_1, List.of(LAND_TERR)));
+    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
+    assertThat(seaToIslands, hasEntry(SEA_TERR_1, Set.of(LAND_TERR)));
   }
 
   @Test
   @DisplayName("No Overlap Case")
   void noOverlap() {
-    final Map<String, List<String>> seaToIslands =
+    final Map<String, Set<String>> seaToIslands =
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(adjacentInner)));
 
@@ -130,7 +131,7 @@ final class IslandTerritoryFinderTest {
   @Test
   @DisplayName("Sea territory overlapping only one island")
   void onlyOneIslandIsOverlapped() {
-    final Map<String, List<String>> seaToIslands =
+    final Map<String, Set<String>> seaToIslands =
         IslandTerritoryFinder.findIslands(
             Map.of(
                 SEA_TERR,
@@ -141,6 +142,6 @@ final class IslandTerritoryFinderTest {
                 List.of(inner)));
 
     assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, List.of(LAND_TERR)));
+    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
   }
 }
