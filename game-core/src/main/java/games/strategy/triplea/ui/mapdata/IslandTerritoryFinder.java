@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.mapdata;
 
 import games.strategy.ui.Util;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,16 +27,10 @@ class IslandTerritoryFinder {
     final Set<String> seaTerritories = filterSeaTerritories(polygons.keySet());
     final Set<String> landTerritories = filterNotSeaTerritories(polygons.keySet());
 
-    // Function where given a territory name, give us a polygon for that territory
-    final Function<String, Polygon> polygonLookup =
-        territoryName -> polygons.get(territoryName).iterator().next();
-
     // map sea territories to: sea territory name -> islands contained by that sea territory
     return seaTerritories.stream()
         .collect(
-            Collectors.toMap(
-                sea -> sea,
-                sea -> findIslandsForSeaTerritory(sea, landTerritories, polygonLookup)));
+            Collectors.toMap(sea -> sea, findIslandsForSeaTerritory(landTerritories, polygons)));
   }
 
   private static Set<String> filterSeaTerritories(final Set<String> territoryNames) {
@@ -55,24 +48,27 @@ class IslandTerritoryFinder {
   }
 
   /** Find all land territories contained by a given sea territory. */
-  private static Set<String> findIslandsForSeaTerritory(
-      final String seaTerritory,
-      final Set<String> landTerritories,
-      final Function<String, Polygon> polygonLookup) {
+  private static Function<String, Set<String>> findIslandsForSeaTerritory(
+      final Set<String> landTerritories, final Map<String, List<Polygon>> polygons) {
 
-    final Polygon seaPoly = polygonLookup.apply(seaTerritory);
-
-    return landTerritories.stream()
-        .filter(isLandContainedBySeaPolygon(seaPoly, polygonLookup))
-        .collect(Collectors.toSet());
+    return seaTerritory ->
+        landTerritories.stream()
+            .filter(landIsContainedBySeaTerritory(seaTerritory, polygons))
+            .collect(Collectors.toSet());
   }
 
-  /** Checks that a given land territory would be contained by a given sea polygon. */
-  private Predicate<String> isLandContainedBySeaPolygon(
-      final Polygon seaPoly, final Function<String, Polygon> polygonLookup) {
+  /** Checks that a given land territory would be contained by a given sea territory. */
+  private Predicate<String> landIsContainedBySeaTerritory(
+      final String seaTerritory, final Map<String, List<Polygon>> polygons) {
+
+    // Function where given a territory name, give us a polygon for that territory
+    final Function<String, Polygon> polygonLookup =
+        territoryName -> polygons.get(territoryName).iterator().next();
+
     return land -> {
-      final Rectangle landBounds = polygonLookup.apply(land).getBounds();
-      return seaPoly.contains(landBounds);
+      final Polygon seaPoly = polygonLookup.apply(seaTerritory);
+      final Polygon landPoly = polygonLookup.apply(land);
+      return seaPoly.contains(landPoly.getBounds());
     };
   }
 }
