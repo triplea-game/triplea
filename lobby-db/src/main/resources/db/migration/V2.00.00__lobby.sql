@@ -1,4 +1,4 @@
-comment on database lobby_db is 'The Database of the TripleA Lobby';
+comment on database lobby_db is 'Database used by lobby';
 
 create table bad_word
 (
@@ -32,7 +32,7 @@ values (1, 'ADMIN'),     -- user can add/remove admins and add/remove moderators
        (2, 'MODERATOR'), -- user has boot/ban privileges
        (3, 'PLAYER'),    -- standard registered user
        (4, 'ANONYMOUS'), -- users that are not registered, they do not have an entry in lobby_user table
-       (5, 'HOST'); -- AKA LobbyWatcher, special connection for hosts to send game updates to lobby
+       (5, 'HOST'); -- AKA 'Lobby Watcher', special connection for hosts to send game updates to lobby
 
 create table lobby_user
 (
@@ -49,7 +49,7 @@ alter table lobby_user
     owner to lobby_user;
 alter table lobby_user
     add constraint lobby_user_pass_check check (password IS NOT NULL OR bcrypt_password IS NOT NULL);
-comment on table lobby_user is 'Stores information about TripleA Lobby users.';
+comment on table lobby_user is 'Stores information about Triplea Lobby users.';
 comment on column lobby_user.username is 'Defines the in-game username.';
 comment on column lobby_user.password is
     $$The legacy MD5Crypt hash of the password. The length of the hash must always be 34 chars.
@@ -120,11 +120,14 @@ create table banned_user
     username     varchar(40)   not null,
     system_id    varchar(36) not null,
     ip           inet          not null,
-    ban_expiry   timestamptz   not null check (ban_expiry > now()),
+    ban_expiry   timestamptz   not null,
     date_created timestamptz   not null default now()
 );
 alter table banned_user
     owner to lobby_user;
+
+create index banned_user_ip on banned_user(ip, system_id);
+
 comment on table banned_user is
     $$ Table that records player bans, when players join lobby we check their IP address and hashed mac
           against this table. If there there is an IP or mac match, then the user is not allowed to join. $$;
@@ -217,5 +220,5 @@ create table game_hosting_api_key
 alter table game_hosting_api_key
     owner to lobby_user;
 comment on table game_hosting_api_key is
-    $$ Table dedicated for storing "LobbyWatcher" api-keys. Game hosting connections create a dedicated
+    $$ Table dedicated for storing "Lobby Watcher" api-keys. Game hosting connections create a dedicated
      connection to the lobby with their own API key $$;
