@@ -168,7 +168,7 @@ public class MapData implements Closeable {
         log.log(Level.SEVERE, "Error reading map.properties", e);
       }
 
-      contains.putAll(TerritoryContainsTerritoryAnalyzer.initializeContains(polys));
+      contains.putAll(TerritoryContainsTerritoryAnalyzer.findIslands(polys));
     } catch (final IOException ex) {
       log.log(Level.SEVERE, "Failed to initialize map data", ex);
     }

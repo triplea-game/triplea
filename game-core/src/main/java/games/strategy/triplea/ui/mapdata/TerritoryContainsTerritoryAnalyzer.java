@@ -13,7 +13,17 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class TerritoryContainsTerritoryAnalyzer {
 
-  static Map<String, List<String>> initializeContains(final Map<String, List<Polygon>> polygons) {
+  /**
+   * Finds all island territories given a set of territory names and their corresponding polygons.
+   * An island is defined as a land territory that is contained within a sea territory.
+   *
+   * <p>Warning: territories may consist of multiple polygons, only the first polygon is checked.
+   *
+   * @param polygons Mapping of territory names to the polygons representing that territories.
+   * @return A mapping of sea territory names to the name of land territories that are islands
+   *     contained by each corresponding sea territory.
+   */
+  static Map<String, List<String>> findIslands(final Map<String, List<Polygon>> polygons) {
     final Set<String> territoryNames = polygons.keySet();
     final Function<String, Polygon> polygonLookup =
         territoryName -> polygons.get(territoryName).iterator().next();
