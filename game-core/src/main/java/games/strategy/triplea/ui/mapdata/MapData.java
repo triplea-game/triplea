@@ -13,12 +13,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.io.ByteArrayInputStream;
-import java.io.Closeable;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +30,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 import lombok.extern.java.Log;
 import org.triplea.java.function.ThrowingFunction;
 import org.triplea.java.function.ThrowingSupplier;
@@ -43,7 +38,7 @@ import org.triplea.util.Tuple;
 
 /** contains data about the territories useful for drawing. */
 @Log
-public class MapData implements Closeable {
+public class MapData {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
   public static final String PROPERTY_UNITS_WIDTH = "units.width";
   public static final String PROPERTY_UNITS_HEIGHT = "units.height";
@@ -127,14 +122,16 @@ public class MapData implements Closeable {
   private final Map<Image, List<Point>> decorations = new HashMap<>();
   private final Map<String, Image> territoryNameImages = new HashMap<>();
   private final Map<String, Image> effectImages = new HashMap<>();
-  private final ResourceLoader resourceLoader;
+
+  @Nullable private final Image vcImage;
+  @Nullable private final Image blockadeImage;
+  @Nullable private final Image errorImage;
+  @Nullable private final Image warningImage;
+  private final String mapNameDir;
 
   public MapData(final String mapNameDir) {
-    this(ResourceLoader.getMapResourceLoader(mapNameDir));
-  }
-
-  public MapData(final ResourceLoader loader) {
-    resourceLoader = loader;
+    this.mapNameDir = mapNameDir;
+    final ResourceLoader loader = ResourceLoader.getMapResourceLoader(mapNameDir);
     try {
       if (loader.getResource(POLYGON_FILE) == null) {
         throw new IllegalStateException(
@@ -147,23 +144,23 @@ public class MapData implements Closeable {
                 + "to the root of the map zip");
       }
 
-      place.putAll(readPlacementsOneToMany(optionalResource(PLACEMENT_FILE)));
-      territoryEffects.putAll(readPointsOneToMany(optionalResource(TERRITORY_EFFECT_FILE)));
+      place.putAll(readPlacementsOneToMany(loader.optionalResource(PLACEMENT_FILE)));
+      territoryEffects.putAll(readPointsOneToMany(loader.optionalResource(TERRITORY_EFFECT_FILE)));
 
-      polys.putAll(readPolygonsOneToMany(requiredResource(POLYGON_FILE)));
-      centers.putAll(readPointsOneToOne(requiredResource(CENTERS_FILE)));
-      vcPlace.putAll(readPointsOneToOne(optionalResource(VC_MARKERS)));
-      convoyPlace.putAll(readPointsOneToOne(optionalResource(CONVOY_MARKERS)));
-      commentPlace.putAll(readPointsOneToOne(optionalResource(COMMENT_MARKERS)));
-      blockadePlace.putAll(readPointsOneToOne(optionalResource(BLOCKADE_MARKERS)));
-      capitolPlace.putAll(readPointsOneToOne(optionalResource(CAPITAL_MARKERS)));
-      puPlace.putAll(readPointsOneToOne(optionalResource(PU_PLACE_FILE)));
-      namePlace.putAll(readPointsOneToOne(optionalResource(TERRITORY_NAME_PLACE_FILE)));
-      kamikazePlace.putAll(readPointsOneToOne(optionalResource(KAMIKAZE_FILE)));
-      decorations.putAll(loadDecorations());
-      territoryNameImages.putAll(territoryNameImages());
+      polys.putAll(readPolygonsOneToMany(loader.requiredResource(POLYGON_FILE)));
+      centers.putAll(readPointsOneToOne(loader.requiredResource(CENTERS_FILE)));
+      vcPlace.putAll(readPointsOneToOne(loader.optionalResource(VC_MARKERS)));
+      convoyPlace.putAll(readPointsOneToOne(loader.optionalResource(CONVOY_MARKERS)));
+      commentPlace.putAll(readPointsOneToOne(loader.optionalResource(COMMENT_MARKERS)));
+      blockadePlace.putAll(readPointsOneToOne(loader.optionalResource(BLOCKADE_MARKERS)));
+      capitolPlace.putAll(readPointsOneToOne(loader.optionalResource(CAPITAL_MARKERS)));
+      puPlace.putAll(readPointsOneToOne(loader.optionalResource(PU_PLACE_FILE)));
+      namePlace.putAll(readPointsOneToOne(loader.optionalResource(TERRITORY_NAME_PLACE_FILE)));
+      kamikazePlace.putAll(readPointsOneToOne(loader.optionalResource(KAMIKAZE_FILE)));
+      decorations.putAll(loadDecorations(loader));
+      territoryNameImages.putAll(territoryNameImages(loader));
 
-      try (InputStream inputStream = requiredResource(MAP_PROPERTIES).get()) {
+      try (InputStream inputStream = loader.requiredResource(MAP_PROPERTIES).get()) {
         mapProperties.load(inputStream);
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Error reading map.properties", e);
@@ -173,18 +170,13 @@ public class MapData implements Closeable {
     } catch (final IOException ex) {
       log.log(Level.SEVERE, "Failed to initialize map data", ex);
     }
-  }
 
-  private ThrowingSupplier<InputStream, IOException> optionalResource(final String path) {
-    return () ->
-        Optional.ofNullable(resourceLoader.getResourceAsStream(path))
-            .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
-  }
+    vcImage = loader.loadImage("misc/vc.png").orElse(null);
+    blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
+    errorImage = loader.loadImage("misc/error.gif").orElse(null);
+    warningImage = loader.loadImage("misc/warning.gif").orElse(null);
 
-  private ThrowingSupplier<InputStream, IOException> requiredResource(final String path) {
-    return () ->
-        Optional.ofNullable(resourceLoader.getResourceAsStream(path))
-            .orElseThrow(() -> new FileNotFoundException(path));
+    loader.close();
   }
 
   private static Map<String, Point> readPointsOneToOne(
@@ -224,52 +216,42 @@ public class MapData implements Closeable {
     return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
   }
 
-  @Override
-  public void close() {
-    resourceLoader.close();
-  }
-
-  private Map<String, Image> territoryNameImages() {
+  private Map<String, Image> territoryNameImages(final ResourceLoader resourceLoader) {
     if (!resourceLoader.hasPath("territoryNames/")) {
       return new HashMap<>();
     }
 
     final Map<String, Image> territoryNameImages = new HashMap<>();
     for (final String name : centers.keySet()) {
-      final Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
+      final Optional<Image> territoryNameImage = loadTerritoryNameImage(resourceLoader, name);
 
       territoryNameImage.ifPresent(image -> territoryNameImages.put(name, image));
     }
     return territoryNameImages;
   }
 
-  private Optional<Image> loadTerritoryNameImage(final String imageName) {
-    try {
-      // try first file names that have underscores instead of spaces
-      final String normalizedName = imageName.replace(' ', '_');
-      Optional<Image> img = loadImage(constructTerritoryNameImagePath(normalizedName));
-      if (img.isEmpty()) {
-        img = loadImage(constructTerritoryNameImagePath(imageName));
-      }
-      return img;
-    } catch (final Exception e) {
-      // TODO: this is checking for IllegalStateException - we should bubble up the Optional image
-      // load and just
-      // check instead if the optional is empty.
-      log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
-      return Optional.empty();
-    }
+  private Optional<Image> loadTerritoryNameImage(
+      final ResourceLoader resourceLoader, final String imageName) {
+    // try first file names that have underscores instead of spaces
+    final String normalizedName = imageName.replace(' ', '_');
+    return resourceLoader
+        .loadImage(constructTerritoryNameImagePath(normalizedName))
+        .or(() -> resourceLoader.loadImage(constructTerritoryNameImagePath(imageName)));
   }
 
   private static String constructTerritoryNameImagePath(final String baseName) {
     return "territoryNames/" + baseName + ".png";
   }
 
-  private Map<Image, List<Point>> loadDecorations() throws IOException {
+  private Map<Image, List<Point>> loadDecorations(final ResourceLoader resourceLoader)
+      throws IOException {
     final Map<Image, List<Point>> decorations = new HashMap<>();
-    final Map<String, List<Point>> points = readPointsOneToMany(optionalResource(DECORATIONS_FILE));
+    final Map<String, List<Point>> points =
+        readPointsOneToMany(resourceLoader.optionalResource(DECORATIONS_FILE));
     for (final String name : points.keySet()) {
-      loadImage("misc/" + name).ifPresent(img -> decorations.put(img, points.get(name)));
+      resourceLoader
+          .loadImage("misc/" + name)
+          .ifPresent(img -> decorations.put(img, points.get(name)));
     }
     return decorations;
   }
@@ -765,34 +747,20 @@ public class MapData implements Closeable {
   }
 
   public Optional<Image> getVcImage() {
-    return loadImage("misc/vc.png");
+
+    return Optional.ofNullable(vcImage);
   }
 
   public Optional<Image> getBlockadeImage() {
-    return loadImage("misc/blockade.png");
+    return Optional.ofNullable(blockadeImage);
   }
 
   public Optional<Image> getErrorImage() {
-    return loadImage("misc/error.gif");
+    return Optional.of(errorImage);
   }
 
   public Optional<Image> getWarningImage() {
-    return loadImage("misc/warning.gif");
-  }
-
-  private Optional<Image> loadImage(final String imageName) {
-    final URL url = resourceLoader.getResource(imageName);
-    if (url == null) {
-      // this is actually pretty common that we try to read images that are not there. Let the
-      // caller
-      // decide if this is an error or not.
-      return Optional.empty();
-    }
-    try {
-      return Optional.of(ImageIO.read(url));
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    }
+    return Optional.of(warningImage);
   }
 
   public Map<String, Image> getTerritoryNameImages() {
@@ -811,15 +779,18 @@ public class MapData implements Closeable {
   }
 
   public Optional<Image> getTerritoryEffectImage(final String effectName) {
-    // TODO: what does this cache buy us? should we still keep it?
-    if (effectImages.get(effectName) != null) {
-      return Optional.of(effectImages.get(effectName));
+    try (ResourceLoader loader = ResourceLoader.getMapResourceLoader(mapNameDir)) {
+      // TODO: what does this cache buy us? should we still keep it?
+      if (effectImages.get(effectName) != null) {
+        return Optional.of(effectImages.get(effectName));
+      }
+      Optional<Image> effectImage =
+          loader.loadImage("territoryEffects/" + effectName + "_large.png");
+      if (effectImage.isEmpty()) {
+        effectImage = loader.loadImage("territoryEffects/" + effectName + ".png");
+      }
+      effectImages.put(effectName, effectImage.orElse(null));
+      return effectImage;
     }
-    Optional<Image> effectImage = loadImage("territoryEffects/" + effectName + "_large.png");
-    if (effectImage.isEmpty()) {
-      effectImage = loadImage("territoryEffects/" + effectName + ".png");
-    }
-    effectImages.put(effectName, effectImage.orElse(null));
-    return effectImage;
   }
 }

@@ -7,8 +7,11 @@ import com.google.common.base.Splitter;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
+import java.awt.Image;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -22,9 +25,11 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
+import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -275,5 +280,32 @@ public class ResourceLoader implements Closeable {
 
     return UrlStreams.openStream(url)
         .orElseThrow(() -> new IllegalStateException("Failed to open an input stream to: " + path));
+  }
+
+  public ThrowingSupplier<InputStream, IOException> optionalResource(final String path) {
+    return () ->
+        Optional.ofNullable(getResourceAsStream(path))
+            .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
+  }
+
+  public ThrowingSupplier<InputStream, IOException> requiredResource(final String path) {
+    return () ->
+        Optional.ofNullable(getResourceAsStream(path))
+            .orElseThrow(() -> new FileNotFoundException(path));
+  }
+
+  public Optional<Image> loadImage(final String imageName) {
+    final URL url = getResource(imageName);
+    if (url == null) {
+      // this is actually pretty common that we try to read images that are not there. Let the
+      // caller
+      // decide if this is an error or not.
+      return Optional.empty();
+    }
+    try {
+      return Optional.of(ImageIO.read(url));
+    } catch (final IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }
