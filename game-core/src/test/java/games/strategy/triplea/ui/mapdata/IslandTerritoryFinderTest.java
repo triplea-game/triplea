@@ -69,7 +69,8 @@ final class IslandTerritoryFinderTest {
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(outer)));
 
-    assertThat(inversion, is(anEmptyMap()));
+    assertThat(inversion, is(aMapWithSize(1)));
+    assertThat(inversion, hasEntry(SEA_TERR, Set.of()));
   }
 
   @Test
@@ -125,7 +126,8 @@ final class IslandTerritoryFinderTest {
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(adjacentInner)));
 
-    assertThat(seaToIslands, is(anEmptyMap()));
+    assertThat(seaToIslands, is(aMapWithSize(1)));
+    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of()));
   }
 
   @Test

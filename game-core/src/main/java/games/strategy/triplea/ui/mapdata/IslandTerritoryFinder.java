@@ -38,9 +38,7 @@ class IslandTerritoryFinder {
       final Set<String> islands =
           findIslandsForSeaTerritory(seaTerritory, landTerritories, polygonLookup);
 
-      if (!islands.isEmpty()) {
-        contains.put(seaTerritory, islands);
-      }
+      contains.put(seaTerritory, islands);
     }
     return contains;
   }

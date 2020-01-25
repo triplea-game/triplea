@@ -537,7 +537,8 @@ public class MapData implements Closeable {
    *     checking for any contained 'island' territories.
    */
   public Set<Polygon> getContainedTerritoryPolygons(final String territoryName) {
-    return Optional.ofNullable(contains.get(territoryName)).orElse(Set.of()).stream()
+    return contains.get(territoryName)
+        .stream()
         .map(this::getPolygons)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
