@@ -26,11 +26,8 @@ class IslandTerritoryFinder {
    *     contained by each corresponding sea territory.
    */
   static Map<String, Set<String>> findIslands(final Map<String, List<Polygon>> polygons) {
-    final Set<String> seaTerritories =
-        filterTerritories(polygons.keySet(), Util::isTerritoryNameIndicatingWater);
-
-    final Set<String> landTerritories =
-        filterTerritories(polygons.keySet(), Predicate.not(Util::isTerritoryNameIndicatingWater));
+    final Set<String> seaTerritories = filterSeaTerritories(polygons.keySet());
+    final Set<String> landTerritories = filterNotSeaTerritories(polygons.keySet());
 
     final Function<String, Polygon> polygonLookup =
         territoryName -> polygons.get(territoryName).iterator().next();
@@ -46,6 +43,14 @@ class IslandTerritoryFinder {
       }
     }
     return contains;
+  }
+
+  private static Set<String> filterSeaTerritories(final Set<String> territoryNames) {
+    return filterTerritories(territoryNames, Util::isTerritoryNameIndicatingWater);
+  }
+
+  private static Set<String> filterNotSeaTerritories(final Set<String> territoryNames) {
+    return filterTerritories(territoryNames, Predicate.not(Util::isTerritoryNameIndicatingWater));
   }
 
   /** Returns a subset of territories matching a given filter. */
