@@ -38,14 +38,9 @@ class IslandTerritoryFinder {
     final Map<String, Set<String>> contains = new HashMap<>();
 
     for (final String seaTerritory : seaTerritories) {
-      final Set<String> contained = new HashSet<>();
-      for (final String landTerritory : landTerritories) {
-        final Polygon landPoly = polygonLookup.apply(landTerritory);
-        final Polygon seaPoly = polygonLookup.apply(seaTerritory);
-        if (seaPoly.contains(landPoly.getBounds())) {
-          contained.add(landTerritory);
-        }
-      }
+      final Set<String> contained =
+          findIslandsForSeaTerritory(seaTerritory, landTerritories, polygonLookup);
+
       if (!contained.isEmpty()) {
         contains.put(seaTerritory, contained);
       }
@@ -56,5 +51,20 @@ class IslandTerritoryFinder {
   private static Set<String> filterTerritories(
       final Set<String> territoryNames, final Predicate<String> territoryFilter) {
     return territoryNames.stream().filter(territoryFilter).collect(Collectors.toSet());
+  }
+
+  private static Set<String> findIslandsForSeaTerritory(
+      final String seaTerritory,
+      final Set<String> landTerritories,
+      final Function<String, Polygon> polygonLookup) {
+    final Polygon seaPoly = polygonLookup.apply(seaTerritory);
+    final Set<String> contained = new HashSet<>();
+    for (final String landTerritory : landTerritories) {
+      final Polygon landPoly = polygonLookup.apply(landTerritory);
+      if (seaPoly.contains(landPoly.getBounds())) {
+        contained.add(landTerritory);
+      }
+    }
+    return contained;
   }
 }
