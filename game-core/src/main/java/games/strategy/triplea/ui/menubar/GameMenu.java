@@ -64,7 +64,6 @@ final class GameMenu extends JMenu {
     addSeparator();
     addMenuItemWithHotkey(frame.getShowGameAction(), KeyEvent.VK_G);
     addMenuItemWithHotkey(frame.getShowHistoryAction(), KeyEvent.VK_H);
-    add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
     addSeparator();
     addGameOptionsMenu();
     addShowVerifiedDice();

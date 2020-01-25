@@ -121,10 +121,6 @@ public interface UiContext {
 
   boolean getShowTerritoryEffects();
 
-  boolean getShowMapOnly();
-
-  void setShowMapOnly(boolean showMapOnly);
-
   boolean getShowEndOfTurnReport();
 
   void setShowEndOfTurnReport(boolean value);

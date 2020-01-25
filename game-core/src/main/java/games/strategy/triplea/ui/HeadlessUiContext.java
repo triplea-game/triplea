@@ -111,13 +111,5 @@ public class HeadlessUiContext extends AbstractUiContext {
   }
 
   @Override
-  public boolean getShowMapOnly() {
-    return false;
-  }
-
-  @Override
-  public void setShowMapOnly(final boolean showMapOnly) {}
-
-  @Override
   public void setUnitScaleFactor(final double scaleFactor) {}
 }
