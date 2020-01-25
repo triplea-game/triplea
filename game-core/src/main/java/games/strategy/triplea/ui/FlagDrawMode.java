@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -12,6 +12,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.event.ActionEvent;
 import java.util.Collection;

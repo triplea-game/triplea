@@ -6,6 +6,8 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;

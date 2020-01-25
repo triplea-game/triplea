@@ -51,7 +51,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
-import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -73,8 +72,11 @@ import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
+import games.strategy.ui.ImageScrollerSmallView;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -177,7 +179,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   private final GameData data;
   private final IGame game;
   private final MapPanel mapPanel;
-  private final MapPanelSmallView smallView;
+  private final ImageScrollerSmallView smallView;
   private final JPanel territoryInfo = new JPanel();
   private final JLabel message = new JLabel("No selection");
   private final ResourceBar resourceBar;
@@ -211,7 +213,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
-  private List<Unit> unitsBeingMousedOver;
   private GamePlayer lastStepPlayer;
   private GamePlayer currentStepPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
@@ -363,7 +364,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
                   if (uiContext == null) {
                     return;
                   }
-                  if (getEditMode()) {
+                  if (mapPanel.getEditMode()) {
                     if (tabsPanel.indexOfComponent(editPanel) == -1) {
                       showEditMode();
                     }
@@ -473,15 +474,12 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
     final Image small = uiContext.getMapImage().getSmallMapImage();
-    smallView = new MapPanelSmallView(small, model, uiContext.getMapData());
+    smallView = new ImageScrollerSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(mapSelectionListener);
     mapPanel.addMouseOverUnitListener(
-        (units, territory) -> {
-          unitsBeingMousedOver = units;
-          tooltipManager.updateTooltip(getUnitInfo());
-        });
+        (units, territory) -> tooltipManager.updateTooltip(getUnitInfo()));
     // link the small and large images
     SwingUtilities.invokeLater(mapPanel::initSmallMap);
     mapAndChatPanel = new JPanel();
@@ -1999,10 +1997,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   }
 
   private String getUnitInfo() {
-    if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
-      final Unit unit = unitsBeingMousedOver.get(0);
+    if (!mapPanel.getMouseHoverUnits().isEmpty()) {
+      final Unit unit = mapPanel.getMouseHoverUnits().get(0);
       return MapUnitTooltipManager.getTooltipTextForUnit(
-          unit.getType(), unit.getOwner(), unitsBeingMousedOver.size());
+          unit.getType(), unit.getOwner(), mapPanel.getMouseHoverUnits().size());
     }
     return "";
   }
@@ -2155,7 +2153,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           }
           addTab("Notes", notesPanel, 'N');
           addTab("Territory", details, 'T');
-          if (getEditMode()) {
+          if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
@@ -2336,7 +2334,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           }
           addTab("Notes", notesPanel, 'N');
           addTab("Territory", details, 'T');
-          if (getEditMode()) {
+          if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
@@ -2414,18 +2412,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     setWidgetActivation();
-  }
-
-  private boolean getEditMode() {
-    final boolean isEditMode;
-    // use GameData from mapPanel since it will follow current history node
-    mapPanel.getData().acquireReadLock();
-    try {
-      isEditMode = BaseEditDelegate.getEditMode(mapPanel.getData());
-    } finally {
-      mapPanel.getData().releaseReadLock();
-    }
-    return isEditMode;
   }
 
   /**

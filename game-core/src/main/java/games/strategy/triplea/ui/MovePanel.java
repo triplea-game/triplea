@@ -23,6 +23,10 @@ import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapSelectionListener;
+import games.strategy.triplea.ui.panels.map.MouseOverUnitListener;
+import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.ui.unit.scroller.UnitScroller;
 import games.strategy.triplea.util.MovableUnitsFilter;
 import games.strategy.triplea.util.TransportUtils;
@@ -101,7 +105,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       new UnitSelectionListener() {
         @Override
         public void unitsSelected(
-            final List<Unit> units, final Territory t, final MouseDetails me) {
+            final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
           if (!getListening()) {
             return;
           }
@@ -112,8 +116,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           if (t == null) {
             return;
           }
-          final boolean rightMouse = me.isRightButton();
-          final boolean isMiddleMouseButton = me.getButton() == MouseEvent.BUTTON2;
+          final boolean rightMouse = mouseDetails.isRightButton();
+          final boolean isMiddleMouseButton = mouseDetails.getButton() == MouseEvent.BUTTON2;
           final boolean noSelectedTerritory = (firstSelectedTerritory == null);
           final boolean isFirstSelectedTerritory = Objects.equals(firstSelectedTerritory, t);
           // select units
@@ -122,12 +126,12 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           try {
             // de select units
             if (rightMouse && !noSelectedTerritory && !map.wasLastActionDraggingAndReset()) {
-              deselectUnits(units, t, me);
+              deselectUnits(units, t, mouseDetails);
             } else if (!isMiddleMouseButton
                 && !rightMouse
                 && (noSelectedTerritory || isFirstSelectedTerritory)) {
-              selectUnitsToMove(units, t, me);
-            } else if (!rightMouse && me.isControlDown() && !isFirstSelectedTerritory) {
+              selectUnitsToMove(units, t, mouseDetails);
+            } else if (!rightMouse && mouseDetails.isControlDown() && !isFirstSelectedTerritory) {
               selectWayPoint(t);
             } else if (!rightMouse
                 && !noSelectedTerritory
@@ -142,7 +146,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         }
 
         private void selectUnitsToMove(
-            final List<Unit> units, final Territory t, final MouseDetails me) {
+            final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
           // are any of the units ours, note - if no units selected that's still ok
           if (!BaseEditDelegate.getEditMode(getData()) || !selectedUnits.isEmpty()) {
             for (final Unit unit : units) {
@@ -164,7 +168,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                 return true;
               };
           if (units.isEmpty() && selectedUnits.isEmpty()) {
-            if (!me.isShiftDown()) {
+            if (!mouseDetails.isShiftDown()) {
               final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
               if (unitsToMove.isEmpty()) {
                 return;
@@ -218,15 +222,15 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
           }
           if (getFirstSelectedTerritory() == null) {
             setFirstSelectedTerritory(t);
-            mouseSelectedPoint = me.getMapPoint();
-            mouseCurrentPoint = me.getMapPoint();
+            mouseSelectedPoint = mouseDetails.getMapPoint();
+            mouseCurrentPoint = mouseDetails.getMapPoint();
             enableCancelButton();
           }
           if (!getFirstSelectedTerritory().equals(t)) {
             throw new IllegalStateException("Wrong selected territory");
           }
           // add all
-          if (me.isShiftDown()) {
+          if (mouseDetails.isShiftDown()) {
             // prevent units of multiple owners from being chosen in edit mode
             final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
             if (!BaseEditDelegate.getEditMode(getData())) {
@@ -241,7 +245,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
                   .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits())));
             }
             selectedUnits.addAll(t.getUnitCollection().getMatches(ownedNotFactoryBuilder.build()));
-          } else if (me.isControlDown()) {
+          } else if (mouseDetails.isControlDown()) {
             selectedUnits.addAll(CollectionUtils.getMatches(units, unitsToMoveMatch));
           } else { // add one
             // best candidate unit for route is chosen dynamically later
@@ -249,7 +253,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
             unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
 
-            final int iterCount = me.isAltDown() ? deselectNumber : 1;
+            final int iterCount = mouseDetails.isAltDown() ? deselectNumber : 1;
 
             int addCount = 0;
             for (final Unit unit : unitsToMove) {
@@ -263,7 +267,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
             }
           }
           if (!selectedUnits.isEmpty()) {
-            mouseLastUpdatePoint = me.getMapPoint();
+            mouseLastUpdatePoint = mouseDetails.getMapPoint();
             final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
             // Load Bombers with paratroops
             if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))

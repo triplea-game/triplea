@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Dimension;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.BoxLayout;
