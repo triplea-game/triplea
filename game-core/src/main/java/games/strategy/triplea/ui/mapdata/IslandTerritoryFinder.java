@@ -34,7 +34,8 @@ class IslandTerritoryFinder {
     // map sea territories to: sea territory name -> islands contained by that sea territory
     return seaTerritories.stream()
         .collect(
-            Collectors.toMap(sea -> sea, findIslandsForSeaTerritory(landTerritories, polygons)));
+            Collectors.toMap(
+                Function.identity(), findIslandsForSeaTerritory(landTerritories, polygons)));
   }
 
   private static Set<String> filterSeaTerritories(final Set<String> territoryNames) {
