@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.mapdata;
 import games.strategy.ui.Util;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,18 +28,16 @@ class IslandTerritoryFinder {
     final Set<String> seaTerritories = filterSeaTerritories(polygons.keySet());
     final Set<String> landTerritories = filterNotSeaTerritories(polygons.keySet());
 
+    // Function where given a territory name, give us a polygon for that territory
     final Function<String, Polygon> polygonLookup =
         territoryName -> polygons.get(territoryName).iterator().next();
 
-    final Map<String, Set<String>> contains = new HashMap<>();
-
-    for (final String seaTerritory : seaTerritories) {
-      final Set<String> islands =
-          findIslandsForSeaTerritory(seaTerritory, landTerritories, polygonLookup);
-
-      contains.put(seaTerritory, islands);
-    }
-    return contains;
+    // map sea territories to: sea territory name -> islands contained by that sea territory
+    return seaTerritories.stream()
+        .collect(
+            Collectors.toMap(
+                sea -> sea,
+                sea -> findIslandsForSeaTerritory(sea, landTerritories, polygonLookup)));
   }
 
   private static Set<String> filterSeaTerritories(final Set<String> territoryNames) {
