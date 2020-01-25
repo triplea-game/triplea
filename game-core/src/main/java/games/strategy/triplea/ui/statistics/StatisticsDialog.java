@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.statistics;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.stats.Statistics;
 import games.strategy.engine.stats.StatisticsAggregator;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
@@ -13,20 +14,29 @@ import org.knowm.xchart.style.Styler;
 import org.triplea.swing.JTabbedPaneBuilder;
 
 public class StatisticsDialog extends JPanel {
+
+  private XYChartBuilder xyChartDefaults = new XYChartBuilder().theme(Styler.ChartTheme.Matlab);
+
   public StatisticsDialog(final GameData game) {
     final Statistics statistics = StatisticsAggregator.aggregate(game);
     final JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
     tabbedPane.addTab("Lines", createDummyXyGraph(statistics));
     tabbedPane.addTab("Pie", createDummyPieChart(statistics));
+    tabbedPane.addTab("Production", createProductionChart(statistics));
     this.add(tabbedPane.build());
   }
 
+  private JPanel createProductionChart(final Statistics statistics) {
+    final XYChart chart = xyChartDefaults.title("Production").build();
+    statistics
+        .getProductionOfPlayerInRound()
+        .rowMap()
+        .forEach((key, value) -> chart.addSeries(key, new ArrayList<>(value.values())));
+    return new XChartPanel<>(chart);
+  }
+
   private JPanel createDummyXyGraph(final Statistics statistics) {
-    final XYChart chart =
-        new XYChartBuilder()
-            .theme(Styler.ChartTheme.Matlab)
-            .title("Sample Chart: " + statistics.toString())
-            .build();
+    final XYChart chart = xyChartDefaults.title("Sample Chart: " + statistics.toString()).build();
     chart.addSeries("some value1", new double[] {2.0, 0.0, 40.0});
     chart.addSeries("some value2", new double[] {3.0, 1.0, 41.0});
     chart.addSeries("some value3", new double[] {4.0, 2.0, 42.0});
