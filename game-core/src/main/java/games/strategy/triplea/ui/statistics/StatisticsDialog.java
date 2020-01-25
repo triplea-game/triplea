@@ -15,7 +15,8 @@ import org.triplea.swing.JTabbedPaneBuilder;
 
 public class StatisticsDialog extends JPanel {
 
-  private XYChartBuilder xyChartDefaults = new XYChartBuilder().theme(Styler.ChartTheme.Matlab);
+  private final XYChartBuilder xyChartDefaults =
+      new XYChartBuilder().theme(Styler.ChartTheme.Matlab).xAxisTitle("#Rounds");
 
   public StatisticsDialog(final GameData game) {
     final Statistics statistics = StatisticsAggregator.aggregate(game);
@@ -27,7 +28,8 @@ public class StatisticsDialog extends JPanel {
   }
 
   private JPanel createProductionChart(final Statistics statistics) {
-    final XYChart chart = xyChartDefaults.title("Production").build();
+    final XYChart chart =
+        xyChartDefaults.title("Production").yAxisTitle("Production from territories").build();
     statistics
         .getProductionOfPlayerInRound()
         .rowMap()
