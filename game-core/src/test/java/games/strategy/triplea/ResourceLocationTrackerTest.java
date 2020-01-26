@@ -9,28 +9,26 @@ import org.junit.jupiter.api.Test;
 class ResourceLocationTrackerTest {
   @Test
   void defaultEmptyMapPrefix() {
-    final ResourceLocationTracker testObj = new ResourceLocationTracker("", new URL[0]);
-    assertThat(testObj.getMapPrefix(), is(""));
+    assertThat(ResourceLocationTracker.getMapPrefix("", new URL[0]), is(""));
   }
 
   @Test
   void defaultEmptyMapPrefixWithMoreInterestingTestData() throws Exception {
-    final ResourceLocationTracker testObj =
-        new ResourceLocationTracker(
-            "", new URL[] {new URL("file://localhost"), new URL("file://oldFormat.zip")});
-    assertThat(testObj.getMapPrefix(), is(""));
+    assertThat(
+        ResourceLocationTracker.getMapPrefix(
+            "", new URL[] {new URL("file://localhost"), new URL("file://oldFormat.zip")}),
+        is(""));
   }
 
   @Test
   void masterZipsGetSpecialPrefixBasedOnTheMapName() throws Exception {
     final String fakeMapName = "fakeMapName";
-    final ResourceLocationTracker testObj =
-        new ResourceLocationTracker(
+    assertThat(
+        ResourceLocationTracker.getMapPrefix(
             fakeMapName,
             new URL[] {
               new URL("file://pretend" + ResourceLocationTracker.MASTER_ZIP_IDENTIFYING_SUFFIX)
-            });
-    assertThat(
-        testObj.getMapPrefix(), is(fakeMapName + ResourceLocationTracker.MASTER_ZIP_MAGIC_PREFIX));
+            }),
+        is(fakeMapName + ResourceLocationTracker.MASTER_ZIP_MAGIC_PREFIX));
   }
 }
