@@ -36,7 +36,7 @@ public class ResourceLoader implements Closeable {
   public static final String RESOURCE_FOLDER = "assets";
 
   private final URLClassLoader loader;
-  private final ResourceLocationTracker resourceLocationTracker;
+  private final String mapPrefix;
   @Getter private final String mapName;
 
   private ResourceLoader(final String mapName, final String[] paths) {
@@ -55,7 +55,7 @@ public class ResourceLoader implements Closeable {
         throw new IllegalStateException(e);
       }
     }
-    resourceLocationTracker = new ResourceLocationTracker(mapName, urls);
+    mapPrefix = ResourceLocationTracker.getMapPrefix(mapName, urls);
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
@@ -226,7 +226,7 @@ public class ResourceLoader implements Closeable {
    *     resource. Do not use '\' or File.separator)
    */
   public @Nullable URL getResource(final String inputPath) {
-    final String path = resourceLocationTracker.getMapPrefix() + inputPath;
+    final String path = mapPrefix + inputPath;
     return findResource(path).or(() -> findResource(inputPath)).orElse(null);
   }
 
@@ -239,8 +239,8 @@ public class ResourceLoader implements Closeable {
    * @param inputPath2 Same as inputPath but this takes second priority when loading
    */
   public @Nullable URL getResource(final String inputPath, final String inputPath2) {
-    final String path = resourceLocationTracker.getMapPrefix() + inputPath;
-    final String path2 = resourceLocationTracker.getMapPrefix() + inputPath2;
+    final String path = mapPrefix + inputPath;
+    final String path2 = mapPrefix + inputPath2;
     return findResource(path)
         .or(() -> findResource(path2))
         .or(() -> findResource(inputPath))
