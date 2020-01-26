@@ -259,13 +259,12 @@ public final class AutoPlacementFinder {
       }
     }
 
-    // makes TripleA read all the text data files for the map.
-    MapData mapData = new MapData(mapDir);
     textOptionPane.show();
     textOptionPane.appendNewLine(
         "Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
     textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
     final Map<String, List<Point>> placements = new HashMap<>();
+    final MapData mapData = new MapData(mapDir);
     for (final String name : mapData.getTerritories()) {
       final Set<Polygon> containedPolygons = mapData.getContainedTerritoryPolygons(name);
       final List<Point> points =
