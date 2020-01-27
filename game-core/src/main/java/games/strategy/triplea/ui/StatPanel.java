@@ -5,18 +5,17 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ProductionStat;
+import games.strategy.engine.stats.TuvStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.util.TuvUtils;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -38,7 +37,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import org.triplea.java.collections.IntegerMap;
 
 class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
@@ -431,24 +429,6 @@ class StatPanel extends AbstractStatPanel {
       return data.getMap().getTerritories().stream()
           .map(Territory::getUnitCollection)
           .mapToInt(units -> units.countMatches(ownedBy))
-          .sum();
-    }
-  }
-
-  static class TuvStat extends AbstractStat {
-    @Override
-    public String getName() {
-      return "TUV";
-    }
-
-    @Override
-    public double getValue(final GamePlayer player, final GameData data) {
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
-      final Predicate<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
-      return data.getMap().getTerritories().stream()
-          .map(Territory::getUnitCollection)
-          .map(units -> units.getMatches(unitIsOwnedBy))
-          .mapToInt(owned -> TuvUtils.getTuv(owned, costs))
           .sum();
     }
   }

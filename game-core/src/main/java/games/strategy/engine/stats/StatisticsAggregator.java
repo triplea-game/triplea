@@ -19,6 +19,7 @@ import lombok.extern.java.Log;
 @UtilityClass
 public class StatisticsAggregator {
   private static IStat productionStat = new ProductionStat();
+  private static IStat tuvStat = new TuvStat();
 
   public static Statistics aggregate(@NonNull final GameData game) {
     log.info("Aggregating statistics for game " + game.getGameName());
@@ -33,11 +34,17 @@ public class StatisticsAggregator {
         underConstruction
             .getProductionOfPlayerInRound()
             .put(player.getName(), round, productionStat.getValue(player, game));
+        underConstruction
+            .getTuvOfPlayerInRound()
+            .put(player.getName(), round, tuvStat.getValue(player, game));
       }
       for (final String alliance : alliances) {
         underConstruction
             .getProductionOfPlayerInRound()
             .put(alliance, round, productionStat.getValue(alliance, game));
+        underConstruction
+            .getTuvOfPlayerInRound()
+            .put(alliance, round, tuvStat.getValue(alliance, game));
       }
     }
 
