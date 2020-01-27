@@ -131,52 +131,52 @@ public class MapData {
 
   public MapData(final String mapNameDir) {
     this.mapNameDir = mapNameDir;
-    final ResourceLoader loader = ResourceLoader.getMapResourceLoader(mapNameDir);
-    try {
-      if (loader.getResource(POLYGON_FILE) == null) {
-        throw new IllegalStateException(
-            "Error in resource loading. Unable to load expected resource: "
-                + POLYGON_FILE
-                + ", the error"
-                + " is that either we did not find the correct path to load. Check the resource "
-                + "loader to make sure the map zip or dir was added. Failing that, the path in "
-                + "this error message should be available relative to the map folder, or relative "
-                + "to the root of the map zip");
+    try (ResourceLoader loader = ResourceLoader.getMapResourceLoader(mapNameDir)) {
+      try {
+        if (loader.getResource(POLYGON_FILE) == null) {
+          throw new IllegalStateException(
+              "Error in resource loading. Unable to load expected resource: "
+                  + POLYGON_FILE
+                  + ", the error"
+                  + " is that either we did not find the correct path to load. Check the resource "
+                  + "loader to make sure the map zip or dir was added. Failing that, the path in "
+                  + "this error message should be available relative to the map folder, or relative "
+                  + "to the root of the map zip");
+        }
+
+        place.putAll(readPlacementsOneToMany(loader.optionalResource(PLACEMENT_FILE)));
+        territoryEffects.putAll(
+            readPointsOneToMany(loader.optionalResource(TERRITORY_EFFECT_FILE)));
+
+        polys.putAll(readPolygonsOneToMany(loader.requiredResource(POLYGON_FILE)));
+        centers.putAll(readPointsOneToOne(loader.requiredResource(CENTERS_FILE)));
+        vcPlace.putAll(readPointsOneToOne(loader.optionalResource(VC_MARKERS)));
+        convoyPlace.putAll(readPointsOneToOne(loader.optionalResource(CONVOY_MARKERS)));
+        commentPlace.putAll(readPointsOneToOne(loader.optionalResource(COMMENT_MARKERS)));
+        blockadePlace.putAll(readPointsOneToOne(loader.optionalResource(BLOCKADE_MARKERS)));
+        capitolPlace.putAll(readPointsOneToOne(loader.optionalResource(CAPITAL_MARKERS)));
+        puPlace.putAll(readPointsOneToOne(loader.optionalResource(PU_PLACE_FILE)));
+        namePlace.putAll(readPointsOneToOne(loader.optionalResource(TERRITORY_NAME_PLACE_FILE)));
+        kamikazePlace.putAll(readPointsOneToOne(loader.optionalResource(KAMIKAZE_FILE)));
+        decorations.putAll(loadDecorations(loader));
+        territoryNameImages.putAll(territoryNameImages(loader));
+
+        try (InputStream inputStream = loader.requiredResource(MAP_PROPERTIES).get()) {
+          mapProperties.load(inputStream);
+        } catch (final Exception e) {
+          log.log(Level.SEVERE, "Error reading map.properties", e);
+        }
+
+        contains.putAll(IslandTerritoryFinder.findIslands(polys));
+      } catch (final IOException ex) {
+        log.log(Level.SEVERE, "Failed to initialize map data", ex);
       }
 
-      place.putAll(readPlacementsOneToMany(loader.optionalResource(PLACEMENT_FILE)));
-      territoryEffects.putAll(readPointsOneToMany(loader.optionalResource(TERRITORY_EFFECT_FILE)));
-
-      polys.putAll(readPolygonsOneToMany(loader.requiredResource(POLYGON_FILE)));
-      centers.putAll(readPointsOneToOne(loader.requiredResource(CENTERS_FILE)));
-      vcPlace.putAll(readPointsOneToOne(loader.optionalResource(VC_MARKERS)));
-      convoyPlace.putAll(readPointsOneToOne(loader.optionalResource(CONVOY_MARKERS)));
-      commentPlace.putAll(readPointsOneToOne(loader.optionalResource(COMMENT_MARKERS)));
-      blockadePlace.putAll(readPointsOneToOne(loader.optionalResource(BLOCKADE_MARKERS)));
-      capitolPlace.putAll(readPointsOneToOne(loader.optionalResource(CAPITAL_MARKERS)));
-      puPlace.putAll(readPointsOneToOne(loader.optionalResource(PU_PLACE_FILE)));
-      namePlace.putAll(readPointsOneToOne(loader.optionalResource(TERRITORY_NAME_PLACE_FILE)));
-      kamikazePlace.putAll(readPointsOneToOne(loader.optionalResource(KAMIKAZE_FILE)));
-      decorations.putAll(loadDecorations(loader));
-      territoryNameImages.putAll(territoryNameImages(loader));
-
-      try (InputStream inputStream = loader.requiredResource(MAP_PROPERTIES).get()) {
-        mapProperties.load(inputStream);
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Error reading map.properties", e);
-      }
-
-      contains.putAll(IslandTerritoryFinder.findIslands(polys));
-    } catch (final IOException ex) {
-      log.log(Level.SEVERE, "Failed to initialize map data", ex);
+      vcImage = loader.loadImage("misc/vc.png").orElse(null);
+      blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
+      errorImage = loader.loadImage("misc/error.gif").orElse(null);
+      warningImage = loader.loadImage("misc/warning.gif").orElse(null);
     }
-
-    vcImage = loader.loadImage("misc/vc.png").orElse(null);
-    blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
-    errorImage = loader.loadImage("misc/error.gif").orElse(null);
-    warningImage = loader.loadImage("misc/warning.gif").orElse(null);
-
-    loader.close();
   }
 
   private static Map<String, Point> readPointsOneToOne(
