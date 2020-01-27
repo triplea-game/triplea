@@ -1,10 +1,15 @@
 package games.strategy.triplea.ui.statistics;
 
+import com.google.common.collect.Table;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.history.Round;
 import games.strategy.engine.stats.Statistics;
 import games.strategy.engine.stats.StatisticsAggregator;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
 import org.knowm.xchart.XChartPanel;
@@ -15,43 +20,43 @@ import org.triplea.swing.JTabbedPaneBuilder;
 
 public class StatisticsDialog extends JPanel {
 
+  @Getter
+  @RequiredArgsConstructor
+  private static class OverTimeChart {
+    private final String title;
+    private final String axisTitle;
+    private final Table<String, Round, Double> data;
+  }
+
   private final XYChartBuilder xyChartDefaults =
       new XYChartBuilder().theme(Styler.ChartTheme.Matlab).xAxisTitle("#Rounds");
 
   public StatisticsDialog(final GameData game) {
     final Statistics statistics = StatisticsAggregator.aggregate(game);
+
+    final List<OverTimeChart> overTimeCharts =
+        List.of(
+            new OverTimeChart(
+                "Production",
+                "Production from territories",
+                statistics.getProductionOfPlayerInRound()),
+            new OverTimeChart("TUV", "TUV", statistics.getTuvOfPlayerInRound()),
+            new OverTimeChart("Units", "Units", statistics.getUnitsOfPlayerInRound()));
+
     final JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
     tabbedPane.addTab("Lines", createDummyXyGraph(statistics));
     tabbedPane.addTab("Pie", createDummyPieChart(statistics));
-    tabbedPane.addTab("Production", createProductionChart(statistics));
-    tabbedPane.addTab("TUV", createTuvChart(statistics));
-    tabbedPane.addTab("Units", createUnitsChart(statistics));
+    for (final OverTimeChart chartData : overTimeCharts) {
+      tabbedPane.addTab(chartData.getTitle(), createChart(chartData));
+    }
     this.add(tabbedPane.build());
   }
 
-  private JPanel createProductionChart(final Statistics statistics) {
+  private JPanel createChart(final OverTimeChart chartData) {
     final XYChart chart =
-        xyChartDefaults.title("Production").yAxisTitle("Production from territories").build();
-    statistics
-        .getProductionOfPlayerInRound()
-        .rowMap()
-        .forEach((key, value) -> chart.addSeries(key, new ArrayList<>(value.values())));
-    return new XChartPanel<>(chart);
-  }
-
-  private JPanel createTuvChart(final Statistics statistics) {
-    final XYChart chart = xyChartDefaults.title("TUV").yAxisTitle("TUV").build();
-    statistics
-        .getTuvOfPlayerInRound()
-        .rowMap()
-        .forEach((key, value) -> chart.addSeries(key, new ArrayList<>(value.values())));
-    return new XChartPanel<>(chart);
-  }
-
-  private JPanel createUnitsChart(final Statistics statistics) {
-    final XYChart chart = xyChartDefaults.title("Units").yAxisTitle("TUV").build();
-    statistics
-        .getUnitsOfPlayerInRound()
+        xyChartDefaults.title(chartData.getTitle()).yAxisTitle(chartData.getAxisTitle()).build();
+    chartData
+        .getData()
         .rowMap()
         .forEach((key, value) -> chart.addSeries(key, new ArrayList<>(value.values())));
     return new XChartPanel<>(chart);
