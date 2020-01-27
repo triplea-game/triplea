@@ -173,6 +173,7 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public void shutDown() {
     super.shutDown();
+    resourceLoader.close();
   }
 
   @Override
