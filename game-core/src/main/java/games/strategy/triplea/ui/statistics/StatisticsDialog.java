@@ -41,7 +41,9 @@ public class StatisticsDialog extends JPanel {
                 "Production from territories",
                 statistics.getProductionOfPlayerInRound()),
             new OverTimeChart("TUV", "TUV", statistics.getTuvOfPlayerInRound()),
-            new OverTimeChart("Units", "Units", statistics.getUnitsOfPlayerInRound()));
+            new OverTimeChart("Units", "Units", statistics.getUnitsOfPlayerInRound()),
+            new OverTimeChart(
+                "VC", "Victory Cities", statistics.getVictoryCitiesOfPlayerInRound()));
 
     final JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
     tabbedPane.addTab("Lines", createDummyXyGraph(statistics));

@@ -9,9 +9,9 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ProductionStat;
 import games.strategy.engine.stats.TuvStat;
 import games.strategy.engine.stats.UnitsStat;
+import games.strategy.engine.stats.VictoryCityStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
-import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -411,24 +410,6 @@ class StatPanel extends AbstractStatPanel {
   class PuStat extends ResourceStat {
     PuStat() {
       super(getResourcePUs(gameData));
-    }
-  }
-
-  static class VictoryCityStat extends AbstractStat {
-    @Override
-    public String getName() {
-      return "VC";
-    }
-
-    @Override
-    public double getValue(final GamePlayer player, final GameData data) {
-      // return sum of victory cities
-      return data.getMap().getTerritories().stream()
-          .filter(place -> place.getOwner().equals(player))
-          .map(TerritoryAttachment::get)
-          .filter(Objects::nonNull)
-          .mapToInt(TerritoryAttachment::getVictoryCity)
-          .sum();
     }
   }
 

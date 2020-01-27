@@ -21,6 +21,7 @@ public class StatisticsAggregator {
   private static IStat productionStat = new ProductionStat();
   private static IStat tuvStat = new TuvStat();
   private static IStat unitsStat = new UnitsStat();
+  private static IStat victoryCityStat = new VictoryCityStat();
 
   public static Statistics aggregate(@NonNull final GameData game) {
     log.info("Aggregating statistics for game " + game.getGameName());
@@ -41,6 +42,9 @@ public class StatisticsAggregator {
         underConstruction
             .getUnitsOfPlayerInRound()
             .put(player.getName(), round, unitsStat.getValue(player, game));
+        underConstruction
+            .getVictoryCitiesOfPlayerInRound()
+            .put(player.getName(), round, victoryCityStat.getValue(player, game));
       }
       for (final String alliance : alliances) {
         underConstruction
@@ -52,6 +56,9 @@ public class StatisticsAggregator {
         underConstruction
             .getUnitsOfPlayerInRound()
             .put(alliance, round, unitsStat.getValue(alliance, game));
+        underConstruction
+            .getVictoryCitiesOfPlayerInRound()
+            .put(alliance, round, victoryCityStat.getValue(alliance, game));
       }
     }
 
