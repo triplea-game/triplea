@@ -756,11 +756,11 @@ public class MapData {
   }
 
   public Optional<Image> getErrorImage() {
-    return Optional.of(errorImage);
+    return Optional.ofNullable(errorImage);
   }
 
   public Optional<Image> getWarningImage() {
-    return Optional.of(warningImage);
+    return Optional.ofNullable(warningImage);
   }
 
   public Map<String, Image> getTerritoryNameImages() {
