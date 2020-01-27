@@ -305,7 +305,8 @@ public class ResourceLoader implements Closeable {
     try {
       return Optional.of(ImageIO.read(url));
     } catch (final IOException e) {
-      throw new IllegalStateException(e);
+      log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
+      return Optional.empty();
     }
   }
 }
