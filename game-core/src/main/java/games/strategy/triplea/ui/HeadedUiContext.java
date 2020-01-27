@@ -56,7 +56,7 @@ public class HeadedUiContext extends AbstractUiContext {
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    if(resourceLoader != null) {
+    if (resourceLoader != null) {
       resourceLoader.close();
     }
     resourceLoader = ResourceLoader.getMapResourceLoader(dir);
