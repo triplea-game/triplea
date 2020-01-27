@@ -56,11 +56,11 @@ public class HeadedUiContext extends AbstractUiContext {
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    resourceLoader = ResourceLoader.getMapResourceLoader(dir);
-    if (mapData != null) {
-      mapData.close();
+    if (resourceLoader != null) {
+      resourceLoader.close();
     }
-    mapData = new MapData(resourceLoader);
+    resourceLoader = ResourceLoader.getMapResourceLoader(dir);
+    mapData = new MapData(dir);
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
@@ -176,7 +176,7 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public void shutDown() {
     super.shutDown();
-    mapData.close();
+    resourceLoader.close();
   }
 
   @Override
