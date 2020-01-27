@@ -14,4 +14,5 @@ import lombok.Value;
 public class Statistics {
   private final Table<String, Round, Double> productionOfPlayerInRound = HashBasedTable.create();
   private final Table<String, Round, Double> tuvOfPlayerInRound = HashBasedTable.create();
+  private final Table<String, Round, Double> unitsOfPlayerInRound = HashBasedTable.create();
 }

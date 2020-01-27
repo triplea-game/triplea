@@ -3,13 +3,12 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ProductionStat;
 import games.strategy.engine.stats.TuvStat;
+import games.strategy.engine.stats.UnitsStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -26,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -413,23 +411,6 @@ class StatPanel extends AbstractStatPanel {
   class PuStat extends ResourceStat {
     PuStat() {
       super(getResourcePUs(gameData));
-    }
-  }
-
-  static class UnitsStat extends AbstractStat {
-    @Override
-    public String getName() {
-      return "Units";
-    }
-
-    @Override
-    public double getValue(final GamePlayer player, final GameData data) {
-      final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player);
-      // sum the total match count
-      return data.getMap().getTerritories().stream()
-          .map(Territory::getUnitCollection)
-          .mapToInt(units -> units.countMatches(ownedBy))
-          .sum();
     }
   }
 

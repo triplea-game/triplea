@@ -20,6 +20,7 @@ import lombok.extern.java.Log;
 public class StatisticsAggregator {
   private static IStat productionStat = new ProductionStat();
   private static IStat tuvStat = new TuvStat();
+  private static IStat unitsStat = new UnitsStat();
 
   public static Statistics aggregate(@NonNull final GameData game) {
     log.info("Aggregating statistics for game " + game.getGameName());
@@ -37,6 +38,9 @@ public class StatisticsAggregator {
         underConstruction
             .getTuvOfPlayerInRound()
             .put(player.getName(), round, tuvStat.getValue(player, game));
+        underConstruction
+            .getUnitsOfPlayerInRound()
+            .put(player.getName(), round, unitsStat.getValue(player, game));
       }
       for (final String alliance : alliances) {
         underConstruction
@@ -45,6 +49,9 @@ public class StatisticsAggregator {
         underConstruction
             .getTuvOfPlayerInRound()
             .put(alliance, round, tuvStat.getValue(alliance, game));
+        underConstruction
+            .getUnitsOfPlayerInRound()
+            .put(alliance, round, unitsStat.getValue(alliance, game));
       }
     }
 

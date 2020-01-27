@@ -25,6 +25,7 @@ public class StatisticsDialog extends JPanel {
     tabbedPane.addTab("Pie", createDummyPieChart(statistics));
     tabbedPane.addTab("Production", createProductionChart(statistics));
     tabbedPane.addTab("TUV", createTuvChart(statistics));
+    tabbedPane.addTab("Units", createUnitsChart(statistics));
     this.add(tabbedPane.build());
   }
 
@@ -42,6 +43,15 @@ public class StatisticsDialog extends JPanel {
     final XYChart chart = xyChartDefaults.title("TUV").yAxisTitle("TUV").build();
     statistics
         .getTuvOfPlayerInRound()
+        .rowMap()
+        .forEach((key, value) -> chart.addSeries(key, new ArrayList<>(value.values())));
+    return new XChartPanel<>(chart);
+  }
+
+  private JPanel createUnitsChart(final Statistics statistics) {
+    final XYChart chart = xyChartDefaults.title("Units").yAxisTitle("TUV").build();
+    statistics
+        .getUnitsOfPlayerInRound()
         .rowMap()
         .forEach((key, value) -> chart.addSeries(key, new ArrayList<>(value.values())));
     return new XChartPanel<>(chart);
