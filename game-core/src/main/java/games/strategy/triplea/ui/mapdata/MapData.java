@@ -140,8 +140,8 @@ public class MapData {
                   + ", the error"
                   + " is that either we did not find the correct path to load. Check the resource "
                   + "loader to make sure the map zip or dir was added. Failing that, the path in "
-                  + "this error message should be available relative to the map folder, or relative "
-                  + "to the root of the map zip");
+                  + "this error message should be available relative to the map folder, or "
+                  + "relative to the root of the map zip");
         }
 
         place.putAll(readPlacementsOneToMany(loader.optionalResource(PLACEMENT_FILE)));
