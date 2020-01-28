@@ -68,8 +68,7 @@ public class Fire implements IExecutable {
       final Collection<TerritoryEffect> territoryEffects,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
-    this.attackableUnits =
-        CollectionUtils.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
+    this.attackableUnits = attackableUnits;
     this.canReturnFire = canReturnFire;
     this.firingUnits = firingUnits;
     this.stepName = stepName;
