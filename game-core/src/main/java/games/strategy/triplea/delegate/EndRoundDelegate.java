@@ -303,9 +303,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // end round delegate)
       final String title =
           "Victory Achieved"
-              + (winners.isEmpty()
-                  ? ""
-                  : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
+              + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners));
       // we send the bridge, because we can call this method from outside this delegate, which
       // means our local copy of playerBridge could be null.
       bridge

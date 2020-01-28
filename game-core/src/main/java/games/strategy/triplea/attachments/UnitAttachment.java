@@ -3267,9 +3267,9 @@ public class UnitAttachment extends DefaultAttachment {
                 + (support.getAllied() && support.getEnemy()
                     ? " Allied & Enemy "
                     : (support.getAllied() ? " Allied " : " Enemy "))
-                + (support.getUnitType().size() > 4
+                + (support.getUnitType().size() > 25
                     ? "Units"
-                    : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
+                    : MyFormatter.defaultNamedToTextList(support.getUnitType()));
         tuples.add(Tuple.of(key, text));
       }
     }
@@ -3557,7 +3557,12 @@ public class UnitAttachment extends DefaultAttachment {
     for (final Tuple<String, String> tuple : tuples) {
       result.append(tuple.getFirst());
       if (!tuple.getSecond().isEmpty()) {
-        result.append(": <b>").append(tuple.getSecond()).append("</b>");
+        result
+            .append(": <b>")
+            .append(
+                MyFormatter.addHtmlBreaksAndIndents(
+                    tuple.getSecond(), 100 - tuple.getFirst().length(), 100))
+            .append("</b>");
       }
       result.append("<br />");
     }
