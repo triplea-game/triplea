@@ -81,19 +81,24 @@ final class MyFormatterTest {
     @Test
     void addHtmlBreaksAndIndentsWithBreak() {
       final String target =
-          "unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType, unitType";
+          "unitType, unitType, unitType, unitType, unitType, unitType, unitType, "
+              + "unitType, unitType, unitType, unitType, unitType";
       final String result =
           "unitType, unitType, unitType, unitType, unitType, unitType, unitType, "
-              + "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unitType, unitType, unitType, unitType, unitType";
+              + "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+              + "unitType, unitType, unitType, unitType, unitType";
       assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(result));
     }
 
     @Test
     void addHtmlBreaksAndIndentsWithVeryLongWord() {
       final String target =
-          "aVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongUnitType";
+          "aVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVery"
+              + "VeryLongUnitType";
       final String result =
-          "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongUnitType";
+          "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aVery"
+              + "VeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVery"
+              + "VeryLongUnitType";
       assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(result));
     }
   }
