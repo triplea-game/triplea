@@ -83,7 +83,7 @@ subprojects {
         databaseRiderVersion = '1.7.3'
         dropwizardVersion = '1.3.15'
         dropwizardWebsocketsVersion = '1.3.14'
-        equalsVerifierVersion = '3.1.11'
+        equalsVerifierVersion = '3.1.12'
         errorProneVersion = '2.3.4'
         guavaVersion = "28.2-jre"
         hamcrestJsonVersion = '0.2'
