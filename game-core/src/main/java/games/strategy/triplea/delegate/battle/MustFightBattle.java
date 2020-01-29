@@ -211,7 +211,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final Map<Unit, Collection<Unit>> dependencies =
         new HashMap<>(TransportTracker.transporting(units));
-    if (!isAlliedAirIndependent()) {
+    if (!Properties.getAlliedAirIndependent(gameData)) {
       dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, gameData, attacker));
       for (final Unit carrier : dependencies.keySet()) {
         final UnitAttachment ua = UnitAttachment.get(carrier.getType());
@@ -1007,7 +1007,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return isWW2V2() || Properties.getDefendingSubsSneakAttack(gameData);
   }
 
-  private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
+  private static boolean canAirAttackSubs(
+      final Collection<Unit> firedAt, final Collection<Unit> firing) {
     return firedAt.stream().noneMatch(Matches.unitCanNotBeTargetedByAll())
         || firing.stream().anyMatch(Matches.unitIsDestroyer());
   }
@@ -1969,52 +1970,59 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void attackAirOnNonSubs() {
-    Collection<Unit> units = new ArrayList<>(attackingUnits);
-    units.addAll(attackingWaitingToDie);
-    // See if allied air can participate in combat
-    if (!isAlliedAirIndependent()) {
-      units = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(attacker));
-    }
-    if (!canAirAttackSubs(defendingUnits, units)) {
-      units = CollectionUtils.getMatches(units, Matches.unitIsAir());
-      final Collection<Unit> enemyUnitsNotSubs =
-          CollectionUtils.getMatches(defendingUnits, Matches.unitCanNotBeTargetedByAll().negate());
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
-      allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
-      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
-      allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
-      fire(
-          defender.getName() + SELECT_CASUALTIES,
-          units,
-          enemyUnitsNotSubs,
-          allEnemyUnitsAliveOrWaitingToDie,
-          allFriendlyUnitsAliveOrWaitingToDie,
-          false,
-          ReturnFire.ALL,
-          "Attacker's aircraft fire,");
-    }
+    fireAirOnNonSubs(
+        defender.getName() + SELECT_CASUALTIES,
+        "Attacker's aircraft fire,",
+        false,
+        attackingUnits,
+        attackingWaitingToDie,
+        defendingUnits,
+        defendingWaitingToDie);
   }
 
   private void defendAirOnNonSubs() {
-    Collection<Unit> units = new ArrayList<>(defendingUnits);
-    units.addAll(defendingWaitingToDie);
-    if (!canAirAttackSubs(attackingUnits, units)) {
+    fireAirOnNonSubs(
+        attacker.getName() + SELECT_CASUALTIES,
+        "Defender's aircraft fire,",
+        true,
+        defendingUnits,
+        defendingWaitingToDie,
+        attackingUnits,
+        attackingWaitingToDie);
+  }
+
+  private void fireAirOnNonSubs(
+      final String stepName,
+      final String message,
+      final boolean defending,
+      final Collection<Unit> firingUnits,
+      final Collection<Unit> firingUnitsWaitingToDie,
+      final Collection<Unit> enemyUnits,
+      final Collection<Unit> enemyUnitsWaitingToDie) {
+
+    Collection<Unit> units = new ArrayList<>(firingUnits);
+    units.addAll(firingUnitsWaitingToDie);
+    // See if allied air can participate in combat
+    if (!defending && !Properties.getAlliedAirIndependent(gameData)) {
+      units = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(attacker));
+    }
+    if (!canAirAttackSubs(enemyUnits, units)) {
       units = CollectionUtils.getMatches(units, Matches.unitIsAir());
       final Collection<Unit> enemyUnitsNotSubs =
-          CollectionUtils.getMatches(attackingUnits, Matches.unitCanNotBeTargetedByAll().negate());
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
-      allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
-      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
-      allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+          CollectionUtils.getMatches(enemyUnits, Matches.unitCanNotBeTargetedByAll().negate());
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(enemyUnits);
+      allEnemyUnitsAliveOrWaitingToDie.addAll(enemyUnitsWaitingToDie);
+      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(firingUnits);
+      allFriendlyUnitsAliveOrWaitingToDie.addAll(firingUnitsWaitingToDie);
       fire(
-          attacker.getName() + SELECT_CASUALTIES,
+          stepName,
           units,
           enemyUnitsNotSubs,
           allEnemyUnitsAliveOrWaitingToDie,
           allFriendlyUnitsAliveOrWaitingToDie,
-          true,
+          defending,
           ReturnFire.ALL,
-          "Defender's aircraft fire,");
+          message);
     }
   }
 
@@ -2053,7 +2061,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     firing.addAll(firingUnitsWaitingToDie);
     firing = CollectionUtils.getMatches(firing, Matches.unitIsFirstStrike().negate());
     // See if allied air can participate in combat
-    if (!defending && !isAlliedAirIndependent()) {
+    if (!defending && !Properties.getAlliedAirIndependent(gameData)) {
       firing = CollectionUtils.getMatches(firing, Matches.unitIsOwnedBy(attacker));
     }
     // if restricted, remove aircraft from attackers
@@ -2808,10 +2816,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean isPartialAmphibiousRetreat() {
     return Properties.getPartialAmphibiousRetreat(gameData);
-  }
-
-  private boolean isAlliedAirIndependent() {
-    return Properties.getAlliedAirIndependent(gameData);
   }
 
   private boolean canSubsSubmerge() {
