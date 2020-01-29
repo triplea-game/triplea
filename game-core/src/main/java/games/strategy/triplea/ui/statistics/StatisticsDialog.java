@@ -32,7 +32,7 @@ public class StatisticsDialog extends JPanel {
       new XYChartBuilder().theme(Styler.ChartTheme.Matlab).xAxisTitle("#Rounds");
 
   public StatisticsDialog(final GameData game) {
-    final Statistics statistics = StatisticsAggregator.aggregate(game);
+    final Statistics statistics = new StatisticsAggregator(game).aggregate();
 
     final List<OverTimeChart> overTimeCharts =
         List.of(
