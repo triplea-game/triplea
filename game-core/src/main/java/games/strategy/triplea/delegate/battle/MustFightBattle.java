@@ -1367,8 +1367,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         CollectionUtils.getMatches(
             attackableUnits,
             PredicateBuilder.of(Matches.unitIsNotInfrastructure())
-                .andIf(defender, Matches.unitIsSuicideOnAttack())
-                .andIf(!defender, Matches.unitIsSuicideOnDefense())
+                .andIf(defender, Matches.unitIsSuicideOnAttack().negate())
+                .andIf(!defender, Matches.unitIsSuicideOnDefense().negate())
                 .build());
     if (firingUnits.isEmpty() || targetUnits.isEmpty()) {
       return;
