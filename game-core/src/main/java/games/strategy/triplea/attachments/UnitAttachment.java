@@ -1760,12 +1760,15 @@ public class UnitAttachment extends DefaultAttachment {
     canDieFromReachingMaxDamage = false;
   }
 
+  @Deprecated
   private void setIsSuicide(final String s) {
     setIsSuicide(getBool(s));
   }
 
+  @Deprecated
   private void setIsSuicide(final Boolean s) {
     setIsSuicideOnAttack(s);
+    // Global property controlled whether isSuicide units would suicide on defense
     setIsSuicideOnDefense(s && !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(getData()));
     setIsFirstStrike(s);
   }
