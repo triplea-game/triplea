@@ -1353,85 +1353,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  void fireSuicideUnitsAttack() {
-    // TODO: Remove isSuicideOnAttack check and update to use canNotTarget/canNotBeTargetedBy
-    final Predicate<Unit> attackableUnits =
-        Matches.unitIsNotInfrastructureAndNotCapturedOnEntering(attacker, battleSite, gameData)
-            .and(Matches.unitIsSuicideOnAttack().negate())
-            .and(Matches.unitIsSuicideOnDefense().negate())
-            .and(Matches.unitIsBeingTransported().negate());
-    final Collection<Unit> suicideAttackers =
-        CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack());
-    final Collection<Unit> attackedDefenders =
-        CollectionUtils.getMatches(defendingUnits, attackableUnits);
-    // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no
-    // destroyers, you can't attack subs with anything.
-    if (attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-        && attackedDefenders.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())) {
-      attackedDefenders.removeAll(
-          CollectionUtils.getMatches(attackedDefenders, Matches.unitCanNotBeTargetedByAll()));
-    }
-    if (!suicideAttackers.isEmpty()
-        && suicideAttackers.stream().allMatch(Matches.unitCanNotTargetAll())) {
-      attackedDefenders.removeAll(
-          CollectionUtils.getMatches(attackedDefenders, Matches.unitIsAir()));
-    }
-    if (suicideAttackers.isEmpty() || attackedDefenders.isEmpty()) {
-      return;
-    }
-    final boolean canReturnFire = (!Properties.getSuicideAndMunitionCasualtiesRestricted(gameData));
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
-    allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
-    fire(
-        defender.getName() + SELECT_CASUALTIES_SUICIDE,
-        suicideAttackers,
-        attackedDefenders,
-        allEnemyUnitsAliveOrWaitingToDie,
-        suicideAttackers,
-        false,
-        canReturnFire ? ReturnFire.ALL : ReturnFire.NONE,
-        SUICIDE_ATTACK);
-  }
-
-  void fireSuicideUnitsDefend() {
-    // TODO: Remove isSuicideOnDefense check and update to use canNotTarget/canNotBeTargetedBy
-    final Predicate<Unit> attackableUnits =
-        Matches.unitIsNotInfrastructure()
-            .and(Matches.unitIsSuicideOnAttack().negate())
-            .and(Matches.unitIsSuicideOnDefense().negate())
-            .and(Matches.unitIsBeingTransported().negate());
-    final Collection<Unit> suicideDefenders =
-        CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicideOnDefense());
-    final Collection<Unit> attackedAttackers =
-        CollectionUtils.getMatches(attackingUnits, attackableUnits);
-    // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no
-    // destroyers, you can't attack subs with anything.
-    if (defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-        && attackedAttackers.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())) {
-      attackedAttackers.removeAll(
-          CollectionUtils.getMatches(attackedAttackers, Matches.unitCanNotBeTargetedByAll()));
-    }
-    if (!suicideDefenders.isEmpty()
-        && suicideDefenders.stream().allMatch(Matches.unitCanNotTargetAll())) {
-      suicideDefenders.removeAll(CollectionUtils.getMatches(suicideDefenders, Matches.unitIsAir()));
-    }
-    if (suicideDefenders.isEmpty() || attackedAttackers.isEmpty()) {
-      return;
-    }
-    final boolean canReturnFire = (!Properties.getSuicideAndMunitionCasualtiesRestricted(gameData));
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
-    allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
-    fire(
-        attacker.getName() + SELECT_CASUALTIES_SUICIDE,
-        suicideDefenders,
-        attackedAttackers,
-        allEnemyUnitsAliveOrWaitingToDie,
-        suicideDefenders,
-        true,
-        canReturnFire ? ReturnFire.ALL : ReturnFire.NONE,
-        SUICIDE_DEFEND);
-  }
-
   private void fire(
       final String stepName,
       final Collection<Unit> firingUnits,
@@ -1752,22 +1673,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           getEmptyOrFriendlySeaNeighbors(
               defender, CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())));
     }
-  }
-
-  /**
-   * Check for suicide units and kill them immediately (they get to shoot back, which is the point).
-   */
-  private void checkSuicideUnits(final IDelegateBridge bridge) {
-    final List<Unit> deadUnits = new ArrayList<>();
-    deadUnits.addAll(CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack()));
-    deadUnits.addAll(CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicideOnDefense()));
-    bridge
-        .getDisplayChannelBroadcaster()
-        .deadUnitNotification(battleId, attacker, deadUnits, dependentUnits);
-    bridge
-        .getDisplayChannelBroadcaster()
-        .deadUnitNotification(battleId, defender, deadUnits, dependentUnits);
-    remove(deadUnits, bridge, battleSite, null);
   }
 
   /** Check for unescorted transports and kill them immediately. */
@@ -2175,6 +2080,22 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           }
         });
+  }
+
+  /**
+   * Check for suicide units and kill them immediately (they get to shoot back, which is the point).
+   */
+  private void checkSuicideUnits(final IDelegateBridge bridge) {
+    final List<Unit> deadUnits = new ArrayList<>();
+    deadUnits.addAll(CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack()));
+    deadUnits.addAll(CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicideOnDefense()));
+    bridge
+        .getDisplayChannelBroadcaster()
+        .deadUnitNotification(battleId, attacker, deadUnits, dependentUnits);
+    bridge
+        .getDisplayChannelBroadcaster()
+        .deadUnitNotification(battleId, defender, deadUnits, dependentUnits);
+    remove(deadUnits, bridge, battleSite, null);
   }
 
   private void attackerRetreatPlanes(final IDelegateBridge bridge) {
