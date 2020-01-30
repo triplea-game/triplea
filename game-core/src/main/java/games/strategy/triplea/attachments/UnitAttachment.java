@@ -1771,6 +1771,11 @@ public class UnitAttachment extends DefaultAttachment {
     // Global property controlled whether isSuicide units would suicide on defense
     setIsSuicideOnDefense(s && !Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(getData()));
     setIsFirstStrike(s);
+    if (s) {
+      canNotTarget = null;
+    } else {
+      resetCanNotTarget();
+    }
   }
 
   private void setIsSuicideOnAttack(final String s) {
