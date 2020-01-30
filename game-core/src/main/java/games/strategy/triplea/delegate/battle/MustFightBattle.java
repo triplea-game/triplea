@@ -1894,11 +1894,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void firstStrikeDefendersFire(final ReturnFire returnFire) {
-    firstStrikeFire(
+    findTargetGroupsAndFire(
         returnFire,
         attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
         true,
         defender,
+        Matches.unitIsFirstStrike(),
         defendingUnits,
         defendingWaitingToDie,
         attackingUnits,
@@ -1906,52 +1907,25 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void firstStrikeAttackersFire(final ReturnFire returnFire) {
-    firstStrikeFire(
+    findTargetGroupsAndFire(
         returnFire,
         defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
         false,
         attacker,
+        Matches.unitIsFirstStrike(),
         attackingUnits,
         attackingWaitingToDie,
         defendingUnits,
         defendingWaitingToDie);
   }
 
-  private void firstStrikeFire(
-      final ReturnFire returnFire,
-      final String stepName,
-      final boolean defending,
-      final GamePlayer firingPlayer,
-      final Collection<Unit> firingUnits,
-      final Collection<Unit> firingUnitsWaitingToDie,
-      final Collection<Unit> enemyUnits,
-      final Collection<Unit> enemyUnitsWaitingToDie) {
-
-    Collection<Unit> firing = new ArrayList<>(firingUnits);
-    firing.addAll(firingUnitsWaitingToDie);
-    firing = CollectionUtils.getMatches(firing, Matches.unitIsFirstStrike());
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(enemyUnits);
-    allEnemyUnitsAliveOrWaitingToDie.addAll(enemyUnitsWaitingToDie);
-    final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(firingUnits);
-    allFriendlyUnitsAliveOrWaitingToDie.addAll(firingUnitsWaitingToDie);
-    for (final TargetGroup firingGroup : TargetGroup.newTargetGroups(firing, enemyUnits)) {
-      fire(
-          stepName,
-          firingGroup.getFiringUnits(firing),
-          firingGroup.getTargetUnits(enemyUnits),
-          allEnemyUnitsAliveOrWaitingToDie,
-          allFriendlyUnitsAliveOrWaitingToDie,
-          defending,
-          returnFire,
-          firingGroup.getMessage(firingPlayer));
-    }
-  }
-
   private void standardAttackersFire() {
-    standardFire(
+    findTargetGroupsAndFire(
+        ReturnFire.ALL,
         defender.getName() + SELECT_CASUALTIES,
         false,
         attacker,
+        Matches.unitIsFirstStrike().negate(),
         attackingUnits,
         attackingWaitingToDie,
         defendingUnits,
@@ -1959,20 +1933,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void standardDefendersFire() {
-    standardFire(
+    findTargetGroupsAndFire(
+        ReturnFire.ALL,
         attacker.getName() + SELECT_CASUALTIES,
         true,
         defender,
+        Matches.unitIsFirstStrike().negate(),
         defendingUnits,
         defendingWaitingToDie,
         attackingUnits,
         attackingWaitingToDie);
   }
 
-  private void standardFire(
+  private void findTargetGroupsAndFire(
+      final ReturnFire returnFire,
       final String stepName,
       final boolean defending,
       final GamePlayer firingPlayer,
+      final Predicate<Unit> firingUnitPredicate,
       final Collection<Unit> firingUnits,
       final Collection<Unit> firingUnitsWaitingToDie,
       final Collection<Unit> enemyUnits,
@@ -1980,7 +1958,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
     Collection<Unit> firing = new ArrayList<>(firingUnits);
     firing.addAll(firingUnitsWaitingToDie);
-    firing = CollectionUtils.getMatches(firing, Matches.unitIsFirstStrike().negate());
+    firing = CollectionUtils.getMatches(firing, firingUnitPredicate);
     // See if allied air can participate in combat
     if (!defending && !Properties.getAlliedAirIndependent(gameData)) {
       firing = CollectionUtils.getMatches(firing, Matches.unitIsOwnedBy(attacker));
@@ -1997,7 +1975,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           allEnemyUnitsAliveOrWaitingToDie,
           allFriendlyUnitsAliveOrWaitingToDie,
           defending,
-          ReturnFire.ALL,
+          returnFire,
           firingGroup.getMessage(firingPlayer));
     }
   }
