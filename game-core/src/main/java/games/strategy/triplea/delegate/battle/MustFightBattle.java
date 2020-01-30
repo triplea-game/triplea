@@ -1897,7 +1897,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     firstStrikeFire(
         returnFire,
         attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-        "First strike units defend, ",
+        true,
+        defender,
         defendingUnits,
         defendingWaitingToDie,
         attackingUnits,
@@ -1908,7 +1909,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     firstStrikeFire(
         returnFire,
         defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-        "First strike units attack, ",
+        false,
+        attacker,
         attackingUnits,
         attackingWaitingToDie,
         defendingUnits,
@@ -1918,7 +1920,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void firstStrikeFire(
       final ReturnFire returnFire,
       final String stepName,
-      final String message,
+      final boolean defending,
+      final GamePlayer firingPlayer,
       final Collection<Unit> firingUnits,
       final Collection<Unit> firingUnitsWaitingToDie,
       final Collection<Unit> enemyUnits,
@@ -1927,26 +1930,21 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     Collection<Unit> firing = new ArrayList<>(firingUnits);
     firing.addAll(firingUnitsWaitingToDie);
     firing = CollectionUtils.getMatches(firing, Matches.unitIsFirstStrike());
-    final Set<UnitType> canNotTarget =
-        firing.stream()
-            .map(unit -> UnitAttachment.get(unit.getType()).getCanNotTarget())
-            .flatMap(unitTypes -> unitTypes.stream())
-            .collect(Collectors.toSet());
-    final Collection<Unit> attackableUnits =
-        CollectionUtils.getMatches(enemyUnits, Matches.unitIsOfTypes(canNotTarget).negate());
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(enemyUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(enemyUnitsWaitingToDie);
     final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(firingUnits);
     allFriendlyUnitsAliveOrWaitingToDie.addAll(firingUnitsWaitingToDie);
-    fire(
-        stepName,
-        firing,
-        attackableUnits,
-        allEnemyUnitsAliveOrWaitingToDie,
-        allFriendlyUnitsAliveOrWaitingToDie,
-        false,
-        returnFire,
-        message);
+    for (final TargetGroup firingGroup : TargetGroup.newTargetGroups(firing, enemyUnits)) {
+      fire(
+          stepName,
+          firingGroup.getFiringUnits(firing),
+          firingGroup.getTargetUnits(enemyUnits),
+          allEnemyUnitsAliveOrWaitingToDie,
+          allFriendlyUnitsAliveOrWaitingToDie,
+          defending,
+          returnFire,
+          firingGroup.getMessage(firingPlayer));
+    }
   }
 
   private void standardAttackersFire() {
