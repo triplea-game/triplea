@@ -1698,16 +1698,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
     }
-    // Attacker air fire on non-subs
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 99993L;
-
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            attackAirOnNonSubs();
-          }
-        });
     // Attacker fire remaining units
     steps.add(
         new IExecutable() {
@@ -1730,16 +1720,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
     }
-    // Defender air fire on non-subs
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 1560702114917865123L;
-
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            defendAirOnNonSubs();
-          }
-        });
     steps.add(
         new IExecutable() {
           private static final long serialVersionUID = 1560702114917865290L;
@@ -1969,68 +1949,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         message);
   }
 
-  private void attackAirOnNonSubs() {
-    fireAirOnNonSubs(
-        defender.getName() + SELECT_CASUALTIES,
-        "Attacker's aircraft fire,",
-        false,
-        attackingUnits,
-        attackingWaitingToDie,
-        defendingUnits,
-        defendingWaitingToDie);
-  }
-
-  private void defendAirOnNonSubs() {
-    fireAirOnNonSubs(
-        attacker.getName() + SELECT_CASUALTIES,
-        "Defender's aircraft fire,",
-        true,
-        defendingUnits,
-        defendingWaitingToDie,
-        attackingUnits,
-        attackingWaitingToDie);
-  }
-
-  private void fireAirOnNonSubs(
-      final String stepName,
-      final String message,
-      final boolean defending,
-      final Collection<Unit> firingUnits,
-      final Collection<Unit> firingUnitsWaitingToDie,
-      final Collection<Unit> enemyUnits,
-      final Collection<Unit> enemyUnitsWaitingToDie) {
-
-    Collection<Unit> units = new ArrayList<>(firingUnits);
-    units.addAll(firingUnitsWaitingToDie);
-    // See if allied air can participate in combat
-    if (!defending && !Properties.getAlliedAirIndependent(gameData)) {
-      units = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(attacker));
-    }
-    if (!canAirAttackSubs(enemyUnits, units)) {
-      units = CollectionUtils.getMatches(units, Matches.unitIsAir());
-      final Collection<Unit> enemyUnitsNotSubs =
-          CollectionUtils.getMatches(enemyUnits, Matches.unitCanNotBeTargetedByAll().negate());
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(enemyUnits);
-      allEnemyUnitsAliveOrWaitingToDie.addAll(enemyUnitsWaitingToDie);
-      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(firingUnits);
-      allFriendlyUnitsAliveOrWaitingToDie.addAll(firingUnitsWaitingToDie);
-      fire(
-          stepName,
-          units,
-          enemyUnitsNotSubs,
-          allEnemyUnitsAliveOrWaitingToDie,
-          allFriendlyUnitsAliveOrWaitingToDie,
-          defending,
-          ReturnFire.ALL,
-          message);
-    }
-  }
-
   private void standardAttackersFire() {
     standardFire(
         defender.getName() + SELECT_CASUALTIES,
-        "Attackers fire, ",
         false,
+        attacker,
         attackingUnits,
         attackingWaitingToDie,
         defendingUnits,
@@ -2040,8 +1963,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void standardDefendersFire() {
     standardFire(
         attacker.getName() + SELECT_CASUALTIES,
-        "Defenders fire, ",
         true,
+        defender,
         defendingUnits,
         defendingWaitingToDie,
         attackingUnits,
@@ -2050,8 +1973,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void standardFire(
       final String stepName,
-      final String message,
       final boolean defending,
+      final GamePlayer firingPlayer,
       final Collection<Unit> firingUnits,
       final Collection<Unit> firingUnitsWaitingToDie,
       final Collection<Unit> enemyUnits,
@@ -2064,23 +1987,21 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!defending && !Properties.getAlliedAirIndependent(gameData)) {
       firing = CollectionUtils.getMatches(firing, Matches.unitIsOwnedBy(attacker));
     }
-    // if restricted, remove aircraft from attackers
-    if (!canAirAttackSubs(enemyUnits, firing)) {
-      firing.removeAll(CollectionUtils.getMatches(firing, Matches.unitIsAir()));
-    }
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(enemyUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(enemyUnitsWaitingToDie);
     final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(firingUnits);
     allFriendlyUnitsAliveOrWaitingToDie.addAll(firingUnitsWaitingToDie);
-    fire(
-        stepName,
-        firing,
-        enemyUnits,
-        allEnemyUnitsAliveOrWaitingToDie,
-        allFriendlyUnitsAliveOrWaitingToDie,
-        defending,
-        ReturnFire.ALL,
-        message);
+    for (final TargetGroup firingGroup : TargetGroup.newTargetGroups(firing, enemyUnits)) {
+      fire(
+          stepName,
+          firingGroup.getFiringUnits(firing),
+          firingGroup.getTargetUnits(enemyUnits),
+          allEnemyUnitsAliveOrWaitingToDie,
+          allFriendlyUnitsAliveOrWaitingToDie,
+          defending,
+          ReturnFire.ALL,
+          firingGroup.getMessage(firingPlayer));
+    }
   }
 
   private void addCheckEndBattleAndRetreatingSteps(final List<IExecutable> steps) {
