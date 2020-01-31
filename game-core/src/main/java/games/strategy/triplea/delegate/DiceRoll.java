@@ -583,6 +583,18 @@ public class DiceRoll implements Externalizable {
     return hits;
   }
 
+  @VisibleForTesting
+  static DiceRoll rollDice(
+      final List<Unit> units,
+      final boolean defending,
+      final GamePlayer player,
+      final IDelegateBridge bridge,
+      final IBattle battle,
+      final Collection<TerritoryEffect> territoryEffects) {
+    return rollDice(
+        units, defending, player, bridge, battle, "", territoryEffects, List.of(), units);
+  }
+
   /**
    * Used to roll dice for attackers and defenders in battles.
    *

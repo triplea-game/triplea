@@ -697,28 +697,12 @@ class WW2V3Year41Test {
     // Attacking fighter
     final DiceRoll roll1 =
         DiceRoll.rollDice(
-            germanFighter,
-            false,
-            germans,
-            delegateBridge,
-            mock(IBattle.class),
-            "",
-            territoryEffects,
-            null,
-            germanFighter);
+            germanFighter, false, germans, delegateBridge, mock(IBattle.class), territoryEffects);
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            germanFighter,
-            true,
-            germans,
-            delegateBridge,
-            mock(IBattle.class),
-            "",
-            territoryEffects,
-            null,
-            germanFighter);
+            germanFighter, true, germans, delegateBridge, mock(IBattle.class), territoryEffects);
     assertEquals(0, roll2.getHits());
   }
 
