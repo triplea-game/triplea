@@ -1619,6 +1619,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
     }
+    steps.add(
+        new IExecutable() {
+          private static final long serialVersionUID = -7634700553071456768L;
+
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            removeFirstStrikeSuicideUnits(bridge);
+          }
+        });
     // Attacker fire remaining units
     steps.add(
         new IExecutable() {
@@ -1901,7 +1910,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            checkSuicideUnits(bridge);
+            removeStandardSuicideUnits(bridge);
           }
         });
     steps.add(
@@ -2082,14 +2091,19 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         });
   }
 
-  /**
-   * Check for suicide units and kill them immediately (they get to shoot back, which is the point).
-   */
-  private void checkSuicideUnits(final IDelegateBridge bridge) {
+  private void removeFirstStrikeSuicideUnits(final IDelegateBridge bridge) {
+    removeSuicideUnits(bridge, Matches.unitIsFirstStrike());
+  }
+
+  private void removeStandardSuicideUnits(final IDelegateBridge bridge) {
+    removeSuicideUnits(bridge, Matches.unitIsFirstStrike().negate());
+  }
+
+  private void removeSuicideUnits(final IDelegateBridge bridge, final Predicate<Unit> unitMatch) {
     final Collection<Unit> deadAttackers =
-        CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack());
+        CollectionUtils.getMatches(attackingUnits, unitMatch.and(Matches.unitIsSuicideOnAttack()));
     final Collection<Unit> deadDefenders =
-        CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicideOnDefense());
+        CollectionUtils.getMatches(defendingUnits, unitMatch.and(Matches.unitIsSuicideOnDefense()));
     bridge
         .getDisplayChannelBroadcaster()
         .deadUnitNotification(battleId, attacker, deadAttackers, dependentUnits);
@@ -2103,8 +2117,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void attackerRetreatPlanes(final IDelegateBridge bridge) {
     // planes retreat to the same square the battle is in, and then should move during non combat to
-    // their landing site,
-    // or be scrapped if they can't find one.
+    // their landing site, or be scrapped if they can't find one.
     if (attackingUnits.stream().anyMatch(Matches.unitIsAir())) {
       queryRetreat(false, RetreatType.PLANES, bridge, Set.of(battleSite));
     }
