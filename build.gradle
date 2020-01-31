@@ -106,7 +106,7 @@ subprojects {
         postgresqlVersion = '42.2.9'
         rateLimitjVersion = '0.6.0'
         slf4jSimpleVersion = '1.7.28'
-        snakeYamlVersion = '2.0'
+        snakeYamlVersion = '2.1'
         sonatypeGoodiesPrefsVersion = '2.3.1'
         substanceVersion = '2.5.1'
         xchartVersion = '3.6.1'
