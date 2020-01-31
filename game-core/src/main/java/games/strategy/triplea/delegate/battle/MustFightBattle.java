@@ -2086,15 +2086,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * Check for suicide units and kill them immediately (they get to shoot back, which is the point).
    */
   private void checkSuicideUnits(final IDelegateBridge bridge) {
-    final List<Unit> deadUnits = new ArrayList<>();
-    deadUnits.addAll(CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack()));
-    deadUnits.addAll(CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicideOnDefense()));
+    final Collection<Unit> deadAttackers =
+        CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack());
+    final Collection<Unit> deadDefenders =
+        CollectionUtils.getMatches(defendingUnits, Matches.unitIsSuicideOnDefense());
     bridge
         .getDisplayChannelBroadcaster()
-        .deadUnitNotification(battleId, attacker, deadUnits, dependentUnits);
+        .deadUnitNotification(battleId, attacker, deadAttackers, dependentUnits);
     bridge
         .getDisplayChannelBroadcaster()
-        .deadUnitNotification(battleId, defender, deadUnits, dependentUnits);
+        .deadUnitNotification(battleId, defender, deadDefenders, dependentUnits);
+    final List<Unit> deadUnits = new ArrayList<>(deadAttackers);
+    deadUnits.addAll(deadDefenders);
     remove(deadUnits, bridge, battleSite, null);
   }
 
