@@ -71,7 +71,7 @@ public class TargetGroup {
       final UnitType unitType, final Set<UnitType> unitTypes, final Set<UnitType> enemyUnitTypes) {
     final Set<UnitType> targets = new HashSet<>(enemyUnitTypes);
     targets.removeAll(UnitAttachment.get(unitType).getCanNotTarget());
-    if (!unitTypes.stream().anyMatch(Matches.unitTypeIsDestroyer())) {
+    if (unitTypes.stream().noneMatch(Matches.unitTypeIsDestroyer())) {
       for (final UnitType target : targets) {
         if (UnitAttachment.get(target).getCanNotBeTargetedBy().contains(unitType)) {
           targets.remove(target);
