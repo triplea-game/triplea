@@ -49,22 +49,12 @@ public class TargetGroup {
         units.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
     final Set<UnitType> enemyUnitTypes =
         enemyUnits.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
-    final List<TargetGroup> firingGroups = new ArrayList<TargetGroup>();
+    final List<TargetGroup> targetGroups = new ArrayList<TargetGroup>();
     for (final UnitType unitType : unitTypes) {
       final Set<UnitType> targets = findTargets(unitType, unitTypes, enemyUnitTypes);
-      boolean isAdded = false;
-      for (final TargetGroup firingGroup : firingGroups) {
-        if (firingGroup.getTargetUnitTypes().equals(targets)) {
-          firingGroup.getFiringUnitTypes().add(unitType);
-          isAdded = true;
-          break;
-        }
-      }
-      if (!isAdded) {
-        firingGroups.add(new TargetGroup(unitType, targets));
-      }
+      addToTargetGroups(unitType, targets, targetGroups);
     }
-    return sortFiringGroups(firingGroups);
+    return sortTargetGroups(targetGroups);
   }
 
   private static Set<UnitType> findTargets(
@@ -81,9 +71,24 @@ public class TargetGroup {
     return targets;
   }
 
-  private static List<TargetGroup> sortFiringGroups(final List<TargetGroup> firingGroups) {
-    return firingGroups.stream()
-        .sorted(Comparator.comparingInt(firingGroup -> firingGroup.getTargetUnitTypes().size()))
+  private static void addToTargetGroups(
+      final UnitType unitType, final Set<UnitType> targets, final List<TargetGroup> targetGroups) {
+    boolean isAdded = false;
+    for (final TargetGroup firingGroup : targetGroups) {
+      if (firingGroup.getTargetUnitTypes().equals(targets)) {
+        firingGroup.getFiringUnitTypes().add(unitType);
+        isAdded = true;
+        break;
+      }
+    }
+    if (!isAdded) {
+      targetGroups.add(new TargetGroup(unitType, targets));
+    }
+  }
+
+  private static List<TargetGroup> sortTargetGroups(final List<TargetGroup> targetGroups) {
+    return targetGroups.stream()
+        .sorted(Comparator.comparingInt(targetGroup -> targetGroup.getTargetUnitTypes().size()))
         .collect(Collectors.toList());
   }
 }
