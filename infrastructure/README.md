@@ -81,11 +81,11 @@ examples
 
 ### Useful flags
 
-  * `-v`: Verbose output
-  * `-vvv`: Debug output
-  * `-vvvv`: SSL Debug output
-  * `--diff`: Shows differences in updated templates and files
-  * `-t`: Tags
+* `-v`: Verbose output
+* `-vvv`: Debug output
+* `-vvvv`: SSL Debug output
+* `--diff`: Shows differences in updated templates and files
+* `-t`: Tags
 
 ### Examples with Tags
 
