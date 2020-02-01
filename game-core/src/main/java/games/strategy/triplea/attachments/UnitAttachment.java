@@ -690,18 +690,14 @@ public class UnitAttachment extends DefaultAttachment {
 
   public Set<UnitType> getCanNotTarget() {
     if (canNotTarget == null) {
-      if (isSuicideOnAttack && isFirstStrike) { // Support isSuicide shortcut
-        canNotTarget =
-            new HashSet<>(
-                CollectionUtils.getMatches(
-                    getData().getUnitTypeList().getAllUnitTypes(),
-                    Matches.unitTypeIsSuicideOnAttack().or(Matches.unitTypeIsSuicideOnDefense())));
-      } else { // Support isSub shortcut
-        canNotTarget =
-            new HashSet<>(
-                CollectionUtils.getMatches(
-                    getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
-      }
+      final Predicate<UnitType> unitTypeMatch =
+          (isSuicideOnAttack && isFirstStrike)
+              ? Matches.unitTypeIsSuicideOnAttack().or(Matches.unitTypeIsSuicideOnDefense())
+              : Matches.unitTypeIsAir();
+      canNotTarget =
+          new HashSet<>(
+              CollectionUtils.getMatches(
+                  getData().getUnitTypeList().getAllUnitTypes(), unitTypeMatch));
     }
     return canNotTarget;
   }
