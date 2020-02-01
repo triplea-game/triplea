@@ -61,18 +61,19 @@ public class TargetGroup {
       final UnitType unitType, final Set<UnitType> unitTypes, final Set<UnitType> enemyUnitTypes) {
     final Set<UnitType> targets = new HashSet<>(enemyUnitTypes);
     targets.removeAll(UnitAttachment.get(unitType).getCanNotTarget());
-    if (unitTypes.stream().noneMatch(Matches.unitTypeIsDestroyer())) {
-      for (final UnitType target : targets) {
-        if (UnitAttachment.get(target).getCanNotBeTargetedBy().contains(unitType)) {
-          targets.remove(target);
-        }
-      }
-    }
-    return targets;
+    return unitTypes.stream().anyMatch(Matches.unitTypeIsDestroyer())
+        ? targets
+        : targets.stream()
+            .filter(
+                target -> !UnitAttachment.get(target).getCanNotBeTargetedBy().contains(unitType))
+            .collect(Collectors.toSet());
   }
 
   private static void addToTargetGroups(
       final UnitType unitType, final Set<UnitType> targets, final List<TargetGroup> targetGroups) {
+    if (targets.isEmpty()) {
+      return;
+    }
     boolean isAdded = false;
     for (final TargetGroup targetGroup : targetGroups) {
       if (targetGroup.getTargetUnitTypes().equals(targets)) {
