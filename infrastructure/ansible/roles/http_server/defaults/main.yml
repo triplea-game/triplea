@@ -1,5 +1,4 @@
 http_server_user: http_server
-http_server_port: "8080"
 http_server_home_folder: "/home/{{ http_server_user }}"
 http_server_run_file: "{{ http_server_home_folder }}/run_server"
 

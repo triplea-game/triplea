@@ -44,7 +44,7 @@ server {
       proxy_pass          http://localhost:8080;
       proxy_read_timeout  90;
 
-      proxy_redirect      https://localhost:443 https://localhost:{{ http_server_port }};
+      proxy_redirect      https://localhost:443 https://localhost:8080;
     }
 
     location /lobby/chat/websocket {
