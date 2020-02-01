@@ -13,11 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Group of firing units and their targets. */
-@Getter
+@Getter(AccessLevel.PRIVATE)
 public class TargetGroup {
 
   private final Set<UnitType> firingUnitTypes;
