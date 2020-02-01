@@ -82,7 +82,7 @@
   template:
     src: etc_nginx_sites_enabled_default.j2
     dest: /etc/nginx/sites-enabled/default
-
+  register: nginx_config_changed
 
 - name: allow ports
   become: true
@@ -93,9 +93,16 @@
     proto: tcp
   with_items: "{{ nginx_allowed_ports }}"
 
-- name: relaunch nginx
+- name: restart nginx if config changed
+  when: nginx_config_changed.changed
   become: true
   systemd:
     name: nginx
     state: restarted
+
+- name: ensure nginx is started
+  become: true
+  systemd:
+    name: nginx
+    state: started
 
