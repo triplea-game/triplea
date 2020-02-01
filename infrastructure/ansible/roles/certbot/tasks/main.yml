@@ -1,0 +1,26 @@
+- name: install software properties common
+  apt:
+    state: present
+    name: software-properties-common
+  
+- name: install certbot apt-repositories
+  apt_repository:
+    state: present
+    repo: "{{ item }}"
+  loop:
+    - "deb http://archive.ubuntu.com/ubuntu/ bionic universe"
+    - "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe"
+    - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
+    - "ppa:certbot/certbot"
+
+- name: install certbox and python for certbot on nginx
+  apt:
+    update_cache: yes
+    name:
+      - certbot
+      - python-certbot-nginx
+
+- name: run certbot
+  tags: cert
+  become: true
+  command: "certbot --nginx -n -m tripleabuilderbot@gmail.com --agree-tos -d {{ inventory_hostname }}"

@@ -14,9 +14,12 @@
         - bot
         - nginx
         - http_server
-    - admin_user
-    - firewall
-    - security
+    - name: admin_user
+      tags: [ admin_user ]
+    - name: firewall
+      tags: [ firewall ]
+    - name: security
+      tags: [ security ]
 
 - hosts: postgresHosts
   gather_facts: no
@@ -41,6 +44,8 @@
       tags: [ http_server ]
     - role: nginx
       tags: [ nginx ]
+    - role: certbot
+      tags: [ certbot ]
 
 - hosts: botHosts
   gather_facts: no
