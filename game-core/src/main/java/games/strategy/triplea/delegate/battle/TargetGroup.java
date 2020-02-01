@@ -14,12 +14,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.Setter;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Group of firing units and their targets. */
 @Getter
-@Setter
 public class TargetGroup {
 
   private final Set<UnitType> firingUnitTypes;
