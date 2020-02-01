@@ -1,5 +1,11 @@
-nginx_ssl_certificate: /etc/nginx/cert.crt
-nginx_ssl_certificate_key: /etc/nginx/cert.key
-nginx_ssl_dhparams: /etc/nginx/dhparam.pem
+ssl_cert: /etc/nginx/cert.crt
+ssl_cert_key: /etc/nginx/cert.key
+
+lets_encrypt_cert: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+lets_encrypt_cert_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+
+dhparams_pem_file: /etc/nginx/dhparam.pem
+
 nginx_allowed_ports:
   - 443
+  - 80

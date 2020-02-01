@@ -14,9 +14,12 @@
         - bot
         - nginx
         - http_server
-    - admin_user
-    - firewall
-    - security
+    - name: admin_user
+      tags: [ admin_user ]
+    - name: firewall
+      tags: [ firewall ]
+    - name: security
+      tags: [ security ]
 
 - hosts: postgresHosts
   gather_facts: no
@@ -36,11 +39,27 @@
   strategy: free
   tags: lobby
   roles:
-    - java
+    - role: java
+      tags: [ java ]
     - role: http_server
       tags: [ http_server ]
     - role: nginx
       tags: [ nginx ]
+
+- hosts: letsEncrypt
+  gather_facts: no
+  serial: 100%
+  strategy: free
+  tags: lobby
+  roles:
+    - role: certbot
+      tags: [ certbot ]
+    # Re-run nginx role to fix configuration and do final restart.
+    # Modifications to /etc/nginx/sites-enabled/default triggers a NGINX restart.
+    # Certbot role adds a new line to /etc/nginx/sites-enabled/default
+    # every time it runs and makes changes.
+    - role: nginx
+      tags: [ certbot ]
 
 - hosts: botHosts
   gather_facts: no

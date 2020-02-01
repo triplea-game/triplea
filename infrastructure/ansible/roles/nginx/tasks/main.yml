@@ -4,52 +4,108 @@
     name: nginx
     state: present
 
+
 - name: generate dhparam.pem
   become: true
   shell:
-    cmd: openssl dhparam -out {{ nginx_ssl_dhparams }} 4096
-    creates: "{{ nginx_ssl_dhparams }}"
+    cmd: openssl dhparam -out {{ dhparams_pem_file }} 4096
+    creates: "{{ dhparams_pem_file }}"
 
 - name: set permissions of dhparam.pem
   become: true
   file:
-    dest: "{{ nginx_ssl_dhparams }}"
+    dest: "{{ dhparams_pem_file }}"
     mode: 600
 
-- name: check for nginx cert key
-  stat:
-    path: "{{ nginx_ssl_certificate_key }}"
-  register: cert_key
-  changed_when: false
 
-- name: check for nginx certificate
+- name: check for SSL cert key
   stat:
-    path: "{{ nginx_ssl_certificate }}"
-  register: cert
+    path: "{{ ssl_cert_key }}"
+  register: has_cert_key
+  changed_when: false
+ 
+- name: check for SSL cert
+  stat:
+    path: "{{ ssl_cert }}"
+  register: has_cert
   changed_when: false
 
 - name: create SSL keys if needed
   become: true
-  when: (cert_key.stat.exists == false) or (cert.stat.exists == false)
-  command: openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout {{ nginx_ssl_certificate_key }} -out {{ nginx_ssl_certificate }} -batch -subj '/CN=localhost' -sha256 -addext "subjectAltName = IP:127.0.0.1, IP:::1"
+  when: (has_cert_key.stat.exists == false) or (has_cert.stat.exists == false)
+  command: |
+       openssl req -x509 -nodes -days 365 \
+          -newkey rsa:4096 -keyout {{ ssl_cert_key }} -out {{ ssl_cert }} \
+          -batch -subj '/CN=localhost' -sha256 -addext "subjectAltName = IP:127.0.0.1, IP:::1"
+
+
+- name: check for letsencrypt cert key
+  stat:
+    path: "{{ lets_encrypt_cert_key }}"
+  register: has_lets_encrypt_cert_key
+  changed_when: false
+
+- name: set cert-key variable to generated cert if letsencrypt cert key DNE
+  when: has_lets_encrypt_cert_key.stat.exists == false
+  set_fact:
+    cert_key: "{{ ssl_cert_key }};"
+  changed_when: false
+
+- name: set cert-key variable to lets_encrypt cert-key if exists
+  when: has_lets_encrypt_cert_key.stat.exists
+  set_fact:
+    cert_key: "{{ lets_encrypt_cert_key }}; # managed by Certbot;"
+  changed_when: false
+
+
+- name: check for lets_encrypt cert
+  stat:
+    path: "{{ lets_encrypt_cert }}"
+  register: has_lets_encrypt_cert
+  changed_when: false
+  
+- name: set cert variable to generated cert if lets_encrypt cert DNE
+  when: has_lets_encrypt_cert.stat.exists == false
+  set_fact:
+    cert: "{{ ssl_cert }};"
+  changed_when: false
+
+- name: set cert variable to lets_encrypt cert if exists
+  when: has_lets_encrypt_cert.stat.exists
+  set_fact:
+    cert: "{{ lets_encrypt_cert }}; # managed by Certbot;"
+  changed_when: false
+
 
 - name: deploy nginx sites_enabled configuation
   become: true
   template:
     src: etc_nginx_sites_enabled_default.j2
     dest: /etc/nginx/sites-enabled/default
+  register: nginx_config_changed
 
 - name: allow ports
   become: true
+  tags: firewall
   ufw:
     rule: allow
     port: "{{ item }}"
     proto: tcp
   with_items: "{{ nginx_allowed_ports }}"
 
-- name: relaunch nginx
+- name: restart nginx if config changed
+  when: |
+    (nginx_config_changed.changed) 
+      or (has_cert_key.stat.exists == false) 
+      or (has_cert.stat.exists == false)
   become: true
   systemd:
     name: nginx
     state: restarted
+
+- name: ensure nginx is started
+  become: true
+  systemd:
+    name: nginx
+    state: started
 
