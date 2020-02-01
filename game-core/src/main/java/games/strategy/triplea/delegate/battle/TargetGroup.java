@@ -39,7 +39,8 @@ public class TargetGroup {
   /**
    * Find all target groupings for firing units and enemy units based on canNotTarget and
    * canNotBeTargetedBy attributes. Also takes into account if any destroyers are present which
-   * cancel canNotBeTargetedBy. Sort all the target groups so most restrictive appear first.
+   * cancel canNotBeTargetedBy. Sort all the target groups so those with the least number of targets
+   * appear first.
    */
   public static List<TargetGroup> newTargetGroups(
       final Collection<Unit> units, final Collection<Unit> enemyUnits) {
