@@ -80,19 +80,22 @@ examples
 
 # To see 'diff' output, which shows how each file on server is being updated
 #  (caution!! this can expose secret values to stdout)
-./run_deployment 2.0.1000 -d -i ansible/inventory/prerelease
+./run_deployment 2.0.1000 --diff -i ansible/inventory/prerelease
 
 # To see SSL debug output:
+./run_deployment 2.0.1000 -vvvv -i ansible/inventory/prerelease
+
+# To see debug output from each command:
 ./run_deployment 2.0.1000 -vvv -i ansible/inventory/prerelease
 
 # To deploy to just bots, use tags, '-t' (see playbook for tag names)
-./run_deployment 2.0.1000 -vvv -t bots -i ansible/inventory/prerelease
+./run_deployment 2.0.1000 -t bots -i ansible/inventory/prerelease
 ```
 
 Production deployment is only a matter of specifying the production inventory file.
 
 ```
-./run_deployment 2.0.1000 -vvv -i ansible/inventory/production
+./run_deployment 2.0.1000 -i ansible/inventory/production
 ```
 
 ## PreRelease and Production Deployments
@@ -165,47 +168,13 @@ ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed255
 
 # Https Certificate Installation
 
-Currently done manually.
+The 'certbot' role will:
+  - run lets-encrypt and create a publicly signed SSL cert.
+  - sets up a weekly renewal cronjob that will renew the SSL cert if it
+    is within 30 days of expiry
 
-## certbot from letsencrypt
-
-```bash
-sudo apt-get update
-sudo apt-get install software-properties-common
-sudo add-apt-repository universe
-sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get update
-sudo apt-get install certbot python-certbot-nginx 
-
-sudo certbot --nginx -m tripleabuilderbot@gmail.com --agree-tos
-```
-
-Create CAA DNS records
+For each domain running SSH, a CAA DNS record needs to be created (one time):
 
 ![Screenshot from 2019-11-19 13-06-13](https://user-images.githubusercontent.com/12397753/69196411-48980e00-0ae3-11ea-9130-61e1fd5368b3.png)
 
-Everything that goes well, should look like:
-```
-Congratulations! You have successfully enabled
-https://prerelease.triplea-game.org
-
-You should test your configuration at:
-https://www.ssllabs.com/ssltest/analyze.html?d=prerelease.triplea-game.org
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-IMPORTANT NOTES:
- - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/prerelease.triplea-game.org/fullchain.pem
-   Your key file has been saved at:
-   /etc/letsencrypt/live/prerelease.triplea-game.org/privkey.pem
-   Your cert will expire on 2020-02-17. To obtain a new or tweaked
-   version of this certificate in the future, simply run certbot again
-   with the "certonly" option. To non-interactively renew *all* of
-   your certificates, run "certbot renew"
- - Your account credentials have been saved in your Certbot
-   configuration directory at /etc/letsencrypt. You should make a
-   secure backup of this folder now. This configuration directory will
-   also contain certificates and private keys obtained by Certbot so
-   making regular backups of this folder is ideal.
-``````
 
