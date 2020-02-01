@@ -94,7 +94,10 @@
   with_items: "{{ nginx_allowed_ports }}"
 
 - name: restart nginx if config changed
-  when: nginx_config_changed.changed
+  when: |
+    (nginx_config_changed.changed) 
+      or (has_cert_key.stat.exists == false) 
+      or (has_cert.stat.exists == false)
   become: true
   systemd:
     name: nginx
