@@ -75,6 +75,7 @@ examples
 
 
 ### Typical Deployment Command
+
 ```bash
 ./run_deployment 2.0.1000 -i ansible/inventory/prerelease
 ```
@@ -181,8 +182,9 @@ ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed255
 # Https Certificate Installation
 
 The 'certbot' role will:
-  - run lets-encrypt and create a publicly signed SSL cert.
-  - sets up a weekly renewal cronjob that will renew the SSL cert if it
+
+- run lets-encrypt and create a publicly signed SSL cert.
+- sets up a weekly renewal cronjob that will renew the SSL cert if it
     is within 30 days of expiry
 
 For each domain running SSH, a CAA DNS record needs to be created (one time):
