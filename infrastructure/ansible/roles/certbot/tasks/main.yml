@@ -31,7 +31,12 @@
 
 - name: run certbot
   become: true
-  command: "certbot --nginx -n -m tripleabuilderbot@gmail.com --agree-tos -d {{ inventory_hostname }}"
+  command: |
+     certbot --nginx -n \
+         -m tripleabuilderbot@gmail.com \
+         -d {{ inventory_hostname }} \
+         --agree-tos \
+         --rsa-key-size 4096
   when: has_certbot_pem.stat.exists == false
 
 - name: Add letsencrypt cronjob for cert renewal
