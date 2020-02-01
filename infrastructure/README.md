@@ -166,10 +166,11 @@ by ansible when ansible is run. To encrypt a variable:
 [Ansible-Vault Docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 
 Warnings:
- - use files to store passwords/secrets so that the password is not in your shell history
- - take care to not commit into git any passwords or secrets, files containing secrets should
+
+* use files to store passwords/secrets so that the password is not in your shell history
+* take care to not commit into git any passwords or secrets, files containing secrets should
    be added to .gitignore to help prevent this.
- - if any secret is exposed, we would need to rotate password and re-encrypt variables
+* if any secret is exposed, we would need to rotate password and re-encrypt variables
 
 
 ### Ansible Vault File Encryption
@@ -183,8 +184,8 @@ ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed255
 
 The 'certbot' role will:
 
-- run lets-encrypt and create a publicly signed SSL cert.
-- sets up a weekly renewal cronjob that will renew the SSL cert if it
+* run lets-encrypt and create a publicly signed SSL cert.
+* sets up a weekly renewal cronjob that will renew the SSL cert if it
     is within 30 days of expiry
 
 For each domain running SSH, a CAA DNS record needs to be created (one time):
