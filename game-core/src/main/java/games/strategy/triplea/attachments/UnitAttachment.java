@@ -1774,10 +1774,6 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setIsSuicideOnAttack(final String s) {
-    isSuicideOnAttack = getBool(s);
-  }
-
   private void setIsSuicideOnAttack(final Boolean s) {
     isSuicideOnAttack = s;
   }
@@ -1786,24 +1782,12 @@ public class UnitAttachment extends DefaultAttachment {
     return isSuicideOnAttack;
   }
 
-  private void resetIsSuicideOnAttack() {
-    isSuicideOnAttack = false;
-  }
-
-  private void setIsSuicideOnDefense(final String s) {
-    isSuicideOnDefense = getBool(s);
-  }
-
   private void setIsSuicideOnDefense(final Boolean s) {
     isSuicideOnDefense = s;
   }
 
   public boolean getIsSuicideOnDefense() {
     return isSuicideOnDefense;
-  }
-
-  private void resetIsSuicideOnDefense() {
-    isSuicideOnDefense = false;
   }
 
   private void setIsSuicideOnHit(final String s) {
@@ -3832,18 +3816,18 @@ public class UnitAttachment extends DefaultAttachment {
             MutableProperty.<Boolean>ofWriteOnly(this::setIsSuicide, this::setIsSuicide))
         .put(
             "isSuicideOnAttack",
-            MutableProperty.of(
-                this::setIsSuicideOnAttack,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
                 this::setIsSuicideOnAttack,
                 this::getIsSuicideOnAttack,
-                this::resetIsSuicideOnAttack))
+                () -> false))
         .put(
             "isSuicideOnDefense",
-            MutableProperty.of(
-                this::setIsSuicideOnDefense,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
                 this::setIsSuicideOnDefense,
                 this::getIsSuicideOnDefense,
-                this::resetIsSuicideOnDefense))
+                () -> false))
         .put(
             "isSuicideOnHit",
             MutableProperty.of(
