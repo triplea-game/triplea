@@ -4,6 +4,10 @@ server {
     return 301 https://$host$request_uri;
 }
 
+# warning: be sure that we can run certbot role and then re-run the nginx
+# role without this file changing. If this file is changed (white-space included)
+# then nginx will be restarting, disconnecting all active connections.
+
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
@@ -49,5 +53,5 @@ server {
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
     }
-
 }
+

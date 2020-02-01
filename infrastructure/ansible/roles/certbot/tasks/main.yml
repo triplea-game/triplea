@@ -1,9 +1,11 @@
 - name: install software properties common
+  become: true
   apt:
     state: present
     name: software-properties-common
   
 - name: install certbot apt-repositories
+  become: true
   apt_repository:
     state: present
     repo: "{{ item }}"
@@ -14,15 +16,23 @@
     - "ppa:certbot/certbot"
 
 - name: install certbot and python for certbot on nginx
+  become: true
   apt:
     update_cache: yes
     name:
       - certbot
       - python-certbot-nginx
 
+- name: look for certbot generated key file
+  become: true
+  stat:
+    path: /etc/letsencrypt/live/prerelease.triplea-game.org/cert.pem
+  register: has_certbot_pem
+
 - name: run certbot
   become: true
   command: "certbot --nginx -n -m tripleabuilderbot@gmail.com --agree-tos -d {{ inventory_hostname }}"
+  when: has_certbot_pem.stat.exists == false
 
 - name: Add letsencrypt cronjob for cert renewal
   become: true
