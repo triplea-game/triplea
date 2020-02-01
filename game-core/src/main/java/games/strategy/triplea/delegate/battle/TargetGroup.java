@@ -74,9 +74,9 @@ public class TargetGroup {
   private static void addToTargetGroups(
       final UnitType unitType, final Set<UnitType> targets, final List<TargetGroup> targetGroups) {
     boolean isAdded = false;
-    for (final TargetGroup firingGroup : targetGroups) {
-      if (firingGroup.getTargetUnitTypes().equals(targets)) {
-        firingGroup.getFiringUnitTypes().add(unitType);
+    for (final TargetGroup targetGroup : targetGroups) {
+      if (targetGroup.getTargetUnitTypes().equals(targets)) {
+        targetGroup.getFiringUnitTypes().add(unitType);
         isAdded = true;
         break;
       }
