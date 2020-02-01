@@ -18,6 +18,6 @@ botHosts
 [linode:children]
 production
 
-[productionNginx:children]
+[letsEncrypt:children]
 dropwizardHosts
 

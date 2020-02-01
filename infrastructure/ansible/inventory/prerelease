@@ -15,6 +15,6 @@ botHosts
 [linode:children]
 prerelease
 
-[prereleaseNginx:children]
+[letsEncrypt:children]
 dropwizardHosts
 

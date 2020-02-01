@@ -46,7 +46,7 @@
     - role: nginx
       tags: [ nginx ]
 
-- hosts: productionNginx,prereleaseNginx
+- hosts: letsEncrypt
   gather_facts: no
   serial: 100%
   strategy: free
