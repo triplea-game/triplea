@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.battle;
 
 import com.google.common.collect.Sets;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -35,10 +34,6 @@ public class TargetGroup {
 
   public Collection<Unit> getTargetUnits(final Collection<Unit> units) {
     return CollectionUtils.getMatches(units, Matches.unitIsOfTypes(targetUnitTypes));
-  }
-
-  public String getMessage(final GamePlayer player) {
-    return player.getName() + " fire, ";
   }
 
   /**

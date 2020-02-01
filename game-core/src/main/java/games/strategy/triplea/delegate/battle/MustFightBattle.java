@@ -1890,7 +1890,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           allFriendlyUnitsAliveOrWaitingToDie,
           defending,
           returnFire,
-          firingGroup.getMessage(firingPlayer));
+          firingPlayer.getName() + " fire, ");
     }
   }
 
