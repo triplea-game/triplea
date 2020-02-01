@@ -80,11 +80,12 @@ examples
 ```
 
 ### Useful flags
-  * -v: Verbose output
-  * -vvv: Debug output
-  * -vvvv: SSL Debug output
-  * --diff: Shows differences in updated templates and files
-  * -t : Tags
+
+  * `-v`: Verbose output
+  * `-vvv`: Debug output
+  * `-vvvv`: SSL Debug output
+  * `--diff`: Shows differences in updated templates and files
+  * `-t`: Tags
 
 ### Examples with Tags
 
@@ -96,13 +97,13 @@ examples
 ```
 
 #### Deploy NGINX and CertBot
+
 ```bash
 ./run_deployment 2.0.1000 -t nginx,certbot -i ansible/inventory/prerelease
 ```
 
-
 ## Example Prod Deployment
- 
+
 Production deployment is only a matter of specifying the production inventory file.
 
 ```bash
