@@ -26,7 +26,7 @@
 - name: look for certbot generated key file
   become: true
   stat:
-    path: /etc/letsencrypt/live/prerelease.triplea-game.org/cert.pem
+    path: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
   register: has_certbot_pem
 
 - name: run certbot
