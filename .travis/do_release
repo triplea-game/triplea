@@ -140,9 +140,12 @@ function pushMaps() {
     set -x
     cd website
 
-    git update-index --refresh
-    if ! git diff-index --quiet HEAD --; then
-      git add --all _maps/
+    # Add any new map files now so that 'diff-index' will detect these new files
+    git add --all _maps/
+    # Run 'update-index --refresh' so that we are sure to be comparing against
+    # a latest remote HEAD. A non-zero-exit in either 'git update-index' or
+    # in 'git diff-index' indicates there are changes to commit and push.
+    if ! git update-index --refresh || ! git diff-index --quiet HEAD --; then
       git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
       git push -fq origin master
     fi
