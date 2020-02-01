@@ -39,11 +39,19 @@
   strategy: free
   tags: lobby
   roles:
-    - java
+    - role: java
+      tags: [ java ]
     - role: http_server
       tags: [ http_server ]
     - role: nginx
       tags: [ nginx ]
+
+- hosts: productionNginx,prereleaseNginx
+  gather_facts: no
+  serial: 100%
+  strategy: free
+  tags: lobby
+  roles:
     - role: certbot
       tags: [ certbot ]
 

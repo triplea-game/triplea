@@ -15,3 +15,6 @@ botHosts
 [linode:children]
 prerelease
 
+[prereleaseNginx:children]
+dropwizardHosts
+
