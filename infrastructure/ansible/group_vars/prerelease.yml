@@ -1,4 +1,2 @@
 lobby_uri: "https://prerelease.triplea-game.org"
-#cert_path: "/etc/letsencrypt/live/{{ inventory_hostname }}"
-#nginx_ssl_certificate: "{{ cert_path }}/fullchain.pem"
-#nginx_ssl_certificate_key: "{{ cert_path }}/privkey.pem"
+
