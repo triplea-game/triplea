@@ -13,7 +13,7 @@
     - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
     - "ppa:certbot/certbot"
 
-- name: install certbox and python for certbot on nginx
+- name: install certbot and python for certbot on nginx
   apt:
     update_cache: yes
     name:
@@ -21,6 +21,13 @@
       - python-certbot-nginx
 
 - name: run certbot
-  tags: cert
   become: true
   command: "certbot --nginx -n -m tripleabuilderbot@gmail.com --agree-tos -d {{ inventory_hostname }}"
+
+- name: Add letsencrypt cronjob for cert renewal
+  become: true
+  cron:
+    name: letsencrypt_renewal
+    special_time: weekly
+    job: certbot renew
+
