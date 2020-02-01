@@ -167,9 +167,10 @@ by ansible when ansible is run. To encrypt a variable:
 
 Warnings:
 
-* use files to store passwords/secrets so that the password is not in your shell history
-* take care to not commit into git any passwords or secrets, files containing secrets should
-   be added to .gitignore to help prevent this.
+* use files to store passwords/secrets so that the password is not in your
+  shell history
+* take care to not commit into git any passwords or secrets, files containing
+  secrets should be added to .gitignore to help prevent this.
 * if any secret is exposed, we would need to rotate password and re-encrypt variables
 
 
