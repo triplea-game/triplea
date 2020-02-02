@@ -74,17 +74,12 @@ public class TargetGroup {
     if (targets.isEmpty()) {
       return;
     }
-    boolean isAdded = false;
-    for (final TargetGroup targetGroup : targetGroups) {
-      if (targetGroup.getTargetUnitTypes().equals(targets)) {
-        targetGroup.getFiringUnitTypes().add(unitType);
-        isAdded = true;
-        break;
-      }
-    }
-    if (!isAdded) {
-      targetGroups.add(new TargetGroup(unitType, targets));
-    }
+    targetGroups.stream()
+        .filter(targetGroup -> targetGroup.getTargetUnitTypes().equals(targets))
+        .findAny()
+        .ifPresentOrElse(
+            targetGroup -> targetGroup.getFiringUnitTypes().add(unitType),
+            () -> targetGroups.add(new TargetGroup(unitType, targets)));
   }
 
   private static List<TargetGroup> sortTargetGroups(final List<TargetGroup> targetGroups) {
