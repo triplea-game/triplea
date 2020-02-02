@@ -674,6 +674,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCanNotTarget(final String value) throws GameParseException {
+    if (canNotTarget == null) {
+      throw new GameParseException(
+          "Can't use canNotTarget with isSub/isSuicide, replace isSub with individual sub "
+              + "properties or isSuicide with isSuicideOnAttack/isSuicideOnDefense: "
+              + thisErrorMsg());
+    }
     final String[] s = splitOnColon(value);
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
