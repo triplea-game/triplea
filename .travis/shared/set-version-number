@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -eEu
+
+## Overwrites the version property file to contain a version number that
+## has the current build number in it. This script then prints (returns)
+## the newly updated version number.
+## The overwrite is done by overwriting the trailing '.0' of the version number
+## with the build id. IE: "2.0.0" -> "2.0.<BUILD_ID>", EG: "2.0.0" -> "2.0.1234"
+
+
+PROP_FILE="game-core/src/main/resources/META-INF/triplea/product.properties"
+
+## Update property file, set build number
+## Expect contents like: "version = 2.0.0"
+## Overwrite to contain something like: "version = 2.0.1234"
+
+sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" $PROP_FILE
+
+## Read the new version number and print it.
+## EG: "version = 2.0.1234", print "2.0.1234"
+## Do this by:
+## 1. remove all spaces, EG: "version=2.0.1234"
+## 2. remove everything up to and including the equals sign, eg: "2.0.1234"
+
+tr -d ' ' $PROP_FILE \
+  | sed 's/.*=//'
+

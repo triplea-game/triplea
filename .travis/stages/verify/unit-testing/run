@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eEu
+
+# Run Tests
+./gradlew --parallel test 
+
+# upload coverage report - https://github.com/codecov/example-gradle
+bash <(curl -s https://codecov.io/bash)
+
