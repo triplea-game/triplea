@@ -94,7 +94,8 @@ class TargetGroupTest extends AbstractDelegateTestCase {
 
   @Test
   @DisplayName(
-      "Verify 2 target groups if sub and fighters attack sub and fighters as subs can only target subs")
+      "Verify 2 target groups if sub and fighters attack sub and fighters as subs can only "
+          + "target subs")
   void testNewTargetGroupsForMultipleGroups() {
     final GamePlayer germany = GameDataTestUtil.germany(twwGameData);
     final List<Unit> units = GameDataTestUtil.germanSubmarine(twwGameData).create(1, germany);
