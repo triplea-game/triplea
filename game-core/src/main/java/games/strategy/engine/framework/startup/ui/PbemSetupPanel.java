@@ -12,9 +12,7 @@ import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.engine.random.PbemDiceRoller;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +30,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
+import org.triplea.swing.jpanel.GridBagConstraintsFill;
 
 /**
  * A panel for setting up Play by Email/Forum. This panel listens to the GameSelectionModel so it
@@ -95,52 +96,43 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     int row = 0;
     add(
         diceServerEditor,
-        new GridBagConstraints(
-            0,
-            row++,
-            1,
-            1,
-            1.0d,
-            0d,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(10, 0, 20, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(0, row++)
+            .gridWidth(1)
+            .gridHeight(1)
+            .weightX(1.0)
+            .weightY(0.0)
+            .anchor(GridBagConstraintsAnchor.NORTHWEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(10, 0, 20, 0)
+            .build());
 
     final JTabbedPane tabbedPane = new JTabbedPane();
     add(
         tabbedPane,
-        new GridBagConstraints(
-            0,
-            row++,
-            1,
-            1,
-            1.0d,
-            0d,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(10, 0, 20, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(0, row++)
+            .gridWidth(1)
+            .gridHeight(1)
+            .weightX(1.0)
+            .weightY(0.0)
+            .anchor(GridBagConstraintsAnchor.NORTHWEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(10, 0, 20, 0)
+            .build());
     tabbedPane.addTab("Play By Forum", forumPosterEditor);
     tabbedPane.addTab("Play By Email", emailSenderEditor);
 
     // add selection of local players
     add(
         localPlayerSelection,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            1.0d,
-            0d,
-            GridBagConstraints.NORTHEAST,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 10, 0),
-            0,
-            0));
+        new GridBagConstraintsBuilder(0, row)
+            .gridWidth(1)
+            .gridHeight(1)
+            .weightX(1.0)
+            .weightY(0.0)
+            .anchor(GridBagConstraintsAnchor.NORTHEAST)
+            .fill(GridBagConstraintsFill.NONE)
+            .insets(10, 0, 10, 0)
+            .build());
     layoutPlayerComponents(localPlayerPanel, playerTypes, gameSelectorModel.getGameData());
   }
 
