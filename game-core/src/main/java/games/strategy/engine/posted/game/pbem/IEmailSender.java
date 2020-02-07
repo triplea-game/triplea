@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.engine.posted.game.pbem;
 
 import com.google.common.base.Preconditions;
 import games.strategy.triplea.settings.ClientSetting;

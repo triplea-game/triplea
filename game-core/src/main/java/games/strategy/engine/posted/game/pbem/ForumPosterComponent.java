@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.engine.posted.game.pbem;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;

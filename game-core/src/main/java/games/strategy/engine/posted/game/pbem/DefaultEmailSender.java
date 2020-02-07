@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.engine.posted.game.pbem;
 
 import com.google.common.base.Splitter;
 import java.io.File;

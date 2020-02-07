@@ -14,7 +14,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.pbem.PbemMessagePoster;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
