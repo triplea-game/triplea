@@ -4,7 +4,8 @@ set -eEu
 
 eval "$(ssh-agent -s)"
 cd infrastructure || exit 1
-echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+VAULT_PASSWORD_FILE="vault_password"
+echo "$ANSIBLE_VAULT_PASSWORD" > "$VAULT_PASSWORD_FILE"
 
 ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
 
