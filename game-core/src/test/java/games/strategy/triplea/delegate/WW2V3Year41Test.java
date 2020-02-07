@@ -36,11 +36,11 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_SUB_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_FIRE;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -697,26 +697,12 @@ class WW2V3Year41Test {
     // Attacking fighter
     final DiceRoll roll1 =
         DiceRoll.rollDice(
-            germanFighter,
-            false,
-            germans,
-            delegateBridge,
-            mock(IBattle.class),
-            "",
-            territoryEffects,
-            null);
+            germanFighter, false, germans, delegateBridge, mock(IBattle.class), territoryEffects);
     assertEquals(1, roll1.getHits());
     // Defending fighter
     final DiceRoll roll2 =
         DiceRoll.rollDice(
-            germanFighter,
-            true,
-            germans,
-            delegateBridge,
-            mock(IBattle.class),
-            "",
-            territoryEffects,
-            null);
+            germanFighter, true, germans, delegateBridge, mock(IBattle.class), territoryEffects);
     assertEquals(0, roll2.getHits());
   }
 
@@ -1006,10 +992,10 @@ class WW2V3Year41Test {
         List.of(
                 attacker + SUBS_SUBMERGE,
                 defender + SUBS_SUBMERGE,
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker + ATTACKER_WITHDRAW)
@@ -1047,11 +1033,11 @@ class WW2V3Year41Test {
     assertEquals(
         List.of(
                 defender + SUBS_SUBMERGE,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
                 defender + FIRE,
                 attacker + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,
@@ -1095,13 +1081,13 @@ class WW2V3Year41Test {
     assertEquals(
         List.of(
                 attacker + SUBS_SUBMERGE,
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker + ATTACKER_WITHDRAW)
             .toString(),
@@ -1143,12 +1129,12 @@ class WW2V3Year41Test {
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         List.of(
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 defender + FIRE,
                 attacker + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,

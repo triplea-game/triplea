@@ -175,6 +175,7 @@ public final class ProSortMoveOptionsUtils {
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
                           sortedUnitsList,
                           defendingUnits,
+                          sortedUnitsList,
                           false,
                           data,
                           t,
@@ -197,6 +198,7 @@ public final class ProSortMoveOptionsUtils {
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
                           sortedUnitsList,
                           defendingUnits,
+                          sortedUnitsList,
                           false,
                           data,
                           t,
@@ -236,6 +238,7 @@ public final class ProSortMoveOptionsUtils {
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
                           sortedUnitsList,
                           defendingUnits,
+                          sortedUnitsList,
                           false,
                           data,
                           t,
@@ -258,6 +261,7 @@ public final class ProSortMoveOptionsUtils {
                       DiceRoll.getUnitPowerAndRollsForNormalBattles(
                           sortedUnitsList,
                           defendingUnits,
+                          sortedUnitsList,
                           false,
                           data,
                           t,

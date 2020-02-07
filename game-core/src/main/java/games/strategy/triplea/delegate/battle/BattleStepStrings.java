@@ -16,8 +16,8 @@ public interface BattleStepStrings {
   String AIR_DEFEND_NON_SUBS = "Air defend non subs";
   String REMOVE_SNEAK_ATTACK_CASUALTIES = "Remove sneak attack casualties";
   String FIRE = " fire";
-  String SUBS_FIRE = " subs fire";
-  String SELECT_SUB_CASUALTIES = " select sub casualties";
+  String FIRST_STRIKE_UNITS_FIRE = " first strike units fire";
+  String SELECT_FIRST_STRIKE_CASUALTIES = " select first strike casualties";
   String SELECT_CASUALTIES = " select casualties";
   String REMOVE_CASUALTIES = "Remove casualties";
   String SUBS_WITHDRAW = " withdraw subs?";

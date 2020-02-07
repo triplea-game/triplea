@@ -1435,6 +1435,7 @@ class BattleCalculatorPanel extends JPanel {
               DiceRoll.getUnitPowerAndRollsForNormalBattles(
                   attackers,
                   defenders,
+                  attackers,
                   false,
                   data,
                   location,
@@ -1448,6 +1449,7 @@ class BattleCalculatorPanel extends JPanel {
               DiceRoll.getUnitPowerAndRollsForNormalBattles(
                   defenders,
                   attackers,
+                  defenders,
                   true,
                   data,
                   location,

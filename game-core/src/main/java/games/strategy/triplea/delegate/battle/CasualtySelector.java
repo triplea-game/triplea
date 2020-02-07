@@ -969,6 +969,7 @@ public class CasualtySelector {
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             sortedUnitsList,
             new ArrayList<>(enemyUnits),
+            sortedUnitsList,
             defending,
             data,
             battlesite,

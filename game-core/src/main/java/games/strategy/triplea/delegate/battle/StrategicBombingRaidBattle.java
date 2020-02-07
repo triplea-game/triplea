@@ -291,9 +291,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               }
             }
             // kill any suicide attackers (veqryn)
-            if (attackingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
+            if (attackingUnits.stream().anyMatch(Matches.unitIsSuicideOnAttack())) {
               final List<Unit> suicideUnits =
-                  CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicide());
+                  CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicideOnAttack());
               attackingUnits.removeAll(suicideUnits);
               final Change removeSuicide = ChangeFactory.removeUnits(battleSite, suicideUnits);
               final String transcriptText =

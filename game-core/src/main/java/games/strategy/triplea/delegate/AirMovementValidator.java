@@ -621,7 +621,7 @@ public final class AirMovementValidator {
     final Collection<Unit> enemyUnitsAtEnd =
         route.getEnd().getUnitCollection().getMatches(Matches.enemyUnit(player, player.getData()));
     if (!enemyUnitsAtEnd.isEmpty() && GameStepPropertiesHelper.isCombatMove(player.getData())) {
-      ownedAir.removeIf(Matches.unitIsSuicide());
+      ownedAir.removeIf(Matches.unitIsSuicideOnAttack());
     }
 
     // Sort the list by shortest range first so those birds will get first pick of landing spots

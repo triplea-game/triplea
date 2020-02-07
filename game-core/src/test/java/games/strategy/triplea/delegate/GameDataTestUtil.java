@@ -175,6 +175,16 @@ public final class GameDataTestUtil {
     return unitType(Constants.UNIT_TYPE_FIGHTER, data);
   }
 
+  /** Returns a germanFighter UnitType object for the specified GameData object. */
+  public static UnitType germanFighter(final GameData data) {
+    return unitType("germanFighter", data);
+  }
+
+  /** Returns a britishFighter UnitType object for the specified GameData object. */
+  public static UnitType britishFighter(final GameData data) {
+    return unitType("britishFighter", data);
+  }
+
   /** Returns a destroyer UnitType object for the specified GameData object. */
   public static UnitType destroyer(final GameData data) {
     return unitType(Constants.UNIT_TYPE_DESTROYER, data);
@@ -183,6 +193,16 @@ public final class GameDataTestUtil {
   /** Returns a submarine UnitType object for the specified GameData object. */
   public static UnitType submarine(final GameData data) {
     return unitType(Constants.UNIT_TYPE_SUBMARINE, data);
+  }
+
+  /** Returns a germanSubmarine UnitType object for the specified GameData object. */
+  public static UnitType germanSubmarine(final GameData data) {
+    return unitType("germanSubmarine", data);
+  }
+
+  /** Returns a britishSubmarine UnitType object for the specified GameData object. */
+  public static UnitType britishSubmarine(final GameData data) {
+    return unitType("britishSubmarine", data);
   }
 
   /** Returns an infantry UnitType object for the specified GameData object. */
@@ -264,6 +284,11 @@ public final class GameDataTestUtil {
   /** Returns a germanArtillery UnitType object for the specified GameData object. */
   public static UnitType germanArtillery(final GameData data) {
     return unitType("germanArtillery", data);
+  }
+
+  /** Returns a britishArtillery UnitType object for the specified GameData object. */
+  public static UnitType britishArtillery(final GameData data) {
+    return unitType("britishArtillery", data);
   }
 
   /** Returns a germanAntiTankGun UnitType object for the specified GameData object. */

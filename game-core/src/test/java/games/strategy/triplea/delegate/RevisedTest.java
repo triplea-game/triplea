@@ -33,11 +33,11 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRST_STRIKE_UNITS_FIRE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_SUB_CASUALTIES;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_FIRE;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_FIRST_STRIKE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -1061,10 +1061,10 @@ class RevisedTest {
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         List.of(
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker + SUBS_SUBMERGE,
@@ -1073,8 +1073,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables(false);
-    final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
+    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
     // fight, each sub should fire and hit
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0));
@@ -1119,10 +1119,10 @@ class RevisedTest {
      */
     assertEquals(
         List.of(
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 defender + FIRE,
                 attacker + SELECT_CASUALTIES,
@@ -1133,8 +1133,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables(false);
-    final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
+    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
@@ -1190,10 +1190,10 @@ class RevisedTest {
      */
     assertEquals(
         List.of(
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
@@ -1206,8 +1206,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables(false);
-    final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
+    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
@@ -1247,10 +1247,10 @@ class RevisedTest {
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         List.of(
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
@@ -1261,8 +1261,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables(false);
-    final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
+    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking sub hits with sneak attack, but defending sub gets to return fire because it is a
@@ -1315,10 +1315,10 @@ class RevisedTest {
      */
     assertEquals(
         List.of(
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
@@ -1331,8 +1331,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables(false);
-    final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
+    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
@@ -1373,10 +1373,10 @@ class RevisedTest {
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         List.of(
-                attacker + SUBS_FIRE,
-                defender + SELECT_SUB_CASUALTIES,
-                defender + SUBS_FIRE,
-                attacker + SELECT_SUB_CASUALTIES,
+                attacker + FIRST_STRIKE_UNITS_FIRE,
+                defender + SELECT_FIRST_STRIKE_CASUALTIES,
+                defender + FIRST_STRIKE_UNITS_FIRE,
+                attacker + SELECT_FIRST_STRIKE_CASUALTIES,
                 attacker + FIRE,
                 defender + SELECT_CASUALTIES,
                 defender + FIRE,
@@ -1388,8 +1388,8 @@ class RevisedTest {
             .toString(),
         steps.toString());
     final List<IExecutable> execs = battle.getBattleExecutables(false);
-    final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
-    final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
+    final int attackSubs = getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class);
+    final int defendSubs = getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class);
     assertTrue(attackSubs < defendSubs);
     givenRemotePlayerWillSelectCasualtiesPer(
         bridge,
