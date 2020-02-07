@@ -13,6 +13,8 @@
 
 set -eux
 
+.travis/shared/setup-database
+
 readonly VERSION=$(sed 's/version\s*=\s*//' game-core/src/main/resources/META-INF/triplea/product.properties)
 
 readonly HTTP_SERVER_JAR_PATH="http-server/build/libs/triplea-http-server-${VERSION}.jar"

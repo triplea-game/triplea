@@ -5,16 +5,12 @@ set -eEu
 readonly INSTALL4J_HOME=~/install4j
 readonly ARTIFACTS_DIR=./build/artifacts
 
-trap "reportStatus FAILURE" ERR
-
 function main() {
   installInstall4j
   buildReleaseArtifacts
   collectArtifacts
   generateArtifactChecksums
   triggerGithubReleaseWithTagPush
-  pushMaps
-  reportStatus SUCCESS
 }
 
 function reportStatus() {

@@ -5,6 +5,13 @@
 # On failure, this script will check for an open "build broken" issue and will create one
 # if there is not one already open.
 
+
+if [ -z "$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" ]; then
+  echo "Aborting issue creation, access token not set. Assuming this is not a 'master' branch build."
+  echo "If the current branch is not 'master', this is fine, otherwise this is a configuration bug."
+  exit 1
+fi
+
 set -eu
 
 # Should be one of {SUCCESS|FAILURE}

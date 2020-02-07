@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eEu
+
+.travis/shared/setup-database
+
+# Start http server, this is here so that any output from the server
+# will be printed to Travis. If we launch the http server as part of unit
+# tests, the http server output is suppressed in Travis.
+script_dir=$(dirname "$0")
+"$script_dir/launch-http-server"
+
+# Run Tests
+./gradlew integTest
+
