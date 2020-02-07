@@ -6,12 +6,15 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.function.Function;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 
@@ -39,7 +42,13 @@ public class DiceServerEditor extends EditorPanel {
     final int labelSpace = 2;
     int row = 0;
     diceRollersByDisplayName.keySet().forEach(servers::addItem);
-    add(
+
+    final JPanel diceRollerOptions = new JPanel();
+    diceRollerOptions.setLayout(new GridBagLayout());
+    diceRollerOptions.setBorder(new TitledBorder("Dice Server Options"));
+    add(diceRollerOptions);
+
+    diceRollerOptions.add(
         serverLabel,
         new GridBagConstraints(
             0,
@@ -53,7 +62,7 @@ public class DiceServerEditor extends EditorPanel {
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    add(
+    diceRollerOptions.add(
         servers,
         new GridBagConstraints(
             1,
@@ -68,7 +77,7 @@ public class DiceServerEditor extends EditorPanel {
             0,
             0));
     row++;
-    add(
+    diceRollerOptions.add(
         toLabel,
         new GridBagConstraints(
             0,
@@ -82,7 +91,7 @@ public class DiceServerEditor extends EditorPanel {
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    add(
+    diceRollerOptions.add(
         toAddress,
         new GridBagConstraints(
             1,
@@ -97,7 +106,7 @@ public class DiceServerEditor extends EditorPanel {
             0,
             0));
     row++;
-    add(
+    diceRollerOptions.add(
         ccLabel,
         new GridBagConstraints(
             0,
@@ -111,7 +120,7 @@ public class DiceServerEditor extends EditorPanel {
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    add(
+    diceRollerOptions.add(
         ccAddress,
         new GridBagConstraints(
             1,
@@ -127,7 +136,7 @@ public class DiceServerEditor extends EditorPanel {
             0));
     row++;
     final JLabel gameIdLabel = new JLabel("Game Name:");
-    add(
+    diceRollerOptions.add(
         gameIdLabel,
         new GridBagConstraints(
             0,
@@ -141,7 +150,7 @@ public class DiceServerEditor extends EditorPanel {
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    add(
+    diceRollerOptions.add(
         gameId,
         new GridBagConstraints(
             1,
@@ -156,7 +165,7 @@ public class DiceServerEditor extends EditorPanel {
             0,
             0));
     row++;
-    add(
+    diceRollerOptions.add(
         testDiceButton,
         new GridBagConstraints(
             2,
