@@ -1,188 +1,108 @@
+if: tag is blank
 dist: xenial
 sudo: false
 language: java
-if: tag is blank
+jdk: openjdk11
+cache: { directories: [ "$HOME/.gradle" , ".gradle" ] }
+install: skip
 
-# Note: Travis generally does not allocate more than 5 VMs at once.
-# Avoid running more than 5 jobs in parallel. Try to keep the jobs
-# balanced so that they each take about the same amount of time.
-
-# Note: We download Java 11.0.5 for a few reasons:
-# - jcenter no longer allows https TLS1.0 connection (this is seen as
-#   a gradle failed to download plugin error)
-# - Travis has Java 11.0.2 baked in to it, 11.0.2 does not have a
-#   recent patch (2019-10) to allow Java 11 to use a compatible version
-#   of TLS.
-# To overcome this situation, we emulate the travis 'install-jdk' script
-# and install a latest Java 11. For reference:
-#   https://sormuras.github.io/blog/2017-12-08-install-jdk-on-travis.html
-# Java12 does not have this issue, we do not download the Java11 script
-# for that JVM or else we would be overriding Java12 with Java11.  
-#
-# Additional note: The export commands seem to not apply when extracted
-# to a script and seemingly only work when located in the main travis config
-# here.
-#
-
+env:
+  global:
+   - REPORT_FAIL=".travis/shared/report-build-status FAILURE"
+   - VERIFY_STAGE=".travis/stages/verify"
+   - DEPLOY_STAGE=".travis/stages/deploy"
 jobs:
   include:
-    - stage: verify
-      env: "Static Verification"
-      jdk: openjdk11
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-          - '~/jdk-11.0.5+10'
-      before_install:
-        - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5+10
-        - export PATH=${JAVA_HOME}/bin:$PATH
-        - java --version
-      install: skip
-      script:
-        ## shellcheck all shell scripts
-        - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
-        - .travis/check-links || travis_terminate 1;
-        - .travis/find-unused-dbunit-datasets || travis_terminate 1
-        - .travis/find-unmatched-test-packages || travis_terminate 1;
-        - .travis/find-orphaned-tests || travis_terminate 1;
-        - .travis/check-custom-style || travis_terminate 1;
-        - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain pmdTest
-    - stage: verify
-      env: "Unit & Integration Tests"
-      jdk: openjdk11
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-          - '~/jdk-11.0.5+10'
+    
+    ########################################################################
+    # Jobs are ordered tests first and then slower jobs before faster ones.
+  
+    - stage: Verify
+      name: "Tests: Integration Test"
+      addons: { postgresql: "10" }
+      script: [ $VERIFY_STAGE/integration-testing/run || $REPORT_FAIL ]
+
+    - stage: Verify
+      name: "Tests: Unit Test"
+      script: [ $VERIFY_STAGE/unit-testing/run || $REPORT_FAIL ]
+    
+    - stage: Verify
+      name: "Tests: Smoke Test"
       addons: {postgresql: "10"}
-      before_install:
-        - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5+10
-        - export PATH=${JAVA_HOME}/bin:$PATH
-        - java --version
-      install: skip
-      script:
-        - .travis/setup_database
-        - .travis/launch-http-server || travis_terminate 1
-        - ./gradlew --parallel test integTest jacocoTestReport || travis_terminate 1
-        - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
-    - stage: verify
-      env: "Smoke Test"
-      jdk: openjdk11
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-          - '~/jdk-11.0.5+10'
-      addons: {postgresql: "10"}
-      before_install:
-        - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5+10
-        - export PATH=${JAVA_HOME}/bin:$PATH
-        - java --version
-      install: skip
-      script:
-        - ./.travis/setup_database
-        - ./.travis/run_smoke_tests
-    - stage: deploy artifacts
-      env: "Upload to Github Releases"
+      script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL ]
+
+    - stage: Verify
+      name: "Analysis: PMD Verification"
+      script: [ $VERIFY_STAGE/pmd-verification/run || $REPORT_FAIL ]
+    
+    - stage: Verify
+      name: "Analysis: Checkstyle"
+      script: [ $VERIFY_STAGE/checkstyle/run || $REPORT_FAIL ]
+    
+    - stage: Verify
+      name: "Analysis: Java Formatting"
+      script: [ $VERIFY_STAGE/java-formatting/run || $REPORT_FAIL ]
+    
+    - stage: Verify
+      name: "Analysis: Check Links and YAML Syntax"
+      script: [ $VERIFY_STAGE/check-links-and-yaml-syntax/run || $REPORT_FAIL ]
+      
+    - stage: Verify
+      name: "Analysis: Code Convention Checks"
+      script: [ $VERIFY_STAGE/code-convention-checks/run || $REPORT_FAIL ]
+
+    - stage: Verify
+      name: "Analysis: Find Unused or Unmatched Tests"
+      script: [ $VERIFY_STAGE/find-unused-or-unmatched-tests/run || $REPORT_FAIL ]
+
+    ########################################################################
+
+    - stage: Deploy
+      name: "Push Map Descriptions to Website"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      install: skip
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-          - '~/jdk-11.0.5+10'
-      before_install:
-        - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5+10
-        - export PATH=${JAVA_HOME}/bin:$PATH
-        - java --version
-      script:
-        - ./.travis/setup_gpg
-        ## Update product version to include build number.
-        ## EG: replace "2.0.0" to be "2.0.15555";
-        - sed -i "s/.0 *$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
-        - ./.travis/do_release
+      addons: { apt: { packages: [ python3, python3-yaml ] } }
+      script: [ $DEPLOY_STAGE/update-maps-on-website/run || $REPORT_FAIL ]     
+
+    - stage: Deploy
+      name: "Ansible Deploy to Prerelease"
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      language: python
+      python: "3.6"
+      addons: { apt: { packages: [ sshpass ] } }
+      install: [ pip install ansible ]
+      script: [ $DEPLOY_STAGE/ansible-deploy-to-prerelease/run || $REPORT_FAIL ]
+
+    - stage: Deploy
+      name: "Build Installer Downloads & Upload to Github Releases"
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      script: [ $DEPLOY_STAGE/installers/run || $REPORT_FAIL ]
       deploy:
-        jdk: openjdk11
+        on: { tags: false, repo: triplea-game/triplea, branch: master }
         provider: releases
-        addons:
-          apt:
-            packages:
-              # python for map file splitter
-              - python3
-              - python3-yaml
-        api_key:
-          secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
         file_glob: true
         file: build/artifacts/*
         skip_cleanup: true        
         prerelease: true
-        on:
-          tags: false
-          repo: triplea-game/triplea
-          branch: master
-    - stage: deploy artifacts
-      env: "Deploy to Prerelease"
+        api_key:
+          secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
+
+    - stage: Deploy
+      name: "Ansible Deploy to Producton"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       language: python
       python: "3.6"
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-          - '~/jdk-11.0.5+10'
-      addons:
-        apt:
-          packages:
-            - sshpass
-      before_install:
-        - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5+10
-        - export PATH=${JAVA_HOME}/bin:$PATH
-        - java --version
-      install:
-        - pip install ansible
-      script:
-        - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
-        - version=$(cat game-core/src/main/resources/META-INF/triplea/product.properties | tr -d ' ' | sed 's/.*=//')
-        - eval "$(ssh-agent -s)"
-        - cd infrastructure
-        - ./build_deployment_artifacts || travis_terminate 1
-        - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-        - ./run_deployment "$version" -i ansible/inventory/prerelease || travis_terminate 1
-    - stage: deploy production
-      env: "Deploy to Producton"
+      addons: { apt: { packages: [ sshpass ] } }
+      install: [ pip install ansible ]
+      script: [ $DEPLOY_STAGE/production/run || $REPORT_FAIL ]
+
+    ########################################################################
+    
+    - stage: Finish
+      name: "Report Successful Build"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      language: python
-      python: "3.6"
-      addons:
-        apt:
-          packages:
-            - sshpass
-      cache:
-        directories:
-          - '$HOME/.gradle'
-          - '.gradle'
-          - '~/jdk-11.0.5+10'
-      before_install:
-        - ./.travis/install_java_11.0.5
-        - export JAVA_HOME=~/jdk-11.0.5+10
-        - export PATH=${JAVA_HOME}/bin:$PATH
-        - java --version
-      install:
-        - pip install ansible
-      script:
-        - version="2.0.16817"
-        - ./infrastructure/download_deployment_artifacts "$version" 
-        - eval "$(ssh-agent -s)"
-        - cd infrastructure
-        - echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-        # - ./run_deployment "$version" -i ansible/inventory/production
+      script: [ ".travis/shared/report-build-status SUCCESS" ] 
+
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
-  - test "$TRAVIS_EVENT_TYPE" != "pull_request" && test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
+  - $REPORT_FAIL
+

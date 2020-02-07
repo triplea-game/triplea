@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eEu
+
+.travis/shared/set-version-number
+
+script_dir=$(dirname "$0")
+"$script_dir/setup-gpg"
+"$script_dir/do-release"
+
