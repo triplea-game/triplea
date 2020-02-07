@@ -194,7 +194,7 @@ public class DiceServerEditor extends EditorPanel {
             !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText), toLabel);
     final boolean ccValid =
         setLabelValid(PlayerEmailValidation.isValid(ccAddress.getText()), ccLabel);
-    final boolean serverValid = validateComboBox(servers, serverLabel);
+    final boolean serverValid = setLabelValid(servers.getSelectedItem() != null, serverLabel);
     final boolean allValid = serverValid && toValid && ccValid;
     testDiceButton.setEnabled(allValid);
     return allValid;
