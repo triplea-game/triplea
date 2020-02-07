@@ -1,10 +1,11 @@
-package games.strategy.engine.pbem;
+package games.strategy.engine.posted.game.pbem;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
@@ -70,24 +71,6 @@ public class PbemMessagePoster implements Serializable {
 
   public void setSaveGame(final File saveGameFile) {
     this.saveGameFile = saveGameFile;
-  }
-
-  private Optional<IForumPoster> newForumPoster() {
-    final String name = gameProperties.get(IForumPoster.NAME, "");
-    if (name.isEmpty()) {
-      return Optional.empty();
-    }
-    return Optional.of(
-        IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
-  }
-
-  private Optional<IEmailSender> newEmailSender() {
-    final String subject = gameProperties.get(IEmailSender.SUBJECT, "");
-    if (subject.isEmpty()) {
-      return Optional.empty();
-    }
-    return Optional.of(
-        IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.RECIPIENTS, "")));
   }
 
   /**
@@ -164,6 +147,24 @@ public class PbemMessagePoster implements Serializable {
       historyWriter.startEvent(sb.toString());
     }
     return (forumSuccess == null || !forumSuccess.isCancelled()) && emailSuccess;
+  }
+
+  private Optional<IForumPoster> newForumPoster() {
+    final String name = gameProperties.get(IForumPoster.NAME, "");
+    if (name.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(
+        IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
+  }
+
+  private Optional<IEmailSender> newEmailSender() {
+    final String subject = gameProperties.get(IEmailSender.SUBJECT, "");
+    if (subject.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(
+        IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.RECIPIENTS, "")));
   }
 
   /**

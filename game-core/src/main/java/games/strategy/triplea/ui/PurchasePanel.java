@@ -131,7 +131,7 @@ public class PurchasePanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     final boolean hasPurchased = purchase.totalValues() != 0;
     if (!hasPurchased) {
       final int selectedOption =

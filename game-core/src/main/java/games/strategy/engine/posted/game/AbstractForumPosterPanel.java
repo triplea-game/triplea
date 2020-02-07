@@ -1,14 +1,15 @@
-package games.strategy.triplea.ui;
+package games.strategy.engine.posted.game;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.engine.pbem.ForumPosterComponent;
-import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.triplea.ui.ActionPanel;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -55,7 +56,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
 
   protected abstract String getTitle();
 
-  void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge) {
+  public void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge) {
     tripleAFrame = frame;
     playerBridge = bridge;
     // Nothing to do if there are no PBEM messengers

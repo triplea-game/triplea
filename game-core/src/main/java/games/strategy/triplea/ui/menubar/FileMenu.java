@@ -5,7 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.pbem.PbemMessagePoster;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TripleAFrame;

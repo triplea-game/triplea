@@ -5,7 +5,7 @@ import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import com.google.common.base.Strings;
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.engine.pbem.IEmailSender;
+import games.strategy.engine.posted.game.pbem.IEmailSender;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.net.URI;

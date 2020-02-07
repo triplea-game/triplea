@@ -140,7 +140,7 @@ public class UserActionPanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     if (!firstRun
         || JOptionPane.showConfirmDialog(
                 JOptionPane.getFrameForComponent(UserActionPanel.this),

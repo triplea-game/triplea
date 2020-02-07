@@ -1,17 +1,17 @@
-package games.strategy.triplea.ui;
+package games.strategy.engine.posted.game;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 
-class MoveForumPosterPanel extends AbstractForumPosterPanel {
+public class MoveForumPosterPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -533962696697230277L;
 
-  MoveForumPosterPanel(final GameData data, final MapPanel map) {
+  public MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     release();
   }
 

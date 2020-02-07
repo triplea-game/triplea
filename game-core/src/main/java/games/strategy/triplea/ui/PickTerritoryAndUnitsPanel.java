@@ -168,7 +168,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     currentAction = doneAction;
     setWidgetActivation();
     if (pickedTerritory == null || !territoryChoices.contains(pickedTerritory)) {

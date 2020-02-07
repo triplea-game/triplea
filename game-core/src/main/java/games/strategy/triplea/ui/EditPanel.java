@@ -1043,7 +1043,7 @@ class EditPanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     // no-op, no done button to be clicked, instead user should turn edit mode off.
   }
 }
