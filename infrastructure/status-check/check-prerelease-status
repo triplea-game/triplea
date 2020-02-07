@@ -1,4 +1,0 @@
-#!/bin/bash
-
-ssh admin@prerelease.triplea-game.org "bash -s" < ./prerelease-status
-
