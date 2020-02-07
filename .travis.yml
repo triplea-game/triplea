@@ -78,7 +78,6 @@ jobs:
       script: [ $DEPLOY_STAGE/installers/run || $REPORT_FAIL ]
       deploy:
         on: { tags: false, repo: triplea-game/triplea, branch: master }
-        jdk: openjdk11
         provider: releases
         file_glob: true
         file: build/artifacts/*
