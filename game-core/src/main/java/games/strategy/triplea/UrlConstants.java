@@ -24,4 +24,5 @@ public final class UrlConstants {
   public static final String TRIPLEA_FORUM = "https://forums.triplea-game.org/";
   public static final String TRIPLEA_WEBSITE = "https://triplea-game.org/";
   public static final String USER_GUIDE = "https://triplea-game.org/user-guide/";
+  public static final String MARTI_REGISTRATION = "https://dice.tripleawarclub.org/";
 }

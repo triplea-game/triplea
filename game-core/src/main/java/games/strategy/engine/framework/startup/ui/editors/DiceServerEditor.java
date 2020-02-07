@@ -5,6 +5,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
+import games.strategy.triplea.UrlConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -15,8 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import org.triplea.awt.OpenFileUtility;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.JButtonBuilder;
 
 /** A class to configure a Dice Server for the game. */
 public class DiceServerEditor extends EditorPanel {
@@ -26,6 +29,11 @@ public class DiceServerEditor extends EditorPanel {
           .collect(
               ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
+  private final JButton registerButton = new JButtonBuilder("Register")
+      .actionListener(() -> OpenFileUtility.openUrl(UrlConstants.MARTI_REGISTRATION))
+      .toolTip("<html>Opens email registration page to register with MARTI dice-roller.<br>"
+          + "Needs to be done once before MARTI dice server can be used.</html>")
+      .build();
   private final JButton testDiceButton = new JButton("Test Server");
   private final JTextField toAddress = new JTextField();
   private final JTextField ccAddress = new JTextField();
@@ -165,6 +173,21 @@ public class DiceServerEditor extends EditorPanel {
             0,
             0));
     row++;
+    diceRollerOptions.add(
+        registerButton,
+        new GridBagConstraints(
+            1,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
+
     diceRollerOptions.add(
         testDiceButton,
         new GridBagConstraints(
