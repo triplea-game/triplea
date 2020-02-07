@@ -56,8 +56,7 @@ public class TargetGroup {
       if (targets.isEmpty()) {
         continue;
       }
-      final Optional<TargetGroup> targetGroup =
-          findTargetsInTargetGroups(unitType, targets, targetGroups);
+      final Optional<TargetGroup> targetGroup = findTargetsInTargetGroups(targets, targetGroups);
       if (targetGroup.isPresent()) {
         targetGroup.get().getFiringUnitTypes().add(unitType);
       } else {
@@ -80,7 +79,7 @@ public class TargetGroup {
   }
 
   private static Optional<TargetGroup> findTargetsInTargetGroups(
-      final UnitType unitType, final Set<UnitType> targets, final List<TargetGroup> targetGroups) {
+      final Set<UnitType> targets, final List<TargetGroup> targetGroups) {
     return targetGroups.stream()
         .filter(targetGroup -> targetGroup.getTargetUnitTypes().equals(targets))
         .findAny();
