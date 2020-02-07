@@ -73,23 +73,6 @@ public class PbemMessagePoster implements Serializable {
     this.saveGameFile = saveGameFile;
   }
 
-  private Optional<IForumPoster> newForumPoster() {
-    final String name = gameProperties.get(IForumPoster.NAME, "");
-    if (name.isEmpty()) {
-      return Optional.empty();
-    }
-    return Optional.of(
-        IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
-  }
-
-  private Optional<IEmailSender> newEmailSender() {
-    final String subject = gameProperties.get(IEmailSender.SUBJECT, "");
-    if (subject.isEmpty()) {
-      return Optional.empty();
-    }
-    return Optional.of(
-        IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.RECIPIENTS, "")));
-  }
 
   /**
    * Post summary to form and/or email, and writes the action performed to the history writer.
@@ -165,6 +148,24 @@ public class PbemMessagePoster implements Serializable {
       historyWriter.startEvent(sb.toString());
     }
     return (forumSuccess == null || !forumSuccess.isCancelled()) && emailSuccess;
+  }
+
+  private Optional<IForumPoster> newForumPoster() {
+    final String name = gameProperties.get(IForumPoster.NAME, "");
+    if (name.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(
+        IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
+  }
+
+  private Optional<IEmailSender> newEmailSender() {
+    final String subject = gameProperties.get(IEmailSender.SUBJECT, "");
+    if (subject.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(
+        IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.RECIPIENTS, "")));
   }
 
   /**
