@@ -96,7 +96,7 @@ class RepairPanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     final boolean hasPurchased = getTotalValues(repair) != 0;
     if (!hasPurchased) {
       final int selectedOption =

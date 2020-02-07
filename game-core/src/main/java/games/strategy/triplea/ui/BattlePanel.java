@@ -96,7 +96,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     // no-op; battles are done when they all have been fought, there is no done button.
   }
 

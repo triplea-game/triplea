@@ -243,7 +243,7 @@ class TechPanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     techRoll = null;
     release();
   }

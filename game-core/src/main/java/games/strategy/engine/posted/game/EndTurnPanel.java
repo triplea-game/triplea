@@ -1,18 +1,18 @@
-package games.strategy.triplea.ui;
+package games.strategy.engine.posted.game;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import javax.swing.JOptionPane;
 
-class EndTurnPanel extends AbstractForumPosterPanel {
+public class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
 
-  EndTurnPanel(final GameData data, final MapPanel map) {
+  public EndTurnPanel(final GameData data, final MapPanel map) {
     super(data, map);
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     if (forumPosterComponent.canPostTurnSummary()) {
       if (forumPosterComponent.getHasPostedTurnSummary()
           || JOptionPane.YES_OPTION

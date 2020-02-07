@@ -125,5 +125,5 @@ public abstract class ActionPanel extends JPanel {
    * this should be a no-op. For example, battle phase ends when all battles have been fought and
    * not when the user clicks done (there is no done button during the battle phase).
    */
-  abstract void performDone();
+  public abstract void performDone();
 }

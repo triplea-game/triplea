@@ -8,6 +8,8 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.posted.game.EndTurnPanel;
+import games.strategy.engine.posted.game.MoveForumPosterPanel;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;

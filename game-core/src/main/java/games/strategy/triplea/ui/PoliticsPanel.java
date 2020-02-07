@@ -193,7 +193,7 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   @Override
-  void performDone() {
+  public void performDone() {
     if (!firstRun || youSureDoNothing()) {
       choice = null;
       release();
