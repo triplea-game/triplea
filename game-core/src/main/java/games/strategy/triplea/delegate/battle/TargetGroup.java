@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -52,7 +53,16 @@ public class TargetGroup {
     final List<TargetGroup> targetGroups = new ArrayList<TargetGroup>();
     for (final UnitType unitType : unitTypes) {
       final Set<UnitType> targets = findTargets(unitType, unitTypes, enemyUnitTypes);
-      addToTargetGroups(unitType, targets, targetGroups);
+      if (targets.isEmpty()) {
+        continue;
+      }
+      final Optional<TargetGroup> targetGroup =
+          findTargetsInTargetGroups(unitType, targets, targetGroups);
+      if (targetGroup.isPresent()) {
+        targetGroup.get().getFiringUnitTypes().add(unitType);
+      } else {
+        targetGroups.add(new TargetGroup(unitType, targets));
+      }
     }
     return sortTargetGroups(targetGroups);
   }
@@ -69,17 +79,11 @@ public class TargetGroup {
             .collect(Collectors.toSet());
   }
 
-  private static void addToTargetGroups(
+  private static Optional<TargetGroup> findTargetsInTargetGroups(
       final UnitType unitType, final Set<UnitType> targets, final List<TargetGroup> targetGroups) {
-    if (targets.isEmpty()) {
-      return;
-    }
-    targetGroups.stream()
+    return targetGroups.stream()
         .filter(targetGroup -> targetGroup.getTargetUnitTypes().equals(targets))
-        .findAny()
-        .ifPresentOrElse(
-            targetGroup -> targetGroup.getFiringUnitTypes().add(unitType),
-            () -> targetGroups.add(new TargetGroup(unitType, targets)));
+        .findAny();
   }
 
   private static List<TargetGroup> sortTargetGroups(final List<TargetGroup> targetGroups) {
