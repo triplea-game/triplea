@@ -73,7 +73,6 @@ public class PbemMessagePoster implements Serializable {
     this.saveGameFile = saveGameFile;
   }
 
-
   /**
    * Post summary to form and/or email, and writes the action performed to the history writer.
    *
