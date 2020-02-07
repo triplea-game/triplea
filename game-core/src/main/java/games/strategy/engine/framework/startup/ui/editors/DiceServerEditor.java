@@ -197,15 +197,21 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    final String toAddressText = toAddress.getText();
     final boolean toValid =
         setLabelValid(
-            !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText), toLabel);
+            !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText()),
+            toLabel);
     final boolean ccValid =
-        setLabelValid(PlayerEmailValidation.isValid(ccAddress.getText()), ccLabel);
+        setLabelValid(
+            !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText()),
+            ccLabel);
     final boolean serverValid = setLabelValid(servers.getSelectedItem() != null, serverLabel);
     final boolean allValid = serverValid && toValid && ccValid;
     testDiceButton.setEnabled(allValid);
+    testDiceButton.setToolTipText(
+        allValid
+            ? "Send a verified dice roll test email"
+            : "First enter a valid 'to' and 'cc' email address");
     return allValid;
   }
 
