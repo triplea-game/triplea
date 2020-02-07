@@ -10,10 +10,14 @@ bot02.triplea-game.org
 bot03.triplea-game.org
 bot04.triplea-game.org
 
+[forums]
+forums.triplea-game.org
+
 [production:children]
 postgresHosts
 dropwizardHosts
 botHosts
+forums
 
 [linode:children]
 production
