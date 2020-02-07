@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.engine.pbf;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.system.HttpProxy;

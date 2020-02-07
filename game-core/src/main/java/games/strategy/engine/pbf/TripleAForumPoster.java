@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.engine.pbf;
 
 import games.strategy.triplea.UrlConstants;
 

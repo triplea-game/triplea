@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.engine.pbf;
 
 import com.google.common.collect.ImmutableSet;
 import games.strategy.triplea.settings.ClientSetting;

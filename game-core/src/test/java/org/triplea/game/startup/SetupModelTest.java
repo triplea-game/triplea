@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.engine.pbem.IForumPoster;
+import games.strategy.engine.pbf.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 import org.junit.jupiter.api.Test;
 

@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.pbem.IForumPoster;
+import games.strategy.engine.pbf.IForumPoster;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
