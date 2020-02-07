@@ -46,7 +46,6 @@ public class HeadedUiContext extends AbstractUiContext {
   private final PuImageFactory puImageFactory = new PuImageFactory();
   private boolean drawUnits = true;
   private boolean drawTerritoryEffects = false;
-  private boolean drawMapOnly = false;
 
   @Getter(onMethod_ = {@Override})
   private Cursor cursor = Cursor.getDefaultCursor();
@@ -57,11 +56,11 @@ public class HeadedUiContext extends AbstractUiContext {
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    resourceLoader = ResourceLoader.getMapResourceLoader(dir);
-    if (mapData != null) {
-      mapData.close();
+    if (resourceLoader != null) {
+      resourceLoader.close();
     }
-    mapData = new MapData(resourceLoader);
+    resourceLoader = ResourceLoader.getMapResourceLoader(dir);
+    mapData = new MapData(dir);
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale =
@@ -177,7 +176,7 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public void shutDown() {
     super.shutDown();
-    mapData.close();
+    resourceLoader.close();
   }
 
   @Override
@@ -198,16 +197,6 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public boolean getShowTerritoryEffects() {
     return drawTerritoryEffects;
-  }
-
-  @Override
-  public boolean getShowMapOnly() {
-    return drawMapOnly;
-  }
-
-  @Override
-  public void setShowMapOnly(final boolean showMapOnly) {
-    drawMapOnly = showMapOnly;
   }
 
   @Override

@@ -7,8 +7,11 @@ import com.google.common.base.Splitter;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
+import java.awt.Image;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -22,9 +25,11 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
+import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -36,7 +41,7 @@ public class ResourceLoader implements Closeable {
   public static final String RESOURCE_FOLDER = "assets";
 
   private final URLClassLoader loader;
-  private final ResourceLocationTracker resourceLocationTracker;
+  private final String mapPrefix;
   @Getter private final String mapName;
 
   private ResourceLoader(final String mapName, final String[] paths) {
@@ -55,7 +60,7 @@ public class ResourceLoader implements Closeable {
         throw new IllegalStateException(e);
       }
     }
-    resourceLocationTracker = new ResourceLocationTracker(mapName, urls);
+    mapPrefix = ResourceLocationTracker.getMapPrefix(mapName, urls);
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
@@ -226,7 +231,7 @@ public class ResourceLoader implements Closeable {
    *     resource. Do not use '\' or File.separator)
    */
   public @Nullable URL getResource(final String inputPath) {
-    final String path = resourceLocationTracker.getMapPrefix() + inputPath;
+    final String path = mapPrefix + inputPath;
     return findResource(path).or(() -> findResource(inputPath)).orElse(null);
   }
 
@@ -239,8 +244,8 @@ public class ResourceLoader implements Closeable {
    * @param inputPath2 Same as inputPath but this takes second priority when loading
    */
   public @Nullable URL getResource(final String inputPath, final String inputPath2) {
-    final String path = resourceLocationTracker.getMapPrefix() + inputPath;
-    final String path2 = resourceLocationTracker.getMapPrefix() + inputPath2;
+    final String path = mapPrefix + inputPath;
+    final String path2 = mapPrefix + inputPath2;
     return findResource(path)
         .or(() -> findResource(path2))
         .or(() -> findResource(inputPath))
@@ -275,5 +280,33 @@ public class ResourceLoader implements Closeable {
 
     return UrlStreams.openStream(url)
         .orElseThrow(() -> new IllegalStateException("Failed to open an input stream to: " + path));
+  }
+
+  public ThrowingSupplier<InputStream, IOException> optionalResource(final String path) {
+    return () ->
+        Optional.ofNullable(getResourceAsStream(path))
+            .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
+  }
+
+  public ThrowingSupplier<InputStream, IOException> requiredResource(final String path) {
+    return () ->
+        Optional.ofNullable(getResourceAsStream(path))
+            .orElseThrow(() -> new FileNotFoundException(path));
+  }
+
+  public Optional<Image> loadImage(final String imageName) {
+    final URL url = getResource(imageName);
+    if (url == null) {
+      // this is actually pretty common that we try to read images that are not there. Let the
+      // caller
+      // decide if this is an error or not.
+      return Optional.empty();
+    }
+    try {
+      return Optional.of(ImageIO.read(url));
+    } catch (final IOException e) {
+      log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
+      return Optional.empty();
+    }
   }
 }

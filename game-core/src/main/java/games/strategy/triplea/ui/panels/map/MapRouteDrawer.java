@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.panels.map;
 
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;

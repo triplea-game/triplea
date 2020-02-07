@@ -1,13 +1,18 @@
-[postgresHosts]
-prerelease.triplea-game.org
+[prerelease]
+prerelease2.triplea-game.org
 
-[dropwizardHosts]
-prerelease.triplea-game.org
+[postgresHosts:children]
+prerelease
 
-[botHosts]
-prerelease.triplea-game.org
+[dropwizardHosts:children]
+prerelease
 
-[prerelease:children]
-postgresHosts
+[botHosts:children]
+prerelease
+
+[linode:children]
+prerelease
+
+[letsEncrypt:children]
 dropwizardHosts
-botHosts
+

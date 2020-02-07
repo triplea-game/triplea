@@ -6,6 +6,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;

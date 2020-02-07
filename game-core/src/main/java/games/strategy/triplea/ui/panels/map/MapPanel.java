@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.panels.map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -16,8 +16,12 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.MouseDetails;
+import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.UnitIconProperties;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -26,6 +30,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
+import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -81,12 +86,11 @@ public class MapPanel extends ImageScrollerLargeView {
   private final List<MouseOverUnitListener> mouseOverUnitsListeners = new ArrayList<>();
   private GameData gameData;
   // the territory that the mouse is currently over
-  @Getter(AccessLevel.PACKAGE)
-  private @Nullable Territory currentTerritory;
+  @Getter private @Nullable Territory currentTerritory;
 
   private @Nullable Territory highlightedTerritory;
   private final TerritoryHighlighter territoryHighlighter = new TerritoryHighlighter();
-  private final MapPanelSmallView smallView;
+  private final ImageScrollerSmallView smallView;
   // units the mouse is currently over
   private Tuple<Territory, List<Unit>> currentUnits;
   private final SmallMapImageManager smallMapImageManager;
@@ -136,7 +140,7 @@ public class MapPanel extends ImageScrollerLargeView {
             tileManager.resetTiles(gameData, uiContext.getMapData());
             SwingUtilities.invokeLater(
                 () -> {
-                  recreateTiles(getData(), uiContext);
+                  recreateTiles(gameData, uiContext);
                   repaint();
                 });
           }
@@ -161,7 +165,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public MapPanel(
       final GameData data,
-      final MapPanelSmallView smallView,
+      final ImageScrollerSmallView smallView,
       final UiContext uiContext,
       final ImageScrollModel model,
       final Supplier<Integer> computeScrollSpeed) {
@@ -330,12 +334,28 @@ public class MapPanel extends ImageScrollerLargeView {
     this.tileManager.resetTiles(data, uiContext.getMapData());
   }
 
-  GameData getData() {
+  public List<Unit> getMouseHoverUnits() {
+    return Optional.ofNullable(currentUnits).map(Tuple::getSecond).orElse(List.of());
+  }
+
+  public GameData getData() {
     return gameData;
   }
 
+  public boolean getEditMode() {
+    final boolean isEditMode;
+    // use GameData from mapPanel since it will follow current history node
+    gameData.acquireReadLock();
+    try {
+      isEditMode = BaseEditDelegate.getEditMode(gameData);
+    } finally {
+      gameData.releaseReadLock();
+    }
+    return isEditMode;
+  }
+
   // Beagle Code used to change map skin
-  void changeImage(final Dimension newDimensions) {
+  public void changeImage(final Dimension newDimensions) {
     model.setMaxBounds((int) newDimensions.getWidth(), (int) newDimensions.getHeight());
     tileManager.createTiles(new Rectangle(newDimensions));
     tileManager.resetTiles(gameData, uiContext.getMapData());
@@ -388,7 +408,7 @@ public class MapPanel extends ImageScrollerLargeView {
    * Centers on a territory and highlights it, the territory highlight animation does not turn off
    * until #clearHighlight is called.
    */
-  void highlightTerritory(final Territory territory) {
+  public void highlightTerritory(final Territory territory) {
     highlightTerritory(territory, AnimationDuration.INFINITE, HighlightDelay.STANDARD_DELAY);
   }
 
@@ -426,7 +446,7 @@ public class MapPanel extends ImageScrollerLargeView {
     private final int delayMs;
   }
 
-  void clearHighlightedTerritory() {
+  public void clearHighlightedTerritory() {
     highlightedTerritory = null;
     territoryHighlighter.clear();
   }
@@ -436,7 +456,8 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   /** Set the route, could be null. */
-  void setRoute(final Route route, final Point start, final Point end, final Image cursorImage) {
+  public void setRoute(
+      final Route route, final Point start, final Point end, final Image cursorImage) {
     if (route == null) {
       routeDescription = null;
       SwingUtilities.invokeLater(this::repaint);
@@ -451,19 +472,19 @@ public class MapPanel extends ImageScrollerLargeView {
     SwingUtilities.invokeLater(this::repaint);
   }
 
-  void addMapSelectionListener(final MapSelectionListener listener) {
+  public void addMapSelectionListener(final MapSelectionListener listener) {
     mapSelectionListeners.add(listener);
   }
 
-  void removeMapSelectionListener(final MapSelectionListener listener) {
+  public void removeMapSelectionListener(final MapSelectionListener listener) {
     mapSelectionListeners.remove(listener);
   }
 
-  void addMouseOverUnitListener(final MouseOverUnitListener listener) {
+  public void addMouseOverUnitListener(final MouseOverUnitListener listener) {
     mouseOverUnitsListeners.add(listener);
   }
 
-  void removeMouseOverUnitListener(final MouseOverUnitListener listener) {
+  public void removeMouseOverUnitListener(final MouseOverUnitListener listener) {
     mouseOverUnitsListeners.remove(listener);
   }
 
@@ -485,11 +506,11 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  void addUnitSelectionListener(final UnitSelectionListener listener) {
+  public void addUnitSelectionListener(final UnitSelectionListener listener) {
     unitSelectionListeners.add(listener);
   }
 
-  void removeUnitSelectionListener(final UnitSelectionListener listener) {
+  public void removeUnitSelectionListener(final UnitSelectionListener listener) {
     unitSelectionListeners.remove(listener);
   }
 
@@ -574,7 +595,7 @@ public class MapPanel extends ImageScrollerLargeView {
         });
   }
 
-  void setGameData(final GameData data) {
+  public void setGameData(final GameData data) {
     // clean up any old listeners
     if (gameData != null) {
       gameData.removeTerritoryListener(territoryListener);
@@ -816,21 +837,21 @@ public class MapPanel extends ImageScrollerLargeView {
     g.translate(bounds.getX(), bounds.getY());
   }
 
-  Image getTerritoryImage(final Territory territory) {
-    getData().acquireReadLock();
+  public Image getTerritoryImage(final Territory territory) {
+    gameData.acquireReadLock();
     try {
       return tileManager.newTerritoryImage(territory, gameData, uiContext.getMapData());
     } finally {
-      getData().releaseReadLock();
+      gameData.releaseReadLock();
     }
   }
 
-  Image getTerritoryImage(final Territory territory, final Territory focusOn) {
-    getData().acquireReadLock();
+  public Image getTerritoryImage(final Territory territory, final Territory focusOn) {
+    gameData.acquireReadLock();
     try {
       return tileManager.newTerritoryImage(territory, focusOn, gameData, uiContext.getMapData());
     } finally {
-      getData().releaseReadLock();
+      gameData.releaseReadLock();
     }
   }
 
@@ -846,18 +867,18 @@ public class MapPanel extends ImageScrollerLargeView {
     repaint();
   }
 
-  void initSmallMap() {
+  public void initSmallMap() {
     for (final Territory territory : gameData.getMap().getTerritories()) {
       smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
     }
     smallMapImageManager.update(uiContext.getMapData());
   }
 
-  void changeSmallMapOffscreenMap() {
+  public void changeSmallMapOffscreenMap() {
     smallMapImageManager.updateOffscreenImage(uiContext.getMapImage().getSmallMapImage());
   }
 
-  void setMouseShadowUnits(final Collection<Unit> units) {
+  public void setMouseShadowUnits(final Collection<Unit> units) {
     if (units == null || units.isEmpty()) {
       movementLeftForCurrentUnits = "";
       mouseShadowImage = null;
@@ -896,7 +917,7 @@ public class MapPanel extends ImageScrollerLargeView {
     g.setRenderingHint(
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     final Rectangle bounds = new Rectangle(0, 0, 0, 0);
-    getData().acquireReadLock();
+    gameData.acquireReadLock();
     try {
       int i = 0;
       for (final UnitCategory category : categories) {
@@ -917,14 +938,14 @@ public class MapPanel extends ImageScrollerLargeView {
         i++;
       }
     } finally {
-      getData().releaseReadLock();
+      gameData.releaseReadLock();
     }
     mouseShadowImage = img;
     SwingUtilities.invokeLater(this::repaint);
     g.dispose();
   }
 
-  void setTerritoryOverlay(final Territory territory, final Color color, final int alpha) {
+  public void setTerritoryOverlay(final Territory territory, final Color color, final int alpha) {
     tileManager.setTerritoryOverlay(territory, color, alpha, gameData, uiContext.getMapData());
   }
 
@@ -932,7 +953,7 @@ public class MapPanel extends ImageScrollerLargeView {
     tileManager.setTerritoryOverlayForBorder(territory, color, gameData, uiContext.getMapData());
   }
 
-  void clearTerritoryOverlay(final Territory territory) {
+  public void clearTerritoryOverlay(final Territory territory) {
     tileManager.clearTerritoryOverlay(territory, gameData, uiContext.getMapData());
   }
 
@@ -940,7 +961,7 @@ public class MapPanel extends ImageScrollerLargeView {
     return uiContext;
   }
 
-  void hideMouseCursor() {
+  public void hideMouseCursor() {
     if (hiddenCursor == null) {
       hiddenCursor =
           getToolkit()
@@ -952,15 +973,15 @@ public class MapPanel extends ImageScrollerLargeView {
     setCursor(hiddenCursor);
   }
 
-  void showMouseCursor() {
+  public void showMouseCursor() {
     setCursor(uiContext.getCursor());
   }
 
-  Optional<Image> getErrorImage() {
+  public Optional<Image> getErrorImage() {
     return uiContext.getMapData().getErrorImage();
   }
 
-  Optional<Image> getWarningImage() {
+  public Optional<Image> getWarningImage() {
     return uiContext.getMapData().getWarningImage();
   }
 

@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.CardLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;

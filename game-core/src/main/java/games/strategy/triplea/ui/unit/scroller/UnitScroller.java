@@ -9,7 +9,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -103,7 +103,11 @@ public class UnitScroller {
 
   private void unitMoved() {
     updateMovesLeftLabel();
-    drawUnitAvatarPane(lastFocusedTerritory);
+    if (lastFocusedTerritory == null) {
+      focusCapital();
+    } else {
+      drawUnitAvatarPane(lastFocusedTerritory);
+    }
 
     // remove any moved units from the sleeping units
     sleepingUnits.removeAll(

@@ -8,6 +8,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;

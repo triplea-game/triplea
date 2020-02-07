@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -260,65 +259,44 @@ public final class AutoPlacementFinder {
       }
     }
 
-    // makes TripleA read all the text data files for the map.
-    try (MapData mapData = new MapData(mapDir)) {
-      textOptionPane.show();
-      textOptionPane.appendNewLine(
-          "Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
-      textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
-      final Map<String, List<Point>> placements = new HashMap<>();
-      for (final String name : mapData.getTerritories()) {
-        final List<Point> points;
-        if (mapData.hasContainedTerritory(name)) {
-          final Set<Polygon> containedPolygons = new HashSet<>();
-          for (final String containedName : mapData.getContainedTerritory(name)) {
-            containedPolygons.addAll(mapData.getPolygons(containedName));
-          }
-          points =
-              getPlacementsStartingAtTopLeft(
+    textOptionPane.show();
+    textOptionPane.appendNewLine(
+        "Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
+    textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
+    final Map<String, List<Point>> placements = new HashMap<>();
+    final MapData mapData = new MapData(mapDir);
+    for (final String name : mapData.getTerritories()) {
+      final Set<Polygon> containedPolygons = mapData.getContainedTerritoryPolygons(name);
+      final List<Point> points =
+          containedPolygons.isEmpty()
+              ? getPlacementsStartingAtMiddle(
+                  mapData.getPolygons(name), mapData.getBoundingRect(name), mapData.getCenter(name))
+              : getPlacementsStartingAtTopLeft(
                   mapData.getPolygons(name),
                   mapData.getBoundingRect(name),
                   mapData.getCenter(name),
                   containedPolygons);
-          placements.put(name, points);
-        } else {
-          points =
-              getPlacementsStartingAtMiddle(
-                  mapData.getPolygons(name),
-                  mapData.getBoundingRect(name),
-                  mapData.getCenter(name));
-          placements.put(name, points);
-        }
-        textOptionPane.appendNewLine(name + ": " + points.size());
-      }
-      textOptionPane.appendNewLine("\r\nAll Finished!");
-      textOptionPane.countDown();
-      final String fileName =
-          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
-      if (fileName == null) {
-        textOptionPane.appendNewLine("You chose not to save, Shutting down");
-        textOptionPane.dispose();
-        return;
-      }
-      try (OutputStream os = new FileOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToMany(os, placements);
-        textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
-      } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed to write points file: " + fileName, e);
-        textOptionPane.dispose();
-        return;
-      }
-      textOptionPane.dispose();
-    } catch (final Exception e) {
-      JOptionPane.showMessageDialog(
-          null,
-          new JLabel(
-              "Could not find map. Make sure it is in finalized location and contains "
-                  + "centers.txt and polygons.txt"));
-      log.severe("Caught Exception.");
-      log.severe("Could be due to some missing text files.");
-      log.log(Level.SEVERE, "Or due to the map folder not being in the right location.", e);
+      placements.put(name, points);
+      textOptionPane.appendNewLine(name + ": " + points.size());
     }
+    textOptionPane.appendNewLine("\r\nAll Finished!");
+    textOptionPane.countDown();
+    final String fileName =
+        new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
+    if (fileName == null) {
+      textOptionPane.appendNewLine("You chose not to save, Shutting down");
+      textOptionPane.dispose();
+      return;
+    }
+    try (OutputStream os = new FileOutputStream(fileName)) {
+      PointFileReaderWriter.writeOneToMany(os, placements);
+      textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
+    } catch (final IOException e) {
+      log.log(Level.SEVERE, "Failed to write points file: " + fileName, e);
+      textOptionPane.dispose();
+      return;
+    }
+    textOptionPane.dispose();
   }
 
   /**

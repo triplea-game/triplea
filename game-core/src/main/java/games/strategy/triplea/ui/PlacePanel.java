@@ -16,6 +16,8 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Component;

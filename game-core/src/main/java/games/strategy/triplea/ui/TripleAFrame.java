@@ -33,15 +33,12 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
-import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.player.IPlayerBridge;
-import games.strategy.engine.player.Player;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
@@ -51,7 +48,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
-import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -73,8 +69,11 @@ import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
+import games.strategy.ui.ImageScrollerSmallView;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -177,7 +176,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   private final GameData data;
   private final IGame game;
   private final MapPanel mapPanel;
-  private final MapPanelSmallView smallView;
+  private final ImageScrollerSmallView smallView;
   private final JPanel territoryInfo = new JPanel();
   private final JLabel message = new JLabel("No selection");
   private final ResourceBar resourceBar;
@@ -211,7 +210,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
-  private List<Unit> unitsBeingMousedOver;
   private GamePlayer lastStepPlayer;
   private GamePlayer currentStepPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
@@ -363,7 +361,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
                   if (uiContext == null) {
                     return;
                   }
-                  if (getEditMode()) {
+                  if (mapPanel.getEditMode()) {
                     if (tabsPanel.indexOfComponent(editPanel) == -1) {
                       showEditMode();
                     }
@@ -372,26 +370,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
                       hideEditMode();
                     }
                   }
-                  if (uiContext.getShowMapOnly()) {
-                    hideRightHandSidePanel();
-                    // display troop movement
-                    final HistoryNode node = data.getHistory().getLastNode();
-                    if (node instanceof Renderable) {
-                      final Object details1 = ((Renderable) node).getRenderingData();
-                      if (details1 instanceof MoveDescription) {
-                        final MoveDescription moveMessage = (MoveDescription) details1;
-                        final Route route = moveMessage.getRoute();
-                        mapPanel.setRoute(null);
-                        mapPanel.setRoute(route);
-                        final Territory terr = route.getEnd();
-                        if (!mapPanel.isShowing(terr)) {
-                          mapPanel.centerOn(terr);
-                        }
-                      }
-                    }
-                  } else {
-                    showRightHandSidePanel();
-                  }
+                  showRightHandSidePanel();
                 });
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to process game data change", e);
@@ -421,14 +400,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
         }
       };
-
-  private final Action showMapOnlyAction =
-      SwingAction.of(
-          "Show map only",
-          e -> {
-            showMapOnly();
-            dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-          });
 
   private TripleAFrame(
       final IGame game,
@@ -473,15 +444,12 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
     final Image small = uiContext.getMapImage().getSmallMapImage();
-    smallView = new MapPanelSmallView(small, model, uiContext.getMapData());
+    smallView = new ImageScrollerSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(mapSelectionListener);
     mapPanel.addMouseOverUnitListener(
-        (units, territory) -> {
-          unitsBeingMousedOver = units;
-          tooltipManager.updateTooltip(getUnitInfo());
-        });
+        (units, territory) -> tooltipManager.updateTooltip(getUnitInfo()));
     // link the small and large images
     SwingUtilities.invokeLater(mapPanel::initSmallMap);
     mapAndChatPanel = new JPanel();
@@ -1959,7 +1927,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           showGame();
         }
       } else {
-        if (!uiContext.getShowMapOnly() && inHistory.compareAndSet(false, true)) {
+        if (inHistory.compareAndSet(false, true)) {
           showHistory();
         }
       }
@@ -1999,10 +1967,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
   }
 
   private String getUnitInfo() {
-    if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
-      final Unit unit = unitsBeingMousedOver.get(0);
+    if (!mapPanel.getMouseHoverUnits().isEmpty()) {
+      final Unit unit = mapPanel.getMouseHoverUnits().get(0);
       return MapUnitTooltipManager.getTooltipTextForUnit(
-          unit.getType(), unit.getOwner(), unitsBeingMousedOver.size());
+          unit.getType(), unit.getOwner(), mapPanel.getMouseHoverUnits().size());
     }
     return "";
   }
@@ -2155,7 +2123,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           }
           addTab("Notes", notesPanel, 'N');
           addTab("Territory", details, 'T');
-          if (getEditMode()) {
+          if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
@@ -2305,7 +2273,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
 
   private void showGame() {
     inGame.set(true);
-    uiContext.setShowMapOnly(false);
     // Are we coming from showHistory mode or showMapOnly mode?
     SwingUtilities.invokeLater(
         () -> {
@@ -2336,7 +2303,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
           }
           addTab("Notes", notesPanel, 'N');
           addTab("Territory", details, 'T');
-          if (getEditMode()) {
+          if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
           actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
@@ -2352,58 +2319,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     mapPanel.setRoute(null);
   }
 
-  private void showMapOnly() {
-    // Are we coming from showHistory mode or showGame mode?
-    if (inHistory.compareAndSet(true, false)) {
-      if (historySyncher != null) {
-        historySyncher.deactivate();
-        historySyncher = null;
-      }
-      historyPanel.goToEnd();
-      historyPanel = null;
-      mapPanel.getData().removeDataChangeListener(dataChangeListener);
-      mapPanel.setGameData(data);
-      data.addDataChangeListener(dataChangeListener);
-      gameMainPanel.removeAll();
-      gameMainPanel.setLayout(new BorderLayout());
-      gameMainPanel.add(mapAndChatPanel, BorderLayout.CENTER);
-      gameMainPanel.add(rightHandSidePanel, BorderLayout.EAST);
-      gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-      getContentPane().removeAll();
-      getContentPane().add(gameMainPanel, BorderLayout.CENTER);
-      mapPanel.setRoute(null);
-    } else {
-      inGame.set(false);
-    }
-    uiContext.setShowMapOnly(true);
-    setWidgetActivation();
-    validate();
-  }
-
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(
         () -> {
-          showHistoryAction.setEnabled(!(inHistory.get() || uiContext.getShowMapOnly()));
+          showHistoryAction.setEnabled(!inHistory.get());
           showGameAction.setEnabled(!inGame.get());
-          // We need to check and make sure there are no local human players
-          boolean foundHuman = false;
-          for (final Player gamePlayer : localPlayers.getLocalPlayers()) {
-            if (gamePlayer instanceof TripleAPlayer) {
-              foundHuman = true;
-              break;
-            }
-          }
-          if (!foundHuman) {
-            showMapOnlyAction.setEnabled(inGame.get() || inHistory.get());
-          } else {
-            showMapOnlyAction.setEnabled(false);
-          }
           if (editModeButtonModel != null) {
-            if (editDelegate == null || uiContext.getShowMapOnly()) {
-              editModeButtonModel.setEnabled(false);
-            } else {
-              editModeButtonModel.setEnabled(true);
-            }
+            editModeButtonModel.setEnabled(editDelegate != null);
           }
         });
   }
@@ -2414,18 +2336,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     setWidgetActivation();
-  }
-
-  private boolean getEditMode() {
-    final boolean isEditMode;
-    // use GameData from mapPanel since it will follow current history node
-    mapPanel.getData().acquireReadLock();
-    try {
-      isEditMode = BaseEditDelegate.getEditMode(mapPanel.getData());
-    } finally {
-      mapPanel.getData().releaseReadLock();
-    }
-    return isEditMode;
   }
 
   /**
@@ -2492,10 +2402,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
 
   public Action getShowHistoryAction() {
     return showHistoryAction;
-  }
-
-  public Action getShowMapOnlyAction() {
-    return showMapOnlyAction;
   }
 
   public UiContext getUiContext() {

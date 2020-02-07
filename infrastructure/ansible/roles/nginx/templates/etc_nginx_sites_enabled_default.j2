@@ -4,12 +4,16 @@ server {
     return 301 https://$host$request_uri;
 }
 
+# warning: be sure that we can run certbot role and then re-run the nginx
+# role without this file changing. If this file is changed (white-space included)
+# then nginx will be restarting, disconnecting all active connections.
+
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     server_name {{ inventory_hostname }};
-    ssl_certificate {{ nginx_ssl_certificate }};
-    ssl_certificate_key {{ nginx_ssl_certificate_key }};
+    ssl_certificate {{ cert }} 
+    ssl_certificate_key {{ cert_key }}
 
     ssl on;
     ssl_protocols  TLSv1.2 TLSv1.3;
@@ -17,7 +21,7 @@ server {
     ssl_prefer_server_ciphers on;
     access_log            /var/log/nginx/java_server.access.log;
 
-    ssl_dhparam {{ nginx_ssl_dhparams }};
+    ssl_dhparam {{ dhparams_pem_file }};
     ssl_ecdh_curve secp384r1;
     ssl_session_timeout  10m;
     ssl_session_cache shared:SSL:10m;
@@ -40,7 +44,7 @@ server {
       proxy_pass          http://localhost:8080;
       proxy_read_timeout  90;
 
-      proxy_redirect      https://localhost:443 https://localhost:{{ http_server_port }};
+      proxy_redirect      https://localhost:443 https://localhost:8080;
     }
 
     location /lobby/chat/websocket {
@@ -50,3 +54,4 @@ server {
       proxy_set_header Connection "upgrade";
     }
 }
+

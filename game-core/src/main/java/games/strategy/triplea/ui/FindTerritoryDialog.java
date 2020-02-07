@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.stream.Collectors;

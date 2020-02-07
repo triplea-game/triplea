@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -240,57 +241,50 @@ public final class BattlePanel extends ActionPanel {
             cleanUpBattleWindow();
             currentBattleDisplayed = null;
           }
-          if (!getMap().getUiContext().getShowMapOnly()) {
-            battleDisplay =
-                new BattleDisplay(
-                    getData(),
-                    location,
-                    attacker,
-                    defender,
-                    attackingUnits,
-                    defendingUnits,
-                    killedUnits,
-                    attackingWaitingToDie,
-                    defendingWaitingToDie,
-                    BattlePanel.this.getMap(),
-                    isAmphibious,
-                    battleType,
-                    amphibiousLandAttackers);
-            battleFrame.setTitle(
-                attacker.getName()
-                    + " attacks "
-                    + defender.getName()
-                    + " in "
-                    + location.getName());
-            battleFrame.getContentPane().removeAll();
-            battleFrame.getContentPane().add(battleDisplay);
-            battleFrame.setMinimumSize(new Dimension(800, 600));
-            battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-            PbemDiceRoller.setFocusWindow(battleFrame);
-            boolean foundHumanInBattle = false;
-            for (final Player gamePlayer :
-                getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
-              if ((gamePlayer.getGamePlayer().equals(attacker)
-                      && gamePlayer instanceof TripleAPlayer)
-                  || (gamePlayer.getGamePlayer().equals(defender)
-                      && gamePlayer instanceof TripleAPlayer)) {
-                foundHumanInBattle = true;
-                break;
-              }
+          battleDisplay =
+              new BattleDisplay(
+                  getData(),
+                  location,
+                  attacker,
+                  defender,
+                  attackingUnits,
+                  defendingUnits,
+                  killedUnits,
+                  attackingWaitingToDie,
+                  defendingWaitingToDie,
+                  BattlePanel.this.getMap(),
+                  isAmphibious,
+                  battleType,
+                  amphibiousLandAttackers);
+          battleFrame.setTitle(
+              attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+          battleFrame.getContentPane().removeAll();
+          battleFrame.getContentPane().add(battleDisplay);
+          battleFrame.setMinimumSize(new Dimension(800, 600));
+          battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+          PbemDiceRoller.setFocusWindow(battleFrame);
+          boolean foundHumanInBattle = false;
+          for (final Player gamePlayer :
+              getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
+            if ((gamePlayer.getGamePlayer().equals(attacker) && gamePlayer instanceof TripleAPlayer)
+                || (gamePlayer.getGamePlayer().equals(defender)
+                    && gamePlayer instanceof TripleAPlayer)) {
+              foundHumanInBattle = true;
+              break;
             }
-            if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
-              battleFrame.setAlwaysOnTop(true);
-              battleFrame.setVisible(true);
-              battleFrame.validate();
-              battleFrame.invalidate();
-              battleFrame.repaint();
-            } else {
-              battleFrame.setVisible(false);
-            }
-            battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-            currentBattleDisplayed = battleId;
-            SwingUtilities.invokeLater(battleFrame::toFront);
           }
+          if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
+            battleFrame.setAlwaysOnTop(true);
+            battleFrame.setVisible(true);
+            battleFrame.validate();
+            battleFrame.invalidate();
+            battleFrame.repaint();
+          } else {
+            battleFrame.setVisible(false);
+          }
+          battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+          currentBattleDisplayed = battleId;
+          SwingUtilities.invokeLater(battleFrame::toFront);
         });
   }
 

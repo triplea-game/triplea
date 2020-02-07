@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 
 class MoveForumPosterPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -533962696697230277L;

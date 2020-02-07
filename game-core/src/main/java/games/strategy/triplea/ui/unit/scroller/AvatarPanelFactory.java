@@ -5,7 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
