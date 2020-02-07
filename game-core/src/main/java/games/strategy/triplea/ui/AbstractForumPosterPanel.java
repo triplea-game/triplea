@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.engine.posted.game.pbem.ForumPosterComponent;
+import games.strategy.engine.posted.game.ForumPosterComponent;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
