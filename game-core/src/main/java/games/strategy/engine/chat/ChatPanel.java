@@ -53,11 +53,6 @@ public class ChatPanel extends JPanel implements ChatModel {
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
 
-  @Override
-  public String getAllText() {
-    return chatMessagePanel.getAllText();
-  }
-
   public void setChat(final Chat chat) {
     chatMessagePanel.setChat(chat);
     chatPlayerPanel.setChat(chat);

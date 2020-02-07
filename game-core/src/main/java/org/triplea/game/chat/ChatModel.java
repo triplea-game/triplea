@@ -9,6 +9,4 @@ import games.strategy.engine.chat.Chat;
 public interface ChatModel {
 
   Chat getChat();
-
-  String getAllText();
 }

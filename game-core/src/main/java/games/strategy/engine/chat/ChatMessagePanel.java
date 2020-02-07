@@ -91,10 +91,6 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
     setSize(300, 200);
   }
 
-  String getAllText() {
-    return text.getText();
-  }
-
   void setChat(final Chat chat) {
     Interruptibles.await(
         () ->
