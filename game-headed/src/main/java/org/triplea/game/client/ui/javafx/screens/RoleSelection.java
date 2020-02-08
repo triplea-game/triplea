@@ -2,8 +2,10 @@ package org.triplea.game.client.ui.javafx.screens;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.triplea.Constants;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +35,8 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
   private static final String DISABLE_TEXT = "Disable";
 
   private final Map<GamePlayer, ComboBox<String>> roleForPlayers = new HashMap<>();
+  private final Map<GamePlayer, Spinner<Integer>> incomeForPlayers = new HashMap<>();
+  private final Map<GamePlayer, Spinner<Integer>> pusForPlayers = new HashMap<>();
 
   @FXML private ComboBox<String> allSelectorCheckbox;
 
@@ -101,8 +105,10 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
           });
       final var income = new Spinner<Integer>(0, 100, 100);
       income.setDisable(true);
+      incomeForPlayers.put(playerId, income);
       final var pus = new Spinner<Integer>(0, 100, 0);
       pus.setDisable(true);
+      pusForPlayers.put(playerId, pus);
       factionGrid.addRow(factionGrid.getRowCount(), name, controllingPlayer, faction, income, pus);
     }
   }
@@ -131,6 +137,22 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
 
   @FXML
   void startGame() {
+    if (resourceModifierCheckbox.isSelected()) {
+      incomeForPlayers.forEach(
+          (gamePlayer, spinner) ->
+              ((NumberProperty)
+                      gameData
+                          .getProperties()
+                          .getPlayerProperty(Constants.getIncomePercentageFor(gamePlayer)))
+                  .setValue(spinner.getValue()));
+      pusForPlayers.forEach(
+          (gamePlayer, spinner) ->
+              ((NumberProperty)
+                      gameData
+                          .getProperties()
+                          .getPlayerProperty(Constants.getPuIncomeBonus(gamePlayer)))
+                  .setValue(spinner.getValue()));
+    }
     final List<Entry<String, String>> flatMapping =
         roleForPlayers.entrySet().stream()
             .map(
@@ -140,6 +162,7 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
                         entry.getValue().getSelectionModel().getSelectedItem()))
             .collect(Collectors.toUnmodifiableList());
     LocalLauncher.create(flatMapping, DISABLE_TEXT::equals, gameData).launch();
+    cancelMapSelection();
   }
 
   @FXML
