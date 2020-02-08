@@ -49,7 +49,7 @@ public class TripleA extends Application {
   private void setupStage(
       final Stage stage, final Scene scene, final RootActionPane rootActionPane) {
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-    // stage.setFullScreen(true);
+    stage.setFullScreen(true);
 
     Font.loadFont(TripleA.class.getResourceAsStream(FONT_PATH), 14);
     stage.setScene(scene);
