@@ -23,12 +23,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import lombok.extern.java.Log;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
-@Log
 public class RoleSelection implements ControlledScreen<ScreenController<FxmlManager>> {
 
   static final String SELECTED_MAP_KEY = "selectedMap";
@@ -80,37 +78,48 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
                 .orElseThrow(
                     () -> new IllegalStateException("Missing GameData when calling screen"));
     final List<String> availablePlayers = List.of(PlayerType.playerTypes());
-    for (final GamePlayer playerId : gameData.getPlayerList()) {
-      final var name = new Label(playerId.getName());
-      final ComboBox<String> controllingPlayer =
-          new ComboBox<>(FXCollections.observableArrayList(availablePlayers));
-      controllingPlayer.getSelectionModel().select(0);
-      if (playerId.getCanBeDisabled()) {
-        controllingPlayer.getItems().add(DISABLE_TEXT);
-      }
-      roleForPlayers.put(playerId, controllingPlayer);
-      final Collection<String> playerAlliances =
-          gameData.getAllianceTracker().getAlliancesPlayerIsIn(playerId);
-      final var faction = new Button(playerAlliances.toString());
-      faction.setOnAction(
-          e -> {
-            final int targetIndex = controllingPlayer.getSelectionModel().getSelectedIndex();
-            playerAlliances.stream()
-                .map(gameData.getAllianceTracker()::getPlayersInAlliance)
-                .flatMap(Collection::stream)
-                .map(roleForPlayers::get)
-                .filter(stringComboBox -> stringComboBox.getItems().size() > targetIndex)
-                .map(ComboBox::getSelectionModel)
-                .forEach(selectionModel -> selectionModel.select(targetIndex));
-          });
-      final var income = new Spinner<Integer>(0, 100, 100);
-      income.setDisable(true);
-      incomeForPlayers.put(playerId, income);
-      final var pus = new Spinner<Integer>(0, 100, 0);
-      pus.setDisable(true);
-      pusForPlayers.put(playerId, pus);
-      factionGrid.addRow(factionGrid.getRowCount(), name, controllingPlayer, faction, income, pus);
+    for (final GamePlayer gamePlayer : gameData.getPlayerList()) {
+      setupPlayerControl(availablePlayers, gamePlayer);
     }
+  }
+
+  private void setupPlayerControl(
+      final List<String> availablePlayers, final GamePlayer gamePlayer) {
+    final var name = new Label(gamePlayer.getName());
+    final ComboBox<String> controllingPlayer =
+        new ComboBox<>(FXCollections.observableArrayList(availablePlayers));
+    controllingPlayer.getSelectionModel().select(0);
+    if (gamePlayer.getCanBeDisabled()) {
+      controllingPlayer.getItems().add(DISABLE_TEXT);
+    }
+    final Button faction = newFactionButton(gamePlayer, controllingPlayer);
+    roleForPlayers.put(gamePlayer, controllingPlayer);
+    final var income = new Spinner<Integer>(0, 100, 100);
+    income.setDisable(true);
+    incomeForPlayers.put(gamePlayer, income);
+    final var pus = new Spinner<Integer>(0, 100, 0);
+    pus.setDisable(true);
+    pusForPlayers.put(gamePlayer, pus);
+    factionGrid.addRow(factionGrid.getRowCount(), name, controllingPlayer, faction, income, pus);
+  }
+
+  private Button newFactionButton(
+      final GamePlayer gamePlayer, final ComboBox<String> controllingPlayer) {
+    final Collection<String> playerAlliances =
+        gameData.getAllianceTracker().getAlliancesPlayerIsIn(gamePlayer);
+    final var faction = new Button(playerAlliances.toString());
+    faction.setOnAction(
+        e -> {
+          final int targetIndex = controllingPlayer.getSelectionModel().getSelectedIndex();
+          playerAlliances.stream()
+              .map(gameData.getAllianceTracker()::getPlayersInAlliance)
+              .flatMap(Collection::stream)
+              .map(roleForPlayers::get)
+              .filter(stringComboBox -> stringComboBox.getItems().size() > targetIndex)
+              .map(ComboBox::getSelectionModel)
+              .forEach(selectionModel -> selectionModel.select(targetIndex));
+        });
+    return faction;
   }
 
   @Override
@@ -138,20 +147,7 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
   @FXML
   void startGame() {
     if (resourceModifierCheckbox.isSelected()) {
-      incomeForPlayers.forEach(
-          (gamePlayer, spinner) ->
-              ((NumberProperty)
-                      gameData
-                          .getProperties()
-                          .getPlayerProperty(Constants.getIncomePercentageFor(gamePlayer)))
-                  .setValue(spinner.getValue()));
-      pusForPlayers.forEach(
-          (gamePlayer, spinner) ->
-              ((NumberProperty)
-                      gameData
-                          .getProperties()
-                          .getPlayerProperty(Constants.getPuIncomeBonus(gamePlayer)))
-                  .setValue(spinner.getValue()));
+      setupPuIncome();
     }
     final List<Entry<String, String>> flatMapping =
         roleForPlayers.entrySet().stream()
@@ -163,6 +159,23 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
             .collect(Collectors.toUnmodifiableList());
     LocalLauncher.create(flatMapping, DISABLE_TEXT::equals, gameData).launch();
     cancelMapSelection();
+  }
+
+  private void setupPuIncome() {
+    incomeForPlayers.forEach(
+        (gamePlayer, spinner) ->
+            ((NumberProperty)
+                    gameData
+                        .getProperties()
+                        .getPlayerProperty(Constants.getIncomePercentageFor(gamePlayer)))
+                .setValue(spinner.getValue()));
+    pusForPlayers.forEach(
+        (gamePlayer, spinner) ->
+            ((NumberProperty)
+                    gameData
+                        .getProperties()
+                        .getPlayerProperty(Constants.getPuIncomeBonus(gamePlayer)))
+                .setValue(spinner.getValue()));
   }
 
   @FXML
