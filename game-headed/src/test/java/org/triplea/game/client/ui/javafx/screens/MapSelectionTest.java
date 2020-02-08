@@ -132,13 +132,15 @@ public class MapSelectionTest {
   @Test
   @SuppressWarnings("unchecked")
   void mapSelectionLoadsGame() {
-    RootActionPane rootActionPane = mockRootActionPane();
-    GameChooserEntry gameChooserEntry = mock(GameChooserEntry.class);
+    final RootActionPane rootActionPane = mockRootActionPane();
+    final GameChooserEntry gameChooserEntry = mock(GameChooserEntry.class);
 
     mapSelection.setSelectedGame(gameChooserEntry);
 
-    ArgumentCaptor<Consumer<GameData>> gameDataConsumer = ArgumentCaptor.forClass(Consumer.class);
-    ArgumentCaptor<Consumer<Throwable>> throwableConsumer = ArgumentCaptor.forClass(Consumer.class);
+    final ArgumentCaptor<Consumer<GameData>> gameDataConsumer =
+        ArgumentCaptor.forClass(Consumer.class);
+    final ArgumentCaptor<Consumer<Throwable>> throwableConsumer =
+        ArgumentCaptor.forClass(Consumer.class);
 
     mapSelection.selectMap();
 
@@ -146,7 +148,7 @@ public class MapSelectionTest {
     verify(gameLoader)
         .loadGame(eq(gameChooserEntry), gameDataConsumer.capture(), throwableConsumer.capture());
 
-    ScreenController<FxmlManager> screenController = mock(ScreenController.class);
+    final ScreenController<FxmlManager> screenController = mock(ScreenController.class);
     mapSelection.connect(screenController);
 
     verifySuccessfulSelection(gameDataConsumer.getValue(), screenController);
