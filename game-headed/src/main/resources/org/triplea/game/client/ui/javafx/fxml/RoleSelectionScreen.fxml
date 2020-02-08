@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="root" alignment="TOP_CENTER" fillWidth="false" spacing="5.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screens.RoleSelection">
+   <children>
+      <HBox alignment="CENTER">
+         <children>
+            <Label text="Battle Orders" />
+         </children>
+      </HBox>
+      <ScrollPane>
+         <content>
+            <GridPane fx:id="factionGrid" hgap="5.0" vgap="5.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+                <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints hgrow="SOMETIMES" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints vgrow="NEVER" />
+                <RowConstraints vgrow="NEVER" />
+              </rowConstraints>
+               <children>
+                  <Label text="Faction" GridPane.rowIndex="1" />
+                  <Label text="Controlling Player" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label disable="true" text="Income" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Label disable="true" text="Bonus" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                  <Label alignment="TOP_RIGHT" text="Set All" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                  <ComboBox fx:id="allSelectorCheckbox" onAction="#setAllTo" GridPane.columnIndex="1" />
+                  <HBox alignment="CENTER_RIGHT" fillHeight="false" focusTraversable="true" pickOnBounds="false" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
+                     <children>
+                        <Label text="Resource Modifiers" />
+                        <CheckBox fx:id="resourceModifierCheckbox" mnemonicParsing="false" onAction="#toggleResourceModifiers" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </HBox>
+               </children>
+            </GridPane>
+         </content>
+      </ScrollPane>
+      <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelMapSelection" text="Cancel" />
+      <Button alignment="BOTTOM_CENTER" defaultButton="true" mnemonicParsing="false" onAction="#startGame" text="Play" />
+   </children>
+</VBox>

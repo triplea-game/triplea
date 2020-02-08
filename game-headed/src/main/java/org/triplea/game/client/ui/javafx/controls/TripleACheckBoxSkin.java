@@ -45,8 +45,7 @@ public class TripleACheckBoxSkin extends SkinBase<CheckBox> {
     pane.prefHeightProperty().bind(getSkinnable().prefHeightProperty());
     pane.maxWidthProperty().bind(getSkinnable().maxWidthProperty());
     pane.maxHeightProperty().bind(getSkinnable().maxHeightProperty());
-    pane.setOnMouseClicked(
-        e -> getSkinnable().selectedProperty().set(!getSkinnable().selectedProperty().get()));
+    pane.setOnMouseClicked(e -> getSkinnable().fire());
     getChildren().add(pane);
   }
 

@@ -1,5 +1,6 @@
 package org.triplea.game.client.ui.javafx.screen;
 
+import java.util.Map;
 import javafx.scene.Node;
 
 /**
@@ -19,4 +20,17 @@ public interface ControlledScreen<T extends ScreenController<?>> {
 
   /** A common method to retrieve the root Node to attach it to the Scene Graph. */
   Node getNode();
+
+  /**
+   * Method being called whenever this screen is being shown.
+   *
+   * @param data Data that is being passed by another screen, validated according to {@link
+   *     #getValidTypes()}.
+   */
+  default void onShow(Map<String, Object> data) {}
+
+  /** Returns a mapping of valid types that are being passed to a certain screen. */
+  default Map<String, Class<?>> getValidTypes() {
+    return Map.of();
+  }
 }

@@ -31,7 +31,7 @@
                   </Button>
                   <VBox alignment="CENTER" pickOnBounds="false">
                      <children>
-                        <Button fx:id="selectButton" disable="true" mnemonicParsing="false" text="%map_selection.button.select">
+                        <Button fx:id="selectButton" disable="true" mnemonicParsing="false" onAction="#selectMap" text="%map_selection.button.select">
                            <VBox.margin>
                               <Insets bottom="5.0" top="5.0" />
                            </VBox.margin></Button>

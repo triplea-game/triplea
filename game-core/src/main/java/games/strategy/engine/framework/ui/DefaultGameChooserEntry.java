@@ -44,14 +44,23 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     // TODO: We should be setting this in the the constructor. At this point, you have to call
     // methods in the
     // correct order for things to work, and that is bads.
+    getCompleteGameData()
+        .ifPresent(
+            data -> {
+              gameData = data;
+              gameDataFullyLoaded = true;
+            });
+  }
+
+  @Override
+  public Optional<GameData> getCompleteGameData() throws GameParseException {
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (inputStream.isEmpty()) {
-      return;
+      return Optional.empty();
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = GameParser.parse(url.toString(), input);
-      gameDataFullyLoaded = true;
+      return Optional.of(GameParser.parse(url.toString(), input));
     } catch (final EngineVersionException e) {
       log.log(Level.SEVERE, "Game engine not compatible with: " + url, e);
       throw new GameParseException(e);

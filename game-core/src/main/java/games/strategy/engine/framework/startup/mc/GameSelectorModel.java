@@ -27,8 +27,11 @@ import lombok.extern.java.Log;
  * selector panel on the staging screens, eg: map, round, filename.
  */
 @Log
-public class GameSelectorModel extends Observable {
-  @Nullable @Getter private GameData gameData = null;
+public class GameSelectorModel extends Observable implements GameSelector {
+  @Nullable
+  @Getter(onMethod_ = {@Override})
+  private GameData gameData = null;
+
   @Getter private String gameName = "";
   @Getter private String gameVersion = "";
   @Getter private String gameRound = "";
@@ -149,7 +152,8 @@ public class GameSelectorModel extends Observable {
   }
 
   /** Clears AI game over cache and loads default game in a new thread. */
-  public void loadDefaultGameNewThread() {
+  @Override
+  public void onGameEnded() {
     // clear out ai cached properties (this ended up being the best place to put it, as we have
     // definitely left a game
     // at this point)
