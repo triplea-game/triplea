@@ -48,7 +48,6 @@ public class DiceServerEditor extends EditorPanel {
     this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
-    int row = 0;
     diceRollersByDisplayName.keySet().forEach(servers::addItem);
 
     final JPanel diceRollerOptions = new JPanel();
@@ -56,6 +55,7 @@ public class DiceServerEditor extends EditorPanel {
     diceRollerOptions.setBorder(new TitledBorder("Dice Server Options"));
     add(diceRollerOptions);
 
+    int row = 0;
     diceRollerOptions.add(
         serverLabel,
         new GridBagConstraints(
