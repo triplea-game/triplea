@@ -9,6 +9,5 @@ eval "$(ssh-agent -s)"
 cd infrastructure
 ./build_deployment_artifacts
 echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
-./run_deployment "$version" -i ansible/inventory/prerelease || travis_terminate 1
-
+./run_deployment "$version" -i ansible/inventory/prerelease 
 
