@@ -1,8 +1,0 @@
-#!/bin/bash
-
-df -h | head -1 && df -h | grep "/$"
-
-systemctl status postgresql.service
-systemctl status http_server.service
-systemctl status bot@01.service
-systemctl status bot@02.service
