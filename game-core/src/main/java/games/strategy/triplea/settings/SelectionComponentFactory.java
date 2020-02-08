@@ -559,7 +559,11 @@ final class SelectionComponentFactory {
         if (custom.isSelected()) {
           try {
             final URI uri = new URI(uriField.getText().trim());
-            context.setValue(ClientSetting.diceRollerUri, uri);
+            if (!uri.isAbsolute() || uriField.getText().isBlank()) {
+              showInvalidUriError("Not a valid URI defined", uriField.getText());
+            } else {
+              context.setValue(ClientSetting.diceRollerUri, uri);
+            }
           } catch (final URISyntaxException e) {
             showInvalidUriError(e.getMessage(), uriField.getText());
           }
