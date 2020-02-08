@@ -8,6 +8,10 @@ final class UriClientSetting extends ClientSetting<URI> {
     super(URI.class, name);
   }
 
+  protected UriClientSetting(final String name, final URI defaultValue) {
+    super(URI.class, name, defaultValue);
+  }
+
   @Override
   protected String encodeValue(final URI value) {
     return value.toString();

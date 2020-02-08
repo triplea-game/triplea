@@ -1,6 +1,7 @@
 package games.strategy.triplea.settings;
 
 import static games.strategy.triplea.settings.SelectionComponentFactory.booleanRadioButtons;
+import static games.strategy.triplea.settings.SelectionComponentFactory.diceRollerOverrideSelection;
 import static games.strategy.triplea.settings.SelectionComponentFactory.filePath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
@@ -93,6 +94,13 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.confirmEnemyCasualties);
+    }
+  },
+
+  DICE_ROLLER_URI("Dice Server URI", SettingType.TESTING, "Dice server for PBEM & PBF games") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return diceRollerOverrideSelection();
     }
   },
 

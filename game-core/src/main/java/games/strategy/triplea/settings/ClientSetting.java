@@ -6,6 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
@@ -63,6 +64,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new StringClientSetting("DEFAULT_GAME_NAME_PREF", "Big World : 1942");
   public static final ClientSetting<String> defaultGameUri =
       new StringClientSetting("DEFAULT_GAME_URI_PREF");
+  public static final ClientSetting<URI> diceRollerUri =
+      new UriClientSetting("DICE_ROLLER_URI", DiceServerEditor.PRODUCTION_URI);
   public static final ClientSetting<Integer> fasterArrowKeyScrollMultiplier =
       new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
