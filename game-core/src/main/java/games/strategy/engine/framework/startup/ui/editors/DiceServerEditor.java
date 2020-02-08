@@ -29,11 +29,13 @@ public class DiceServerEditor extends EditorPanel {
           .collect(
               ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
-  private final JButton registerButton = new JButtonBuilder("Register")
-      .actionListener(() -> OpenFileUtility.openUrl(UrlConstants.MARTI_REGISTRATION))
-      .toolTip("<html>Opens email registration page to register with MARTI dice-roller.<br>"
-          + "Needs to be done once before MARTI dice server can be used.</html>")
-      .build();
+  private final JButton registerButton =
+      new JButtonBuilder("Register")
+          .actionListener(() -> OpenFileUtility.openUrl(UrlConstants.MARTI_REGISTRATION))
+          .toolTip(
+              "<html>Opens email registration page to register with MARTI dice-roller.<br>"
+                  + "Needs to be done once before MARTI dice server can be used.</html>")
+          .build();
   private final JButton testDiceButton = new JButton("Test Server");
   private final JTextField toAddress = new JTextField();
   private final JTextField ccAddress = new JTextField();
