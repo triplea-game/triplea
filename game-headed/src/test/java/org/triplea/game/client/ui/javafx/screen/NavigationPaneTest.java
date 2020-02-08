@@ -46,8 +46,6 @@ class NavigationPaneTest {
 
     navigationPane.registerScreen(FxmlManager.MAIN_MENU_CONTROLS, mock);
 
-    verify(mock).getNode();
-
     navigationPane.switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
 
     navigationPane.registerScreen(FxmlManager.MAIN_MENU_CONTROLS, mock);
