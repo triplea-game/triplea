@@ -37,7 +37,7 @@ import org.apache.http.util.EntityUtils;
 /** A pbem dice roller that reads its configuration from a properties file. */
 @Log
 @Builder
-public final class PropertiesDiceRoller implements IRemoteDiceServer {
+public final class MartiDiceRoller implements IRemoteDiceServer {
   private static final int MESSAGE_MAX_LENGTH = 200;
   private static final String DICE_ROLLER_PATH = "/marti.php";
 

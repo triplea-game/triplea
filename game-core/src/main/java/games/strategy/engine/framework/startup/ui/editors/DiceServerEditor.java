@@ -2,8 +2,8 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;
+import games.strategy.engine.random.MartiDiceRoller;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
@@ -252,7 +252,7 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   public IRemoteDiceServer newDiceServer() {
-    return PropertiesDiceRoller.builder()
+    return MartiDiceRoller.builder()
         .diceRollerUri(ClientSetting.diceRollerUri.getValueOrThrow())
         .gameId(gameId.getText())
         .toAddress(toAddress.getText())
