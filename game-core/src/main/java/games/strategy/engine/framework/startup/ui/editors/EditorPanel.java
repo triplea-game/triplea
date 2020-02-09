@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -15,22 +14,10 @@ import javax.swing.JPanel;
  */
 abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
-  private final Color labelColor;
+  private final Color labelColor = new JLabel().getForeground();
 
   EditorPanel() {
     super(new GridBagLayout());
-    labelColor = new JLabel().getForeground();
-  }
-
-  /**
-   * Checks if a combobox has an active item.
-   *
-   * @param comboBox The comboBox to check.
-   * @param label The label which should be used to indicate an invalid setup.
-   * @return True, if the combobox is valid, false otherwise.
-   */
-  boolean validateComboBox(final JComboBox<?> comboBox, final JLabel label) {
-    return setLabelValid(comboBox.getSelectedItem() != null, label);
   }
 
   /**

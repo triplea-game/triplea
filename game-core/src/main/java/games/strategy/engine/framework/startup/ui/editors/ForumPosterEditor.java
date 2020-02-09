@@ -259,7 +259,7 @@ public class ForumPosterEditor extends EditorPanel {
     final boolean setupValid =
         IForumPoster.isClientSettingSetupValidForServer((String) forums.getSelectedItem());
     final boolean idValid = setLabelValid(isInt(topicIdField.getText()), topicIdLabel);
-    final boolean forumValid = validateComboBox(forums, forumLabel);
+    final boolean forumValid = setLabelValid(forums.getSelectedItem() != null, forumLabel);
     final boolean allValid = setupValid && idValid && forumValid;
     viewPosts.setEnabled(allValid);
     testForum.setEnabled(allValid);

@@ -4,6 +4,7 @@ import static org.triplea.util.Arrays.withSensitiveArray;
 import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import com.google.common.base.Strings;
+import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
 import java.awt.Component;
@@ -503,6 +504,95 @@ final class SelectionComponentFactory {
         localhostServer.setSelected(ClientSetting.lobbyUseLocalhostOverride.getValueOrThrow());
         uriField.setText(ClientSetting.lobbyUriOverride.getValue().map(URI::toString).orElse(""));
         uriField.setEnabled(!ClientSetting.lobbyUseLocalhostOverride.getValue().orElse(false));
+      }
+    };
+  }
+
+  static SelectionComponent<JComponent> diceRollerOverrideSelection() {
+    final JTextField uriField = new JTextFieldBuilder().build();
+
+    final JRadioButton production = new JRadioButton("Production (default)");
+    final JRadioButton prerelease = new JRadioButton("PreRelease");
+    final ActionListener disableCustomField =
+        e -> {
+          uriField.setText("");
+          uriField.setEnabled(false);
+        };
+    production.addActionListener(disableCustomField);
+    prerelease.addActionListener(disableCustomField);
+
+    final JRadioButton custom = new JRadioButton("Custom");
+    custom.addActionListener(e -> uriField.setEnabled(true));
+
+    // set radio button selections
+    production.setSelected(
+        ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRODUCTION_URI));
+    prerelease.setSelected(
+        ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRE_RELEASE_URI));
+    custom.setSelected(!prerelease.isSelected() && !production.isSelected());
+
+    uriField.setEnabled(custom.isSelected());
+    uriField.setText(
+        custom.isSelected() ? ClientSetting.diceRollerUri.getValueOrThrow().toString() : "");
+
+    final ButtonGroup buttonGroup = new ButtonGroup();
+    buttonGroup.add(production);
+    buttonGroup.add(prerelease);
+    buttonGroup.add(custom);
+
+    final var selectionPanel =
+        new JPanelBuilder()
+            .boxLayoutVertical()
+            .add(new JPanelBuilder().add(production).add(prerelease).add(custom).build())
+            .add(uriField)
+            .build();
+
+    return new SelectionComponent<>() {
+      @Override
+      public JComponent getUiComponent() {
+        return selectionPanel;
+      }
+
+      @Override
+      public void save(final SaveContext context) {
+        // if custom selected, read a value from the input field
+        if (custom.isSelected()) {
+          try {
+            final URI uri = new URI(uriField.getText().trim());
+            if (!uri.isAbsolute() || uriField.getText().isBlank()) {
+              showInvalidUriError("Not a valid URI defined", uriField.getText());
+            } else {
+              context.setValue(ClientSetting.diceRollerUri, uri);
+            }
+          } catch (final URISyntaxException e) {
+            showInvalidUriError(e.getMessage(), uriField.getText());
+          }
+        } else if (prerelease.isSelected()) {
+          context.setValue(ClientSetting.diceRollerUri, DiceServerEditor.PRE_RELEASE_URI);
+        } else {
+          context.setValue(ClientSetting.diceRollerUri, DiceServerEditor.PRODUCTION_URI);
+        }
+      }
+
+      private void showInvalidUriError(final String errorMessage, final String fieldValue) {
+        SwingComponents.showError(
+            null, "Invalid URI", "Invalid URI, " + errorMessage + ": " + fieldValue);
+      }
+
+      @Override
+      public void resetToDefault() {
+        production.setSelected(true);
+        uriField.setText("");
+        uriField.setEnabled(false);
+      }
+
+      @Override
+      public void reset() {
+        production.setSelected(
+            ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRODUCTION_URI));
+        prerelease.setSelected(
+            ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRE_RELEASE_URI));
+        custom.setSelected(!prerelease.isSelected() && !production.isSelected());
       }
     };
   }

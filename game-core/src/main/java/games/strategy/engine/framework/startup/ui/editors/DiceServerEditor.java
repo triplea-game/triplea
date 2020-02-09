@@ -1,74 +1,94 @@
 package games.strategy.engine.framework.startup.ui.editors;
 
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;
+import games.strategy.engine.random.MartiDiceRoller;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.engine.random.PropertiesDiceRoller;
+import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.function.Function;
+import java.net.URI;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import org.triplea.awt.OpenFileUtility;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.JButtonBuilder;
 
 /** A class to configure a Dice Server for the game. */
 public class DiceServerEditor extends EditorPanel {
-  private static final long serialVersionUID = -451810815037661114L;
-  private static final ImmutableMap<String, PropertiesDiceRoller> diceRollersByDisplayName =
-      PropertiesDiceRoller.loadFromFile().stream()
-          .collect(
-              ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
+  public static final URI PRODUCTION_URI = URI.create("https://dice.marti.triplea-game.org");
+  public static final URI PRE_RELEASE_URI =
+      URI.create("https://prerelease.dice.marti.triplea-game.org");
 
+  private static final long serialVersionUID = -451810815037661114L;
+  private final JButton registerButton =
+      new JButtonBuilder("Register")
+          .actionListener(() -> OpenFileUtility.openUrl(UrlConstants.MARTI_REGISTRATION))
+          .toolTip(
+              "<html>Opens email registration page to register with MARTI dice-roller.<br>"
+                  + "Needs to be done once before MARTI dice server can be used.</html>")
+          .build();
   private final JButton testDiceButton = new JButton("Test Server");
   private final JTextField toAddress = new JTextField();
   private final JTextField ccAddress = new JTextField();
   private final JTextField gameId = new JTextField();
-  private final JLabel serverLabel = new JLabel("Servers:");
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel ccLabel = new JLabel("Cc:");
-  private final JComboBox<String> servers = new JComboBox<>();
   private final Runnable readyCallback;
 
   public DiceServerEditor(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
+
+    final JPanel diceRollerOptions = new JPanel();
+    diceRollerOptions.setLayout(new GridBagLayout());
+    diceRollerOptions.setBorder(new TitledBorder("Dice Server Options"));
+    add(diceRollerOptions);
+
     int row = 0;
-    diceRollersByDisplayName.keySet().forEach(servers::addItem);
-    add(
-        serverLabel,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, bottomSpace, labelSpace),
-            0,
-            0));
-    add(
-        servers,
-        new GridBagConstraints(
-            1,
-            row,
-            2,
-            1,
-            1.0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(0, 0, bottomSpace, 0),
-            0,
-            0));
-    row++;
-    add(
+    // Show the dice server URI only if it is set to a non-default value.
+    if (!ClientSetting.diceRollerUri
+        .getValueOrThrow()
+        .equals(ClientSetting.diceRollerUri.getDefaultValue().orElseThrow())) {
+      diceRollerOptions.add(
+          new JLabel("Dice Server"),
+          new GridBagConstraints(
+              0,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, labelSpace),
+              0,
+              0));
+      diceRollerOptions.add(
+          new JLabel(ClientSetting.diceRollerUri.getValueOrThrow().toString()),
+          new GridBagConstraints(
+              1,
+              row,
+              2,
+              1,
+              1.0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
+      row++;
+    }
+
+    diceRollerOptions.add(
         toLabel,
         new GridBagConstraints(
             0,
@@ -82,7 +102,7 @@ public class DiceServerEditor extends EditorPanel {
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    add(
+    diceRollerOptions.add(
         toAddress,
         new GridBagConstraints(
             1,
@@ -97,7 +117,7 @@ public class DiceServerEditor extends EditorPanel {
             0,
             0));
     row++;
-    add(
+    diceRollerOptions.add(
         ccLabel,
         new GridBagConstraints(
             0,
@@ -111,7 +131,7 @@ public class DiceServerEditor extends EditorPanel {
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    add(
+    diceRollerOptions.add(
         ccAddress,
         new GridBagConstraints(
             1,
@@ -127,7 +147,7 @@ public class DiceServerEditor extends EditorPanel {
             0));
     row++;
     final JLabel gameIdLabel = new JLabel("Game Name:");
-    add(
+    diceRollerOptions.add(
         gameIdLabel,
         new GridBagConstraints(
             0,
@@ -141,7 +161,7 @@ public class DiceServerEditor extends EditorPanel {
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    add(
+    diceRollerOptions.add(
         gameId,
         new GridBagConstraints(
             1,
@@ -156,7 +176,22 @@ public class DiceServerEditor extends EditorPanel {
             0,
             0));
     row++;
-    add(
+    diceRollerOptions.add(
+        registerButton,
+        new GridBagConstraints(
+            1,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
+
+    diceRollerOptions.add(
         testDiceButton,
         new GridBagConstraints(
             2,
@@ -171,7 +206,6 @@ public class DiceServerEditor extends EditorPanel {
             0,
             0));
 
-    servers.addItemListener(e -> checkFieldsAndNotify());
     testDiceButton.addActionListener(
         e -> {
           final PbemDiceRoller random = new PbemDiceRoller(newDiceServer());
@@ -188,39 +222,41 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    final String toAddressText = toAddress.getText();
     final boolean toValid =
         setLabelValid(
-            !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText), toLabel);
+            !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText()),
+            toLabel);
     final boolean ccValid =
-        setLabelValid(PlayerEmailValidation.isValid(ccAddress.getText()), ccLabel);
-    final boolean serverValid = validateComboBox(servers, serverLabel);
-    final boolean allValid = serverValid && toValid && ccValid;
+        setLabelValid(
+            !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText()),
+            ccLabel);
+    final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
+    testDiceButton.setToolTipText(
+        allValid
+            ? "Send a verified dice roll test email"
+            : "First enter a valid 'to' and 'cc' email address");
     return allValid;
   }
 
   public void applyToGameProperties(final GameProperties properties) {
-    properties.set(IRemoteDiceServer.NAME, servers.getSelectedItem());
     properties.set(IRemoteDiceServer.GAME_NAME, gameId.getText());
     properties.set(IRemoteDiceServer.EMAIL_1, toAddress.getText());
     properties.set(IRemoteDiceServer.EMAIL_2, ccAddress.getText());
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
-    servers.setSelectedItem(properties.get(IRemoteDiceServer.NAME));
     gameId.setText(properties.get(IRemoteDiceServer.GAME_NAME, ""));
     toAddress.setText(properties.get(IRemoteDiceServer.EMAIL_1, ""));
     ccAddress.setText(properties.get(IRemoteDiceServer.EMAIL_2, ""));
   }
 
   public IRemoteDiceServer newDiceServer() {
-    final String selectedName = (String) servers.getSelectedItem();
-    assert selectedName != null;
-    final PropertiesDiceRoller roller = diceRollersByDisplayName.get(selectedName);
-    roller.setGameId(gameId.getText());
-    roller.setToAddress(toAddress.getText());
-    roller.setCcAddress(ccAddress.getText());
-    return roller;
+    return MartiDiceRoller.builder()
+        .diceRollerUri(ClientSetting.diceRollerUri.getValueOrThrow())
+        .gameId(gameId.getText())
+        .toAddress(toAddress.getText())
+        .ccAddress(ccAddress.getText())
+        .build();
   }
 }
