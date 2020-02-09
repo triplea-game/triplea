@@ -22,10 +22,11 @@ public class MartiDiceRollerTest {
           + "\t</head>\n"
           + "\t<body>\n"
           + "\t\t<p>Dice results were sent via email.</p>"
-          + "<br><a href='https://dice.marti.triplea-game.org/MARTI_verify.php?iv=oTVwKksuDf4f0LW4j6U6yAklQWsxpdac"
-          + "%2FmX1NMP7uXY%3D&enc=vhDa64l%2FORX6X8di6LVdl5JQGC81uQyKE4Jt0gHoVsOV5UxzmsbVReOsBQonZmQi7JZAwGhL4HoFXzk"
-          + "JMjilNX1gRMs5%2FhXyjyoUryYGPzgOWIVG7IxkuOMRiot7kPqJQwNcf08ev8TNj9WxZTSWPNy2j1Y17piXRn%2FffXIGPDDcrmw2rSeB"
-          + "3lCq6ZjlKSmMCIqEXk%2FSsJjQO7jKq7CkWTZPY2QxTfFuOmFEj1Ji7pp1GVuVcc5g90q5'>Click here to verify the roll.</a>"
+          + "<br><a href='https://dice.marti.triplea-game.org/MARTI_verify.php?iv=oTVwKksuDf4f0LW4j"
+          + "6U6yAklQWsxpdac%2FmX1NMP7uXY%3D&enc=vhDa64l%2FORX6X8di6LVdl5JQGC81uQyKE4Jt0gHoVsOV5Uxz"
+          + "msbVReOsBQonZmQi7JZAwGhL4HoFXzkJMjilNX1gRMs5%2FhXyjyoUryYGPzgOWIVG7IxkuOMRiot7kPqJQwNc"
+          + "f08ev8TNj9WxZTSWPNy2j1Y17piXRn%2FffXIGPDDcrmw2rSeB3lCq6ZjlKSmMCIqEXk%2FSsJjQO7jKq7CkWT"
+          + "ZPY2QxTfFuOmFEj1Ji7pp1GVuVcc5g90q5'>Click here to verify the roll.</a>"
           + "<br>your dice are: 2,5,1<p><p>\t</body>\n"
           + "</html>";
 
