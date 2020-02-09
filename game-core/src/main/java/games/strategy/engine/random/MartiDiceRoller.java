@@ -39,7 +39,7 @@ import org.apache.http.util.EntityUtils;
 @Builder
 public final class MartiDiceRoller implements IRemoteDiceServer {
   private static final int MESSAGE_MAX_LENGTH = 200;
-  private static final String DICE_ROLLER_PATH = "/marti.php";
+  private static final String DICE_ROLLER_PATH = "/MARTI.php";
 
   @Nonnull private final URI diceRollerUri;
 
