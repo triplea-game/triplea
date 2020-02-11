@@ -601,7 +601,13 @@ public class CasualtySelector {
     }
     if (!friendlyUnits.containsAll(targetsToPickFrom)) {
       throw new IllegalStateException(
-          "friendlyUnits should but does not contain all units from targetsToPickFrom");
+          "friendlyUnits should but does not contain all units from targetsToPickFrom"
+              + ", battlesite: "
+              + battlesite
+              + ", friendlyUnits: "
+              + friendlyUnits
+              + ", targetsToPickFrom: "
+              + targetsToPickFrom);
     }
     final GameData data = bridge.getData();
     final boolean isEditMode = BaseEditDelegate.getEditMode(data);
