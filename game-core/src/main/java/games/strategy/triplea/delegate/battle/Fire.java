@@ -96,8 +96,7 @@ public class Fire implements IExecutable {
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     // add to the stack so we will execute, we want to roll dice, select casualties, then notify in
-    // that order, so push
-    // onto the stack in reverse order
+    // that order, so push onto the stack in reverse order
     final IExecutable rollDice =
         new IExecutable() {
           private static final long serialVersionUID = 7578210876028725797L;
@@ -162,6 +161,8 @@ public class Fire implements IExecutable {
   private void selectCasualties(final IDelegateBridge bridge) {
     final int hitCount = dice.getHits();
     bridge.getDisplayChannelBroadcaster().notifyDice(dice, stepName);
+    // Remove any attackable units that previously died
+    attackableUnits.retainAll(allEnemyUnitsNotIncludingWaitingToDie);
     final int countTransports =
         CollectionUtils.countMatches(
             attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
