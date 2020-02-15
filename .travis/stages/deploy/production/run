@@ -12,6 +12,6 @@ ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.
 ansible-playbook \
   --vault-password-file "$VAULT_PASSWORD_FILE" \
   -i ansible/inventory/production \
-  -t security \
+  -t security,admin_user \
  ansible/site.yml
 
