@@ -1,7 +1,10 @@
 package games.strategy.engine.posted.game.pbf;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
@@ -10,8 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import javax.annotation.Nonnull;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -29,6 +33,7 @@ import org.apache.http.util.EntityUtils;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.util.Arrays;
 
 /**
  * Posts turn summaries to a NodeBB based forum of your choice.
@@ -36,17 +41,77 @@ import org.triplea.awt.OpenFileUtility;
  * <p>URL format is {@code https://your.forumurl.com/api/v2/topics/<topicID>}.
  */
 @Log
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-abstract class NodeBbForumPoster implements IForumPoster {
+public class NodeBbForumPoster implements IForumPoster {
+
+  public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
+  public static final String TRIPLEA_FORUM_DISPLAY_NAME = "forums.triplea-game.org";
 
   private final Load load = new Load(LoadSettings.builder().build());
   private final int topicId;
   private final String username;
   private final String password;
+  private final String forumUrl;
 
-  abstract String getForumUrl();
+  @Getter(onMethod_ = @Override)
+  private final String displayName;
 
-  @Override
+  @Builder
+  public static class ForumPostingParameters {
+    @Nonnull private final Integer topicId;
+    @Nonnull private final char[] username;
+    @Nonnull private final char[] password;
+  }
+
+  private NodeBbForumPoster(
+      final ForumPostingParameters forumPostingParameters,
+      final String forumUrl,
+      final String displayName) {
+    this.topicId = forumPostingParameters.topicId;
+    this.forumUrl = forumUrl;
+    this.displayName = displayName;
+    this.username =
+        Arrays.withSensitiveArrayAndReturn(() -> forumPostingParameters.username, String::new);
+    this.password =
+        Arrays.withSensitiveArrayAndReturn(() -> forumPostingParameters.password, String::new);
+  }
+
+  public static NodeBbForumPoster newAxisAndAlliesOrgForumPoster(
+      final ForumPostingParameters forumPostingParameters) {
+    return new NodeBbForumPoster(
+        forumPostingParameters,
+        UrlConstants.AXIS_AND_ALLIES_FORUM,
+        AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
+  }
+
+  public static NodeBbForumPoster newTripleaForumsPoster(
+      final ForumPostingParameters forumPostingParameters) {
+    return new NodeBbForumPoster(
+        forumPostingParameters, UrlConstants.TRIPLEA_FORUM, TRIPLEA_FORUM_DISPLAY_NAME);
+  }
+
+  public static boolean isClientSettingSetupValidForServer(final String server) {
+    if (NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME.equals(server)) {
+      return ClientSetting.tripleaForumUsername.isSet()
+          && ClientSetting.tripleaForumPassword.isSet();
+    } else if (NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME.equals(server)) {
+      return ClientSetting.aaForumUsername.isSet() && ClientSetting.aaForumPassword.isSet();
+    }
+    return false;
+  }
+
+  public static ImmutableSet<String> availablePosters() {
+    return ImmutableSet.of(
+        NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME,
+        NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
+  }
+
+  /**
+   * Called when the turn summary should be posted.
+   *
+   * @param summary the forum summary
+   * @param title the forum title
+   * @return true if the post was successful
+   */
   public CompletableFuture<String> postTurnSummary(
       final String summary, final String title, final Path path) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
@@ -69,7 +134,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   private void post(
       final CloseableHttpClient client, final String token, final String text, final Path path)
       throws IOException {
-    final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/topics/" + topicId);
+    final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
     post.setEntity(
         new UrlEncodedFormEntity(
@@ -93,7 +158,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
 
   private String uploadSaveGame(
       final CloseableHttpClient client, final String token, final Path path) throws IOException {
-    final HttpPost fileUpload = new HttpPost(getForumUrl() + "/api/v2/util/upload");
+    final HttpPost fileUpload = new HttpPost(forumUrl + "/api/v2/util/upload");
     fileUpload.setEntity(
         MultipartEntityBuilder.create()
             .addBinaryBody(
@@ -123,7 +188,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   private void deleteToken(final CloseableHttpClient client, final int userId, final String token)
       throws IOException {
     final HttpDelete httpDelete =
-        new HttpDelete(getForumUrl() + "/api/v2/users/" + userId + "/tokens/" + token);
+        new HttpDelete(forumUrl + "/api/v2/users/" + userId + "/tokens/" + token);
     HttpProxy.addProxy(httpDelete);
     addTokenHeader(httpDelete, token);
     client.execute(httpDelete).close(); // ignore errors, execute and then close
@@ -148,7 +213,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   }
 
   private Map<?, ?> queryUserInfo(final CloseableHttpClient client) throws IOException {
-    final HttpGet post = new HttpGet(getForumUrl() + "/api/user/username/" + username);
+    final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + username);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       return (Map<?, ?>) load.loadFromString(EntityUtils.toString(response.getEntity()));
@@ -160,7 +225,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   }
 
   private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
-    final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/users/" + userId + "/tokens");
+    final HttpPost post = new HttpPost(forumUrl + "/api/v2/users/" + userId + "/tokens");
     post.setEntity(
         new UrlEncodedFormEntity(List.of(newPasswordParameter()), StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
@@ -184,12 +249,16 @@ abstract class NodeBbForumPoster implements IForumPoster {
     }
   }
 
-  @Override
+  /** Opens a browser and go to the forum post, identified by the forumId. */
   public void viewPosted() {
-    OpenFileUtility.openUrl(getForumUrl() + "/topic/" + topicId);
+    OpenFileUtility.openUrl(forumUrl + "/topic/" + topicId);
   }
 
-  @Override
+  /**
+   * Each poster provides a message that is displayed on the progress bar when testing the poster.
+   *
+   * @return the progress bar message
+   */
   public String getTestMessage() {
     return "Testing... This may take a while";
   }

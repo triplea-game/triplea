@@ -6,6 +6,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
+import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -47,7 +48,7 @@ public class ForumPosterEditor extends EditorPanel {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    IForumPoster.availablePosters().forEach(forums::addItem);
+    NodeBbForumPoster.availablePosters().forEach(forums::addItem);
     add(
         forumLabel,
         new GridBagConstraints(
@@ -196,7 +197,7 @@ public class ForumPosterEditor extends EditorPanel {
 
   /** Tests the Forum poster. */
   private void testForum() {
-    final IForumPoster poster = newForumPoster();
+    final NodeBbForumPoster poster = newForumPoster();
     final ProgressWindow progressWindow =
         new ProgressWindow(JOptionPane.getFrameForComponent(this), poster.getTestMessage());
     progressWindow.setVisible(true);
@@ -257,7 +258,7 @@ public class ForumPosterEditor extends EditorPanel {
   /** Checks if all fields are filled out correctly and indicates an error otherwise. */
   public boolean areFieldsValid() {
     final boolean setupValid =
-        IForumPoster.isClientSettingSetupValidForServer((String) forums.getSelectedItem());
+        NodeBbForumPoster.isClientSettingSetupValidForServer((String) forums.getSelectedItem());
     final boolean idValid = setLabelValid(isInt(topicIdField.getText()), topicIdLabel);
     final boolean forumValid = setLabelValid(forums.getSelectedItem() != null, forumLabel);
     final boolean allValid = setupValid && idValid && forumValid;
@@ -272,7 +273,7 @@ public class ForumPosterEditor extends EditorPanel {
     return string.matches("^-?\\d+$");
   }
 
-  private IForumPoster newForumPoster() {
+  private NodeBbForumPoster newForumPoster() {
     final String forumName = (String) forums.getSelectedItem();
     Preconditions.checkNotNull(forumName);
     return IForumPoster.newInstanceByName(forumName, Integer.parseInt(topicIdField.getText()));
