@@ -15,7 +15,7 @@ PROP_FILE="game-core/src/main/resources/META-INF/triplea/product.properties"
 ## Expect contents like: "version = 2.0.0"
 ## Overwrite to contain something like: "version = 2.0.1234"
 
-sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" $PROP_FILE
+sed -i "s/.0 *$/.$TRAVIS_BUILD_NUMBER/" $PROP_FILE
 
 ## Read the new version number and print it.
 ## EG: "version = 2.0.1234", print "2.0.1234"
@@ -23,6 +23,5 @@ sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" $PROP_FILE
 ## 1. remove all spaces, EG: "version=2.0.1234"
 ## 2. remove everything up to and including the equals sign, eg: "2.0.1234"
 
-tr -d ' ' $PROP_FILE \
-  | sed 's/.*=//'
+sed 's/.*= *//' $PROP_FILE
 
