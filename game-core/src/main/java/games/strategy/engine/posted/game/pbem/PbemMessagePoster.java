@@ -6,6 +6,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
+import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
@@ -81,9 +82,9 @@ public class PbemMessagePoster implements Serializable {
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
-    final Optional<IForumPoster> forumPoster = newForumPoster();
-
+    final Optional<NodeBbForumPoster> forumPoster = newForumPoster();
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
+
     if (forumPoster.isPresent()) {
       saveGameSb.append(gameProperties.get(IForumPoster.TOPIC_ID)).append("_");
     }
@@ -134,7 +135,7 @@ public class PbemMessagePoster implements Serializable {
       final StringBuilder sb = new StringBuilder("Post Turn Summary");
       if (forumSuccess != null) {
         sb.append(" to ")
-            .append(forumPoster.get().getDisplayName())
+            .append(gameProperties.get(IForumPoster.NAME))
             .append(" success = ")
             .append(forumSuccess.isDone() && !forumSuccess.isCancelled());
       }
@@ -149,13 +150,13 @@ public class PbemMessagePoster implements Serializable {
     return (forumSuccess == null || !forumSuccess.isCancelled()) && emailSuccess;
   }
 
-  private Optional<IForumPoster> newForumPoster() {
+  private Optional<NodeBbForumPoster> newForumPoster() {
     final String name = gameProperties.get(IForumPoster.NAME, "");
     if (name.isEmpty()) {
       return Optional.empty();
     }
     return Optional.of(
-        IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
+        NodeBbForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
   }
 
   private Optional<IEmailSender> newEmailSender() {
