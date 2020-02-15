@@ -69,7 +69,7 @@ public class NodeBbForumPoster {
   }
 
   /**
-   * Creates an {@link IForumPoster} instance based on the given arguments and the configured
+   * Creates a {@link NodeBbForumPoster} instance based on the given arguments and the configured
    * settings.
    */
   public static NodeBbForumPoster newInstanceByName(final String name, final int topicId) {
