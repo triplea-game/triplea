@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.extern.java.Log;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -41,7 +40,7 @@ import org.triplea.util.Arrays;
  * <p>URL format is {@code https://your.forumurl.com/api/v2/topics/<topicID>}.
  */
 @Log
-public class NodeBbForumPoster implements IForumPoster {
+public class NodeBbForumPoster {
 
   public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
   public static final String TRIPLEA_FORUM_DISPLAY_NAME = "forums.triplea-game.org";
@@ -52,41 +51,48 @@ public class NodeBbForumPoster implements IForumPoster {
   private final String password;
   private final String forumUrl;
 
-  @Getter(onMethod_ = @Override)
-  private final String displayName;
-
   @Builder
   public static class ForumPostingParameters {
     @Nonnull private final Integer topicId;
     @Nonnull private final char[] username;
     @Nonnull private final char[] password;
+    @Nonnull private final String forumUrl;
   }
 
-  private NodeBbForumPoster(
-      final ForumPostingParameters forumPostingParameters,
-      final String forumUrl,
-      final String displayName) {
+  private NodeBbForumPoster(final ForumPostingParameters forumPostingParameters) {
     this.topicId = forumPostingParameters.topicId;
-    this.forumUrl = forumUrl;
-    this.displayName = displayName;
+    this.forumUrl = forumPostingParameters.forumUrl;
     this.username =
         Arrays.withSensitiveArrayAndReturn(() -> forumPostingParameters.username, String::new);
     this.password =
         Arrays.withSensitiveArrayAndReturn(() -> forumPostingParameters.password, String::new);
   }
 
-  public static NodeBbForumPoster newAxisAndAlliesOrgForumPoster(
-      final ForumPostingParameters forumPostingParameters) {
-    return new NodeBbForumPoster(
-        forumPostingParameters,
-        UrlConstants.AXIS_AND_ALLIES_FORUM,
-        AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
-  }
-
-  public static NodeBbForumPoster newTripleaForumsPoster(
-      final ForumPostingParameters forumPostingParameters) {
-    return new NodeBbForumPoster(
-        forumPostingParameters, UrlConstants.TRIPLEA_FORUM, TRIPLEA_FORUM_DISPLAY_NAME);
+  /**
+   * Creates an {@link IForumPoster} instance based on the given arguments and the configured
+   * settings.
+   */
+  public static NodeBbForumPoster newInstanceByName(final String name, final int topicId) {
+    switch (name) {
+      case NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME:
+        return new NodeBbForumPoster(
+            ForumPostingParameters.builder()
+                .topicId(topicId)
+                .username(ClientSetting.tripleaForumUsername.getValueOrThrow())
+                .password(ClientSetting.tripleaForumPassword.getValueOrThrow())
+                .forumUrl(UrlConstants.TRIPLEA_FORUM)
+                .build());
+      case NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME:
+        return new NodeBbForumPoster(
+            ForumPostingParameters.builder()
+                .topicId(topicId)
+                .username(ClientSetting.aaForumUsername.getValueOrThrow())
+                .password(ClientSetting.aaForumPassword.getValueOrThrow())
+                .forumUrl(UrlConstants.AXIS_AND_ALLIES_FORUM)
+                .build());
+      default:
+        throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
+    }
   }
 
   public static boolean isClientSettingSetupValidForServer(final String server) {

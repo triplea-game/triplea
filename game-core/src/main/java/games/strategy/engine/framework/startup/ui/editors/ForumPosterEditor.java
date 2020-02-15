@@ -276,7 +276,7 @@ public class ForumPosterEditor extends EditorPanel {
   private NodeBbForumPoster newForumPoster() {
     final String forumName = (String) forums.getSelectedItem();
     Preconditions.checkNotNull(forumName);
-    return IForumPoster.newInstanceByName(forumName, Integer.parseInt(topicIdField.getText()));
+    return NodeBbForumPoster.newInstanceByName(forumName, Integer.parseInt(topicIdField.getText()));
   }
 
   public void applyToGameProperties(final GameProperties properties) {
