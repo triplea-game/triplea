@@ -1,10 +1,6 @@
-- name: add mirror for faster download
-  become: true
-  apt_repository:
-    repo: deb http://mirrors.accretive-networks.net/ubuntu bionic main
-
 - name: Update and upgrade apt packages
   become: true
   apt:
     upgrade: yes
     cache_valid_time: 86400 # One day, only updates if caches are older than this.
+
