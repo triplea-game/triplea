@@ -18,7 +18,6 @@ public final class SoundPath {
   public static final String CLIP_CHAT_SLAP = "chat_slap";
   public static final String CLIP_CHAT_JOIN_GAME = "chat_join_game";
   public static final String CLIP_CLICK_BUTTON = "click_button";
-  public static final String CLIP_CLICK_PLOT = "click_plot";
   public static final String CLIP_TRIGGERED_DEFEAT_SOUND = "defeat_";
   public static final String CLIP_TRIGGERED_VICTORY_SOUND = "victory_";
   public static final String CLIP_BATTLE_AA_HIT = "battle_aa_hit";
@@ -56,7 +55,6 @@ public final class SoundPath {
   public static final String CLIP_PLACED_SEA = "placed_sea";
   public static final String CLIP_POLITICAL_ACTION_FAILURE = "political_action_failure";
   public static final String CLIP_POLITICAL_ACTION_SUCCESSFUL = "political_action_successful";
-  public static final String CLIP_REQUIRED_ACTION = "required_action";
   public static final String CLIP_REQUIRED_YOUR_TURN_SERIES = "required_your_turn_series";
   public static final String CLIP_TECHNOLOGY_FAILURE = "technology_failure";
   public static final String CLIP_TECHNOLOGY_SUCCESSFUL = "technology_successful";
@@ -80,10 +78,8 @@ public final class SoundPath {
     soundOptions.put(SoundPath.CLIP_CHAT_SLAP, "Chat Slapping");
     soundOptions.put(SoundPath.CLIP_CHAT_JOIN_GAME, "Joined Chat");
     soundOptions.put(SoundPath.CLIP_CLICK_BUTTON, "Click Button");
-    soundOptions.put(SoundPath.CLIP_CLICK_PLOT, "Click Plot");
     soundOptions.put(SoundPath.CLIP_GAME_START, "Game Start");
     soundOptions.put(SoundPath.CLIP_GAME_WON, "Game Won");
-    soundOptions.put(SoundPath.CLIP_REQUIRED_ACTION, "Required Action");
     soundOptions.put(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, "Start of Your Turn Control");
     soundOptions.put(SoundPath.CLIP_BATTLE_AA_HIT, "AA Hit");
     soundOptions.put(SoundPath.CLIP_BATTLE_AA_MISS, "AA Miss");
