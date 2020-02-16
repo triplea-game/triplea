@@ -29,7 +29,7 @@ function installInstall4j() {
 }
 
 function buildReleaseArtifacts() {
-  JAVA_OPTS=-Xmx3G ./gradlew \
+  JAVA_OPTS=-Xmx4G ./gradlew \
       --no-daemon \
       --parallel \
       -Pinstall4jHomeDir="$INSTALL4J_HOME" \
