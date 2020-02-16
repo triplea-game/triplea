@@ -20,40 +20,40 @@ jobs:
     - stage: Verify
       name: "Tests: Integration Test"
       addons: { postgresql: "10" }
-      script: [ $VERIFY_STAGE/integration-testing/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/integration-testing/run || $REPORT_FAIL "integ tests" ]
 
     - stage: Verify
       name: "Tests: Unit Test"
-      script: [ $VERIFY_STAGE/unit-testing/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/unit-testing/run || $REPORT_FAIL "unit tests" ]
     
     - stage: Verify
       name: "Tests: Smoke Test"
       addons: {postgresql: "10"}
-      script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
 
     - stage: Verify
       name: "Analysis: PMD Verification"
-      script: [ $VERIFY_STAGE/pmd-verification/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/pmd-verification/run || $REPORT_FAIL "pmd verification" ]
     
     - stage: Verify
       name: "Analysis: Checkstyle"
-      script: [ $VERIFY_STAGE/checkstyle/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/checkstyle/run || $REPORT_FAIL "checkstyle" ]
     
     - stage: Verify
       name: "Analysis: Java Formatting"
-      script: [ $VERIFY_STAGE/java-formatting/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/java-formatting/run || $REPORT_FAIL "formatting" ]
     
     - stage: Verify
       name: "Analysis: Check Links and YAML Syntax"
-      script: [ $VERIFY_STAGE/check-links-and-yaml-syntax/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/check-links-and-yaml-syntax/run || $REPORT_FAIL "valid links and yaml" ]
       
     - stage: Verify
       name: "Analysis: Code Convention Checks"
-      script: [ $VERIFY_STAGE/code-convention-checks/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/code-convention-checks/run || $REPORT_FAIL "code conventions" ]
 
     - stage: Verify
       name: "Analysis: Find Unused or Unmatched Tests"
-      script: [ $VERIFY_STAGE/find-unused-or-unmatched-tests/run || $REPORT_FAIL ]
+      script: [ $VERIFY_STAGE/find-unused-or-unmatched-tests/run || $REPORT_FAIL "unused or unmatched tests" ]
 
     ########################################################################
 
@@ -61,7 +61,7 @@ jobs:
       name: "Push Map Descriptions to Website"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       addons: { apt: { packages: [ python3, python3-yaml ] } }
-      script: [ $DEPLOY_STAGE/update-maps-on-website/run || $REPORT_FAIL ]     
+      script: [ $DEPLOY_STAGE/update-maps-on-website/run || $REPORT_FAIL "push maps to website" ]
 
     - stage: Deploy
       name: "Ansible Deploy to Prerelease"
@@ -70,12 +70,12 @@ jobs:
       python: "3.6"
       addons: { apt: { packages: [ sshpass ] } }
       install: [ pip install ansible ]
-      script: [ $DEPLOY_STAGE/ansible-deploy-to-prerelease/run || $REPORT_FAIL ]
+      script: [ $DEPLOY_STAGE/ansible-deploy-to-prerelease/run || $REPORT_FAIL "prerelease deployment" ]
 
     - stage: Deploy
       name: "Build Installer Downloads & Upload to Github Releases"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      script: [ $DEPLOY_STAGE/installers/run || $REPORT_FAIL ]
+      script: [ $DEPLOY_STAGE/installers/run || $REPORT_FAIL "build installers" ]
       deploy:
         on: { tags: false, repo: triplea-game/triplea, branch: master }
         provider: releases
@@ -93,7 +93,7 @@ jobs:
       python: "3.6"
       addons: { apt: { packages: [ sshpass ] } }
       install: [ pip install ansible ]
-      script: [ $DEPLOY_STAGE/production/run || $REPORT_FAIL ]
+      script: [ $DEPLOY_STAGE/production/run || $REPORT_FAIL "production update" ]
 
     ########################################################################
     
@@ -104,5 +104,5 @@ jobs:
 
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
-  - $REPORT_FAIL
+  - $REPORT_FAIL "end of script failure catch block"
 

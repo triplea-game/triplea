@@ -16,10 +16,12 @@ set -eu
 
 # Should be one of {SUCCESS|FAILURE}
 RESULT=${1-}
+BUILD_STAGE=${2-"unreported build stage"}
 
 readonly BROKEN_BUILD_ISSUE_TITLE="Travis Master Branch Build Failed";
 readonly LATEST_BUILD_LINK="[#$TRAVIS_BUILD_NUMBER]($TRAVIS_BUILD_WEB_URL)"
-readonly BROKEN_BUILD_ISSUE_BODY="Travis master branch build $LATEST_BUILD_LINK failed."
+readonly BROKEN_BUILD_ISSUE_BODY="Travis master branch build $LATEST_BUILD_LINK failed.\
+     Build stage: $BUILD_STAGE"
 
 readonly API_URL="https://api.github.com/repos/triplea-game/triplea"
 readonly API_AUTH="Authorization: token $GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS"
