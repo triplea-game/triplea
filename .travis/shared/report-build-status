@@ -30,12 +30,17 @@ if [ -z "$RESULT" ]; then
   exit 1
 fi
 
+
+
+exit_code=0
+
 function main() {
 case "$RESULT" in
   SUCCESS)
     reportBuildSuccess
     ;;
   FAILURE)
+    exit_code=1
     reportBuildFailure
     ;;
   *)
@@ -106,4 +111,5 @@ function openNewFailedBuildIssue() {
 }
 
 main
+exit "$exit_code"
 
