@@ -15,11 +15,6 @@
             <Insets top="10.0" />
          </VBox.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#showRuleBook" styleClass="normal-font-size" text="%main.button.rule_book">
-         <VBox.margin>
-            <Insets top="10.0" />
-         </VBox.margin>
-      </Button>
       <Button mnemonicParsing="false" onAction="#back" text="%main.button.back">
          <VBox.margin>
             <Insets top="10.0" />
