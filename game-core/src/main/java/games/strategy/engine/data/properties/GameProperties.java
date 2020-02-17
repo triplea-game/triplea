@@ -99,7 +99,7 @@ public class GameProperties extends GameDataComponent {
     if (value == null) {
       return defaultValue;
     }
-    return (String) value;
+    return String.valueOf(value);
   }
 
   public void addEditableProperty(final IEditableProperty<?> property) {
