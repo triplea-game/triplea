@@ -22,6 +22,7 @@ readonly BROKEN_BUILD_ISSUE_TITLE="Travis Master Branch Build Failed";
 readonly LATEST_BUILD_LINK="[#$TRAVIS_BUILD_NUMBER]($TRAVIS_BUILD_WEB_URL)"
 readonly BROKEN_BUILD_ISSUE_BODY="Travis master branch build $LATEST_BUILD_LINK failed.\
      Build stage: $BUILD_STAGE"
+readonly BROKEN_BUILD_COMMENT="Build $LATEST_BUILD_LINK failed on stage: $BUILD_STAGE"
 
 readonly API_URL="https://api.github.com/repos/triplea-game/triplea"
 readonly API_AUTH="Authorization: token $GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS"
@@ -101,7 +102,7 @@ function reportBuildFailure() {
   if [ -z "$failedBuildIssue" ]; then
      openNewFailedBuildIssue
   else
-     commentOnIssue "$failedBuildIssue" "Build $LATEST_BUILD_LINK failed"
+     commentOnIssue "$failedBuildIssue" "$BROKEN_BUILD_COMMENT"
   fi
 }
 
