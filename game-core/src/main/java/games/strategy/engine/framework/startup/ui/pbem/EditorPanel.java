@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.triplea.swing.SwingComponents;
 
 /**
  * Helper Base class for Editors, that provides a basic collection of useful operations.
@@ -14,7 +15,6 @@ import javax.swing.JPanel;
  */
 abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
-  private final Color labelColor = new JLabel().getForeground();
 
   EditorPanel() {
     super(new GridBagLayout());
@@ -28,7 +28,7 @@ abstract class EditorPanel extends JPanel {
    * @return The value of valid
    */
   boolean setLabelValid(final boolean valid, final JLabel label) {
-    label.setForeground(valid ? labelColor : Color.RED);
+    label.setForeground(valid ? SwingComponents.getDefaultLabelColor() : Color.RED);
     return valid;
   }
 }
