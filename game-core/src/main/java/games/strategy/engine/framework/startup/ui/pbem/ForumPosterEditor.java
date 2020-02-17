@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.triplea.java.ViewModelListener;
 import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.SwingComponents;
 
 /** A class for selecting which Forum poster to use. */
 class ForumPosterEditor extends JPanel
@@ -190,10 +191,10 @@ class ForumPosterEditor extends JPanel
     alsoPostAfterCombatMove.setSelected(forumPosterEditorViewModel.isAlsoPostAfterCombatMove());
     attachSaveGameToSummary.setSelected(forumPosterEditorViewModel.isAttachSaveGameToSummary());
 
-    final boolean isValid = forumPosterEditorViewModel.areFieldsValid();
-    EditorPanel.setLabelValid(isValid, topicIdLabel);
-    EditorPanel.setLabelValid(isValid, forumLabel);
-    viewPosts.setEnabled(isValid);
-    testForum.setEnabled(isValid);
+    SwingComponents.highlightLabelIfNotValid(forumPosterEditorViewModel.isTopicIdValid(), topicIdLabel);
+    SwingComponents.highlightLabelIfNotValid(forumPosterEditorViewModel.isForumSelectionValid(), forumLabel);
+
+    viewPosts.setEnabled(forumPosterEditorViewModel.isViewForumPostButtonEnabled());
+    testForum.setEnabled(forumPosterEditorViewModel.isTestForumPostButtonEnabled());
   }
 }

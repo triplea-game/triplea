@@ -19,6 +19,7 @@ import org.triplea.awt.OpenFileUtility;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingComponents;
 
 /** A class to configure a Dice Server for the game. */
 public class DiceServerEditor extends JPanel {
@@ -224,13 +225,12 @@ public class DiceServerEditor extends JPanel {
 
   public boolean areFieldsValid() {
     final boolean toValid =
-        EditorPanel.setLabelValid(
-            !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText()),
-            toLabel);
+        !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText());
+    SwingComponents.highlightLabelIfNotValid(toValid, toLabel);
     final boolean ccValid =
-        EditorPanel.setLabelValid(
-            !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText()),
-            ccLabel);
+        !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText());
+    SwingComponents.highlightLabelIfNotValid(ccValid, ccLabel);
+
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
     testDiceButton.setToolTipText(

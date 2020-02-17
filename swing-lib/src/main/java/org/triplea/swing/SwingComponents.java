@@ -83,11 +83,20 @@ public final class SwingComponents {
     }
   }
 
+
+  /**
+   * Colors a label text to a highlight color if not valid, otherwise returns the label
+   * text to a default color.
+   */
+  public static void highlightLabelIfNotValid(final boolean valid, final JLabel label) {
+    label.setForeground(valid ? SwingComponents.getDefaultLabelColor() : Color.RED);
+  }
+
   /**
    * Returns the default text color for labels. Note, this is a dynamic value in case the look and
    * feel is changed which could potentially change the text color of labels.
    */
-  public static Color getDefaultLabelColor() {
+  private static Color getDefaultLabelColor() {
     return new JLabel().getForeground();
   }
 

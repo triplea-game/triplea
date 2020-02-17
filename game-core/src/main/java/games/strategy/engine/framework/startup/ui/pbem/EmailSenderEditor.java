@@ -25,6 +25,7 @@ import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.ProgressWindow;
+import org.triplea.swing.SwingComponents;
 
 /** An editor for modifying email senders. */
 @Log
@@ -195,8 +196,8 @@ public class EmailSenderEditor extends JPanel {
 
     final String toAddressText = toAddress.getText();
     final boolean addressValid =
-        EditorPanel.setLabelValid(
-            !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText), toLabel);
+        !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText);
+    SwingComponents.highlightLabelIfNotValid(addressValid, toLabel);
     final boolean allValid = setupValid && addressValid;
     testEmail.setEnabled(allValid);
     return allValid;
