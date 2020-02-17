@@ -78,6 +78,9 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
       game.setRandomSource(randomSource);
       gameData.getGameLoader().startGame(game, gamePlayers, launchAction, null);
       return Optional.of(game);
+    } catch (final MapNotFoundException e) {
+      // The throwing method of MapNotFoundException notifies and prompts user to download the map.
+      return Optional.empty();
     } catch (final Exception ex) {
       log.log(Level.SEVERE, "Failed to start game", ex);
       return Optional.empty();
