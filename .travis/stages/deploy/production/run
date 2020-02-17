@@ -10,8 +10,7 @@ echo "$ANSIBLE_VAULT_PASSWORD" > "$VAULT_PASSWORD_FILE"
 ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
 
 ansible-playbook \
-  --vault-password-file "$VAULT_PASSWORD_FILE" \
   -i ansible/inventory/production \
-  -t security,admin_user \
+  -t admin_user \
  ansible/site.yml
 
