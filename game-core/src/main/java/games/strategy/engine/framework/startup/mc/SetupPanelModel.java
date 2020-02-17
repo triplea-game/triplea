@@ -8,7 +8,7 @@ import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
-import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
+import games.strategy.engine.framework.startup.ui.pbem.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;

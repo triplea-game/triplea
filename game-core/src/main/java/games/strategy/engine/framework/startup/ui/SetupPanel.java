@@ -33,7 +33,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     this.listener = listener;
   }
 
-  void fireListener() {
+  public void fireListener() {
     if (listener != null) {
       listener.accept(this);
     }
@@ -47,7 +47,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
 
   public abstract List<Action> getUserActions();
 
-  void layoutPlayerComponents(
+  public void layoutPlayerComponents(
       final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {
     panel.removeAll();
     playerRows.clear();

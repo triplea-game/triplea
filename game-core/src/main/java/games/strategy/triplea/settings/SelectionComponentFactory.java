@@ -4,7 +4,7 @@ import static org.triplea.util.Arrays.withSensitiveArray;
 import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import com.google.common.base.Strings;
-import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
+import games.strategy.engine.framework.startup.ui.pbem.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
 import java.awt.Component;
