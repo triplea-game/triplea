@@ -66,21 +66,25 @@ public class GridBagConstraintsBuilder {
         padY);
   }
 
+  /** Default value is 1 */
   public GridBagConstraintsBuilder gridWidth(final int gridWidth) {
     this.gridWidth = gridWidth;
     return this;
   }
 
+  /** Default value is 1 */
   public GridBagConstraintsBuilder gridHeight(final int gridHeight) {
     this.gridHeight = gridHeight;
     return this;
   }
 
+  /** Default value is 0 */
   public GridBagConstraintsBuilder weightX(final double weightX) {
     this.weightX = weightX;
     return this;
   }
 
+  /** Default value is 0 */
   public GridBagConstraintsBuilder weightY(final double weightY) {
     this.weightY = weightY;
     return this;
@@ -88,7 +92,9 @@ public class GridBagConstraintsBuilder {
 
   /**
    * Sets grid bag constraint anchor value, this dictates how components are placed in the grid
-   * cell. If not specified, defaults to: GridBagConstraintsAnchor.WEST
+   * cell.
+   *
+   * <p>Default value is: GridBagConstraintsAnchor.WEST
    */
   public GridBagConstraintsBuilder anchor(final GridBagConstraintsAnchor anchor) {
     this.anchor = anchor;
@@ -97,8 +103,9 @@ public class GridBagConstraintsBuilder {
 
   /**
    * Sets grid bag constraint fill value, this dictates how components are adjusted when placed in
-   * grid cell, whether they are expanded to fill space. If not specified, defaults to:
-   * GridBagConstraintsFill.NONE
+   * grid cell, whether they are expanded to fill space.
+   *
+   * <p>Default value is: GridBagConstraintsFill.NONE
    */
   public GridBagConstraintsBuilder fill(final GridBagConstraintsFill fill) {
     this.fill = fill;
@@ -116,11 +123,13 @@ public class GridBagConstraintsBuilder {
     return this;
   }
 
+  /** Default value is 0 */
   public GridBagConstraintsBuilder padX(final int padX) {
     this.padX = padX;
     return this;
   }
 
+  /** Default value is 0 */
   public GridBagConstraintsBuilder padY(final int padY) {
     this.padY = padY;
     return this;
