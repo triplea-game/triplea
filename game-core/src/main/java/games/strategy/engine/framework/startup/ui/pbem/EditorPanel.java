@@ -1,9 +1,8 @@
 package games.strategy.engine.framework.startup.ui.pbem;
 
 import java.awt.Color;
-import java.awt.GridBagLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -13,12 +12,8 @@ import org.triplea.swing.SwingComponents;
  * methods in this class static, and converting it to a utility class is probably a good thing to
  * do.
  */
-abstract class EditorPanel extends JPanel {
-  private static final long serialVersionUID = 8156959717037201321L;
-
-  EditorPanel() {
-    super(new GridBagLayout());
-  }
+@UtilityClass
+class EditorPanel {
 
   /**
    * Turns the label red to indicate an error if valid is true.
@@ -27,7 +22,7 @@ abstract class EditorPanel extends JPanel {
    * @param label The Label whose color should be changed.
    * @return The value of valid
    */
-  boolean setLabelValid(final boolean valid, final JLabel label) {
+  static boolean setLabelValid(final boolean valid, final JLabel label) {
     label.setForeground(valid ? SwingComponents.getDefaultLabelColor() : Color.RED);
     return valid;
   }

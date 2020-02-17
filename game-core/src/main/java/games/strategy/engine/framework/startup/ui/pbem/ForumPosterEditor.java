@@ -1,17 +1,19 @@
 package games.strategy.engine.framework.startup.ui.pbem;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.triplea.java.ViewModelListener;
 import org.triplea.swing.DocumentListenerBuilder;
 
 /** A class for selecting which Forum poster to use. */
-class ForumPosterEditor extends EditorPanel
+class ForumPosterEditor extends JPanel
     implements ViewModelListener<ForumPosterEditorViewModel> {
   private static final long serialVersionUID = -6069315084412575053L;
   private final JButton viewPosts = new JButton("View Forum");
@@ -24,6 +26,8 @@ class ForumPosterEditor extends EditorPanel
   private final JComboBox<String> forums = new JComboBox<>();
 
   ForumPosterEditor(final ForumPosterEditorViewModel viewModel) {
+    super(new GridBagLayout());
+
     viewModel.setView(this);
 
     final int bottomSpace = 1;
@@ -187,8 +191,8 @@ class ForumPosterEditor extends EditorPanel
     attachSaveGameToSummary.setSelected(forumPosterEditorViewModel.isAttachSaveGameToSummary());
 
     final boolean isValid = forumPosterEditorViewModel.areFieldsValid();
-    setLabelValid(isValid, topicIdLabel);
-    setLabelValid(isValid, forumLabel);
+    EditorPanel.setLabelValid(isValid, topicIdLabel);
+    EditorPanel.setLabelValid(isValid, forumLabel);
     viewPosts.setEnabled(isValid);
     testForum.setEnabled(isValid);
   }

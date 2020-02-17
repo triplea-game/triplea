@@ -21,7 +21,7 @@ import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 
 /** A class to configure a Dice Server for the game. */
-public class DiceServerEditor extends EditorPanel {
+public class DiceServerEditor extends JPanel {
   public static final URI PRODUCTION_URI = URI.create("https://dice.marti.triplea-game.org");
   public static final URI PRE_RELEASE_URI =
       URI.create("https://prerelease.dice.marti.triplea-game.org");
@@ -43,6 +43,7 @@ public class DiceServerEditor extends EditorPanel {
   private final Runnable readyCallback;
 
   public DiceServerEditor(final Runnable readyCallback) {
+    super(new GridBagLayout());
     this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
@@ -223,11 +224,11 @@ public class DiceServerEditor extends EditorPanel {
 
   public boolean areFieldsValid() {
     final boolean toValid =
-        setLabelValid(
+        EditorPanel.setLabelValid(
             !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText()),
             toLabel);
     final boolean ccValid =
-        setLabelValid(
+        EditorPanel.setLabelValid(
             !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText()),
             ccLabel);
     final boolean allValid = toValid && ccValid;
