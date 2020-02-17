@@ -16,11 +16,12 @@ set -eu
 
 # Should be one of {SUCCESS|FAILURE}
 RESULT=${1-}
+BUILD_STAGE=${2-"unreported build stage"}
 
 readonly BROKEN_BUILD_ISSUE_TITLE="Travis Master Branch Build Failed";
 readonly LATEST_BUILD_LINK="[#$TRAVIS_BUILD_NUMBER]($TRAVIS_BUILD_WEB_URL)"
-readonly BROKEN_BUILD_ISSUE_BODY="Latest master branch travis build $LATEST_BUILD_LINK failed.\n\
-No release artifacts will be generated until this is fixed."
+readonly BROKEN_BUILD_ISSUE_BODY="Travis master branch build $LATEST_BUILD_LINK failed.\
+     Build stage: $BUILD_STAGE"
 
 readonly API_URL="https://api.github.com/repos/triplea-game/triplea"
 readonly API_AUTH="Authorization: token $GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS"
@@ -30,12 +31,15 @@ if [ -z "$RESULT" ]; then
   exit 1
 fi
 
+exit_code=0
+
 function main() {
 case "$RESULT" in
   SUCCESS)
     reportBuildSuccess
     ;;
   FAILURE)
+    exit_code=1
     reportBuildFailure
     ;;
   *)
@@ -53,12 +57,14 @@ function findOpenFailedBuildIssue() {
          # filter for open status
          # grab just the issue number line
          # filter issue number line for just the issue number
+         # If in case we have duplicates somehow, just grab only one
    curl -s -H "$API_AUTH" "$API_URL/issues" \
          | grep -E "^\s+\"state\": |^\s+\"number\": |^\s+\"title\": " \
          | grep -EC1 "^\s+\"title\": \"$BROKEN_BUILD_ISSUE_TITLE" \
          | grep -EB2 "^\s+\"state\": \"open\",$" \
          | grep -E "^\s+\"number\":" \
-         | sed 's/.*number": \(.*\),/\1/'
+         | sed 's/.*number": \(.*\),/\1/' \
+         | head -1
 }
 
 # On success, if there is an open failed build issue:
@@ -106,4 +112,5 @@ function openNewFailedBuildIssue() {
 }
 
 main
+exit "$exit_code"
 
