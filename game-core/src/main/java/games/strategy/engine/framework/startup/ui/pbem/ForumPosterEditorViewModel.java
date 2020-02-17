@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.editors;
+package games.strategy.engine.framework.startup.ui.pbem;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
@@ -12,20 +12,12 @@ import org.triplea.java.ViewModelListener;
 class ForumPosterEditorViewModel {
   private final Runnable readyCallback;
 
-  @Setter
-  private ViewModelListener<ForumPosterEditorViewModel> view;
+  @Setter private ViewModelListener<ForumPosterEditorViewModel> view;
 
-  @Setter
-  private String forumSelection = "";
-  @Setter
-  @Getter
-  private String topicId = "";
-  @Setter
-  @Getter
-  private boolean attachSaveGameToSummary;
-  @Setter
-  @Getter
-  private boolean alsoPostAfterCombatMove;
+  @Setter private String forumSelection = "";
+  @Setter @Getter private String topicId = "";
+  @Setter @Getter private boolean attachSaveGameToSummary;
+  @Setter @Getter private boolean alsoPostAfterCombatMove;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
     this.readyCallback = readyCallback;

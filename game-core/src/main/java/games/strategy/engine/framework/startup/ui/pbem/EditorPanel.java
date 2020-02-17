@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.editors;
+package games.strategy.engine.framework.startup.ui.pbem;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;
