@@ -28,7 +28,7 @@ import lombok.extern.java.Log;
  */
 @Log
 public class GameSelectorModel extends Observable {
-  @Getter private GameData gameData = null;
+  @Nullable @Getter private GameData gameData = null;
   @Getter private String gameName = "";
   @Getter private String gameVersion = "";
   @Getter private String gameRound = "";
