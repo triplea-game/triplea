@@ -24,15 +24,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.java.ViewModelListener;
 
 @ExtendWith(MockitoExtension.class)
 class ForumPosterEditorViewModelTest {
 
   @Mock private GameData gameData;
-
+  @Mock private ViewModelListener<ForumPosterEditorViewModel> viewModelListener;
   @Mock private BiConsumer<String, Integer> viewForumPostAction;
   @Mock private BiConsumer<String, Integer> testPostAction;
-
   @Mock private Runnable readyCallback;
 
   @Test
@@ -236,6 +236,27 @@ class ForumPosterEditorViewModelTest {
       viewModel.setForumSelection("");
 
       verify(readyCallback).run();
+    }
+  }
+
+  @Nested
+  class ViewCallbackIsInvokedWhenFieldsAreSet {
+    @Test
+    void topicId() {
+      final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+      viewModel.setView(viewModelListener);
+      viewModel.setTopicId("");
+
+      verify(viewModelListener).viewModelChanged(viewModel);
+    }
+
+    @Test
+    void forumSelection() {
+      final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+      viewModel.setView(viewModelListener);
+      viewModel.setForumSelection("");
+
+      verify(viewModelListener).viewModelChanged(viewModel);
     }
   }
 }

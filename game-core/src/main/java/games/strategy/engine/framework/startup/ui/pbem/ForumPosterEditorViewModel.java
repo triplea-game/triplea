@@ -1,6 +1,8 @@
 package games.strategy.engine.framework.startup.ui.pbem;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicates;
+import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.pbem.test.post.SwingTestPostProgressDisplayFactory;
@@ -30,7 +32,7 @@ class ForumPosterEditorViewModel {
 
   @Getter private boolean viewForumPostButtonEnabled;
   @Getter private boolean testForumPostButtonEnabled;
-  private String forumSelection = "";
+  @Getter private String forumSelection = "";
   @Getter private boolean forumSelectionValid;
   @Getter private String topicId = "";
   @Getter private boolean topicIdValid;
@@ -43,18 +45,23 @@ class ForumPosterEditorViewModel {
 
   ForumPosterEditorViewModel(final Runnable readyCallback, final GameProperties properties) {
     this.readyCallback = readyCallback;
-    setForumSelection((String) properties.get(IForumPoster.NAME));
+    setForumSelection(Strings.nullToEmpty((String) properties.get(IForumPoster.NAME)));
     setTopicId(properties.get(IForumPoster.TOPIC_ID, ""));
     this.alsoPostAfterCombatMove = properties.get(IForumPoster.POST_AFTER_COMBAT, false);
     this.attachSaveGameToSummary = properties.get(IForumPoster.INCLUDE_SAVEGAME, false);
   }
 
+  @SuppressWarnings("Guava")
   synchronized void setForumSelection(final String forumSelection) {
-    this.forumSelection = forumSelection;
-    forumSelectionValid = !forumSelection.isBlank();
+    this.forumSelection =
+        Optional.ofNullable(forumSelection)
+            .filter(Predicates.not(String::isBlank))
+            .orElse(getForumSelectionOptions().iterator().next());
+    forumSelectionValid = !this.forumSelection.isBlank();
     viewForumPostButtonEnabled = areFieldsValid();
     testForumPostButtonEnabled = areFieldsValid();
     readyCallback.run();
+    Optional.ofNullable(view).ifPresent(v -> v.viewModelChanged(this));
   }
 
   synchronized void setTopicId(final String topicId) {
@@ -64,11 +71,7 @@ class ForumPosterEditorViewModel {
     viewForumPostButtonEnabled = areFieldsValid();
     testForumPostButtonEnabled = areFieldsValid();
     readyCallback.run();
-  }
-
-  String getForumSelection() {
-    return Optional.ofNullable(forumSelection) //
-        .orElse(getForumSelectionOptions().iterator().next());
+    Optional.ofNullable(view).ifPresent(v -> v.viewModelChanged(this));
   }
 
   Iterable<String> getForumSelectionOptions() {

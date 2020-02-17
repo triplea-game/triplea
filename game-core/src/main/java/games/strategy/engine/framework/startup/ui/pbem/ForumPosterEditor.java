@@ -187,7 +187,9 @@ class ForumPosterEditor extends JPanel
   @Override
   public void viewModelChanged(final ForumPosterEditorViewModel forumPosterEditorViewModel) {
     forums.setSelectedItem(forumPosterEditorViewModel.getForumSelection());
-    topicIdField.setText(forumPosterEditorViewModel.getTopicId());
+    if (!topicIdField.getText().equals(forumPosterEditorViewModel.getTopicId())) {
+      topicIdField.setText(forumPosterEditorViewModel.getTopicId());
+    }
     alsoPostAfterCombatMove.setSelected(forumPosterEditorViewModel.isAlsoPostAfterCombatMove());
     attachSaveGameToSummary.setSelected(forumPosterEditorViewModel.isAttachSaveGameToSummary());
 
