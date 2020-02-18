@@ -86,18 +86,6 @@ public final class SwingAction {
     };
   }
 
-  /** Creates a swing action that executes a given Runnable when fired. */
-  public static AbstractAction of(final Runnable action) {
-    return new AbstractAction() {
-      private static final long serialVersionUID = 555055501471099555L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        action.run();
-      }
-    };
-  }
-
   /**
    * Synchronously executes the specified action on the Swing event dispatch thread.
    *
