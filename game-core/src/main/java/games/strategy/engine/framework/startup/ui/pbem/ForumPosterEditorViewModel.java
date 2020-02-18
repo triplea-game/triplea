@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui.pbem;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
@@ -32,8 +33,7 @@ class ForumPosterEditorViewModel {
 
   @Getter private boolean viewForumPostButtonEnabled;
   @Getter private boolean testForumPostButtonEnabled;
-  @Getter private String forumSelection = "";
-  @Getter private boolean forumSelectionValid;
+  private String forumSelection;
   @Getter private String topicId = "";
   @Getter private boolean topicIdValid;
   @Setter @Getter private boolean attachSaveGameToSummary;
@@ -41,6 +41,7 @@ class ForumPosterEditorViewModel {
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
+    setForumSelection("");
   }
 
   ForumPosterEditorViewModel(final Runnable readyCallback, final GameProperties properties) {
@@ -53,15 +54,25 @@ class ForumPosterEditorViewModel {
 
   @SuppressWarnings("Guava")
   synchronized void setForumSelection(final String forumSelection) {
+    // if forumSelect is null or blank, default it to first forum selection option
     this.forumSelection =
         Optional.ofNullable(forumSelection)
             .filter(Predicates.not(String::isBlank))
             .orElse(getForumSelectionOptions().iterator().next());
-    forumSelectionValid = !this.forumSelection.isBlank();
+    Postconditions.assertState(
+        this.forumSelection != null && !this.forumSelection.isBlank(),
+        "Forum selection is driven by a drop-down to ensure user can never set it to null, "
+            + "if setting to null from a game properties, we default to the first available "
+            + "selection entry, forum selection should never be null or empty.");
     viewForumPostButtonEnabled = areFieldsValid();
     testForumPostButtonEnabled = areFieldsValid();
     readyCallback.run();
     Optional.ofNullable(view).ifPresent(v -> v.viewModelChanged(this));
+  }
+
+  public String getForumSelection() {
+    Preconditions.checkNotNull(forumSelection, "Forum selection should never be null");
+    return forumSelection;
   }
 
   synchronized void setTopicId(final String topicId) {
@@ -81,7 +92,7 @@ class ForumPosterEditorViewModel {
   }
 
   synchronized boolean areFieldsValid() {
-    return forumSelectionValid && topicIdValid;
+    return topicIdValid;
   }
 
   public void populateFromGameProperties(final GameProperties properties) {

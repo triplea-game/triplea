@@ -14,8 +14,7 @@ import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** A class for selecting which Forum poster to use. */
-class ForumPosterEditor extends JPanel
-    implements ViewModelListener<ForumPosterEditorViewModel> {
+class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterEditorViewModel> {
   private static final long serialVersionUID = -6069315084412575053L;
   private final JButton viewPosts = new JButton("View Forum");
   private final JButton testForum = new JButton("Test Post");
@@ -193,8 +192,8 @@ class ForumPosterEditor extends JPanel
     alsoPostAfterCombatMove.setSelected(forumPosterEditorViewModel.isAlsoPostAfterCombatMove());
     attachSaveGameToSummary.setSelected(forumPosterEditorViewModel.isAttachSaveGameToSummary());
 
-    SwingComponents.highlightLabelIfNotValid(forumPosterEditorViewModel.isTopicIdValid(), topicIdLabel);
-    SwingComponents.highlightLabelIfNotValid(forumPosterEditorViewModel.isForumSelectionValid(), forumLabel);
+    SwingComponents.highlightLabelIfNotValid(
+        forumPosterEditorViewModel.isTopicIdValid(), topicIdLabel);
 
     viewPosts.setEnabled(forumPosterEditorViewModel.isViewForumPostButtonEnabled());
     testForum.setEnabled(forumPosterEditorViewModel.isTestForumPostButtonEnabled());

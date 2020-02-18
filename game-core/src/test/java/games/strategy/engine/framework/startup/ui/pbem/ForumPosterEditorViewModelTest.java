@@ -2,9 +2,11 @@ package games.strategy.engine.framework.startup.ui.pbem;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.text.IsEmptyString.emptyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Preconditions;
@@ -36,6 +38,14 @@ class ForumPosterEditorViewModelTest {
   @Mock private Runnable readyCallback;
 
   @Test
+  @DisplayName("Ensure forum selection is set when loading wtihout game properties")
+  void initializationSetsForumSelection() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
+
+    assertThat(viewModel.getForumSelection(), is(notNullValue()));
+  }
+
+  @Test
   @DisplayName("Ensure we can use GameProperties to set initial values")
   void verifyInitializationWithGameProperties() {
     final GameProperties gameProperties = new GameProperties(gameData);
@@ -48,7 +58,6 @@ class ForumPosterEditorViewModelTest {
         new ForumPosterEditorViewModel(() -> {}, gameProperties);
 
     assertThat(viewModel.getForumSelection(), is("forumName"));
-    assertThat("forum selection is set => valid", viewModel.isForumSelectionValid(), is(true));
     assertThat(viewModel.getTopicId(), is("topicId"));
     assertThat("topic id is not numeric => not valid", viewModel.isTopicIdValid(), is(false));
     assertThat(viewModel.isAlsoPostAfterCombatMove(), is(true));
@@ -82,31 +91,6 @@ class ForumPosterEditorViewModelTest {
         is(false));
   }
 
-  @Test
-  void forumSelectionIsValidWhenSet() {
-    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
-    viewModel.setForumSelection("selection");
-
-    assertThat(viewModel.isForumSelectionValid(), is(true));
-  }
-
-  @Test
-  void forumSelectionNotValidWhenNotSet() {
-    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
-    viewModel.setForumSelection("");
-
-    assertThat(viewModel.isForumSelectionValid(), is(false));
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"1", "10", "55555", " 1 "})
-  void topicIdIsValidWhenPositiveNumber(final String validValue) {
-    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
-    viewModel.setForumSelection(validValue);
-
-    assertThat(viewModel.isForumSelectionValid(), is(true));
-  }
-
   @DisplayName("Topic ID should only be valid for positive numbers")
   @ParameterizedTest
   @ValueSource(strings = {"", "nAn", "0.0", "0.", "-1", "0", "zero", "1,000"})
@@ -123,8 +107,7 @@ class ForumPosterEditorViewModelTest {
     viewModel.setForumSelection("forumSelection");
     viewModel.setTopicId("100");
     Preconditions.checkState(
-        viewModel.isForumSelectionValid() && viewModel.isTopicIdValid(),
-        "Test makes sense only if forum selection and topic id are valid");
+        viewModel.isTopicIdValid(), "Test makes sense only if topic id is valid");
     viewModel.setViewForumPostAction(viewForumPostAction);
 
     viewModel.viewForumButtonClicked();
@@ -151,16 +134,13 @@ class ForumPosterEditorViewModelTest {
     viewModel.setForumSelection(forumSelection);
     viewModel.setTopicId(topicId);
     Preconditions.checkState(
-        !viewModel.isForumSelectionValid() || !viewModel.isTopicIdValid(),
-        "Test makes sense only if either forum selection or topic id are invalid");
+        !viewModel.isTopicIdValid(), "Test makes sense only if topic id is invalid");
     return viewModel;
   }
 
   @SuppressWarnings("unused")
   private static List<Arguments> invalidForumSettings() {
     return List.of(
-        Arguments.of("", "1"),
-        Arguments.of(" ", "1"),
         Arguments.of("forumSelection", "not a number"),
         Arguments.of("forumSelection", ""),
         Arguments.of("forumSelection", "0.0"),
@@ -192,20 +172,18 @@ class ForumPosterEditorViewModelTest {
   }
 
   @Test
-  void forumPostButtonIsActiveWithValidData( ) {
+  void forumPostButtonIsActiveWithValidData() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
     viewModel.setTestPostAction(testPostAction);
     viewModel.setForumSelection("forumSelection");
     viewModel.setTopicId("20");
     Preconditions.checkState(
-        viewModel.isForumSelectionValid() && viewModel.isTopicIdValid(),
-        "Test makes sense only if forum selection and topic id are valid");
+        viewModel.isTopicIdValid(), "Test makes sense only if topic id is valid");
 
     viewModel.testPostButtonClicked();
 
     verify(testPostAction).accept("forumSelection", 20);
   }
-
 
   @DisplayName("Ensure fields are valid if both forum selection and topic id are valid")
   @Test
@@ -214,29 +192,27 @@ class ForumPosterEditorViewModelTest {
     viewModel.setForumSelection("forumSelection");
     viewModel.setTopicId("20");
     Preconditions.checkState(
-        viewModel.isForumSelectionValid() && viewModel.isTopicIdValid(),
-        "Test makes sense only if forum selection and topic id are valid");
+        viewModel.isTopicIdValid(), "Test makes sense only if topic id is valid");
 
     assertThat(viewModel.areFieldsValid(), is(true));
   }
 
-  @Nested
-  class ReadyCallbackInvokeWhenFieldsAreSet {
-    @Test
-    void topicId() {
-      final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
-      viewModel.setTopicId("");
+  @Test
+  void topicId() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setTopicId("");
 
-      verify(readyCallback).run();
-    }
+    // called once in construction, called again on 'setTopicId'
+    verify(readyCallback, times(2)).run();
+  }
 
-    @Test
-    void forumSelection() {
-      final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
-      viewModel.setForumSelection("");
+  @Test
+  void forumSelection() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumSelection("");
 
-      verify(readyCallback).run();
-    }
+    // called once in construction, called again on 'setForumSelection'
+    verify(readyCallback, times(2)).run();
   }
 
   @Nested

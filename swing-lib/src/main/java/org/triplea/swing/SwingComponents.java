@@ -83,10 +83,9 @@ public final class SwingComponents {
     }
   }
 
-
   /**
-   * Colors a label text to a highlight color if not valid, otherwise returns the label
-   * text to a default color.
+   * Colors a label text to a highlight color if not valid, otherwise returns the label text to a
+   * default color.
    */
   public static void highlightLabelIfNotValid(final boolean valid, final JLabel label) {
     label.setForeground(valid ? SwingComponents.getDefaultLabelColor() : Color.RED);
