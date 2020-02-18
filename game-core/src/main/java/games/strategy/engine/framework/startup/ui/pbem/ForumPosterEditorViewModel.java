@@ -35,7 +35,7 @@ class ForumPosterEditorViewModel {
   private String forumSelection;
   @Getter private String topicId = "";
   @Getter private boolean topicIdValid;
-  @Setter @Getter private boolean attachSaveGameToSummary;
+  @Setter @Getter private boolean attachSaveGameToSummary = true;
   @Setter @Getter private boolean alsoPostAfterCombatMove;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
@@ -95,7 +95,7 @@ class ForumPosterEditorViewModel {
     setForumSelection((String) properties.get(IForumPoster.NAME));
     setTopicId(properties.get(IForumPoster.TOPIC_ID, ""));
     this.alsoPostAfterCombatMove = properties.get(IForumPoster.POST_AFTER_COMBAT, false);
-    this.attachSaveGameToSummary = properties.get(IForumPoster.INCLUDE_SAVEGAME, false);
+    this.attachSaveGameToSummary = properties.get(IForumPoster.INCLUDE_SAVEGAME, true);
     Optional.ofNullable(view).ifPresent(v -> v.viewModelChanged(this));
   }
 

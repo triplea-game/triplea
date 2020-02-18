@@ -52,7 +52,7 @@ class ForumPosterEditorViewModelTest {
     gameProperties.set(IForumPoster.NAME, "forumName");
     gameProperties.set(IForumPoster.TOPIC_ID, "topicId");
     gameProperties.set(IForumPoster.POST_AFTER_COMBAT, true);
-    gameProperties.set(IForumPoster.INCLUDE_SAVEGAME, true);
+    gameProperties.set(IForumPoster.INCLUDE_SAVEGAME, false);
 
     final ForumPosterEditorViewModel viewModel =
         new ForumPosterEditorViewModel(() -> {}, gameProperties);
@@ -61,7 +61,7 @@ class ForumPosterEditorViewModelTest {
     assertThat(viewModel.getTopicId(), is("topicId"));
     assertThat("topic id is not numeric => not valid", viewModel.isTopicIdValid(), is(false));
     assertThat(viewModel.isAlsoPostAfterCombatMove(), is(true));
-    assertThat(viewModel.isAttachSaveGameToSummary(), is(true));
+    assertThat(viewModel.isAttachSaveGameToSummary(), is(false));
   }
 
   @Test
@@ -86,9 +86,10 @@ class ForumPosterEditorViewModelTest {
         viewModel.isAlsoPostAfterCombatMove(),
         is(true));
     assertThat(
-        "Expecting default to be false when not specified in game properties",
+        "Attach save game summary defaults to true, when not specified in game properties, "
+            + "we expect the default value",
         viewModel.isAttachSaveGameToSummary(),
-        is(false));
+        is(true));
   }
 
   @DisplayName("Topic ID should only be valid for positive numbers")
