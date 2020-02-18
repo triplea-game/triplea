@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.ui.pbem;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
-import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.pbem.test.post.SwingTestPostProgressDisplayFactory;
@@ -46,10 +45,7 @@ class ForumPosterEditorViewModel {
 
   ForumPosterEditorViewModel(final Runnable readyCallback, final GameProperties properties) {
     this.readyCallback = readyCallback;
-    setForumSelection(Strings.nullToEmpty((String) properties.get(IForumPoster.NAME)));
-    setTopicId(properties.get(IForumPoster.TOPIC_ID, ""));
-    this.alsoPostAfterCombatMove = properties.get(IForumPoster.POST_AFTER_COMBAT, false);
-    this.attachSaveGameToSummary = properties.get(IForumPoster.INCLUDE_SAVEGAME, false);
+    populateFromGameProperties(properties);
   }
 
   @SuppressWarnings("Guava")
@@ -96,11 +92,11 @@ class ForumPosterEditorViewModel {
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
-    this.forumSelection = (String) properties.get(IForumPoster.NAME);
-    this.topicId = properties.get(IForumPoster.TOPIC_ID, "");
+    setForumSelection((String) properties.get(IForumPoster.NAME));
+    setTopicId(properties.get(IForumPoster.TOPIC_ID, ""));
     this.alsoPostAfterCombatMove = properties.get(IForumPoster.POST_AFTER_COMBAT, false);
-    this.attachSaveGameToSummary = properties.get(IForumPoster.INCLUDE_SAVEGAME, true);
-    view.viewModelChanged(this);
+    this.attachSaveGameToSummary = properties.get(IForumPoster.INCLUDE_SAVEGAME, false);
+    Optional.ofNullable(view).ifPresent(v -> v.viewModelChanged(this));
   }
 
   synchronized void viewForumButtonClicked() {
