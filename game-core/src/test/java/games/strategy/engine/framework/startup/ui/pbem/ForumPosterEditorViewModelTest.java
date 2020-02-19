@@ -17,7 +17,6 @@ import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -216,24 +215,12 @@ class ForumPosterEditorViewModelTest {
     verify(readyCallback, times(2)).run();
   }
 
-  @Nested
-  class ViewCallbackIsInvokedWhenFieldsAreSet {
-    @Test
-    void topicId() {
-      final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
-      viewModel.setView(viewModelListener);
-      viewModel.setTopicId("");
+  @Test
+  void viewCallbackIsInvokedWhenViewModelDataIsChanged() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setView(viewModelListener);
+    viewModel.populateFromGameProperties(new GameProperties(gameData));
 
-      verify(viewModelListener).viewModelChanged(viewModel);
-    }
-
-    @Test
-    void forumSelection() {
-      final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
-      viewModel.setView(viewModelListener);
-      viewModel.setForumSelection("");
-
-      verify(viewModelListener).viewModelChanged(viewModel);
-    }
+    verify(viewModelListener).viewModelChanged(viewModel);
   }
 }

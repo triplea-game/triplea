@@ -63,7 +63,6 @@ class ForumPosterEditorViewModel {
     viewForumPostButtonEnabled = areFieldsValid();
     testForumPostButtonEnabled = areFieldsValid();
     readyCallback.run();
-    Optional.ofNullable(view).ifPresent(v -> v.viewModelChanged(this));
   }
 
   public String getForumSelection() {
@@ -78,7 +77,6 @@ class ForumPosterEditorViewModel {
     viewForumPostButtonEnabled = areFieldsValid();
     testForumPostButtonEnabled = areFieldsValid();
     readyCallback.run();
-    Optional.ofNullable(view).ifPresent(v -> v.viewModelChanged(this));
   }
 
   Iterable<String> getForumSelectionOptions() {
