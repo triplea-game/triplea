@@ -20,7 +20,7 @@
   </files>
   <launchers>
     <launcher name="TripleA" id="33" menuName="TripleA-${compiler:sys.version}">
-      <executable name="TripleA" iconSet="true" stderrMode="append" executableMode="gui" checkConsoleParameter="true" dpiAware="false">
+      <executable name="TripleA" iconSet="true" stderrMode="append" executableMode="gui" checkConsoleParameter="true" dpiAware="true">
         <versionInfo internalName="TripleA" productName="TripleA Game" />
       </executable>
       <splashScreen show="true" width="256" height="256" bitmapFile="assets/icons/triplea_icon_256_256.png" textOverlay="true">
