@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.pbem.test.post;
+package games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientContext;

@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.pbem.test.post;
+package games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post;
 
 public interface TestPostProgressDisplay {
 

@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.pbem.test.post;
+package games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post;
 
 import games.strategy.engine.framework.GameRunner;
 import java.util.function.Supplier;

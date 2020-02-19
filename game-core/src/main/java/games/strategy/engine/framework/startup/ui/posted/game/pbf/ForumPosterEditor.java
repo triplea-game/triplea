@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.pbem;
+package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

@@ -10,7 +10,7 @@ import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
-import games.strategy.engine.framework.startup.ui.pbem.PbemSetupPanel;
+import games.strategy.engine.framework.startup.ui.posted.game.pbf.PbemSetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import java.awt.Dimension;
 import java.util.Optional;

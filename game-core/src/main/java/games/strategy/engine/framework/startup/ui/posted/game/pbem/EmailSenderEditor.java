@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.pbem;
+package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import com.google.common.base.Ascii;
 import games.strategy.engine.ClientFileSystemHelper;
