@@ -30,12 +30,6 @@ final class WebHelpMenu extends JMenu {
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     add(warClub);
 
-    final JMenuItem ruleBookLink = new JMenuItem("Rule Book");
-    ruleBookLink.setMnemonic(KeyEvent.VK_K);
-    ruleBookLink.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
-    add(ruleBookLink);
-
     final JMenuItem donateLink = new JMenuItem("Donate");
     donateLink.setMnemonic(KeyEvent.VK_O);
     donateLink.addActionListener(

@@ -31,7 +31,6 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton connectToHostedGame;
   private JButton connectToLobby;
   private JButton enginePreferences;
-  private JButton ruleBook;
   private JButton userGuideButton;
 
   private final SetupPanelModel model;
@@ -77,9 +76,7 @@ public class MetaSetupPanel extends SetupPanel {
             + "so long as you know their IP address.</html>");
     enginePreferences = new JButton("Engine Preferences");
     enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
-    ruleBook = new JButton("Rule Book");
     userGuideButton = new JButton("User Guide & Help");
-    ruleBook.setToolTipText("Download a manual of how to play");
   }
 
   private void layoutComponents() {
@@ -183,20 +180,6 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(10, 0, 0, 0),
             0,
             0));
-    add(
-        ruleBook,
-        new GridBagConstraints(
-            0,
-            8,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(10, 0, 0, 0),
-            0,
-            0));
 
     final JButton mapCreator =
         new JButtonBuilder()
@@ -208,7 +191,7 @@ public class MetaSetupPanel extends SetupPanel {
         mapCreator,
         new GridBagConstraints(
             0,
-            9,
+            8,
             1,
             1,
             0,
@@ -223,7 +206,7 @@ public class MetaSetupPanel extends SetupPanel {
         userGuideButton,
         new GridBagConstraints(
             0,
-            10,
+            9,
             1,
             1,
             0,
@@ -259,12 +242,7 @@ public class MetaSetupPanel extends SetupPanel {
     connectToLobby.addActionListener(e -> model.login());
     enginePreferences.addActionListener(
         e -> ClientSetting.showSettingsWindow(JOptionPane.getFrameForComponent(this)));
-    ruleBook.addActionListener(e -> ruleBook());
     userGuideButton.addActionListener(e -> userGuidePage());
-  }
-
-  private static void ruleBook() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK);
   }
 
   private static void userGuidePage() {

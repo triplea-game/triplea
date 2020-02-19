@@ -32,12 +32,6 @@ public class AboutInformation implements ControlledScreen<ScreenController<FxmlM
     open(UrlConstants.USER_GUIDE);
   }
 
-  @FXML
-  @SuppressWarnings("unused")
-  private void showRuleBook() {
-    open(UrlConstants.RULE_BOOK);
-  }
-
   private void open(final String url) {
     OpenFileUtility.openUrl(
         url, () -> new Alert(Alert.AlertType.INFORMATION, url, ButtonType.CLOSE).show());
