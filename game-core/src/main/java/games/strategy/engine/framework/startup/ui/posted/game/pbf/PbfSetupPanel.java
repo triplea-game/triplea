@@ -12,9 +12,6 @@ import games.strategy.engine.framework.startup.ui.PlayerSelectorRow;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailSenderEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbem.ForumPosterEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbem.ForumPosterEditorViewModel;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.random.PbemDiceRoller;
 import java.awt.Dialog;
@@ -52,7 +49,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
   private final DiceServerEditor diceServerEditor;
   private final ForumPosterEditor forumPosterEditor;
   private final ForumPosterEditorViewModel forumPosterEditorViewModel;
-  private final EmailSenderEditor emailSenderEditor;
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
   private final JPanel localPlayerPanel = new JPanel();
   private final JButton localPlayerSelection = new JButton("Select Local Players and AI's");
@@ -79,7 +75,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
 
     forumPosterEditor = new ForumPosterEditor(forumPosterEditorViewModel);
 
-    emailSenderEditor = new EmailSenderEditor(this::fireListener);
     createComponents();
     layoutComponents();
     setupListeners();
@@ -139,7 +134,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             .insets(10, 0, 20, 0)
             .build());
     tabbedPane.addTab("Play By Forum", forumPosterEditor);
-    tabbedPane.addTab("Play By Email", emailSenderEditor);
 
     // add selection of local players
     add(
@@ -179,7 +173,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             properties -> {
               diceServerEditor.populateFromGameProperties(properties);
               forumPosterEditorViewModel.populateFromGameProperties(properties);
-              emailSenderEditor.populateFromGameProperties(properties);
             });
   }
 
@@ -194,9 +187,7 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
   public boolean canGameStart() {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();
     final boolean forumValid = forumPosterEditorViewModel.areFieldsValid();
-    final boolean emailValid = emailSenderEditor.areFieldsValid();
-    final boolean ready =
-        diceServerValid && (forumValid || emailValid) && gameSelectorModel.getGameData() != null;
+    final boolean ready = diceServerValid && forumValid && gameSelectorModel.getGameData() != null;
     // make sure at least 1 player is enabled
     return ready && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
@@ -225,9 +216,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
           IForumPoster.POST_AFTER_COMBAT, forumPosterEditorViewModel.isAlsoPostAfterCombatMove());
       properties.set(
           IForumPoster.INCLUDE_SAVEGAME, forumPosterEditorViewModel.isAttachSaveGameToSummary());
-    }
-    if (emailSenderEditor.areFieldsValid()) {
-      emailSenderEditor.applyToGameProperties(data.getProperties());
     }
   }
 
