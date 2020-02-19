@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.editors;
+package games.strategy.engine.framework.startup.ui.pbem;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;
@@ -19,9 +19,10 @@ import org.triplea.awt.OpenFileUtility;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingComponents;
 
 /** A class to configure a Dice Server for the game. */
-public class DiceServerEditor extends EditorPanel {
+public class DiceServerEditor extends JPanel {
   public static final URI PRODUCTION_URI = URI.create("https://dice.marti.triplea-game.org");
   public static final URI PRE_RELEASE_URI =
       URI.create("https://prerelease.dice.marti.triplea-game.org");
@@ -43,6 +44,7 @@ public class DiceServerEditor extends EditorPanel {
   private final Runnable readyCallback;
 
   public DiceServerEditor(final Runnable readyCallback) {
+    super(new GridBagLayout());
     this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
@@ -223,13 +225,12 @@ public class DiceServerEditor extends EditorPanel {
 
   public boolean areFieldsValid() {
     final boolean toValid =
-        setLabelValid(
-            !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText()),
-            toLabel);
+        !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText());
+    SwingComponents.highlightLabelIfNotValid(toValid, toLabel);
     final boolean ccValid =
-        setLabelValid(
-            !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText()),
-            ccLabel);
+        !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText());
+    SwingComponents.highlightLabelIfNotValid(ccValid, ccLabel);
+
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
     testDiceButton.setToolTipText(

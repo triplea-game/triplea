@@ -1,14 +1,17 @@
-package games.strategy.engine.framework.startup.ui;
+package games.strategy.engine.framework.startup.ui.pbem;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
-import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
-import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
-import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
+import games.strategy.engine.framework.startup.ui.PlayerSelectorRow;
+import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.framework.startup.ui.SetupPanel;
+import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.random.PbemDiceRoller;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -44,6 +47,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private final GameSelectorModel gameSelectorModel;
   private final DiceServerEditor diceServerEditor;
   private final ForumPosterEditor forumPosterEditor;
+  private final ForumPosterEditorViewModel forumPosterEditorViewModel;
   private final EmailSenderEditor emailSenderEditor;
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
   private final JPanel localPlayerPanel = new JPanel();
@@ -52,13 +56,25 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   /**
    * Creates a new instance.
    *
-   * @param model the GameSelectionModel, though which changes are obtained when new games are
+   * @param model the GameSelectionModel, through which changes are obtained when new games are
    *     chosen, or save games loaded
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
     diceServerEditor = new DiceServerEditor(this::fireListener);
-    forumPosterEditor = new ForumPosterEditor(this::fireListener);
+
+    // create a view model with game properties if they are defined, otherwise create
+    // one without game properties.
+    forumPosterEditorViewModel =
+        Optional.ofNullable(model.getGameData())
+            .map(GameData::getProperties)
+            .map(
+                gameProperties ->
+                    new ForumPosterEditorViewModel(this::fireListener, gameProperties))
+            .orElseGet(() -> new ForumPosterEditorViewModel(this::fireListener));
+
+    forumPosterEditor = new ForumPosterEditor(forumPosterEditorViewModel);
+
     emailSenderEditor = new EmailSenderEditor(this::fireListener);
     createComponents();
     layoutComponents();
@@ -158,7 +174,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
         .ifPresent(
             properties -> {
               diceServerEditor.populateFromGameProperties(properties);
-              forumPosterEditor.populateFromGameProperties(properties);
+              forumPosterEditorViewModel.populateFromGameProperties(properties);
               emailSenderEditor.populateFromGameProperties(properties);
             });
   }
@@ -173,7 +189,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public boolean canGameStart() {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();
-    final boolean forumValid = forumPosterEditor.areFieldsValid();
+    final boolean forumValid = forumPosterEditorViewModel.areFieldsValid();
     final boolean emailValid = emailSenderEditor.areFieldsValid();
     final boolean ready =
         diceServerValid && (forumValid || emailValid) && gameSelectorModel.getGameData() != null;
@@ -184,11 +200,27 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public void postStartGame() {
     final GameData data = gameSelectorModel.getGameData();
+
+    Preconditions.checkNotNull(
+        data,
+        "Game Data must not be null when starting a game, "
+            + "this error indicates a programming bug that allowed for the start game button to be "
+            + "enabled without first valid game data being loaded. ");
     if (diceServerEditor.areFieldsValid()) {
       diceServerEditor.applyToGameProperties(data.getProperties());
     }
-    if (forumPosterEditor.areFieldsValid()) {
-      forumPosterEditor.applyToGameProperties(data.getProperties());
+    if (forumPosterEditorViewModel.areFieldsValid()) {
+      final GameProperties properties = data.getProperties();
+      properties.set(
+          IForumPoster.NAME, //
+          forumPosterEditorViewModel.getForumSelection());
+      properties.set(
+          IForumPoster.TOPIC_ID, //
+          Integer.parseInt(forumPosterEditorViewModel.getTopicId()));
+      properties.set(
+          IForumPoster.POST_AFTER_COMBAT, forumPosterEditorViewModel.isAlsoPostAfterCombatMove());
+      properties.set(
+          IForumPoster.INCLUDE_SAVEGAME, forumPosterEditorViewModel.isAttachSaveGameToSummary());
     }
     if (emailSenderEditor.areFieldsValid()) {
       emailSenderEditor.applyToGameProperties(data.getProperties());
@@ -214,6 +246,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   /** Called when the user hits play. */
   @Override
   public Optional<ILauncher> getLauncher() {
+    Preconditions.checkNotNull(
+        gameSelectorModel.getGameData(),
+        "Game Data must not be null when launching a game, "
+            + "this error indicates a programming bug that allowed for the start game button to be "
+            + "enabled without first valid game data being loaded. ");
+
     final PbemDiceRoller randomSource = new PbemDiceRoller(diceServerEditor.newDiceServer());
     final Map<String, PlayerType> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();

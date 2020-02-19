@@ -260,15 +260,6 @@ public class NodeBbForumPoster {
     OpenFileUtility.openUrl(forumUrl + "/topic/" + topicId);
   }
 
-  /**
-   * Each poster provides a message that is displayed on the progress bar when testing the poster.
-   *
-   * @return the progress bar message
-   */
-  public String getTestMessage() {
-    return "Testing... This may take a while";
-  }
-
   private static void addTokenHeader(final HttpRequestBase request, final String token) {
     request.addHeader("Authorization", "Bearer " + token);
   }

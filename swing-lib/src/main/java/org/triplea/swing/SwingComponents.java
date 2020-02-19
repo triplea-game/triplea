@@ -3,6 +3,7 @@ package org.triplea.swing;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -35,6 +36,7 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -52,6 +54,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.JTextComponent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -60,11 +63,10 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * code out of the rest of the code base. This also gives us a cleaner interface between UI and the
  * rest of the code.
  */
+@UtilityClass
 public final class SwingComponents {
   private static final String PERIOD = ".";
   private static final Collection<String> visiblePrompts = new HashSet<>();
-
-  private SwingComponents() {}
 
   /**
    * Enum for swing codes that represent key events. In this case holding control or the meta keys.
@@ -79,6 +81,22 @@ public final class SwingComponents {
     KeyDownMask(final int code) {
       this.code = code;
     }
+  }
+
+  /**
+   * Colors a label text to a highlight color if not valid, otherwise returns the label text to a
+   * default color.
+   */
+  public static void highlightLabelIfNotValid(final boolean valid, final JLabel label) {
+    label.setForeground(valid ? SwingComponents.getDefaultLabelColor() : Color.RED);
+  }
+
+  /**
+   * Returns the default text color for labels. Note, this is a dynamic value in case the look and
+   * feel is changed which could potentially change the text color of labels.
+   */
+  private static Color getDefaultLabelColor() {
+    return new JLabel().getForeground();
   }
 
   public static void addSpaceKeyListener(final JComponent component, final Runnable runnable) {

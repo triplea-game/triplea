@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.editors;
+package games.strategy.engine.framework.startup.ui.pbem;
 
 import com.google.common.base.Ascii;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -7,6 +7,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,16 +18,18 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.ProgressWindow;
+import org.triplea.swing.SwingComponents;
 
 /** An editor for modifying email senders. */
 @Log
-public class EmailSenderEditor extends EditorPanel {
+public class EmailSenderEditor extends JPanel {
   private static final long serialVersionUID = -4647781117491269926L;
   private final JTextField subject = new JTextField();
   private final JTextField toAddress = new JTextField();
@@ -36,6 +39,7 @@ public class EmailSenderEditor extends EditorPanel {
   private final Runnable readyCallback;
 
   public EmailSenderEditor(final Runnable readyCallback) {
+    super(new GridBagLayout());
     this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
@@ -192,8 +196,8 @@ public class EmailSenderEditor extends EditorPanel {
 
     final String toAddressText = toAddress.getText();
     final boolean addressValid =
-        setLabelValid(
-            !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText), toLabel);
+        !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText);
+    SwingComponents.highlightLabelIfNotValid(addressValid, toLabel);
     final boolean allValid = setupValid && addressValid;
     testEmail.setEnabled(allValid);
     return allValid;
