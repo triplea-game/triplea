@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.posted.game.pbem;
+package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.startup.ui.posted.game.pbf.ForumPosterEditorViewModel;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import java.util.List;
