@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.posted.game.pbf;
+package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
@@ -12,9 +12,8 @@ import games.strategy.engine.framework.startup.ui.PlayerSelectorRow;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailSenderEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbem.ForumPosterEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbem.ForumPosterEditorViewModel;
+import games.strategy.engine.framework.startup.ui.posted.game.pbf.ForumPosterEditor;
+import games.strategy.engine.framework.startup.ui.posted.game.pbf.ForumPosterEditorViewModel;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.random.PbemDiceRoller;
 import java.awt.Dialog;

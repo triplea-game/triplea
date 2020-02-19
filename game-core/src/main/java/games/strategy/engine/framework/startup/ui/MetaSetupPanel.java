@@ -26,6 +26,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
   private JButton startLocal;
+  private JButton startPbf;
   private JButton startPbem;
   private JButton hostGame;
   private JButton connectToHostedGame;
@@ -60,10 +61,12 @@ public class MetaSetupPanel extends SetupPanel {
         "<html>Start a game on this computer. <br>"
             + "You can play against a friend sitting besides you (hotseat mode), <br>"
             + "or against one of the AIs.</html>");
-    startPbem = new JButton("Start PBEM (Play-By-Email/Forum) Game");
+    startPbf = new JButton("Play By Forum");
+    startPbf.setToolTipText(
+        "<html>Starts a game which will be posted to an online forum or message board.</html>");
+    startPbem = new JButton("Play By Email");
     startPbem.setToolTipText(
-        "<html>Starts a game which will be emailed back and forth between all players, <br>"
-            + "or be posted to an online forum or message board.</html>");
+        "<html>Starts a game which will be emailed back and forth between all players.</html>");
     hostGame = new JButton("Host Networked Game");
     hostGame.setToolTipText(
         "<html>Hosts a network game, which people can connect to. <br>"
@@ -82,11 +85,12 @@ public class MetaSetupPanel extends SetupPanel {
   private void layoutComponents() {
     setLayout(new GridBagLayout());
     // top space
+    int row = 0;
     add(
         new JPanel(),
         new GridBagConstraints(
             0,
-            0,
+            row,
             1,
             1,
             1,
@@ -96,11 +100,12 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(0, 0, 0, 0),
             0,
             0));
+    row++;
     add(
         connectToLobby,
         new GridBagConstraints(
             0,
-            1,
+            row,
             1,
             1,
             0,
@@ -110,11 +115,12 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(10, 0, 0, 0),
             0,
             0));
+    row++;
     add(
         startLocal,
         new GridBagConstraints(
             0,
-            2,
+            row,
             1,
             1,
             0,
@@ -124,11 +130,27 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(10, 0, 0, 0),
             0,
             0));
+    row++;
+    add(
+        startPbf,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(10, 0, 0, 0),
+            0,
+            0));
+    row++;
     add(
         startPbem,
         new GridBagConstraints(
             0,
-            3,
+            row,
             1,
             1,
             0,
@@ -138,11 +160,12 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(10, 0, 0, 0),
             0,
             0));
+    row++;
     add(
         hostGame,
         new GridBagConstraints(
             0,
-            4,
+            row,
             1,
             1,
             0,
@@ -152,11 +175,12 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(10, 0, 0, 0),
             0,
             0));
+    row++;
     add(
         connectToHostedGame,
         new GridBagConstraints(
             0,
-            5,
+            row,
             1,
             1,
             0,
@@ -166,11 +190,12 @@ public class MetaSetupPanel extends SetupPanel {
             new Insets(10, 0, 0, 0),
             0,
             0));
+    row++;
     add(
         enginePreferences,
         new GridBagConstraints(
             0,
-            6,
+            row,
             1,
             1,
             0,
@@ -187,11 +212,12 @@ public class MetaSetupPanel extends SetupPanel {
             .actionListener(MapCreator::openMapCreatorWindow)
             .build();
 
+    row++;
     add(
         mapCreator,
         new GridBagConstraints(
             0,
-            8,
+            row,
             1,
             1,
             0,
@@ -202,11 +228,12 @@ public class MetaSetupPanel extends SetupPanel {
             0,
             0));
 
+    row++;
     add(
         userGuideButton,
         new GridBagConstraints(
             0,
-            9,
+            row,
             1,
             1,
             0,
@@ -236,6 +263,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private void setupListeners() {
     startLocal.addActionListener(e -> model.showLocal());
+    startPbf.addActionListener(e -> model.showPbf());
     startPbem.addActionListener(e -> model.showPbem());
     hostGame.addActionListener(e -> new Thread(model::showServer).start());
     connectToHostedGame.addActionListener(e -> new Thread(model::showClient).start());

@@ -10,7 +10,8 @@ import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
-import games.strategy.engine.framework.startup.ui.posted.game.pbf.PbemSetupPanel;
+import games.strategy.engine.framework.startup.ui.posted.game.pbem.PbemSetupPanel;
+import games.strategy.engine.framework.startup.ui.posted.game.pbf.PbfSetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import java.awt.Dimension;
 import java.util.Optional;
@@ -43,6 +44,10 @@ public class SetupPanelModel implements ServerSetupModel {
 
   public void showLocal() {
     setGameTypePanel(new LocalSetupPanel(gameSelectorModel));
+  }
+
+  public void showPbf() {
+    setGameTypePanel(new PbfSetupPanel(gameSelectorModel));
   }
 
   public void showPbem() {
