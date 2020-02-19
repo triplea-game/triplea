@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.4" transformSequenceNumber="8">
   <directoryPresets config=".triplea-root" />
-  <application name="TripleA" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" createChecksums="false" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="http://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" autoSave="true" convertDotsToUnderscores="false" macVolumeId="af9346379363d40e" javaMinVersion="11" allowBetaVM="true" jdkMode="jdk">
-    <jreBundles jdkProviderId="JBR" release="11.0.4-b485.1" />
+  <application name="TripleA" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" createChecksums="false" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="http://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" autoSave="true" convertDotsToUnderscores="false" macVolumeId="af9346379363d40e" javaMinVersion="11" jdkMode="jdk">
+    <jreBundles jdkProviderId="JBR" release="11.0.6-b722.15" />
   </application>
   <files>
     <mountPoints>
