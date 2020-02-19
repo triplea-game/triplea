@@ -34,17 +34,6 @@
       </java>
       <macStaticAssociationActions mode="selected" />
       <vmOptionsFile mode="none" overwriteMode="3" />
-      <infoPlist>&lt;key&gt;CFBundleURLTypes&lt;/key&gt;
-&lt;array&gt;
-    &lt;dict&gt;
-        &lt;key&gt;CFBundleURLName&lt;/key&gt;
-        &lt;string&gt;TripleA Protocol&lt;/string&gt;
-        &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;
-        &lt;array&gt;
-            &lt;string&gt;triplea&lt;/string&gt;
-        &lt;/array&gt;
-    &lt;/dict&gt;
-&lt;/array&gt;</infoPlist>
       <iconImageFiles>
         <file path="./assets/icons/triplea_icon_16_16.png" />
         <file path="./assets/icons/triplea_icon_32_32.png" />
@@ -266,103 +255,12 @@ return console.askOkCancel(message, true);
                 </serializedBean>
                 <condition>!context.getBooleanVariable("sys.programGroupDisabled")</condition>
               </action>
-              <group name="Register Protocol Handler" id="173" beanClass="com.install4j.runtime.beans.groups.ActionGroup">
-                <beans>
-                  <action name="Add triplea key" id="172" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" actionElevationType="elevated">
-                    <serializedBean>
-                      <property name="keyName" type="string">Software\Classes\triplea</property>
-                      <property name="registryRoot" type="enum" class="com.install4j.api.windows.RegistryRoot" value="HKEY_CURRENT_USER" />
-                      <property name="value" type="string">URL:TripleA Protocol</property>
-                    </serializedBean>
-                  </action>
-                  <action name="Add URL Protocol entry" id="175" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" actionElevationType="elevated">
-                    <serializedBean>
-                      <property name="keyName" type="string">Software\Classes\triplea</property>
-                      <property name="registryRoot" type="enum" class="com.install4j.api.windows.RegistryRoot" value="HKEY_CURRENT_USER" />
-                      <property name="valueName" type="string">URL Protocol</property>
-                    </serializedBean>
-                  </action>
-                  <action name="Add Icon Path" id="177" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" actionElevationType="elevated">
-                    <serializedBean>
-                      <property name="keyName" type="string">Software\Classes\triplea\DefaultIcon</property>
-                      <property name="registryRoot" type="enum" class="com.install4j.api.windows.RegistryRoot" value="HKEY_CURRENT_USER" />
-                      <property name="value" type="string">"${installer:sys.installationDir}\TripleA.exe,0"</property>
-                    </serializedBean>
-                  </action>
-                  <action name="Add Exec Path" id="178" beanClass="com.install4j.runtime.beans.actions.registry.SetRegistryValueAction" actionElevationType="elevated">
-                    <serializedBean>
-                      <property name="keyName" type="string">Software\Classes\triplea\shell\open\command</property>
-                      <property name="registryRoot" type="enum" class="com.install4j.api.windows.RegistryRoot" value="HKEY_CURRENT_USER" />
-                      <property name="value" type="string">"${installer:sys.installationDir}\TripleA.exe" "%1"</property>
-                    </serializedBean>
-                  </action>
-                  <action name="Linux protocol handler" id="220" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" errorMessage="Failed to create protocol handler">
-                    <serializedBean>
-                      <property name="script">
-                        <object class="com.install4j.api.beans.ScriptProperty">
-                          <property name="value" type="string">String home = System.getProperty("user.home");
-File shareFolder = new File(home + "/.local/share");
-if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; shareFolder.isDirectory())){
-    File applicationsDir = new File(shareFolder, "applications");
-    if(!applicationsDir.exists() || !applicationsDir.isDirectory()){
-        applicationsDir.mkdirs();
-    }
-    File desktopFile = new File(applicationsDir, "TripleA-" + context.getCompilerVariable("sys.version") + "-0.desktop");
-    File mimeappsFile = new File(applicationsDir, "mimeapps.list");
-    if(!desktopFile.exists()){
-        return true;
-    }
-    if(!mimeappsFile.exists()){
-        mimeappsFile.createNewFile();
-    }
-    String mimeType = "x-scheme-handler/triplea";
-    StringBuilder builder = new StringBuilder();
-    try(Scanner scanner = new Scanner(desktopFile)){
-        String mimeTypePrefix = "MimeType=";
-        while(scanner.hasNextLine()){
-            String nextLine = scanner.nextLine();
-            if(nextLine.startsWith("Exec=") &amp;&amp; !nextLine.contains("%u")){
-                builder.append(nextLine).append(" %u\n");
-            } else if(!nextLine.startsWith(mimeTypePrefix)){
-                builder.append(nextLine).append('\n');
-            }
-        }
-        builder.append(mimeTypePrefix).append(mimeType);
-    }
-    try(PrintWriter writer = new PrintWriter(desktopFile)){
-        writer.print(builder.toString());
-    }
-    builder = new StringBuilder();
-    try(Scanner scanner = new Scanner(mimeappsFile)){
-        boolean isSetup = false;
-        String defaultApplicationString = "[Default Applications]";
-        String mimeTypePrefix = mimeType + "=";
-        while(scanner.hasNextLine()){
-            String nextLine = scanner.nextLine();
-            if(!nextLine.startsWith(mimeTypePrefix)){
-                builder.append(nextLine).append('\n');
-            }
-            if(nextLine.equalsIgnoreCase(defaultApplicationString)){
-                isSetup = true;
-            }
-        }
-        if(!isSetup){
-            builder.insert(0, defaultApplicationString + "\n");
-        }
-        builder.append(mimeTypePrefix).append(desktopFile.getName()).append('\n');
-    }
-    try(PrintWriter writer = new PrintWriter(mimeappsFile)){
-        writer.print(builder.toString());
-    }
-}
-return true;</property>
-                        </object>
-                      </property>
-                    </serializedBean>
-                    <condition>Util.isLinux()</condition>
-                  </action>
-                </beans>
-              </group>
+              <action id="554" beanClass="com.install4j.runtime.beans.actions.desktop.UrlHandlerAction" actionElevationType="elevated" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="launcherId" type="string">33</property>
+                  <property name="scheme" type="string">triplea</property>
+                </serializedBean>
+              </action>
               <action id="11" beanClass="com.install4j.runtime.beans.actions.desktop.RegisterAddRemoveAction" actionElevationType="elevated">
                 <serializedBean>
                   <property name="itemName" type="string">${compiler:sys.fullName} ${compiler:sys.version}</property>
