@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
@@ -12,9 +11,6 @@ import games.strategy.engine.framework.startup.ui.PlayerSelectorRow;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbf.ForumPosterEditor;
-import games.strategy.engine.framework.startup.ui.posted.game.pbf.ForumPosterEditorViewModel;
-import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.random.PbemDiceRoller;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -49,8 +45,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
   private final GameSelectorModel gameSelectorModel;
   private final DiceServerEditor diceServerEditor;
-  private final ForumPosterEditor forumPosterEditor;
-  private final ForumPosterEditorViewModel forumPosterEditorViewModel;
   private final EmailSenderEditor emailSenderEditor;
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
   private final JPanel localPlayerPanel = new JPanel();
@@ -65,19 +59,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
     diceServerEditor = new DiceServerEditor(this::fireListener);
-
-    // create a view model with game properties if they are defined, otherwise create
-    // one without game properties.
-    forumPosterEditorViewModel =
-        Optional.ofNullable(model.getGameData())
-            .map(GameData::getProperties)
-            .map(
-                gameProperties ->
-                    new ForumPosterEditorViewModel(this::fireListener, gameProperties))
-            .orElseGet(() -> new ForumPosterEditorViewModel(this::fireListener));
-
-    forumPosterEditor = new ForumPosterEditor(forumPosterEditorViewModel);
-
     emailSenderEditor = new EmailSenderEditor(this::fireListener);
     createComponents();
     layoutComponents();
@@ -137,7 +118,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             .fill(GridBagConstraintsFill.HORIZONTAL)
             .insets(10, 0, 20, 0)
             .build());
-    tabbedPane.addTab("Play By Forum", forumPosterEditor);
     tabbedPane.addTab("Play By Email", emailSenderEditor);
 
     // add selection of local players
@@ -177,7 +157,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
         .ifPresent(
             properties -> {
               diceServerEditor.populateFromGameProperties(properties);
-              forumPosterEditorViewModel.populateFromGameProperties(properties);
               emailSenderEditor.populateFromGameProperties(properties);
             });
   }
@@ -192,10 +171,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public boolean canGameStart() {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();
-    final boolean forumValid = forumPosterEditorViewModel.areFieldsValid();
     final boolean emailValid = emailSenderEditor.areFieldsValid();
-    final boolean ready =
-        diceServerValid && (forumValid || emailValid) && gameSelectorModel.getGameData() != null;
+    final boolean ready = diceServerValid && emailValid && gameSelectorModel.getGameData() != null;
     // make sure at least 1 player is enabled
     return ready && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
@@ -211,19 +188,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             + "enabled without first valid game data being loaded. ");
     if (diceServerEditor.areFieldsValid()) {
       diceServerEditor.applyToGameProperties(data.getProperties());
-    }
-    if (forumPosterEditorViewModel.areFieldsValid()) {
-      final GameProperties properties = data.getProperties();
-      properties.set(
-          IForumPoster.NAME, //
-          forumPosterEditorViewModel.getForumSelection());
-      properties.set(
-          IForumPoster.TOPIC_ID, //
-          Integer.parseInt(forumPosterEditorViewModel.getTopicId()));
-      properties.set(
-          IForumPoster.POST_AFTER_COMBAT, forumPosterEditorViewModel.isAlsoPostAfterCombatMove());
-      properties.set(
-          IForumPoster.INCLUDE_SAVEGAME, forumPosterEditorViewModel.isAttachSaveGameToSummary());
     }
     if (emailSenderEditor.areFieldsValid()) {
       emailSenderEditor.applyToGameProperties(data.getProperties());
