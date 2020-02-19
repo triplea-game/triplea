@@ -22,7 +22,7 @@ function reportStatus() {
 function installInstall4j() {
   echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
   wget --no-verbose -O install4j_unix.sh \
-          https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_8_0_2.sh
+          https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_8_0_4.sh
   chmod +x install4j_unix.sh
   ./install4j_unix.sh -q -dir "$INSTALL4J_HOME"
   "$INSTALL4J_HOME/bin/install4jc" -L "$INSTALL4J_8_LICENSE"
