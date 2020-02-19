@@ -8,13 +8,11 @@
     <mountPoints>
       <mountPoint id="28" location="assets" />
       <mountPoint id="23" location="bin" />
-      <mountPoint id="27" location="dice_servers" />
       <mountPoint id="22" />
     </mountPoints>
     <entries>
       <dirEntry mountPoint="28" file="assets" subDirectory="assets" />
       <dirEntry mountPoint="23" file="build/libs" />
-      <dirEntry mountPoint="27" file="dice_servers" subDirectory="dice_servers" />
       <fileEntry mountPoint="22" file=".triplea-root" />
     </entries>
   </files>
