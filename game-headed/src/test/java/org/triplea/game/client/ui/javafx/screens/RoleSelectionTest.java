@@ -24,11 +24,11 @@ import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.game.client.ui.javafx.UserAgentStylesheetTest;
+import org.triplea.game.client.ui.javafx.UserAgentStylesheetTestCase;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
-public class RoleSelectionTest extends UserAgentStylesheetTest {
+public class RoleSelectionTest extends UserAgentStylesheetTestCase {
 
   private final RoleSelection roleSelection = new RoleSelection();
 

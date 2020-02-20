@@ -14,11 +14,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import org.junit.jupiter.api.Test;
-import org.triplea.game.client.ui.javafx.UserAgentStylesheetTest;
+import org.triplea.game.client.ui.javafx.UserAgentStylesheetTestCase;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
-class MainMenuPaneTest extends UserAgentStylesheetTest {
+class MainMenuPaneTest extends UserAgentStylesheetTestCase {
 
   @Test
   void testGetNode() {
