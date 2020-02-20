@@ -1,5 +1,6 @@
 package org.triplea.game.client.ui.javafx.screens;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -23,6 +24,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
@@ -36,13 +39,29 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
   private final Map<GamePlayer, Spinner<Integer>> incomeForPlayers = new HashMap<>();
   private final Map<GamePlayer, Spinner<Integer>> pusForPlayers = new HashMap<>();
 
-  @FXML private ComboBox<String> allSelectorCheckbox;
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  @FXML
+  private ComboBox<String> allSelectorCheckbox;
 
-  @FXML private GridPane factionGrid;
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  @FXML
+  private GridPane factionGrid;
 
-  @FXML private VBox root;
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  @FXML
+  private VBox root;
 
-  @FXML private CheckBox resourceModifierCheckbox;
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  @FXML
+  private CheckBox resourceModifierCheckbox;
 
   private ScreenController<FxmlManager> screenController;
   private GameData gameData;
@@ -65,6 +84,8 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
   @Override
   public void onShow(final Map<String, Object> data) {
     roleForPlayers.clear();
+    incomeForPlayers.clear();
+    pusForPlayers.clear();
     factionGrid
         .getChildren()
         .removeIf(
