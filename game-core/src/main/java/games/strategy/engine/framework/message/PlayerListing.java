@@ -41,6 +41,25 @@ public class PlayerListing implements Serializable {
   @Getter private final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder;
 
   public PlayerListing(
+      final Map<String, Boolean> playersEnabledListing,
+      final Map<String, PlayerType> localPlayerTypes,
+      final Version gameVersion,
+      final String gameName,
+      final String gameRound) {
+    // we don't need the playerToNode list, the disable-able players, or the alliances list, for a
+    // local game
+    this(
+        null,
+        playersEnabledListing,
+        localPlayerTypes,
+        gameVersion,
+        gameName,
+        gameRound,
+        null,
+        null);
+  }
+
+  public PlayerListing(
       final Map<String, String> playerToNodeListing,
       final Map<String, Boolean> playersEnabledListing,
       final Map<String, PlayerType> localPlayerTypes,

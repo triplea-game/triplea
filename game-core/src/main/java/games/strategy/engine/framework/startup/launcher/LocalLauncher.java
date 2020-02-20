@@ -112,18 +112,13 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
                     PlayerCountrySelection::getPlayerName,
                     PlayerCountrySelection::isPlayerEnabled));
 
-    // we don't need the playerToNode list, the disable-able players, or the alliances list, for a
-    // local game
     final PlayerListing pl =
         new PlayerListing(
-            null,
             playersEnabled,
             playerTypes,
             gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(),
-            gameSelectorModel.getGameRound(),
-            null,
-            null);
+            gameSelectorModel.getGameRound());
     return new LocalLauncher(gameSelectorModel, new PlainRandomSource(), pl, parent, launchAction);
   }
 
@@ -135,7 +130,6 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
         entry -> !isDisabled.test(entry.getValue());
     final PlayerListing playerListing =
         new PlayerListing(
-            null,
             roleMapping.stream()
                 .collect(Collectors.toUnmodifiableMap(Entry::getKey, enabledPredicate::test)),
             roleMapping.stream()
@@ -145,9 +139,7 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
                         Entry::getKey, entry -> PlayerType.fromLabel(entry.getValue()))),
             gameData.getGameVersion(),
             gameData.getGameName(),
-            String.valueOf(gameData.getCurrentRound()),
-            null,
-            null);
+            String.valueOf(gameData.getCurrentRound()));
     return new LocalLauncher(
         GameSelector.fromGameData(gameData),
         new PlainRandomSource(),
