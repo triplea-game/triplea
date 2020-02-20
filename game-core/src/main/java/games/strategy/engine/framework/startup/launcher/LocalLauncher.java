@@ -126,14 +126,14 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
       final List<Entry<String, String>> roleMapping,
       final Predicate<String> isDisabled,
       final GameData gameData) {
-    final Predicate<Entry<String, String>> enabledPredicate =
+    final Predicate<Entry<String, String>> isPlayerEnabled =
         entry -> !isDisabled.test(entry.getValue());
     final PlayerListing playerListing =
         new PlayerListing(
             roleMapping.stream()
-                .collect(Collectors.toUnmodifiableMap(Entry::getKey, enabledPredicate::test)),
+                .collect(Collectors.toUnmodifiableMap(Entry::getKey, isPlayerEnabled::test)),
             roleMapping.stream()
-                .filter(enabledPredicate)
+                .filter(isPlayerEnabled)
                 .collect(
                     Collectors.toUnmodifiableMap(
                         Entry::getKey, entry -> PlayerType.fromLabel(entry.getValue()))),
