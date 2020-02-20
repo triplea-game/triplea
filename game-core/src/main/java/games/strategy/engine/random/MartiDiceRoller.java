@@ -41,6 +41,8 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   private static final String DICE_ROLLER_PATH = "/MARTI.php";
 
   private final Pattern errorPattern = Pattern.compile("fatal error:(.*)!");
+  // Matches a comma separated list of integers like this:
+  // your dice are: 1,2,3 <p>
   private final Pattern dicePattern =
       Pattern.compile("your dice are:\\s*((?:\\d(?:,\\d+)*)?)\\s*<p>");
 
