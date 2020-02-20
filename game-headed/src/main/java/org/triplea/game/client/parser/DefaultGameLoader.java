@@ -3,6 +3,7 @@ package org.triplea.game.client.parser;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.ui.GameChooserEntry;
+import java.io.FileNotFoundException;
 import java.util.function.Consumer;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -26,10 +27,10 @@ public class DefaultGameLoader extends Service<GameData> implements GameLoader {
   protected Task<GameData> createTask() {
     return new Task<>() {
       @Override
-      protected GameData call() throws GameParseException {
+      protected GameData call() throws GameParseException, FileNotFoundException {
         return gameChooserEntry
             .getCompleteGameData()
-            .orElseThrow(() -> new GameParseException("Missing file!"));
+            .orElseThrow(() -> new FileNotFoundException("Missing file!"));
       }
     };
   }
