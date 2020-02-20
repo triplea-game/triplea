@@ -1,5 +1,6 @@
 package games.strategy.engine.random;
 
+import com.google.common.base.Preconditions;
 import java.io.IOException;
 
 /**
@@ -51,7 +52,7 @@ public interface IRemoteDiceServer {
     private static final long serialVersionUID = -4907933854630035414L;
 
     public DiceServerException(final String message) {
-      super(message);
+      super(Preconditions.checkNotNull(message));
     }
   }
 }
