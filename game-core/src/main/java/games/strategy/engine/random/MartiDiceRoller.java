@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.HttpProxy;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -96,16 +95,15 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public int[] getDice(final String string, final int count)
-      throws IOException, InvocationTargetException {
+  public int[] getDice(final String string, final int count) throws DiceServerException {
     final Matcher errorMatcher = errorPattern.matcher(string);
     if (errorMatcher.find()) {
-      throw new InvocationTargetException(null, errorMatcher.group(1));
+      throw new DiceServerException(errorMatcher.group(1));
     }
 
     final Matcher diceMatcher = dicePattern.matcher(string);
     if (!diceMatcher.find()) {
-      throw new IOException("String '" + string + "' has an invalid format.");
+      throw new IllegalStateException("String '" + string + "' has an invalid format.");
     }
     return Splitter.on(',').omitEmptyStrings().splitToList(diceMatcher.group(1)).stream()
         .mapToInt(Integer::parseInt)

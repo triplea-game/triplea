@@ -1,7 +1,6 @@
 package games.strategy.engine.random;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * A service that provides dice rolling facilities outside the game process. Used to provide a level
@@ -21,9 +20,9 @@ public interface IRemoteDiceServer {
    * Given the html page returned from postRequest, return the dice [] throw an
    * InvocationTargetException to indicate an error message to be returned.
    *
-   * @throws IOException If there was an error parsing the string.
+   * @throws DiceServerException If the server returned an error message.
    */
-  int[] getDice(String string, int count) throws IOException, InvocationTargetException;
+  int[] getDice(String string, int count) throws DiceServerException;
 
   /**
    * Get the to address.
@@ -47,4 +46,12 @@ public interface IRemoteDiceServer {
   String getGameId();
 
   String getDisplayName();
+
+  class DiceServerException extends Exception {
+    private static final long serialVersionUID = -4907933854630035414L;
+
+    public DiceServerException(final String message) {
+      super(message);
+    }
+  }
 }

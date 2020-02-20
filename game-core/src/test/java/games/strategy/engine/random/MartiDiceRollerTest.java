@@ -3,12 +3,10 @@ package games.strategy.engine.random;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsArray.array;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import games.strategy.engine.random.IRemoteDiceServer.DiceServerException;
 import java.net.URI;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
@@ -40,18 +38,18 @@ public class MartiDiceRollerTest {
   @Test
   void unsuccessfulMessageGetsExtractedCorrectly() {
     final Exception exception =
-        assertThrows(
-            InvocationTargetException.class, () -> martiDiceRoller.getDice(failureMessage, 0));
+        assertThrows(DiceServerException.class, () -> martiDiceRoller.getDice(failureMessage, 0));
     assertThat(exception.getMessage(), is(" Error description."));
-    assertThat(exception.getCause(), is(nullValue()));
   }
 
   @Test
   void verifyCorrectMissingOrInvalidTokenHandling() {
-    assertThrows(IOException.class, () -> martiDiceRoller.getDice("", 0));
-    assertThrows(IOException.class, () -> martiDiceRoller.getDice("your dice are:", 0));
-    assertThrows(IOException.class, () -> martiDiceRoller.getDice("<p>", 0));
-    assertThrows(IOException.class, () -> martiDiceRoller.getDice("<p>your dice are:", 0));
-    assertThrows(IOException.class, () -> martiDiceRoller.getDice("your dice are:NaN<p>", 0));
+    assertThrows(IllegalStateException.class, () -> martiDiceRoller.getDice("", 0));
+    assertThrows(IllegalStateException.class, () -> martiDiceRoller.getDice("your dice are:", 0));
+    assertThrows(IllegalStateException.class, () -> martiDiceRoller.getDice("<p>", 0));
+    assertThrows(
+        IllegalStateException.class, () -> martiDiceRoller.getDice("<p>your dice are:", 0));
+    assertThrows(
+        IllegalStateException.class, () -> martiDiceRoller.getDice("your dice are:NaN<p>", 0));
   }
 }
