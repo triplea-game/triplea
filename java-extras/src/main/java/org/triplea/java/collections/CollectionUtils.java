@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.function.Predicate.not;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +42,7 @@ public final class CollectionUtils {
     checkNotNull(collection);
     checkNotNull(predicate);
 
-    return collection.stream().filter(predicate).collect(Collectors.toList());
+    return ImmutableList.copyOf(collection).stream().filter(predicate).collect(Collectors.toList());
   }
 
   /**
