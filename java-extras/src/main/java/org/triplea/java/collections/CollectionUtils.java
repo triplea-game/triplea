@@ -5,16 +5,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.function.Predicate.not;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.concurrent.ThreadSafe;
+import lombok.experimental.UtilityClass;
 
 /** A collection of useful methods for working with instances of {@link Collection}. */
-public final class CollectionUtils {
-  private CollectionUtils() {}
+@ThreadSafe
+@UtilityClass
+public class CollectionUtils {
 
   /**
    * Returns the count of elements in the specified collection that match the specified predicate.
@@ -27,7 +31,7 @@ public final class CollectionUtils {
     checkNotNull(collection);
     checkNotNull(predicate);
 
-    return (int) collection.stream().filter(predicate).count();
+    return (int) ImmutableList.copyOf(collection).stream().filter(predicate).count();
   }
 
   /**
@@ -61,26 +65,38 @@ public final class CollectionUtils {
     checkArgument(max >= 0, "max must not be negative");
     checkNotNull(predicate);
 
-    return collection.stream().filter(predicate).limit(max).collect(Collectors.toList());
+    return ImmutableList.copyOf(collection).stream()
+        .filter(predicate)
+        .limit(max)
+        .collect(Collectors.toList());
   }
 
   /** return a such that a exists in c1 and a exists in c2. always returns a new collection. */
-  public static <T> List<T> intersection(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c2 == null) {
+  public static <T> List<T> intersection(
+      final Collection<T> collection1, final Collection<T> collection2) {
+    if (collection1 == null || collection2 == null) {
       return new ArrayList<>();
     }
+    final Collection<T> c1 = ImmutableSet.copyOf(collection1);
+    final Collection<T> c2 = ImmutableSet.copyOf(collection2);
+
     return c1.stream().filter(c2::contains).collect(Collectors.toList());
   }
 
   /** Returns a such that a exists in c1 but not in c2. Always returns a new collection. */
-  public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c1.isEmpty()) {
+  public static <T> List<T> difference(
+      final Collection<T> collection1, final Collection<T> collection2) {
+    if (collection1 == null || collection1.isEmpty()) {
       return new ArrayList<>(0);
     }
-    if (c2 == null || c2.isEmpty()) {
-      return new ArrayList<>(c1);
+    if (collection2 == null || collection2.isEmpty()) {
+      return new ArrayList<>(collection1);
     }
-    return c1.stream().filter(not(c2::contains)).collect(Collectors.toList());
+
+    final Collection<T> c1 = ImmutableSet.copyOf(collection1);
+    final Collection<T> c2 = ImmutableSet.copyOf(collection2);
+
+    return ImmutableList.copyOf(c1).stream().filter(not(c2::contains)).collect(Collectors.toList());
   }
 
   /**
@@ -88,9 +104,11 @@ public final class CollectionUtils {
    * are the same size. Note that (a,a,b) (a,b,b) are equal.
    */
   public static <T> boolean haveEqualSizeAndEquivalentElements(
-      final Collection<T> c1, final Collection<T> c2) {
-    checkNotNull(c1);
-    checkNotNull(c2);
+      final Collection<T> collection1, final Collection<T> collection2) {
+    checkNotNull(collection1);
+    checkNotNull(collection2);
+    final Collection<T> c1 = ImmutableSet.copyOf(collection1);
+    final Collection<T> c2 = ImmutableSet.copyOf(collection2);
 
     return Iterables.elementsEqual(c1, c2)
         || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
