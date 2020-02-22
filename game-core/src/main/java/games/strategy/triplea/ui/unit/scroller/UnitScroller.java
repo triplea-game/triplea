@@ -80,13 +80,15 @@ public class UnitScroller {
 
   private final Supplier<GamePlayer> currentPlayerSupplier;
   private final Supplier<MovePhase> movePhaseSupplier;
+  private Supplier<Boolean> parentPanelIsVisible;
 
   private final AvatarPanelFactory avatarPanelFactory;
   private final JLabel movesLeftLabel = new JLabel();
   private final JLabel territoryNameLabel = new JLabel();
   private final JPanel selectUnitImagePanel = new JPanel();
 
-  public UnitScroller(final GameData data, final MapPanel mapPanel) {
+  public UnitScroller(
+      final GameData data, final MapPanel mapPanel, final Supplier<Boolean> parentPanelIsVisible) {
     this.gameData = data;
     this.mapPanel = mapPanel;
     this.currentPlayerSupplier = () -> gameData.getSequence().getStep().getPlayerId();
@@ -95,6 +97,7 @@ public class UnitScroller {
             gameData.getSequence().getStep().isNonCombat()
                 ? MovePhase.NON_COMBAT
                 : MovePhase.COMBAT;
+    this.parentPanelIsVisible = parentPanelIsVisible;
     avatarPanelFactory = new AvatarPanelFactory(mapPanel);
 
     gameData.addGameDataEventListener(GameDataEvent.UNIT_MOVED, this::unitMoved);
@@ -102,6 +105,10 @@ public class UnitScroller {
   }
 
   private void unitMoved() {
+    if (!parentPanelIsVisible.get()) {
+      return;
+    }
+
     updateMovesLeftLabel();
     if (lastFocusedTerritory == null) {
       focusCapital();
@@ -142,9 +149,11 @@ public class UnitScroller {
   private void gamePhaseChanged() {
     skippedUnits = new HashSet<>();
     lastFocusedTerritory = null;
-    selectUnitImagePanel.removeAll();
-    selectUnitImagePanel.repaint();
-    focusCapital();
+    if (parentPanelIsVisible.get()) {
+      selectUnitImagePanel.removeAll();
+      selectUnitImagePanel.repaint();
+      focusCapital();
+    }
   }
 
   private void focusCapital() {

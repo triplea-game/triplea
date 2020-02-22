@@ -730,7 +730,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     warningImage = getMap().getWarningImage().orElse(null);
     errorImage = getMap().getErrorImage().orElse(null);
 
-    unitScroller = new UnitScroller(getData(), getMap());
+    unitScroller = new UnitScroller(getData(), getMap(), this::isVisible);
   }
 
   // Same as above! Delete this crap after refactoring.
