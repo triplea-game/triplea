@@ -103,7 +103,7 @@ final class CollectionUtilsTest {
 
     @Test
     void shouldReturnFalseWhenCollectionsHaveSameSizeButElementsAreNotEquivalent() {
-      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 2)), is(false));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 2)), is(true));
       assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 2), List.of(1, 2, 3)), is(false));
     }
   }
