@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eEu
+set -eEux
 
 ## Overwrites the version property file to contain a version number that
 ## has the current build number in it. This script then prints (returns)

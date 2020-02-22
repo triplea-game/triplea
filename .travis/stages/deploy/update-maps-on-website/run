@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eEu
+set -eEux
 
 
 ## Live update maps list on website, read the maps in 'triplea_maps.yaml' and 

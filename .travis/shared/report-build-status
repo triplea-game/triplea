@@ -12,7 +12,7 @@ if [ -z "$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" ]; then
   exit 1
 fi
 
-set -eu
+set -eux
 
 # Should be one of {SUCCESS|FAILURE}
 RESULT=${1-}
