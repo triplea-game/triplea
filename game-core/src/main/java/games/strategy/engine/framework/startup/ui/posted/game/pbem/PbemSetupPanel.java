@@ -42,7 +42,7 @@ import org.triplea.swing.jpanel.GridBagConstraintsFill;
  * panel, and we notify it through the notifyObservers()
  */
 public class PbemSetupPanel extends SetupPanel implements Observer {
-  private static final long serialVersionUID = 9006941131918034674L;
+  private static final long serialVersionUID = -4027051961383144244L;
   private final GameSelectorModel gameSelectorModel;
   private final DiceServerEditor diceServerEditor;
   private final EmailSenderEditor emailSenderEditor;
