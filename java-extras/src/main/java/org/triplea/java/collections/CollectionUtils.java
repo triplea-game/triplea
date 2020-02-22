@@ -107,8 +107,8 @@ public class CollectionUtils {
       final Collection<T> collection1, final Collection<T> collection2) {
     checkNotNull(collection1);
     checkNotNull(collection2);
-    final Collection<T> c1 = ImmutableSet.copyOf(collection1);
-    final Collection<T> c2 = ImmutableSet.copyOf(collection2);
+    final Collection<T> c1 = ImmutableList.copyOf(collection1);
+    final Collection<T> c2 = ImmutableList.copyOf(collection2);
 
     return Iterables.elementsEqual(c1, c2)
         || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
