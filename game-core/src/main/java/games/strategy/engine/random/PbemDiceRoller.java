@@ -1,5 +1,6 @@
 package games.strategy.engine.random;
 
+import games.strategy.engine.random.IRemoteDiceServer.DiceServerException;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -8,8 +9,6 @@ import java.awt.Window;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.net.SocketException;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import javax.swing.JButton;
@@ -214,10 +213,9 @@ public class PbemDiceRoller implements IRandomSource {
 
       appendText(subjectMessage + "\n");
       appendText("Contacting  " + diceServer.getDisplayName() + "\n");
-      String text = null;
       try {
-        text = diceServer.postRequest(sides, count, subjectMessage, gameId);
-        if (text.length() == 0) {
+        final String text = diceServer.postRequest(sides, count, subjectMessage, gameId);
+        if (text.isEmpty()) {
           appendText("Nothing could be read from dice server\n");
           appendText("Please check your firewall settings");
           notifyError();
@@ -230,34 +228,25 @@ public class PbemDiceRoller implements IRandomSource {
         if (!test) {
           closeAndReturn();
         }
-      } catch (final SocketException ex) { // an error in networking
-        appendText(
-            "Connection failure:"
-                + ex.getMessage()
-                + "\n"
-                + "Please ensure your Internet connection is working, and try again.");
-        notifyError();
-      } catch (final InvocationTargetException e) {
-        appendText("\nError:" + e.getMessage() + "\n\n");
-        appendText("Text from dice server:\n" + text + "\n");
-        notifyError();
-      } catch (final IOException ex) {
-        appendText("An error has occurred!\n");
-        appendText("Possible reasons the error could have happened:\n");
-        appendText("  1: An invalid e-mail address\n");
-        appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
-        appendText("  3: The e-mail address does not exist\n");
-        appendText(
-            "  4: An unknown error, please see the error console and consult the "
-                + "forums for help\n");
-        appendText("     Visit " + UrlConstants.TRIPLEA_FORUM + "  for extra help\n");
-        if (text != null) {
-          appendText("Text from dice server:\n" + text + "\n");
-        }
+      } catch (final IOException e) {
+        appendText("Connection failure:\n");
         final StringWriter writer = new StringWriter();
-        ex.printStackTrace(new PrintWriter(writer));
+        e.printStackTrace(new PrintWriter(writer));
         appendText(writer.toString());
+        appendText("\nPlease ensure your Internet connection is working, and try again.");
+        appendText("Visit " + UrlConstants.TRIPLEA_FORUM + " for extra help\n");
         notifyError();
+      } catch (final DiceServerException e) {
+        appendText("The dice server reported an issue with your request!\n");
+        appendText("Error Message:\n");
+        appendText(e.getMessage());
+        appendText("\n");
+        notifyError();
+      } catch (final RuntimeException e) {
+        // Close screen in case an unexpected error occurs
+        // and rethrow exception for default error handling.
+        closeAndReturn();
+        throw e;
       }
     }
 

@@ -5,15 +5,14 @@ import com.google.common.collect.ImmutableList;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.HttpProxy;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.extern.java.Log;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -35,11 +34,16 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 /** A pbem dice roller that reads its configuration from a properties file. */
-@Log
 @Builder
 public final class MartiDiceRoller implements IRemoteDiceServer {
   private static final int MESSAGE_MAX_LENGTH = 200;
   private static final String DICE_ROLLER_PATH = "/MARTI.php";
+
+  private final Pattern errorPattern = Pattern.compile("fatal error:(.*)!");
+  // Matches a comma separated list of integers like this:
+  // your dice are: 1,2,3 <p>
+  private final Pattern dicePattern =
+      Pattern.compile("your dice are:\\s*((?:\\d(?:,\\d+)*)?)\\s*<p>");
 
   @Nonnull private final URI diceRollerUri;
 
@@ -91,43 +95,21 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public int[] getDice(final String string, final int count)
-      throws IOException, InvocationTargetException {
-    final String errorStartString = "fatal error:";
-    final String errorEndString = "!";
-    final int errorStringStartIndex = string.indexOf(errorStartString);
-    if (errorStringStartIndex >= 0) {
-      final int endIndex =
-          string.indexOf(errorEndString, (errorStringStartIndex + errorStartString.length()));
-      if (endIndex > 0) {
-        final String error =
-            string.substring(errorStringStartIndex + errorStartString.length(), endIndex);
-        throw new InvocationTargetException(null, error);
-      }
+  public int[] getDice(final String string, final int count) throws DiceServerException {
+    final Matcher errorMatcher = errorPattern.matcher(string);
+    if (errorMatcher.find()) {
+      throw new DiceServerException(errorMatcher.group(1));
     }
 
-    final String rollStartString = "your dice are:";
-    final String rollEndString = "<p>";
-    int startIndex = string.indexOf(rollStartString);
-    if (startIndex == -1) {
-      throw new IOException("Could not find start index, text returned is:" + string);
+    final Matcher diceMatcher = dicePattern.matcher(string);
+    if (!diceMatcher.find()) {
+      throw new IllegalStateException("String '" + string + "' has an invalid format.");
     }
-    startIndex += rollStartString.length();
-    final int endIndex = string.indexOf(rollEndString, startIndex);
-    if (endIndex == -1) {
-      throw new IOException("Could not find end index");
-    }
-    try {
-      return Splitter.on(',').omitEmptyStrings().trimResults()
-          .splitToList(string.substring(startIndex, endIndex)).stream()
-          .mapToInt(Integer::parseInt)
-          // -1 since we are 0 based
-          .map(i -> i - 1)
-          .toArray();
-    } catch (final NumberFormatException ex) {
-      log.log(Level.SEVERE, "Number format parsing: " + string, ex);
-      throw new IOException(ex.getMessage());
-    }
+    return Splitter.on(',').omitEmptyStrings().splitToList(diceMatcher.group(1)).stream()
+        .mapToInt(Integer::parseInt)
+        // -1 since we are 0 based
+        .map(i -> i - 1)
+        .toArray();
   }
 
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {
