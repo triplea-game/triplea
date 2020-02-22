@@ -172,15 +172,19 @@ public class UnitScroller {
   }
 
   private void drawUnitAvatarPane(final Territory t) {
+
+    final GamePlayer player = currentPlayerSupplier.get();
+    final List<Unit> moveableUnits =
+        player == null
+            ? List.of()
+            : UnitScrollerModel.getMoveableUnits(
+                t, movePhaseSupplier.get(), player, getAllSkippedUnits());
+
     SwingUtilities.invokeLater(
         () -> {
           selectUnitImagePanel.removeAll();
-          if (currentPlayerSupplier.get() != null) {
-            final List<Unit> moveableUnits =
-                UnitScrollerModel.getMoveableUnits(
-                    t, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
-            selectUnitImagePanel.add(
-                avatarPanelFactory.buildPanel(moveableUnits, currentPlayerSupplier.get()));
+          if (player != null) {
+            selectUnitImagePanel.add(avatarPanelFactory.buildPanel(moveableUnits, player));
           }
           selectUnitImagePanel.revalidate();
           selectUnitImagePanel.repaint();
