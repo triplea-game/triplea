@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eEu
+set -eEux
 
 version=$(.travis/shared/set-version-number)
 

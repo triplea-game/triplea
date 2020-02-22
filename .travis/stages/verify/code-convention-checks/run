@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eEu
+set -eEux
 
 ## shellcheck all shell scripts
 find .travis/ -type f -print0 | xargs --null grep -lE "^#\!/bin/bash$" | xargs shellcheck

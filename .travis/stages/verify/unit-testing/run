@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eEu
+set -eEux
 
 # Run Tests
 ./gradlew --parallel test 

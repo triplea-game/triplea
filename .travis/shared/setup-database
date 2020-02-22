@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 echo "create database lobby_db" | psql -h localhost -U postgres -d postgres
 echo "create user lobby_user with password 'postgres'" | psql -h localhost -U postgres -d postgres
