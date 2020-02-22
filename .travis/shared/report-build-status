@@ -5,10 +5,9 @@
 # On failure, this script will check for an open "build broken" issue and will create one
 # if there is not one already open.
 
-
-if [ -z "$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" ]; then
-  echo "Aborting issue creation, access token not set. Assuming this is not a 'master' branch build."
-  echo "If the current branch is not 'master', this is fine, otherwise this is a configuration bug."
+if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "master" ]; then
+  # If this is a PR, or a branch build, then just exit and maintain the error code
+  # exit flag - do not create a build fail issue.
   exit 1
 fi
 
