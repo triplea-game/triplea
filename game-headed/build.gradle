@@ -15,11 +15,11 @@ ext {
 }
 
 javafx {
+    version = javafxVersion
     modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml', 'javafx.web' ]
 }
 
 dependencies {
-    implementation "org.openjfx:javafx:$javafxVersion"
     implementation "org.pushing-pixels:radiance-substance:$substanceVersion"
     implementation project(":game-core")
     implementation project(":java-extras")
