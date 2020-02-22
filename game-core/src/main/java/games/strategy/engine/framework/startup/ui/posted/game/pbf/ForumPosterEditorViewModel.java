@@ -1,12 +1,12 @@
-package games.strategy.engine.framework.startup.ui.pbem;
+package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.primitives.Ints;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.startup.ui.pbem.test.post.SwingTestPostProgressDisplayFactory;
-import games.strategy.engine.framework.startup.ui.pbem.test.post.TestPostAction;
+import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
+import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.TestPostAction;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import java.util.Optional;

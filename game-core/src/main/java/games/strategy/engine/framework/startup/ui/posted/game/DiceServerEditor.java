@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.pbem;
+package games.strategy.engine.framework.startup.ui.posted.game;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;

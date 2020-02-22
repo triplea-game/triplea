@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.pbem;
+package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
