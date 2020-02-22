@@ -175,8 +175,7 @@ public class UnitScroller {
         () -> {
           selectUnitImagePanel.removeAll();
           if (player != null) {
-            selectUnitImagePanel.add(
-                avatarPanelFactory.buildPanel(moveableUnits, player));
+            selectUnitImagePanel.add(avatarPanelFactory.buildPanel(moveableUnits, player));
           }
           selectUnitImagePanel.revalidate();
           selectUnitImagePanel.repaint();
