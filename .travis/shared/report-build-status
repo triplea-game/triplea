@@ -6,9 +6,14 @@
 # if there is not one already open.
 
 
-if [ -z "$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" ]; then
-  echo "Aborting issue creation, access token not set. Assuming this is not a 'master' branch build."
-  echo "If the current branch is not 'master', this is fine, otherwise this is a configuration bug."
+## Make sure we are building master branch.
+## PRs will have their pull request number set in 'TRAVIS_PULL_REQUEST', otherwise
+## they are false.
+## TRAVIS_BRANCH will be set to 'master' for PR builds, but for branch builds it
+## it will be set to the name of the branch being built.
+if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "master" ]; then
+  # If this is a PR, or a branch build, then just exit and maintain the error code
+  # exit flag - do not create a build fail issue.
   exit 1
 fi
 
