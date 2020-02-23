@@ -95,7 +95,7 @@ class ContentDownloaderTest {
     verify(proxySettings).accept(any());
   }
 
-  @SuppressWarnings("EmptyTryBlock")
+  @SuppressWarnings({"EmptyTryBlock", "try"})
   @Test
   @DisplayName("Verify all resources are closed")
   void resourcesAreClosed() throws Exception {
