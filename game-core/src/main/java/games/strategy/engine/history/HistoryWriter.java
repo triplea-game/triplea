@@ -146,7 +146,7 @@ public class HistoryWriter implements Serializable {
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.severe(
+      log.info(
           "Not in an event, but trying to add child: "
               + node
               + ". Current history node is: "
@@ -160,7 +160,7 @@ public class HistoryWriter implements Serializable {
   public void addChange(final Change change) {
     assertCorrectThread();
     if (!isCurrentEvent() && !isCurrentStep()) {
-      log.severe(
+      log.info(
           "Not in an event or step, but trying to add change: "
               + change
               + ". Current history node is: "
@@ -174,7 +174,7 @@ public class HistoryWriter implements Serializable {
   public void setRenderingData(final Object details) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.severe(
+      log.info(
           "Not in an event, but trying to set details: "
               + details
               + ". Current history node is: "
