@@ -99,12 +99,16 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
     void setUp() throws Exception {
       when(client.execute(any())).thenReturn(response);
       when(response.getStatusLine()).thenReturn(statusLine);
+    }
+
+    private void givenOkStatus() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
     }
 
     @Test
     void shouldReturnLengthWhenContentLengthHeaderIsPresent() throws Exception {
       givenContentLengthHeaderValueIs("42");
+      givenOkStatus();
 
       final Optional<Long> length = getDownloadLengthFromHost();
 
@@ -131,6 +135,7 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
 
     @Test
     void shouldReturnEmptyWhenContentLengthHeaderIsAbsent() throws Exception {
+      givenOkStatus();
       when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(null);
 
       final Optional<Long> length = getDownloadLengthFromHost();
@@ -140,6 +145,7 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
 
     @Test
     void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() {
+      givenOkStatus();
       givenContentLengthHeaderValueIs(null);
 
       final Exception e = assertThrows(IOException.class, this::getDownloadLengthFromHost);
@@ -149,6 +155,7 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
 
     @Test
     void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() {
+      givenOkStatus();
       givenContentLengthHeaderValueIs("value");
 
       final Exception e = assertThrows(IOException.class, this::getDownloadLengthFromHost);
