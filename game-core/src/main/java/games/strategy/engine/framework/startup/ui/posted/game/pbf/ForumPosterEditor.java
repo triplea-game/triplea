@@ -8,6 +8,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.triplea.java.ViewModelListener;
 import org.triplea.swing.DocumentListenerBuilder;
@@ -19,6 +20,10 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   private final JButton viewPosts = new JButton("View Forum");
   private final JButton testForum = new JButton("Test Post");
   private final JTextField topicIdField = new JTextField();
+  private final JLabel usernameLabel = new JLabel("Forum Username");
+  private final JTextField usernameField = new JTextField();
+  private final JLabel passwordLabel = new JLabel("Forum Password");
+  private final JPasswordField passwordField = new JPasswordField();
   private final JLabel topicIdLabel = new JLabel("Topic Id:");
   private final JLabel forumLabel = new JLabel("Forums:");
   private final JCheckBox attachSaveGameToSummary = new JCheckBox("Attach save game to summary");
@@ -50,7 +55,16 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0));
 
     viewModel.getForumSelectionOptions().forEach(forums::addItem);
-    forums.addActionListener(e -> viewModel.setForumSelection((String) forums.getSelectedItem()));
+    forums.addActionListener(
+        e -> {
+          viewModel.setForumSelection((String) forums.getSelectedItem());
+
+          usernameField.setText(viewModel.getForumUsername());
+          passwordField.setText(String.valueOf(viewModel.getForumPassword()));
+          SwingComponents.highlightLabelIfNotValid(viewModel.isForumUsernameValid(), usernameLabel);
+          SwingComponents.highlightLabelIfNotValid(viewModel.isForumPasswordValid(), passwordLabel);
+          testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
+        });
     forums.setSelectedItem(viewModel.getForumSelection());
     add(
         forums,
@@ -84,7 +98,13 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0));
 
     DocumentListenerBuilder.attachDocumentListener(
-        topicIdField, () -> viewModel.setTopicId(topicIdField.getText().trim()));
+        topicIdField,
+        () -> {
+          viewModel.setTopicId(topicIdField.getText().trim());
+          SwingComponents.highlightLabelIfNotValid(viewModel.isTopicIdValid(), topicIdLabel);
+          viewPosts.setEnabled(viewModel.isViewForumPostButtonEnabled());
+          testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
+        });
     add(
         topicIdField,
         new GridBagConstraints(
@@ -116,6 +136,82 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0,
             0));
     row++;
+
+    add(
+        usernameLabel,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+
+    DocumentListenerBuilder.attachDocumentListener(
+        usernameField,
+        () -> {
+          viewModel.setForumUsername(usernameField.getText().trim());
+          SwingComponents.highlightLabelIfNotValid(viewModel.isForumUsernameValid(), usernameLabel);
+          testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
+        });
+    add(
+        usernameField,
+        new GridBagConstraints(
+            1,
+            row,
+            1,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
+    row++;
+
+    add(
+        passwordLabel,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    DocumentListenerBuilder.attachDocumentListener(
+        passwordField,
+        () -> {
+          viewModel.setForumPassword(passwordField.getPassword());
+          SwingComponents.highlightLabelIfNotValid(viewModel.isForumPasswordValid(), passwordLabel);
+          testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
+        });
+    add(
+        passwordField,
+        new GridBagConstraints(
+            1,
+            row,
+            1,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
+    row++;
+
     add(
         new JLabel(""),
         new GridBagConstraints(
@@ -186,15 +282,17 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   @Override
   public void viewModelChanged(final ForumPosterEditorViewModel forumPosterEditorViewModel) {
     forums.setSelectedItem(forumPosterEditorViewModel.getForumSelection());
-    if (!topicIdField.getText().equals(forumPosterEditorViewModel.getTopicId())) {
-      topicIdField.setText(forumPosterEditorViewModel.getTopicId());
-    }
+    topicIdField.setText(forumPosterEditorViewModel.getTopicId());
+    usernameField.setText(forumPosterEditorViewModel.getForumUsername());
+    passwordField.setText(String.valueOf(forumPosterEditorViewModel.getForumPassword()));
     alsoPostAfterCombatMove.setSelected(forumPosterEditorViewModel.isAlsoPostAfterCombatMove());
     attachSaveGameToSummary.setSelected(forumPosterEditorViewModel.isAttachSaveGameToSummary());
-
     SwingComponents.highlightLabelIfNotValid(
         forumPosterEditorViewModel.isTopicIdValid(), topicIdLabel);
-
+    SwingComponents.highlightLabelIfNotValid(
+        forumPosterEditorViewModel.isForumUsernameValid(), usernameLabel);
+    SwingComponents.highlightLabelIfNotValid(
+        forumPosterEditorViewModel.isForumPasswordValid(), passwordLabel);
     viewPosts.setEnabled(forumPosterEditorViewModel.isViewForumPostButtonEnabled());
     testForum.setEnabled(forumPosterEditorViewModel.isTestForumPostButtonEnabled());
   }

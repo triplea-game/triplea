@@ -9,6 +9,7 @@ import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.Swin
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.TestPostAction;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import lombok.Getter;
@@ -30,13 +31,12 @@ class ForumPosterEditorViewModel {
   private BiConsumer<String, Integer> viewForumPostAction =
       (forumName, topicId) -> NodeBbForumPoster.newInstanceByName(forumName, topicId).viewPosted();
 
-  @Getter private boolean viewForumPostButtonEnabled;
-  @Getter private boolean testForumPostButtonEnabled;
   private String forumSelection;
   @Getter private String topicId = "";
-  @Getter private boolean topicIdValid;
   @Setter @Getter private boolean attachSaveGameToSummary = true;
   @Setter @Getter private boolean alsoPostAfterCombatMove;
+  @Getter private String forumUsername;
+  @Getter private char[] forumPassword;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
@@ -46,6 +46,28 @@ class ForumPosterEditorViewModel {
   ForumPosterEditorViewModel(final Runnable readyCallback, final GameProperties properties) {
     this.readyCallback = readyCallback;
     populateFromGameProperties(properties);
+  }
+
+  void setForumPassword(final char[] password) {
+    final ClientSetting<char[]> passwordSetting =
+        forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+            ? ClientSetting.tripleaForumPassword
+            : ClientSetting.aaForumPassword;
+
+    passwordSetting.setValueAndFlush(password);
+    forumPassword = password;
+    readyCallback.run();
+  }
+
+  void setForumUsername(final String username) {
+    final ClientSetting<char[]> usernameSetting =
+        forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+            ? ClientSetting.tripleaForumUsername
+            : ClientSetting.aaForumUsername;
+
+    usernameSetting.setValueAndFlush(username.toCharArray());
+    forumUsername = username;
+    readyCallback.run();
   }
 
   @SuppressWarnings("Guava")
@@ -60,8 +82,14 @@ class ForumPosterEditorViewModel {
         "Forum selection is driven by a drop-down to ensure user can never set it to null, "
             + "if setting to null from a game properties, we default to the first available "
             + "selection entry, forum selection should never be null or empty.");
-    viewForumPostButtonEnabled = areFieldsValid();
-    testForumPostButtonEnabled = areFieldsValid();
+    forumUsername =
+        this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+            ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
+            : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
+    forumPassword =
+        this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[] {})
+            : ClientSetting.aaForumPassword.getValue().orElse(new char[] {});
     readyCallback.run();
   }
 
@@ -71,11 +99,11 @@ class ForumPosterEditorViewModel {
   }
 
   synchronized void setTopicId(final String topicId) {
+    if (this.topicId.equals(topicId)) {
+      return;
+    }
+
     this.topicId = topicId;
-    final Integer numericTopicId = Ints.tryParse(topicId);
-    topicIdValid = numericTopicId != null && numericTopicId > 0;
-    viewForumPostButtonEnabled = areFieldsValid();
-    testForumPostButtonEnabled = areFieldsValid();
     readyCallback.run();
   }
 
@@ -86,7 +114,28 @@ class ForumPosterEditorViewModel {
   }
 
   synchronized boolean areFieldsValid() {
-    return topicIdValid;
+    return isTopicIdValid() && isForumUsernameValid() && isForumPasswordValid();
+  }
+
+  boolean isForumPasswordValid() {
+    return forumPassword != null && forumPassword.length > 0;
+  }
+
+  boolean isForumUsernameValid() {
+    return forumUsername != null && !forumUsername.isBlank();
+  }
+
+  boolean isViewForumPostButtonEnabled() {
+    return isTopicIdValid();
+  }
+
+  boolean isTestForumPostButtonEnabled() {
+    return areFieldsValid();
+  }
+
+  boolean isTopicIdValid() {
+    final Integer numericTopicId = Ints.tryParse(topicId);
+    return numericTopicId != null && numericTopicId > 0;
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
@@ -98,7 +147,7 @@ class ForumPosterEditorViewModel {
   }
 
   synchronized void viewForumButtonClicked() {
-    if (areFieldsValid()) {
+    if (isTopicIdValid()) {
       viewForumPostAction.accept(forumSelection, Integer.parseInt(topicId));
     }
   }

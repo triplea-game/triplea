@@ -283,11 +283,15 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   private void setEncodedValue(final @Nullable String encodedValue) {
     if (encodedValue == null) {
       getPreferences().remove(name);
+      listeners.forEach(listener -> listener.accept(this));
     } else {
-      getPreferences().put(name, encodedValue);
+      try {
+        getPreferences().put(name, encodedValue);
+        listeners.forEach(listener -> listener.accept(this));
+      } catch (final IllegalArgumentException e) {
+        log.log(Level.SEVERE, "Failed to save value", e);
+      }
     }
-
-    listeners.forEach(listener -> listener.accept(this));
   }
 
   private boolean isDefaultValue(final T value) {
