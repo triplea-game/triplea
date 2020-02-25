@@ -35,14 +35,14 @@ class StackTraceErrorReportFormatterTest {
 
   @Nested
   final class VerifyTitle {
-    @BeforeEach
-    void setup() {
+    private void givenDefaultClass() {
       when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
       when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
     }
 
     @Test
     void logMessageOnly() {
+      givenDefaultClass();
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(null);
 
@@ -56,6 +56,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void preferExceptionMessageOverLogMessage() {
+      givenDefaultClass();
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
@@ -76,6 +77,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void handleNullLogMessageAndNullExceptionMessage() {
+      givenDefaultClass();
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
