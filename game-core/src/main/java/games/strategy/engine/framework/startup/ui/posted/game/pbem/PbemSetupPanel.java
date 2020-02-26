@@ -171,8 +171,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public boolean canGameStart() {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();
-    final boolean emailValid = emailSenderEditor.areFieldsValid();
-    final boolean ready = diceServerValid && emailValid && gameSelectorModel.getGameData() != null;
+    final boolean ready = diceServerValid && gameSelectorModel.getGameData() != null;
     // make sure at least 1 player is enabled
     return ready && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
@@ -189,9 +188,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     if (diceServerEditor.areFieldsValid()) {
       diceServerEditor.applyToGameProperties(data.getProperties());
     }
-    if (emailSenderEditor.areFieldsValid()) {
-      emailSenderEditor.applyToGameProperties(data.getProperties());
-    }
+    emailSenderEditor.applyToGameProperties(data.getProperties());
   }
 
   /**

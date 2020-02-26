@@ -5,7 +5,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
-import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -138,7 +137,11 @@ public class EmailSenderEditor extends JPanel {
   }
 
   private void checkFieldsAndNotify() {
-    areFieldsValid();
+    final String toAddressText = toAddress.getText();
+    final boolean addressValid =
+        !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText);
+    SwingComponents.highlightLabelIfNotValid(addressValid, toLabel);
+    testEmail.setEnabled(addressValid);
     readyCallback.run();
   }
 
@@ -186,27 +189,12 @@ public class EmailSenderEditor extends JPanel {
         .start();
   }
 
-  /** Checks if fields are set, if so enables them and returns true, false otherwise. */
-  public boolean areFieldsValid() {
-    final boolean setupValid =
-        ClientSetting.emailServerHost.isSet()
-            && ClientSetting.emailServerPort.isSet()
-            && ClientSetting.emailServerSecurity.isSet()
-            && ClientSetting.emailUsername.isSet();
-
-    final String toAddressText = toAddress.getText();
-    final boolean addressValid =
-        !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText);
-    SwingComponents.highlightLabelIfNotValid(addressValid, toLabel);
-    final boolean allValid = setupValid && addressValid;
-    testEmail.setEnabled(allValid);
-    return allValid;
-  }
-
   public void applyToGameProperties(final GameProperties properties) {
-    properties.set(IEmailSender.SUBJECT, subject.getText());
-    properties.set(IEmailSender.RECIPIENTS, toAddress.getText());
-    properties.set(IEmailSender.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
+    if (!toAddress.getText().isBlank() && PlayerEmailValidation.isValid(toAddress.getText())) {
+      properties.set(IEmailSender.SUBJECT, subject.getText());
+      properties.set(IEmailSender.RECIPIENTS, toAddress.getText());
+      properties.set(IEmailSender.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
+    }
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
