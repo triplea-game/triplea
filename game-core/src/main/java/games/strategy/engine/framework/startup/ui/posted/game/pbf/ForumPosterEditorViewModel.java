@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
 import com.google.common.primitives.Ints;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
@@ -12,6 +11,7 @@ import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.Postconditions;
@@ -70,12 +70,11 @@ class ForumPosterEditorViewModel {
     readyCallback.run();
   }
 
-  @SuppressWarnings("Guava")
   synchronized void setForumSelection(final String forumSelection) {
     // if forumSelect is null or blank, default it to first forum selection option
     this.forumSelection =
         Optional.ofNullable(forumSelection)
-            .filter(Predicates.not(String::isBlank))
+            .filter(Predicate.not(String::isBlank))
             .orElse(getForumSelectionOptions().iterator().next());
     Postconditions.assertState(
         this.forumSelection != null && !this.forumSelection.isBlank(),
