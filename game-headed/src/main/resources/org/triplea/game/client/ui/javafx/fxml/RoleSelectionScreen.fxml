@@ -8,7 +8,7 @@
    <children>
       <HBox alignment="CENTER">
          <children>
-            <Label text="Battle Orders" />
+            <Label text="%role_selection.label.title" />
          </children>
       </HBox>
       <ScrollPane>
@@ -27,15 +27,15 @@
                 <RowConstraints vgrow="NEVER" />
               </rowConstraints>
                <children>
-                  <Label text="Faction" GridPane.rowIndex="1" />
-                  <Label text="Controlling Player" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label disable="true" text="Income" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                  <Label disable="true" text="Bonus" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                  <Label alignment="TOP_RIGHT" text="Set All" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                  <Label text="%role_selection.label.faction" GridPane.rowIndex="1" />
+                  <Label text="%role_selection.label.controlling_player" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label disable="true" text="%role_selection.label.income" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Label disable="true" text="%role_selection.label.pus" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                  <Label alignment="TOP_RIGHT" text="%role_selection.label.set_all" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
                   <ComboBox fx:id="allSelectorCheckbox" onAction="#setAllTo" GridPane.columnIndex="1" />
                   <HBox alignment="CENTER_RIGHT" fillHeight="false" focusTraversable="true" pickOnBounds="false" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
                      <children>
-                        <Label text="Resource Modifiers" />
+                        <Label text="%role_selection.label.resource_modifiers" />
                         <CheckBox fx:id="resourceModifierCheckbox" mnemonicParsing="false" onAction="#toggleResourceModifiers" />
                      </children>
                      <GridPane.margin>
@@ -46,7 +46,7 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelMapSelection" text="Cancel" />
-      <Button alignment="BOTTOM_CENTER" defaultButton="true" mnemonicParsing="false" onAction="#startGame" text="Play" />
+      <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelMapSelection" text="%role_selection.button.cancel" />
+      <Button alignment="BOTTOM_CENTER" defaultButton="true" mnemonicParsing="false" onAction="#startGame" text="%role_selection.button.play" />
    </children>
 </VBox>
