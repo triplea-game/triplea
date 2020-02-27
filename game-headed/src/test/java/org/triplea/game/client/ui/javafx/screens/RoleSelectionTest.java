@@ -2,6 +2,7 @@ package org.triplea.game.client.ui.javafx.screens;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -10,7 +11,9 @@ import static org.mockito.Mockito.when;
 import static org.triplea.game.client.ui.javafx.screens.RoleSelection.SELECTED_MAP_KEY;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.framework.startup.ui.PlayerType;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -53,7 +56,34 @@ public class RoleSelectionTest extends UserAgentStylesheetTestCase {
     assertThat(observableList, is(List.of(PlayerType.playerTypes())));
   }
 
-  // TODO Add Test for onShow method
+  @Test
+  void verifyOnShowClearsFactionGridItemsCorrectly() {
+    final GameData gameData = mock(GameData.class);
+    final PlayerList playerList = mock(PlayerList.class);
+    when(playerList.iterator()).thenReturn(Collections.emptyIterator());
+    when(gameData.getPlayerList()).thenReturn(playerList);
+    final GridPane factionGrid = mock(GridPane.class);
+    final Node node1 = mock(Node.class);
+    final Node node2 = mockNodeInGridPane(0, 0);
+    final Node node3 = mockNodeInGridPane(1, 0);
+    final ObservableList<Node> children = FXCollections.observableArrayList(node1, node2, node3);
+    when(factionGrid.getChildren()).thenReturn(children);
+    roleSelection.setFactionGrid(factionGrid);
+
+    roleSelection.onShow(Map.of(SELECTED_MAP_KEY, gameData));
+
+    assertThat(children, is(List.of(node1, node2)));
+    verify(playerList).iterator();
+  }
+
+  @Test
+  void verifyEarlyErrorIfNoGameDataAvailable() {
+    final GridPane factionGrid = mock(GridPane.class);
+    when(factionGrid.getChildren()).thenReturn(FXCollections.emptyObservableList());
+    roleSelection.setFactionGrid(factionGrid);
+
+    assertThrows(IllegalStateException.class, () -> roleSelection.onShow(Map.of()));
+  }
 
   @Test
   void keyTypesAreCorrect() {
