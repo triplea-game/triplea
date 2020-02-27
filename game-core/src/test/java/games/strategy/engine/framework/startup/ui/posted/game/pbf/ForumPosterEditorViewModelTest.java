@@ -14,6 +14,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.ViewModelListener;
 
 @ExtendWith(MockitoExtension.class)
-class ForumPosterEditorViewModelTest {
+class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
 
   @Mock private GameData gameData;
   @Mock private ViewModelListener<ForumPosterEditorViewModel> viewModelListener;
@@ -117,10 +119,10 @@ class ForumPosterEditorViewModelTest {
 
   @DisplayName("View Forum button click is no-op if topic id or forum selection are not valid")
   @ParameterizedTest
-  @MethodSource("invalidForumSettings")
-  void viewForumPostNoOpOnInvalidData(final String forumSelection, final String topicId) {
-    final ForumPosterEditorViewModel viewModel =
-        givenViewModelWithInvalidFieldSettings(forumSelection, topicId);
+  @ValueSource(strings = {"0.0", "-1", "2311111111111", "not a number", "NaN"})
+  void viewForumPostNoOpOnInvalidTopicId(final String topicId) {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
+    viewModel.setTopicId(topicId);
     viewModel.setViewForumPostAction(viewForumPostAction);
 
     viewModel.viewForumButtonClicked();
@@ -129,31 +131,35 @@ class ForumPosterEditorViewModelTest {
   }
 
   private ForumPosterEditorViewModel givenViewModelWithInvalidFieldSettings(
-      final String forumSelection, final String topicId) {
+      final String topicId, final String username, final char[] password) {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
-    viewModel.setForumSelection(forumSelection);
     viewModel.setTopicId(topicId);
-    Preconditions.checkState(
-        !viewModel.isTopicIdValid(), "Test makes sense only if topic id is invalid");
+    viewModel.setForumUsername(username);
+    viewModel.setForumPassword(password);
     return viewModel;
   }
 
   @SuppressWarnings("unused")
   private static List<Arguments> invalidForumSettings() {
     return List.of(
-        Arguments.of("forumSelection", "not a number"),
-        Arguments.of("forumSelection", ""),
-        Arguments.of("forumSelection", "0.0"),
-        Arguments.of("forumSelection", "0"),
-        Arguments.of("forumSelection", "-1"));
+        // invalid topic IDs
+        Arguments.of("not a number", "user", new char[] {'a'}),
+        Arguments.of("", "user", new char[] {'a'}),
+        Arguments.of("0.0", "user", new char[] {'a'}),
+        Arguments.of("0", "user", new char[] {'a'}),
+        Arguments.of("-1", "user", new char[] {'a'}),
+        // missing user
+        Arguments.of("1", "", new char[] {'a'}),
+        // missing password
+        Arguments.of("1", "", new char[] {}));
   }
 
   @DisplayName("Ensure fields are not valid if forum selection or topic id are not valid")
   @ParameterizedTest
   @MethodSource("invalidForumSettings")
-  void invalidForumSettings(final String forumSelection, final String topicId) {
+  void invalidForumSettings(final String topicId, final String username, final char[] password) {
     final ForumPosterEditorViewModel viewModel =
-        givenViewModelWithInvalidFieldSettings(forumSelection, topicId);
+        givenViewModelWithInvalidFieldSettings(topicId, username, password);
 
     assertThat(viewModel.areFieldsValid(), is(false));
   }
@@ -161,13 +167,13 @@ class ForumPosterEditorViewModelTest {
   @DisplayName("Ensure test post button is no-op if fields are not valid")
   @ParameterizedTest
   @MethodSource("invalidForumSettings")
-  void forumPostTestButtonIsNoOpOnInvalidData(final String forumSelection, final String topicId) {
+  void forumPostTestButtonIsNoOpOnInvalidData(
+      final String topicId, final String username, final char[] password) {
     final ForumPosterEditorViewModel viewModel =
-        givenViewModelWithInvalidFieldSettings(forumSelection, topicId);
+        givenViewModelWithInvalidFieldSettings(topicId, username, password);
     viewModel.setTestPostAction(testPostAction);
 
     viewModel.testPostButtonClicked();
-
     verify(testPostAction, never()).accept(any(), any());
   }
 
@@ -179,18 +185,22 @@ class ForumPosterEditorViewModelTest {
     viewModel.setTopicId("20");
     Preconditions.checkState(
         viewModel.isTopicIdValid(), "Test makes sense only if topic id is valid");
+    viewModel.setForumUsername("username");
+    viewModel.setForumPassword(new char[] {'a', 'b'});
 
     viewModel.testPostButtonClicked();
 
     verify(testPostAction).accept("forumSelection", 20);
   }
 
-  @DisplayName("Ensure fields are valid if both forum selection and topic id are valid")
+  @DisplayName("Ensure fields are valid if forum selection, topic id and credentials are set")
   @Test
   void validForumSettings() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
     viewModel.setForumSelection("forumSelection");
     viewModel.setTopicId("20");
+    viewModel.setForumUsername("username");
+    viewModel.setForumPassword(new char[] {'a', 'b'});
     Preconditions.checkState(
         viewModel.isTopicIdValid(), "Test makes sense only if topic id is valid");
 
@@ -202,7 +212,29 @@ class ForumPosterEditorViewModelTest {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setTopicId("");
 
-    // called once in construction, called again on 'setTopicId'
+    verify(readyCallback).run();
+  }
+
+  @Test
+  void readyCallbackIsInvokedOnConstructionWhenForumIsSetToDefaultValue() {
+    new ForumPosterEditorViewModel(readyCallback);
+
+    verify(readyCallback).run();
+  }
+
+  @Test
+  void updatingUsernameInvokesReadyCallback() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumUsername("");
+
+    verify(readyCallback, times(2)).run();
+  }
+
+  @Test
+  void updatingPasswordInvokesReadyCallback() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumPassword(new char[] {'a'});
+
     verify(readyCallback, times(2)).run();
   }
 
@@ -222,5 +254,55 @@ class ForumPosterEditorViewModelTest {
     viewModel.populateFromGameProperties(new GameProperties(gameData));
 
     verify(viewModelListener).viewModelChanged(viewModel);
+  }
+
+  @Test
+  void initiallyUsernameIsInvalidDueToBeingBlank() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    assertThat(viewModel.isForumUsernameValid(), is(false));
+  }
+
+  @Test
+  void nonBlankUsernameIsValid() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumUsername("name");
+    assertThat(viewModel.isForumUsernameValid(), is(true));
+  }
+
+  @Test
+  void initiallyPasswordIsInvalidDueToBeingBlank() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    assertThat(viewModel.isForumPasswordValid(), is(false));
+  }
+
+  @Test
+  void nonBlankPasswordIsValid() {
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumPassword(new char[] {'a'});
+    assertThat(viewModel.isForumPasswordValid(), is(true));
+  }
+
+  @Test
+  void changingForumSelectionToAxisAndAlliesOrgTogglesUsernameAndPassword() {
+    ClientSetting.aaForumUsername.setValueAndFlush(new char[] {'a'});
+    ClientSetting.aaForumPassword.setValueAndFlush(new char[] {'b'});
+
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumSelection(NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
+
+    assertThat(viewModel.getForumUsername(), is("a"));
+    assertThat(viewModel.getForumPassword(), is(new char[] {'b'}));
+  }
+
+  @Test
+  void changingForumSelectionToTripleATogglesUsernameAndPassword() {
+    ClientSetting.tripleaForumUsername.setValueAndFlush(new char[] {'c'});
+    ClientSetting.tripleaForumPassword.setValueAndFlush(new char[] {'d'});
+
+    final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
+    viewModel.setForumSelection(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
+
+    assertThat(viewModel.getForumUsername(), is("c"));
+    assertThat(viewModel.getForumPassword(), is(new char[] {'d'}));
   }
 }
