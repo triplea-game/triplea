@@ -107,21 +107,32 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
   private void setupPlayerControl(
       final List<String> availablePlayers, final GamePlayer gamePlayer) {
     final var name = new Label(gamePlayer.getName());
+
     final ComboBox<String> controllingPlayer =
         new ComboBox<>(FXCollections.observableArrayList(availablePlayers));
     controllingPlayer.getSelectionModel().select(0);
+
     if (gamePlayer.getCanBeDisabled()) {
       controllingPlayer.getItems().add(DISABLE_TEXT);
     }
+
     final Button faction = newFactionButton(gamePlayer, controllingPlayer);
     roleForPlayers.put(gamePlayer, controllingPlayer);
-    final var income = new Spinner<Integer>(0, 100, 100);
-    income.setDisable(true);
+
+    final var income = createDisabledPercentageSpinner(100);
     incomeForPlayers.put(gamePlayer, income);
-    final var pus = new Spinner<Integer>(0, 100, 0);
-    pus.setDisable(true);
+
+    final var pus = createDisabledPercentageSpinner(0);
     pusForPlayers.put(gamePlayer, pus);
+
     factionGrid.addRow(factionGrid.getRowCount(), name, controllingPlayer, faction, income, pus);
+  }
+
+  private Spinner<Integer> createDisabledPercentageSpinner(final int initialValue) {
+    final var spinner = new Spinner<Integer>(0, 100, initialValue);
+    spinner.setPrefWidth(90);
+    spinner.setDisable(true);
+    return spinner;
   }
 
   private Button newFactionButton(
