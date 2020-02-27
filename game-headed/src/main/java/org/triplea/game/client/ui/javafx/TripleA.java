@@ -49,7 +49,9 @@ public class TripleA extends Application {
   private void setupStage(
       final Stage stage, final Scene scene, final RootActionPane rootActionPane) {
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-    stage.setFullScreen(true);
+    // Should be a configurable setting in the future, but for developing it's
+    // better to work in non-fullscreen mode
+    stage.setFullScreen(false);
 
     Font.loadFont(TripleA.class.getResourceAsStream(FONT_PATH), 14);
     stage.setScene(scene);
