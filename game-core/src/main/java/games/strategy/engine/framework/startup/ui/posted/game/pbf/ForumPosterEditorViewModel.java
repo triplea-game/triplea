@@ -87,8 +87,8 @@ class ForumPosterEditorViewModel {
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
     forumPassword =
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[] {})
-            : ClientSetting.aaForumPassword.getValue().orElse(new char[] {});
+            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0])
+            : ClientSetting.aaForumPassword.getValue().orElse(new char[0]);
     readyCallback.run();
   }
 
