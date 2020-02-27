@@ -40,14 +40,6 @@ public class GameSelectionControls implements ControlledScreen<ScreenController<
   @FXML
   private void showJoinNetworkGameMenu() {}
 
-  @SuppressWarnings("unused")
-  @FXML
-  private void showPlayByForumMenu() {}
-
-  @SuppressWarnings("unused")
-  @FXML
-  private void showPlayByEmailMenu() {}
-
   @Override
   public void connect(final ScreenController<FxmlManager> screenController) {
     this.screenController = screenController;
