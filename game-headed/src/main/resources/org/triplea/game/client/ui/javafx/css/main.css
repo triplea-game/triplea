@@ -80,7 +80,16 @@
 	-fx-scale-shape: false;
 	-fx-background-color: white;
 }
-.combo-box-popup .list-cell:hover {
+
+.combo-box:hover .arrow-button .arrow {
+	-fx-background-color: DARKOLIVEGREEN;
+}
+
+.combo-box-base {
+	-fx-background-color: transparent;
+}
+
+.combo-box-popup .list-cell:hover, .combo-box:hover > .list-cell, .combo-box:hover > .arrow-button {
 	-fx-border-color: #303030;
 	-fx-background: ANTIQUEWHITE;
 	-fx-background-color: ANTIQUEWHITE;
