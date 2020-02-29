@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-
-<BorderPane fx:id="gameOptions" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screens.GameSelectionControls">
+<BorderPane fx:id="gameOptions" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screens.GameSelectionControls">
    <center>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
@@ -42,36 +39,6 @@
                <effect>
                   <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                </effect>
-            </Button>
-            <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPlayByForumMenu" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.startPBF">
-               <graphic>
-                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@/org/triplea/game/client/ui/javafx/images/play_by_forum.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-               <effect>
-                  <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
-               </effect>
-            </Button>
-            <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showPlayByEmailMenu" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.startPBEM">
-               <graphic>
-                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@/org/triplea/game/client/ui/javafx/images/play_by_email.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <effect>
-                  <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
-               </effect>
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
             </Button>
             <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.host_networked_game">
                <HBox.margin>
