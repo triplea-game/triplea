@@ -13,14 +13,13 @@ import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -29,6 +28,9 @@ import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /** Default implementation of {@link IClientMessenger}. */
 @Log
@@ -273,31 +275,25 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public void changeToGameSave(final File saveGame, final String fileName) {
+  public void changeToGameSave(@Nullable final File saveGame, final String fileName) {
     final byte[] bytes = getBytesFromFile(saveGame);
-    if (bytes == null || bytes.length == 0) {
+    if (bytes.length == 0) {
       return;
     }
     changeToGameSave(bytes, fileName);
   }
 
-  private static byte[] getBytesFromFile(final File file) {
+  @Nonnull
+  private static byte[] getBytesFromFile(@Nullable final File file) {
     if (file == null || !file.exists()) {
-      return null;
+      return new byte[0];
     }
-    // Get the size of the file
-    final long length = file.length();
-    if (length > Integer.MAX_VALUE) {
-      return null;
-    }
-    // Create the byte array to hold the data
-    final byte[] bytes = new byte[(int) length];
-    try (InputStream is = new FileInputStream(file)) {
-      is.read(bytes);
+    try {
+      return Files.readAllBytes(file.toPath());
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to read file: " + file, e);
+      return new byte[0];
     }
-    return bytes;
   }
 
   @Override
