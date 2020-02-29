@@ -31,17 +31,15 @@ public class SetMapClientAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
+    if (availableGames.isEmpty()) {
+      JOptionPane.showMessageDialog(
+              parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
-    for (final String game : availableGames) {
-      model.addElement(game);
-    }
-    if (model.getSize() <= 1) {
-      JOptionPane.showMessageDialog(
-          parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    model.addAll(availableGames);
     final int selectedOption =
         JOptionPane.showConfirmDialog(
             parent, combo, "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
