@@ -2,28 +2,20 @@ package games.strategy.net;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.ForgotPasswordConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import lombok.Setter;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
@@ -39,9 +31,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private final NioSocket nioSocket;
   private final SocketChannel socketChannel;
   private INode serverNode;
-
-  @Setter(onMethod_ = {@Override})
-  private IServerStartupRemote serverStartupRemote;
 
   private volatile boolean shutDown = false;
 
@@ -243,43 +232,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Override
   public void removeConnectionChangeListener(final IConnectionChangeListener listener) {}
-
-  @Override
-  public void changeServerGameTo(final String gameName) {
-    serverStartupRemote.changeServerGameTo(gameName);
-  }
-
-  @Override
-  public void changeToLatestAutosave(final HeadlessAutoSaveType typeOfAutosave) {
-    serverStartupRemote.changeToLatestAutosave(typeOfAutosave);
-  }
-
-  @Override
-  public void changeToGameSave(final byte[] bytes, final String fileName) {
-    serverStartupRemote.changeToGameSave(bytes, fileName);
-  }
-
-  @Override
-  public void changeToGameSave(@Nullable final File saveGame, final String fileName) {
-    final byte[] bytes = getBytesFromFile(saveGame);
-    if (bytes.length == 0) {
-      return;
-    }
-    changeToGameSave(bytes, fileName);
-  }
-
-  @Nonnull
-  private static byte[] getBytesFromFile(@Nullable final File file) {
-    if (file == null || !file.exists()) {
-      return new byte[0];
-    }
-    try {
-      return Files.readAllBytes(file.toPath());
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file: " + file, e);
-      return new byte[0];
-    }
-  }
 
   @Override
   public String toString() {
