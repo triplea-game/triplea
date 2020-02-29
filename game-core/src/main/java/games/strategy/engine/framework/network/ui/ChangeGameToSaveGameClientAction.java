@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import lombok.extern.java.Log;
 
@@ -29,21 +28,20 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    GameFileSelector.selectGameFile(owner)
-        .ifPresent(file -> changeToGameSave(file, file.getName()));
+    GameFileSelector.selectGameFile(owner).ifPresent(this::changeToGameSave);
   }
 
-  public void changeToGameSave(@Nullable final File saveGame, final String fileName) {
+  private void changeToGameSave(final File saveGame) {
     final byte[] bytes = getBytesFromFile(saveGame);
     if (bytes.length == 0) {
       return;
     }
-    serverStartupRemote.changeToGameSave(bytes, fileName);
+    serverStartupRemote.changeToGameSave(bytes, saveGame.getName());
   }
 
   @Nonnull
-  private static byte[] getBytesFromFile(@Nullable final File file) {
-    if (file == null || !file.exists()) {
+  private static byte[] getBytesFromFile(final File file) {
+    if (!file.exists()) {
       return new byte[0];
     }
     try {
