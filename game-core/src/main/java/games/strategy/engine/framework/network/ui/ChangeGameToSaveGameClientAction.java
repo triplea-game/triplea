@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import lombok.extern.java.Log;
 
@@ -32,23 +31,18 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
   }
 
   private void changeToGameSave(final File saveGame) {
-    final byte[] bytes = getBytesFromFile(saveGame);
-    if (bytes.length == 0) {
+    if (!saveGame.exists()) {
       return;
     }
-    serverStartupRemote.changeToGameSave(bytes, saveGame.getName());
-  }
-
-  @Nonnull
-  private static byte[] getBytesFromFile(final File file) {
-    if (!file.exists()) {
-      return new byte[0];
-    }
+    final byte[] bytes;
     try {
-      return Files.readAllBytes(file.toPath());
+      bytes = Files.readAllBytes(saveGame.toPath());
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file: " + file, e);
-      return new byte[0];
+      log.log(Level.SEVERE, "Failed to read file: " + saveGame, e);
+      return;
+    }
+    if (bytes.length > 0) {
+      serverStartupRemote.changeToGameSave(bytes, saveGame.getName());
     }
   }
 }
