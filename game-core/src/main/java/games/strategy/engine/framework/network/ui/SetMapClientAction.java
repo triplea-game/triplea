@@ -33,7 +33,7 @@ public class SetMapClientAction extends AbstractAction {
   public void actionPerformed(final ActionEvent e) {
     if (availableGames.isEmpty()) {
       JOptionPane.showMessageDialog(
-              parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
+          parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
       return;
     }
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
