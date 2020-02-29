@@ -16,12 +16,10 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 
 /** Default implementation of {@link IClientMessenger}. */
-@Log
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode node;
   private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
