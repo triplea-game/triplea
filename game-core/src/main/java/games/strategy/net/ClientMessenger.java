@@ -3,10 +3,7 @@ package games.strategy.net;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.message.HubInvoke;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.ForgotPasswordConversation;
 import games.strategy.net.nio.NioSocket;
@@ -20,17 +17,16 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.Setter;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /** Default implementation of {@link IClientMessenger}. */
 @Log
@@ -43,6 +39,10 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private final NioSocket nioSocket;
   private final SocketChannel socketChannel;
   private INode serverNode;
+
+  @Setter(onMethod_ = {@Override})
+  private IServerStartupRemote serverStartupRemote;
+
   private volatile boolean shutDown = false;
 
   /**
@@ -244,34 +244,19 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public void removeConnectionChangeListener(final IConnectionChangeListener listener) {}
 
-  private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
-    final List<Object> args = new ArrayList<>();
-    final Class<?>[] argTypes = new Class<?>[messages.length];
-    for (int i = 0; i < messages.length; i++) {
-      final Object message = messages[i];
-      args.add(message);
-      argTypes[i] = args.get(i).getClass();
-    }
-    final RemoteName rn = ServerModel.SERVER_REMOTE_NAME;
-    final RemoteMethodCall call =
-        new RemoteMethodCall(rn.getName(), methodName, args.toArray(), argTypes, rn.getClazz());
-    final HubInvoke hubInvoke = new HubInvoke(null, false, call);
-    send(hubInvoke, getServerNode());
-  }
-
   @Override
   public void changeServerGameTo(final String gameName) {
-    bareBonesSendMessageToServer("changeServerGameTo", gameName);
+    serverStartupRemote.changeServerGameTo(gameName);
   }
 
   @Override
   public void changeToLatestAutosave(final HeadlessAutoSaveType typeOfAutosave) {
-    bareBonesSendMessageToServer("changeToLatestAutosave", typeOfAutosave);
+    serverStartupRemote.changeToLatestAutosave(typeOfAutosave);
   }
 
   @Override
   public void changeToGameSave(final byte[] bytes, final String fileName) {
-    bareBonesSendMessageToServer("changeToGameSave", bytes, fileName);
+    serverStartupRemote.changeToGameSave(bytes, fileName);
   }
 
   @Override

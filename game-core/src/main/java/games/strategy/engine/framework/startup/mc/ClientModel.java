@@ -251,6 +251,7 @@ public class ClientModel implements IMessengerErrorListener {
     // save this, it will be cleared later
     gameDataOnStartup = gameSelectorModel.getGameData();
     final IServerStartupRemote serverStartup = getServerStartup();
+    messenger.setServerStartupRemote(serverStartup);
     final PlayerListing players = serverStartup.getPlayerListing();
     internalPlayerListingChanged(players);
     if (!serverStartup.isGameStarted(messenger.getLocalNode())) {
