@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.network.ui;
 
 import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.net.IClientMessenger;
+import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -12,16 +12,16 @@ import javax.swing.JOptionPane;
 public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
   private final Component parent;
-  private final IClientMessenger clientMessenger;
+  private final IServerStartupRemote serverStartupRemote;
   private final HeadlessAutoSaveType typeOfAutosave;
 
   public ChangeToAutosaveClientAction(
       final Component parent,
-      final IClientMessenger clientMessenger,
+      final IServerStartupRemote serverStartupRemote,
       final HeadlessAutoSaveType typeOfAutosave) {
     super("Change To " + typeOfAutosave.toString().toLowerCase());
     this.parent = JOptionPane.getFrameForComponent(parent);
-    this.clientMessenger = clientMessenger;
+    this.serverStartupRemote = serverStartupRemote;
     this.typeOfAutosave = typeOfAutosave;
   }
 
@@ -37,6 +37,6 @@ public class ChangeToAutosaveClientAction extends AbstractAction {
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
-    clientMessenger.changeToLatestAutosave(typeOfAutosave);
+    serverStartupRemote.changeToLatestAutosave(typeOfAutosave);
   }
 }

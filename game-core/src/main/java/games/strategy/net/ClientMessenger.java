@@ -2,36 +2,24 @@ package games.strategy.net;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.message.HubInvoke;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteName;
 import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.ForgotPasswordConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 
 /** Default implementation of {@link IClientMessenger}. */
-@Log
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode node;
   private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
@@ -41,6 +29,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private final NioSocket nioSocket;
   private final SocketChannel socketChannel;
   private INode serverNode;
+
   private volatile boolean shutDown = false;
 
   /**
@@ -241,64 +230,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Override
   public void removeConnectionChangeListener(final IConnectionChangeListener listener) {}
-
-  private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
-    final List<Object> args = new ArrayList<>();
-    final Class<?>[] argTypes = new Class<?>[messages.length];
-    for (int i = 0; i < messages.length; i++) {
-      final Object message = messages[i];
-      args.add(message);
-      argTypes[i] = args.get(i).getClass();
-    }
-    final RemoteName rn = ServerModel.SERVER_REMOTE_NAME;
-    final RemoteMethodCall call =
-        new RemoteMethodCall(rn.getName(), methodName, args.toArray(), argTypes, rn.getClazz());
-    final HubInvoke hubInvoke = new HubInvoke(null, false, call);
-    send(hubInvoke, getServerNode());
-  }
-
-  @Override
-  public void changeServerGameTo(final String gameName) {
-    bareBonesSendMessageToServer("changeServerGameTo", gameName);
-  }
-
-  @Override
-  public void changeToLatestAutosave(final HeadlessAutoSaveType typeOfAutosave) {
-    bareBonesSendMessageToServer("changeToLatestAutosave", typeOfAutosave);
-  }
-
-  @Override
-  public void changeToGameSave(final byte[] bytes, final String fileName) {
-    bareBonesSendMessageToServer("changeToGameSave", bytes, fileName);
-  }
-
-  @Override
-  public void changeToGameSave(final File saveGame, final String fileName) {
-    final byte[] bytes = getBytesFromFile(saveGame);
-    if (bytes == null || bytes.length == 0) {
-      return;
-    }
-    changeToGameSave(bytes, fileName);
-  }
-
-  private static byte[] getBytesFromFile(final File file) {
-    if (file == null || !file.exists()) {
-      return null;
-    }
-    // Get the size of the file
-    final long length = file.length();
-    if (length > Integer.MAX_VALUE) {
-      return null;
-    }
-    // Create the byte array to hold the data
-    final byte[] bytes = new byte[(int) length];
-    try (InputStream is = new FileInputStream(file)) {
-      is.read(bytes);
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file: " + file, e);
-    }
-    return bytes;
-  }
 
   @Override
   public String toString() {

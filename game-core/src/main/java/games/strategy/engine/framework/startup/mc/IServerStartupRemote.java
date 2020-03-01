@@ -31,14 +31,10 @@ public interface IServerStartupRemote extends IRemote {
 
   Set<String> getAvailableGames();
 
-  // Invoked via reflection
-  @SuppressWarnings("unused")
   void changeServerGameTo(String gameName);
 
-  @SuppressWarnings("unused")
   void changeToLatestAutosave(HeadlessAutoSaveType typeOfAutosave);
 
-  @SuppressWarnings("unused")
   void changeToGameSave(byte[] bytes, String fileName);
 
   byte[] getSaveGame();

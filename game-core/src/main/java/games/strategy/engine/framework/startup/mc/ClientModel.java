@@ -443,7 +443,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotSetMapClientAction(final Component parent) {
-    return new SetMapClientAction(parent, getClientMessenger(), getAvailableServerGames());
+    return new SetMapClientAction(parent, getServerStartup(), getAvailableServerGames());
   }
 
   public Action getHostBotChangeGameOptionsClientAction(final Component parent) {
@@ -451,12 +451,12 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotChangeGameToSaveGameClientAction(final Frame owner) {
-    return new ChangeGameToSaveGameClientAction(getClientMessenger(), owner);
+    return new ChangeGameToSaveGameClientAction(getServerStartup(), owner);
   }
 
   public Action getHostBotChangeToAutosaveClientAction(
       final Component parent, final HeadlessAutoSaveType autosaveType) {
-    return new ChangeToAutosaveClientAction(parent, getClientMessenger(), autosaveType);
+    return new ChangeToAutosaveClientAction(parent, getServerStartup(), autosaveType);
   }
 
   public Action getHostBotGetGameSaveClientAction(final Component parent) {

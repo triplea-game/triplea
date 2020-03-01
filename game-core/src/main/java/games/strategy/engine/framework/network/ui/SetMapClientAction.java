@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.network.ui;
 
-import games.strategy.net.IClientMessenger;
-import games.strategy.net.INode;
+import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.Collections;
@@ -17,33 +16,30 @@ public class SetMapClientAction extends AbstractAction {
 
   final List<String> availableGames;
   private final Component parent;
-  private final IClientMessenger clientMessenger;
+  private final IServerStartupRemote serverStartupRemote;
 
   public SetMapClientAction(
       final Component parent,
-      final IClientMessenger clientMessenger,
+      final IServerStartupRemote serverStartupRemote,
       final List<String> availableGames) {
     super("Change Game To");
     this.parent = JOptionPane.getFrameForComponent(parent);
-    this.clientMessenger = clientMessenger;
+    this.serverStartupRemote = serverStartupRemote;
     this.availableGames = availableGames;
     Collections.sort(this.availableGames);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final INode serverNode = clientMessenger.getServerNode();
-    final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-    final JComboBox<String> combo = new JComboBox<>(model);
-    model.addElement("");
-    for (final String game : availableGames) {
-      model.addElement(game);
-    }
-    if (serverNode == null || model.getSize() <= 1) {
+    if (availableGames.isEmpty()) {
       JOptionPane.showMessageDialog(
           parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
       return;
     }
+    final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+    final JComboBox<String> combo = new JComboBox<>(model);
+    model.addElement("");
+    model.addAll(availableGames);
     final int selectedOption =
         JOptionPane.showConfirmDialog(
             parent, combo, "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
@@ -54,6 +50,6 @@ public class SetMapClientAction extends AbstractAction {
     if (name == null || name.length() <= 1) {
       return;
     }
-    clientMessenger.changeServerGameTo(name);
+    serverStartupRemote.changeServerGameTo(name);
   }
 }
