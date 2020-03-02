@@ -5,12 +5,7 @@ import games.strategy.engine.message.RemoteActionCode;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
-/**
- * Chat messages occur on this channel.
- *
- * <p>RMI warning: the ordering of methods cannot be changed, these methods will be invoked by
- * method order number
- */
+/** Chat messages occur on this channel. */
 public interface IChatChannel extends IChannelSubscriber {
   // we get the sender from MessageContext
   @RemoteActionCode(0)
