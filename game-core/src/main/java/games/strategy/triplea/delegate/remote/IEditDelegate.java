@@ -32,9 +32,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
   @RemoteActionCode(3)
   String changePUs(GamePlayer player, int pus);
 
-  @RemoteActionCode(5)
-  String changeTechTokens(GamePlayer player, int tokens);
-
   @RemoteActionCode(1)
   String addTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
 
