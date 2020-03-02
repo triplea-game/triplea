@@ -8,6 +8,6 @@ package games.strategy.engine.message;
  *
  * <p>Modifications to the parameters of an IRemote may or may not be visible to the calling object.
  *
- * <p>All methods declared by an IRemote may though a MessengerException.
+ * <p>All methods declared by an IRemote may throw a MessengerException.
  */
 public interface IRemote {}
