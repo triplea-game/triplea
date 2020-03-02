@@ -11,16 +11,14 @@ import org.junit.jupiter.api.Test;
 class EndPointTest {
 
   @Test
-  void testEndPoint() {
+  void testEndPoint() throws Exception {
     final EndPoint endPoint = new EndPoint("", Comparator.class, false);
     endPoint.addImplementor((Comparator<Object>) (o1, o2) -> 2);
     final RemoteMethodCall call =
         new RemoteMethodCall(
             "",
-            "compare",
-            new Object[] {"", ""},
-            new Class<?>[] {Object.class, Object.class},
-            Comparator.class);
+            Comparator.class.getMethod("compare", Object.class, Object.class),
+            new Object[] {"", ""});
     final List<RemoteMethodCallResults> results =
         endPoint.invokeLocal(call, endPoint.takeANumber(), null);
     assertEquals(1, results.size());

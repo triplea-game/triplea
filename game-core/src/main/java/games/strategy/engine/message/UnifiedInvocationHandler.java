@@ -44,9 +44,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
         }
       }
     }
-    final RemoteMethodCall remoteMethodMsg =
-        new RemoteMethodCall(
-            endPointName, method.getName(), args, method.getParameterTypes(), remoteType);
+    final RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(endPointName, method, args);
     if (ignoreResults) {
       messenger.invoke(endPointName, remoteMethodMsg);
       return null;
