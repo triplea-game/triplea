@@ -246,6 +246,7 @@ public interface Player extends IRemote {
    *     how many allowed from that location
    * @return a list of units to scramble mapped to where they are coming from
    */
+  @RemoteActionCode(14)
   Map<Territory, Collection<Unit>> scrambleUnitsQuery(
       Territory scrambleTo,
       Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers);
@@ -273,6 +274,7 @@ public interface Player extends IRemote {
       GamePlayer playerSendingProposal, String acceptanceQuestion, boolean politics);
 
   /** Asks the player if they wish to perform any kamikaze suicide attacks. */
+  @RemoteActionCode(21)
   Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       Map<Territory, Collection<Unit>> possibleUnitsToAttack);
 

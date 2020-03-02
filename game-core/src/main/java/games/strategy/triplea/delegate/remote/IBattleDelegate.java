@@ -21,6 +21,7 @@ public interface IBattleDelegate extends IRemote, IDelegate {
    * @param bombing - fight a bombing raid
    * @return an error string if the battle could not be fought or an error occurred, null otherwise
    */
+  @RemoteActionCode(2)
   String fightBattle(Territory where, boolean bombing, BattleType type);
 
   /**

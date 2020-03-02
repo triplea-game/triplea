@@ -16,6 +16,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * @param at territory to place
    * @return an error code if the placement was not successful
    */
+  @RemoteActionCode(13)
   String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
   @RemoteActionCode(12)

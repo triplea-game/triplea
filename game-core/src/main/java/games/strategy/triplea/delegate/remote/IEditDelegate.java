@@ -50,6 +50,7 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
   @RemoteActionCode(0)
   String addComment(String message);
 
+  @RemoteActionCode(4)
   String changePoliticalRelationships(
       Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> relationshipChanges);
 }

@@ -54,6 +54,7 @@ public interface IDisplay extends IChannelSubscriber {
    * @param attacker - PlayerId of attacker
    * @param defender - PlayerId of defender
    */
+  @RemoteActionCode(12)
   void showBattle(
       UUID battleId,
       Territory location,
@@ -84,6 +85,7 @@ public interface IDisplay extends IChannelSubscriber {
   void battleEnd(UUID battleId, String message);
 
   /** Notify that the casualties occurred. */
+  @RemoteActionCode(2)
   void casualtyNotification(
       UUID battleId,
       String step,
@@ -94,12 +96,14 @@ public interface IDisplay extends IChannelSubscriber {
       Map<Unit, Collection<Unit>> dependents);
 
   /** Notify that the casualties occurred, and only the casualty. */
+  @RemoteActionCode(4)
   void deadUnitNotification(
       UUID battleId,
       GamePlayer player,
       Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
 
+  @RemoteActionCode(3)
   void changedUnitsNotification(
       UUID battleId,
       GamePlayer player,
