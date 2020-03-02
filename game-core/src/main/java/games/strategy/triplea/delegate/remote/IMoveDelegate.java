@@ -25,10 +25,10 @@ public interface IMoveDelegate
    * @param player referring player ID
    * @return a list of territories with air units that must move of player ID
    */
-  @RemoteActionCode(8)
   @RemoteActionCode(9)
   Collection<Territory> getTerritoriesWhereAirCantLand(GamePlayer player);
 
+  @RemoteActionCode(8)
   Collection<Territory> getTerritoriesWhereAirCantLand();
 
   /**
