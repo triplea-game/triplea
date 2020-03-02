@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.message.IChannelSubscriber;
+import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import java.util.Map;
@@ -15,7 +16,7 @@ public interface IClientChannel extends IChannelSubscriber {
       new RemoteName(
           "games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
 
-@RemoteActionCode(2)
+  @RemoteActionCode(2)
   void playerListingChanged(PlayerListing listing);
 
   /**
@@ -23,8 +24,9 @@ public interface IClientChannel extends IChannelSubscriber {
    *
    * @param players who is playing who.
    */
+  @RemoteActionCode(0)
   void doneSelectingPlayers(byte[] gameData, Map<String, INode> players);
 
-@RemoteActionCode(1)
+  @RemoteActionCode(1)
   void gameReset();
 }

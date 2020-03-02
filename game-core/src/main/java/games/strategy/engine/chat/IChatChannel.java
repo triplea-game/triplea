@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IChannelSubscriber;
+import games.strategy.engine.message.RemoteActionCode;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 
@@ -12,24 +13,24 @@ import org.triplea.http.client.lobby.chat.ChatParticipant;
  */
 public interface IChatChannel extends IChannelSubscriber {
   // we get the sender from MessageContext
-@RemoteActionCode(0)
+  @RemoteActionCode(0)
   void chatOccurred(String message);
 
-@RemoteActionCode(2)
+  @RemoteActionCode(2)
   void slapOccurred(UserName userName);
 
-@RemoteActionCode(3)
+  @RemoteActionCode(3)
   void speakerAdded(ChatParticipant chatParticipant);
 
-@RemoteActionCode(4)
+  @RemoteActionCode(4)
   void speakerRemoved(UserName userName);
 
   // purely here to keep connections open and stop NATs and crap from thinking that our connection
   // is closed when it is
   // not.
-@RemoteActionCode(1)
+  @RemoteActionCode(1)
   void ping();
 
-@RemoteActionCode(5)
+  @RemoteActionCode(5)
   void statusChanged(UserName userName, String status);
 }

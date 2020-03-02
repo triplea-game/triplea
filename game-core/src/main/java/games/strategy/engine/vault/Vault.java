@@ -2,6 +2,7 @@ package games.strategy.engine.vault;
 
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IChannelSubscriber;
+import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.RemoteName;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -27,7 +28,6 @@ import javax.crypto.spec.DESKeySpec;
  * <p>When the data is unlocked by the original node, other nodes can read the data. When data is
  * put in the vault, it cant be changed by the originating node.
  *
-@RemoteActionCode(1)
  * <p>NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultId id)</code>
  * method should be called when it is no longer needed.
  */
@@ -112,7 +112,6 @@ public class Vault {
         }
 
         @Override
-@RemoteActionCode(1)
         public void release(final VaultId id) {
           unverifiedValues.remove(id);
           verifiedValues.remove(id);
@@ -260,7 +259,6 @@ public class Vault {
    *
    * <p>If the id has already been released, then nothing will happen.
    */
-@RemoteActionCode(1)
   public void release(final VaultId id) {
     getRemoteBroadcaster().release(id);
   }
@@ -311,11 +309,13 @@ public class Vault {
   }
 
   interface IRemoteVault extends IChannelSubscriber {
+    @RemoteActionCode(0)
     void addLockedValue(VaultId id, byte[] data);
 
+    @RemoteActionCode(2)
     void unlock(VaultId id, byte[] secretKeyBytes);
 
-@RemoteActionCode(1)
+    @RemoteActionCode(1)
     void release(VaultId id);
   }
 }

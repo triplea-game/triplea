@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate.remote;
 
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.RemoteActionCode;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
    *
    * @return A list of moves already made.
    */
-@RemoteActionCode(4)
+  @RemoteActionCode(4)
   List<T> getMovesMade();
 
   /**
@@ -24,6 +25,6 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
    * @param moveIndex - an index in the list getMovesMade.
    * @return an error string if the move could not be undone, null otherwise
    */
-@RemoteActionCode(12)
+  @RemoteActionCode(12)
   String undoMove(int moveIndex);
 }

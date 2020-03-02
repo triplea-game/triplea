@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.remote;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
@@ -10,7 +11,7 @@ import games.strategy.triplea.delegate.data.BattleListing;
 /** Logic for querying and fighting pending battles. */
 public interface IBattleDelegate extends IRemote, IDelegate {
   /** Returns the battles currently waiting to be fought. */
-@RemoteActionCode(3)
+  @RemoteActionCode(3)
   BattleListing getBattles();
 
   /**
@@ -25,6 +26,6 @@ public interface IBattleDelegate extends IRemote, IDelegate {
   /**
    * Returns the current battle if there is one, or null if there is no current battle in progress.
    */
-@RemoteActionCode(5)
+  @RemoteActionCode(5)
   IBattle getCurrentBattle();
 }

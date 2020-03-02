@@ -1,6 +1,7 @@
 package games.strategy.engine.random;
 
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.RemoteName;
 
 /** A service that generates dice statistics for each player in the game. */
@@ -21,6 +22,6 @@ public interface IRandomStats extends IRemote {
     ENGINE
   }
 
-@RemoteActionCode(0)
+  @RemoteActionCode(0)
   RandomStatsDetails getRandomStats(int diceSides);
 }
