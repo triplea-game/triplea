@@ -198,7 +198,7 @@ public class LobbyLogin {
                           panel.getUsername(), panel.getEmail(), panel.getPassword()));
       if (!createAccountResponse.isSuccess()) {
         showError("Account Creation Failed", createAccountResponse.getErrorMessage());
-        return createAccount(panel);
+        return Optional.empty();
       }
 
       final LobbyLoginResponse loginResponse =
