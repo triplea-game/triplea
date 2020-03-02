@@ -18,6 +18,7 @@ public interface ISound extends IChannelSubscriber {
    * @param gamePlayer The player who's sound we want to play (ie: russians infantry might make
    *     different sounds from german infantry, etc). Can be null.
    */
+@RemoteActionCode(0)
   void playSoundForAll(String clipName, GamePlayer gamePlayer);
 
   /**
@@ -32,6 +33,7 @@ public interface ISound extends IChannelSubscriber {
    *     they will not hear a sound. (Can be null.)
    * @param includeObservers Whether to include non-playing machines
    */
+@RemoteActionCode(1)
   void playSoundToPlayers(
       String clipName,
       Collection<GamePlayer> playersToSendTo,

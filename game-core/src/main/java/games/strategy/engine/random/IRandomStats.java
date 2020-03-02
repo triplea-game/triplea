@@ -21,5 +21,6 @@ public interface IRandomStats extends IRemote {
     ENGINE
   }
 
+@RemoteActionCode(0)
   RandomStatsDetails getRandomStats(int diceSides);
 }

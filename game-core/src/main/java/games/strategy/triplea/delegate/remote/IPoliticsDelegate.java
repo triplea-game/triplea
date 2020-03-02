@@ -7,7 +7,9 @@ import java.util.Collection;
 
 /** Logic for performing political actions. */
 public interface IPoliticsDelegate extends IRemote, IDelegate {
+@RemoteActionCode(0)
   void attemptAction(PoliticalActionAttachment actionChoice);
 
+@RemoteActionCode(7)
   Collection<PoliticalActionAttachment> getValidActions();
 }

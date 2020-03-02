@@ -15,6 +15,7 @@ public interface IClientChannel extends IChannelSubscriber {
       new RemoteName(
           "games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
 
+@RemoteActionCode(2)
   void playerListingChanged(PlayerListing listing);
 
   /**
@@ -24,5 +25,6 @@ public interface IClientChannel extends IChannelSubscriber {
    */
   void doneSelectingPlayers(byte[] gameData, Map<String, INode> players);
 
+@RemoteActionCode(1)
   void gameReset();
 }

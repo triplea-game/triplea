@@ -20,6 +20,7 @@ public interface IDisplay extends IChannelSubscriber {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
    */
+@RemoteActionCode(10)
   void reportMessageToAll(
       String message,
       String title,
@@ -32,6 +33,7 @@ public interface IDisplay extends IChannelSubscriber {
    * players listed but NOT any of the players listed as butNotThesePlayers. (No message to any
    * observers or players not in the list.)
    */
+@RemoteActionCode(11)
   void reportMessageToPlayers(
       Collection<GamePlayer> playersToSendTo,
       Collection<GamePlayer> butNotThesePlayers,
@@ -73,9 +75,11 @@ public interface IDisplay extends IChannelSubscriber {
    * @param battleId - the battle we are listing steps for.
    * @param steps - a collection of strings denoting all steps in the battle
    */
+@RemoteActionCode(6)
   void listBattleSteps(UUID battleId, List<String> steps);
 
   /** The given battle has ended. */
+@RemoteActionCode(0)
   void battleEnd(UUID battleId, String message);
 
   /** Notify that the casualties occurred. */
@@ -103,17 +107,23 @@ public interface IDisplay extends IChannelSubscriber {
       Map<Unit, Collection<Unit>> dependents);
 
   /** Notification of the results of a bombing raid. */
+@RemoteActionCode(1)
   void bombingResults(UUID battleId, List<Die> dice, int cost);
 
   /** Notify that the given player has retreated some or all of his units. */
+@RemoteActionCode(9)
   void notifyRetreat(String shortMessage, String message, String step, GamePlayer retreatingPlayer);
 
+@RemoteActionCode(8)
   void notifyRetreat(UUID battleId, Collection<Unit> retreating);
 
   /** Show dice for the given battle and step. */
+@RemoteActionCode(7)
   void notifyDice(DiceRoll dice, String stepName);
 
+@RemoteActionCode(5)
   void gotoBattleStep(UUID battleId, String step);
 
+@RemoteActionCode(13)
   void shutDown();
 }

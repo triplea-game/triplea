@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.data.BattleListing;
 /** Logic for querying and fighting pending battles. */
 public interface IBattleDelegate extends IRemote, IDelegate {
   /** Returns the battles currently waiting to be fought. */
+@RemoteActionCode(3)
   BattleListing getBattles();
 
   /**
@@ -24,5 +25,6 @@ public interface IBattleDelegate extends IRemote, IDelegate {
   /**
    * Returns the current battle if there is one, or null if there is no current battle in progress.
    */
+@RemoteActionCode(5)
   IBattle getCurrentBattle();
 }

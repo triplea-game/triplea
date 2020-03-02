@@ -14,8 +14,10 @@ public interface IPurchaseDelegate extends IAbstractForumPosterDelegate {
    * @param productionRules - units maps ProductionRule -> count.
    * @return null if units bought, otherwise an error message
    */
+@RemoteActionCode(10)
   String purchase(IntegerMap<ProductionRule> productionRules);
 
   /** Returns an error code, or null if all is good. */
+@RemoteActionCode(11)
   String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
 }

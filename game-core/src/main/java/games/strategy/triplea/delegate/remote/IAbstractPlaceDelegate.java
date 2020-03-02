@@ -17,6 +17,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    */
   String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
+@RemoteActionCode(12)
   default String placeUnits(final Collection<Unit> units, final Territory at) {
     return placeUnits(units, at, BidMode.NOT_BID);
   }
@@ -35,12 +36,14 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * @param at referring territory
    * @return object that contains place-able units
    */
+@RemoteActionCode(6)
   PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
 
   /**
    * Returns the number of placements made so far. this is not the number of units placed, but the
    * number of times we have made successful placements.
    */
+@RemoteActionCode(7)
   int getPlacementsMade();
 
   /**
@@ -48,5 +51,6 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    *
    * @return a list of Territories with air units that must move
    */
+@RemoteActionCode(9)
   Collection<Territory> getTerritoriesWhereAirCantLand();
 }

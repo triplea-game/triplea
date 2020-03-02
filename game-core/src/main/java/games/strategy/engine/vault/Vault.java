@@ -27,6 +27,7 @@ import javax.crypto.spec.DESKeySpec;
  * <p>When the data is unlocked by the original node, other nodes can read the data. When data is
  * put in the vault, it cant be changed by the originating node.
  *
+@RemoteActionCode(1)
  * <p>NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultId id)</code>
  * method should be called when it is no longer needed.
  */
@@ -111,6 +112,7 @@ public class Vault {
         }
 
         @Override
+@RemoteActionCode(1)
         public void release(final VaultId id) {
           unverifiedValues.remove(id);
           verifiedValues.remove(id);
@@ -258,6 +260,7 @@ public class Vault {
    *
    * <p>If the id has already been released, then nothing will happen.
    */
+@RemoteActionCode(1)
   public void release(final VaultId id) {
     getRemoteBroadcaster().release(id);
   }
@@ -312,6 +315,7 @@ public class Vault {
 
     void unlock(VaultId id, byte[] secretKeyBytes);
 
+@RemoteActionCode(1)
     void release(VaultId id);
   }
 }

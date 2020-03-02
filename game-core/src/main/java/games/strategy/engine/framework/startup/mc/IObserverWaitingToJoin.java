@@ -16,5 +16,6 @@ public interface IObserverWaitingToJoin extends IRemote {
   void joinGame(byte[] gameData, Map<String, INode> players);
 
   /** You could not join the game, usually this is due to an error. */
+@RemoteActionCode(0)
   void cannotJoinGame(String reason);
 }

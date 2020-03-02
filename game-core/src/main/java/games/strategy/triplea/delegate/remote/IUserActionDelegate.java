@@ -7,7 +7,9 @@ import java.util.Collection;
 
 /** Logic for performing user actions. */
 public interface IUserActionDelegate extends IRemote, IDelegate {
+@RemoteActionCode(0)
   void attemptAction(UserActionAttachment actionChoice);
 
+@RemoteActionCode(7)
   Collection<UserActionAttachment> getValidActions();
 }

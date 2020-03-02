@@ -15,6 +15,7 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
    *
    * @return A list of moves already made.
    */
+@RemoteActionCode(4)
   List<T> getMovesMade();
 
   /**
@@ -23,5 +24,6 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
    * @param moveIndex - an index in the list getMovesMade.
    * @return an error string if the move could not be undone, null otherwise
    */
+@RemoteActionCode(12)
   String undoMove(int moveIndex);
 }
