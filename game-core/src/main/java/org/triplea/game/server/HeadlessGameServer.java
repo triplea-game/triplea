@@ -50,18 +50,6 @@ public class HeadlessGameServer {
     }
     instance = this;
 
-    final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (!fileName.isEmpty()) {
-      try {
-        final File file = new File(fileName);
-        if (file.exists()) {
-          gameSelectorModel.load(file);
-        }
-      } catch (final Exception e) {
-        gameSelectorModel.resetGameDataToNull();
-      }
-    }
-
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
