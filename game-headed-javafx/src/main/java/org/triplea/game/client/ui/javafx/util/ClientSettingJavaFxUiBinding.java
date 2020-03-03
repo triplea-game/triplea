@@ -167,13 +167,6 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
       return proxySettings(
           ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
-  },
-
-  USE_EXPERIMENTAL_JAVAFX_UI(SettingType.TESTING) {
-    @Override
-    public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.useExperimentalJavaFxUi);
-    }
   };
 
   @Getter(onMethod_ = {@Override})

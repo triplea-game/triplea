@@ -291,17 +291,6 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
-  USE_EXPERIMENTAL_JAVAFX_UI(
-      "Use JavaFX UI (Incomplete!)",
-      SettingType.TESTING,
-      "Enable the experimental JavaFX UI. Not recommended. Isn't working yet.\n"
-          + "Just a proof-of-concept. Requires a restart.") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.useExperimentalJavaFxUi);
-    }
-  },
-
   EMAIL_SETTINGS(
       "Play by Email Preferences",
       SettingType.PLAY_BY_FORUM_EMAIL,

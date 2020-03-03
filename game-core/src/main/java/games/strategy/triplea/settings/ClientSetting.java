@@ -151,8 +151,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =
       new StringClientSetting("PLAYER_NAME", SystemProperties.getUserName());
-  public static final ClientSetting<Boolean> useExperimentalJavaFxUi =
-      new BooleanClientSetting("USE_EXPERIMENTAL_JAVAFX_UI");
   public static final ClientSetting<String> loggingVerbosity =
       new StringClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
   public static final ClientSetting<String> emailServerHost =
