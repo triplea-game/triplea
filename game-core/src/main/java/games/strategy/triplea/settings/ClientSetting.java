@@ -354,6 +354,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
           String.format(
               "Failed to decode encoded value: '%s' in client setting '%s'", encodedValue, name),
           e);
+      resetValue();
       return getDefaultValue().orElse(null);
     }
   }
