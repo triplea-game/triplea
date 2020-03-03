@@ -10,3 +10,5 @@ include 'lobby-db'
 include 'smoke-testing'
 include 'swing-lib'
 include 'test-common'
+include 'game-headed-javafx'
+
