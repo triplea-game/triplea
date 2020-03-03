@@ -13,19 +13,14 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
   private final UnifiedMessenger messenger;
   private final String endPointName;
   private final boolean ignoreResults;
-  private final Class<?> remoteType;
 
   UnifiedInvocationHandler(
-      final UnifiedMessenger messenger,
-      final String endPointName,
-      final boolean ignoreResults,
-      final Class<?> remoteType) {
+      final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults) {
     // equality and hash code are based on end point name
     super(endPointName);
     this.messenger = messenger;
     this.endPointName = endPointName;
     this.ignoreResults = ignoreResults;
-    this.remoteType = remoteType;
   }
 
   @Override
@@ -44,9 +39,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
         }
       }
     }
-    final RemoteMethodCall remoteMethodMsg =
-        new RemoteMethodCall(
-            endPointName, method.getName(), args, method.getParameterTypes(), remoteType);
+    final RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(endPointName, method, args);
     if (ignoreResults) {
       messenger.invoke(endPointName, remoteMethodMsg);
       return null;

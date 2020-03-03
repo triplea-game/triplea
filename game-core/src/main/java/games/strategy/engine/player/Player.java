@@ -6,6 +6,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -26,23 +27,29 @@ public interface Player extends IRemote {
    * Returns the id of this player. This id is initialized by the initialize method in
    * IRemotePlayer.
    */
+  @RemoteActionCode(5)
   GamePlayer getGamePlayer();
 
   /** Called before the game starts. */
+  @RemoteActionCode(9)
   void initialize(IPlayerBridge bridge, GamePlayer gamePlayer);
 
   /** Returns the nation name. */
+  @RemoteActionCode(6)
   String getName();
 
+  @RemoteActionCode(8)
   PlayerType getPlayerType();
 
   /**
    * Start the given step. stepName appears as it does in the game xml file. The game step will
    * finish executing when this method returns.
    */
+  @RemoteActionCode(26)
   void start(String stepName);
 
   /** Called when the game is stopped (like if we are closing the window or leaving the game). */
+  @RemoteActionCode(27)
   void stopGame();
 
   /**
@@ -66,6 +73,7 @@ public interface Player extends IRemote {
    *     one hitpoints left?
    * @return CasualtyDetails
    */
+  @RemoteActionCode(19)
   CasualtyDetails selectCasualties(
       Collection<Unit> selectFrom,
       Map<Unit, Collection<Unit>> dependents,
@@ -91,6 +99,7 @@ public interface Player extends IRemote {
    * @param diceSides - the number of sides on the die, found by data.getDiceSides()
    * @return the resulting dice array
    */
+  @RemoteActionCode(20)
   int[] selectFixedDice(int numDice, int hitAt, String title, int diceSides);
 
   // TODO: Remove noneAvailable as it is always passed as 'true'
@@ -102,6 +111,7 @@ public interface Player extends IRemote {
    * @param territories - territories where the unit can bombard
    * @return the Territory to bombard in, null if the unit should not bombard
    */
+  @RemoteActionCode(18)
   Territory selectBombardingTerritory(
       Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable);
 
@@ -110,6 +120,7 @@ public interface Player extends IRemote {
    *
    * @param unitTerritory - where the potential battle is
    */
+  @RemoteActionCode(15)
   boolean selectAttackSubs(Territory unitTerritory);
 
   /**
@@ -117,6 +128,7 @@ public interface Player extends IRemote {
    *
    * @param unitTerritory - where the potential battle is
    */
+  @RemoteActionCode(16)
   boolean selectAttackTransports(Territory unitTerritory);
 
   /**
@@ -124,6 +136,7 @@ public interface Player extends IRemote {
    *
    * @param unitTerritory - where the potential battle is
    */
+  @RemoteActionCode(17)
   boolean selectAttackUnits(Territory unitTerritory);
 
   /**
@@ -131,6 +144,7 @@ public interface Player extends IRemote {
    *
    * @param unitTerritory - where the potential battle is
    */
+  @RemoteActionCode(22)
   boolean selectShoreBombard(Territory unitTerritory);
 
   // TODO: this is only called from BattleCalculator.selectCasualties() and should probably be
@@ -140,21 +154,25 @@ public interface Player extends IRemote {
    *
    * @param error that an error occurred
    */
+  @RemoteActionCode(11)
   void reportError(String error);
 
   /** report a message to the user. */
+  @RemoteActionCode(12)
   void reportMessage(String message, String title);
 
   /**
    * One or more bombers have just moved into a territory where a strategic bombing raid can be
    * conducted, should the bomber bomb.
    */
+  @RemoteActionCode(25)
   boolean shouldBomberBomb(Territory territory);
 
   /**
    * One or more bombers have just moved into a territory where a strategic bombing raid can be
    * conducted, what should the bomber bomb.
    */
+  @RemoteActionCode(28)
   Unit whatShouldBomberBomb(
       Territory territory, Collection<Unit> potentialTargets, Collection<Unit> bombers);
 
@@ -165,6 +183,7 @@ public interface Player extends IRemote {
    * @param from - where the rockets are launched from, null for WW2V1 rules
    * @return the territory to attack, null if no territory should be attacked
    */
+  @RemoteActionCode(29)
   Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from);
 
   /**
@@ -174,6 +193,7 @@ public interface Player extends IRemote {
    * @param from - the territory containing the factory
    * @return - the fighters to move
    */
+  @RemoteActionCode(7)
   Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
       Collection<Unit> fightersThatCanBeMoved, Territory from);
 
@@ -183,6 +203,7 @@ public interface Player extends IRemote {
    * @param candidates - a list of territories - these are the places where air units can land
    * @return - the territory to land the fighters in, must be non null
    */
+  @RemoteActionCode(23)
   Territory selectTerritoryForAirToLand(
       Collection<Territory> candidates, Territory currentTerritory, String unitMessage);
 
@@ -191,9 +212,11 @@ public interface Player extends IRemote {
    *
    * @param aaFiringTerritories - the territories where aa will fire
    */
+  @RemoteActionCode(2)
   boolean confirmMoveInFaceOfAa(Collection<Territory> aaFiringTerritories);
 
   /** The attempted move will kill some air units. */
+  @RemoteActionCode(3)
   boolean confirmMoveKamikaze();
 
   /**
@@ -206,6 +229,7 @@ public interface Player extends IRemote {
    * @param message - user displayable message
    * @return the territory to retreat to, or null if the player doesnt wish to retreat
    */
+  @RemoteActionCode(13)
   Territory retreatQuery(
       UUID battleId,
       boolean submerge,
@@ -222,16 +246,20 @@ public interface Player extends IRemote {
    *     how many allowed from that location
    * @return a list of units to scramble mapped to where they are coming from
    */
+  @RemoteActionCode(14)
   Map<Territory, Collection<Unit>> scrambleUnitsQuery(
       Territory scrambleTo,
       Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers);
 
   /** Ask the player which if any units they want to select. */
+  @RemoteActionCode(24)
   Collection<Unit> selectUnitsQuery(Territory current, Collection<Unit> possible, String message);
 
   /** Allows the user to pause and confirm enemy casualties. */
+  @RemoteActionCode(1)
   void confirmEnemyCasualties(UUID battleId, String message, GamePlayer hitPlayer);
 
+  @RemoteActionCode(4)
   void confirmOwnCasualties(UUID battleId, String message);
 
   /**
@@ -241,10 +269,12 @@ public interface Player extends IRemote {
    * @param politics is this from politics delegate?
    * @return whether the player accepts the action proposal
    */
+  @RemoteActionCode(0)
   boolean acceptAction(
       GamePlayer playerSendingProposal, String acceptanceQuestion, boolean politics);
 
   /** Asks the player if they wish to perform any kamikaze suicide attacks. */
+  @RemoteActionCode(21)
   Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       Map<Territory, Collection<Unit>> possibleUnitsToAttack);
 
@@ -252,6 +282,7 @@ public interface Player extends IRemote {
    * Used during the RandomStartDelegate for assigning territories to players, and units to
    * territories.
    */
+  @RemoteActionCode(10)
   Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
       List<Territory> territoryChoices, List<Unit> unitChoices, int unitsPerPick);
 }

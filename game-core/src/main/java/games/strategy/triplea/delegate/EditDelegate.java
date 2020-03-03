@@ -197,28 +197,6 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changeTechTokens(final GamePlayer player, final int newTotal) {
-    final String result = checkEditMode();
-    if (result != null) {
-      return result;
-    }
-    final Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
-    final int oldTotal = player.getResources().getQuantity(techTokens);
-    if (oldTotal == newTotal) {
-      return "New token total is unchanged";
-    }
-    if (newTotal < 0) {
-      return "New token total is invalid";
-    }
-    logEvent(
-        "Changing tech tokens for " + player.getName() + " from " + oldTotal + " to " + newTotal,
-        null);
-    bridge.addChange(
-        ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
-    return null;
-  }
-
-  @Override
   public String addTechAdvance(final GamePlayer player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {

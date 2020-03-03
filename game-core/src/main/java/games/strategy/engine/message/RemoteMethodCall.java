@@ -1,7 +1,5 @@
 package games.strategy.engine.message;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.VisibleForTesting;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -24,13 +22,8 @@ public class RemoteMethodCall implements Externalizable {
 
   public RemoteMethodCall() {}
 
-  public RemoteMethodCall(
-      final String remoteName,
-      final String methodName,
-      final Object[] args,
-      final Class<?>[] argTypes,
-      final Class<?> remoteInterface) {
-    checkNotNull(argTypes);
+  public RemoteMethodCall(final String remoteName, final Method method, final Object[] args) {
+    final Class<?>[] argTypes = method.getParameterTypes();
     if (args == null && argTypes.length != 0) {
       throw new IllegalArgumentException("args but no types");
     }
@@ -38,10 +31,10 @@ public class RemoteMethodCall implements Externalizable {
       throw new IllegalArgumentException("Arg and arg type lengths dont match");
     }
     this.remoteName = remoteName;
-    this.methodName = methodName;
+    this.methodName = method.getName();
     this.args = args;
-    this.argTypes = classesToString(argTypes, args);
-    methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
+    this.argTypes = classesToString(method.getParameterTypes(), args);
+    methodNumber = RemoteInterfaceHelper.getNumber(method);
   }
 
   public String getRemoteName() {

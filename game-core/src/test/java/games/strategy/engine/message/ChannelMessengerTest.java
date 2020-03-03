@@ -121,12 +121,16 @@ class ChannelMessengerTest {
   }
 
   private interface IChannelBase extends IChannelSubscriber {
+    @RemoteActionCode(1)
     void testNoParams();
 
+    @RemoteActionCode(2)
     void testPrimitives(int a, short b, long c, byte d, boolean e, float f);
 
+    @RemoteActionCode(3)
     void testString(String a);
 
+    @RemoteActionCode(0)
     void testArray(
         int[] ints,
         short[] shorts,

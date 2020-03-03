@@ -20,8 +20,7 @@ public class ChannelMessenger implements IChannelMessenger {
   @Override
   public IChannelSubscriber getChannelBroadcaster(final RemoteName channelName) {
     final InvocationHandler ih =
-        new UnifiedInvocationHandler(
-            unifiedMessenger, channelName.getName(), true, channelName.getClazz());
+        new UnifiedInvocationHandler(unifiedMessenger, channelName.getName(), true);
     return (IChannelSubscriber)
         Proxy.newProxyInstance(
             Thread.currentThread().getContextClassLoader(),

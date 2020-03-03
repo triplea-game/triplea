@@ -260,14 +260,18 @@ class RemoteMessengerTest {
   }
 
   private interface IFoo extends IRemote {
+    @RemoteActionCode(0)
     void foo();
   }
 
   private interface ITestRemote extends IRemote {
+    @RemoteActionCode(0)
     int increment(int testVal);
 
+    @RemoteActionCode(1)
     void testVoid();
 
+    @RemoteActionCode(2)
     void throwException() throws Exception;
   }
 

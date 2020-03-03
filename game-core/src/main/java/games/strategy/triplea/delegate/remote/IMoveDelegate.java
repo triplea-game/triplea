@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate.remote;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.UndoableMove;
 import java.util.Collection;
 
@@ -15,6 +16,7 @@ public interface IMoveDelegate
    * @param move - the move to perform.
    * @return an error message if the move can't be made, null otherwise
    */
+  @RemoteActionCode(13)
   String performMove(MoveDescription move);
 
   /**
@@ -23,8 +25,10 @@ public interface IMoveDelegate
    * @param player referring player ID
    * @return a list of territories with air units that must move of player ID
    */
+  @RemoteActionCode(9)
   Collection<Territory> getTerritoriesWhereAirCantLand(GamePlayer player);
 
+  @RemoteActionCode(8)
   Collection<Territory> getTerritoriesWhereAirCantLand();
 
   /**
@@ -32,5 +36,6 @@ public interface IMoveDelegate
    *
    * @return a list of Territories with units that can't fight
    */
+  @RemoteActionCode(10)
   Collection<Territory> getTerritoriesWhereUnitsCantFight();
 }

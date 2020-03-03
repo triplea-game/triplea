@@ -2,6 +2,7 @@ package games.strategy.engine.vault;
 
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IChannelSubscriber;
+import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.RemoteName;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -308,10 +309,13 @@ public class Vault {
   }
 
   interface IRemoteVault extends IChannelSubscriber {
+    @RemoteActionCode(0)
     void addLockedValue(VaultId id, byte[] data);
 
+    @RemoteActionCode(2)
     void unlock(VaultId id, byte[] secretKeyBytes);
 
+    @RemoteActionCode(1)
     void release(VaultId id);
   }
 }

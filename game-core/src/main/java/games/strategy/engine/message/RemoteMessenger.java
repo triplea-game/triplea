@@ -20,8 +20,7 @@ public class RemoteMessenger implements IRemoteMessenger {
   @Override
   public IRemote getRemote(final RemoteName remoteName, final boolean ignoreResults) {
     final InvocationHandler ih =
-        new UnifiedInvocationHandler(
-            unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
+        new UnifiedInvocationHandler(unifiedMessenger, remoteName.getName(), ignoreResults);
     return (IRemote)
         Proxy.newProxyInstance(
             Thread.currentThread().getContextClassLoader(),
