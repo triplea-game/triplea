@@ -4,7 +4,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
+import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
@@ -14,9 +16,12 @@ import games.strategy.net.Messengers;
 import java.awt.Component;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -29,22 +34,22 @@ import org.triplea.java.Interruptibles;
 @Log
 public class LocalLauncher extends AbstractLauncher<ServerGame> {
   private final GameData gameData;
-  private final GameSelectorModel gameSelectorModel;
+  private final GameSelector gameSelector;
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
   private final Component parent;
   private final LaunchAction launchAction;
 
   public LocalLauncher(
-      final GameSelectorModel gameSelectorModel,
+      final GameSelector gameSelector,
       final IRandomSource randomSource,
       final PlayerListing playerListing,
       final Component parent,
       final LaunchAction launchAction) {
     this.randomSource = randomSource;
     this.playerListing = playerListing;
-    this.gameSelectorModel = gameSelectorModel;
-    this.gameData = gameSelectorModel.getGameData();
+    this.gameSelector = gameSelector;
+    this.gameData = gameSelector.getGameData();
     this.parent = parent;
     this.launchAction = launchAction;
   }
@@ -61,7 +66,7 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
       // game. might be caused
       // by closing of stream while unloading map resources.
       Interruptibles.sleep(100);
-      gameSelectorModel.loadDefaultGameNewThread();
+      gameSelector.onGameEnded();
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }
   }
@@ -107,18 +112,39 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
                     PlayerCountrySelection::getPlayerName,
                     PlayerCountrySelection::isPlayerEnabled));
 
-    // we don't need the playerToNode list, the disable-able players, or the alliances list, for a
-    // local game
     final PlayerListing pl =
         new PlayerListing(
-            null,
             playersEnabled,
             playerTypes,
             gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(),
-            gameSelectorModel.getGameRound(),
-            null,
-            null);
+            gameSelectorModel.getGameRound());
     return new LocalLauncher(gameSelectorModel, new PlainRandomSource(), pl, parent, launchAction);
+  }
+
+  public static LocalLauncher create(
+      final List<Entry<String, String>> roleMapping,
+      final Predicate<String> isDisabled,
+      final GameData gameData) {
+    final Predicate<Entry<String, String>> isPlayerEnabled =
+        entry -> !isDisabled.test(entry.getValue());
+    final PlayerListing playerListing =
+        new PlayerListing(
+            roleMapping.stream()
+                .collect(Collectors.toUnmodifiableMap(Entry::getKey, isPlayerEnabled::test)),
+            roleMapping.stream()
+                .filter(isPlayerEnabled)
+                .collect(
+                    Collectors.toUnmodifiableMap(
+                        Entry::getKey, entry -> PlayerType.fromLabel(entry.getValue()))),
+            gameData.getGameVersion(),
+            gameData.getGameName(),
+            String.valueOf(gameData.getCurrentRound()));
+    return new LocalLauncher(
+        GameSelector.fromGameData(gameData),
+        new PlainRandomSource(),
+        playerListing,
+        null,
+        new HeadedLaunchAction(null));
   }
 }

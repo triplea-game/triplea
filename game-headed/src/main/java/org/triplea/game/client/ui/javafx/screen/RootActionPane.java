@@ -3,6 +3,7 @@ package org.triplea.game.client.ui.javafx.screen;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.GameRunner;
 import java.awt.GraphicsEnvironment;
+import java.util.Map;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -72,7 +73,7 @@ public class RootActionPane implements ScreenController<Screens> {
   }
 
   @Override
-  public void switchScreen(final Screens identifier) {
+  public void switchScreen(final Screens identifier, final Map<String, Object> data) {
     Preconditions.checkNotNull(identifier);
 
     switch (identifier) {

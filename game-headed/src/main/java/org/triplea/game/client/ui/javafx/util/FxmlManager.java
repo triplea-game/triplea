@@ -21,7 +21,9 @@ public enum FxmlManager {
 
   MAIN_MENU_CONTROLS("/org/triplea/game/client/ui/javafx/fxml/MainMenuControls.fxml"),
 
-  MAP_SELECTION("/org/triplea/game/client/ui/javafx/fxml/MapSelection.fxml");
+  MAP_SELECTION("/org/triplea/game/client/ui/javafx/fxml/MapSelection.fxml"),
+
+  ROLE_SELECTION("/org/triplea/game/client/ui/javafx/fxml/RoleSelectionScreen.fxml");
 
   private static final String LANG_CLASS_BASENAME =
       "org.triplea.game.client.ui.javafx.lang.TripleA";

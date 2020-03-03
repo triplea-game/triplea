@@ -40,7 +40,7 @@ public class HeadedLaunchAction implements LaunchAction {
   @Override
   public void handleGameInterruption(
       final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
-    gameSelectorModel.loadDefaultGameNewThread();
+    gameSelectorModel.onGameEnded();
   }
 
   @Override

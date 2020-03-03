@@ -54,6 +54,7 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
     navigationPane.registerScreen(FxmlManager.ABOUT_INFORMATION);
     navigationPane.registerScreen(FxmlManager.MAIN_MENU_CONTROLS);
     navigationPane.registerScreen(FxmlManager.MAP_SELECTION);
+    navigationPane.registerScreen(FxmlManager.ROLE_SELECTION);
 
     navigationPane.switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
   }

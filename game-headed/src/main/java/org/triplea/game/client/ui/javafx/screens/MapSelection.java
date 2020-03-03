@@ -2,7 +2,9 @@ package org.triplea.game.client.ui.javafx.screens;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.ui.GameChooserEntry;
+import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -16,16 +18,22 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.web.WebView;
 import lombok.AccessLevel;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.triplea.game.client.parser.DefaultGameDetector;
+import org.triplea.game.client.parser.DefaultGameLoader;
 import org.triplea.game.client.parser.GameDetector;
+import org.triplea.game.client.parser.GameLoader;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
+import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 import org.triplea.util.LocalizeHtml;
 
+@Log
 public class MapSelection implements ControlledScreen<ScreenController<FxmlManager>> {
 
   private final GameDetector gameDetector;
+  private final GameLoader gameLoader;
   private final BiFunction<String, String, String> linkLocalizer;
 
   @Setter(
@@ -62,13 +70,16 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
   // to initialize this controller.
   @SuppressWarnings("unused")
   public MapSelection() {
-    this(new DefaultGameDetector(), LocalizeHtml::localizeImgLinksInHtml);
+    this(new DefaultGameDetector(), new DefaultGameLoader(), LocalizeHtml::localizeImgLinksInHtml);
   }
 
   @VisibleForTesting
   MapSelection(
-      final GameDetector gameDetector, final BiFunction<String, String, String> linkLocalizer) {
+      final GameDetector gameDetector,
+      final GameLoader gameLoader,
+      final BiFunction<String, String, String> linkLocalizer) {
     this.gameDetector = gameDetector;
+    this.gameLoader = gameLoader;
     this.linkLocalizer = linkLocalizer;
   }
 
@@ -140,5 +151,22 @@ public class MapSelection implements ControlledScreen<ScreenController<FxmlManag
   @FXML
   void backToGameSelection() {
     screenController.switchScreen(FxmlManager.GAME_SELECTION_CONTROLS);
+  }
+
+  @FXML
+  void selectMap() {
+    final var rootActionPane = (RootActionPane) root.getScene().getWindow().getUserData();
+    rootActionPane.setLoadingOverlay(true);
+    gameLoader.loadGame(
+        selectedGame,
+        gameData -> {
+          screenController.switchScreen(
+              FxmlManager.ROLE_SELECTION, Map.of(RoleSelection.SELECTED_MAP_KEY, gameData));
+          rootActionPane.setLoadingOverlay(false);
+        },
+        throwable -> {
+          log.log(Level.SEVERE, "Failed to load Game.", throwable);
+          rootActionPane.setLoadingOverlay(false);
+        });
   }
 }
