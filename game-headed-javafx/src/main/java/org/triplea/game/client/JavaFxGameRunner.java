@@ -1,13 +1,12 @@
 package org.triplea.game.client;
 
+import javafx.application.Application;
+import lombok.extern.java.Log;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.debug.console.window.ConsoleConfiguration;
 import org.triplea.game.client.ui.javafx.TripleA;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
-
-import javafx.application.Application;
-import lombok.extern.java.Log;
 
 @Log
 public class JavaFxGameRunner {
