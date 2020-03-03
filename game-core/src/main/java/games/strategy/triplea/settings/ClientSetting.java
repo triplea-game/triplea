@@ -70,9 +70,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
-  /** Fallback URI in case github is not available when fetching the live lobby URI. */
-  public static final ClientSetting<URI> lobbyLastUsedUri =
-      new UriClientSetting("LAST_USED_LOBBY_URI");
   /**
    * When set to true, lobby URI is hardcoded to localhost (http). Takes precedence over {@code
    * lobbyOverrideUri}
