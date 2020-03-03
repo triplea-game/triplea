@@ -16,14 +16,10 @@ import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
-import javafx.application.Application;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
-import org.triplea.debug.ErrorMessage;
 import org.triplea.debug.LoggerManager;
-import org.triplea.debug.console.window.ConsoleConfiguration;
-import org.triplea.game.client.ui.javafx.TripleA;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
@@ -32,13 +28,7 @@ import org.triplea.swing.SwingAction;
 public final class HeadedGameRunner {
   private HeadedGameRunner() {}
 
-  /** Entry point for running a new headed game client. */
-  public static void main(final String[] args) {
-    checkNotNull(args);
-    checkState(
-        !GraphicsEnvironment.isHeadless(),
-        "UI client launcher invoked from headless environment. This is currently "
-            + "prohibited by design to avoid UI rendering errors in the headless environment.");
+  public static void initializeClientSettingAndLogging() {
     Thread.setDefaultUncaughtExceptionHandler(
         (t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
 
@@ -46,16 +36,13 @@ public final class HeadedGameRunner {
 
     LoggerManager.setLogLevel(
         ClientSetting.loggingVerbosity.getValue().map(Level::parse).orElse(Level.INFO));
+  }
+
+  public static void initializeLookAndFeel() {
     Interruptibles.await(() -> SwingAction.invokeAndWait(LookAndFeel::initialize));
-    if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
-      Interruptibles.await(
-          () ->
-              SwingAction.invokeAndWait(
-                  () -> {
-                    ConsoleConfiguration.initialize();
-                    ErrorMessage.initialize();
-                  }));
-    }
+  }
+
+  public static void initializeDesktopIntegrations(final String[] args) {
     ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
@@ -86,11 +73,20 @@ public final class HeadedGameRunner {
     if (HttpProxy.isUsingSystemProxy()) {
       HttpProxy.updateSystemProxy();
     }
+  }
 
-    if (ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
-      Application.launch(TripleA.class, args);
-    } else {
-      GameRunner.start();
-    }
+  /** Entry point for running a new headed game client. */
+  public static void main(final String[] args) {
+    checkNotNull(args);
+    checkState(
+        !GraphicsEnvironment.isHeadless(),
+        "UI client launcher invoked from headless environment. This is currently "
+            + "prohibited by design to avoid UI rendering errors in the headless environment.");
+    initializeClientSettingAndLogging();
+    initializeLookAndFeel();
+
+    initializeDesktopIntegrations(args);
+
+    GameRunner.start();
   }
 }

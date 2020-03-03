@@ -1,0 +1,31 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA JavaFX Game Client'
+mainClassName = 'org.triplea.game.client.ui.javafx.TripleA'
+
+javafx {
+    version = javafxVersion
+    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml', 'javafx.web' ]
+}
+
+dependencies {
+    implementation project(':game-headed')
+    implementation project(':game-core')
+    implementation project(':swing-lib')
+    implementation project(':java-extras')
+}
+
+task release(group: 'release', dependsOn: [shadowJar]) {
+    doLast {
+        publishArtifacts(shadowJar.outputs.files)
+    }
+}
+
+shadowJar {
+    archiveClassifier.set ''
+}
