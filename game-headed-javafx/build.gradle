@@ -20,6 +20,12 @@ dependencies {
     implementation project(':java-extras')
 }
 
+task release(group: 'release', dependsOn: [shadowJar]) {
+    doLast {
+        publishArtifacts(shadowJar.outputs.files)
+    }
+}
+
 shadowJar {
     archiveClassifier.set ''
 }
