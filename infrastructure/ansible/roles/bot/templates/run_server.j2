@@ -31,7 +31,6 @@ java -server \
     -Xmx{{ bot_max_memory }} \
     -Djava.awt.headless=true \
     -jar {{ bot_jar }} \
-    -Ptriplea.game= \
     -Ptriplea.port=${BOT_PORT} \
     -Ptriplea.name={{ bot_name }}-${BOT_NUMBER} \
     -Ptriplea.lobby.uri={{ bot_lobby_uri }} \
