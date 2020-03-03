@@ -303,6 +303,8 @@ return Math.min(is32BitJavaRuntime ? 1024L : 2048L, halfMemoryMiB);</property>
                   <property name="description" type="string">TripleA Savegame</property>
                   <property name="extension" type="string">tsvg</property>
                   <property name="launcherId" type="string">33</property>
+                  <property name="unix" type="boolean" value="true" />
+                  <property name="unixMimeType" type="string">application/triplea</property>
                 </serializedBean>
               </action>
             </actions>
