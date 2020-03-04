@@ -30,9 +30,9 @@ public class HeadlessLaunchAction implements LaunchAction {
       // if we do not do this, we can get into an infinite loop of launching a game,
       // then crashing out, then launching, etc.
       serverModel.setAllPlayersToNullNodes();
-      final File f1 = getAutoSaveFileUtils().getHeadlessAutoSaveFile();
-      if (!f1.exists()) {
-        gameSelectorModel.load(f1);
+      final File autoSaveFile = getAutoSaveFileUtils().getHeadlessAutoSaveFile();
+      if (autoSaveFile.exists()) {
+        gameSelectorModel.load(autoSaveFile);
       }
     } catch (final Exception e1) {
       log.log(Level.SEVERE, "Failed to load game", e1);
