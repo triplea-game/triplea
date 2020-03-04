@@ -1,7 +1,5 @@
 package org.triplea.game.client.ui.javafx;
 
-import games.strategy.engine.framework.GameRunner;
-import java.awt.GraphicsEnvironment;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -9,7 +7,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javax.swing.SwingUtilities;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;

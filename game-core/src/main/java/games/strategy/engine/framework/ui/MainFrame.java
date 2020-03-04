@@ -47,7 +47,6 @@ public class MainFrame {
 
     setupPanelModel.setUi(mainFrame);
     show();
-
   }
 
   public static void show() {

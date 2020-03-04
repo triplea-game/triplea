@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.BorderLayout;
 import java.awt.Color;

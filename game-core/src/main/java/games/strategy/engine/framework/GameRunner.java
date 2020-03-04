@@ -60,8 +60,7 @@ public final class GameRunner {
   public static void start() {
     SwingUtilities.invokeLater(
         () -> {
-          setupPanelModel = new SetupPanelModel(gameSelectorModel); //gameSelectorModel, mainFrame);
-
+          setupPanelModel = new SetupPanelModel(gameSelectorModel);
           MainFrame.buildMainFrame(setupPanelModel, gameSelectorModel);
           setupPanelModel.showSelectType();
           new Thread(GameRunner::showMainFrame).start();

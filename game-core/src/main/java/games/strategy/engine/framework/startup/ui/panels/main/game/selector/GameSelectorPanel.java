@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;

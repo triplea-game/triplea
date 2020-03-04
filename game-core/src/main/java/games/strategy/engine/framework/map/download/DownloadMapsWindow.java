@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.function.Predicate.not;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;

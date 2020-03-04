@@ -1,9 +1,9 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import java.util.Map;
 import java.util.Optional;
 import org.triplea.game.chat.ChatModel;

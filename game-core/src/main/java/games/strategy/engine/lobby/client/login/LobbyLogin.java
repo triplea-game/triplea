@@ -2,7 +2,6 @@ package games.strategy.engine.lobby.client.login;
 
 import com.google.common.base.Strings;
 import feign.FeignException;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
