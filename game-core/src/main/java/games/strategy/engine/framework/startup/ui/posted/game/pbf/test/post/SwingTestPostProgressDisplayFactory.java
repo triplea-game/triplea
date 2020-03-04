@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post;
 
-import games.strategy.engine.framework.GameRunner;
 import java.util.function.Supplier;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -20,19 +19,18 @@ public class SwingTestPostProgressDisplayFactory implements Supplier<TestPostPro
       public void showSuccess(final String message) {
         SwingUtilities.invokeLater(
             () ->
-                GameRunner.showMessageDialog(
-                    message,
-                    GameRunner.Title.of("Test Turn Summary Post"),
-                    JOptionPane.INFORMATION_MESSAGE));
+                JOptionPane.showMessageDialog(
+                    null, message, "Test Turn Summary Post", JOptionPane.INFORMATION_MESSAGE));
       }
 
       @Override
       public void showFailure(final Throwable throwable) {
         SwingUtilities.invokeLater(
             () ->
-                GameRunner.showMessageDialog(
+                JOptionPane.showMessageDialog(
+                    null,
                     throwable.getMessage(),
-                    GameRunner.Title.of("Test Turn Summary Post"),
+                    "Test Turn Summary Post",
                     JOptionPane.WARNING_MESSAGE));
       }
 

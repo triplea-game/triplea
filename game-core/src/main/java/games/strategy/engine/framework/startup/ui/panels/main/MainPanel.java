@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
 import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import java.awt.BorderLayout;
@@ -59,6 +58,7 @@ public class MainPanel extends JPanel {
    * subsequent screens.
    */
   MainPanel(
+      final Runnable quitAction,
       final GameSelectorPanel gameSelectorPanel,
       final Consumer<MainPanel> launchAction,
       @Nullable final ChatModel chatModel,
@@ -103,7 +103,7 @@ public class MainPanel extends JPanel {
         new JButtonBuilder()
             .title("Quit")
             .toolTip("Close TripleA.")
-            .actionListener(GameRunner::quitGame)
+            .actionListener(quitAction)
             .build();
     final JPanel buttonsPanel =
         new JPanelBuilder().borderEtched().add(playButton).add(quitButton).build();

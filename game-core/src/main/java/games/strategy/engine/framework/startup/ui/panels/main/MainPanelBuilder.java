@@ -1,11 +1,12 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import java.util.Optional;
 import javax.swing.JOptionPane;
+import lombok.AllArgsConstructor;
 import org.triplea.game.startup.SetupModel;
 
 /**
@@ -13,7 +14,10 @@ import org.triplea.game.startup.SetupModel;
  * contents are added to {@link MainPanel} and we set up listeners so that we can change screens by
  * swapping the contents rendered by {@link MainPanel}.
  */
+@AllArgsConstructor
 public class MainPanelBuilder {
+
+  private final Runnable quitAction;
 
   /** Creates a MainPanel instance and configures screen transition listeners. */
   public MainPanel buildMainPanel(
@@ -23,6 +27,7 @@ public class MainPanelBuilder {
 
     final MainPanel mainPanel =
         new MainPanel(
+            quitAction,
             gameSelectorPanel,
             uiPanel -> {
               setupPanelModel
@@ -52,7 +57,7 @@ public class MainPanelBuilder {
                 .map(SetupModel::getChatModel)
                 .orElse(null),
             setupPanelModel::showSelectType);
-    setupPanelModel.setPanelChangeListener(setupPanel -> mainPanel.setSetupPanel(setupPanel));
+    setupPanelModel.setPanelChangeListener(mainPanel::setSetupPanel);
     gameSelectorModel.addObserver((observable, arg) -> mainPanel.updatePlayButtonState());
     return mainPanel;
   }

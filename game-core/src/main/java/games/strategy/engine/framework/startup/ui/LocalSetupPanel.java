@@ -2,8 +2,8 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
