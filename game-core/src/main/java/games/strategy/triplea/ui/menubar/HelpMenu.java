@@ -5,8 +5,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MacOsIntegration;
@@ -237,10 +237,9 @@ final class HelpMenu extends JMenu {
                   final Result<String> result =
                       Interruptibles.awaitResult(
                           () ->
-                              GameRunner.newBackgroundTaskRunner()
-                                  .runInBackgroundAndReturn(
-                                      "Calculating Data",
-                                      () -> getUnitStatsTable(gameData, uiContext)));
+                              BackgroundTaskRunner.runInBackgroundAndReturn(
+                                  "Calculating Data",
+                                  () -> getUnitStatsTable(gameData, uiContext)));
                   final JEditorPane editorPane =
                       new JEditorPane(
                           "text/html", result.result.orElse("Failed to calculate Data"));

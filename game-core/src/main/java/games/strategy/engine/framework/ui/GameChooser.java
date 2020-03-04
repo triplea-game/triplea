@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -124,9 +124,8 @@ public class GameChooser extends JDialog {
       throws InterruptedException {
     final GameChooserModel gameChooserModel =
         new GameChooserModel(
-            GameRunner.newBackgroundTaskRunner()
-                .runInBackgroundAndReturn(
-                    "Loading all available games...", GameChooserModel::parseMapFiles));
+            BackgroundTaskRunner.runInBackgroundAndReturn(
+                "Loading all available games...", GameChooserModel::parseMapFiles));
     final GameChooser chooser = new GameChooser(parent, gameChooserModel);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);

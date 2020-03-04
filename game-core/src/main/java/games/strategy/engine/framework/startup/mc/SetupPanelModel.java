@@ -10,13 +10,13 @@ import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.posted.game.pbem.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.PbfSetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -35,7 +35,7 @@ public class SetupPanelModel implements ServerSetupModel {
   protected SetupPanel panel = null;
 
   @Setter private Consumer<SetupPanel> panelChangeListener;
-  @Nonnull private final JFrame ui;
+  @Setter private JFrame ui;
 
   @Override
   public void showSelectType() {

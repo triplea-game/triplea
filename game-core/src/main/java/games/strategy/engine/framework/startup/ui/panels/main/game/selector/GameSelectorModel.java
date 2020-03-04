@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.mc;
+package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -6,6 +6,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.startup.mc.ClientModel;
+import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.pro.ProAi;
@@ -97,12 +99,12 @@ public class GameSelectorModel extends Observable implements GameSelector {
     }
   }
 
-  void setCanSelect(final boolean canSelect) {
+  public void setCanSelect(final boolean canSelect) {
     this.canSelect = canSelect;
     notifyObs();
   }
 
-  void setIsHostHeadlessBot(final boolean isHostHeadlessBot) {
+  public void setIsHostHeadlessBot(final boolean isHostHeadlessBot) {
     this.hostIsHeadlessBot = isHostHeadlessBot;
     notifyObs();
   }
@@ -111,7 +113,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
    * We don't have a game data (i.e. we are a remote player and the data has not been sent yet), but
    * we still want to display game info.
    */
-  void clearDataButKeepGameInfo(
+  public void clearDataButKeepGameInfo(
       final String gameName, final String gameRound, final String gameVersion) {
     synchronized (this) {
       gameData = null;
@@ -126,7 +128,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
     return Optional.ofNullable(fileName).orElse("-");
   }
 
-  void setGameData(final GameData data) {
+  public void setGameData(final GameData data) {
     synchronized (this) {
       if (data == null) {
         gameName = gameRound = gameVersion = "-";

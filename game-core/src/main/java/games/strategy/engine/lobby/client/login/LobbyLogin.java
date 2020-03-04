@@ -2,7 +2,8 @@ package games.strategy.engine.lobby.client.login;
 
 import com.google.common.base.Strings;
 import feign.FeignException;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.MainFrame;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
@@ -69,7 +70,7 @@ public class LobbyLogin {
         .ifPresent(
             lobbyClient -> {
               final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, serverProperties);
-              GameRunner.hideMainFrame();
+              MainFrame.hide();
               lobbyFrame.setVisible(true);
 
               if (lobbyClient.isPasswordChangeRequired()) {
@@ -112,10 +113,9 @@ public class LobbyLogin {
     try {
 
       final LobbyLoginResponse loginResponse =
-          GameRunner.newBackgroundTaskRunner()
-              .runInBackgroundAndReturn(
-                  CONNECTING_TO_LOBBY,
-                  () -> lobbyLoginClient.login(panel.getUserName(), panel.getPassword()));
+          BackgroundTaskRunner.runInBackgroundAndReturn(
+              CONNECTING_TO_LOBBY,
+              () -> lobbyLoginClient.login(panel.getUserName(), panel.getPassword()));
 
       if (loginResponse.getFailReason() == null) {
         return Optional.of(
@@ -190,22 +190,20 @@ public class LobbyLogin {
   private Optional<HttpLobbyClient> createAccount(final CreateAccountPanel panel) {
     try {
       final CreateAccountResponse createAccountResponse =
-          GameRunner.newBackgroundTaskRunner()
-              .runInBackgroundAndReturn(
-                  "Creating account...",
-                  () ->
-                      lobbyLoginClient.createAccount(
-                          panel.getUsername(), panel.getEmail(), panel.getPassword()));
+          BackgroundTaskRunner.runInBackgroundAndReturn(
+              "Creating account...",
+              () ->
+                  lobbyLoginClient.createAccount(
+                      panel.getUsername(), panel.getEmail(), panel.getPassword()));
       if (!createAccountResponse.isSuccess()) {
         showError("Account Creation Failed", createAccountResponse.getErrorMessage());
         return Optional.empty();
       }
 
       final LobbyLoginResponse loginResponse =
-          GameRunner.newBackgroundTaskRunner()
-              .runInBackgroundAndReturn(
-                  CONNECTING_TO_LOBBY,
-                  () -> lobbyLoginClient.login(panel.getUsername(), panel.getPassword()));
+          BackgroundTaskRunner.runInBackgroundAndReturn(
+              CONNECTING_TO_LOBBY,
+              () -> lobbyLoginClient.login(panel.getUsername(), panel.getPassword()));
 
       if (loginResponse.getFailReason() != null) {
         throw new LoginFailure(loginResponse.getFailReason());
@@ -246,8 +244,7 @@ public class LobbyLogin {
   private void forgotPassword(final ForgotPasswordPanel panel) {
     try {
       final String response =
-          GameRunner.newBackgroundTaskRunner()
-              .runInBackgroundAndReturn(
+          BackgroundTaskRunner.runInBackgroundAndReturn(
                   "Sending forgot password request...",
                   () ->
                       ForgotPasswordClient.newClient(serverProperties.getUri())

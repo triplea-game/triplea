@@ -18,7 +18,7 @@ import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
-import games.strategy.engine.framework.ui.background.TaskRunner;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.UrlConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -360,20 +360,19 @@ public final class GameSelectorPanel extends JPanel implements Observer {
       final GameChooserEntry entry =
           GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
       if (entry != null) {
-        GameRunner.newBackgroundTaskRunner()
-            .runInBackground(
-                "Loading map...",
-                () -> {
-                  if (!entry.isGameDataLoaded()) {
-                    try {
-                      entry.fullyParseGameData();
-                    } catch (final GameParseException e) {
-                      // TODO remove bad entries from the underlying model
-                      return;
-                    }
-                  }
-                  model.load(entry);
-                });
+        BackgroundTaskRunner.runInBackground(
+            "Loading map...",
+            () -> {
+              if (!entry.isGameDataLoaded()) {
+                try {
+                  entry.fullyParseGameData();
+                } catch (final GameParseException e) {
+                  // TODO remove bad entries from the underlying model
+                  return;
+                }
+              }
+              model.load(entry);
+            });
         // warning: NPE check is not to protect against concurrency, another thread could still null
         // out game data.
         // The NPE check is to protect against the case where there are errors loading game, in
