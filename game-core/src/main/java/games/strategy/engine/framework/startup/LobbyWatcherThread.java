@@ -2,7 +2,7 @@ package games.strategy.engine.framework.startup;
 
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;

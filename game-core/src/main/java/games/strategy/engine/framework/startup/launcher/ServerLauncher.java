@@ -5,7 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IClientChannel;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.mc.ServerModel;

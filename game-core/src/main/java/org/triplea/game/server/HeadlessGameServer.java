@@ -16,7 +16,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;

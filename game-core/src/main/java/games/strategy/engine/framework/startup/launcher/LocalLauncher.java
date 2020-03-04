@@ -5,7 +5,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.engine.framework.startup.mc.GameSelector;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.player.Player;

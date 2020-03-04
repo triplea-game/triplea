@@ -15,7 +15,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;

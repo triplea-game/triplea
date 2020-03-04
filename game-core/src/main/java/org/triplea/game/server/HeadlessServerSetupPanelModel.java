@@ -6,7 +6,7 @@ import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import java.util.Optional;
 import lombok.AccessLevel;

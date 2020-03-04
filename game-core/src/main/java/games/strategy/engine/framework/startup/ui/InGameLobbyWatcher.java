@@ -4,7 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.SystemPropertyReader;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
