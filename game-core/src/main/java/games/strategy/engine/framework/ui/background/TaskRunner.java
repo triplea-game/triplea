@@ -51,25 +51,12 @@ public class TaskRunner<E extends Exception> {
     //   change the 'null' parent window reference to main frame.
     final WaitDialog waitDialog = new WaitDialog(null, waitDialogTitle);
     waitDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    final SwingWorker<Void, Void> worker =
-        new SwingWorker<>() {
-          @Override
-          protected Void doInBackground() {
-            try {
-              backgroundAction.run();
-            } catch (final Throwable e) {
-              exceptionRef.set(e);
-            }
-            return null;
-          }
 
-          @Override
-          protected void done() {
-            waitDialog.setVisible(false);
-            waitDialog.dispose();
-          }
-        };
+    final SwingWorker<Void, Void> worker =
+        buildBackgroundJobRunnerWithWaitDialog(backgroundAction, exceptionRef, waitDialog);
+    // If wait dialog is closed, then cancel the worker background job.
     SwingComponents.addWindowClosedListener(waitDialog, () -> worker.cancel(true));
+
     worker.execute();
     waitDialog.setVisible(true);
 
@@ -80,7 +67,30 @@ public class TaskRunner<E extends Exception> {
         exceptionHandler.accept(exception);
       }
     } catch (final ClassCastException e) {
-      throw new AssertionError("unexpected checked exception", e);
+      throw new AssertionError("Unexpected exception thrown", e);
     }
+  }
+
+  private SwingWorker<Void, Void> buildBackgroundJobRunnerWithWaitDialog(
+      final ThrowingRunnable<E> backgroundAction,
+      final AtomicReference<Throwable> exceptionRef,
+      final WaitDialog waitDialog) {
+    return new SwingWorker<>() {
+      @Override
+      protected Void doInBackground() {
+        try {
+          backgroundAction.run();
+        } catch (final Throwable e) {
+          exceptionRef.set(e);
+        }
+        return null;
+      }
+
+      @Override
+      protected void done() {
+        waitDialog.setVisible(false);
+        waitDialog.dispose();
+      }
+    };
   }
 }
