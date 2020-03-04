@@ -69,7 +69,7 @@ public final class GameDataManager {
                 "Incompatible engine versions. We are: %s<br>"
                     + "Trying to load incompatible save game version: %s<br>"
                     + "To download an older version of TripleA,<br>"
-                    + "please visit: <a href=%s>%s</a>",
+                    + "please visit: <a href=\"%s\">%s</a>",
                 ClientContext.engineVersion(),
                 ((games.strategy.util.Version) version).getExactVersion(),
                 UrlConstants.OLD_DOWNLOADS_WEBSITE,
@@ -85,7 +85,7 @@ public final class GameDataManager {
                 "Incompatible engine versions. We are: %s<br>"
                     + "Trying to load game created with: %s<br>"
                     + "To download the latest version of TripleA,<br>"
-                    + "please visit: <a href=%s>%s</a>",
+                    + "please visit: <a href=\"%s\">%s</a>",
                 ClientContext.engineVersion(),
                 version,
                 UrlConstants.DOWNLOAD_WEBSITE,
