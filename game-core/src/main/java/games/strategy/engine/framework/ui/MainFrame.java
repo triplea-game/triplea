@@ -46,12 +46,16 @@ public class MainFrame {
     mainFrame.pack();
 
     setupPanelModel.setUi(mainFrame);
+    show();
 
+  }
+
+  public static void show() {
     SwingUtilities.invokeLater(
         () -> {
-          mainFrame.requestFocus();
-          mainFrame.toFront();
-          mainFrame.setVisible(true);
+          instance.mainFrame.requestFocus();
+          instance.mainFrame.toFront();
+          instance.mainFrame.setVisible(true);
         });
   }
 

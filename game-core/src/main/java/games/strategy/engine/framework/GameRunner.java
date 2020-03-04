@@ -75,8 +75,8 @@ public final class GameRunner {
    * lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
+    MainFrame.show();
     ProAi.gameOverClearCache();
-
     loadGame();
 
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
