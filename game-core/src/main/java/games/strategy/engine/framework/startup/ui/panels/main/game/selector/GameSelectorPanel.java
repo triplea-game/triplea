@@ -35,7 +35,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import lombok.extern.java.Log;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -45,7 +44,6 @@ import org.triplea.swing.SwingComponents;
  * Left hand side panel of the launcher screen that has various info, like selected game and engine
  * version.
  */
-@Log
 public final class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
 
