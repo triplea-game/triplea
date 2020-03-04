@@ -2,7 +2,6 @@ package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
-import games.strategy.engine.framework.GameRunner;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -116,8 +115,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
                   final int optionType = JOptionPane.YES_NO_OPTION;
                   int messageType = JOptionPane.WARNING_MESSAGE;
                   final int result =
-                      GameRunner.showConfirmDialog(
-                          message, GameRunner.Title.of(title), optionType, messageType);
+                      JOptionPane.showConfirmDialog(null, message, title, optionType, messageType);
                   if (result == JOptionPane.YES_OPTION) {
                     if (map.delete()) {
                       messageType = JOptionPane.INFORMATION_MESSAGE;

@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 import com.google.common.base.Ascii;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -181,8 +180,8 @@ public class EmailSenderEditor extends JPanel {
                 final int finalMessageType = messageType;
                 SwingUtilities.invokeLater(
                     () ->
-                        GameRunner.showMessageDialog(
-                            finalMessage, GameRunner.Title.of("Email Test"), finalMessageType));
+                        JOptionPane.showMessageDialog(
+                            null, finalMessage, "Email Test", finalMessageType));
                 progressWindow.setVisible(false);
               }
             })

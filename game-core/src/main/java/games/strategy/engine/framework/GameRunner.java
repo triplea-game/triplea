@@ -76,7 +76,7 @@ public final class GameRunner {
 
     UpdateChecks.launch();
   }
-  
+
   /**
    * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids
    * parameter swapping problem and makes refactoring easier.
@@ -91,16 +91,6 @@ public final class GameRunner {
     public static Title of(final String value) {
       return new Title(value);
     }
-  }
-
-  public static int showConfirmDialog(
-      final String message, final Title title, final int optionType, final int messageType) {
-    return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
-  }
-
-  public static void showMessageDialog(
-      final String message, final Title title, final int messageType) {
-    JOptionPane.showMessageDialog(mainFrame, message, title.value, messageType);
   }
 
   public static void hideMainFrame() {
