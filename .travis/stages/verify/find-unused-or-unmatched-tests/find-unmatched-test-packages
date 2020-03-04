@@ -19,6 +19,11 @@ find . -path "*src/main/java/*" -type f -name "*.java" > "$srcFiles"
 
 ## Loop over all source files
 while read -r file; do
+     ## Skip source files that have a '@SuppressWarnings("UnmatchedTest")'
+     ## This is needed when we have multiple source files with the same
+     ## class file name.
+     if grep -Ei "@SuppressWarning.*UnmatchedTest"; then continue; fi
+
      ## Find the expected test file for a given source file and count how
      ## many times we find that test file name in the set of test files
      testFileName=$(basename "${file/.java/Test.java}")
