@@ -66,9 +66,9 @@ public final class GameDataManager {
       if (version instanceof games.strategy.util.Version) {
         throw new IOException(
             String.format(
-                "Incompatible engine versions. We are: %s<br/>"
-                    + "Trying to load incompatible save game version: %s<br/>"
-                    + "To download an older version of TripleA,<br/>"
+                "Incompatible engine versions. We are: %s<br>"
+                    + "Trying to load incompatible save game version: %s<br>"
+                    + "To download an older version of TripleA,<br>"
                     + "please visit: <a href=%s>%s</a>",
                 ClientContext.engineVersion(),
                 ((games.strategy.util.Version) version).getExactVersion(),
@@ -82,9 +82,9 @@ public final class GameDataManager {
       } else if (!ClientContext.engineVersion().isCompatibleWithEngineVersion((Version) version)) {
         throw new IOException(
             String.format(
-                "Incompatible engine versions. We are: %s<br/>"
-                    + "Trying to load game created with: %s<br/>"
-                    + "To download the latest version of TripleA,<br/>"
+                "Incompatible engine versions. We are: %s<br>"
+                    + "Trying to load game created with: %s<br>"
+                    + "To download the latest version of TripleA,<br>"
                     + "please visit: <a href=%s>%s</a>",
                 ClientContext.engineVersion(),
                 version,
