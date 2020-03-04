@@ -1,5 +1,8 @@
 package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
+import static org.triplea.swing.SwingComponents.DialogWithLinksParams;
+import static org.triplea.swing.SwingComponents.DialogWithLinksTypes;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -15,6 +18,8 @@ import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
+import games.strategy.engine.framework.ui.background.TaskRunner;
+import games.strategy.triplea.UrlConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -30,14 +35,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import lombok.extern.java.Log;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /**
  * Left hand side panel of the launcher screen that has various info, like selected game and engine
  * version.
  */
+@Log
 public final class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
 
@@ -323,20 +331,31 @@ public final class GameSelectorPanel extends JPanel implements Observer {
         .build()
         .selectGameFile(JOptionPane.getFrameForComponent(this))
         .ifPresent(
-            file -> {
-              try {
-                GameRunner.newBackgroundTaskRunner()
-                    .runInBackground(
-                        "Loading savegame...",
+            file ->
+                TaskRunner.builder()
+                    .waitDialogTitle("Loading Save Game")
+                    .exceptionHandler(
+                        e ->
+                            SwingComponents.showDialogWithLinks(
+                                DialogWithLinksParams.builder()
+                                    .title("Error")
+                                    .dialogType(DialogWithLinksTypes.ERROR)
+                                    .dialogText(
+                                        String.format(
+                                            "<html>Failed to load save game.<br/><br/>"
+                                                + "Error: %s<br/><br/>"
+                                                + "If this is not expected, please "
+                                                + "<a href=%s>file a bug report</a> "
+                                                + "and attach the error message above and the "
+                                                + "save game you are trying to load.",
+                                            e.getMessage(), UrlConstants.GITHUB_ISSUES))
+                                    .build()))
+                    .build()
+                    .run(
                         () -> {
-                          if (model.load(file)) {
-                            setOriginalPropertiesMap(model.getGameData());
-                          }
-                        });
-              } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-              }
-            });
+                          model.load(file);
+                          setOriginalPropertiesMap(model.getGameData());
+                        }));
   }
 
   private void selectGameFile() {

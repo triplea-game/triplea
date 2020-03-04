@@ -105,8 +105,12 @@ public class HeadlessGameServer {
       if (file == null || !file.exists()) {
         return;
       }
-      gameSelectorModel.load(file);
-      log.info("Changed to save: " + file.getName());
+      try {
+        gameSelectorModel.load(file);
+        log.info("Changed to save: " + file.getName());
+      } catch (final Exception e) {
+        log.log(Level.SEVERE, "Error loading game file: " + file.getAbsolutePath(), e);
+      }
     }
   }
 
