@@ -312,26 +312,27 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void selectSavedGameFile() {
-    GameFileSelector.selectGameFile(JOptionPane.getFrameForComponent(this))
+    GameFileSelector.builder()
+        .fileDoesNotExistAction(
+            file ->
+                DialogBuilder.builder()
+                    .parent(this)
+                    .title("Save Game File Not Found")
+                    .errorMessage("File does not exist: " + file.getAbsolutePath())
+                    .showDialog())
+        .build()
+        .selectGameFile(JOptionPane.getFrameForComponent(this))
         .ifPresent(
             file -> {
               try {
-                if (!GameRunner.newBackgroundTaskRunner()
-                    .runInBackgroundAndReturn(
+                GameRunner.newBackgroundTaskRunner()
+                    .runInBackground(
                         "Loading savegame...",
                         () -> {
                           if (model.load(file)) {
                             setOriginalPropertiesMap(model.getGameData());
-                            return true;
                           }
-                          return false;
-                        })) {
-                  DialogBuilder.builder()
-                      .parent(this)
-                      .title("Save Game File Not Found")
-                      .errorMessage("File does not exist: " + file.getAbsolutePath())
-                      .showDialog();
-                }
+                        });
               } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
               }

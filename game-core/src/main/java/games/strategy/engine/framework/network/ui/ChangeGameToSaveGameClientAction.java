@@ -27,7 +27,11 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    GameFileSelector.selectGameFile(owner).ifPresent(this::changeToGameSave);
+    GameFileSelector.builder()
+        .fileDoesNotExistAction(file -> {}) // no-op if selected game file does not exist
+        .build()
+        .selectGameFile(owner)
+        .ifPresent(this::changeToGameSave);
   }
 
   private void changeToGameSave(final File saveGame) {

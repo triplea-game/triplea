@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.ClientContext;
@@ -39,6 +40,7 @@ public final class GameDataManager {
    */
   public static GameData loadGame(final File file) throws IOException {
     checkNotNull(file);
+    checkArgument(file.exists());
 
     try (InputStream fis = new FileInputStream(file);
         InputStream is = new BufferedInputStream(fis)) {
