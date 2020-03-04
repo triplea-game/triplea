@@ -17,7 +17,6 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -30,8 +29,9 @@ import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.SwingComponents;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
+@RequiredArgsConstructor
 public class SetupPanelModel implements ServerSetupModel {
-  @Getter @Setter protected GameSelectorModel gameSelectorModel;
+  @Getter protected final GameSelectorModel gameSelectorModel;
   protected SetupPanel panel = null;
 
   @Setter private Consumer<SetupPanel> panelChangeListener;

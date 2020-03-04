@@ -13,31 +13,23 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.auto.update.UpdateChecks;
-import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.MainFrame;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
-import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Services;
@@ -68,33 +60,14 @@ public final class GameRunner {
   public static void start() {
     SwingUtilities.invokeLater(
         () -> {
-          setupPanelModel = new SetupPanelModel(); //gameSelectorModel, mainFrame);
-          new MainFrame(setupPanelModel, gameSelectorModel);
+          setupPanelModel = new SetupPanelModel(gameSelectorModel); //gameSelectorModel, mainFrame);
+
+          MainFrame.buildMainFrame(setupPanelModel, gameSelectorModel);
           setupPanelModel.showSelectType();
           new Thread(GameRunner::showMainFrame).start();
         });
 
     UpdateChecks.launch();
-  }
-
-  /**
-   * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids
-   * parameter swapping problem and makes refactoring easier.
-   */
-  public static class Title {
-    public final String value;
-
-    private Title(final String value) {
-      this.value = value;
-    }
-
-    public static Title of(final String value) {
-      return new Title(value);
-    }
-  }
-
-  public static void hideMainFrame() {
-    SwingUtilities.invokeLater(() -> mainFrame.setVisible(false));
   }
 
   /**
@@ -192,9 +165,5 @@ public final class GameRunner {
     }
     Interruptibles.await(() -> SwingAction.invokeAndWait(setupPanelModel::showSelectType));
     showMainFrame();
-  }
-
-  public static void quitGame() {
-    mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
   }
 }

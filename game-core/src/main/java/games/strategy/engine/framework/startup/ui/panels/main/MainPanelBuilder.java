@@ -6,6 +6,7 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import java.util.Optional;
 import javax.swing.JOptionPane;
+import lombok.AllArgsConstructor;
 import org.triplea.game.startup.SetupModel;
 
 /**
@@ -13,7 +14,10 @@ import org.triplea.game.startup.SetupModel;
  * contents are added to {@link MainPanel} and we set up listeners so that we can change screens by
  * swapping the contents rendered by {@link MainPanel}.
  */
+@AllArgsConstructor
 public class MainPanelBuilder {
+
+  private final Runnable quitAction;
 
   /** Creates a MainPanel instance and configures screen transition listeners. */
   public MainPanel buildMainPanel(
@@ -23,6 +27,7 @@ public class MainPanelBuilder {
 
     final MainPanel mainPanel =
         new MainPanel(
+            quitAction,
             gameSelectorPanel,
             uiPanel -> {
               setupPanelModel
