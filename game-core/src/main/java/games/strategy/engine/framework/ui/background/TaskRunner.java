@@ -80,7 +80,7 @@ public class TaskRunner<E extends Exception> {
       protected Void doInBackground() {
         try {
           backgroundAction.run();
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
           exceptionRef.set(e);
         }
         return null;
