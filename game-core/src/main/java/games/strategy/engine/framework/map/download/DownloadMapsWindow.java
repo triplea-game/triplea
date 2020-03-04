@@ -9,6 +9,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -227,9 +228,8 @@ public class DownloadMapsWindow extends JFrame {
 
     private static List<DownloadFileDescription> getMapDownloadListInBackground()
         throws InterruptedException {
-      return GameRunner.newBackgroundTaskRunner()
-          .runInBackgroundAndReturn(
-              "Downloading list of available maps...", ClientContext::getMapDownloadList);
+      return BackgroundTaskRunner.runInBackgroundAndReturn(
+          "Downloading list of available maps...", ClientContext::getMapDownloadList);
     }
 
     private void createAndShow(

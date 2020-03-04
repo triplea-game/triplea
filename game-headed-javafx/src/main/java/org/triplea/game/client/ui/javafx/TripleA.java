@@ -40,10 +40,6 @@ public class TripleA extends Application {
     navigationPane.switchScreen(FxmlManager.MAIN_MENU_PANE);
 
     setupStage(stage, scene, loadedNode.getController());
-    // Don't invoke Swing if headless (for example in tests)
-    if (!GraphicsEnvironment.isHeadless()) {
-      SwingUtilities.invokeLater(GameRunner::newMainFrame);
-    }
   }
 
   private void setupStage(

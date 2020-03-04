@@ -18,6 +18,7 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
+import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
@@ -52,7 +53,6 @@ public final class GameRunner {
 
   private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private static SetupPanelModel setupPanelModel;
-  private static JFrame mainFrame;
 
   private GameRunner() {}
 
@@ -68,32 +68,15 @@ public final class GameRunner {
   public static void start() {
     SwingUtilities.invokeLater(
         () -> {
-          newMainFrame();
-          setupPanelModel = new SetupPanelModel(gameSelectorModel, mainFrame);
-          mainFrame.add(new MainPanelBuilder().buildMainPanel(setupPanelModel, gameSelectorModel));
-          mainFrame.pack();
+          setupPanelModel = new SetupPanelModel(); //gameSelectorModel, mainFrame);
+          new MainFrame(setupPanelModel, gameSelectorModel);
           setupPanelModel.showSelectType();
           new Thread(GameRunner::showMainFrame).start();
         });
 
     UpdateChecks.launch();
   }
-
-  public static void newMainFrame() {
-    mainFrame =
-        JFrameBuilder.builder()
-            .title("TripleA")
-            .windowClosedAction(GameRunner::exitGameIfFinished)
-            .build();
-    LookAndFeelSwingFrameListener.register(mainFrame);
-
-    mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-  }
-
-  public static BackgroundTaskRunner newBackgroundTaskRunner() {
-    return new BackgroundTaskRunner(mainFrame);
-  }
-
+  
   /**
    * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids
    * parameter swapping problem and makes refactoring easier.
@@ -129,12 +112,6 @@ public final class GameRunner {
    * lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
-    SwingUtilities.invokeLater(
-        () -> {
-          mainFrame.requestFocus();
-          mainFrame.toFront();
-          mainFrame.setVisible(true);
-        });
     ProAi.gameOverClearCache();
 
     loadGame();

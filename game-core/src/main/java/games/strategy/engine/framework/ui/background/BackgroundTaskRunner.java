@@ -3,6 +3,7 @@ package games.strategy.engine.framework.ui.background;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -11,17 +12,17 @@ import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import org.triplea.java.Interruptibles;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.function.ThrowingSupplier;
 
 /** Provides methods for running tasks in the background to avoid blocking the UI. */
+@UtilityClass
 public final class BackgroundTaskRunner {
-  private final JFrame frame;
+  private static JFrame mainFrame;
 
-  public BackgroundTaskRunner(final JFrame frame) {
-    checkNotNull(frame);
-
-    this.frame = frame;
+  public static void setMainFrame(final JFrame mainFrame) {
+    Preconditions.checkState(BackgroundTaskRunner.mainFrame == null);
+    BackgroundTaskRunner.mainFrame = mainFrame;
   }
 
   /**
@@ -37,7 +38,7 @@ public final class BackgroundTaskRunner {
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background
    *     action to complete.
    */
-  public void runInBackground(final String message, final Runnable backgroundAction)
+  public static void runInBackground(final String message, final Runnable backgroundAction)
       throws InterruptedException {
     runInBackgroundAndReturn(
         message,
@@ -45,14 +46,6 @@ public final class BackgroundTaskRunner {
           backgroundAction.run();
           return null;
         });
-  }
-
-  /**
-   * Similar to 'runInBackground' except uses Interruptibles#await to suppress the {@code
-   * InterruptedException}.
-   */
-  public void awaitRunInBackground(final String message, final Runnable backgroundAction) {
-    Interruptibles.await(() -> runInBackground(message, backgroundAction));
   }
 
   /**
@@ -71,8 +64,8 @@ public final class BackgroundTaskRunner {
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background
    *     action to complete.
    */
-  public <T> T runInBackgroundAndReturn(final String message, final Supplier<T> backgroundAction)
-      throws InterruptedException {
+  public static <T> T runInBackgroundAndReturn(
+      final String message, final Supplier<T> backgroundAction) throws InterruptedException {
     return runInBackgroundAndReturn(message, backgroundAction::get, RuntimeException.class);
   }
 
@@ -96,7 +89,7 @@ public final class BackgroundTaskRunner {
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background
    *     action to complete.
    */
-  public <T, E extends Exception> T runInBackgroundAndReturn(
+  public static <T, E extends Exception> T runInBackgroundAndReturn(
       final String message,
       final ThrowingSupplier<T, E> backgroundAction,
       final Class<E> exceptionType)
@@ -108,7 +101,7 @@ public final class BackgroundTaskRunner {
 
     final AtomicReference<T> resultRef = new AtomicReference<>();
     final AtomicReference<Throwable> exceptionRef = new AtomicReference<>();
-    final WaitDialog waitDialog = new WaitDialog(frame, message);
+    final WaitDialog waitDialog = new WaitDialog(mainFrame, message);
     final SwingWorker<T, Void> worker =
         new SwingWorker<>() {
           @Override
