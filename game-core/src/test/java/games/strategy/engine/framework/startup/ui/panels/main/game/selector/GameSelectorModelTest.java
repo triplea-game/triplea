@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.mc;
+package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.net.URI;
