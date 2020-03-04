@@ -338,14 +338,13 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                         e ->
                             SwingComponents.showDialogWithLinks(
                                 DialogWithLinksParams.builder()
-                                    .title("Error")
+                                    .title("Failed To Load Save Game")
                                     .dialogType(DialogWithLinksTypes.ERROR)
                                     .dialogText(
                                         String.format(
-                                            "<html>Failed to load save game.<br/><br/>"
-                                                + "Error: %s<br/><br/>"
+                                            "<html>Error: %s<br/><br/>"
                                                 + "If this is not expected, please "
-                                                + "<a href=%s>file a bug report</a> "
+                                                + "file a <a href=%s>bug report</a><br/>"
                                                 + "and attach the error message above and the "
                                                 + "save game you are trying to load.",
                                             e.getMessage(), UrlConstants.GITHUB_ISSUES))

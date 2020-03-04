@@ -61,16 +61,35 @@ public final class GameDataManager {
 
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is));
     try {
-      final Version readVersion = (Version) input.readObject();
-      if (!ClientContext.engineVersion().isCompatibleWithEngineVersion(readVersion)) {
-        final String error =
-            "Incompatible engine versions. We are: "
-                + ClientContext.engineVersion()
-                + " . Trying to load game created with: "
-                + readVersion
-                + "\nTo download the latest version of TripleA, Please visit "
-                + UrlConstants.DOWNLOAD_WEBSITE;
-        throw new IOException(error);
+      final Object version = input.readObject();
+
+      if (version instanceof games.strategy.util.Version) {
+        throw new IOException(
+            String.format(
+                "Incompatible engine versions. We are: %s<br/>"
+                    + "Trying to load incompatible save game version: %s<br/>"
+                    + "To download an older version of TripleA,<br/>"
+                    + "please visit: <a href=%s>%s</a>",
+                ClientContext.engineVersion(),
+                ((games.strategy.util.Version) version).getExactVersion(),
+                UrlConstants.OLD_DOWNLOADS_WEBSITE,
+                UrlConstants.OLD_DOWNLOADS_WEBSITE));
+
+      } else if (!(version instanceof Version)) {
+        throw new IOException(
+            "Incompatible engine version with save game, "
+                + "unable to determine version of the save game");
+      } else if (!ClientContext.engineVersion().isCompatibleWithEngineVersion((Version) version)) {
+        throw new IOException(
+            String.format(
+                "Incompatible engine versions. We are: %s<br/>"
+                    + "Trying to load game created with: %s<br/>"
+                    + "To download the latest version of TripleA,<br/>"
+                    + "please visit: <a href=%s>%s</a>",
+                ClientContext.engineVersion(),
+                version,
+                UrlConstants.DOWNLOAD_WEBSITE,
+                UrlConstants.DOWNLOAD_WEBSITE));
       }
 
       final GameData data = (GameData) input.readObject();
