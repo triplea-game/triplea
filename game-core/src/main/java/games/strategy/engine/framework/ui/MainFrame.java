@@ -13,17 +13,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.triplea.swing.JFrameBuilder;
 
+/** Represents the outermost JFrame, maintains the reference to it and controls access. */
 public class MainFrame {
-
-  private JFrame mainFrame;
 
   private static MainFrame instance;
 
-  public static void buildMainFrame(
-      final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
-    Preconditions.checkState(instance == null);
-    instance = new MainFrame(setupPanelModel, gameSelectorModel);
-  }
+  private JFrame mainFrame;
 
   private MainFrame(
       final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
@@ -47,6 +42,12 @@ public class MainFrame {
 
     setupPanelModel.setUi(mainFrame);
     show();
+  }
+
+  public static void buildMainFrame(
+      final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
+    Preconditions.checkState(instance == null);
+    instance = new MainFrame(setupPanelModel, gameSelectorModel);
   }
 
   public static void show() {
