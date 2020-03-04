@@ -47,7 +47,6 @@ public class MainPanel extends JPanel {
           .build();
   private final JButton cancelButton = new JButtonBuilder().title("Cancel").build();
 
-  private final Runnable quitAction;
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel mainPanel;
   private final JSplitPane chatSplit;
@@ -64,7 +63,6 @@ public class MainPanel extends JPanel {
       final Consumer<MainPanel> launchAction,
       @Nullable final ChatModel chatModel,
       final Runnable cancelAction) {
-    this.quitAction = quitAction;
     playButton.addActionListener(e -> launchAction.accept(this));
     cancelButton.addActionListener(e -> cancelAction.run());
 
