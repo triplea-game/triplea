@@ -5,12 +5,10 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import com.github.benmanes.caffeine.cache.Ticker;
-import com.google.common.cache.Cache;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -31,16 +29,12 @@ class ExpiringAfterWriteCacheTest {
   private static final String KEY = "key-value";
   private static final int VALUE = 100;
   private ExpiringAfterWriteCache<String, Integer> realCache;
-  private ExpiringAfterWriteCache<String, Integer> cacheWithMockTicker;
 
   @Mock private Consumer<CacheEntry<String, Integer>> cacheRemovalListener;
-  @Mock private Ticker ticker;
 
   @BeforeEach
   void setup() {
     realCache = new ExpiringAfterWriteCache<>(1, TimeUnit.MINUTES, cacheRemovalListener);
-    cacheWithMockTicker =
-        new ExpiringAfterWriteCache<>(1, TimeUnit.MINUTES, cacheRemovalListener, ticker);
   }
 
   @AfterEach
@@ -155,7 +149,7 @@ class ExpiringAfterWriteCacheTest {
       realCache.put("id10", 0);
       realCache.invalidate("id10");
 
-      verify(cacheRemovalListener).accept(new CacheEntry<>("id10", 0));
+      verify(cacheRemovalListener, atLeastOnce()).accept(new CacheEntry<>("id10", 0));
     }
   }
 
@@ -185,10 +179,8 @@ class ExpiringAfterWriteCacheTest {
     }
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
   class Refresh {
-    @Mock private Cache<String, Integer> mockCache;
 
     @Test
     void refreshFalseIfNotInCacheEmptyCase() {
@@ -213,16 +205,6 @@ class ExpiringAfterWriteCacheTest {
       final boolean result = realCache.refresh(KEY);
 
       assertThat(result, is(true));
-    }
-
-    @Test
-    void refreshedItemsAreWrittenBackIntoTheCache() {
-      when(mockCache.getIfPresent(KEY)).thenReturn(VALUE);
-
-      final boolean result = realCache.refresh(KEY);
-
-      assertThat(result, is(true));
-      verify(mockCache).put(KEY, VALUE);
     }
   }
 }
