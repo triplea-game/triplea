@@ -23,13 +23,9 @@
 
 ## Testing
 <!--
-  Place an X below if applies. Manual testing is a crutch for us, 
-  we would prefer to rely on automated testing.
+  Describe any manual testing performed below. 
 -->
 
-[] Manual testing done
-
-<!-- If manually tested, summarize the testing done below this line. -->
 
 
 <!-- If there are UI updates, uncomment and include screenshots below -->
