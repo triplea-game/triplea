@@ -1,8 +1,8 @@
 package org.triplea.server.lobby.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.cache.Cache;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.java.cache.TtlCache;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.server.lobby.CacheUtils;
 
 /**
  * Class that stores the set of games in the lobby. Games are identified by a combination of two
@@ -43,7 +43,7 @@ import org.triplea.server.lobby.CacheUtils;
 @Slf4j
 public class GameListing {
   @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
-  @NonNull private final Cache<GameId, LobbyGame> games;
+  @NonNull private final TtlCache<GameId, LobbyGame> games;
   @NonNull private final GameListingEventQueue gameListingEventQueue;
 
   @AllArgsConstructor
@@ -69,7 +69,7 @@ public class GameListing {
   /** Adds or updates a game. Returns true if game is updated, false if game was not found. */
   boolean updateGame(final ApiKey apiKey, final String id, final LobbyGame lobbyGame) {
     final var listedGameId = new GameId(apiKey, id);
-    final LobbyGame existingValue = games.asMap().replace(listedGameId, lobbyGame);
+    final LobbyGame existingValue = games.replace(listedGameId, lobbyGame).orElse(null);
 
     if (existingValue != null) {
       gameListingEventQueue.gameUpdated(
@@ -83,8 +83,9 @@ public class GameListing {
   void removeGame(final ApiKey apiKey, final String id) {
     log.info("Removing game: {}", id);
     final GameId key = new GameId(apiKey, id);
-    if (games.asMap().containsKey(key)) {
-      games.invalidate(key);
+
+    final Optional<LobbyGame> value = games.invalidate(key);
+    if (value.isPresent()) {
       gameListingEventQueue.gameRemoved(id);
     }
   }
@@ -108,12 +109,13 @@ public class GameListing {
    *     extended.
    */
   boolean keepAlive(final ApiKey apiKey, final String id) {
-    return CacheUtils.refresh(games, new GameId(apiKey, id));
+    return games.refresh(new GameId(apiKey, id));
   }
 
   /** Moderator action to remove a game. */
   void bootGame(final int moderatorId, final String id) {
-    CacheUtils.findEntryByKey(games, gameId -> gameId.id.equals(id))
+    games
+        .findEntryByKey(gameId -> gameId.id.equals(id))
         .ifPresent(
             gameToRemove -> {
               final String hostName = gameToRemove.getValue().getHostName();

@@ -1,4 +1,4 @@
-package org.triplea.server.lobby;
+package org.triplea.java.cache;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,35 +7,49 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@SuppressWarnings({"InnerClassMayBeStatic", "OptionalGetWithoutIsPresent", "DoNotMock"})
-class CacheUtilsTest {
+@ExtendWith(MockitoExtension.class)
+class ExpiringAfterWriteCacheTest {
 
   private static final String KEY = "key-value";
   private static final int VALUE = 100;
-  private Cache<String, Integer> realCache = CacheBuilder.newBuilder().maximumSize(1).build();
+  private ExpiringAfterWriteCache<String, Integer> realCache;
+
+  @Mock private Consumer<TtlCache.CacheEntry<String, Integer>> cacheRemovalListener;
+
+  @BeforeEach
+  void setup() {
+    realCache = new ExpiringAfterWriteCache<>(1, TimeUnit.SECONDS, cacheRemovalListener);
+  }
+
+  @AfterEach
+  void tearDown() {
+    realCache.stopTimer();
+  }
 
   @Nested
   class FindEntryByKey {
 
     @Test
     void emptyCase() {
-      assertThat(CacheUtils.findEntryByKey(realCache, key -> key.equals(KEY)), isEmpty());
+      assertThat(realCache.findEntryByKey(key -> key.equals(KEY)), isEmpty());
     }
 
     @Test
     void notFoundCase() {
       realCache.put(KEY, VALUE);
-      assertThat(
-          CacheUtils.findEntryByKey(realCache, key -> key.equals("some-other-key")), isEmpty());
+      assertThat(realCache.findEntryByKey(key -> key.equals("some-other-key")), isEmpty());
     }
 
     @Test
@@ -43,7 +57,7 @@ class CacheUtilsTest {
       realCache.put(KEY, VALUE);
 
       final Optional<Map.Entry<String, Integer>> result =
-          CacheUtils.findEntryByKey(realCache, key -> key.equals(KEY));
+          realCache.findEntryByKey(key -> key.equals(KEY));
 
       assertThat(result.isPresent(), is(true));
       assertThat(result.get().getKey(), is(KEY));
@@ -58,7 +72,7 @@ class CacheUtilsTest {
 
     @Test
     void refreshFalseIfNotInCacheEmptyCase() {
-      final boolean result = CacheUtils.refresh(realCache, KEY);
+      final boolean result = realCache.refresh(KEY);
 
       assertThat(result, is(false));
     }
@@ -67,7 +81,7 @@ class CacheUtilsTest {
     void refreshFalseIfNotInCacheNotFoundCase() {
       realCache.put(KEY, VALUE);
 
-      final boolean result = CacheUtils.refresh(realCache, "wrong-key-value");
+      final boolean result = realCache.refresh("wrong-key-value");
 
       assertThat(result, is(false));
     }
@@ -76,7 +90,7 @@ class CacheUtilsTest {
     void refreshTrueWhenFoundInCache() {
       realCache.put(KEY, VALUE);
 
-      final boolean result = CacheUtils.refresh(realCache, KEY);
+      final boolean result = realCache.refresh(KEY);
 
       assertThat(result, is(true));
     }
@@ -85,7 +99,7 @@ class CacheUtilsTest {
     void refreshedItemsAreWrittenBackIntoTheCache() {
       when(mockCache.getIfPresent(KEY)).thenReturn(VALUE);
 
-      final boolean result = CacheUtils.refresh(mockCache, KEY);
+      final boolean result = realCache.refresh(KEY);
 
       assertThat(result, is(true));
       verify(mockCache).put(KEY, VALUE);

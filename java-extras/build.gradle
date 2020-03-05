@@ -1,5 +1,8 @@
 description = 'TripleA library for low-level helper APIs, ie: syntactic sugar'
 
 dependencies {
+    // https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine
+    compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.8.1'
+
     testImplementation project(':test-common')
 }

@@ -5,6 +5,7 @@ import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
 import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.text.IsEmptyString.emptyString;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,11 +13,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import java.util.List;
 import java.util.Map;
-import org.hamcrest.core.IsCollectionContaining;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.server.lobby.game.listing.GameListing.GameId;
 
@@ -52,7 +53,8 @@ class GameListingTest {
   private static final String HOST_NAME = "host-player";
   private static final int MODERATOR_ID = 33;
 
-  private final Cache<GameId, LobbyGame> cache = CacheBuilder.newBuilder().build();
+  private final ExpiringAfterWriteCache<GameId, LobbyGame> cache =
+      new ExpiringAfterWriteCache<>(1, TimeUnit.HOURS, entry -> {});
 
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
   @Mock private GameListingEventQueue gameListingEventQueue;
@@ -73,6 +75,11 @@ class GameListingTest {
             .build();
   }
 
+  @AfterEach
+  void tearDown() {
+    cache.stopTimer();
+  }
+
   @Nested
   final class GetGames {
 
@@ -85,21 +92,17 @@ class GameListingTest {
 
       final List<LobbyGameListing> result = gameListing.getGames();
 
-      assertThat(result.size(), is((int) cache.size()));
       assertThat(
           result,
-          IsCollectionContaining.hasItem(
-              LobbyGameListing.builder().gameId(GAME_ID_0).lobbyGame(lobbyGame0).build()));
+          hasItem(LobbyGameListing.builder().gameId(GAME_ID_0).lobbyGame(lobbyGame0).build()));
 
       assertThat(
           result,
-          IsCollectionContaining.hasItem(
-              LobbyGameListing.builder().gameId(GAME_ID_1).lobbyGame(lobbyGame1).build()));
+          hasItem(LobbyGameListing.builder().gameId(GAME_ID_1).lobbyGame(lobbyGame1).build()));
 
       assertThat(
           result,
-          IsCollectionContaining.hasItem(
-              LobbyGameListing.builder().gameId(GAME_ID_2).lobbyGame(lobbyGame2).build()));
+          hasItem(LobbyGameListing.builder().gameId(GAME_ID_2).lobbyGame(lobbyGame2).build()));
     }
   }
 
