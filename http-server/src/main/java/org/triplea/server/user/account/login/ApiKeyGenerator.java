@@ -6,13 +6,13 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 
 // TODO: Project#12 test-me
 @Builder
 class ApiKeyGenerator implements Function<LoginRecord, ApiKey> {
 
-  @Nonnull private final LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Nonnull private final ApiKeyDaoWrapper apiKeyDaoWrapper;
 
   @Override
   public ApiKey apply(final LoginRecord loginRecord) {

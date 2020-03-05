@@ -32,7 +32,7 @@ import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.GamePlayerLookup;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.server.http.web.socket.MessageBroadcaster;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.remote.actions.RemoteActionsEventQueue;
@@ -53,7 +53,7 @@ class ModeratorChatServiceTest {
           .build();
 
   @Mock private Session session;
-  @Mock private LobbyApiKeyDaoWrapper lobbyApiKeyDaoWrapper;
+  @Mock private ApiKeyDaoWrapper lobbyApiKeyDaoWrapper;
   @Mock private ModeratorActionPersistence moderatorActionPersistence;
   @Mock private Chatters chatters;
   @Mock private MessageBroadcaster messageBroadcaster;

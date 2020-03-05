@@ -63,7 +63,7 @@ class LobbyApiKeyDaoWrapperTest {
   @Mock private Supplier<ApiKey> keyMaker;
   @Mock private Function<ApiKey, String> keyHashingFunction;
 
-  @InjectMocks private LobbyApiKeyDaoWrapper wrapper;
+  @InjectMocks private ApiKeyDaoWrapper wrapper;
 
   @Mock private UserWithRoleRecord apiKeyUserData;
 

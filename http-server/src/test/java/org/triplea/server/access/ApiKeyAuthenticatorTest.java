@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.server.TestData;
@@ -34,7 +34,7 @@ class ApiKeyAuthenticatorTest {
   private static final UserWithRoleRecord ANONYMOUS_USER_RECORD =
       UserWithRoleRecord.builder().username("anonymous-user-name").role(UserRole.ANONYMOUS).build();
 
-  @Mock private LobbyApiKeyDaoWrapper apiKeyDao;
+  @Mock private ApiKeyDaoWrapper apiKeyDao;
 
   @InjectMocks private ApiKeyAuthenticator authenticator;
 

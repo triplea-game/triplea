@@ -23,7 +23,7 @@ import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeType;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.server.TestData;
@@ -58,7 +58,7 @@ class MessagingServiceTest {
   private static final ChatParticipant CHAT_PARTICIPANT =
       chatParticipantAdapter.apply(MODERATOR_DATA);
 
-  @Mock private LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Mock private ApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private ChatEventProcessor eventProcessing;
   @Mock private BiConsumer<Session, ServerMessageEnvelope> messageSender;
   @Mock private BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
