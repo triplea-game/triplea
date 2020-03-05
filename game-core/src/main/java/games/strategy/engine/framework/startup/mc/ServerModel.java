@@ -28,6 +28,7 @@ import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
@@ -289,7 +290,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   public void cancel() {
     gameSelectorModel.deleteObserver(gameSelectorObserver);
-    // TODO: Project#12 Stop ServerPoller thread here
+    Optional.ofNullable(lobbyWatcherThread)
+        .map(LobbyWatcherThread::getLobbyWatcher)
+        .ifPresent(InGameLobbyWatcherWrapper::shutDown);
     Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
     Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
     Optional.ofNullable(chatModelCancel).ifPresent(Runnable::run);
