@@ -31,7 +31,7 @@ import org.triplea.http.client.lobby.chat.LobbyChatClient;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
 import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
 import org.triplea.server.access.AuthenticatedUser;
 import org.triplea.server.access.BannedPlayerEventHandler;
@@ -225,7 +225,7 @@ public class ServerApplication extends Application<AppConfig> {
       final MetricRegistry metrics, final Jdbi jdbi) {
     return new CachingAuthenticator<>(
         metrics,
-        new ApiKeyAuthenticator(new LobbyApiKeyDaoWrapper(jdbi)),
+        new ApiKeyAuthenticator(new ApiKeyDaoWrapper(jdbi)),
         CacheBuilder.newBuilder().expireAfterAccess(Duration.ofMinutes(10)).maximumSize(10000));
   }
 

@@ -29,7 +29,7 @@ import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.lobby.server.db.data.UserRoleLookup;
 
 @ExtendWith(MockitoExtension.class)
-class LobbyApiKeyDaoWrapperTest {
+class ApiKeyDaoWrapperTest {
 
   private static final ApiKey API_KEY = ApiKey.of("api-key");
   private static final String HASHED_KEY = "Dead, rainy shores proud swashbuckler";
@@ -63,7 +63,7 @@ class LobbyApiKeyDaoWrapperTest {
   @Mock private Supplier<ApiKey> keyMaker;
   @Mock private Function<ApiKey, String> keyHashingFunction;
 
-  @InjectMocks private LobbyApiKeyDaoWrapper wrapper;
+  @InjectMocks private ApiKeyDaoWrapper wrapper;
 
   @Mock private UserWithRoleRecord apiKeyUserData;
 

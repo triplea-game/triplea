@@ -8,8 +8,8 @@ import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.GamePlayerLookup;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
 import org.triplea.server.http.web.socket.MessageBroadcaster;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.remote.actions.RemoteActionsEventQueue;
@@ -17,7 +17,7 @@ import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 @Builder
 class ModeratorChatService {
 
-  @Nonnull private final LobbyApiKeyDaoWrapper lobbyApiKeyDaoWrapper;
+  @Nonnull private final ApiKeyDaoWrapper lobbyApiKeyDaoWrapper;
   @Nonnull private final ModeratorActionPersistence moderatorActionPersistence;
   @Nonnull private final Chatters chatters;
   @Nonnull private final MessageBroadcaster messageBroadcaster;

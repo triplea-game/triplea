@@ -13,7 +13,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.server.lobby.chat.event.processing.ChatEventProcessor;
 import org.triplea.server.lobby.chat.event.processing.ServerResponse;
@@ -21,7 +21,7 @@ import org.triplea.server.lobby.chat.event.processing.ServerResponse;
 @Slf4j
 @Builder
 class MessagingService {
-  @Nonnull private final LobbyApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Nonnull private final ApiKeyDaoWrapper apiKeyDaoWrapper;
   @Nonnull private final ChatEventProcessor chatEventProcessor;
   /** Sends to a single session. */
   @Nonnull private final BiConsumer<Session, ServerMessageEnvelope> messageSender;

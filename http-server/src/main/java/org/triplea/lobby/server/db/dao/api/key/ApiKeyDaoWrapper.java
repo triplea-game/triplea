@@ -21,9 +21,8 @@ import org.triplea.lobby.server.db.dao.UserRoleDao;
 import org.triplea.lobby.server.db.data.UserRole;
 
 /** Wrapper to abstract away DB details of how API key is stored and to provide convenience APIs. */
-// TODO: Project#12 rename this back to ApiKeyDaoWrapper
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class LobbyApiKeyDaoWrapper {
+public class ApiKeyDaoWrapper {
 
   private final LobbyApiKeyDao apiKeyDao;
   private final GameHostingApiKeyDao gameHostApiKeyDao;
@@ -34,7 +33,7 @@ public class LobbyApiKeyDaoWrapper {
   private final Function<ApiKey, String> keyHashingFunction;
 
   @SuppressWarnings("UnstableApiUsage")
-  public LobbyApiKeyDaoWrapper(final Jdbi jdbi) {
+  public ApiKeyDaoWrapper(final Jdbi jdbi) {
     this(
         jdbi.onDemand(LobbyApiKeyDao.class),
         jdbi.onDemand(GameHostingApiKeyDao.class),

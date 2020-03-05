@@ -5,7 +5,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.lobby.server.db.dao.access.log.AccessLogDao;
-import org.triplea.lobby.server.db.dao.api.key.LobbyApiKeyDaoWrapper;
+import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.user.account.login.authorizer.BCryptHashVerifier;
 import org.triplea.server.user.account.login.authorizer.anonymous.AnonymousLoginFactory;
@@ -27,9 +27,7 @@ public class LoginControllerFactory {
                         .accessLogDao(jdbi.onDemand(AccessLogDao.class))
                         .build())
                 .apiKeyGenerator(
-                    ApiKeyGenerator.builder()
-                        .apiKeyDaoWrapper(new LobbyApiKeyDaoWrapper(jdbi))
-                        .build())
+                    ApiKeyGenerator.builder().apiKeyDaoWrapper(new ApiKeyDaoWrapper(jdbi)).build())
                 .anonymousLogin(AnonymousLoginFactory.build(jdbi, chatters))
                 .tempPasswordLogin(
                     TempPasswordLogin.builder()
