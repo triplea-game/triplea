@@ -64,8 +64,7 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
             .start();
   }
 
-  @VisibleForTesting
-  public void stopTimer() {
+  public void close() {
     cleanupTimer.cancel();
   }
 

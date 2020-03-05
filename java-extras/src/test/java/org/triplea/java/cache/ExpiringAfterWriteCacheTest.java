@@ -45,7 +45,7 @@ class ExpiringAfterWriteCacheTest {
 
   @AfterEach
   void tearDown() {
-    realCache.stopTimer();
+    realCache.close();
   }
 
   @Nested

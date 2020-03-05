@@ -77,7 +77,7 @@ class GameListingTest {
 
   @AfterEach
   void tearDown() {
-    cache.stopTimer();
+    cache.close();
   }
 
   @Nested
