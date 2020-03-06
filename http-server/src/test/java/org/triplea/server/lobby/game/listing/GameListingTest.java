@@ -75,11 +75,6 @@ class GameListingTest {
             .build();
   }
 
-  @AfterEach
-  void tearDown() {
-    cache.close();
-  }
-
   @Nested
   final class GetGames {
 

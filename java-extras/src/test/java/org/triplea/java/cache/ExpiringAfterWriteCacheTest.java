@@ -37,11 +37,6 @@ class ExpiringAfterWriteCacheTest {
     realCache = new ExpiringAfterWriteCache<>(1, TimeUnit.MINUTES, cacheRemovalListener);
   }
 
-  @AfterEach
-  void tearDown() {
-    realCache.close();
-  }
-
   @Nested
   class GetAndPut {
     @Test

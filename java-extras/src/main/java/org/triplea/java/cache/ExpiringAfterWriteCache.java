@@ -3,12 +3,11 @@ package org.triplea.java.cache;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
+import com.github.benmanes.caffeine.cache.Scheduler;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import org.triplea.java.timer.ScheduledTimer;
-import org.triplea.java.timer.Timers;
 
 /**
  * Cache that expires values when a TTL (time to live) expires. TTL timer starts when the value is
@@ -21,7 +20,6 @@ import org.triplea.java.timer.Timers;
 public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, ValueT> {
 
   private final Cache<IdT, ValueT> cache;
-  private final ScheduledTimer cleanupTimer;
   private final Consumer<CacheEntry<IdT, ValueT>> removalListener;
 
   public ExpiringAfterWriteCache(
@@ -31,6 +29,7 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
     cache =
         Caffeine.newBuilder()
             .expireAfterWrite(duration, timeUnit)
+            .scheduler(Scheduler.systemScheduler())
             .removalListener(
                 (IdT key, ValueT value, RemovalCause cause) -> {
                   if (cause == RemovalCause.EXPIRED || cause == RemovalCause.EXPLICIT) {
@@ -40,16 +39,6 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
             .build();
 
     this.removalListener = removalListener;
-
-    cleanupTimer =
-        Timers.fixedRateTimer("cache-cleanup-" + Math.random())
-            .period(1000, TimeUnit.MILLISECONDS)
-            .task(cache::cleanUp)
-            .start();
-  }
-
-  public void close() {
-    cleanupTimer.cancel();
   }
 
   @Override
