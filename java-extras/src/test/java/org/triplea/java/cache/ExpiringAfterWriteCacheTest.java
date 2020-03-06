@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.java.cache.TtlCache.CacheEntry;
 
 @ExtendWith(MockitoExtension.class)
 class ExpiringAfterWriteCacheTest {
@@ -29,7 +28,7 @@ class ExpiringAfterWriteCacheTest {
   private static final int VALUE = 100;
   private ExpiringAfterWriteCache<String, Integer> realCache;
 
-  @Mock private Consumer<CacheEntry<String, Integer>> cacheRemovalListener;
+  @Mock private BiConsumer<String, Integer> cacheRemovalListener;
 
   @BeforeEach
   void setup() {
@@ -56,7 +55,7 @@ class ExpiringAfterWriteCacheTest {
       realCache.put("id", 1);
 
       assertThat(realCache.get("id"), isPresentAndIs(1));
-      verify(cacheRemovalListener, never()).accept(any());
+      verify(cacheRemovalListener, never()).accept(any(), any());
     }
   }
 
@@ -107,7 +106,7 @@ class ExpiringAfterWriteCacheTest {
 
       realCache.replace("id20", 1);
 
-      verify(cacheRemovalListener, never()).accept(any());
+      verify(cacheRemovalListener, never()).accept(any(), any());
     }
   }
 
@@ -143,7 +142,7 @@ class ExpiringAfterWriteCacheTest {
       realCache.put("id10", 0);
       realCache.invalidate("id10");
 
-      verify(cacheRemovalListener, atLeastOnce()).accept(new CacheEntry<>("id10", 0));
+      verify(cacheRemovalListener, atLeastOnce()).accept("id10", 0);
     }
   }
 
