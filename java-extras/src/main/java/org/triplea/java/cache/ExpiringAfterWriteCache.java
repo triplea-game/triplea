@@ -24,7 +24,6 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
   private final ScheduledTimer cleanupTimer;
   private final Consumer<CacheEntry<IdT, ValueT>> removalListener;
 
-  @SuppressWarnings("unchecked")
   public ExpiringAfterWriteCache(
       final long duration,
       final TimeUnit timeUnit,
@@ -33,9 +32,9 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
         Caffeine.newBuilder()
             .expireAfterWrite(duration, timeUnit)
             .removalListener(
-                (key, value, cause) -> {
+                (IdT key, ValueT value, RemovalCause cause) -> {
                   if (cause == RemovalCause.EXPIRED || cause == RemovalCause.EXPLICIT) {
-                    removalListener.accept(new CacheEntry<>((IdT) key, (ValueT) value));
+                    removalListener.accept(new CacheEntry<>(key, value));
                   }
                 })
             .build();
