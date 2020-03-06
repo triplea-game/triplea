@@ -1,16 +1,8 @@
 description = 'TripleA library for low-level helper APIs, ie: syntactic sugar'
 
 dependencies {
+    errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
 
     testImplementation project(':test-common')
-}
-
-
-configurations {
-    errorprone {
-        // error prone brings in version 2.7.0 of caffeine, exclude this so
-        // we can get the implementation version
-        exclude group: 'com.github.ben-manes.caffeine', module: 'caffeine'
-    }
 }
