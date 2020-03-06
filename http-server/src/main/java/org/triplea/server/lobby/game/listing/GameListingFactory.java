@@ -1,10 +1,10 @@
 package org.triplea.server.lobby.game.listing;
 
-import com.google.common.cache.CacheBuilder;
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
+import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 
 @UtilityClass
@@ -15,9 +15,10 @@ public final class GameListingFactory {
         .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
         .gameListingEventQueue(gameListingEventQueue)
         .games(
-            CacheBuilder.newBuilder()
-                .expireAfterWrite(Duration.ofSeconds(LobbyWatcherClient.KEEP_ALIVE_SECONDS))
-                .build())
+            new ExpiringAfterWriteCache<>(
+                LobbyWatcherClient.KEEP_ALIVE_SECONDS,
+                TimeUnit.SECONDS,
+                new GameTtlExpiredListener(gameListingEventQueue)))
         .build();
   }
 }

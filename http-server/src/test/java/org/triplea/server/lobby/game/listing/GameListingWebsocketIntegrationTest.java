@@ -56,7 +56,7 @@ class GameListingWebsocketIntegrationTest extends DropwizardTest {
     final String gameId = lobbyWatcherClient.postGame(TestData.LOBBY_GAME);
     lobbyWatcherClient.removeGame(gameId);
 
-    verify(gameRemovedListener, timeout(2000L)).accept(gameId);
+    verify(gameRemovedListener, timeout(2000L).atLeastOnce()).accept(gameId);
   }
 
   @Test
