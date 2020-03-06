@@ -71,6 +71,11 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
   }
 
   @Override
+  public Optional<ValueT> replace(final IdT id, final ValueT newValue) {
+    return Optional.ofNullable(cache.asMap().replace(id, newValue));
+  }
+
+  @Override
   public Map<IdT, ValueT> asMap() {
     return Map.copyOf(cache.asMap());
   }

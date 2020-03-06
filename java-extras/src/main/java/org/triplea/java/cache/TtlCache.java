@@ -26,19 +26,16 @@ public interface TtlCache<IdT, ValueT> {
    * Places a new item in the cache if one existed with the same ID and replaces the existing value.
    * The replaced item is returned, otherwise returns an empty.
    */
-  default Optional<ValueT> replace(IdT id, ValueT newValue) {
-    final Optional<ValueT> value = get(id);
-    if (value.isPresent()) {
-      put(id, newValue);
-    }
-    return value;
-  }
+  Optional<ValueT> replace(IdT id, ValueT newValue);
 
   default Optional<Map.Entry<IdT, ValueT>> findEntryByKey(final Predicate<IdT> keyCheck) {
     return asMap().entrySet().stream().filter(entry -> keyCheck.test(entry.getKey())).findAny();
   }
 
-  /** Returns a snapshot of all values currently in the cache. */
+  /**
+   * Returns a snapshot (copy) of all values currently in the cache. Note, modifications to the
+   * returned {@code Map} will *not* update the underlying cache.
+   */
   Map<IdT, ValueT> asMap();
 
   @Value
