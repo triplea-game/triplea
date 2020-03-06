@@ -21,7 +21,7 @@ class GameTtlExpiredListenerTest {
   void verifyGameRemovedCall() {
     final GameId gameId = new GameId(TestData.API_KEY, "id");
 
-    gameTtlExpiredListener.accept(new TtlCache.CacheEntry<>(gameId, TestData.LOBBY_GAME));
+    gameTtlExpiredListener.accept(gameId, TestData.LOBBY_GAME);
 
     verify(gameListingEventQueue).gameRemoved("id");
   }
