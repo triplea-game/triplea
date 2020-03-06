@@ -7,7 +7,7 @@ import com.github.benmanes.caffeine.cache.Scheduler;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Cache that expires values when a TTL (time to live) expires. TTL timer starts when the value is
@@ -20,12 +20,10 @@ import java.util.function.Consumer;
 public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, ValueT> {
 
   private final Cache<IdT, ValueT> cache;
-  private final Consumer<CacheEntry<IdT, ValueT>> removalListener;
+  private final BiConsumer<IdT, ValueT> removalListener;
 
   public ExpiringAfterWriteCache(
-      final long duration,
-      final TimeUnit timeUnit,
-      final Consumer<CacheEntry<IdT, ValueT>> removalListener) {
+      final long duration, final TimeUnit timeUnit, final BiConsumer<IdT, ValueT> removalListener) {
     cache =
         Caffeine.newBuilder()
             .expireAfterWrite(duration, timeUnit)
@@ -33,7 +31,7 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
             .removalListener(
                 (IdT key, ValueT value, RemovalCause cause) -> {
                   if (cause == RemovalCause.EXPIRED || cause == RemovalCause.EXPLICIT) {
-                    removalListener.accept(new CacheEntry<>(key, value));
+                    removalListener.accept(key, value);
                   }
                 })
             .build();
@@ -66,7 +64,7 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
   @Override
   public Optional<ValueT> invalidate(final IdT id) {
     final Optional<ValueT> value = Optional.ofNullable(cache.asMap().remove(id));
-    value.ifPresent(valueT -> removalListener.accept(new CacheEntry<>(id, valueT)));
+    value.ifPresent(valueT -> removalListener.accept(id, valueT));
     return value;
   }
 

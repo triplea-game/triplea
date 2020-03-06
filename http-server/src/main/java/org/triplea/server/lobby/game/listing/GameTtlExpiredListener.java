@@ -1,18 +1,18 @@
 package org.triplea.server.lobby.game.listing;
 
-import java.util.function.Consumer;
+import static org.triplea.server.lobby.game.listing.GameListing.GameId;
+
+import java.util.function.BiConsumer;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
-import org.triplea.java.cache.TtlCache;
 
 @AllArgsConstructor
-class GameTtlExpiredListener
-    implements Consumer<TtlCache.CacheEntry<GameListing.GameId, LobbyGame>> {
+class GameTtlExpiredListener implements BiConsumer<GameId, LobbyGame> {
 
   private final GameListingEventQueue gameListingEventQueue;
 
   @Override
-  public void accept(final TtlCache.CacheEntry<GameListing.GameId, LobbyGame> removedEntry) {
-    gameListingEventQueue.gameRemoved(removedEntry.getId().getId());
+  public void accept(final GameId gameId, final LobbyGame removedEntry) {
+    gameListingEventQueue.gameRemoved(gameId.getId());
   }
 }

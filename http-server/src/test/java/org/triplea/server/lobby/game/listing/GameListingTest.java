@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ class GameListingTest {
   private static final int MODERATOR_ID = 33;
 
   private final ExpiringAfterWriteCache<GameId, LobbyGame> cache =
-      new ExpiringAfterWriteCache<>(1, TimeUnit.HOURS, entry -> {});
+      new ExpiringAfterWriteCache<>(1, TimeUnit.HOURS, (key, value) -> {});
 
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
   @Mock private GameListingEventQueue gameListingEventQueue;

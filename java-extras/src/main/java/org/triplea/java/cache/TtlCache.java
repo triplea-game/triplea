@@ -3,7 +3,6 @@ package org.triplea.java.cache;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import lombok.Value;
 
 public interface TtlCache<IdT, ValueT> {
 
@@ -37,10 +36,4 @@ public interface TtlCache<IdT, ValueT> {
    * returned {@code Map} will *not* update the underlying cache.
    */
   Map<IdT, ValueT> asMap();
-
-  @Value
-  class CacheEntry<I, V> {
-    private final I id;
-    private final V value;
-  }
 }
