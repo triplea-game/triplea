@@ -113,6 +113,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     battleTracker.fightAirRaidsAndStrategicBombing(bridge);
     if (needToFireRockets) {
+      // If we are loading a save-game created during battle and after the 'needToCreateRockets'
+      // phase, rocketHelper can be null here.
+      if (rocketHelper == null) {
+        rocketHelper = RocketsFireHelper.setUpRockets(bridge);
+      }
       rocketHelper.fireRockets(bridge);
       needToFireRockets = false;
     }
