@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.java.cache.TtlCache;
 import org.triplea.server.TestData;
 import org.triplea.server.lobby.game.listing.GameListing.GameId;
 
