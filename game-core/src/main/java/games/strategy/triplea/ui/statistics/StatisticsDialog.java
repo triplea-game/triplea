@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.statistics;
 import com.google.common.collect.Table;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.Round;
+import games.strategy.engine.stats.OverTimeStatisticType;
 import games.strategy.engine.stats.Statistics;
 import games.strategy.engine.stats.StatisticsAggregator;
 import java.util.ArrayList;
@@ -37,11 +38,27 @@ public class StatisticsDialog extends JPanel {
             new OverTimeChart(
                 "Production",
                 "Production from territories",
-                statistics.getProductionOfPlayerInRound()),
-            new OverTimeChart("TUV", "TUV", statistics.getTuvOfPlayerInRound()),
-            new OverTimeChart("Units", "Units", statistics.getUnitsOfPlayerInRound()),
+                statistics
+                    .getOverTimeStatistics()
+                    .get(OverTimeStatisticType.PredefinedStatistics.PRODUCTION)),
             new OverTimeChart(
-                "VC", "Victory Cities", statistics.getVictoryCitiesOfPlayerInRound()));
+                "TUV",
+                "TUV",
+                statistics
+                    .getOverTimeStatistics()
+                    .get(OverTimeStatisticType.PredefinedStatistics.TUV)),
+            new OverTimeChart(
+                "Units",
+                "Units",
+                statistics
+                    .getOverTimeStatistics()
+                    .get(OverTimeStatisticType.PredefinedStatistics.UNITS)),
+            new OverTimeChart(
+                "VC",
+                "Victory Cities",
+                statistics
+                    .getOverTimeStatistics()
+                    .get(OverTimeStatisticType.PredefinedStatistics.VC)));
 
     final JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
     for (final OverTimeChart chartData : overTimeCharts) {
