@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
 import lombok.Builder;
 
@@ -50,6 +51,7 @@ public final class GameFileSelector {
     return Optional.empty();
   }
 
+  @Nullable
   private File mapFileResult(final File file) {
     if (file.exists()) {
       return file;
