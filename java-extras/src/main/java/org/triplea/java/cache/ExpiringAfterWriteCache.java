@@ -65,8 +65,7 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
 
   @Override
   public Optional<ValueT> invalidate(final IdT id) {
-    final Optional<ValueT> value = get(id);
-    cache.invalidate(id);
+    final Optional<ValueT> value = Optional.ofNullable(cache.asMap().remove(id));
     value.ifPresent(valueT -> removalListener.accept(new CacheEntry<>(id, valueT)));
     return value;
   }
