@@ -7,6 +7,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -35,11 +36,10 @@ public final class GameFileSelector {
       fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
-      final String fileName = fileDialog.getFile();
-      final String dirName = fileDialog.getDirectory();
-      return Optional.ofNullable(fileName)
-          .map(name -> new File(dirName, fileName))
-          .map(this::mapFileResult);
+
+      // FileDialog.getFiles() always returns an array
+      // of 1 or 0 items, because FileDialog.multipleMode is false by default
+      return Arrays.stream(fileDialog.getFiles()).findAny().map(this::mapFileResult);
     }
 
     // Non-Mac platforms should use the normal Swing JFileChooser
