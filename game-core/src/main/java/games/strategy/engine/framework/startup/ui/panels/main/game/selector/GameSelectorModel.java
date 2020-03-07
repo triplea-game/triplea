@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -68,31 +69,25 @@ public class GameSelectorModel extends Observable implements GameSelector {
   /**
    * Loads game data by parsing a given file.
    *
-   * @return True if file parsing was successful and an internal {@code GameData} was set. Otherwise
-   *     returns false and internal {@code GameData} is null.
+   * @throws Exception If file parsing is successful and an internal {@code GameData} was set.
    */
-  public boolean load(final File file) {
-    if (!file.isFile()) {
-      return false;
-    }
+  public void load(final File file) throws Exception {
+    Preconditions.checkArgument(
+        file.exists(),
+        "Programming error, expected file to have already been checked to exist: "
+            + file.getAbsolutePath());
 
     final GameData newData;
-    try {
-      // if the file name is xml, load it as a new game
-      if (file.getName().toLowerCase().endsWith("xml")) {
-        try (InputStream inputStream = new FileInputStream(file)) {
-          newData = GameParser.parse(file.getAbsolutePath(), inputStream);
-        }
-      } else {
-        // try to load it as a saved game whatever the extension
-        newData = GameDataManager.loadGame(file);
+    // if the file name is xml, load it as a new game
+    if (file.getName().toLowerCase().endsWith("xml")) {
+      try (InputStream inputStream = new FileInputStream(file)) {
+        newData = GameParser.parse(file.getAbsolutePath(), inputStream);
       }
-      load(newData, file.getName());
-      return true;
-    } catch (final Exception e) {
-      log.log(Level.SEVERE, "Error loading game file: " + file.getAbsolutePath(), e);
-      return false;
+    } else {
+      // try to load it as a saved game whatever the extension
+      newData = GameDataManager.loadGame(file);
     }
+    load(newData, file.getName());
   }
 
   public GameData getGameData(final InputStream input) {

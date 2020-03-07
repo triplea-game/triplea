@@ -1,5 +1,8 @@
 package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
+import static org.triplea.swing.SwingComponents.DialogWithLinksParams;
+import static org.triplea.swing.SwingComponents.DialogWithLinksTypes;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -14,6 +17,8 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.engine.framework.ui.background.TaskRunner;
+import games.strategy.triplea.UrlConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -32,6 +37,7 @@ import javax.swing.JScrollPane;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /**
  * Left hand side panel of the launcher screen that has various info, like selected game and engine
@@ -311,29 +317,41 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void selectSavedGameFile() {
-    GameFileSelector.selectGameFile(JOptionPane.getFrameForComponent(this))
+    GameFileSelector.builder()
+        .fileDoesNotExistAction(
+            file ->
+                DialogBuilder.builder()
+                    .parent(this)
+                    .title("Save Game File Not Found")
+                    .errorMessage("File does not exist: " + file.getAbsolutePath())
+                    .showDialog())
+        .build()
+        .selectGameFile(JOptionPane.getFrameForComponent(this))
         .ifPresent(
-            file -> {
-              try {
-                if (!BackgroundTaskRunner.runInBackgroundAndReturn(
-                    "Loading savegame...",
-                    () -> {
-                      if (model.load(file)) {
-                        setOriginalPropertiesMap(model.getGameData());
-                        return true;
-                      }
-                      return false;
-                    })) {
-                  DialogBuilder.builder()
-                      .parent(this)
-                      .title("Save Game File Not Found")
-                      .errorMessage("File does not exist: " + file.getAbsolutePath())
-                      .showDialog();
-                }
-              } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-              }
-            });
+            file ->
+                TaskRunner.builder()
+                    .waitDialogTitle("Loading Save Game")
+                    .exceptionHandler(
+                        e ->
+                            SwingComponents.showDialogWithLinks(
+                                DialogWithLinksParams.builder()
+                                    .title("Failed To Load Save Game")
+                                    .dialogType(DialogWithLinksTypes.ERROR)
+                                    .dialogText(
+                                        String.format(
+                                            "<html>Error: %s<br/><br/>"
+                                                + "If this is not expected, please "
+                                                + "file a <a href=%s>bug report</a><br/>"
+                                                + "and attach the error message above and the "
+                                                + "save game you are trying to load.",
+                                            e.getMessage(), UrlConstants.GITHUB_ISSUES))
+                                    .build()))
+                    .build()
+                    .run(
+                        () -> {
+                          model.load(file);
+                          setOriginalPropertiesMap(model.getGameData());
+                        }));
   }
 
   private void selectGameFile() {

@@ -25,7 +25,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.SwingUtilities;
+import lombok.extern.java.Log;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
@@ -38,6 +40,7 @@ import org.triplea.util.Services;
  * GameRunner - The entrance class with the main method. In this class commonly used constants are
  * getting defined and the Game is being launched
  */
+@Log
 public final class GameRunner {
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final int PORT = 3300;
@@ -92,7 +95,12 @@ public final class GameRunner {
     gameSelectorModel.loadDefaultGameSameThread();
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (!fileName.isEmpty() && new File(fileName).exists()) {
-      gameSelectorModel.load(new File(fileName));
+      try {
+        gameSelectorModel.load(new File(fileName));
+      } catch (final Exception e) {
+        log.log(
+            Level.SEVERE, "Error loading game file: " + new File(fileName).getAbsolutePath(), e);
+      }
     }
 
     final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");

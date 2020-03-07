@@ -8,6 +8,7 @@ import lombok.experimental.UtilityClass;
 public final class UrlConstants {
   public static final String AXIS_AND_ALLIES_FORUM = "https://www.axisandallies.org/forums";
   public static final String DOWNLOAD_WEBSITE = "https://triplea-game.org/download/";
+  public static final String OLD_DOWNLOADS_WEBSITE = "https://triplea-game.org/old_downloads/";
   public static final String GITHUB_ISSUES = "https://github.com/triplea-game/triplea/issues/new";
   public static final String LICENSE_NOTICE =
       "https://github.com/triplea-game/triplea/blob/master/README.md#license";
