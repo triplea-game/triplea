@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
@@ -37,7 +36,6 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import lombok.extern.java.Log;
 import org.triplea.java.OptionalUtils;
-import org.triplea.java.function.ThrowingFunction;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
 import org.triplea.swing.JTextFieldBuilder;
@@ -164,7 +162,7 @@ final class SelectionComponentFactory {
 
       private Optional<Integer> parsePort(final String encodedPort) {
         try {
-          final Integer port = Integer.valueOf(encodedPort);
+          final int port = Integer.parseInt(encodedPort);
           return (port > 0) ? Optional.of(port) : Optional.empty();
         } catch (final NumberFormatException e) {
           return Optional.empty();
@@ -597,66 +595,6 @@ final class SelectionComponentFactory {
     };
   }
 
-  // TODO: UNUSED-CODE remove this method
-  static <T> SelectionComponent<JComponent> textField(
-      final ClientSetting<T> clientSetting,
-      final ThrowingFunction<T, String, ValueEncodingException> encodeValue,
-      final ThrowingFunction<String, T, ValueEncodingException> decodeValue,
-      final String invalidValueMessage) {
-    return new SelectionComponent<>() {
-      private final JTextField textField = new JTextField(encode(clientSetting::getValue), 20);
-
-      private String encode(final Supplier<Optional<T>> valueSupplier) {
-        return valueSupplier
-            .get()
-            .map(
-                value -> {
-                  try {
-                    return encodeValue.apply(value);
-                  } catch (final ValueEncodingException e) {
-                    log.log(
-                        Level.FINE,
-                        String.format(
-                            "Failed to encode value '%s' from client setting '%s'",
-                            value, clientSetting),
-                        e);
-                    return null;
-                  }
-                })
-            .orElse("");
-      }
-
-      @Override
-      public JComponent getUiComponent() {
-        return textField;
-      }
-
-      @Override
-      public void save(final SaveContext context) {
-        final String encodedValue = textField.getText();
-        if (encodedValue.isEmpty()) {
-          context.setValue(clientSetting, null);
-        } else {
-          try {
-            context.setValue(clientSetting, decodeValue.apply(encodedValue));
-          } catch (final ValueEncodingException e) {
-            context.reportError(clientSetting, invalidValueMessage, encodedValue);
-          }
-        }
-      }
-
-      @Override
-      public void reset() {
-        textField.setText(encode(clientSetting::getValue));
-      }
-
-      @Override
-      public void resetToDefault() {
-        textField.setText(encode(clientSetting::getDefaultValue));
-      }
-    };
-  }
-
   /**
    * Returns an unscrubbable string containing sensitive data. Use only when absolutely required.
    */
@@ -824,13 +762,5 @@ final class SelectionComponentFactory {
         passwordField.setText(credentialToString(passwordSetting::getValue));
       }
     };
-  }
-
-  static final class ValueEncodingException extends Exception {
-    private static final long serialVersionUID = 4544282783923154696L;
-
-    ValueEncodingException(final Throwable cause) {
-      super(cause);
-    }
   }
 }
