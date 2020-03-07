@@ -38,7 +38,7 @@ public final class GameFileSelector {
       fileDialog.setVisible(true);
 
       // FileDialog.getFiles() always returns an array
-      // of 1 or 0 items
+      // of 1 or 0 items, because FileDialog.multipleMode is false by default
       return Arrays.stream(fileDialog.getFiles()).findAny().map(this::mapFileResult);
     }
 
