@@ -67,7 +67,7 @@ public class TaskRunner<E extends Exception> {
         exceptionHandler.accept(exception);
       }
     } catch (final ClassCastException e) {
-      throw new AssertionError("Unexpected exception thrown", e);
+      throw new IllegalStateException("Unexpected exception thrown", e);
     }
   }
 
