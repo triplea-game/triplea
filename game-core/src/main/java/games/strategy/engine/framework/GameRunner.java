@@ -79,7 +79,8 @@ public final class GameRunner {
   public static void showMainFrame() {
     MainFrame.show();
     ProAi.gameOverClearCache();
-    loadGame();
+    loadGameIfSpecified();
+    openMapDownloadWindowIfDownloadScheduled();
 
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
       setupPanelModel.showServer();
@@ -90,19 +91,20 @@ public final class GameRunner {
     }
   }
 
-  private static void loadGame() {
+  private static void loadGameIfSpecified() {
     checkState(!SwingUtilities.isEventDispatchThread());
     gameSelectorModel.loadDefaultGameSameThread();
-    final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (!fileName.isEmpty() && new File(fileName).exists()) {
+    final File saveGameFile = new File(System.getProperty(TRIPLEA_GAME, ""));
+    if (saveGameFile.exists()) {
       try {
-        gameSelectorModel.load(new File(fileName));
+        gameSelectorModel.load(saveGameFile);
       } catch (final Exception e) {
-        log.log(
-            Level.SEVERE, "Error loading game file: " + new File(fileName).getAbsolutePath(), e);
+        log.log(Level.SEVERE, "Error loading game file: " + saveGameFile.getAbsolutePath(), e);
       }
     }
+  }
 
+  private static void openMapDownloadWindowIfDownloadScheduled() {
     final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
     if (!downloadableMap.isEmpty()) {
       SwingUtilities.invokeLater(
