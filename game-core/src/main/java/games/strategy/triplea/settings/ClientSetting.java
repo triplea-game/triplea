@@ -345,10 +345,11 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       return decodeValue(encodedValue);
     } catch (final ValueEncodingException e) {
       log.log(
-          Level.WARNING,
+          Level.INFO,
           String.format(
               "Failed to decode encoded value: '%s' in client setting '%s'", encodedValue, name),
           e);
+      resetValue();
       return getDefaultValue().orElse(null);
     }
   }
