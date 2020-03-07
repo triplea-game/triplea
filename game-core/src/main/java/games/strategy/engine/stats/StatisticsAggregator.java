@@ -46,6 +46,11 @@ public class StatisticsAggregator {
 
   public Statistics aggregate() {
     log.info("Aggregating statistics for game " + game.getGameName());
+    collectOverTimeStatistics();
+    return underConstruction;
+  }
+
+  private void collectOverTimeStatistics() {
     final List<GamePlayer> players = game.getPlayerList().getPlayers();
     final List<String> alliances = new ArrayList<>(game.getAllianceTracker().getAlliances());
 
@@ -77,8 +82,6 @@ public class StatisticsAggregator {
                     .put(alliance, round, source.getValue(alliance, game)));
       }
     }
-
-    return underConstruction;
   }
 
   private List<Round> getRounds() {
