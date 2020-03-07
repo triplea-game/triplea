@@ -80,6 +80,7 @@ public final class GameRunner {
     MainFrame.show();
     ProAi.gameOverClearCache();
     loadGame();
+    openMapDownloadWindowIfDownloadScheduled();
 
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
       setupPanelModel.showServer();
@@ -104,7 +105,9 @@ public final class GameRunner {
         }
       }
     }
+  }
 
+  private static void openMapDownloadWindowIfDownloadScheduled() {
     final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
     if (!downloadableMap.isEmpty()) {
       SwingUtilities.invokeLater(
