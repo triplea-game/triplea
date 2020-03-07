@@ -36,6 +36,9 @@ public final class GameFileSelector {
       fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
+
+      // FileDialog.getFiles() always returns an array
+      // of 1 or 0 items
       return Arrays.stream(fileDialog.getFiles()).findAny().map(this::mapFileResult);
     }
 
