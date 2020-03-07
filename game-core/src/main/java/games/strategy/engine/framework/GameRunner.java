@@ -94,12 +94,14 @@ public final class GameRunner {
     checkState(!SwingUtilities.isEventDispatchThread());
     gameSelectorModel.loadDefaultGameSameThread();
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (!fileName.isEmpty() && new File(fileName).exists()) {
-      try {
-        gameSelectorModel.load(new File(fileName));
-      } catch (final Exception e) {
-        log.log(
-            Level.SEVERE, "Error loading game file: " + new File(fileName).getAbsolutePath(), e);
+    if (!fileName.isEmpty()) {
+      final File saveGameFile = new File(fileName);
+      if (saveGameFile.exists()) {
+        try {
+          gameSelectorModel.load(saveGameFile);
+        } catch (final Exception e) {
+          log.log(Level.SEVERE, "Error loading game file: " + saveGameFile.getAbsolutePath(), e);
+        }
       }
     }
 
