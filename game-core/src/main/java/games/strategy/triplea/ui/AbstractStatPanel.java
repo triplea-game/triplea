@@ -43,10 +43,10 @@ public abstract class AbstractStatPanel extends JPanel {
     return players;
   }
 
-  static class ResourceStat extends AbstractStat {
+  public static class ResourceStat extends AbstractStat {
     final Resource resource;
 
-    ResourceStat(final Resource resource) {
+    public ResourceStat(final Resource resource) {
       this.resource = resource;
     }
 

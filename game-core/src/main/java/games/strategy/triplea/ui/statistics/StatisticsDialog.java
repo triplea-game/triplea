@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.statistics;
 import com.google.common.collect.Table;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.Round;
-import games.strategy.engine.stats.OverTimeStatisticType;
 import games.strategy.engine.stats.Statistics;
 import games.strategy.engine.stats.StatisticsAggregator;
 import java.util.ArrayList;
@@ -33,32 +32,12 @@ public class StatisticsDialog extends JPanel {
   public StatisticsDialog(final GameData game) {
     final Statistics statistics = new StatisticsAggregator(game).aggregate();
 
-    final List<OverTimeChart> overTimeCharts =
-        List.of(
-            new OverTimeChart(
-                "Production",
-                "Production from territories",
-                statistics
-                    .getOverTimeStatistics()
-                    .get(OverTimeStatisticType.PredefinedStatistics.PRODUCTION)),
-            new OverTimeChart(
-                "TUV",
-                "TUV",
-                statistics
-                    .getOverTimeStatistics()
-                    .get(OverTimeStatisticType.PredefinedStatistics.TUV)),
-            new OverTimeChart(
-                "Units",
-                "Units",
-                statistics
-                    .getOverTimeStatistics()
-                    .get(OverTimeStatisticType.PredefinedStatistics.UNITS)),
-            new OverTimeChart(
-                "VC",
-                "Victory Cities",
-                statistics
-                    .getOverTimeStatistics()
-                    .get(OverTimeStatisticType.PredefinedStatistics.VC)));
+    final List<OverTimeChart> overTimeCharts = new ArrayList<>();
+    statistics
+        .getOverTimeStatistics()
+        .forEach(
+            (key, value) ->
+                overTimeCharts.add(new OverTimeChart(key.getName(), key.getXAxisLabel(), value)));
 
     final JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
     for (final OverTimeChart chartData : overTimeCharts) {

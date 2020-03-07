@@ -3,10 +3,13 @@ package games.strategy.engine.stats;
 import com.google.common.collect.HashBasedTable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
+import games.strategy.triplea.ui.AbstractStatPanel;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.tree.TreeNode;
@@ -22,12 +25,23 @@ public class StatisticsAggregator {
   private final Statistics underConstruction = new Statistics();
   private final GameData game;
 
-  private static Map<OverTimeStatisticType, IStat> createOverTimeStatisticsMapping() {
-    return Map.of(
-        OverTimeStatisticType.PredefinedStatistics.TUV, new TuvStat(),
-        OverTimeStatisticType.PredefinedStatistics.PRODUCTION, new ProductionStat(),
-        OverTimeStatisticType.PredefinedStatistics.UNITS, new UnitsStat(),
-        OverTimeStatisticType.PredefinedStatistics.VC, new VictoryCityStat());
+  private static final Map<OverTimeStatisticType, IStat> defaultStatisticsMapping =
+      Map.of(
+          OverTimeStatisticType.PredefinedStatistics.TUV, new TuvStat(),
+          OverTimeStatisticType.PredefinedStatistics.PRODUCTION, new ProductionStat(),
+          OverTimeStatisticType.PredefinedStatistics.UNITS, new UnitsStat(),
+          OverTimeStatisticType.PredefinedStatistics.VC, new VictoryCityStat());
+
+  private static Map<OverTimeStatisticType, IStat> createOverTimeStatisticsMapping(
+      List<Resource> resources) {
+    final Map<OverTimeStatisticType, IStat> statisticsMapping =
+        new HashMap<>(defaultStatisticsMapping);
+    resources.forEach(
+        resource ->
+            statisticsMapping.put(
+                new OverTimeStatisticType.ResourceStatistic(resource),
+                new AbstractStatPanel.ResourceStat(resource)));
+    return statisticsMapping;
   }
 
   public Statistics aggregate() {
@@ -36,7 +50,7 @@ public class StatisticsAggregator {
     final List<String> alliances = new ArrayList<>(game.getAllianceTracker().getAlliances());
 
     final Map<OverTimeStatisticType, IStat> overTimeStatisticToSource =
-        createOverTimeStatisticsMapping();
+        createOverTimeStatisticsMapping(game.getResourceList().getResources());
     {
       // initialize over time statistics
       for (OverTimeStatisticType type : overTimeStatisticToSource.keySet()) {
