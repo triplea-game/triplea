@@ -1,5 +1,5 @@
 [prerelease]
-prerelease2.triplea-game.org
+prerelease.triplea-game.org
 
 [postgresHosts:children]
 prerelease
