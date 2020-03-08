@@ -6,7 +6,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.triplea.ui.AbstractStatPanel;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ import lombok.extern.java.Log;
 public class StatisticsAggregator {
   private final Statistics underConstruction = new Statistics();
   private final GameData game;
-
   private static final Map<OverTimeStatisticType, IStat> defaultStatisticsMapping =
       Map.of(
           OverTimeStatisticType.PredefinedStatistics.TUV, new TuvStat(),
@@ -39,8 +37,7 @@ public class StatisticsAggregator {
     resources.forEach(
         resource ->
             statisticsMapping.put(
-                new OverTimeStatisticType.ResourceStatistic(resource),
-                new AbstractStatPanel.ResourceStat(resource)));
+                new OverTimeStatisticType.ResourceStatistic(resource), new ResourceStat(resource)));
     return statisticsMapping;
   }
 

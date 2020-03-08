@@ -9,6 +9,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
+import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
