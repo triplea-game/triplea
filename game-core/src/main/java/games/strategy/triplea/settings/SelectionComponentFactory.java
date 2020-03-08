@@ -34,7 +34,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import lombok.extern.java.Log;
 import org.triplea.java.OptionalUtils;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
@@ -47,7 +46,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * that needs a number, we could create an integer text field with this class. This class takes care
  * of the UI code to ensure we render the proper swing component with validation.
  */
-@Log
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
