@@ -2138,7 +2138,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     queryRetreat(false, RetreatType.PARTIAL_AMPHIB, bridge, possible);
   }
 
-
   private void attackerRetreatStalemate(final IDelegateBridge bridge) {
     attackerRetreat(bridge, true);
   }
