@@ -1,5 +1,6 @@
 package org.triplea.swing;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
@@ -29,7 +30,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public final class DocumentListenerBuilder {
-
+  @VisibleForTesting public static final int CALLBACK_DELAY_MS = 100;
   private final AtomicReference<Timer> callListenerAction = new AtomicReference<>();
   private final Runnable listener;
 
@@ -76,36 +77,7 @@ public final class DocumentListenerBuilder {
             listener.run();
           }
         },
-        100);
+        CALLBACK_DELAY_MS);
     return timer;
-  }
-
-  /**
-   * Attaches a given (add/remove/changed) text change action to a {@code JTextComponent}.
-   *
-   * @param textComponent Will receive a new document listener
-   * @param listenerAction The action to call.
-   */
-  public static void attachDocumentListener(
-      final JTextComponent textComponent, final Runnable listenerAction) {
-    textComponent
-        .getDocument()
-        .addDocumentListener(
-            new DocumentListener() {
-              @Override
-              public void insertUpdate(final DocumentEvent e) {
-                listenerAction.run();
-              }
-
-              @Override
-              public void removeUpdate(final DocumentEvent e) {
-                listenerAction.run();
-              }
-
-              @Override
-              public void changedUpdate(final DocumentEvent e) {
-                listenerAction.run();
-              }
-            });
   }
 }

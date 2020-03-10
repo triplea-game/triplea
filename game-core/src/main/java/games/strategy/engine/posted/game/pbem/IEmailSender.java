@@ -4,10 +4,6 @@ import com.google.common.base.Preconditions;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.triplea.util.Arrays;
 
 /**
@@ -33,26 +29,6 @@ public interface IEmailSender {
   void sendEmail(String subject, String htmlMessage, File saveGame, String saveGameName)
       throws IOException;
 
-  String getDisplayName();
-
-  /**
-   * Data class to store a 3-tuple consisting of a server host, a server port and whether or not to
-   * use an encrypted connection.
-   */
-  @AllArgsConstructor
-  @Immutable
-  final class EmailProviderSetting {
-    @Nonnull private final String displayName;
-    @Getter @Nonnull private final String host;
-    @Getter private final int port;
-    @Getter private final boolean isEncrypted;
-
-    @Override
-    public String toString() {
-      return displayName;
-    }
-  }
-
   /**
    * Creates an {@link IEmailSender} instance based on the given arguments and the configured
    * settings.
@@ -62,11 +38,6 @@ public interface IEmailSender {
     Preconditions.checkNotNull(toAddress);
 
     return new DefaultEmailSender(
-        new IEmailSender.EmailProviderSetting(
-            "",
-            ClientSetting.emailServerHost.getValueOrThrow(),
-            ClientSetting.emailServerPort.getValueOrThrow(),
-            ClientSetting.emailServerSecurity.getValueOrThrow()),
         Arrays.withSensitiveArrayAndReturn(
             ClientSetting.emailUsername::getValueOrThrow, String::new),
         Arrays.withSensitiveArrayAndReturn(

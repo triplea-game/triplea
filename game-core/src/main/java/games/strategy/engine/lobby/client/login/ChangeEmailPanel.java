@@ -83,12 +83,13 @@ public final class ChangeEmailPanel {
 
     SwingComponents.addEscapeKeyListener(panel, dialog::dispose);
 
-    DocumentListenerBuilder.attachDocumentListener(
-        emailField,
-        () ->
-            okButton.setEnabled(
-                !emailField.getText().equals(userExistingEmail)
-                    && PlayerEmailValidation.isValid(emailField.getText())));
+    new DocumentListenerBuilder(
+            () ->
+                okButton.setEnabled(
+                    !emailField.getText().equals(userExistingEmail)
+                        && PlayerEmailValidation.isValid(emailField.getText())))
+        .attachTo(emailField);
+
     return panel;
   }
 

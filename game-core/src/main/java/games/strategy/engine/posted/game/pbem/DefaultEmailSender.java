@@ -1,6 +1,7 @@
 package games.strategy.engine.posted.game.pbem;
 
 import com.google.common.base.Splitter;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,19 +39,23 @@ public class DefaultEmailSender implements IEmailSender {
   private final String username;
   private final String password;
   private final String toAddress;
-  private final EmailProviderSetting providerSetting;
+  private final String emailServerHost;
+  private final int emailServerPort;
+  private final boolean encrypted;
 
   DefaultEmailSender(
-      final EmailProviderSetting providerSetting,
       final String username,
       final String password,
       final String subjectPrefix,
       final String toAddress) {
-    this.providerSetting = providerSetting;
     this.username = username;
     this.password = password;
     this.subjectPrefix = subjectPrefix;
     this.toAddress = toAddress;
+
+    emailServerHost = ClientSetting.emailServerHost.getValueOrThrow();
+    emailServerPort = ClientSetting.emailServerPort.getValueOrThrow();
+    encrypted = ClientSetting.emailServerSecurity.getValue().orElse(true);
   }
 
   @Override
@@ -63,12 +68,12 @@ public class DefaultEmailSender implements IEmailSender {
     // this is the last step and we create the email to send
     final Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
-    if (providerSetting.isEncrypted()) {
+    if (encrypted) {
       props.put("mail.smtp.starttls.enable", "true");
       props.put("mail.smtp.starttls.required", "true");
     }
-    props.put("mail.smtp.host", providerSetting.getHost());
-    props.put("mail.smtp.port", providerSetting.getPort());
+    props.put("mail.smtp.host", emailServerHost);
+    props.put("mail.smtp.port", emailServerPort);
     props.put("mail.smtp.connectiontimeout", TIMEOUT);
     props.put("mail.smtp.timeout", TIMEOUT);
     // todo get the turn and player number from the game data
@@ -111,36 +116,12 @@ public class DefaultEmailSender implements IEmailSender {
       }
 
       try (Transport transport = session.getTransport("smtp")) {
-        transport.connect(providerSetting.getHost(), providerSetting.getPort(), username, password);
+        transport.connect(emailServerHost, emailServerPort, username, password);
         mimeMessage.saveChanges();
         transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
       }
     } catch (final MessagingException e) {
       throw new IOException(e);
     }
-  }
-
-  @Override
-  public String getDisplayName() {
-    return providerSetting.toString();
-  }
-
-  @Override
-  public String toString() {
-    return "GenericEmailSender{"
-        + "toAddress='"
-        + toAddress
-        + '\''
-        + ", username='"
-        + username
-        + '\''
-        + ", host='"
-        + providerSetting.getHost()
-        + '\''
-        + ", port="
-        + providerSetting.getPort()
-        + ", encrypted="
-        + providerSetting.isEncrypted()
-        + '}';
   }
 }

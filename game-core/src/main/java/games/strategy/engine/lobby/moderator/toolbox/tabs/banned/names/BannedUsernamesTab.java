@@ -91,8 +91,9 @@ public final class BannedUsernamesTab implements Supplier<Component> {
             .toolTip("Adds a new banned username, this name will not be allowed to join the lobby.")
             .build();
 
-    DocumentListenerBuilder.attachDocumentListener(
-        addField, () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
+    new DocumentListenerBuilder(
+            () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH))
+        .attachTo(addField);
 
     return new JPanelBuilder()
         .add(

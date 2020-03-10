@@ -1,208 +1,234 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
-import com.google.common.base.Ascii;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.posted.game.pbem.IEmailSender;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import lombok.extern.java.Log;
-import org.triplea.domain.data.PlayerEmailValidation;
-import org.triplea.swing.DocumentListenerBuilder;
-import org.triplea.swing.ProgressWindow;
+import javax.swing.border.TitledBorder;
+import org.triplea.java.ViewModelListener;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JCheckBoxBuilder;
+import org.triplea.swing.JComboBoxBuilder;
+import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** An editor for modifying email senders. */
-@Log
-public class EmailSenderEditor extends JPanel {
-  private static final long serialVersionUID = -4647781117491269926L;
-  private final JTextField subject = new JTextField();
-  private final JTextField toAddress = new JTextField();
-  private final JLabel toLabel = new JLabel("To:");
-  private final JButton testEmail = new JButton("Test Email");
-  private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
-  private final Runnable readyCallback;
+public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorViewModel> {
+
+  private static final int FIELD_LENGTH = 20;
+  private final EmailSenderEditorViewModel viewModel = new EmailSenderEditorViewModel(this);
+
+  private boolean syncToModel;
+
+  private final JComboBox<String> emailProviderSelectionBox =
+      JComboBoxBuilder.builder()
+          .items(EmailSenderEditorViewModel.getProviderOptions())
+          .selectedItem(viewModel.getSelectedProvider())
+          .itemSelectedAction(
+              provider -> {
+                if (syncToModel) {
+                  viewModel.setSelectedProvider(provider);
+                }
+              })
+          .build();
+
+  private final JLabel smtpServerLabel = new JLabel("Smtp Server");
+  private final JTextField smtpServerField =
+      JTextFieldBuilder.builder()
+          .text(viewModel.getSmtpServer())
+          .textListener(
+              server -> {
+                if (syncToModel) {
+                  viewModel.setSmtpServer(server);
+                }
+              })
+          .columns(FIELD_LENGTH)
+          .build();
+
+  private final JLabel smtpPortLabel = new JLabel("Port");
+  private final JTextField smtpPortField =
+      JTextFieldBuilder.builder()
+          .text(viewModel.getSmtpPort())
+          .textListener(
+              smtpPort -> {
+                if (syncToModel) {
+                  viewModel.setSmtpPort(smtpPort);
+                }
+              })
+          .columns(FIELD_LENGTH)
+          .build();
+
+  private final JCheckBox useTlsCheckBox =
+      new JCheckBoxBuilder("Use TLS encryption")
+          .selected(viewModel.isUseTls())
+          .actionListener(
+              useTls -> {
+                if (syncToModel) {
+                  viewModel.setUseTls(useTls);
+                }
+              })
+          .build();
+
+  private final JLabel subjectLabel = new JLabel("Subject");
+  private final JTextField subjectField =
+      JTextFieldBuilder.builder()
+          .text(viewModel.getSubject())
+          .textListener(
+              subject -> {
+                if (syncToModel) {
+                  viewModel.setSubject(subject);
+                }
+              })
+          .columns(FIELD_LENGTH)
+          .build();
+
+  private final JLabel toAddressLabel = new JLabel("To:");
+  private final JTextField toAddressField =
+      JTextFieldBuilder.builder()
+          .text(viewModel.getToAddress())
+          .textListener(
+              toAddress -> {
+                if (syncToModel) {
+                  viewModel.setToAddress(toAddress);
+                }
+              })
+          .columns(FIELD_LENGTH)
+          .build();
+
+  private final JCheckBox sendEmailAfterCombatMoveCheckBox =
+      new JCheckBoxBuilder("Also Send Email After Combat Move")
+          .selected(viewModel.isSendEmailAfterCombatMove())
+          .actionListener(
+              sendEmailAfterCombatMove -> {
+                if (syncToModel) {
+                  viewModel.setSendEmailAfterCombatMove(sendEmailAfterCombatMove);
+                }
+              })
+          .build();
+
+  private final JButton testEmailButton =
+      new JButtonBuilder("Send Test Email")
+          .enabled(viewModel.isTestEmailButtonEnabled())
+          .actionListener(viewModel::sendTestEmail)
+          .build();
 
   public EmailSenderEditor(final Runnable readyCallback) {
-    super(new GridBagLayout());
-    this.readyCallback = readyCallback;
-    final int bottomSpace = 1;
-    final int labelSpace = 2;
+    viewModel.setValidatedFieldsChangedListener(readyCallback);
+    this.viewModelChanged(viewModel);
+    syncToModel = true;
+  }
+
+  JPanel build() {
+    toggleFieldVisibility();
+
+    final JPanel contents =
+        new JPanelBuilder()
+            .border(new TitledBorder("Automatically Send Emails"))
+            .gridBagLayout()
+            .build();
     int row = 0;
-    add(
-        new JLabel("Subject:"),
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, bottomSpace, labelSpace),
-            0,
-            0));
-    add(
-        subject,
-        new GridBagConstraints(
-            1,
-            row,
-            2,
-            1,
-            1.0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(0, 0, bottomSpace, 0),
-            0,
-            0));
+
     row++;
-    add(
-        toLabel,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, bottomSpace, labelSpace),
-            0,
-            0));
-    add(
-        toAddress,
-        new GridBagConstraints(
-            1,
-            row,
-            2,
-            1,
-            1.0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(0, 0, bottomSpace, 0),
-            0,
-            0));
+    contents.add(new JLabel("Email Provider"), new GridBagConstraintsBuilder(0, row).build());
+    contents.add(emailProviderSelectionBox, new GridBagConstraintsBuilder(1, row).build());
+
     row++;
-    // add Test button on the same line as encryption
-    add(
-        testEmail,
-        new GridBagConstraints(
-            2,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, bottomSpace, 0),
-            0,
-            0));
-    testEmail.addActionListener(e -> testEmail());
+    contents.add(smtpServerLabel, new GridBagConstraintsBuilder(0, row).build());
+    contents.add(smtpServerField, new GridBagConstraintsBuilder(1, row).build());
+
     row++;
-    add(
-        alsoPostAfterCombatMove,
-        new GridBagConstraints(
-            0,
-            row,
-            2,
-            1,
-            0,
-            0,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, bottomSpace, 0),
-            0,
-            0));
-    DocumentListenerBuilder.attachDocumentListener(subject, this::checkFieldsAndNotify);
-    DocumentListenerBuilder.attachDocumentListener(toAddress, this::checkFieldsAndNotify);
+    contents.add(smtpPortLabel, new GridBagConstraintsBuilder(0, row).build());
+    contents.add(smtpPortField, new GridBagConstraintsBuilder(1, row).build());
+
+    row++;
+    contents.add(useTlsCheckBox, new GridBagConstraintsBuilder(0, row).build());
+
+    row++;
+    contents.add(toAddressLabel, new GridBagConstraintsBuilder(0, row).build());
+    contents.add(toAddressField, new GridBagConstraintsBuilder(1, row).build());
+    contents.add(testEmailButton, new GridBagConstraintsBuilder(2, row).build());
+
+    row++;
+    contents.add(new JPanel(), new GridBagConstraintsBuilder(0, row).gridWidth(2).build());
+
+    row++;
+    contents.add(subjectLabel, new GridBagConstraintsBuilder(0, row).build());
+    contents.add(subjectField, new GridBagConstraintsBuilder(1, row).build());
+
+    row++;
+    contents.add(
+        sendEmailAfterCombatMoveCheckBox,
+        new GridBagConstraintsBuilder(0, row).gridWidth(2).build());
+
+    return contents;
   }
 
-  private void checkFieldsAndNotify() {
-    final String toAddressText = toAddress.getText();
-    final boolean addressValid =
-        !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText);
-    SwingComponents.highlightLabelIfNotValid(addressValid, toLabel);
-    testEmail.setEnabled(addressValid);
-    readyCallback.run();
+  @Override
+  public void viewModelChanged(final EmailSenderEditorViewModel viewModel) {
+    syncToModel = false;
+    SwingUtilities.invokeLater(
+        () -> {
+          toggleFieldVisibility();
+          emailProviderSelectionBox.setSelectedItem(viewModel.getSelectedProvider());
+
+          SwingComponents.highlightLabelIfNotValid(viewModel.isSmtpServerValid(), smtpServerLabel);
+          if (!smtpServerField.getText().equals(viewModel.getSmtpServer())) {
+            smtpServerField.setText(viewModel.getSmtpServer());
+          }
+
+          SwingComponents.highlightLabelIfNotValid(viewModel.isSmtpPortValid(), smtpPortLabel);
+          if (!smtpPortField.getText().equals(viewModel.getSmtpPort())) {
+            smtpPortField.setText(viewModel.getSmtpPort());
+          }
+          useTlsCheckBox.setSelected(viewModel.isUseTls());
+
+          SwingComponents.highlightLabelIfNotValid(viewModel.isToAddressValid(), toAddressLabel);
+          if (!toAddressField.getText().equals(viewModel.getToAddress())) {
+            toAddressField.setText(viewModel.getToAddress());
+          }
+
+          testEmailButton.setEnabled(viewModel.isTestEmailButtonEnabled());
+
+          SwingComponents.highlightLabelIfNotValid(viewModel.isSubjectValid(), subjectLabel);
+          if (!subjectField.getText().equals(viewModel.getSubject())) {
+            subjectField.setText(viewModel.getSubject());
+          }
+
+          sendEmailAfterCombatMoveCheckBox.setSelected(viewModel.isSendEmailAfterCombatMove());
+
+          syncToModel = true;
+        });
   }
 
-  /** Tests the email sender. This must be called from the swing event thread */
-  private void testEmail() {
-    final ProgressWindow progressWindow =
-        new ProgressWindow(JOptionPane.getFrameForComponent(this), "Sending test email...");
-    progressWindow.setVisible(true);
-    new Thread(
-            () -> {
-              // initialize variables to error state, override if successful
-              String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
-              int messageType = JOptionPane.ERROR_MESSAGE;
-              try {
-                final File dummy =
-                    new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
-                dummy.deleteOnExit();
-                try (var fileOutputStream = new FileOutputStream(dummy)) {
-                  fileOutputStream.write(
-                      "This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
-                }
-                final String html =
-                    "<html><body><h1>Success</h1><p>This was a test email "
-                        + "sent by TripleA<p></body></html>";
-                newEmailSender().sendEmail("TripleA Test", html, dummy, "dummy.txt");
-                // email was sent, or an exception would have been thrown
-                message = "Email sent, it should arrive shortly, otherwise check your spam folder";
-                messageType = JOptionPane.INFORMATION_MESSAGE;
-              } catch (final IOException ioe) {
-                message =
-                    "Unable to send email, check SMTP server credentials: "
-                        + Ascii.truncate(ioe.getMessage(), 200, "...");
-                log.log(Level.SEVERE, message, ioe);
-              } finally {
-                // now that we have a result, marshall it back unto the swing thread
-                final String finalMessage = message;
-                final int finalMessageType = messageType;
-                SwingUtilities.invokeLater(
-                    () ->
-                        JOptionPane.showMessageDialog(
-                            null, finalMessage, "Email Test", finalMessageType));
-                progressWindow.setVisible(false);
-              }
-            })
-        .start();
+  private void toggleFieldVisibility() {
+    smtpServerLabel.setVisible(viewModel.showServerOptions());
+    smtpServerField.setVisible(viewModel.showServerOptions());
+    smtpPortLabel.setVisible(viewModel.showServerOptions());
+    smtpPortField.setVisible(viewModel.showServerOptions());
+    useTlsCheckBox.setVisible(viewModel.showServerOptions());
+    testEmailButton.setVisible(viewModel.showEmailOptions());
+    subjectField.setVisible(viewModel.showEmailOptions());
+    subjectLabel.setVisible(viewModel.showEmailOptions());
+    toAddressLabel.setVisible(viewModel.showEmailOptions());
+    toAddressField.setVisible(viewModel.showEmailOptions());
+    sendEmailAfterCombatMoveCheckBox.setVisible(viewModel.showEmailOptions());
   }
 
-  public void applyToGameProperties(final GameProperties properties) {
-    if (!toAddress.getText().isBlank() && PlayerEmailValidation.isValid(toAddress.getText())) {
-      properties.set(IEmailSender.SUBJECT, subject.getText());
-      properties.set(IEmailSender.RECIPIENTS, toAddress.getText());
-      properties.set(IEmailSender.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
-    }
+  void populateFromGameProperties(final GameProperties properties) {
+    viewModel.populateFromGameProperties(properties);
   }
 
-  public void populateFromGameProperties(final GameProperties properties) {
-    subject.setText(properties.get(IEmailSender.SUBJECT, ""));
-    toAddress.setText(properties.get(IEmailSender.RECIPIENTS, ""));
-    alsoPostAfterCombatMove.setSelected(properties.get(IEmailSender.POST_AFTER_COMBAT, false));
+  void applyToGameProperties(final GameProperties properties) {
+    viewModel.applyToGameProperties(properties);
   }
 
-  private IEmailSender newEmailSender() {
-    return IEmailSender.newInstance(subject.getText(), toAddress.getText());
+  boolean areFieldsValid() {
+    return viewModel.areFieldsValid();
   }
 }

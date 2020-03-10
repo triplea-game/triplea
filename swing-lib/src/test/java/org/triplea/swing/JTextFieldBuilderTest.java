@@ -1,7 +1,9 @@
 package org.triplea.swing;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextField;
+import org.awaitility.Awaitility;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
@@ -35,19 +37,21 @@ class JTextFieldBuilderTest {
   }
 
   @Test
-  void actionListener() {
+  void textListener() {
     // we will know we fired an action event if this value is incremented to 1
     final AtomicInteger value = new AtomicInteger(0);
 
     JTextFieldBuilder.builder()
-        .actionListener(fieldValue -> value.incrementAndGet())
+        .textListener(fieldValue -> value.incrementAndGet())
         .build()
         .setText("text");
 
-    MatcherAssert.assertThat(
-        "action expected to have been called and incremented our value from 0 to 1",
-        value.get(),
-        Is.is(1));
+    // Callback is buffered, we need to wait long enough for the event to be scheduled and fired.
+    // Eventually callback action is expected to have been called and incremented our value from 0
+    // to 1.
+    Awaitility.await()
+        .atMost(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2, TimeUnit.MILLISECONDS)
+        .until(() -> value.get() == 1);
   }
 
   @Test

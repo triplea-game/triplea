@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.primitives.Ints;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.TestPostAction;
@@ -15,6 +14,7 @@ import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.Postconditions;
+import org.triplea.java.StringUtils;
 import org.triplea.java.ViewModelListener;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -133,8 +133,7 @@ class ForumPosterEditorViewModel {
   }
 
   boolean isTopicIdValid() {
-    final Integer numericTopicId = Ints.tryParse(topicId);
-    return numericTopicId != null && numericTopicId > 0;
+    return StringUtils.isPositiveInt(topicId);
   }
 
   public void populateFromGameProperties(final GameProperties properties) {

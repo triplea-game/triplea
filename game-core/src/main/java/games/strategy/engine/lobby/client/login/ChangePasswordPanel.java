@@ -117,10 +117,8 @@ public final class ChangePasswordPanel extends JPanel {
 
     SwingComponents.addEnterKeyListener(this, this::close);
 
-    DocumentListenerBuilder.attachDocumentListener(
-        passwordField, () -> okButton.setEnabled(validatePasswords()));
-    DocumentListenerBuilder.attachDocumentListener(
-        passwordConfirmField, () -> okButton.setEnabled(validatePasswords()));
+    new DocumentListenerBuilder(() -> okButton.setEnabled(validatePasswords()))
+        .attachTo(passwordField, passwordConfirmField);
   }
 
   private void close() {

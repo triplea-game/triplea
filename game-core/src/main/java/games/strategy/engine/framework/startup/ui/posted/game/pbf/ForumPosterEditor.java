@@ -97,14 +97,14 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0,
             0));
 
-    DocumentListenerBuilder.attachDocumentListener(
-        topicIdField,
-        () -> {
-          viewModel.setTopicId(topicIdField.getText().trim());
-          SwingComponents.highlightLabelIfNotValid(viewModel.isTopicIdValid(), topicIdLabel);
-          viewPosts.setEnabled(viewModel.isViewForumPostButtonEnabled());
-          testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
-        });
+    new DocumentListenerBuilder(
+            () -> {
+              viewModel.setTopicId(topicIdField.getText().trim());
+              SwingComponents.highlightLabelIfNotValid(viewModel.isTopicIdValid(), topicIdLabel);
+              viewPosts.setEnabled(viewModel.isViewForumPostButtonEnabled());
+              testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
+            })
+        .attachTo(topicIdField);
     add(
         topicIdField,
         new GridBagConstraints(
@@ -152,13 +152,15 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0,
             0));
 
-    DocumentListenerBuilder.attachDocumentListener(
-        usernameField,
-        () -> {
-          viewModel.setForumUsername(usernameField.getText().trim());
-          SwingComponents.highlightLabelIfNotValid(viewModel.isForumUsernameValid(), usernameLabel);
-          testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
-        });
+    new DocumentListenerBuilder(
+            () -> {
+              viewModel.setForumUsername(usernameField.getText().trim());
+              SwingComponents.highlightLabelIfNotValid(
+                  viewModel.isForumUsernameValid(), usernameLabel);
+              testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
+            })
+        .attachTo(usernameField);
+
     add(
         usernameField,
         new GridBagConstraints(
@@ -189,13 +191,14 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             new Insets(0, 0, bottomSpace, labelSpace),
             0,
             0));
-    DocumentListenerBuilder.attachDocumentListener(
-        passwordField,
-        () -> {
-          viewModel.setForumPassword(passwordField.getPassword());
-          SwingComponents.highlightLabelIfNotValid(viewModel.isForumPasswordValid(), passwordLabel);
-          testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
-        });
+    new DocumentListenerBuilder(
+            () -> {
+              viewModel.setForumPassword(passwordField.getPassword());
+              SwingComponents.highlightLabelIfNotValid(
+                  viewModel.isForumPasswordValid(), passwordLabel);
+              testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
+            })
+        .attachTo(passwordField);
     add(
         passwordField,
         new GridBagConstraints(

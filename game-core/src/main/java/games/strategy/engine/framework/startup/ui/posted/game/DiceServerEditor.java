@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.domain.data.PlayerEmailValidation;
@@ -44,7 +45,7 @@ public class DiceServerEditor extends JPanel {
   private final Runnable readyCallback;
 
   public DiceServerEditor(final Runnable readyCallback) {
-    super(new GridBagLayout());
+    //    super(new GridBagLayout());
     this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
@@ -213,9 +214,8 @@ public class DiceServerEditor extends JPanel {
           final PbemDiceRoller random = new PbemDiceRoller(newDiceServer());
           random.test();
         });
-    DocumentListenerBuilder.attachDocumentListener(toAddress, this::checkFieldsAndNotify);
-    DocumentListenerBuilder.attachDocumentListener(ccAddress, this::checkFieldsAndNotify);
-    DocumentListenerBuilder.attachDocumentListener(gameId, this::checkFieldsAndNotify);
+
+    new DocumentListenerBuilder(this::checkFieldsAndNotify).attachTo(toAddress, ccAddress, gameId);
   }
 
   private void checkFieldsAndNotify() {
@@ -226,10 +226,8 @@ public class DiceServerEditor extends JPanel {
   public boolean areFieldsValid() {
     final boolean toValid =
         !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText());
-    SwingComponents.highlightLabelIfNotValid(toValid, toLabel);
     final boolean ccValid =
         !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText());
-    SwingComponents.highlightLabelIfNotValid(ccValid, ccLabel);
 
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
@@ -237,6 +235,12 @@ public class DiceServerEditor extends JPanel {
         allValid
             ? "Send a verified dice roll test email"
             : "First enter a valid 'to' and 'cc' email address");
+
+    SwingUtilities.invokeLater(
+        () -> {
+          SwingComponents.highlightLabelIfNotValid(toValid, toLabel);
+          SwingComponents.highlightLabelIfNotValid(ccValid, ccLabel);
+        });
     return allValid;
   }
 

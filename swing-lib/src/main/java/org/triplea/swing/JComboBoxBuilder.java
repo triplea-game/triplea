@@ -71,6 +71,10 @@ public final class JComboBoxBuilder<E> {
     return comboBox;
   }
 
+  public static JComboBoxBuilder<String> builder() {
+    return builder(String.class);
+  }
+
   public static <E> JComboBoxBuilder<E> builder(final Class<E> itemType) {
     Preconditions.checkNotNull(itemType);
     return new JComboBoxBuilder<>(itemType);

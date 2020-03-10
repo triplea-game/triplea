@@ -28,7 +28,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.triplea.swing.SwingAction;
@@ -106,9 +105,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             .insets(10, 0, 20, 0)
             .build());
 
-    final JTabbedPane tabbedPane = new JTabbedPane();
     add(
-        tabbedPane,
+        emailSenderEditor.build(),
         new GridBagConstraintsBuilder(0, row++)
             .gridWidth(1)
             .gridHeight(1)
@@ -118,7 +116,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             .fill(GridBagConstraintsFill.HORIZONTAL)
             .insets(10, 0, 20, 0)
             .build());
-    tabbedPane.addTab("Play By Email", emailSenderEditor);
 
     // add selection of local players
     add(
@@ -171,9 +168,11 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public boolean canGameStart() {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();
-    final boolean ready = diceServerValid && gameSelectorModel.getGameData() != null;
-    // make sure at least 1 player is enabled
-    return ready && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
+    final boolean emailFieldsValid = emailSenderEditor.areFieldsValid();
+    final boolean gameSelected = emailFieldsValid && gameSelectorModel.getGameData() != null;
+    final boolean atLeastOnePlayerIsEnabled =
+        playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
+    return diceServerValid && emailFieldsValid && gameSelected && atLeastOnePlayerIsEnabled;
   }
 
   @Override
