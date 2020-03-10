@@ -63,7 +63,7 @@ public final class ScreenshotExporter {
     final CompletableFuture<?> future =
         SwingComponents.runWithProgressBar(
                 frame,
-                "Saving map snapshot...",
+                "Saving picture of the gameboard...",
                 () -> {
                   save(gameData, node, file);
                   return null;
@@ -75,14 +75,14 @@ public final class ScreenshotExporter {
                           if (e == null) {
                             JOptionPane.showMessageDialog(
                                 frame,
-                                "Map Snapshot Saved",
-                                "Map Snapshot Saved",
+                                "Saved to: " + file.getAbsolutePath(),
+                                "Gameboard Picture Saved",
                                 JOptionPane.INFORMATION_MESSAGE);
                           } else {
                             JOptionPane.showMessageDialog(
                                 frame,
                                 e.getMessage(),
-                                "Error Saving Map Snapshot",
+                                "Error Saving Gameboard Picture",
                                 JOptionPane.ERROR_MESSAGE);
                           }
                         }));
