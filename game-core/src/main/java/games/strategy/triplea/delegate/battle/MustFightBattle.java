@@ -1986,6 +1986,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                           amphibiousLandAttackers),
                       gameData);
               if (attackPower == 0 && defensePower == 0) {
+                // Check if both sides have only transports remaining and are in a sea battle.
+                // See: https://github.com/triplea-game/triplea/issues/2367
+                // Rule: "In a sea battle, if both sides have only transports remaining, the
+                // attacker’s transports can remain in the contested sea zone or retreat per the
+                // rules in Condition B below, if possible.
+                if (Matches.territoryIsWater().test(battleSite)
+                    && defendingUnits.stream().allMatch(Matches.unitIsTransport())
+                    && attackingUnits.stream().allMatch(Matches.unitIsTransport())) {
+                  attackerRetreatStalemate(bridge);
+                }
                 endBattle(bridge);
                 nobodyWins(bridge);
               }
@@ -2129,7 +2139,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void attackerRetreat(final IDelegateBridge bridge) {
-    if (!canAttackerRetreat()) {
+    attackerRetreat(bridge, false);
+  }
+
+  private void attackerRetreatStalemate(final IDelegateBridge bridge) {
+    attackerRetreat(bridge, true);
+  }
+
+  private void attackerRetreat(
+      final IDelegateBridge bridge, final boolean forceAllowAttackerRetreat) {
+    if (!forceAllowAttackerRetreat && !canAttackerRetreat()) {
       return;
     }
     final Collection<Territory> possible = getAttackerRetreatTerritories();
