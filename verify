@@ -4,9 +4,7 @@ boldGreen="\e[1m\e[92m"
 normal="\e[0m"
 
 ./gradlew --parallel spotlessApply check \
-&& .travis/find-unmatched-test-packages \
-&& .travis/find-orphaned-tests \
-&& .travis/find-unused-dbunit-datasets \
-&& .travis/check-custom-style \
+&& .travis/stages/verify/code-convention-checks/run \
+&& .travis/stages/verify/find-unused-or-unmatched-tests/run \
 && echo -e "${boldGreen}SUCCESS${normal}"
 
