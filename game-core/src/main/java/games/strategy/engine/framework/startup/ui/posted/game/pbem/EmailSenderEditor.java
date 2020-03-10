@@ -178,32 +178,30 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
           emailProviderSelectionBox.setSelectedItem(viewModel.getSelectedProvider());
 
           SwingComponents.highlightLabelIfNotValid(viewModel.isSmtpServerValid(), smtpServerLabel);
-          if (!smtpServerField.getText().equals(viewModel.getSmtpServer())) {
-            smtpServerField.setText(viewModel.getSmtpServer());
-          }
+          updateTextFieldIfNeeded(smtpServerField, viewModel.getSmtpServer());
 
           SwingComponents.highlightLabelIfNotValid(viewModel.isSmtpPortValid(), smtpPortLabel);
-          if (!smtpPortField.getText().equals(viewModel.getSmtpPort())) {
-            smtpPortField.setText(viewModel.getSmtpPort());
-          }
+          updateTextFieldIfNeeded(smtpPortField, viewModel.getSmtpPort());
           useTlsCheckBox.setSelected(viewModel.isUseTls());
 
           SwingComponents.highlightLabelIfNotValid(viewModel.isToAddressValid(), toAddressLabel);
-          if (!toAddressField.getText().equals(viewModel.getToAddress())) {
-            toAddressField.setText(viewModel.getToAddress());
-          }
+          updateTextFieldIfNeeded(toAddressField, viewModel.getToAddress());
 
           testEmailButton.setEnabled(viewModel.isTestEmailButtonEnabled());
 
           SwingComponents.highlightLabelIfNotValid(viewModel.isSubjectValid(), subjectLabel);
-          if (!subjectField.getText().equals(viewModel.getSubject())) {
-            subjectField.setText(viewModel.getSubject());
-          }
+          updateTextFieldIfNeeded(subjectField, viewModel.getSubject());
 
           sendEmailAfterCombatMoveCheckBox.setSelected(viewModel.isSendEmailAfterCombatMove());
-
           syncToModel = true;
         });
+  }
+
+  private static void updateTextFieldIfNeeded(
+      final JTextField textField, final String incomingValue) {
+    if (!textField.getText().equals(incomingValue)) {
+      textField.setText(incomingValue);
+    }
   }
 
   private void toggleFieldVisibility() {
