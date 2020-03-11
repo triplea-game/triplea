@@ -415,6 +415,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
         gameHostingResponse = GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
 
+        ExitStatus.SUCCESS.addExitAction(this::cancel);
         remoteActionsListener =
             WebsocketListenerFactory.newListener(
                 lobbyUri,
@@ -425,7 +426,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                     .bannedPlayerListener(new PlayerDisconnectAction(serverMessenger, this::cancel))
                     .shutdownListener(
                         emptyStringMessage -> {
-                          cancel();
                           ExitStatus.SUCCESS.exit();
                         })
                     .build());
