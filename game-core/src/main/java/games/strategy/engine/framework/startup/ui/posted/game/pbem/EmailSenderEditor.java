@@ -38,7 +38,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
               })
           .build();
 
-  private final JLabel smtpServerLabel = new JLabel("Smtp Server");
+  private final JLabel smtpServerLabel = new JLabel("SMTP Server");
   private final JTextField smtpServerField =
       JTextFieldBuilder.builder()
           .text(viewModel.getSmtpServer())
