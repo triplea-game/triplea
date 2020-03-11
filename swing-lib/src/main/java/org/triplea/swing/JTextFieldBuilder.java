@@ -33,7 +33,8 @@ public class JTextFieldBuilder {
   private Integer columns;
   private Integer maxLength;
 
-  private Consumer<JTextComponent> textEnteredAction;
+  private Consumer<JTextComponent> actionListener;
+  private Consumer<String> textListener;
   private boolean enabled = true;
   private boolean readOnly;
 
@@ -43,11 +44,14 @@ public class JTextFieldBuilder {
 
     Optional.ofNullable(columns).ifPresent(textField::setColumns);
 
-    Optional.ofNullable(textEnteredAction)
+    Optional.ofNullable(actionListener)
+        .ifPresent(action -> textField.addActionListener(e -> action.accept(textField)));
+
+    Optional.ofNullable(textListener)
         .ifPresent(
-            action ->
-                DocumentListenerBuilder.attachDocumentListener(
-                    textField, () -> textEnteredAction.accept(textField)));
+            listener ->
+                new DocumentListenerBuilder(() -> textListener.accept(textField.getText()))
+                    .attachTo(textField));
 
     Optional.ofNullable(maxLength).map(JTextFieldLimit::new).ifPresent(textField::setDocument);
 
@@ -62,8 +66,7 @@ public class JTextFieldBuilder {
 
   /** Sets the initial value displayed on the text field. */
   public JTextFieldBuilder text(final String value) {
-    Preconditions.checkNotNull(value);
-    this.text = value;
+    this.text = Optional.ofNullable(value).orElse("");
     return this;
   }
 
@@ -126,12 +129,19 @@ public class JTextFieldBuilder {
    * Adds an action listener that is fired when the user presses enter after entering text into the
    * text field.
    *
-   * @param textEnteredAction Action to fire on 'enter', input value is the current value of the
-   *     text field.
+   * @param actionListener Action to fire on 'enter', consumed value will be a reference to text
+   *     field firing the action.
    */
-  public JTextFieldBuilder actionListener(final Consumer<JTextComponent> textEnteredAction) {
-    Preconditions.checkNotNull(textEnteredAction);
-    this.textEnteredAction = textEnteredAction;
+  public JTextFieldBuilder actionListener(final Consumer<JTextComponent> actionListener) {
+    Preconditions.checkNotNull(actionListener);
+    this.actionListener = actionListener;
+    return this;
+  }
+
+  /** Adds a listener that is fired when text data is changed. */
+  public JTextFieldBuilder textListener(final Consumer<String> textListener) {
+    Preconditions.checkNotNull(textListener);
+    this.textListener = textListener;
     return this;
   }
 
@@ -141,6 +151,11 @@ public class JTextFieldBuilder {
    */
   public JTextFieldBuilder readOnly() {
     this.readOnly = true;
+    return this;
+  }
+
+  public JTextFieldBuilder enabled(final boolean enabled) {
+    this.enabled = enabled;
     return this;
   }
 

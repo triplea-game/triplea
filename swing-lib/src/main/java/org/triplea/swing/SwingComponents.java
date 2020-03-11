@@ -3,6 +3,7 @@ package org.triplea.swing;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -93,9 +94,13 @@ public final class SwingComponents {
 
   /**
    * Returns the default text color for labels. Note, this is a dynamic value in case the look and
-   * feel is changed which could potentially change the text color of labels.
+   * feel is changed which could potentially change the foreground color of labels.
+   *
+   * @throws IllegalStateException Thrown if current thread is not EDT. We need EDT thread to allow
+   *     creation of a JLabel where we then check the current foreground color.
    */
   private static Color getDefaultLabelColor() {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     return new JLabel().getForeground();
   }
 

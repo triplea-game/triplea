@@ -173,6 +173,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   public static final ClientSetting<Boolean> unitScrollerHighlightTerritory =
       new BooleanClientSetting("UNIT_SCROLLER_HIGHLIGHT_TERRITORY", true);
+  public static final ClientSetting<String> emailProvider =
+      new StringClientSetting("EMAIL_PROVIDER");
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 

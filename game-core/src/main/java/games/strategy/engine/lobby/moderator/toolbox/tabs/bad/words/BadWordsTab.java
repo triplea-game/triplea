@@ -112,8 +112,9 @@ public final class BadWordsTab implements Supplier<Component> {
                     + " characters long")
             .build();
 
-    DocumentListenerBuilder.attachDocumentListener(
-        addField, () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
+    new DocumentListenerBuilder(
+            () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH))
+        .attachTo(addField);
 
     return new JPanelBuilder()
         .add(

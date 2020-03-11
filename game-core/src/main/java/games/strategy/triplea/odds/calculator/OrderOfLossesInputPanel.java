@@ -67,12 +67,13 @@ class OrderOfLossesInputPanel extends JPanel {
     this.attackerCategories = attackerCategories;
     this.defenderCategories = defenderCategories;
     attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
-    DocumentListenerBuilder.attachDocumentListener(
-        attackerTextField, () -> turnToRedIfNotValidOrderOfLoss(attackerTextField));
 
+    new DocumentListenerBuilder(() -> turnToRedIfNotValidOrderOfLoss(attackerTextField))
+        .attachTo(attackerTextField);
     defenderTextField = new JTextField(defenderOrder == null ? "" : defenderOrder);
-    DocumentListenerBuilder.attachDocumentListener(
-        defenderTextField, () -> turnToRedIfNotValidOrderOfLoss(defenderTextField));
+
+    new DocumentListenerBuilder(() -> turnToRedIfNotValidOrderOfLoss(defenderTextField))
+        .attachTo(defenderTextField);
 
     clear = new JButton("Clear");
     clear.addActionListener(

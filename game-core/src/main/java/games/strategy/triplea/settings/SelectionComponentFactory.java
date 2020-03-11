@@ -5,8 +5,8 @@ import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import com.google.common.base.Strings;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
+import games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailProviderPreset;
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.engine.posted.game.pbem.IEmailSender;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
@@ -609,10 +610,8 @@ final class SelectionComponentFactory {
       final ClientSetting<char[]> passwordSetting) {
     return new SelectionComponent<>() {
 
-      private final List<IEmailSender.EmailProviderSetting> knownProviders =
-          List.of(
-              new IEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
-              new IEmailSender.EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
+      private final List<EmailProviderPreset> knownProviders =
+          List.of(EmailProviderPreset.GMAIL, EmailProviderPreset.HOTMAIL);
 
       private final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 
@@ -647,21 +646,34 @@ final class SelectionComponentFactory {
                       .title("Presets...")
                       .actionListener(
                           () -> {
-                            final JComboBox<IEmailSender.EmailProviderSetting> comboBox =
-                                JComboBoxBuilder.builder(IEmailSender.EmailProviderSetting.class)
-                                    .items(knownProviders)
-                                    .build();
+                            final List<String> selections =
+                                knownProviders.stream()
+                                    .map(EmailProviderPreset::getName)
+                                    .collect(Collectors.toList());
+                            final JComboBox<String> comboBox =
+                                JComboBoxBuilder.builder().items(selections).build();
                             if (JOptionPane.showConfirmDialog(
                                     this.panel.getParent(),
                                     new JPanelBuilder().add(comboBox).build(),
                                     "Select a Preset",
                                     JOptionPane.OK_CANCEL_OPTION)
                                 == JOptionPane.OK_OPTION) {
-                              final IEmailSender.EmailProviderSetting config =
-                                  (IEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
-                              serverField.setText(config.getHost());
-                              portSpinner.setValue(config.getPort());
-                              tlsCheckBox.setSelected(config.isEncrypted());
+
+                              EmailProviderPreset.lookupByName((String) comboBox.getSelectedItem())
+                                  .ifPresent(
+                                      preset -> {
+                                        ClientSetting.emailProvider.setValue(preset.getName());
+
+                                        serverField.setText(preset.getServer());
+                                        ClientSetting.emailServerHost.setValue(preset.getServer());
+
+                                        portSpinner.setValue(preset.getPort());
+                                        ClientSetting.emailServerPort.setValue(preset.getPort());
+
+                                        tlsCheckBox.setSelected(preset.isUseTlsByDefault());
+                                        ClientSetting.emailServerSecurity.setValueAndFlush(
+                                            preset.isUseTlsByDefault());
+                                      });
                             }
                           })
                       .build())
