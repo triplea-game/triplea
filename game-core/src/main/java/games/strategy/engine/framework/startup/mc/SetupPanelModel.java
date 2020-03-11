@@ -58,8 +58,8 @@ public class SetupPanelModel implements ServerSetupModel {
    * Starts the game server and displays the game start screen afterwards, awaiting remote game
    * clients.
    */
-  public void showServer() {
-    new ServerModel(
+  public ServerModel showServer() {
+    return new ServerModel(
         gameSelectorModel,
         this,
         ui,
