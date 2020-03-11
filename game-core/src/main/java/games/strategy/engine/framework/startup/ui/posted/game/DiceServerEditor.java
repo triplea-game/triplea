@@ -45,7 +45,6 @@ public class DiceServerEditor extends JPanel {
   private final Runnable readyCallback;
 
   public DiceServerEditor(final Runnable readyCallback) {
-    //    super(new GridBagLayout());
     this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
