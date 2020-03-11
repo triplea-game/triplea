@@ -92,7 +92,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -140,7 +139,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
-import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
@@ -169,7 +167,7 @@ import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
 @Log
-public final class TripleAFrame extends JFrame implements KeyBindingSupplier, QuitHandler {
+public final class TripleAFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = 7640069668264418976L;
 
   private final LocalPlayers localPlayers;
@@ -579,7 +577,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
     final PlacePanel placePanel = actionButtons.getPlacePanel();
     rightHandSidePanel.add(placePanel.getDetachedUnitsToPlacePanel(), BorderLayout.SOUTH);
 
-    addKeyBindings(movePanel, actionButtons, this);
+    addKeyBindings(movePanel, actionButtons);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 
     addTab("Actions", actionButtons, 'C');
@@ -680,20 +678,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier, Qu
         .flatMap(Collection::stream)
         .forEach(
             binding -> SwingComponents.addKeyBinding(this, binding.getKey(), binding.getValue()));
-  }
-
-  @Override
-  public Map<KeyStroke, Runnable> get() {
-    final Map<KeyStroke, Runnable> bindings = new HashMap<>();
-    bindings.put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK),
-        () ->
-            gameCenterPanel.setDividerLocation(
-                (gameCenterPanel.getDividerLocation()
-                        <= gameCenterPanel.getMaximumDividerLocation())
-                    ? 1.0
-                    : gameCenterPanel.getLastDividerLocation()));
-    return bindings;
   }
 
   /**
