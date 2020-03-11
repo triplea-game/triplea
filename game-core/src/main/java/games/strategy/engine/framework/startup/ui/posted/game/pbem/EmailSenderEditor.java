@@ -199,6 +199,9 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
 
   private static void updateTextFieldIfNeeded(
       final JTextField textField, final String incomingValue) {
+    // avoid updating fields to the same value; setting field text
+    // resets the carat position to the end, very annoying if a user is
+    // editing text.
     if (!textField.getText().equals(incomingValue)) {
       textField.setText(incomingValue);
     }
