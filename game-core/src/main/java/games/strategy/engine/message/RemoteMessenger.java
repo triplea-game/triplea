@@ -40,7 +40,9 @@ public class RemoteMessenger implements IRemoteMessenger {
 
   @Override
   public void unregisterRemote(final String name) {
-    unifiedMessenger.removeImplementor(name, unifiedMessenger.getImplementor(name));
+    if (unifiedMessenger.hasImplementor(name)) {
+      unifiedMessenger.removeImplementor(name, unifiedMessenger.getImplementor(name));
+    }
   }
 
   @Override

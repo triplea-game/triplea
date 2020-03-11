@@ -8,6 +8,8 @@ import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -19,6 +21,7 @@ public class MainFrame {
   private static MainFrame instance;
 
   private JFrame mainFrame;
+  private final List<Runnable> quitActions = new ArrayList<>();
 
   private MainFrame(
       final SetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
@@ -34,7 +37,10 @@ public class MainFrame {
     mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     final Runnable quitAction =
-        () -> mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+        () -> {
+          quitActions.forEach(Runnable::run);
+          mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+        };
 
     mainFrame.add(
         new MainPanelBuilder(quitAction).buildMainPanel(setupPanelModel, gameSelectorModel));
@@ -61,5 +67,9 @@ public class MainFrame {
 
   public static void hide() {
     SwingUtilities.invokeLater(() -> instance.mainFrame.setVisible(false));
+  }
+
+  public static void addQuitAction(final Runnable onQuitAction) {
+    instance.quitActions.add(onQuitAction);
   }
 }

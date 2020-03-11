@@ -190,6 +190,11 @@ public class UnifiedMessenger {
     }
   }
 
+  public boolean hasImplementor(final String name) {
+    return localEndPoints.get(name) != null
+        && localEndPoints.get(name).getFirstImplementor() != null;
+  }
+
   /** Removes the specified implementor for the end point with the specified name. */
   public void removeImplementor(final String name, final Object implementor) {
     checkNotNull(implementor);

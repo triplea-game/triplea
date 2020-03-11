@@ -14,6 +14,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
+import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.MainFrame;
@@ -83,7 +84,8 @@ public final class GameRunner {
     openMapDownloadWindowIfDownloadScheduled();
 
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
-      setupPanelModel.showServer();
+      final ServerModel serverModel = setupPanelModel.showServer();
+      MainFrame.addQuitAction(serverModel::cancel);
       System.clearProperty(TRIPLEA_SERVER);
     } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
       setupPanelModel.showClient();
