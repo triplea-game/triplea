@@ -1,7 +1,7 @@
 # Number of days of inactivity before an issue becomes stale
-daysUntilStale: 90 
+daysUntilStale: 70 
 # Number of days of inactivity before a stale issue is closed
-daysUntilClose: 1 
+daysUntilClose: 0
 # Issues with these labels will never be considered stale
 exemptLabels:
   - "Problem"
@@ -10,18 +10,17 @@ exemptLabels:
 staleLabel: 'Stale'
 
 markComment: >
-  The TripleA team regrets this issue was not solved sooner. To keep focus
-  on latest issues and the most pressing tasks, 
-  this issue has been automatically marked as stale because it has not 
-  had recent activity.  If the issue may be closed, please do so. 
-  If there are remaining items, we encourage for those items to be 
-  resubmitted as new, independent, concise tasks. The strategy
-  is divide and conquer. Thank you for your contributions.
+  This issue has been automatically marked as stale because it has not
+  had recent activity. If there is something that can be done to resolve
+  this issue, please add a comment indicating what would be and this will
+  be re-opened. If there are multiple items that can be completed independently,
+  we encourage you to use the "reference in new issue" option next to any
+  outstanding comment so that we may divide and conquer.
 
 closeComment: false
 
 pulls:
-   daysUntilStale: 14 
+   daysUntilStale: 14
    markComment: >
      This pull request has been automatically marked as stale because it has not had
      recent activity. We are eager to see this work completed, please update and
