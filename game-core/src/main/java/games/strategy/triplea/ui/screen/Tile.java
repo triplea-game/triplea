@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Tile {
   public static final int TILE_SIZE = 256;
 
-  private static final ThreadLocal<Image> backImage = ThreadLocal
-      .withInitial(() -> Util.newImage(TILE_SIZE, TILE_SIZE, true));
+  private static final ThreadLocal<Image> backImage =
+      ThreadLocal.withInitial(() -> Util.newImage(TILE_SIZE, TILE_SIZE, true));
 
   private volatile boolean isDirty = true;
   private AtomicBoolean isDrawing = new AtomicBoolean(false);

@@ -49,8 +49,7 @@ public abstract class MapTileDrawable extends AbstractDrawable {
     graphics.setRenderingHint(
         RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-    graphics.drawImage(
-        img, x * Tile.TILE_SIZE - bounds.x, y * Tile.TILE_SIZE - bounds.y, null);
+    graphics.drawImage(img, x * Tile.TILE_SIZE - bounds.x, y * Tile.TILE_SIZE - bounds.y, null);
     if (oldAlphaValue == null) {
       graphics.setRenderingHint(
           RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);

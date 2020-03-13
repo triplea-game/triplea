@@ -110,11 +110,7 @@ public final class TileImageBreaker {
     for (int x = 0; x * Tile.TILE_SIZE < map.getWidth(null); x++) {
       for (int y = 0; y * Tile.TILE_SIZE < map.getHeight(null); y++) {
         final Rectangle bounds =
-            new Rectangle(
-                x * Tile.TILE_SIZE,
-                y * Tile.TILE_SIZE,
-                Tile.TILE_SIZE,
-                Tile.TILE_SIZE);
+            new Rectangle(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE);
         final GraphicsConfiguration localGraphicSystem =
             GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice()
