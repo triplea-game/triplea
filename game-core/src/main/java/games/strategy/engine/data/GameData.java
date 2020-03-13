@@ -27,7 +27,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.SwingUtilities;
 import org.triplea.io.IoUtils;
-import org.triplea.thread.LockUtil;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
@@ -60,7 +59,6 @@ import org.triplea.util.Version;
 public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-  private transient LockUtil lockUtil = LockUtil.INSTANCE;
   private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
   private Version gameVersion;
@@ -98,7 +96,6 @@ public class GameData implements Serializable {
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
-    lockUtil = LockUtil.INSTANCE;
     gameDataEventListeners = new GameDataEventListeners();
   }
 
@@ -333,14 +330,14 @@ public class GameData implements Serializable {
     if (readWriteLockMissing()) {
       return;
     }
-    lockUtil.acquireLock(readWriteLock.readLock());
+    readWriteLock.readLock().lock();
   }
 
   public void releaseReadLock() {
     if (readWriteLockMissing()) {
       return;
     }
-    lockUtil.releaseLock(readWriteLock.readLock());
+    readWriteLock.readLock().unlock();
   }
 
   /**
@@ -351,14 +348,14 @@ public class GameData implements Serializable {
     if (readWriteLockMissing()) {
       return;
     }
-    lockUtil.acquireLock(readWriteLock.writeLock());
+    readWriteLock.writeLock().lock();
   }
 
   public void releaseWriteLock() {
     if (readWriteLockMissing()) {
       return;
     }
-    lockUtil.releaseLock(readWriteLock.writeLock());
+    readWriteLock.writeLock().unlock();
   }
 
   /**
