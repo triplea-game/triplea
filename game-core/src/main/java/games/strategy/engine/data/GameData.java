@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
@@ -96,6 +97,8 @@ public class GameData implements Serializable {
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
+    // Ensure we don't deserialize into an invalid state
+    Preconditions.checkNotNull(readWriteLock, "readWriteLock must not be null!");
     gameDataEventListeners = new GameDataEventListeners();
   }
 
@@ -327,16 +330,10 @@ public class GameData implements Serializable {
    * block if the lock is held, and will be held until the release method is called
    */
   public void acquireReadLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
     readWriteLock.readLock().lock();
   }
 
   public void releaseReadLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
     readWriteLock.readLock().unlock();
   }
 
@@ -345,25 +342,11 @@ public class GameData implements Serializable {
    * block if the lock is held, and will be held until the release method is called
    */
   public void acquireWriteLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
     readWriteLock.writeLock().lock();
   }
 
   public void releaseWriteLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
     readWriteLock.writeLock().unlock();
-  }
-
-  /**
-   * Indicates whether readWriteLock is missing. This can happen in very odd circumstances while
-   * deserializing.
-   */
-  private boolean readWriteLockMissing() {
-    return readWriteLock == null;
   }
 
   public void addToAttachmentOrderAndValues(
