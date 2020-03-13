@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
@@ -59,7 +58,7 @@ import org.triplea.util.Version;
  */
 public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
-  private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+  private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
   private Version gameVersion;
@@ -96,9 +95,10 @@ public class GameData implements Serializable {
   private transient GameDataEventListeners gameDataEventListeners = new GameDataEventListeners();
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // The process of deserializing makes use of this lock,
+    // we'll get an NPE if we don't set this field here already.
+    readWriteLock = new ReentrantReadWriteLock();
     in.defaultReadObject();
-    // Ensure we don't deserialize into an invalid state
-    Preconditions.checkNotNull(readWriteLock, "readWriteLock must not be null!");
     gameDataEventListeners = new GameDataEventListeners();
   }
 
