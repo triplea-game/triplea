@@ -631,16 +631,13 @@ public class MapPanel extends ImageScrollerLargeView {
           new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
       for (final Tile tile : tileList) {
-        synchronized (tile.getMutex()) {
-          final Image img = tile.getImage(gameData, uiContext.getMapData());
-          if (img != null) {
-            g2d.drawImage(
-                img,
-                AffineTransform.getTranslateInstance(
-                    tile.getBounds().x - bounds.getX(), tile.getBounds().y - bounds.getY()),
-                this);
-          }
-        }
+        tile.drawImage(gameData, uiContext.getMapData());
+        final Image img = tile.getImage();
+        g2d.drawImage(
+            img,
+            AffineTransform.getTranslateInstance(
+                tile.getBounds().x - bounds.getX(), tile.getBounds().y - bounds.getY()),
+            this);
       }
     } finally {
       gameData.releaseReadLock();
@@ -752,7 +749,7 @@ public class MapPanel extends ImageScrollerLargeView {
                 () -> {
                   data.acquireReadLock();
                   try {
-                    tile.getImage(data, MapPanel.this.getUiContext().getMapData());
+                    tile.drawImage(data, MapPanel.this.getUiContext().getMapData());
                   } finally {
                     data.releaseReadLock();
                   }
@@ -810,23 +807,16 @@ public class MapPanel extends ImageScrollerLargeView {
       final List<Tile> undrawn) {
     g.translate(-bounds.getX(), -bounds.getY());
     for (final Tile tile : tileManager.getTiles(bounds)) {
-      synchronized (tile.getMutex()) {
-        final Image img;
-        if (tile.needsRedraw()) {
-          // take what we can get to avoid screen flicker
-          undrawn.add(tile);
-          img = tile.getRawImage();
-        } else {
-          img = tile.getImage(data, uiContext.getMapData());
-          images.add(tile);
-        }
-        if (img != null) {
-          g.drawImage(
-              img,
-              AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
-              this);
-        }
+      if (tile.needsRedraw()) {
+        // take what we can get to avoid screen flicker
+        undrawn.add(tile);
+      } else {
+        images.add(tile);
       }
+      g.drawImage(
+          tile.getImage(),
+          AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
+          this);
     }
     g.translate(bounds.getX(), bounds.getY());
   }
