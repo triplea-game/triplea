@@ -635,8 +635,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final Image img = tile.getImage();
         g2d.drawImage(
             img,
-            AffineTransform.getTranslateInstance(
-                tile.getBounds().x - bounds.getX(), tile.getBounds().y - bounds.getY()),
+            AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
             this);
       }
     } finally {
