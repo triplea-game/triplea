@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Responsible for rendering a single map tile. */
 public class Tile {
+  public static final int TILE_SIZE = 256;
   private volatile boolean isDirty = true;
   private AtomicBoolean isDrawing = new AtomicBoolean(false);
   private volatile int currentIndex = 0;
@@ -69,7 +70,7 @@ public class Tile {
     final AffineTransform original = g.getTransform();
     // clear
     g.setColor(Color.BLACK);
-    g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
+    g.fill(new Rectangle(0, 0, TILE_SIZE, TILE_SIZE));
     synchronized (mutex) {
       final Queue<IDrawable> queue = new PriorityQueue<>(contents);
       while (!queue.isEmpty()) {

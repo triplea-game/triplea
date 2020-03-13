@@ -2,7 +2,7 @@ package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import games.strategy.triplea.ui.screen.TileManager;
+import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -171,8 +171,8 @@ public final class TileImageReconstructor {
     final BufferedImage mapImage =
         localGraphicSystem.createCompatibleImage(sizeX, sizeY, Transparency.TRANSLUCENT);
     final Graphics graphics = mapImage.getGraphics();
-    for (int x = 0; x * TileManager.TILE_SIZE < sizeX; x++) {
-      for (int y = 0; y * TileManager.TILE_SIZE < sizeY; y++) {
+    for (int x = 0; x * Tile.TILE_SIZE < sizeX; x++) {
+      for (int y = 0; y * Tile.TILE_SIZE < sizeY; y++) {
         final String tileName = x + "_" + y + ".png";
         final File tileFile = new File(baseTileLocation, tileName);
         if (!tileFile.exists()) {
@@ -182,10 +182,10 @@ public final class TileImageReconstructor {
         Util.ensureImageLoaded(tile);
         final Rectangle tileBounds =
             new Rectangle(
-                x * TileManager.TILE_SIZE,
-                y * TileManager.TILE_SIZE,
-                Math.min((x * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeX),
-                Math.min((y * TileManager.TILE_SIZE) + TileManager.TILE_SIZE, sizeY));
+                x * Tile.TILE_SIZE,
+                y * Tile.TILE_SIZE,
+                Math.min((x * Tile.TILE_SIZE) + Tile.TILE_SIZE, sizeX),
+                Math.min((y * Tile.TILE_SIZE) + Tile.TILE_SIZE, sizeY));
         graphics.drawImage(
             tile,
             tileBounds.x,
