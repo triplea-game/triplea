@@ -21,9 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Tile {
   public static final int TILE_SIZE = 256;
 
-  private static final ThreadLocal<Image> backImage =
-      ThreadLocal.withInitial(() -> Util.newImage(TILE_SIZE, TILE_SIZE, true));
-
   private volatile boolean isDirty = true;
   private AtomicBoolean isDrawing = new AtomicBoolean(false);
 
@@ -43,7 +40,8 @@ public class Tile {
   /** Returns the image representing this tile, re-rendering it first if the tile is dirty. */
   public void drawImage(final GameData data, final MapData mapData) {
     if (isDirty && !isDrawing.getAndSet(true)) {
-      final Graphics2D g = (Graphics2D) backImage.get().getGraphics();
+      final Image backImage = Util.newImage(TILE_SIZE, TILE_SIZE, true);
+      final Graphics2D g = (Graphics2D) backImage.getGraphics();
       g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       g.setRenderingHint(
           RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -53,9 +51,7 @@ public class Tile {
           RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
       draw(g, data, mapData);
       g.dispose();
-      final Image currentImage = image;
-      image = backImage.get();
-      backImage.set(currentImage);
+      image = backImage;
       isDrawing.set(false);
     }
   }
