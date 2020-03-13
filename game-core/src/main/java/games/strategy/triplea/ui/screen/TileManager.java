@@ -46,10 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-import org.triplea.thread.LockUtil;
 import org.triplea.util.Tuple;
 
 /** Orchestrates the rendering of all map tiles. */
@@ -57,7 +54,7 @@ public class TileManager {
   public static final int TILE_SIZE = 256;
 
   private List<Tile> tiles = new ArrayList<>();
-  private final Lock lock = new ReentrantLock();
+  private final Object mutex = new Object();
   private final Map<String, IDrawable> territoryOverlays = new HashMap<>();
   private final Map<String, Set<IDrawable>> territoryDrawables = new HashMap<>();
   private final Map<String, Set<Tile>> territoryTiles = new HashMap<>();
@@ -121,8 +118,7 @@ public class TileManager {
                 (int) bounds.getHeight());
       }
     }
-    acquireLock();
-    try {
+    synchronized (mutex) {
       final List<Tile> tilesInBounds = new ArrayList<>();
       for (final Tile tile : tiles) {
         final Rectangle tileBounds = tile.getBounds();
@@ -147,32 +143,18 @@ public class TileManager {
         }
       }
       return tilesInBounds;
-    } finally {
-      releaseLock();
     }
   }
 
-  private void acquireLock() {
-    LockUtil.INSTANCE.acquireLock(lock);
-  }
-
-  private void releaseLock() {
-    LockUtil.INSTANCE.releaseLock(lock);
-  }
-
   Collection<UnitsDrawer> getUnitDrawables() {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       return new ArrayList<>(allUnitDrawables);
-    } finally {
-      releaseLock();
     }
   }
 
   /** Clears all existing tiles and creates those tiles that intersect {@code bounds}. */
   public void createTiles(final Rectangle bounds) {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       // create our tiles
       tiles = new ArrayList<>();
       for (int x = 0; x * TILE_SIZE < bounds.width; x++) {
@@ -180,8 +162,6 @@ public class TileManager {
           tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)));
         }
       }
-    } finally {
-      releaseLock();
     }
   }
 
@@ -189,8 +169,7 @@ public class TileManager {
   public void resetTiles(final GameData data, final MapData mapData) {
     data.acquireReadLock();
     try {
-      acquireLock();
-      try {
+      synchronized (mutex) {
         for (final Tile tile : tiles) {
           tile.clear();
           final int x = tile.getBounds().x / TILE_SIZE;
@@ -215,8 +194,6 @@ public class TileManager {
             }
           }
         }
-      } finally {
-        releaseLock();
       }
     } finally {
       data.releaseReadLock();
@@ -228,16 +205,13 @@ public class TileManager {
       final Collection<Territory> territories, final GameData data, final MapData mapData) {
     data.acquireReadLock();
     try {
-      acquireLock();
-      try {
+      synchronized (mutex) {
         if (territories == null) {
           return;
         }
         for (final Territory territory : territories) {
           updateTerritory(territory, data, mapData);
         }
-      } finally {
-        releaseLock();
       }
     } finally {
       data.releaseReadLock();
@@ -248,12 +222,9 @@ public class TileManager {
       final Territory territory, final GameData data, final MapData mapData) {
     data.acquireReadLock();
     try {
-      acquireLock();
-      try {
+      synchronized (mutex) {
         clearTerritory(territory);
         drawTerritory(territory, data, mapData);
-      } finally {
-        releaseLock();
       }
     } finally {
       data.releaseReadLock();
@@ -409,8 +380,7 @@ public class TileManager {
       final GameData data,
       final MapData mapData,
       final boolean drawOutline) {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       // make a square
       final Rectangle bounds = mapData.getBoundingRect(focusOn);
       int squareLength = Math.max(bounds.width, bounds.height);
@@ -487,8 +457,6 @@ public class TileManager {
       }
       graphics.dispose();
       return territoryImage;
-    } finally {
-      releaseLock();
     }
   }
 
@@ -538,8 +506,7 @@ public class TileManager {
     }
     data.acquireReadLock();
     try {
-      acquireLock();
-      try {
+      synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           final List<Unit> drawerUnits = drawer.getUnits(data).getSecond();
           if (!drawerUnits.isEmpty() && units.containsAll(drawerUnits)) {
@@ -552,8 +519,6 @@ public class TileManager {
           }
         }
         return null;
-      } finally {
-        releaseLock();
       }
     } finally {
       data.releaseReadLock();
@@ -568,8 +533,7 @@ public class TileManager {
       final double x, final double y, final GameData gameData) {
     gameData.acquireReadLock();
     try {
-      acquireLock();
-      try {
+      synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           final Point placementPoint = drawer.getPlacementPoint();
           if (x > placementPoint.x
@@ -581,8 +545,6 @@ public class TileManager {
           }
         }
         return null;
-      } finally {
-        releaseLock();
       }
     } finally {
       gameData.releaseReadLock();
@@ -595,37 +557,28 @@ public class TileManager {
       final int alpha,
       final GameData data,
       final MapData mapData) {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       final IDrawable drawable =
           new TerritoryOverLayDrawable(color, territory.getName(), alpha, Operation.DRAW);
       territoryOverlays.put(territory.getName(), drawable);
-    } finally {
-      releaseLock();
     }
     updateTerritory(territory, data, mapData);
   }
 
   public void setTerritoryOverlayForBorder(
       final Territory territory, final Color color, final GameData data, final MapData mapData) {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       final IDrawable drawable =
           new TerritoryOverLayDrawable(color, territory.getName(), Operation.DRAW);
       territoryOverlays.put(territory.getName(), drawable);
-    } finally {
-      releaseLock();
     }
     updateTerritory(territory, data, mapData);
   }
 
   public void clearTerritoryOverlay(
       final Territory territory, final GameData data, final MapData mapData) {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       territoryOverlays.remove(territory.getName());
-    } finally {
-      releaseLock();
     }
     updateTerritory(territory, data, mapData);
   }
