@@ -1,7 +1,7 @@
 # Number of days of inactivity before an issue becomes stale
-daysUntilStale: 70 
+daysUntilStale: 30
 # Number of days of inactivity before a stale issue is closed
-daysUntilClose: 0
+daysUntilClose: 30
 # Issues with these labels will never be considered stale
 exemptLabels:
   - "Problem"
@@ -12,7 +12,7 @@ staleLabel: 'Stale'
 markComment: >
   This issue has been automatically marked as stale because it has not
   had recent activity. If there is something that can be done to resolve
-  this issue, please add a comment indicating what would be and this will
+  this issue, please add a comment indicating what that would be and this issue will
   be re-opened. If there are multiple items that can be completed independently,
   we encourage you to use the "reference in new issue" option next to any
   outstanding comment so that we may divide and conquer.
