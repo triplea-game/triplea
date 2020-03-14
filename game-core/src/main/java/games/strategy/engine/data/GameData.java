@@ -58,7 +58,7 @@ import org.triplea.util.Version;
  */
 public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
-  private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+  private transient ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
   private Version gameVersion;
