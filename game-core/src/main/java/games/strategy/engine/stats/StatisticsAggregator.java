@@ -21,17 +21,17 @@ import lombok.extern.java.Log;
 @Log
 @RequiredArgsConstructor
 public class StatisticsAggregator {
-  private final Statistics underConstruction = new Statistics();
-  private final GameData game;
   private static final Map<OverTimeStatisticType, IStat> defaultStatisticsMapping =
       Map.of(
           OverTimeStatisticType.PredefinedStatistics.TUV, new TuvStat(),
           OverTimeStatisticType.PredefinedStatistics.PRODUCTION, new ProductionStat(),
           OverTimeStatisticType.PredefinedStatistics.UNITS, new UnitsStat(),
           OverTimeStatisticType.PredefinedStatistics.VC, new VictoryCityStat());
+  private final Statistics underConstruction = new Statistics();
+  private final GameData game;
 
   private static Map<OverTimeStatisticType, IStat> createOverTimeStatisticsMapping(
-      List<Resource> resources) {
+      final List<Resource> resources) {
     final Map<OverTimeStatisticType, IStat> statisticsMapping =
         new HashMap<>(defaultStatisticsMapping);
     resources.forEach(
@@ -52,7 +52,7 @@ public class StatisticsAggregator {
         createOverTimeStatisticsMapping(game.getResourceList().getResources());
     {
       // initialize over time statistics
-      for (OverTimeStatisticType type : overTimeStatisticSources.keySet()) {
+      for (final OverTimeStatisticType type : overTimeStatisticSources.keySet()) {
         underConstruction.getOverTimeStatistics().put(type, HashBasedTable.create());
       }
     }
@@ -66,10 +66,10 @@ public class StatisticsAggregator {
   }
 
   private void collectOverTimeStatisticsForRound(
-      Map<OverTimeStatisticType, IStat> overTimeStatisticSources,
-      List<GamePlayer> players,
-      List<String> alliances,
-      Round round) {
+      final Map<OverTimeStatisticType, IStat> overTimeStatisticSources,
+      final List<GamePlayer> players,
+      final List<String> alliances,
+      final Round round) {
     for (final GamePlayer player : players) {
       overTimeStatisticSources.forEach(
           (type, source) ->

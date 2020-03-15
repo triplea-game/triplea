@@ -9,7 +9,7 @@ public interface OverTimeStatisticType {
 
   String getAxisLabel();
 
-  @Getter
+  @Getter(onMethod_ = @Override)
   @RequiredArgsConstructor
   enum PredefinedStatistics implements OverTimeStatisticType {
     TUV("TUV", "TUV"),
