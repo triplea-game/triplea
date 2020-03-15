@@ -2,8 +2,8 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteActionCode;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /** Chat messages occur on this channel. */
 public interface IChatChannel extends IChannelSubscriber {

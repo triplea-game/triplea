@@ -1,9 +1,9 @@
 package org.triplea.server.lobby.chat;
 
 import java.util.function.Function;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.lobby.server.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.lobby.server.db.data.UserRole;
 

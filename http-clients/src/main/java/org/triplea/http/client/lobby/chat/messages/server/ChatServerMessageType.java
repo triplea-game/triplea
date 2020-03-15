@@ -4,9 +4,9 @@ import static org.triplea.http.client.web.socket.messages.MessageTypeListenerBin
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.MessageTypeListenerBinding;
 import org.triplea.http.client.web.socket.messages.WebsocketMessageType;
 

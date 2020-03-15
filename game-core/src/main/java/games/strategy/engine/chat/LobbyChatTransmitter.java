@@ -3,9 +3,9 @@ package games.strategy.engine.chat;
 import games.strategy.engine.lobby.client.LobbyClient;
 import java.util.Collection;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.LobbyChatClient;
 
 /**

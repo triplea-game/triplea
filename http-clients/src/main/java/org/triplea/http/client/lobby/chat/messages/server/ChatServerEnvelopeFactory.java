@@ -2,8 +2,8 @@ package org.triplea.http.client.lobby.chat.messages.server;
 
 import java.util.List;
 import lombok.experimental.UtilityClass;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 @UtilityClass

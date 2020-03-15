@@ -6,8 +6,8 @@ import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 class ChatServerEnvelopeFactoryTest {

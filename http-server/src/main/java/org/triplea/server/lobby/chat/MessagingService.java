@@ -10,7 +10,7 @@ import javax.websocket.Session;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;

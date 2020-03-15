@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.chat;
+package org.triplea.domain.data;
 
 import com.google.common.base.Strings;
 import java.io.Serializable;
@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.UserName;
 
 @Builder
 @Getter
