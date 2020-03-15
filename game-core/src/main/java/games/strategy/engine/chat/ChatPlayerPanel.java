@@ -26,8 +26,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 import org.triplea.swing.SwingAction;
 

@@ -21,7 +21,7 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import lombok.Getter;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.JFrameBuilder;
 

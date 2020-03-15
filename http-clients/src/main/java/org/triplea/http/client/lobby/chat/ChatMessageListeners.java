@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.ChatterList;

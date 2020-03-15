@@ -19,10 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 @ExtendWith(MockitoExtension.class)
 class ChatServerMessageTypeTest {

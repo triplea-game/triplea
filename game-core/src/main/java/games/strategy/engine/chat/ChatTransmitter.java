@@ -1,8 +1,8 @@
 package games.strategy.engine.chat;
 
 import java.util.Collection;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /**
  * Interface to represent 'send' actions from a chat client to server. This interface can be used to

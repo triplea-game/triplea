@@ -16,8 +16,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatParticipant;
 
 /** Default implementation of {@link IChatController}. */
 @Log
