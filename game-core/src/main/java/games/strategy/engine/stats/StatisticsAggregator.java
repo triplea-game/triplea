@@ -48,36 +48,43 @@ public class StatisticsAggregator {
   }
 
   private void collectOverTimeStatistics() {
-    final List<GamePlayer> players = game.getPlayerList().getPlayers();
-    final List<String> alliances = new ArrayList<>(game.getAllianceTracker().getAlliances());
-
-    final Map<OverTimeStatisticType, IStat> overTimeStatisticToSource =
+    final Map<OverTimeStatisticType, IStat> overTimeStatisticSources =
         createOverTimeStatisticsMapping(game.getResourceList().getResources());
     {
       // initialize over time statistics
-      for (OverTimeStatisticType type : overTimeStatisticToSource.keySet()) {
+      for (OverTimeStatisticType type : overTimeStatisticSources.keySet()) {
         underConstruction.getOverTimeStatistics().put(type, HashBasedTable.create());
       }
     }
 
+    final List<GamePlayer> players = game.getPlayerList().getPlayers();
+    final List<String> alliances = new ArrayList<>(game.getAllianceTracker().getAlliances());
     for (final Round round : getRounds()) {
       game.getHistory().gotoNode(round);
-      for (final GamePlayer player : players) {
-        overTimeStatisticToSource.forEach(
-            (type, source) ->
-                underConstruction
-                    .getOverTimeStatistics()
-                    .get(type)
-                    .put(player.getName(), round, source.getValue(player, game)));
-      }
-      for (final String alliance : alliances) {
-        overTimeStatisticToSource.forEach(
-            (type, source) ->
-                underConstruction
-                    .getOverTimeStatistics()
-                    .get(type)
-                    .put(alliance, round, source.getValue(alliance, game)));
-      }
+      collectOverTimeStatisticsForRound(overTimeStatisticSources, players, alliances, round);
+    }
+  }
+
+  private void collectOverTimeStatisticsForRound(
+      Map<OverTimeStatisticType, IStat> overTimeStatisticSources,
+      List<GamePlayer> players,
+      List<String> alliances,
+      Round round) {
+    for (final GamePlayer player : players) {
+      overTimeStatisticSources.forEach(
+          (type, source) ->
+              underConstruction
+                  .getOverTimeStatistics()
+                  .get(type)
+                  .put(player.getName(), round, source.getValue(player, game)));
+    }
+    for (final String alliance : alliances) {
+      overTimeStatisticSources.forEach(
+          (type, source) ->
+              underConstruction
+                  .getOverTimeStatistics()
+                  .get(type)
+                  .put(alliance, round, source.getValue(alliance, game)));
     }
   }
 
