@@ -27,7 +27,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.SwingUtilities;
 import org.triplea.io.IoUtils;
-import org.triplea.thread.LockUtil;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
@@ -59,8 +58,7 @@ import org.triplea.util.Version;
  */
 public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
-  private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-  private transient LockUtil lockUtil = LockUtil.INSTANCE;
+  private transient ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
   private Version gameVersion;
@@ -97,8 +95,10 @@ public class GameData implements Serializable {
   private transient GameDataEventListeners gameDataEventListeners = new GameDataEventListeners();
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // The process of deserializing makes use of this lock,
+    // we'll get an NPE if we don't set this field here already.
+    readWriteLock = new ReentrantReadWriteLock();
     in.defaultReadObject();
-    lockUtil = LockUtil.INSTANCE;
     gameDataEventListeners = new GameDataEventListeners();
   }
 
@@ -330,17 +330,11 @@ public class GameData implements Serializable {
    * block if the lock is held, and will be held until the release method is called
    */
   public void acquireReadLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
-    lockUtil.acquireLock(readWriteLock.readLock());
+    readWriteLock.readLock().lock();
   }
 
   public void releaseReadLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
-    lockUtil.releaseLock(readWriteLock.readLock());
+    readWriteLock.readLock().unlock();
   }
 
   /**
@@ -348,25 +342,11 @@ public class GameData implements Serializable {
    * block if the lock is held, and will be held until the release method is called
    */
   public void acquireWriteLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
-    lockUtil.acquireLock(readWriteLock.writeLock());
+    readWriteLock.writeLock().lock();
   }
 
   public void releaseWriteLock() {
-    if (readWriteLockMissing()) {
-      return;
-    }
-    lockUtil.releaseLock(readWriteLock.writeLock());
-  }
-
-  /**
-   * Indicates whether readWriteLock is missing. This can happen in very odd circumstances while
-   * deserializing.
-   */
-  private boolean readWriteLockMissing() {
-    return readWriteLock == null;
+    readWriteLock.writeLock().unlock();
   }
 
   public void addToAttachmentOrderAndValues(

@@ -15,9 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import org.triplea.thread.LockUtil;
 
 /** Responsible for rendering a single map tile. */
 public class Tile {
@@ -26,7 +23,7 @@ public class Tile {
 
   private final Image image;
   private final Rectangle bounds;
-  private final Lock lock = new ReentrantLock();
+  private final Object mutex = new Object();
   private final Queue<IDrawable> contents = new PriorityQueue<>();
 
   Tile(final Rectangle bounds) {
@@ -38,19 +35,19 @@ public class Tile {
     return isDirty && !isDrawing;
   }
 
-  public void acquireLock() {
-    LockUtil.INSTANCE.acquireLock(lock);
-  }
-
-  public void releaseLock() {
-    LockUtil.INSTANCE.releaseLock(lock);
+  /**
+   * Because our Tile-rendering system doesn't use something like "double buffers" on a higher level
+   * (the swing components support it internally, but we don't draw in batch) we expose this
+   * internal mutex to prevent tiles being drawn mid-refresh.
+   */
+  public Object getMutex() {
+    return mutex;
   }
 
   /** Returns the image representing this tile, re-rendering it first if the tile is dirty. */
   public Image getImage(final GameData data, final MapData mapData) {
     if (isDirty) {
-      acquireLock();
-      try {
+      synchronized (mutex) {
         isDrawing = true;
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -64,8 +61,6 @@ public class Tile {
         draw(g, data, mapData);
         g.dispose();
         isDrawing = false;
-      } finally {
-        releaseLock();
       }
     }
     return image;
@@ -77,11 +72,8 @@ public class Tile {
    * @return the image we currently have.
    */
   public Image getRawImage() {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       return image;
-    } finally {
-      releaseLock();
     }
   }
 
@@ -104,41 +96,29 @@ public class Tile {
   }
 
   void addDrawable(final IDrawable d) {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       contents.add(d);
       isDirty = true;
-    } finally {
-      releaseLock();
     }
   }
 
   void removeDrawables(final Collection<IDrawable> c) {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       contents.removeAll(c);
       isDirty = true;
-    } finally {
-      releaseLock();
     }
   }
 
   void clear() {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       contents.clear();
       isDirty = true;
-    } finally {
-      releaseLock();
     }
   }
 
   List<IDrawable> getDrawables() {
-    acquireLock();
-    try {
+    synchronized (mutex) {
       return new ArrayList<>(contents);
-    } finally {
-      releaseLock();
     }
   }
 
