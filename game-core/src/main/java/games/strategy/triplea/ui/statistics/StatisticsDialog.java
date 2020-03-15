@@ -37,7 +37,7 @@ public class StatisticsDialog extends JPanel {
         .getOverTimeStatistics()
         .forEach(
             (key, value) ->
-                overTimeCharts.add(new OverTimeChart(key.getName(), key.getXAxisLabel(), value)));
+                overTimeCharts.add(new OverTimeChart(key.getName(), key.getAxisLabel(), value)));
 
     final JTabbedPaneBuilder tabbedPane = JTabbedPaneBuilder.builder();
     for (final OverTimeChart chartData : overTimeCharts) {

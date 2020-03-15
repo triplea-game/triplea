@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 public interface OverTimeStatisticType {
   String getName();
 
-  String getXAxisLabel();
+  String getAxisLabel();
 
   @Getter
   @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public interface OverTimeStatisticType {
     VC("VC", "Victory Cities");
 
     private final String name;
-    private final String xAxisLabel;
+    private final String axisLabel;
   }
 
   @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public interface OverTimeStatisticType {
     }
 
     @Override
-    public String getXAxisLabel() {
+    public String getAxisLabel() {
       return String.format("%ss", resource.getName());
     }
   }
