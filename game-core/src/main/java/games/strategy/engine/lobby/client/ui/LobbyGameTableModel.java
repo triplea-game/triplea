@@ -1,25 +1,21 @@
 package games.strategy.engine.lobby.client.ui;
 
 import com.google.common.annotations.VisibleForTesting;
-import feign.FeignException;
+import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
-import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.LobbyGameUpdateListener;
-import org.triplea.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
@@ -40,15 +36,13 @@ class LobbyGameTableModel extends AbstractTableModel {
   private final boolean admin;
 
   // these must only be accessed in the swing event thread
-  private final List<Tuple<String, GameDescription>> gameList = new CopyOnWriteArrayList<>();
-  private final GameListingClient gameListingClient;
+  private final List<LobbyGameListing> gameList = new CopyOnWriteArrayList<>();
+  private final PlayerToLobbyConnection playerToLobbyConnection;
   private final LobbyGameUpdateListener lobbyGameBroadcaster =
       new LobbyGameUpdateListener() {
         @Override
         public void gameUpdated(final LobbyGameListing lobbyGameListing) {
-          updateGame(
-              lobbyGameListing.getGameId(),
-              GameDescription.fromLobbyGame(lobbyGameListing.getLobbyGame()));
+          updateGame(lobbyGameListing);
         }
 
         @Override
@@ -57,40 +51,15 @@ class LobbyGameTableModel extends AbstractTableModel {
         }
       };
 
-  LobbyGameTableModel(final boolean admin, final HttpLobbyClient httpLobbyClient) {
+  LobbyGameTableModel(final boolean admin, final PlayerToLobbyConnection playerToLobbyConnection) {
     this.admin = admin;
-    gameListingClient =
-        httpLobbyClient.newGameListingClient(
-            GameListingListeners.builder()
-                .gameUpdated(lobbyGameBroadcaster::gameUpdated)
-                .gameRemoved(lobbyGameBroadcaster::gameRemoved)
-                .build());
+    this.playerToLobbyConnection = playerToLobbyConnection;
 
-    gameListingClient.fetchGameListing().forEach(lobbyGameBroadcaster::gameUpdated);
-
-    httpLobbyClient.addConnectionClosedListener(gameListingClient::close);
-
-    try {
-      final Map<String, GameDescription> games =
-          gameListingClient.fetchGameListing().stream()
-              .collect(
-                  Collectors.toMap(LobbyGameListing::getGameId, GameDescription::fromLobbyGame));
-
-      for (final Map.Entry<String, GameDescription> entry : games.entrySet()) {
-        updateGame(entry.getKey(), entry.getValue());
-      }
-    } catch (final FeignException e) {
-      throw new CouldNotConnectToLobby(e);
-    }
-  }
-
-  private static class CouldNotConnectToLobby extends RuntimeException {
-    private static final long serialVersionUID = -651924799081225628L;
-
-    CouldNotConnectToLobby(final FeignException e) {
-      // TODO: Project#12 add up-time-robot link and/or link to report this error.
-      super(e.getMessage(), e);
-    }
+    playerToLobbyConnection.addGameListingListener(
+        GameListingListeners.builder()
+            .gameUpdated(lobbyGameBroadcaster::gameUpdated)
+            .gameRemoved(lobbyGameBroadcaster::gameRemoved)
+            .build());
   }
 
   private void removeGame(final String gameId) {
@@ -100,7 +69,7 @@ class LobbyGameTableModel extends AbstractTableModel {
             return;
           }
 
-          final Tuple<String, GameDescription> gameToRemove = findGame(gameId);
+          final LobbyGameListing gameToRemove = findGame(gameId);
           if (gameToRemove != null) {
             final int index = gameList.indexOf(gameToRemove);
             gameList.remove(gameToRemove);
@@ -109,9 +78,9 @@ class LobbyGameTableModel extends AbstractTableModel {
         });
   }
 
-  private Tuple<String, GameDescription> findGame(final String gameId) {
+  private LobbyGameListing findGame(final String gameId) {
     return gameList.stream()
-        .filter(game -> game.getFirst().equals(gameId))
+        .filter(game -> game.getGameId().equals(gameId))
         .findFirst()
         .orElse(null);
   }
@@ -122,23 +91,23 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   GameDescription get(final int i) {
-    return gameList.get(i).getSecond();
+    return GameDescription.fromLobbyGame(gameList.get(i).getLobbyGame());
   }
 
   String getGameIdForRow(final int i) {
-    return gameList.get(i).getFirst();
+    return gameList.get(i).getGameId();
   }
 
-  private void updateGame(final String gameId, final GameDescription description) {
+  private void updateGame(final LobbyGameListing lobbyGameListing) {
     SwingUtilities.invokeLater(
         () -> {
-          final Tuple<String, GameDescription> toReplace = findGame(gameId);
+          final LobbyGameListing toReplace = findGame(lobbyGameListing.getGameId());
           if (toReplace == null) {
-            gameList.add(Tuple.of(gameId, description));
+            gameList.add(lobbyGameListing);
             fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
           } else {
             final int replaceIndex = gameList.indexOf(toReplace);
-            gameList.set(replaceIndex, Tuple.of(gameId, description));
+            gameList.set(replaceIndex, lobbyGameListing);
             fireTableRowsUpdated(replaceIndex, replaceIndex);
           }
         });
@@ -169,36 +138,37 @@ class LobbyGameTableModel extends AbstractTableModel {
   @Override
   public Object getValueAt(final int rowIndex, final int columnIndex) {
     final Column column = Column.values()[columnIndex];
-    final GameDescription description = gameList.get(rowIndex).getSecond();
+    final LobbyGame description = gameList.get(rowIndex).getLobbyGame();
     switch (column) {
       case Host:
         return description.getHostName();
       case Round:
-        final int round = description.getRound();
+        final int round = description.getGameRound();
         return round == 0 ? "-" : String.valueOf(round);
       case Name:
-        return description.getGameName();
+        return description.getMapName();
       case Players:
         return description.getPlayerCount();
       case P:
-        return (description.isPassworded() ? "*" : "");
+        return (description.getPassworded() ? "*" : "");
       case GV:
-        return description.getGameVersion();
+        return description.getMapVersion();
       case Status:
         return description.getStatus();
       case Comments:
-        return description.getComment();
+        return description.getComments();
       case Started:
-        return formatBotStartTime(description.getStartDateTime());
+        return formatBotStartTime(description.getEpochMilliTimeStarted());
       case UUID:
-        return gameList.get(rowIndex).getFirst();
+        return gameList.get(rowIndex).getGameId();
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
   }
 
   @VisibleForTesting
-  static String formatBotStartTime(final Instant instant) {
+  static String formatBotStartTime(final long milliEpoch) {
+    final var instant = Instant.ofEpochMilli(milliEpoch);
     return new DateTimeFormatterBuilder()
         .appendLocalized(null, FormatStyle.SHORT)
         .toFormatter()
@@ -206,11 +176,11 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   public void shutdown() {
-    gameListingClient.close();
+    playerToLobbyConnection.close();
   }
 
   public void bootGame(final int selectedIndex) {
     final String gameId = getGameIdForRow(selectedIndex);
-    gameListingClient.bootGame(gameId);
+    playerToLobbyConnection.bootGame(gameId);
   }
 }

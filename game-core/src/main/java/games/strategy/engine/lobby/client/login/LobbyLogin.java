@@ -6,6 +6,7 @@ import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.triplea.UrlConstants;
 import java.awt.Window;
 import java.io.IOException;
@@ -17,7 +18,6 @@ import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
-import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
@@ -78,7 +78,7 @@ public class LobbyLogin {
                   final boolean passwordChanged =
                       ChangePasswordPanel.doPasswordChange(
                           lobbyFrame,
-                          lobbyClient.getHttpLobbyClient(),
+                          lobbyClient.getPlayerToLobbyConnection(),
                           ChangePasswordPanel.AllowCancelMode.DO_NOT_SHOW_CANCEL_BUTTON);
 
                   if (passwordChanged) {
@@ -120,11 +120,9 @@ public class LobbyLogin {
       if (loginResponse.getFailReason() == null) {
         return Optional.of(
             LobbyClient.builder()
-                .httpLobbyClient(
-                    HttpLobbyClient.newClient(
-                        serverProperties.getUri(),
-                        ApiKey.of(loginResponse.getApiKey()),
-                        error -> showError("Connection problem", error)))
+                .playerToLobbyConnection(
+                    new PlayerToLobbyConnection(
+                        serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())))
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .moderator(loginResponse.isModerator())
@@ -175,10 +173,10 @@ public class LobbyLogin {
       case OK:
         return createAccount(createAccountPanel)
             .map(
-                httpLobbyClient ->
+                playerToLobbyConnection ->
                     LobbyClient.builder()
                         .userName(UserName.of(createAccountPanel.getUsername()))
-                        .httpLobbyClient(httpLobbyClient)
+                        .playerToLobbyConnection(playerToLobbyConnection)
                         .build());
       case CANCEL:
         return Optional.empty();
@@ -187,7 +185,7 @@ public class LobbyLogin {
     }
   }
 
-  private Optional<HttpLobbyClient> createAccount(final CreateAccountPanel panel) {
+  private Optional<PlayerToLobbyConnection> createAccount(final CreateAccountPanel panel) {
     try {
       final CreateAccountResponse createAccountResponse =
           BackgroundTaskRunner.runInBackgroundAndReturn(
@@ -209,10 +207,8 @@ public class LobbyLogin {
         throw new LoginFailure(loginResponse.getFailReason());
       }
       return Optional.of(
-          HttpLobbyClient.newClient(
-              serverProperties.getUri(),
-              ApiKey.of(loginResponse.getApiKey()),
-              error -> showError("Connection problem", error)));
+          new PlayerToLobbyConnection(
+              serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();

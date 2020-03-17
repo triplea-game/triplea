@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.ui.Util;
 import java.awt.Window;
 import java.util.function.Consumer;
@@ -12,7 +13,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.triplea.domain.data.PlayerEmailValidation;
-import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
@@ -95,15 +95,15 @@ public final class ChangeEmailPanel {
 
   /** Shows a dialog to user to update password. */
   public static void promptUserForNewEmail(
-      final Window parent, final HttpLobbyClient httpLobbyClient) {
+      final Window parent, final PlayerToLobbyConnection playerToLobbyConnection) {
 
-    final String existingUserEmail = httpLobbyClient.getUserAccountClient().fetchEmail();
+    final String existingUserEmail = playerToLobbyConnection.fetchEmail();
 
     final JDialog dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "", true);
 
     final Consumer<String> submitAction =
         newEmail -> {
-          httpLobbyClient.getUserAccountClient().changeEmail(newEmail);
+          playerToLobbyConnection.changeEmail(newEmail);
           DialogBuilder.builder()
               .parent(parent)
               .title("Success")

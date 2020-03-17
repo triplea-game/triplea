@@ -37,7 +37,9 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     setIconImage(JFrameBuilder.getGameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
-    final ChatTransmitter chatTransmitter = new LobbyChatTransmitter(lobbyClient);
+    final ChatTransmitter chatTransmitter =
+        new LobbyChatTransmitter(
+            lobbyClient.getPlayerToLobbyConnection(), lobbyClient.getUserName());
     final Chat chat = new Chat(chatTransmitter);
     final ChatMessagePanel chatMessagePanel = new ChatMessagePanel(chat, ChatSoundProfile.LOBBY);
     chatMessagePanel.addServerMessage(serverProperties.getMessage());
@@ -46,7 +48,8 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     chatPlayers.addActionFactory(this::newModeratorActions);
 
     final LobbyGameTableModel tableModel =
-        new LobbyGameTableModel(lobbyClient.isModerator(), lobbyClient.getHttpLobbyClient());
+        new LobbyGameTableModel(
+            lobbyClient.isModerator(), lobbyClient.getPlayerToLobbyConnection());
     final LobbyGamePanel gamePanel =
         new LobbyGamePanel(lobbyClient, serverProperties.getUri(), tableModel);
 
@@ -67,8 +70,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
     lobbyClient
-        .getHttpLobbyClient()
-        .getLobbyChatClient()
+        .getPlayerToLobbyConnection()
         .addConnectionClosedListener(
             () -> {
               tableModel.shutdown();
@@ -95,19 +97,19 @@ public class LobbyFrame extends JFrame implements QuitHandler {
       return List.of();
     }
 
-    final var moderatorLobbyClient = lobbyClient.getHttpLobbyClient().getModeratorLobbyClient();
+    final var moderatorLobbyClient = lobbyClient.getPlayerToLobbyConnection();
 
     return List.of(
         DisconnectPlayerModeratorAction.builder()
             .parent(this)
-            .moderatorLobbyClient(moderatorLobbyClient)
+            .playerToLobbyConnection(moderatorLobbyClient)
             .playerChatId(clickedOn.getPlayerChatId())
             .userName(clickedOn.getUserName())
             .build()
             .toSwingAction(),
         BanPlayerModeratorAction.builder()
             .parent(this)
-            .moderatorLobbyClient(moderatorLobbyClient)
+            .playerToLobbyConnection(moderatorLobbyClient)
             .playerChatIdToBan(clickedOn.getPlayerChatId())
             .build()
             .toSwingAction());

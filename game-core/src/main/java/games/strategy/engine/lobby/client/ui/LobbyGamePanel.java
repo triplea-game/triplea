@@ -235,7 +235,7 @@ class LobbyGamePanel extends JPanel {
     }
 
     final InetAddress ipAddress = gameTableModel.get(selectedIndex).getHostedBy().getAddress();
-    lobbyClient.getHttpLobbyClient().getRemoteActionsClient().sendShutdownRequest(ipAddress);
+    lobbyClient.getPlayerToLobbyConnection().sendShutdownRequest(ipAddress);
     JOptionPane.showMessageDialog(null, "The game you selected was sent a shutdown signal");
   }
 }

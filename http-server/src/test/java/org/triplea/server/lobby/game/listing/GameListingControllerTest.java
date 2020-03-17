@@ -1,8 +1,8 @@
 package org.triplea.server.lobby.game.listing;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
 import org.triplea.server.TestData;

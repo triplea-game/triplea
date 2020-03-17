@@ -3,7 +3,7 @@ package org.triplea.server;
 import java.time.Instant;
 import lombok.experimental.UtilityClass;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.server.access.AuthenticatedUser;
 

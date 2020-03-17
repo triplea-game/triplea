@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.listing;
+package org.triplea.domain.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

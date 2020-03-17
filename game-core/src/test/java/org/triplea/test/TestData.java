@@ -2,7 +2,7 @@ package org.triplea.test;
 
 import java.time.Instant;
 import lombok.experimental.UtilityClass;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.domain.data.LobbyGame;
 
 @UtilityClass
 public class TestData {

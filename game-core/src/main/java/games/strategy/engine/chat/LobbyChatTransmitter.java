@@ -1,32 +1,27 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import java.util.Collection;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.chat.ChatMessageListeners;
-import org.triplea.http.client.lobby.chat.LobbyChatClient;
 
 /**
  * Chat transmitter designed to work with lobby, sends and receives messages over Websocket. This
  * class provides a send API and does wiring to connect callbacks from a {@code LobbyChatClient} to
  * a {@code ChatClient}.
  */
-// TODO: Project#12 test-me
 @Log
+@AllArgsConstructor
 public class LobbyChatTransmitter implements ChatTransmitter {
-  private final LobbyChatClient lobbyChatClient;
+  private final PlayerToLobbyConnection playerToLobbyConnection;
   private final UserName localUserName;
-
-  public LobbyChatTransmitter(final LobbyClient lobbyClient) {
-    this.localUserName = lobbyClient.getUserName();
-    this.lobbyChatClient = lobbyClient.getHttpLobbyClient().getLobbyChatClient();
-  }
 
   @Override
   public void setChatClient(final ChatClient chatClient) {
-    lobbyChatClient.setChatMessageListeners(
+    playerToLobbyConnection.addChatMessageListeners(
         ChatMessageListeners.builder()
             .playerStatusListener(chatClient::statusUpdated)
             .playerLeftListener(chatClient::participantRemoved)
@@ -49,27 +44,27 @@ public class LobbyChatTransmitter implements ChatTransmitter {
 
   @Override
   public Collection<ChatParticipant> connect() {
-    return lobbyChatClient.connect();
+    return playerToLobbyConnection.connect();
   }
 
   @Override
   public void disconnect() {
-    lobbyChatClient.close();
+    playerToLobbyConnection.close();
   }
 
   @Override
   public void sendMessage(final String message) {
-    lobbyChatClient.sendChatMessage(message);
+    playerToLobbyConnection.sendChatMessage(message);
   }
 
   @Override
   public void slap(final UserName userName) {
-    lobbyChatClient.slapPlayer(userName);
+    playerToLobbyConnection.slapPlayer(userName);
   }
 
   @Override
   public void updateStatus(final String status) {
-    lobbyChatClient.updateStatus(status);
+    playerToLobbyConnection.updateStatus(status);
   }
 
   @Override

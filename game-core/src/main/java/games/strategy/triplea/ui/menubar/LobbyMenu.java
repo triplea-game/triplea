@@ -37,14 +37,14 @@ public final class LobbyMenu extends JMenuBar {
                   'E',
                   () ->
                       ChangeEmailPanel.promptUserForNewEmail(
-                          frame, frame.getLobbyClient().getHttpLobbyClient()))
+                          frame, frame.getLobbyClient().getPlayerToLobbyConnection()))
               .addMenuItem(
                   "Update Password",
                   'P',
                   () ->
                       ChangePasswordPanel.doPasswordChange(
                           frame,
-                          frame.getLobbyClient().getHttpLobbyClient(),
+                          frame.getLobbyClient().getPlayerToLobbyConnection(),
                           ChangePasswordPanel.AllowCancelMode.SHOW_CANCEL_BUTTON))
               .build());
     }
@@ -60,7 +60,7 @@ public final class LobbyMenu extends JMenuBar {
                           lobbyFrame,
                           lobbyFrame
                               .getLobbyClient()
-                              .getHttpLobbyClient()
+                              .getPlayerToLobbyConnection()
                               .getHttpModeratorToolboxClient()))
               .build());
     }

@@ -10,6 +10,7 @@ import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.TestData;
 import org.triplea.http.client.WireMockTest;

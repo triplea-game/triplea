@@ -4,7 +4,7 @@ import static org.triplea.server.lobby.game.listing.GameListing.GameId;
 
 import java.util.function.BiConsumer;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.domain.data.LobbyGame;
 
 @AllArgsConstructor
 class GameTtlExpiredListener implements BiConsumer<GameId, LobbyGame> {

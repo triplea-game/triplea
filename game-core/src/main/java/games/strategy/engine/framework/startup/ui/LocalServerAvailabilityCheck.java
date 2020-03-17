@@ -1,8 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import java.util.function.Consumer;
 import lombok.Builder;
-import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
 import org.triplea.util.ExitStatus;
 
 /**
@@ -11,7 +11,7 @@ import org.triplea.util.ExitStatus;
  */
 @Builder
 public class LocalServerAvailabilityCheck {
-  private final ConnectivityCheckClient connectivityCheckClient;
+  private final GameToLobbyConnection gameToLobbyConnection;
   private final int localPort;
   private final Consumer<String> errorHandler;
 
@@ -24,7 +24,7 @@ public class LocalServerAvailabilityCheck {
     // if we lose our connection, then shutdown
     new Thread(
             () -> {
-              if (!connectivityCheckClient.checkConnectivity(localPort)) {
+              if (!gameToLobbyConnection.checkConnectivity(localPort)) {
                 // if the server cannot connect to us, then quit
                 errorHandler.accept(
                     "Your computer is not reachable from the internet.\n"

@@ -32,6 +32,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
+import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
@@ -429,7 +430,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                           ExitStatus.SUCCESS.exit();
                         })
                     .build());
-
         lobbyWatcherThread =
             new LobbyWatcherThread(
                 gameSelectorModel,
@@ -437,7 +437,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 ui == null
                     ? new WatcherThreadMessaging.HeadlessWatcherThreadMessaging()
                     : new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui));
-        lobbyWatcherThread.createLobbyWatcher(lobbyUri, gameHostingResponse, errorHandler);
+
+        final GameToLobbyConnection gameToLobbyConnection =
+            new GameToLobbyConnection(lobbyUri, gameHostingResponse, errorHandler);
+        lobbyWatcherThread.createLobbyWatcher(gameToLobbyConnection);
       } else {
         gameHostingResponse = null;
       }
