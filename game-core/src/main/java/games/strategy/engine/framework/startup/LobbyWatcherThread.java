@@ -6,16 +6,11 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
+import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import games.strategy.net.IServerMessenger;
-import java.net.URI;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
 
 @AllArgsConstructor
 public class LobbyWatcherThread {
@@ -24,19 +19,11 @@ public class LobbyWatcherThread {
   @Nonnull private final IServerMessenger serverMessenger;
   @Nonnull private final WatcherThreadMessaging watcherThreadMessaging;
 
-  public void createLobbyWatcher(
-      final URI lobbyUri,
-      final GameHostingResponse gameHostingResponse,
-      final Consumer<String> errorHandler) {
-
-    final HttpLobbyClient lobbyClient =
-        HttpLobbyClient.newClient(
-            lobbyUri, ApiKey.of(gameHostingResponse.getApiKey()), errorHandler);
+  public void createLobbyWatcher(final GameToLobbyConnection gameToLobbyConnection) {
 
     InGameLobbyWatcher.newInGameLobbyWatcher(
             serverMessenger,
-            gameHostingResponse,
-            LobbyWatcherClient.newClient(lobbyUri, ApiKey.of(gameHostingResponse.getApiKey())),
+            gameToLobbyConnection,
             watcherThreadMessaging::connectionLostReporter,
             watcherThreadMessaging::connectionReEstablishedReporter,
             lobbyWatcher.getInGameLobbyWatcher())
@@ -46,7 +33,7 @@ public class LobbyWatcherThread {
               lobbyWatcher.setInGameLobbyWatcher(watcher);
 
               LocalServerAvailabilityCheck.builder()
-                  .connectivityCheckClient(lobbyClient.getConnectivityCheckClient())
+                  .gameToLobbyConnection(gameToLobbyConnection)
                   .localPort(serverMessenger.getLocalNode().getPort())
                   .errorHandler(watcherThreadMessaging::serverNotAvailableHandler)
                   .build()

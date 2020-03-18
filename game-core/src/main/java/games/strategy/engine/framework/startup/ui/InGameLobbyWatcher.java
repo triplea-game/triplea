@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.SystemPropertyReader;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
+import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -18,8 +19,7 @@ import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
 import org.triplea.lobby.common.GameDescription;
@@ -40,7 +40,7 @@ public class InGameLobbyWatcher {
   private final IConnectionChangeListener connectionChangeListener;
   private final boolean humanPlayer;
 
-  private final LobbyWatcherClient gameListingClient;
+  private final GameToLobbyConnection gameToLobbyConnection;
 
   private final IServerMessenger serverMessenger;
 
@@ -48,15 +48,13 @@ public class InGameLobbyWatcher {
 
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
-      final GameHostingResponse gameHostingResponse,
-      final LobbyWatcherClient gameListingClient,
+      final GameToLobbyConnection gameToLobbyConnection,
       final Consumer<String> errorReporter,
       final Consumer<String> reconnectionReporter,
       @Nullable final InGameLobbyWatcher oldWatcher) {
     this(
         serverMessenger,
-        gameHostingResponse,
-        gameListingClient,
+        gameToLobbyConnection,
         errorReporter,
         reconnectionReporter,
         Optional.ofNullable(oldWatcher).map(old -> old.gameDescription).orElse(null),
@@ -65,14 +63,13 @@ public class InGameLobbyWatcher {
 
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
-      final GameHostingResponse gameHostingResponse,
-      final LobbyWatcherClient gameListingClient,
+      final GameToLobbyConnection gameToLobbyConnection,
       final Consumer<String> errorReporter,
       final Consumer<String> reconnectionReporter,
       @Nullable final GameDescription oldGameDescription,
       @Nullable final IGame oldGame) {
     this.serverMessenger = serverMessenger;
-    this.gameListingClient = gameListingClient;
+    this.gameToLobbyConnection = gameToLobbyConnection;
     humanPlayer = !HeadlessGameServer.headless();
 
     final boolean passworded = SystemPropertyReader.serverIsPassworded();
@@ -98,7 +95,9 @@ public class InGameLobbyWatcher {
     final INode publicNode =
         new Node(
             serverMessenger.getLocalNode().getName(),
-            SystemPropertyReader.customHost().orElseGet(gameHostingResponse::getPublicVisibleIp),
+            SystemPropertyReader.customHost()
+                .orElseGet(
+                    () -> gameToLobbyConnection.getGameHostingResponse().getPublicVisibleIp()),
             SystemPropertyReader.customPort()
                 .orElseGet(() -> serverMessenger.getLocalNode().getPort()));
 
@@ -115,21 +114,21 @@ public class InGameLobbyWatcher {
             .gameVersion("0")
             .build();
 
-    gameId = gameListingClient.postGame(gameDescription.toLobbyGame());
+    gameId = gameToLobbyConnection.postGame(gameDescription.toLobbyGame());
 
     // Period time is chosen to less than half the keep-alive cut-off time. In case a keep-alive
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
     keepAliveTimer =
         Timers.fixedRateTimer("lobby-watcher-keep-alive")
-            .period((LobbyWatcherClient.KEEP_ALIVE_SECONDS / 2L) - 1, TimeUnit.SECONDS)
+            .period((GameListingClient.KEEP_ALIVE_SECONDS / 2L) - 1, TimeUnit.SECONDS)
             .task(
                 LobbyWatcherKeepAliveTask.builder()
                     .gameId(gameId)
                     .gameIdSetter(id -> gameId = id)
                     .connectionLostReporter(errorReporter)
                     .connectionReEstablishedReporter(reconnectionReporter)
-                    .keepAliveSender(gameListingClient::sendKeepAlive)
-                    .gamePoster(() -> gameListingClient.postGame(gameDescription.toLobbyGame()))
+                    .keepAliveSender(gameToLobbyConnection::sendKeepAlive)
+                    .gamePoster(() -> gameToLobbyConnection.postGame(gameDescription.toLobbyGame()))
                     .build())
             .start();
 
@@ -161,8 +160,7 @@ public class InGameLobbyWatcher {
    */
   public static Optional<InGameLobbyWatcher> newInGameLobbyWatcher(
       final IServerMessenger serverMessenger,
-      final GameHostingResponse gameHostingResponse,
-      final LobbyWatcherClient gameListingClient,
+      final GameToLobbyConnection gameToLobbyConnection,
       final Consumer<String> errorReporter,
       final Consumer<String> reconnectionReporter,
       final InGameLobbyWatcher oldWatcher) {
@@ -170,8 +168,7 @@ public class InGameLobbyWatcher {
       return Optional.of(
           new InGameLobbyWatcher(
               serverMessenger,
-              gameHostingResponse,
-              gameListingClient,
+              gameToLobbyConnection,
               errorReporter,
               reconnectionReporter,
               oldWatcher));
@@ -239,12 +236,12 @@ public class InGameLobbyWatcher {
       return;
     }
     gameDescription = newDescription;
-    gameListingClient.updateGame(gameId, gameDescription.toLobbyGame());
+    gameToLobbyConnection.updateGame(gameId, gameDescription.toLobbyGame());
   }
 
   void shutDown() {
     isShutdown = true;
-    gameListingClient.removeGame(gameId);
+    gameToLobbyConnection.disconnect(gameId);
     serverMessenger.removeConnectionChangeListener(connectionChangeListener);
     keepAliveTimer.cancel();
     cleanUpGameModelListener();

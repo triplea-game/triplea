@@ -8,8 +8,8 @@ import java.net.InetAddress;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.test.TestData;
 
 final class GameDescriptionTest {

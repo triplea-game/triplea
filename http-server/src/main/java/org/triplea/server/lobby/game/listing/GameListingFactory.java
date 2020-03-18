@@ -3,7 +3,7 @@ package org.triplea.server.lobby.game.listing;
 import java.util.concurrent.TimeUnit;
 import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 
@@ -16,7 +16,7 @@ public final class GameListingFactory {
         .gameListingEventQueue(gameListingEventQueue)
         .games(
             new ExpiringAfterWriteCache<>(
-                LobbyWatcherClient.KEEP_ALIVE_SECONDS,
+                GameListingClient.KEEP_ALIVE_SECONDS,
                 TimeUnit.SECONDS,
                 new GameTtlExpiredListener(gameListingEventQueue)))
         .build();

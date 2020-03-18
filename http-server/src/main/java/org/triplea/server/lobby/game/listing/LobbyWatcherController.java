@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
 import org.triplea.http.client.lobby.game.listing.UpdateGameRequest;
 import org.triplea.lobby.server.db.data.UserRole;

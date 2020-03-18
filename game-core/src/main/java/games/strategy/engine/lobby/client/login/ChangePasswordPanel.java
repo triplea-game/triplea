@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -17,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
@@ -162,13 +162,13 @@ public final class ChangePasswordPanel extends JPanel {
 
   public static boolean doPasswordChange(
       final Window lobbyFrame,
-      final HttpLobbyClient lobbyClient,
+      final PlayerToLobbyConnection playerToLobbyConnection,
       final AllowCancelMode allowCancelMode) {
     return new ChangePasswordPanel(allowCancelMode)
         .show(lobbyFrame)
         .map(
             pass -> {
-              lobbyClient.getUserAccountClient().changePassword(pass);
+              playerToLobbyConnection.changePassword(pass);
               return true;
             })
         .orElse(false);

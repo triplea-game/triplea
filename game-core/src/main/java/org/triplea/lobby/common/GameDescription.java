@@ -12,8 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Wither;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 
 /**

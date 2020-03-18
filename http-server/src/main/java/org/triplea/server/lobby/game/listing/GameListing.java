@@ -13,7 +13,7 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.java.cache.TtlCache;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;

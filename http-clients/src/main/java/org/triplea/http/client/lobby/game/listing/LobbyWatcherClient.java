@@ -3,6 +3,7 @@ package org.triplea.http.client.lobby.game.listing;
 import java.net.URI;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 
@@ -12,7 +13,6 @@ import org.triplea.http.client.HttpClient;
  */
 @AllArgsConstructor
 public class LobbyWatcherClient {
-  public static final int KEEP_ALIVE_SECONDS = 20;
 
   public static final String KEEP_ALIVE_PATH = "/lobby/games/keep-alive";
   public static final String POST_GAME_PATH = "/lobby/games/post-game";

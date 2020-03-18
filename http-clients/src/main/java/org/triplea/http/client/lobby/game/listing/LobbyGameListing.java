@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import org.triplea.domain.data.LobbyGame;
 
 /**
  * Data structure representing a game that is registered in the lobby. Lobby tracks games by a

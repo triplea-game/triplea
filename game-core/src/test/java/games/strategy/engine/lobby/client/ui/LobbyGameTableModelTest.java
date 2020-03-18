@@ -4,17 +4,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import com.google.common.util.concurrent.Runnables;
+import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.net.Node;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,13 +19,10 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.SwingAction;
-import org.triplea.util.Tuple;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @Execution(ExecutionMode.SAME_THREAD)
@@ -64,30 +57,19 @@ final class LobbyGameTableModelTest {
   @Nested
   final class RemoveAndUpdateGameTest {
     private LobbyGameTableModel testObj;
-    @Mock private HttpLobbyClient httpLobbyClient;
-    @Mock private GameListingClient gameListingClient;
-
-    private List<LobbyGameListing> fakeGameListing = new ArrayList<>();
-    private Tuple<String, GameDescription> fakeGame;
+    @Mock private PlayerToLobbyConnection playerToLobbyConnection;
 
     @BeforeEach
     void setUp() {
-      fakeGame = Tuple.of(id0, gameDescription0);
-      fakeGameListing.add(
-          LobbyGameListing.builder()
-              .gameId(fakeGame.getFirst())
-              .lobbyGame(gameDescription0.toLobbyGame())
-              .build());
-
-      when(httpLobbyClient.newGameListingClient(any())).thenReturn(gameListingClient);
-      when(gameListingClient.fetchGameListing()).thenReturn(fakeGameListing);
-      testObj = new LobbyGameTableModel(true, httpLobbyClient);
+      testObj = new LobbyGameTableModel(true, playerToLobbyConnection);
+      testObj
+          .getLobbyGameBroadcaster()
+          .gameUpdated(
+              LobbyGameListing.builder()
+                  .gameId(id0)
+                  .lobbyGame(gameDescription0.toLobbyGame())
+                  .build());
       waitForSwingThreads();
-    }
-
-    @AfterEach
-    void tearDown() {
-      testObj.shutdown();
     }
 
     private void waitForSwingThreads() {
@@ -109,7 +91,7 @@ final class LobbyGameTableModelTest {
           .getLobbyGameBroadcaster()
           .gameUpdated(
               LobbyGameListing.builder()
-                  .gameId(fakeGame.getFirst())
+                  .gameId(id0)
                   .lobbyGame(gameDescription1.toLobbyGame())
                   .build());
 
@@ -133,7 +115,7 @@ final class LobbyGameTableModelTest {
 
     @Test
     void removeGame() {
-      testObj.getLobbyGameBroadcaster().gameRemoved(fakeGame.getFirst());
+      testObj.getLobbyGameBroadcaster().gameRemoved(id0);
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(0));
     }
@@ -150,7 +132,8 @@ final class LobbyGameTableModelTest {
   final class FormatBotStartTimeTest {
     @Test
     void shouldNotThrowException() {
-      assertDoesNotThrow(() -> LobbyGameTableModel.formatBotStartTime(Instant.now()));
+      assertDoesNotThrow(
+          () -> LobbyGameTableModel.formatBotStartTime(Instant.now().toEpochMilli()));
     }
   }
 }

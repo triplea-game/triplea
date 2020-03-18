@@ -1,17 +1,17 @@
 package games.strategy.engine.lobby.client.ui.action;
 
+import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import lombok.Builder;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.swing.SwingAction;
 
 @Builder
 public class BanPlayerModeratorAction {
-  @Nonnull private final ModeratorChatClient moderatorLobbyClient;
+  @Nonnull private final PlayerToLobbyConnection playerToLobbyConnection;
   @Nonnull private final JFrame parent;
   @Nonnull private final PlayerChatId playerChatIdToBan;
 
@@ -26,7 +26,7 @@ public class BanPlayerModeratorAction {
                     + "And please remember to report this ban.",
                 timespan ->
                     // do confirmation
-                    moderatorLobbyClient.banPlayer(
+                    playerToLobbyConnection.banPlayer(
                         BanPlayerRequest.builder()
                             .playerChatId(playerChatIdToBan.getValue())
                             .banMinutes(timespan.toMinutes())

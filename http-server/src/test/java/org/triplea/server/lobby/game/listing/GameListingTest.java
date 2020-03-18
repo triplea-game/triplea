@@ -23,7 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.http.client.lobby.game.listing.LobbyGame;
+import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
