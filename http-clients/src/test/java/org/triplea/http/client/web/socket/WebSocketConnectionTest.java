@@ -66,7 +66,6 @@ class WebSocketConnectionTest {
       listener.onText(mock(WebSocket.class), "2", false);
       listener.onText(mock(WebSocket.class), "3", true);
 
-
       verify(webSocketConnectionListener).messageReceived("123");
     }
 
@@ -78,7 +77,6 @@ class WebSocketConnectionTest {
       listener.onText(mock(WebSocket.class), "3", true);
       listener.onText(mock(WebSocket.class), "4", false);
       listener.onText(mock(WebSocket.class), "5", true);
-
 
       verify(webSocketConnectionListener).messageReceived("123");
       verify(webSocketConnectionListener).messageReceived("45");
