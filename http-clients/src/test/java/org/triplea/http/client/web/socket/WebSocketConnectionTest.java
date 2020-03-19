@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -56,6 +57,31 @@ class WebSocketConnectionTest {
     void onMessage() {
       webSocketConnection.getWebSocketListener().onText(mock(WebSocket.class), MESSAGE, true);
       verify(webSocketConnectionListener).messageReceived(MESSAGE);
+    }
+
+    @Test
+    void verifyListenerAccumulatesMessagesUntilLast() {
+      final WebSocket.Listener listener = webSocketConnection.getWebSocketListener();
+      listener.onText(mock(WebSocket.class), "1", false);
+      listener.onText(mock(WebSocket.class), "2", false);
+      listener.onText(mock(WebSocket.class), "3", true);
+
+
+      verify(webSocketConnectionListener).messageReceived("123");
+    }
+
+    @Test
+    void verifyListenerClearsMessageCorrectly() {
+      final WebSocket.Listener listener = webSocketConnection.getWebSocketListener();
+      listener.onText(mock(WebSocket.class), "1", false);
+      listener.onText(mock(WebSocket.class), "2", false);
+      listener.onText(mock(WebSocket.class), "3", true);
+      listener.onText(mock(WebSocket.class), "4", false);
+      listener.onText(mock(WebSocket.class), "5", true);
+
+
+      verify(webSocketConnectionListener).messageReceived("123");
+      verify(webSocketConnectionListener).messageReceived("45");
     }
 
     @Test
@@ -124,11 +150,14 @@ class WebSocketConnectionTest {
     @Test
     @DisplayName("Verify connect initiates connection and starts the pinger")
     void connectWillInitiateConnection() throws Exception {
-      webSocketConnection.setHttpClient(mockHttpClient());
+      final HttpClient httpClient = mockHttpClient();
+      webSocketConnection.setHttpClient(httpClient);
       final WebSocket connected =
           webSocketConnection.connect(webSocketConnectionListener, errorHandler).get();
 
       assertThat(connected, is(webSocket));
+      verify(httpClient.newWebSocketBuilder())
+          .connectTimeout(Duration.ofMillis(WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS));
       verifyPingerIsStarted();
     }
 
