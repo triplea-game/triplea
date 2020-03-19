@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.Getter;
 
 /** Responsible for rendering a single map tile. */
 public class Tile {
@@ -24,7 +25,9 @@ public class Tile {
   private volatile boolean isDirty = true;
   private AtomicBoolean isDrawing = new AtomicBoolean(false);
 
-  private Image image = Util.newImage(TILE_SIZE, TILE_SIZE, true);
+  /** Current de facto immutable state of this tile. */
+  @Getter private Image image = Util.newImage(TILE_SIZE, TILE_SIZE, true);
+
   private final Rectangle bounds;
   private final Object mutex = new Object();
   private final Queue<IDrawable> contents = new PriorityQueue<>();
@@ -54,11 +57,6 @@ public class Tile {
       image = backImage;
       isDrawing.set(false);
     }
-  }
-
-  /** This image may not reflect our current drawables. */
-  public Image getImage() {
-    return image;
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
