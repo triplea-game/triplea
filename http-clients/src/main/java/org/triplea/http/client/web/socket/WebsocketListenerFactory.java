@@ -40,7 +40,7 @@ public class WebsocketListenerFactory {
           final Consumer<String> errorHandler,
           final ListenersTypeT listeners) {
 
-    final URI websocketUri = URI.create(serverUri.toString().replaceFirst("^http", "ws") + path);
+    final URI websocketUri = URI.create(serverUri + path);
     final GenericWebSocketClient genericWebSocketClient =
         new GenericWebSocketClient(websocketUri, errorHandler);
 

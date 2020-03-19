@@ -101,16 +101,16 @@ class GenericWebSocketClientTest {
     @DisplayName("Verify 'https' protocol when present is swapped to 'wss'")
     void swapHttpsProtocol() {
       final URI inputUri = URI.create("https://uri.com");
-      final URI updated = GenericWebSocketClient.swapHttpsToWssProtocol(inputUri);
+      final URI updated = GenericWebSocketClient.swapHttpToWsProtocol(inputUri);
       assertThat(updated, is(URI.create("wss://uri.com")));
     }
 
     @Test
-    @DisplayName("Verify swap is a no-op with 'http' protocol")
+    @DisplayName("Verify 'http' protocol when present is swapped to 'ws'")
     void swapHttpProtocol() {
       final URI inputUri = URI.create("http://uri.com");
-      final URI updated = GenericWebSocketClient.swapHttpsToWssProtocol(inputUri);
-      assertThat(updated, is(inputUri));
+      final URI updated = GenericWebSocketClient.swapHttpToWsProtocol(inputUri);
+      assertThat(updated, is("ws://uri.com"));
     }
   }
 }
