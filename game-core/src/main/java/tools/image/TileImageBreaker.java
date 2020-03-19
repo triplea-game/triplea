@@ -1,8 +1,8 @@
 package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
+import static games.strategy.triplea.ui.screen.Tile.TILE_SIZE;
 
-import games.strategy.triplea.ui.screen.Tile;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -107,29 +107,28 @@ public final class TileImageBreaker {
     }
 
     textOptionPane.show();
-    for (int x = 0; x * Tile.TILE_SIZE < map.getWidth(null); x++) {
-      for (int y = 0; y * Tile.TILE_SIZE < map.getHeight(null); y++) {
-        final Rectangle bounds =
-            new Rectangle(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE, Tile.TILE_SIZE, Tile.TILE_SIZE);
+    for (int x = 0; x * TILE_SIZE < map.getWidth(null); x++) {
+      for (int y = 0; y * TILE_SIZE < map.getHeight(null); y++) {
+        final Rectangle bounds = new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         final GraphicsConfiguration localGraphicSystem =
             GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice()
                 .getDefaultConfiguration();
         final BufferedImage relief =
             localGraphicSystem.createCompatibleImage(
-                Tile.TILE_SIZE, Tile.TILE_SIZE, Transparency.TRANSLUCENT);
+                TILE_SIZE, TILE_SIZE, Transparency.TRANSLUCENT);
         relief
             .getGraphics()
             .drawImage(
                 map,
                 0,
                 0,
-                Tile.TILE_SIZE,
-                Tile.TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE,
                 bounds.x,
                 bounds.y,
-                bounds.x + Tile.TILE_SIZE,
-                bounds.y + Tile.TILE_SIZE,
+                bounds.x + TILE_SIZE,
+                bounds.y + TILE_SIZE,
                 observer);
 
         final String outFileName = location + File.separator + x + "_" + y + ".png";
