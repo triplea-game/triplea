@@ -110,7 +110,7 @@ class GenericWebSocketClientTest {
     void swapHttpProtocol() {
       final URI inputUri = URI.create("http://uri.com");
       final URI updated = GenericWebSocketClient.swapHttpToWsProtocol(inputUri);
-      assertThat(updated, is("ws://uri.com"));
+      assertThat(updated, is(URI.create("ws://uri.com")));
     }
   }
 }
