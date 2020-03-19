@@ -7,6 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.net.http.WebSocket.Listener;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -38,7 +39,7 @@ import org.triplea.java.timer.Timers;
 class WebSocketConnection {
   @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
 
-  private static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
+  @VisibleForTesting static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
 
   private WebSocketConnectionListener listener;
 
@@ -57,17 +58,67 @@ class WebSocketConnection {
       onMethod_ = {@VisibleForTesting})
   private boolean connectionIsOpen = false;
 
+  @Setter(
+      value = AccessLevel.PACKAGE,
+      onMethod_ = {@VisibleForTesting})
+  private HttpClient httpClient = HttpClient.newHttpClient();
+
   private final URI serverUri;
 
   private boolean closed = false;
 
+  private WebSocket client;
+
   @Getter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  @Setter(
-      value = AccessLevel.PACKAGE,
-      onMethod_ = {@VisibleForTesting})
-  private WebSocket client;
+  private final WebSocket.Listener webSocketListener =
+      new Listener() {
+        private final StringBuilder textAccumulator = new StringBuilder();
+
+        @Override
+        public void onOpen(final WebSocket webSocket) {
+          synchronized (queuedMessages) {
+            client = webSocket;
+            connectionIsOpen = true;
+            queuedMessages.forEach(
+                message ->
+                    client
+                        .sendText(message, true)
+                        .exceptionally(logWebSocketError("Failed to send queued text.")));
+            queuedMessages.clear();
+          }
+          webSocket.request(1);
+        }
+
+        @Override
+        public CompletionStage<?> onText(
+            final WebSocket webSocket, final CharSequence data, final boolean last) {
+          textAccumulator.append(data);
+          if (last) {
+            listener.messageReceived(textAccumulator.toString());
+            textAccumulator.setLength(0);
+          }
+          webSocket.request(1);
+          return null;
+        }
+
+        @Override
+        public CompletionStage<?> onClose(
+            final WebSocket webSocket, final int statusCode, final String reason) {
+          if (!reason.equals(CLIENT_DISCONNECT_MESSAGE)) {
+            log.severe("Connection to server closed: " + reason);
+          }
+          pingSender.cancel();
+          listener.connectionClosed(reason);
+          return null;
+        }
+
+        @Override
+        public void onError(final WebSocket webSocket, final Throwable error) {
+          listener.handleError(error);
+        }
+      };
 
   @Getter(
       value = AccessLevel.PACKAGE,
@@ -84,7 +135,7 @@ class WebSocketConnection {
                 () -> {
                   if (!client.isOutputClosed()) {
                     client
-                        .sendPing(ByteBuffer.wrap(new byte[0]))
+                        .sendPing(ByteBuffer.wrap("Ping".getBytes(StandardCharsets.UTF_8)))
                         .exceptionally(logWebSocketError("Failed to send ping."));
                   }
                 });
@@ -125,57 +176,10 @@ class WebSocketConnection {
   }
 
   private CompletableFuture<WebSocket> connectAsync() {
-    return HttpClient.newHttpClient()
+    return httpClient
         .newWebSocketBuilder()
         .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
-        .buildAsync(
-            serverUri,
-            new Listener() {
-              private final StringBuilder textAccumulator = new StringBuilder();
-
-              @Override
-              public void onOpen(final WebSocket webSocket) {
-                synchronized (queuedMessages) {
-                  client = webSocket;
-                  connectionIsOpen = true;
-                  queuedMessages.forEach(
-                      message ->
-                          client
-                              .sendText(message, true)
-                              .exceptionally(logWebSocketError("Failed to send queued text.")));
-                  queuedMessages.clear();
-                }
-                webSocket.request(1);
-              }
-
-              @Override
-              public CompletionStage<?> onText(
-                  final WebSocket webSocket, final CharSequence data, final boolean last) {
-                textAccumulator.append(data);
-                if (last) {
-                  listener.messageReceived(textAccumulator.toString());
-                  textAccumulator.setLength(0);
-                }
-                webSocket.request(1);
-                return null;
-              }
-
-              @Override
-              public CompletionStage<?> onClose(
-                  final WebSocket webSocket, final int statusCode, final String reason) {
-                if (!reason.equals(CLIENT_DISCONNECT_MESSAGE)) {
-                  log.severe("Connection to server closed: " + reason);
-                }
-                pingSender.cancel();
-                listener.connectionClosed(reason);
-                return null;
-              }
-
-              @Override
-              public void onError(final WebSocket webSocket, final Throwable error) {
-                listener.handleError(error);
-              }
-            });
+        .buildAsync(serverUri, webSocketListener);
   }
 
   /**
