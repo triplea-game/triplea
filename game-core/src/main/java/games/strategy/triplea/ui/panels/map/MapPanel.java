@@ -632,9 +632,8 @@ public class MapPanel extends ImageScrollerLargeView {
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
       for (final Tile tile : tileList) {
         tile.drawImage(gameData, uiContext.getMapData());
-        final Image img = tile.getImage();
         g2d.drawImage(
-            img,
+            tile.getImage(),
             AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
             this);
       }
