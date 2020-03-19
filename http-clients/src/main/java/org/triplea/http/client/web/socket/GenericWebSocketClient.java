@@ -57,7 +57,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
             throwable -> {
               log.log(
                   Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
-              return false;
+              return null;
             });
   }
 
@@ -95,7 +95,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   }
 
   @Override
-  public void handleError(final Exception exception) {
-    log.log(Level.SEVERE, "Websocket error", exception);
+  public void handleError(final Throwable error) {
+    log.log(Level.SEVERE, "Websocket error", error);
   }
 }
