@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
+import static games.strategy.triplea.ui.screen.Tile.TILE_SIZE;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -51,8 +53,6 @@ import org.triplea.util.Tuple;
 
 /** Orchestrates the rendering of all map tiles. */
 public class TileManager {
-  public static final int TILE_SIZE = 256;
-
   private List<Tile> tiles = new ArrayList<>();
   private final Object mutex = new Object();
   private final Map<String, IDrawable> territoryOverlays = new HashMap<>();

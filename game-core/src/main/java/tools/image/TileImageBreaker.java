@@ -1,8 +1,8 @@
 package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
+import static games.strategy.triplea.ui.screen.Tile.TILE_SIZE;
 
-import games.strategy.triplea.ui.screen.TileManager;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -107,33 +107,28 @@ public final class TileImageBreaker {
     }
 
     textOptionPane.show();
-    for (int x = 0; x * TileManager.TILE_SIZE < map.getWidth(null); x++) {
-      for (int y = 0; y * TileManager.TILE_SIZE < map.getHeight(null); y++) {
-        final Rectangle bounds =
-            new Rectangle(
-                x * TileManager.TILE_SIZE,
-                y * TileManager.TILE_SIZE,
-                TileManager.TILE_SIZE,
-                TileManager.TILE_SIZE);
+    for (int x = 0; x * TILE_SIZE < map.getWidth(null); x++) {
+      for (int y = 0; y * TILE_SIZE < map.getHeight(null); y++) {
+        final Rectangle bounds = new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         final GraphicsConfiguration localGraphicSystem =
             GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice()
                 .getDefaultConfiguration();
         final BufferedImage relief =
             localGraphicSystem.createCompatibleImage(
-                TileManager.TILE_SIZE, TileManager.TILE_SIZE, Transparency.TRANSLUCENT);
+                TILE_SIZE, TILE_SIZE, Transparency.TRANSLUCENT);
         relief
             .getGraphics()
             .drawImage(
                 map,
                 0,
                 0,
-                TileManager.TILE_SIZE,
-                TileManager.TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE,
                 bounds.x,
                 bounds.y,
-                bounds.x + TileManager.TILE_SIZE,
-                bounds.y + TileManager.TILE_SIZE,
+                bounds.x + TILE_SIZE,
+                bounds.y + TILE_SIZE,
                 observer);
 
         final String outFileName = location + File.separator + x + "_" + y + ".png";

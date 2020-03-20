@@ -631,16 +631,11 @@ public class MapPanel extends ImageScrollerLargeView {
           new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
       for (final Tile tile : tileList) {
-        synchronized (tile.getMutex()) {
-          final Image img = tile.getImage(gameData, uiContext.getMapData());
-          if (img != null) {
-            g2d.drawImage(
-                img,
-                AffineTransform.getTranslateInstance(
-                    tile.getBounds().x - bounds.getX(), tile.getBounds().y - bounds.getY()),
-                this);
-          }
-        }
+        tile.drawImage(gameData, uiContext.getMapData());
+        g2d.drawImage(
+            tile.getImage(),
+            AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
+            this);
       }
     } finally {
       gameData.releaseReadLock();
@@ -662,8 +657,6 @@ public class MapPanel extends ImageScrollerLargeView {
     int y = getYOffset();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
-    // make sure we use the same data for the entire paint
-    final GameData data = gameData;
     // if the map fits on screen, don't draw any overlap
     final boolean drawHorizontalOverlap = !fittingWidth && uiContext.getMapData().scrollWrapX();
     final boolean drawVerticalOverlap = !fittingHeight && uiContext.getMapData().scrollWrapY();
@@ -680,22 +673,22 @@ public class MapPanel extends ImageScrollerLargeView {
           final Rectangle2D.Double leftUpperBounds =
               new Rectangle2D.Double(
                   model.getMaxWidth() + (double) x, model.getMaxHeight() + (double) y, -x, -y);
-          drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
+          drawTiles(g2d, images, leftUpperBounds, undrawnTiles);
         }
         final Rectangle2D.Double leftBounds =
             new Rectangle2D.Double(model.getMaxWidth() + (double) x, y, -x, getScaledHeight());
-        drawTiles(g2d, images, data, leftBounds, undrawnTiles);
+        drawTiles(g2d, images, leftBounds, undrawnTiles);
       }
       if (drawVerticalOverlap && y < 0) {
         final Rectangle2D.Double upperBounds =
             new Rectangle2D.Double(x, model.getMaxHeight() + (double) y, getScaledWidth(), -y);
-        drawTiles(g2d, images, data, upperBounds, undrawnTiles);
+        drawTiles(g2d, images, upperBounds, undrawnTiles);
       }
     }
     // handle non overlap
     final Rectangle2D.Double mainBounds =
         new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-    drawTiles(g2d, images, data, mainBounds, undrawnTiles);
+    drawTiles(g2d, images, mainBounds, undrawnTiles);
     if (routeDescription != null) {
       if (mouseShadowImage != null && routeDescription.getEnd() != null) {
         final AffineTransform t = new AffineTransform();
@@ -746,13 +739,15 @@ public class MapPanel extends ImageScrollerLargeView {
     updateUndrawnTiles(undrawnTiles, 513);
     updateUndrawnTiles(undrawnTiles, 767);
     clearPendingDrawOperations();
+    // make sure we use the same data for the entire paint
+    final GameData data = gameData;
     undrawnTiles.forEach(
         tile ->
             executor.execute(
                 () -> {
                   data.acquireReadLock();
                   try {
-                    tile.getImage(data, MapPanel.this.getUiContext().getMapData());
+                    tile.drawImage(data, MapPanel.this.getUiContext().getMapData());
                   } finally {
                     data.releaseReadLock();
                   }
@@ -805,28 +800,20 @@ public class MapPanel extends ImageScrollerLargeView {
   private void drawTiles(
       final Graphics2D g,
       final List<Tile> images,
-      final GameData data,
       final Rectangle2D.Double bounds,
       final List<Tile> undrawn) {
     g.translate(-bounds.getX(), -bounds.getY());
     for (final Tile tile : tileManager.getTiles(bounds)) {
-      synchronized (tile.getMutex()) {
-        final Image img;
-        if (tile.needsRedraw()) {
-          // take what we can get to avoid screen flicker
-          undrawn.add(tile);
-          img = tile.getRawImage();
-        } else {
-          img = tile.getImage(data, uiContext.getMapData());
-          images.add(tile);
-        }
-        if (img != null) {
-          g.drawImage(
-              img,
-              AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
-              this);
-        }
+      if (tile.needsRedraw()) {
+        // take what we can get to avoid screen flicker
+        undrawn.add(tile);
+      } else {
+        images.add(tile);
       }
+      g.drawImage(
+          tile.getImage(),
+          AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y),
+          this);
     }
     g.translate(bounds.getX(), bounds.getY());
   }
