@@ -96,7 +96,7 @@ subprojects {
         jacksonDataTypeVersion = '2.10.2'
         jakartaMailVersion = '1.6.4'
         javafxVersion = '13.0.2'
-        javaWebsocketVersion = '1.4.0'
+        javaWebsocketVersion = '1.4.1'
         javaxActivationVersion = '1.1.1'
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '2.3.0.1'
