@@ -108,7 +108,7 @@ subprojects {
         junitPlatformLauncherVersion = '1.5.2'
         mockitoVersion = '3.3.3'
         openFeignVersion = '10.5.1'
-        postgresqlVersion = '42.2.10'
+        postgresqlVersion = '42.2.11'
         rateLimitjVersion = '0.6.0'
         slf4jSimpleVersion = '1.7.28'
         snakeYamlVersion = '2.1'
