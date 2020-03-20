@@ -27,9 +27,7 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.AuthenticationHeaders;
-import org.triplea.http.client.lobby.chat.LobbyChatClient;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
+import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.server.access.ApiKeyAuthenticator;
@@ -40,7 +38,6 @@ import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
 import org.triplea.server.http.web.socket.SessionSet;
-import org.triplea.server.lobby.chat.ChatWebsocket;
 import org.triplea.server.lobby.chat.MessagingServiceFactory;
 import org.triplea.server.lobby.chat.event.processing.Chatters;
 import org.triplea.server.lobby.chat.moderation.ModeratorChatControllerFactory;
@@ -51,7 +48,6 @@ import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
 import org.triplea.server.lobby.game.listing.GameListingEventQueue;
 import org.triplea.server.lobby.game.listing.GameListingEventQueueFactory;
 import org.triplea.server.lobby.game.listing.GameListingFactory;
-import org.triplea.server.lobby.game.listing.GameListingWebsocket;
 import org.triplea.server.lobby.game.listing.LobbyWatcherControllerFactory;
 import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
@@ -62,10 +58,11 @@ import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFacto
 import org.triplea.server.remote.actions.RemoteActionsControllerFactory;
 import org.triplea.server.remote.actions.RemoteActionsEventQueue;
 import org.triplea.server.remote.actions.RemoteActionsEventQueueFactory;
-import org.triplea.server.remote.actions.RemoteActionsWebSocket;
 import org.triplea.server.user.account.create.CreateAccountControllerFactory;
 import org.triplea.server.user.account.login.LoginControllerFactory;
 import org.triplea.server.user.account.update.UpdateAccountControllerFactory;
+import org.triplea.server.web.socket.GameConnectionWebSocket;
+import org.triplea.server.web.socket.PlayerConnectionWebSocket;
 
 /**
  * Main entry-point for launching drop wizard HTTP server. This class is responsible for configuring
@@ -75,9 +72,8 @@ import org.triplea.server.user.account.update.UpdateAccountControllerFactory;
 public class ServerApplication extends Application<AppConfig> {
 
   private static final String[] DEFAULT_ARGS = new String[] {"server", "configuration.yml"};
-  private ServerEndpointConfig chatSocketConfiguration;
-  private ServerEndpointConfig remoteActionsConfiguration;
-  private ServerEndpointConfig gameListingConfiguration;
+  private ServerEndpointConfig gameConnectionWebsocket;
+  private ServerEndpointConfig playerConnectionWebsocket;
 
   /**
    * Main entry-point method, launches the drop-wizard http server. If no args are passed then will
@@ -107,25 +103,17 @@ public class ServerApplication extends Application<AppConfig> {
     // Note, websocket endpoint is instantiated dynamically on every new connection and does
     // not allow for constructor injection. To inject objects, we use 'userProperties' of the
     // socket configuration that can then be retrieved from a websocket session.
-    chatSocketConfiguration =
+    gameConnectionWebsocket =
         ServerEndpointConfig.Builder.create(
-                ChatWebsocket.class, LobbyChatClient.LOBBY_CHAT_WEBSOCKET_PATH)
+                GameConnectionWebSocket.class, WebsocketPaths.GAME_CONNECTIONS)
             .build();
 
-    remoteActionsConfiguration =
+    playerConnectionWebsocket =
         ServerEndpointConfig.Builder.create(
-                RemoteActionsWebSocket.class, RemoteActionListeners.NOTIFICATIONS_WEBSOCKET_PATH)
+                PlayerConnectionWebSocket.class, WebsocketPaths.PLAYER_CONNECTIONS)
             .build();
 
-    gameListingConfiguration =
-        ServerEndpointConfig.Builder.create(
-                GameListingWebsocket.class, GameListingClient.GAME_LISTING_WEBSOCKET_PATH)
-            .build();
-    bootstrap.addBundle(
-        new WebsocketBundle(
-            chatSocketConfiguration, //
-            remoteActionsConfiguration,
-            gameListingConfiguration));
+    bootstrap.addBundle(new WebsocketBundle(gameConnectionWebsocket, playerConnectionWebsocket));
   }
 
   @Override
@@ -168,20 +156,19 @@ public class ServerApplication extends Application<AppConfig> {
             configuration, jdbi, chatters, remoteActionsEventQueue, gameListingEventQueue)
         .forEach(controller -> environment.jersey().register(controller));
 
-    // Inject beans into websocket endpoint
-    chatSocketConfiguration
+    // Inject beans into websocket endpoints
+    gameConnectionWebsocket
         .getUserProperties()
-        .put(
-            ChatWebsocket.MESSAGING_SERVICE_KEY,
-            MessagingServiceFactory.build(jdbi, chatSessions, chatters));
+        .put(GameConnectionWebSocket.REMOTE_ACTIONS_QUEUE_KEY, remoteActionsEventQueue);
 
-    remoteActionsConfiguration
+    playerConnectionWebsocket
         .getUserProperties()
-        .put(RemoteActionsWebSocket.ACTIONS_QUEUE_KEY, remoteActionsEventQueue);
+        .put(PlayerConnectionWebSocket.GAME_LISTING_QUEUE_KEY, gameListingEventQueue);
 
-    gameListingConfiguration
+    final var messagingService = MessagingServiceFactory.build(jdbi, chatSessions, chatters);
+    playerConnectionWebsocket
         .getUserProperties()
-        .put(GameListingWebsocket.GAME_LISTING_EVENT_QUEUE, gameListingEventQueue);
+        .put(PlayerConnectionWebSocket.CHAT_MESSAGING_SERVICE_KEY, messagingService);
   }
 
   private static void enableRequestResponseLogging(final Environment environment) {

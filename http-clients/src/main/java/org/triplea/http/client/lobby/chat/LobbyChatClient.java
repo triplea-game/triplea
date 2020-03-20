@@ -12,19 +12,19 @@ import org.triplea.http.client.lobby.chat.messages.client.ChatClientEnvelopeFact
 import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebsocketListenerBinding;
+import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 
 /** Core websocket client to communicate with lobby chat API. */
 public class LobbyChatClient {
-  public static final String LOBBY_CHAT_WEBSOCKET_PATH = "/lobby/chat/websocket";
-
   private final ChatClientEnvelopeFactory outboundMessageFactory;
   private final GenericWebSocketClient webSocketClient;
 
   public LobbyChatClient(
       final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
     this(
-        new GenericWebSocketClient(URI.create(lobbyUri + LOBBY_CHAT_WEBSOCKET_PATH), errorHandler),
+        new GenericWebSocketClient(
+            URI.create(lobbyUri + WebsocketPaths.PLAYER_CONNECTIONS), errorHandler),
         new ChatClientEnvelopeFactory(apiKey));
   }
 

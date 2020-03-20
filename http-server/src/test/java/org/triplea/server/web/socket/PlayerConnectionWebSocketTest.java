@@ -1,4 +1,4 @@
-package org.triplea.server.lobby.chat;
+package org.triplea.server.web.socket;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,29 +11,41 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.server.lobby.chat.ChatMessagingService;
+import org.triplea.server.lobby.chat.InetExtractor;
+import org.triplea.server.lobby.game.listing.GameListingEventQueue;
 
 @ExtendWith(MockitoExtension.class)
-class ChatWebsocketTest {
-
+class PlayerConnectionWebSocketTest {
   private static final String MESSAGE = "Vandalize the fortress until it waves.";
   private static final CloseReason CLOSE_REASON =
       new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, "close reason phrase");
 
-  @Mock private Session session;
-  @Mock private MessagingService messagingService;
-  @Mock private Throwable throwable;
+  private final PlayerConnectionWebSocket chatWebsocket = new PlayerConnectionWebSocket();
 
-  private final ChatWebsocket chatWebsocket = new ChatWebsocket();
+  @Mock private Session session;
+  @Mock private ChatMessagingService messagingService;
+  @Mock private GameListingEventQueue gameListingEventQueue;
+  @Mock private Throwable throwable;
 
   @BeforeEach
   void setup() {
     when(session.getUserProperties())
         .thenReturn(
             Map.of(
-                ChatWebsocket.MESSAGING_SERVICE_KEY,
+                PlayerConnectionWebSocket.GAME_LISTING_QUEUE_KEY,
+                gameListingEventQueue,
+                PlayerConnectionWebSocket.CHAT_MESSAGING_SERVICE_KEY,
                 messagingService,
                 InetExtractor.IP_ADDRESS_KEY,
                 "/127.0.0.1:555"));
+  }
+
+  @Test
+  void onOpen() {
+    chatWebsocket.open(session);
+
+    verify(gameListingEventQueue).addListener(session);
   }
 
   @Test
@@ -48,6 +60,7 @@ class ChatWebsocketTest {
     chatWebsocket.close(session, CLOSE_REASON);
 
     verify(messagingService).handleDisconnect(session);
+    verify(gameListingEventQueue).removeListener(session);
   }
 
   @Test

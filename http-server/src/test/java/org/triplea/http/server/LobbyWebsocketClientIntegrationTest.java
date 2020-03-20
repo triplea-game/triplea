@@ -10,7 +10,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.lobby.chat.LobbyChatClient;
+import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.server.http.DropwizardTest;
 
 class LobbyWebsocketClientIntegrationTest extends DropwizardTest {
@@ -18,7 +18,7 @@ class LobbyWebsocketClientIntegrationTest extends DropwizardTest {
   @Test
   @DisplayName("Verify basic websocket operations: open, send, close")
   void verifyConnectivity() throws Exception {
-    final URI websocketUri = URI.create(localhost + LobbyChatClient.LOBBY_CHAT_WEBSOCKET_PATH);
+    final URI websocketUri = URI.create(localhost + WebsocketPaths.PLAYER_CONNECTIONS);
 
     final WebSocketClient client =
         new WebSocketClient(websocketUri) {

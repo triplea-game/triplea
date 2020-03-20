@@ -20,7 +20,7 @@ import org.triplea.server.lobby.chat.event.processing.ServerResponse;
 
 @Slf4j
 @Builder
-class MessagingService {
+public class ChatMessagingService {
   @Nonnull private final ApiKeyDaoWrapper apiKeyDaoWrapper;
   @Nonnull private final ChatEventProcessor chatEventProcessor;
   /** Sends to a single session. */
@@ -30,7 +30,7 @@ class MessagingService {
 
   @Nonnull private final Function<UserWithRoleRecord, ChatParticipant> chatParticipantAdapter;
 
-  void handleMessage(final Session session, final String message) {
+  public void handleMessage(final Session session, final String message) {
     // TODO: Project#12 Bans: check API key
     deserializeFromJson(session, message)
         .ifPresent(envelope -> handleClientEnvelope(session, envelope));
@@ -84,14 +84,14 @@ class MessagingService {
             + InetExtractor.extract(session.getUserProperties()));
   }
 
-  void handleError(final Session session, final Throwable throwable) {
+  public void handleError(final Session session, final Throwable throwable) {
     log.warn(
         "Messaging service error processing request, sending error message to client", throwable);
     final ServerMessageEnvelope error = chatEventProcessor.createErrorMessage();
     messageSender.accept(session, error);
   }
 
-  void handleDisconnect(final Session session) {
+  public void handleDisconnect(final Session session) {
     chatEventProcessor
         .disconnect(session)
         .ifPresent(envelope -> messageBroadcaster.accept(session.getOpenSessions(), envelope));

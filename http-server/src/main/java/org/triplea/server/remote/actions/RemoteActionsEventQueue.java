@@ -33,11 +33,11 @@ public class RemoteActionsEventQueue {
   @Nonnull private final SessionSet sessionSet;
   @NonNull private final BannedPlayerEventHandler bannedPlayerEventHandler;
 
-  void addSession(final Session session) {
+  public void addSession(final Session session) {
     sessionSet.put(session);
   }
 
-  void removeSession(final Session session) {
+  public void removeSession(final Session session) {
     sessionSet.remove(session);
   }
 
