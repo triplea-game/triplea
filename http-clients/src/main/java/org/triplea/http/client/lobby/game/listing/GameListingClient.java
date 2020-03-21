@@ -12,6 +12,7 @@ import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingMessageType;
 import org.triplea.http.client.web.socket.WebsocketListenerBinding;
 import org.triplea.http.client.web.socket.WebsocketListenerFactory;
+import org.triplea.http.client.web.socket.WebsocketPaths;
 
 /**
  * Client for interaction with the lobby game listing. Some operations are synchronous, game listing
@@ -21,7 +22,6 @@ import org.triplea.http.client.web.socket.WebsocketListenerFactory;
 public class GameListingClient {
   public static final int KEEP_ALIVE_SECONDS = 20;
 
-  public static final String GAME_LISTING_WEBSOCKET_PATH = "/lobby/games/listing-ws";
   public static final String FETCH_GAMES_PATH = "/lobby/games/fetch-games";
   public static final String BOOT_GAME_PATH = "/lobby/games/boot-game";
 
@@ -43,7 +43,7 @@ public class GameListingClient {
         .websocketListener(
             WebsocketListenerFactory.newListener(
                 serverUri,
-                GAME_LISTING_WEBSOCKET_PATH,
+                WebsocketPaths.PLAYER_CONNECTIONS,
                 GameListingMessageType::valueOf,
                 errorHandler,
                 gameListingListeners))

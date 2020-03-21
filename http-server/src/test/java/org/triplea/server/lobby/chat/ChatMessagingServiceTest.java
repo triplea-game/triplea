@@ -31,7 +31,7 @@ import org.triplea.server.lobby.chat.event.processing.ChatEventProcessor;
 import org.triplea.server.lobby.chat.event.processing.ServerResponse;
 
 @ExtendWith(MockitoExtension.class)
-class MessagingServiceTest {
+class ChatMessagingServiceTest {
   private static final String MALFORMED_MESSAGE = "not-a-json-message";
 
   private static final Map<String, Object> userPropertiesMap =
@@ -63,7 +63,7 @@ class MessagingServiceTest {
   @Mock private BiConsumer<Session, ServerMessageEnvelope> messageSender;
   @Mock private BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
 
-  private MessagingService messagingService;
+  private ChatMessagingService messagingService;
 
   @Mock private ServerMessageEnvelope serverEventEnvelope;
   @Mock private Session session;
@@ -71,7 +71,7 @@ class MessagingServiceTest {
   @BeforeEach
   void setup() {
     messagingService =
-        MessagingService.builder()
+        ChatMessagingService.builder()
             .apiKeyDaoWrapper(apiKeyDaoWrapper)
             .chatEventProcessor(eventProcessing)
             .messageSender(messageSender)

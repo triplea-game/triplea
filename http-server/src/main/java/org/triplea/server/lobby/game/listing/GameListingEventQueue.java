@@ -22,11 +22,11 @@ public class GameListingEventQueue {
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final SessionSet sessionSet;
 
-  void addListener(final Session session) {
+  public void addListener(final Session session) {
     sessionSet.put(session);
   }
 
-  void removeListener(final Session session) {
+  public void removeListener(final Session session) {
     sessionSet.remove(session);
   }
 
