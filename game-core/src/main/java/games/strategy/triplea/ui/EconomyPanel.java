@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import java.awt.GridLayout;

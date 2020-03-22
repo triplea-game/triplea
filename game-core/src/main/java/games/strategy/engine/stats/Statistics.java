@@ -1,8 +1,9 @@
 package games.strategy.engine.stats;
 
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import games.strategy.engine.history.Round;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Value;
 
 /**
@@ -12,8 +13,6 @@ import lombok.Value;
  */
 @Value
 public class Statistics {
-  private final Table<String, Round, Double> productionOfPlayerInRound = HashBasedTable.create();
-  private final Table<String, Round, Double> tuvOfPlayerInRound = HashBasedTable.create();
-  private final Table<String, Round, Double> unitsOfPlayerInRound = HashBasedTable.create();
-  private final Table<String, Round, Double> victoryCitiesOfPlayerInRound = HashBasedTable.create();
+  private final Map<OverTimeStatisticType, Table<String, Round, Double>> overTimeStatistics =
+      new HashMap<>();
 }
