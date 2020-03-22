@@ -31,7 +31,7 @@ java -server \
     -Xmx{{ bot_max_memory }} \
     -Djava.awt.headless=true \
     -jar {{ bot_jar }} \
-    -Ptriplea.port=${BOT_PORT} \
-    -Ptriplea.name={{ bot_name }}-${BOT_NUMBER} \
-    -Ptriplea.lobby.uri={{ bot_lobby_uri }} \
-    -Ptriplea.map.folder={{ bot_maps_folder }}
+{% for key,value in bot_run_args.items()|sort(attribute='1') %}
+  -P{{ key }}={{ value }} \
+{% endfor %}
+

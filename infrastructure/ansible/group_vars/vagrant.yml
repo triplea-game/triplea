@@ -6,3 +6,18 @@ lobby_uri: "http://localhost:8080"
 lobby_db_password: "vagrant-db-password"
 nginx_ssl_certificate: "/vagrant/.vagrant/{{ lookup('env','CRT_FILE') }}"
 
+bot_numbers: ["01", "02"]
+bot_run_args:
+  triplea.game: ""
+  triplea.lobby.game.comments: "automated_host"
+  triplea.lobby.game.hostedBy: "{{ bot_name }}-${BOT_NUMBER}"
+  triplea.lobby.game.supportEmail: "do-not-send@triplea-game.org"
+  triplea.lobby.game.supportPassword: ""
+  triplea.lobby.host: "localhost"
+  triplea.lobby.port: "3304"
+  triplea.map.folder: "$MAPS_FOLDER"
+  triplea.name: "{{ bot_name }}-${BOT_NUMBER}"
+  triplea.port: "${BOT_PORT}"
+  triplea.server: true
+  triplea.server.password: ""
+  triplea.lobby.game.reconnection: "172800"
