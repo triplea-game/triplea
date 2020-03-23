@@ -1,2 +1,3 @@
 lobby_uri: "https://prerelease.triplea-game.org"
-
+using_latest: true
+bot_numbers: ["01", "02"]

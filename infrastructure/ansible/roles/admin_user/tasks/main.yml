@@ -25,7 +25,7 @@
 - name: create ssh directory
   become: true
   file:
-    path: "/home/{{ admin_user }}/.ssh/"
+    path: "{{ admin_home }}/.ssh/"
     state: directory
     mode: "700"
     owner: "{{ admin_user }}"
@@ -35,7 +35,7 @@
   become: true
   copy:
     src: authorized_keys
-    dest: "/home/{{ admin_user }}/.ssh/authorized_keys"
+    dest: "{{ admin_home }}/.ssh/authorized_keys"
     mode: "600"
     owner: "{{ admin_user }}"
     group: "{{ admin_user }}"
