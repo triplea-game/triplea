@@ -7,9 +7,9 @@ import java.net.InetAddress;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.UserJdbiDao;
 import org.triplea.db.dao.UserRoleDao;
@@ -21,31 +21,33 @@ import org.triplea.domain.data.UserName;
 import org.triplea.java.Postconditions;
 
 /** Wrapper to abstract away DB details of how API key is stored and to provide convenience APIs. */
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Builder
 public class ApiKeyDaoWrapper {
 
-  private final LobbyApiKeyDao apiKeyDao;
-  private final GameHostingApiKeyDao gameHostApiKeyDao;
-  private final UserJdbiDao userJdbiDao;
-  private final UserRoleDao userRoleDao;
-  private final Supplier<ApiKey> keyMaker;
+  @Nonnull private final LobbyApiKeyDao lobbyApiKeyDao;
+  @Nonnull private final GameHostingApiKeyDao gameHostApiKeyDao;
+  @Nonnull private final UserJdbiDao userJdbiDao;
+  @Nonnull private final UserRoleDao userRoleDao;
+  @Nonnull private final Supplier<ApiKey> keyMaker;
   /** Hashing function so that we do not store plain-text API key values in database. */
-  private final Function<ApiKey, String> keyHashingFunction;
+  @Nonnull private final Function<ApiKey, String> keyHashingFunction;
 
   @SuppressWarnings("UnstableApiUsage")
-  public ApiKeyDaoWrapper(final Jdbi jdbi) {
-    this(
-        jdbi.onDemand(LobbyApiKeyDao.class),
-        jdbi.onDemand(GameHostingApiKeyDao.class),
-        jdbi.onDemand(UserJdbiDao.class),
-        jdbi.onDemand(UserRoleDao.class),
-        ApiKey::newKey,
-        apiKey -> Hashing.sha512().hashString(apiKey.getValue(), Charsets.UTF_8).toString());
+  public static ApiKeyDaoWrapper build(final Jdbi jdbi) {
+    return ApiKeyDaoWrapper.builder()
+        .lobbyApiKeyDao(jdbi.onDemand(LobbyApiKeyDao.class))
+        .gameHostApiKeyDao(jdbi.onDemand(GameHostingApiKeyDao.class))
+        .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
+        .userRoleDao(jdbi.onDemand(UserRoleDao.class))
+        .keyMaker(ApiKey::newKey)
+        .keyHashingFunction(
+            apiKey -> Hashing.sha512().hashString(apiKey.getValue(), Charsets.UTF_8).toString())
+        .build();
   }
 
   // TODO: update tests
   public Optional<UserWithRoleRecord> lookupByApiKey(final ApiKey apiKey) {
-    return apiKeyDao
+    return lobbyApiKeyDao
         .lookupByApiKey(keyHashingFunction.apply(apiKey))
         .or(
             () ->
@@ -109,7 +111,7 @@ public class ApiKeyDaoWrapper {
     final String hashedKey = keyHashingFunction.apply(apiKey);
 
     final int rowsInserted =
-        apiKeyDao.storeKey(
+        lobbyApiKeyDao.storeKey(
             username,
             userId,
             userRoleId,
@@ -121,6 +123,6 @@ public class ApiKeyDaoWrapper {
   }
 
   public Optional<GamePlayerLookup> lookupPlayerByChatId(final PlayerChatId playerChatId) {
-    return apiKeyDao.lookupByPlayerChatId(playerChatId.getValue());
+    return lobbyApiKeyDao.lookupByPlayerChatId(playerChatId.getValue());
   }
 }

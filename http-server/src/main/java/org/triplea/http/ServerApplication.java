@@ -36,7 +36,6 @@ import org.triplea.modules.access.authorization.BannedPlayerFilter;
 import org.triplea.modules.access.authorization.RoleAuthorizer;
 import org.triplea.modules.chat.MessagingServiceFactory;
 import org.triplea.modules.chat.event.processing.Chatters;
-import org.triplea.modules.chat.moderation.ModeratorChatControllerFactory;
 import org.triplea.modules.error.reporting.ErrorReportControllerFactory;
 import org.triplea.modules.forgot.password.ForgotPasswordControllerFactory;
 import org.triplea.modules.game.ConnectivityControllerFactory;
@@ -53,6 +52,7 @@ import org.triplea.modules.moderation.bad.words.BadWordControllerFactory;
 import org.triplea.modules.moderation.ban.name.UsernameBanControllerFactory;
 import org.triplea.modules.moderation.ban.user.BannedPlayerEventHandler;
 import org.triplea.modules.moderation.ban.user.UserBanControllerFactory;
+import org.triplea.modules.moderation.disconnect.user.DisconnectUserController;
 import org.triplea.modules.moderation.moderators.ModeratorsControllerFactory;
 import org.triplea.modules.moderation.remote.actions.RemoteActionsControllerFactory;
 import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueue;
@@ -212,7 +212,7 @@ public class ServerApplication extends Application<AppConfig> {
       final MetricRegistry metrics, final Jdbi jdbi) {
     return new CachingAuthenticator<>(
         metrics,
-        new ApiKeyAuthenticator(new ApiKeyDaoWrapper(jdbi)),
+        new ApiKeyAuthenticator(ApiKeyDaoWrapper.build(jdbi)),
         CacheBuilder.newBuilder().expireAfterAccess(Duration.ofMinutes(10)).maximumSize(10000));
   }
 
@@ -233,12 +233,12 @@ public class ServerApplication extends Application<AppConfig> {
         BadWordControllerFactory.buildController(jdbi),
         ConnectivityControllerFactory.buildController(),
         CreateAccountControllerFactory.buildController(jdbi),
+        DisconnectUserController.build(jdbi, chatters),
         ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
         GameHostingControllerFactory.buildController(jdbi),
         GameListingControllerFactory.buildController(gameListing),
         LobbyWatcherControllerFactory.buildController(gameListing),
         LoginControllerFactory.buildController(jdbi, chatters),
-        ModeratorChatControllerFactory.buildController(jdbi, chatters, remoteActionsEventQueue),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
         UserBanControllerFactory.buildController(jdbi, chatters, remoteActionsEventQueue),
         ErrorReportControllerFactory.buildController(appConfig, jdbi),

@@ -27,7 +27,9 @@ public class LoginControllerFactory {
                         .accessLogDao(jdbi.onDemand(AccessLogDao.class))
                         .build())
                 .apiKeyGenerator(
-                    ApiKeyGenerator.builder().apiKeyDaoWrapper(new ApiKeyDaoWrapper(jdbi)).build())
+                    ApiKeyGenerator.builder()
+                        .apiKeyDaoWrapper(ApiKeyDaoWrapper.build(jdbi))
+                        .build())
                 .anonymousLogin(AnonymousLoginFactory.build(jdbi, chatters))
                 .tempPasswordLogin(
                     TempPasswordLogin.builder()

@@ -10,9 +10,12 @@ import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+import javax.websocket.Session;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,12 +24,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.db.dao.user.ban.UserBanRecord;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.modules.chat.event.processing.Chatters;
 import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueue;
 
@@ -61,20 +66,26 @@ class UserBanServiceTest {
           .username(USERNAME)
           .systemId("Love ho! fight to be desired.")
           .ip("99.99.00.99")
-          .hoursToBan(20)
+          .minutesToBan(20)
           .build();
 
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  @Mock private UserBanDao bannedUserDao;
+  @Mock private UserBanDao userBanDao;
   @Mock private Supplier<String> publicIdSupplier;
   @Mock private Chatters chatters;
   @Mock private RemoteActionsEventQueue playerBanEvents;
+
+  @SuppressWarnings("unused") // injected into UserBanService
+  @Mock
+  private ApiKeyDaoWrapper apiKeyDaoWrapper;
+
+  @Mock private BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
 
   @InjectMocks private UserBanService bannedUsersService;
 
   @Test
   void getBannedUsers() {
-    when(bannedUserDao.lookupBans()).thenReturn(List.of(USER_BAN_RECORD_1, USER_BAN_RECORD_2));
+    when(userBanDao.lookupBans()).thenReturn(List.of(USER_BAN_RECORD_1, USER_BAN_RECORD_2));
 
     final List<UserBanData> result = bannedUsersService.getBannedUsers();
 
@@ -100,7 +111,7 @@ class UserBanServiceTest {
 
     @Test
     void removeUserBanFailureCase() {
-      when(bannedUserDao.removeBan(BAN_ID)).thenReturn(0);
+      when(userBanDao.removeBan(BAN_ID)).thenReturn(0);
 
       final boolean result = bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID);
 
@@ -110,8 +121,8 @@ class UserBanServiceTest {
 
     @Test
     void removeUserBanSuccessCase() {
-      when(bannedUserDao.removeBan(BAN_ID)).thenReturn(1);
-      when(bannedUserDao.lookupUsernameByBanId(BAN_ID)).thenReturn(Optional.of(USERNAME));
+      when(userBanDao.removeBan(BAN_ID)).thenReturn(1);
+      when(userBanDao.lookupUsernameByBanId(BAN_ID)).thenReturn(Optional.of(USERNAME));
 
       final boolean result = bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID);
 
@@ -139,25 +150,26 @@ class UserBanServiceTest {
 
     private void givenBanDaoUpdateCount(final int updateCount) {
       when(publicIdSupplier.get()).thenReturn(BAN_ID);
-      when(bannedUserDao.addBan(
+      when(userBanDao.addBan(
               BAN_ID,
               USER_BAN_PARAMS.getUsername(),
               USER_BAN_PARAMS.getSystemId(),
               USER_BAN_PARAMS.getIp(),
-              USER_BAN_PARAMS.getHoursToBan()))
+              USER_BAN_PARAMS.getMinutesToBan()))
           .thenReturn(updateCount);
     }
 
     @Test
     void banUserSuccessCase() {
       givenBanDaoUpdateCount(1);
+      when(chatters.hasPlayer(UserName.of(USER_BAN_PARAMS.getUsername()))).thenReturn(true);
 
       assertThat(bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS), is(true));
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(
               ModeratorAuditHistoryDao.AuditArgs.builder()
                   .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
-                  .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getHoursToBan() + " hours")
+                  .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getMinutesToBan() + " hours")
                   .moderatorUserId(MODERATOR_ID)
                   .build());
 
@@ -165,6 +177,7 @@ class UserBanServiceTest {
           .disconnectPlayerSessions(eq(UserName.of(USER_BAN_PARAMS.getUsername())), any());
       verify(playerBanEvents)
           .addPlayerBannedEvent(IpAddressParser.fromString(USER_BAN_PARAMS.getIp()));
+      verify(messageBroadcaster).accept(any(), any());
     }
   }
 }

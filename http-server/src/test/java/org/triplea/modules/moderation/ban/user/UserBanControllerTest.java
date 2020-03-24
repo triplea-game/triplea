@@ -33,7 +33,7 @@ class UserBanControllerTest {
   private final UserBanParams banUserParams =
       UserBanParams.builder()
           .systemId("Mainlands scream with urchin at the dead jamaica!")
-          .hoursToBan(50)
+          .minutesToBan(50)
           .ip("Hoist me ale, ye shiny sea-dog!")
           .username("Where is the mighty tobacco?")
           .build();

@@ -15,7 +15,7 @@ public class MessagingServiceFactory {
   public ChatMessagingService build(
       final Jdbi jdbi, final SessionSet sessionSet, final Chatters chatters) {
     return ChatMessagingService.builder()
-        .apiKeyDaoWrapper(new ApiKeyDaoWrapper(jdbi))
+        .apiKeyDaoWrapper(ApiKeyDaoWrapper.build(jdbi))
         .chatEventProcessor(new ChatEventProcessor(chatters, sessionSet))
         .messageSender(new MessageSender())
         .messageBroadcaster(new MessageBroadcaster(new MessageSender()))

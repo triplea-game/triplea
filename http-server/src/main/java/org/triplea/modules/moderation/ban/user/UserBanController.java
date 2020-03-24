@@ -1,7 +1,11 @@
 package org.triplea.modules.moderation.ban.user;
 
 import com.google.common.base.Preconditions;
+import es.moki.ratelimij.dropwizard.annotation.Rate;
+import es.moki.ratelimij.dropwizard.annotation.RateLimited;
+import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -11,6 +15,8 @@ import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
+import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
+import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
@@ -47,10 +53,26 @@ public class UserBanController extends HttpController {
     Preconditions.checkArgument(banUserParams.getSystemId() != null);
     Preconditions.checkArgument(banUserParams.getIp() != null);
     Preconditions.checkArgument(banUserParams.getUsername() != null);
-    Preconditions.checkArgument(banUserParams.getHoursToBan() > 0);
+    Preconditions.checkArgument(banUserParams.getMinutesToBan() > 0);
 
     final boolean banned =
         bannedUsersService.banUser(authenticatedUser.getUserIdOrThrow(), banUserParams);
+    return Response.status(banned ? 200 : 400).build();
+  }
+
+  @POST
+  @Path(ModeratorChatClient.BAN_PLAYER_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {@Rate(limit = 5, duration = 1, timeUnit = TimeUnit.MINUTES)})
+  public Response banPlayer(
+      @Auth final AuthenticatedUser authenticatedUser, final BanPlayerRequest banPlayerRequest) {
+    Preconditions.checkNotNull(banPlayerRequest);
+    Preconditions.checkNotNull(banPlayerRequest.getPlayerChatId());
+    Preconditions.checkArgument(banPlayerRequest.getBanMinutes() > 0);
+
+    final boolean banned =
+        bannedUsersService.banUser(authenticatedUser.getUserIdOrThrow(), banPlayerRequest);
     return Response.status(banned ? 200 : 400).build();
   }
 }

@@ -28,7 +28,7 @@ class AccessLogTabModelTest {
           .username("Never sail a captain.")
           .ip("Aye, fine beauty!")
           .systemId("Cockroaches stutter from endurance like jolly scallywags.")
-          .hoursToBan(10)
+          .minutesToBan(10)
           .build();
   private static final String USERNAME = "Ahoy there's nothing like the stormy death.";
   private static final PagingParams PAGING_PARAMS =

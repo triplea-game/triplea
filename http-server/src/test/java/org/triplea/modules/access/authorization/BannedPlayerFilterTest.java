@@ -1,4 +1,4 @@
-package org.triplea.http.access;
+package org.triplea.modules.access.authorization;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -27,7 +27,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.http.client.SystemIdHeader;
-import org.triplea.modules.access.authorization.BannedPlayerFilter;
 
 @SuppressWarnings("SameParameterValue")
 @ExtendWith(MockitoExtension.class)

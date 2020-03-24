@@ -16,6 +16,10 @@ public class MessageBroadcaster implements BiConsumer<Collection<Session>, Serve
 
   private final BiConsumer<Session, ServerMessageEnvelope> messageSender;
 
+  public static MessageBroadcaster build() {
+    return new MessageBroadcaster(new MessageSender());
+  }
+
   /**
    * Sends a message to sessions.
    *
