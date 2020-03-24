@@ -1,3 +1,5 @@
+lobby_user:
+
 user_role:
   - id: 1
     name: ANONYMOUS
