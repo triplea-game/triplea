@@ -50,7 +50,7 @@ to be enabled.
 
 This class contains endpoint markups and receives HTTP requests.
 The controller methods should do quick/basic validation and then
-delegate as much as possible to a 'service' class. 
+delegate as much as possible to a 'service' class.
 
 ### (3) Service class
 The service class contains 'business' logic and should perform any database
@@ -88,7 +88,7 @@ a 'single-use-key'. This key is then provided to that moderator.
 
 The moderator can then 'register' the key, where they provide
 the single-use-key and a password. The backend verifies
-the single-use-key and then generates a new key. This is 
+the single-use-key and then generates a new key. This is
 done so that only the moderator will then 'know' the value
 of their new key. The password provided is used as a salt.
 
@@ -118,8 +118,8 @@ an API key value.
 
 ## Multiple SLF4J Bindings Not Allowed
 
-Dropwizard uses Logback and has a binding with SLF4J baked in. Additional SLF4J bindings 
-should generate a warning, but will ultimately cause problems (when run from gradle) and drop 
+Dropwizard uses Logback and has a binding with SLF4J baked in. Additional SLF4J bindings
+should generate a warning, but will ultimately cause problems (when run from gradle) and drop
 wizard may fail to start with this error:
 
 ```bash
@@ -138,7 +138,7 @@ ERROR [2019-06-06 05:07:22,247] org.glassfish.jersey.server.ServerRuntime$Respon
 ! java.lang.IllegalStateException: The output stream has already been closed.
 ```
 
-The impact of this is: 
+The impact of this is:
 - server thread hangs
 - client hangs
 - server does not shutdown cleanly
