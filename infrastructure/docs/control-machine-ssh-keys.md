@@ -1,5 +1,4 @@
-
-## Ansible Public Key
+# Ansible Public Key
 
 Ansible needs to communicate to target servers via ssh. Locally we have a private key
 that is encrypted and decrypted when ansible runs (decryption is via ansible vault).

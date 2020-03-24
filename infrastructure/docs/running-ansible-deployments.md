@@ -1,7 +1,6 @@
-## Running Ansible
+# Running Ansible
 
-- Prerelease is automatic
-  - Deployments are run as the last step of travis builds, after artifacts
+Deployments are run as the last step of travis builds, after artifacts
 are uploaded to github releases. A utility script will download those artifacts
 and place them in a location ansible can find them, then deployment to
 prerelease will start which updates/upgrades/installs to the servers
@@ -11,14 +10,11 @@ defined in the prerelease inventory file.
 - To run deployment manually:
 
 Assuming a vault password file named 'vault_password' is created in the same
-folder and contains the ansible vault password, run: 
+folder and contains the ansible vault password, run:
 
 ```bash
 ./run_deployment [version_to_install] [ansible_args]
 ```
-
-examples
-
 
 ### Typical Deployment Command
 
@@ -28,14 +24,13 @@ examples
 
 ### Useful flags
 
-* `-v`: Verbose output
-* `-vvv`: Debug output
-* `-vvvv`: SSL Debug output
-* `--diff`: Shows differences in updated templates and files
-* `-t`: Tags
+- `-v`: Verbose output
+- `-vvv`: Debug output
+- `-vvvv`: SSL Debug output
+- `--diff`: Shows differences in updated templates and files
+- `-t`: Tags
 
 ### Examples with Tags
-
 
 #### Deploy just bots
 

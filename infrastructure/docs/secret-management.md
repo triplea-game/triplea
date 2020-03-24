@@ -1,6 +1,6 @@
 ## Vault Password
 
-To run ansible, you will need to create a file named 'vault_password' 
+To run ansible, you will need to create a file named 'vault_password'
 and add to that file the ansible vault passowrd (project admins/maintainers will have this).
 
 ```
