@@ -1,12 +1,12 @@
 
-<!-- 
-  Commit comment above summarizing the update.  If multiple commits please 
+<!--
+  Commit comment above summarizing the update.  If multiple commits please
   summarize the change above. Commit comments should include an overview of
   the updates and the goal and reasoning behind the update.
   Code standards and PR guidelines can be found at:
   - https://github.com/triplea-game/triplea/wiki/Contribution-Guidelines
   - https://github.com/triplea-game/triplea/wiki/Code-Reviews
---> 
+-->
 
 
 ## Functional Changes
@@ -23,7 +23,7 @@
 
 ## Testing
 <!--
-  Describe any manual testing performed below. 
+  Describe any manual testing performed below.
 -->
 
 
@@ -38,7 +38,7 @@
 -->
 
 
-<!-- 
+<!--
   Uncomment the below and add any additional details that would be helpful for reviewers.
 -->
 <!--

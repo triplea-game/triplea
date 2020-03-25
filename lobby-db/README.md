@@ -2,18 +2,18 @@
 
 TODO: rename this project to lobby-db-schema and ensure production migration scripts still work
 
-- local lobby database: [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile) 
+- local lobby database: [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile)
 - [migrations files](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration).
 is where we check-in SQL commands to update database. Any new files are run automatically as part of lobby deployment.
 
- 
+
 ## Dev Setup
 
 To launch a local database on Docker, run: `launch_db`
 
 ### Prerequisites
 - Docker
-- `psql` (postgres-client) command 
+- `psql` (postgres-client) command
 
 ### Typical Usage
 

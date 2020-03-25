@@ -16,7 +16,7 @@ defined in the prerelease inventory file.
 - To run deployment manually:
 
 Assuming a vault password file named 'vault_password' is created in the same
-folder and contains the ansible vault password, run: 
+folder and contains the ansible vault password, run:
 
 ```bash
 ./run_deployment [version_to_install] [ansible_args]
@@ -76,7 +76,7 @@ and deployed to github releases.
 
 ## Vault Password
 
-To run ansible, you will need to create a file named 'vault_password' 
+To run ansible, you will need to create a file named 'vault_password'
 and add to that file the ansible vault passowrd (project admins/maintainers will have this).
 
 ```

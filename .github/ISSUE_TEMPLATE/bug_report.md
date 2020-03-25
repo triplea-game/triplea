@@ -10,7 +10,7 @@ assignees: ''
 **How can the problem be recreated?**
 
 <!--
-Example: 
+Example:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -30,7 +30,7 @@ Please zip and post a save game to this bug report!
 
 To zip a save game:
  - find the save game file ending with '.tsvg'
- - use a 'zip' program like winzip (file compression, 
+ - use a 'zip' program like winzip (file compression,
    example: https://www.wikihow.com/Make-a-Zip-File)
 
 Once zipped, you can post the zip file to this issue by clicking
