@@ -1,8 +1,7 @@
 # Ansible Overview
 
 * Deployments are done with [ansible](https://www.ansible.com/)
-* Deployments are [idempotent](https://shadow-soft.com/ansible-idempotency-configuration-
-drift/)
+* Deployments are [idempotent](https://shadow-soft.com/ansible-idempotency-configuration-drift/)
 
 Ansible consists of three main components:
 
