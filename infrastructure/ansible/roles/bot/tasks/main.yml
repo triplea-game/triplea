@@ -44,11 +44,15 @@
     - "{{ bot_install_home }}"
     - "{{ bot_maps_folder }}"
 
+- name: download maps on bot server
+  become: true
+  command: "{{ admin_home }}/download-all-maps"
+
 - name: deploy jar file if using latest
   when: using_latest
   become: true
   copy:
-    src: "triplea-game-headless-{{ version }}-all.jar"
+    src: "triplea-game-headless-{{ version }}.jar"
     dest: "{{ bot_jar }}"
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"
