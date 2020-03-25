@@ -3,12 +3,9 @@
 Common test utilities, meant to be included as a test dependency
 in all other projects.
 
-
 ## Examples
 
-
 ### Custom Hamcrest Matcher
-
 
 ```java
   @Test

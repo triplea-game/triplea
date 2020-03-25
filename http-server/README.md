@@ -33,16 +33,12 @@ Of note, a reference to `AppConfig` is passed to the main server application
 `ServerApplication` which can then wire those properties to any endpoint
 'controllers' that would need configuration values.
 
-
 ## Typical Design of Endpoints
 
 Endpoints typically are powered by four types of classes.
 
-
 ### (1) ControllerFactory class
 Wires up all dependencies and creates the controller class.
-
-
 
 ### (2) Controller class
 Controller classes need to be registered in `ServerApplicaton.java`
@@ -68,7 +64,6 @@ Any transaction methods can live there as a 'default' method.
 For example, password hashing should be done at the service layer
 (unless we can do it by DB function in SQL directly), and then
 the hashed password is passed to DAO for lookup.
-
 
 # Design Notes
 
@@ -106,7 +101,6 @@ and shall not be persisted anyways.
 
 API keys are stored in "client settings", which are stored
 with the OS and persist across TripleA installations.
-
 
 ## API Key Rate Limiting
 
@@ -166,7 +160,6 @@ Contains Java code focused on executing SQL. Parameters passed to this
 layer should be as simple as possible so that this layer is as close
 to pure SQL as possible.
 
-
 ### JDBI result mapper
 
 To return data objects from JDBI queries, register mappers in `JdbiDatabase.java`
@@ -176,7 +169,6 @@ To return data objects from JDBI queries, register mappers in `JdbiDatabase.java
 (1)  The mapped data object should have a static `buildResultMapper` function
 
 (2) Use constants to reference columns names
-
 
 #### Patterns for JDBI Result Data Objects
 
@@ -191,7 +183,6 @@ Do not return DAO data objects to http clients. Typically the backend
 server layer will convert DAO data objects into a shared data object
 that is shared between front-end and backend. This way DB changes do
 not cascade to the front-end clients.
-
 
 ### Design Pattern for Transactions
 
