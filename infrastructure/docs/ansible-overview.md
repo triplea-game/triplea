@@ -6,9 +6,9 @@ drift/)
 
 Ansible consists of three main components:
 
-  * roles: think of these as applications
-  * inventory files: lists servers or hosts by group
-  * playbooks: binds host groups to roles
+* roles: think of these as applications
+* inventory files: lists servers or hosts by group
+* playbooks: binds host groups to roles
 
 Per environment configuration is done through hostgroups, defined in inventory
 files. For example the production inventory file will have a hostgroup called
