@@ -2,8 +2,10 @@
 
 ./gradlew spotlessApply
 
-# Trim trailing spaces in .md files
 find . -name "*.md" -type f  | while read -r file; do
+  # Trim trailing spaces in .md files
   sed -i 's/ *$//' "$file"
+  # Combine multiple blanks lines together into a single
+  sed -i '/^$/N;/^\n$/D' "$file"
 done
 
