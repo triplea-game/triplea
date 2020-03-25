@@ -9,3 +9,5 @@ lobby_db_name: lobby_db
 lobby_db_user: lobby_user
 version: "{{ lookup('env', 'VERSION') }}"
 
+admin_user: "admin"
+admin_home: "/home/{{ admin_user }}"

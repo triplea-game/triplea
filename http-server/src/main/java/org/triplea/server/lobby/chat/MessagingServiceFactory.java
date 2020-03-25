@@ -12,9 +12,9 @@ import org.triplea.server.lobby.chat.event.processing.Chatters;
 @UtilityClass
 public class MessagingServiceFactory {
 
-  public MessagingService build(
+  public ChatMessagingService build(
       final Jdbi jdbi, final SessionSet sessionSet, final Chatters chatters) {
-    return MessagingService.builder()
+    return ChatMessagingService.builder()
         .apiKeyDaoWrapper(new ApiKeyDaoWrapper(jdbi))
         .chatEventProcessor(new ChatEventProcessor(chatters, sessionSet))
         .messageSender(new MessageSender())

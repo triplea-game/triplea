@@ -1,1 +1,20 @@
 lobby_uri: "https://production.triplea-game.org"
+version: "1.9.0.0.12226"
+using_latest: false
+java_version: "openjdk-8-jdk-headless"
+
+bot_run_args:
+  triplea.game: ""
+  triplea.lobby.game.comments: "automated_host"
+  triplea.lobby.game.hostedBy: "Bot{{ bot_prefix }}${BOT_NUMBER}_{{ bot_name }}"
+  triplea.lobby.game.reconnection: "172800"
+  triplea.lobby.game.supportEmail: "do-not-send@triplea-game.org"
+  triplea.lobby.game.supportPassword: ""
+  triplea.lobby.host: "lobby.triplea-game.org"
+  triplea.lobby.port: "3304"
+  triplea.lobby.uri: "{{ bot_lobby_uri }}"
+  triplea.map.folder: "{{ bot_maps_folder }}"
+  triplea.name: "Bot{{ bot_prefix }}${BOT_NUMBER}_{{ bot_name }}"
+  triplea.port: "${BOT_PORT}"
+  triplea.server.password: ""
+  triplea.server: "true"

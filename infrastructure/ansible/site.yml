@@ -15,7 +15,7 @@
         - nginx
         - http_server
     - name: admin_user
-      tags: [ admin_user ]
+      tags: [ admin_user, bots ]
     - name: firewall
       tags: [ firewall ]
     - name: security
@@ -66,6 +66,7 @@
   serial: 100%
   tags: bots
   roles:
+    - admin_user
+    - firewall
     - java
-    - role: bot
-      tags: [ bot ]
+    - bot

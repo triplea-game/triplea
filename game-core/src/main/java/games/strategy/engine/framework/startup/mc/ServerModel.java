@@ -75,6 +75,7 @@ import org.triplea.http.client.remote.actions.messages.server.RemoteActionListen
 import org.triplea.http.client.remote.actions.messages.server.ServerRemoteActionMessageType;
 import org.triplea.http.client.web.socket.WebsocketListenerBinding;
 import org.triplea.http.client.web.socket.WebsocketListenerFactory;
+import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
@@ -420,7 +421,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         remoteActionsListener =
             WebsocketListenerFactory.newListener(
                 lobbyUri,
-                RemoteActionListeners.NOTIFICATIONS_WEBSOCKET_PATH,
+                WebsocketPaths.GAME_CONNECTIONS,
                 ServerRemoteActionMessageType::valueOf,
                 errorHandler,
                 RemoteActionListeners.builder()

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+./gradlew spotlessApply
+
+# Trim trailing spaces in .md files
+find . -name "*.md" -type f  | while read -r file; do
+  sed -i 's/ *$//' "$file"
+done
+

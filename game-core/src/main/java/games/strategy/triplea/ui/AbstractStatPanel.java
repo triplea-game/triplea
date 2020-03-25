@@ -2,8 +2,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.stats.AbstractStat;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,23 +39,5 @@ public abstract class AbstractStatPanel extends JPanel {
     final List<GamePlayer> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
     players.sort(new PlayerOrderComparator(gameData));
     return players;
-  }
-
-  static class ResourceStat extends AbstractStat {
-    final Resource resource;
-
-    ResourceStat(final Resource resource) {
-      this.resource = resource;
-    }
-
-    @Override
-    public String getName() {
-      return resource == null ? "" : resource.getName();
-    }
-
-    @Override
-    public double getValue(final GamePlayer player, final GameData data) {
-      return player.getResources().getQuantity(resource);
-    }
   }
 }

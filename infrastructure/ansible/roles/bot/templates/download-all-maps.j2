@@ -1,0 +1,20 @@
+#!/bin/bash
+
+## note:
+##  -  it appears that it takes some time for a repo to show up in an orgs repo list
+##  -  the curl call below is rate limited, not intended for repeated invocations
+
+# Usage:
+# - Simply execute this script without any arguments
+
+sudo -u {{ bot_user }} mkdir -p {{ bot_maps_folder }}
+cd {{ bot_maps_folder }}
+for j in 1 2; do
+  while read mapRepo; do
+    downloadFile="$(echo $mapRepo | sed 's|.*/||')-master.zip"
+    if [ ! -e "$downloadFile" ]; then
+      sudo -u {{ bot_user }} wget -O "$downloadFile" "https://github.com/$mapRepo/archive/master.zip"
+    fi
+  done < <(curl --silent "https://api.github.com/orgs/triplea-maps/repos?page=$j&per_page=1000" \
+          | grep full_name | sed 's/.*: "//' | sed 's/",$//')
+done

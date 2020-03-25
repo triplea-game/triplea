@@ -2,8 +2,8 @@
 
 Common test utilities, meant to be included as a test dependency
 in all other projects.
- 
- 
+
+
 ## Examples
 
 
@@ -22,7 +22,7 @@ in all other projects.
     return CustomMatcher.<ArgValidationResult>builder()
         .description("Expecting result to be valid? " + valid)
         .checkCondition(result -> result.isValid() == valid)
-        .debug(result -> "Optional Custom debug info of actual value tested," 
+        .debug(result -> "Optional Custom debug info of actual value tested,"
         + " a 'result#toString' is default")
         .build();
    }

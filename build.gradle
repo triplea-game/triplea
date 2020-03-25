@@ -5,7 +5,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.28.0'
     id 'io.franzbecker.gradle-lombok' version '3.3.0' apply false
     id 'net.ltgt.errorprone' version '1.1.1' apply false
-    id 'com.diffplug.gradle.spotless' version '3.27.2' apply false
+    id 'com.diffplug.gradle.spotless' version '3.28.0' apply false
     id "org.sonarqube" version "2.8"
 }
 
@@ -96,16 +96,16 @@ subprojects {
         jacksonDataTypeVersion = '2.10.3'
         jakartaMailVersion = '1.6.5'
         javafxVersion = '13.0.2'
-        javaWebsocketVersion = '1.4.0'
+        javaWebsocketVersion = '1.4.1'
         javaxActivationVersion = '1.1.1'
         jaxbApiVersion = '2.3.1'
         jaxbCoreVersion = '2.3.0.1'
         jaxbImplVersion = '2.3.2'
         jdbiVersion = '3.12.2'
         jlayerVersion = '1.0.1.4'
-        junitJupiterVersion = '5.6.0'
+        junitJupiterVersion = '5.6.1'
         junitPioneerVersion = '0.5.4'
-        junitPlatformLauncherVersion = '1.5.2'
+        junitPlatformLauncherVersion = '1.6.1'
         mockitoVersion = '3.3.3'
         openFeignVersion = '10.5.1'
         postgresqlVersion = '42.2.11'

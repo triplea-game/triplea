@@ -1,0 +1,5 @@
+#!/bin/bash
+
+{% for item in bot_numbers %}
+sudo service bot@{{ item }} start
+{% endfor %}

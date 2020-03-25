@@ -7,6 +7,7 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ProductionStat;
+import games.strategy.engine.stats.ResourceStat;
 import games.strategy.engine.stats.TuvStat;
 import games.strategy.engine.stats.UnitsStat;
 import games.strategy.engine.stats.VictoryCityStat;

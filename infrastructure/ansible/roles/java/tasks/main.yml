@@ -1,5 +1,6 @@
-- name: install openjdk-11-jre
+- name: install java
   become: true
   apt:
     state: present
-    name: openjdk-11-jre-headless
+    update_cache: true
+    name: "{{ java_version }}"

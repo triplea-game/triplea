@@ -47,21 +47,14 @@ server {
       proxy_redirect      https://localhost:443 https://localhost:8080;
     }
 
-    location /lobby/chat/websocket {
+    location /game-connection/ws {
       proxy_pass http://localhost:8080;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
     }
 
-    location /lobby/games/listing-ws {
-      proxy_pass http://localhost:8080;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-    }
-    
-    location /remote/actions/ws {
+    location /player-connection/ws {
       proxy_pass http://localhost:8080;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
