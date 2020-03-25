@@ -6,7 +6,6 @@ TODO: rename this project to lobby-db-schema and ensure production migration scr
 - [migrations files](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration).
 is where we check-in SQL commands to update database. Any new files are run automatically as part of lobby deployment.
 
-
 ## Dev Setup
 
 To launch a local database on Docker, run: `launch_db`
@@ -34,7 +33,6 @@ $ ./drop_db
       ## Includes any new in-development files.
 $ ./run_flyway
 ```
-
 
 ## Connection Configuration
 

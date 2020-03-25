@@ -16,13 +16,13 @@ folder and contains the ansible vault password, run:
 ./run_deployment [version_to_install] [ansible_args]
 ```
 
-### Typical Deployment Command
+## Typical Deployment Command
 
 ```bash
 ./run_deployment 2.0.1000 -i ansible/inventory/prerelease
 ```
 
-### Useful flags
+## Useful flags
 
 - `-v`: Verbose output
 - `-vvv`: Debug output
@@ -30,21 +30,21 @@ folder and contains the ansible vault password, run:
 - `--diff`: Shows differences in updated templates and files
 - `-t`: Tags
 
-### Examples with Tags
+# Examples with Tags
 
-#### Deploy just bots
+## Deploy just bots
 
 ```bash
 ./run_deployment 2.0.1000 -t bots -i ansible/inventory/prerelease
 ```
 
-#### Deploy NGINX and CertBot
+## Deploy NGINX and CertBot
 
 ```bash
 ./run_deployment 2.0.1000 -t nginx,certbot -i ansible/inventory/prerelease
 ```
 
-## Example Prod Deployment
+# Example Prod Deployment
 
 Production deployment is only a matter of specifying the production inventory file.
 

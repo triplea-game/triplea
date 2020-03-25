@@ -16,7 +16,6 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=bugs)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=triplea-game-sonar&metric=code_smells)](https://sonarcloud.io/dashboard?id=triplea-game-sonar)
 
-
 ## [Download and install TripleA](http://triplea-game.org/download/)
 TripleA is a free to play, volunteer run, 100% open source gaming community.
 
@@ -42,7 +41,6 @@ version 3 of the License, or (at your option) any later version.
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License below for more details.
-
 
 #### Additional permission under GNU GPL version 3 section 7
 

@@ -23,7 +23,6 @@ Once downloaded, unzip somewhere, add that somewhere to your path so the
 command "vagrant" is available. If not added to your path, fully quality
 the command 'vagrant' in the steps below to match.
 
-
 ### (2) Launch Vagrant virtual machine
 ```bash
 cd ~/triplea/infrastructure
@@ -48,7 +47,6 @@ Ansible will setup a self-signed certificate to be used by nginx.
 `run_ansible_vagrant` will symlink this certificate from the vagrant virtual
 machine to your local '/usr/local/share/ca-certificates' where it will
 be picked up and added as a trusted certificate.
-
 
 ## Check Results
 

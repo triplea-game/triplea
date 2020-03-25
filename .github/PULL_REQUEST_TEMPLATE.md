@@ -8,7 +8,6 @@
   - https://github.com/triplea-game/triplea/wiki/Code-Reviews
 -->
 
-
 ## Functional Changes
 <!-- Put an X next any that apply -->
 [] New map or map update
@@ -20,13 +19,10 @@
 [] Problem fix:  <!-- Link to bug issue or forum post here -->
 [] Other:   <!-- Please specify -->
 
-
 ## Testing
 <!--
   Describe any manual testing performed below.
 -->
-
-
 
 <!-- If there are UI updates, uncomment and include screenshots below -->
 <!--
@@ -36,7 +32,6 @@
 
 ### After
 -->
-
 
 <!--
   Uncomment the below and add any additional details that would be helpful for reviewers.

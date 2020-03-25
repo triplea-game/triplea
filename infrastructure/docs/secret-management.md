@@ -1,4 +1,4 @@
-## Vault Password
+# Vault Password
 
 To run ansible, you will need to create a file named 'vault_password'
 and add to that file the ansible vault passowrd (project admins/maintainers will have this).
@@ -11,7 +11,7 @@ touch vault_password
 
 # Creating Secrets
 
-### Encrypting variables
+## Encrypting variables
 
 Encrypted variables can be placed in a `defaults/main.yml` file and will be decrypted
 by ansible when ansible is run. To encrypt a variable:
@@ -32,11 +32,9 @@ Warnings:
   secrets should be added to .gitignore to help prevent this.
 * if any secret is exposed, we would need to rotate password and re-encrypt variables
 
-
-### Ansible Vault File Encryption
+## Ansible Vault File Encryption
 
 For reference, encrypting a file looks like this:
 ```
 ansible-vault encrypt --vault-password-file=vault_password ansible_ssh_key.ed25519
 ```
-
