@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ServerApplication" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="org.triplea.server.http.ServerApplication" />
+    <option name="MAIN_CLASS_NAME" value="org.triplea.http.ServerApplication" />
     <module name="triplea.http-server.main" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/http-server" />
     <extension name="coverage">

@@ -17,5 +17,5 @@ public class UserBanParams {
   private String ip;
   private String username;
   private String systemId;
-  private int hoursToBan;
+  private long minutesToBan;
 }

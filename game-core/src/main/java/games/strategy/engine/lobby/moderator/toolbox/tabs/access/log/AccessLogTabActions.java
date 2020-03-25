@@ -187,7 +187,7 @@ class AccessLogTabActions {
                   .username(banData.username)
                   .ip(banData.ip)
                   .systemId(banData.hashedMac)
-                  .hoursToBan(TIME_DURATION_MAP.get(banDurationText))
+                  .minutesToBan(TIME_DURATION_MAP.get(banDurationText))
                   .build());
 
           MessagePopup.showMessage(

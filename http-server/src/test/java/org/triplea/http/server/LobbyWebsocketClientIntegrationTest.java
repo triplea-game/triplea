@@ -11,7 +11,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.web.socket.WebsocketPaths;
-import org.triplea.server.http.DropwizardTest;
+import org.triplea.modules.http.DropwizardTest;
 
 class LobbyWebsocketClientIntegrationTest extends DropwizardTest {
 

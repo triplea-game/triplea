@@ -22,7 +22,7 @@ import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
 import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
 import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
-import org.triplea.server.http.DropwizardTest;
+import org.triplea.modules.http.DropwizardTest;
 
 /**
  * End-to-end test where we go through a chat sequence exercising all chat features. Runs through

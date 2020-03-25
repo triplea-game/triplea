@@ -34,7 +34,7 @@ class ToolboxUserBanClientTest extends WireMockTest {
   private static final UserBanParams BAN_USER_PARAMS =
       UserBanParams.builder()
           .systemId("Why does the skull grow?")
-          .hoursToBan(15)
+          .minutesToBan(15)
           .ip("Fall loudly like a jolly son.")
           .username("Grace is a scrawny breeze.")
           .build();
