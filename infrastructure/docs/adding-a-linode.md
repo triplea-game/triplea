@@ -8,7 +8,7 @@ Update the following:
 Choose a distribution (typically latest ubuntu):
 ![choose-distribution](https://user-images.githubusercontent.com/12397753/77502467-32df8000-6e18-11ea-984f-05c1561cdd4b.png)
 
-Select a region, we try to spread these out with highest concentration in US and EU.
+Select a region, spread these out with highest concentration in US and EU.
 ![select-region](https://user-images.githubusercontent.com/12397753/77502468-33781680-6e18-11ea-901e-904e9a2367e2.png)
 
 Set a linode label & root password, follow naming pattern where number

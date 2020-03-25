@@ -1,4 +1,4 @@
-# To add a bot:
+# To add a bot
 
 - Add a [linode server](https://linode.com)
   - See [adding a linode](adding-a-linode.md) for configuration settings
