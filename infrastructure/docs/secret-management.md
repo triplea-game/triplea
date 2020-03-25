@@ -1,4 +1,8 @@
-# Vault Password
+# Secret Management
+
+Documentation for how passwords can be securely checked in and managed.
+
+## Vault Password
 
 To run ansible, you will need to create a file named 'vault_password'
 and add to that file the ansible vault passowrd (project admins/maintainers
@@ -10,7 +14,7 @@ touch vault_password
 # edit 'vault_password' and add the ansible vault password
 ```
 
-# Creating Secrets
+## Creating Secrets
 
 ## Encrypting variables
 
@@ -21,6 +25,7 @@ will be decrypted by ansible when ansible is run. To encrypt a variable:
    in that file
 1. Create a file named: 'secret' and place the secret value to be
    encrypted in that file
+   
 ```
 ./create_secret "name_of_variable"
 ```

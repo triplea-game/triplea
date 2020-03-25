@@ -44,7 +44,7 @@ folder and contains the ansible vault password, run:
 ./run_deployment 2.0.1000 -t nginx,certbot -i ansible/inventory/prerelease
 ```
 
-# Example Prod Deployment
+## Example Prod Deployment
 
 Production deployment is only a matter of specifying the production inventory file.
 

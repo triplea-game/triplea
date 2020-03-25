@@ -18,7 +18,7 @@ values will 'override' any variable values defined in 'defaults'.
 
 ## Variables
 
-* Ansible allows variables to be defined in many places with differing
+Ansible allows variables to be defined in many places with differing
 levels of precendence. For simplicity,  in this project we constrain where
 variables are defined.
 

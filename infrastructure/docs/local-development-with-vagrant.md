@@ -11,7 +11,7 @@ updates and/or build new roles.
 
 ```bash
 sudo apt install -y virtualbox ansible
-``
+```
 
 ### (1.B) Install Vagrant
 
@@ -24,12 +24,14 @@ command "vagrant" is available. If not added to your path, fully quality
 the command 'vagrant' in the steps below to match.
 
 ### (2) Launch Vagrant virtual machine
+
 ```bash
 cd ~/triplea/infrastructure
 vagrant up
 ```
 
 *Note*, you may need to do some chowning to be able to run virtualbox as non-root:
+
 ```bash
 sudo chown $USER:$USER -R ~/.vagrant.d/
 sudo chown $USER:$USER -R ~/triplea/infrastructure/.vagrant/
