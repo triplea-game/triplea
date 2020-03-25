@@ -2,10 +2,10 @@
 
 Deployment is done with [ansible](https://www.ansible.com/)
 
-* Deployments are idempotent: https://shadow-soft.com/ansible-idempotency-configuration-
-drift/
+* Deployments are [idempotent](https://shadow-soft.com/ansible-idempotency-configuration-
+drift/)
 
-* Ansible consists of three main components:
+Ansible consists of three main components:
   * roles: think of these as applications
   * inventory files: lists servers or hosts by group
   * playbooks: binds host groups to roles
