@@ -1,16 +1,16 @@
 # Ansible Overview
 
-Deployment is done with [ansible](https://www.ansible.com/)
-
+* Deployments are done with [ansible](https://www.ansible.com/)
 * Deployments are [idempotent](https://shadow-soft.com/ansible-idempotency-configuration-
 drift/)
 
 Ansible consists of three main components:
+
   * roles: think of these as applications
   * inventory files: lists servers or hosts by group
   * playbooks: binds host groups to roles
 
-* Per environment configuration is done through hostgroups, defined in inventory
+Per environment configuration is done through hostgroups, defined in inventory
 files. For example the production inventory file will have a hostgroup called
 'production' and we we can then define a 'group_vars/production.yml' file that
 has variable values that only apply to the 'production' hosts. These variable

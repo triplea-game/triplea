@@ -25,7 +25,7 @@ will be decrypted by ansible when ansible is run. To encrypt a variable:
    in that file
 1. Create a file named: 'secret' and place the secret value to be
    encrypted in that file
-   
+
 ```
 ./create_secret "name_of_variable"
 ```

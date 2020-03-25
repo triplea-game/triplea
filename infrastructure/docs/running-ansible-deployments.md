@@ -30,15 +30,15 @@ folder and contains the ansible vault password, run:
 - `--diff`: Shows differences in updated templates and files
 - `-t`: Tags
 
-# Examples with Tags
+## Examples with Tags
 
-## Deploy just bots
+### Deploy just bots
 
 ```bash
 ./run_deployment 2.0.1000 -t bots -i ansible/inventory/prerelease
 ```
 
-## Deploy NGINX and CertBot
+### Deploy NGINX and CertBot
 
 ```bash
 ./run_deployment 2.0.1000 -t nginx,certbot -i ansible/inventory/prerelease

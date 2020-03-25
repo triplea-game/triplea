@@ -15,7 +15,7 @@ sudo apt install -y virtualbox ansible
 
 ### (1.B) Install Vagrant
 
-Install from the download site: https://www.vagrantup.com/downloads.html
+Install from the [vagrant download site](https://www.vagrantup.com/downloads.html)
 
 The version in 'apt' is likely to be out of date and could have Ruby errors.
 
