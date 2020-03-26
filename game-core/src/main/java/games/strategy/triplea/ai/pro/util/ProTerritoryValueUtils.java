@@ -20,7 +20,7 @@ import org.triplea.java.collections.CollectionUtils;
 /** Pro AI battle utilities. */
 public final class ProTerritoryValueUtils {
 
-  private static final int MIN_FACTORY_CHECK_DISTANCE = 9;
+  protected static final int MIN_FACTORY_CHECK_DISTANCE = 9;
   private static final int MAX_FACTORY_CHECK_DISTANCE = 30;
 
   private ProTerritoryValueUtils() {}
