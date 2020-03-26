@@ -11,7 +11,6 @@ env:
    - REPORT_FAIL=".travis/shared/report-build-status FAILURE"
    - VERIFY_STAGE=".travis/stages/verify"
    - DEPLOY_STAGE=".travis/stages/deploy"
-   - DEPLOY_PROD_STAGE=".travis/stages/deployProd"
 jobs:
   include:
     
@@ -86,15 +85,6 @@ jobs:
         prerelease: true
         api_key:
           secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
-
-    - stage: DeployProd
-      name: "Ansible Deploy to Producton"
-      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      language: python
-      python: "3.6"
-      addons: { apt: { packages: [ sshpass ] } }
-      install: [ pip install ansible ]
-      script: [ $DEPLOY_PROD_STAGE/production/run || $REPORT_FAIL "production update" ]
 
     ########################################################################
     
