@@ -8,6 +8,7 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -271,8 +272,8 @@ public final class ProTerritoryValueUtils {
     // Determine value based on enemy factory land distance
     final List<Double> values = new ArrayList<>();
     final GameData data = proData.getData();
-    final Set<Territory> nearbyEnemyCapitalsAndFactories =
-        findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap);
+    final Collection<Territory> nearbyEnemyCapitalsAndFactories =
+        findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap.keySet());
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final int distance =
           data.getMap()
@@ -353,8 +354,8 @@ public final class ProTerritoryValueUtils {
 
     // Determine value based on enemy factory distance
     final List<Double> values = new ArrayList<>();
-    final Set<Territory> nearbyEnemyCapitalsAndFactories =
-        findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap);
+    final Collection<Territory> nearbyEnemyCapitalsAndFactories =
+        findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap.keySet());
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final Route route =
           data.getMap()
@@ -429,13 +430,13 @@ public final class ProTerritoryValueUtils {
     return capitalOrFactoryValue / 100 + nearbyLandValue / 10;
   }
 
-  private static Set<Territory> findNearbyEnemyCapitalsAndFactories(
-      final Territory t, final Map<Territory, Double> enemyCapitalsAndFactoriesMap) {
+  protected static Collection<Territory> findNearbyEnemyCapitalsAndFactories(
+      final Territory t, final Set<Territory> enemyCapitalsAndFactories) {
 
     Set<Territory> nearbyEnemyCapitalsAndFactories = new HashSet<>();
     for (int i = MIN_FACTORY_CHECK_DISTANCE; i <= MAX_FACTORY_CHECK_DISTANCE; i++) {
       nearbyEnemyCapitalsAndFactories = t.getData().getMap().getNeighbors(t, i);
-      nearbyEnemyCapitalsAndFactories.retainAll(enemyCapitalsAndFactoriesMap.keySet());
+      nearbyEnemyCapitalsAndFactories.retainAll(enemyCapitalsAndFactories);
       if (!nearbyEnemyCapitalsAndFactories.isEmpty()) {
         break;
       }
