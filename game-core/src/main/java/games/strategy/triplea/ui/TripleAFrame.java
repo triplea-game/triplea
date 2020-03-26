@@ -772,7 +772,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     uiContext.shutDown();
     if (chatPanel != null) {
       chatPanel.setPlayerRenderer(null);
-      chatPanel.setChat(null);
+      chatPanel.deleteChat();
     }
     if (historySyncher != null) {
       historySyncher.deactivate();

@@ -453,7 +453,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             new HeadlessChat(new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers)));
       } else {
         final var chatPanel = ChatPanel.newChatPanel(messengers, CHAT_NAME, ChatSoundProfile.GAME);
-        chatModelCancel = () -> chatPanel.setChat(null);
+        chatModelCancel = chatPanel::deleteChat;
         chatModel = chatPanel;
       }
 
