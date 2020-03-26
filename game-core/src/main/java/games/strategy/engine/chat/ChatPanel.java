@@ -53,9 +53,9 @@ public class ChatPanel extends JPanel implements ChatModel {
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
 
-  public void setChat(final Chat chat) {
-    chatMessagePanel.setChat(chat);
-    chatPlayerPanel.setChat(chat);
+  public void deleteChat() {
+    chatMessagePanel.setChat(null);
+    chatPlayerPanel.setChat(null);
   }
 
   @Override

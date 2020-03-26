@@ -282,7 +282,7 @@ public class ClientModel implements IMessengerErrorListener {
       messenger.shutDown();
       messenger.removeErrorListener(this);
       objectStreamFactory.setData(null);
-      chatPanel.setChat(null);
+      chatPanel.deleteChat();
       hostIsHeadlessBot = false;
       gameSelectorModel.setIsHostHeadlessBot(false);
       gameSelectorModel.setClientModelForHostBots(null);
