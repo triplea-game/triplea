@@ -1,12 +1,14 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,13 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI battle utilities. */
 public final class ProTerritoryValueUtils {
 
   protected static final int MIN_FACTORY_CHECK_DISTANCE = 9;
-  private static final int MAX_FACTORY_CHECK_DISTANCE = 30;
 
   private ProTerritoryValueUtils() {}
 
@@ -430,18 +432,55 @@ public final class ProTerritoryValueUtils {
     return capitalOrFactoryValue / 100 + nearbyLandValue / 10;
   }
 
+  /**
+   * Finds enemy capitals / factors from a list that are "nearby" a given territory.
+   *
+   * <p>If any of the target territories exist within a distance of 9, returns the subset that do.
+   * Otherwise, proceeds to check the territories at each subsequent distance until at least one
+   * capital is found.
+   *
+   * <p>Note: This is an optimized version of a previous, much slower algorithm that has been
+   * designed to keep the original behavior, but tuned for speed.
+   *
+   * @param startTerritory The territory from where to start the search.
+   * @param enemyCapitalsAndFactories The territories to search for.
+   * @return Subset of enemyCapitalsAndFactories that were found.
+   */
   protected static Collection<Territory> findNearbyEnemyCapitalsAndFactories(
-      final Territory t, final Set<Territory> enemyCapitalsAndFactories) {
+      final Territory startTerritory, final Set<Territory> enemyCapitalsAndFactories) {
+    final GameMap map = startTerritory.getData().getMap();
+    // Use breadth first search to traverse territories, keeping track of which have already been
+    // visited and which territories from the target list have  been found.
+    final var found = new HashSet<Territory>();
+    final var visited = new HashSet<Territory>(List.of(startTerritory));
+    final var territoriesToCheck = new ArrayDeque<Territory>(List.of(startTerritory));
 
-    Set<Territory> nearbyEnemyCapitalsAndFactories = new HashSet<>();
-    for (int i = MIN_FACTORY_CHECK_DISTANCE; i <= MAX_FACTORY_CHECK_DISTANCE; i++) {
-      nearbyEnemyCapitalsAndFactories = t.getData().getMap().getNeighbors(t, i);
-      nearbyEnemyCapitalsAndFactories.retainAll(enemyCapitalsAndFactories);
-      if (!nearbyEnemyCapitalsAndFactories.isEmpty()) {
-        break;
+    // Since we process territories in order of distance, we can keep track of the last territory
+    // at the current distance that's in the territoriesToCheck queue. When we encounter it, we
+    // increment the distance and update lastTerritoryAtCurrentDistance.
+    int distance = 0;
+    Territory lastTerritoryAtCurrentDistance = startTerritory;
+    while (!territoriesToCheck.isEmpty()) {
+      final Territory node = territoriesToCheck.removeFirst();
+      for (final Territory neighbor : map.getNeighbors(node)) {
+        if (visited.add(neighbor)) {
+          territoriesToCheck.add(neighbor);
+          if (enemyCapitalsAndFactories.contains(neighbor)) {
+            found.add(neighbor);
+          }
+        }
+      }
+
+      // If we just processed the last territory at the current distance, increment the distance
+      // and set the territory at which we need to update it again to be the last one added.
+      if (ObjectUtils.referenceEquals(node, lastTerritoryAtCurrentDistance)) {
+        distance++;
+        if (distance >= MIN_FACTORY_CHECK_DISTANCE && !found.isEmpty()) {
+          break;
+        }
+        lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
       }
     }
-
-    return nearbyEnemyCapitalsAndFactories;
+    return found;
   }
 }
