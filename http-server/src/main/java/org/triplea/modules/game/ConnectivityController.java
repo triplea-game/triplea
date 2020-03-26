@@ -26,6 +26,12 @@ import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
 public class ConnectivityController extends HttpController {
   @Nonnull private final Predicate<InetSocketAddress> connectivityCheck;
 
+  public static ConnectivityController build() {
+    return ConnectivityController.builder() //
+        .connectivityCheck(new ConnectivityCheck())
+        .build();
+  }
+
   @POST
   @Path(ConnectivityCheckClient.CONNECTIVITY_CHECK_PATH)
   @RateLimited(

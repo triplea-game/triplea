@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.user.account.FetchEmailResponse;
@@ -20,6 +21,13 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 @Builder
 public class UpdateAccountController extends HttpController {
   @Nonnull private final UpdateAccountService userAccountService;
+
+  /** Instantiates controller with dependencies. */
+  public static UpdateAccountController build(final Jdbi jdbi) {
+    return UpdateAccountController.builder()
+        .userAccountService(UpdateAccountService.build(jdbi))
+        .build();
+  }
 
   @POST
   @Path(UserAccountClient.CHANGE_PASSWORD_PATH)

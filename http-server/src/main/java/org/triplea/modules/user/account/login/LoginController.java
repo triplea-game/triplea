@@ -10,15 +10,23 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
+import org.triplea.modules.chat.event.processing.Chatters;
 
 @Builder
 public class LoginController extends HttpController {
   @Nonnull private final LoginModule loginModule;
+
+  public static LoginController build(final Jdbi jdbi, final Chatters chatters) {
+    return LoginController.builder() //
+        .loginModule(LoginModule.build(jdbi, chatters))
+        .build();
+  }
 
   @RateLimited(
       keys = {KeyPart.IP},

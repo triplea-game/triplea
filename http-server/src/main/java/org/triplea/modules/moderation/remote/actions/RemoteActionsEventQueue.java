@@ -10,6 +10,8 @@ import lombok.NonNull;
 import org.triplea.http.client.remote.actions.messages.server.RemoteActionsEnvelopeFactory;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.modules.moderation.ban.user.BannedPlayerEventHandler;
+import org.triplea.web.socket.MessageBroadcaster;
+import org.triplea.web.socket.MessageSender;
 import org.triplea.web.socket.SessionSet;
 
 /**
@@ -32,6 +34,18 @@ public class RemoteActionsEventQueue {
   @Nonnull private final BiConsumer<Session, ServerMessageEnvelope> messageSender;
   @Nonnull private final SessionSet sessionSet;
   @NonNull private final BannedPlayerEventHandler bannedPlayerEventHandler;
+
+  public static RemoteActionsEventQueue build(
+      final SessionSet sessionSet, final BannedPlayerEventHandler bannedPlayerEventHandler) {
+    final var messageSender = new MessageSender();
+
+    return RemoteActionsEventQueue.builder()
+        .bannedPlayerEventHandler(bannedPlayerEventHandler)
+        .sessionSet(sessionSet)
+        .messageSender(messageSender)
+        .messageBroadcaster(new MessageBroadcaster(messageSender))
+        .build();
+  }
 
   public void addSession(final Session session) {
     sessionSet.put(session);

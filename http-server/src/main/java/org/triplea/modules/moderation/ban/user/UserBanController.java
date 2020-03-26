@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
@@ -20,12 +21,23 @@ import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueue;
 
 /** Controller for endpoints to manage user bans, to be used by moderators. */
 @Builder
 @RolesAllowed(UserRole.MODERATOR)
 public class UserBanController extends HttpController {
   @Nonnull private final UserBanService bannedUsersService;
+
+  public static UserBanController build(
+      final Jdbi jdbi,
+      final Chatters chatters,
+      final RemoteActionsEventQueue remoteActionsEventQueue) {
+    return UserBanController.builder()
+        .bannedUsersService(UserBanService.build(jdbi, chatters, remoteActionsEventQueue))
+        .build();
+  }
 
   @GET
   @Path(ToolboxUserBanClient.GET_USER_BANS_PATH)

@@ -30,6 +30,12 @@ public class LobbyWatcherController extends HttpController {
 
   private final GameListing gameListing;
 
+  public static LobbyWatcherController build(final GameListing gameListing) {
+    return LobbyWatcherController.builder() //
+        .gameListing(gameListing)
+        .build();
+  }
+
   /**
    * Adds a game to the lobby listing. Responds with the gameId assigned to the new game. If we see
    * duplicate posts, the same gameId will be returned.

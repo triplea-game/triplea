@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
@@ -19,6 +20,12 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 @RolesAllowed(UserRole.MODERATOR)
 public class UsernameBanController extends HttpController {
   @Nonnull private final UsernameBanService bannedNamesService;
+
+  public static UsernameBanController build(final Jdbi jdbi) {
+    return UsernameBanController.builder()
+        .bannedNamesService(UsernameBanService.build(jdbi))
+        .build();
+  }
 
   @POST
   @Path(ToolboxUsernameBanClient.REMOVE_BANNED_USER_NAME_PATH)

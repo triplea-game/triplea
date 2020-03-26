@@ -2,6 +2,7 @@ package org.triplea.modules.moderation.bad.words;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.BadWordsDao;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
 
@@ -9,6 +10,11 @@ import org.triplea.db.dao.ModeratorAuditHistoryDao;
 class BadWordsService {
   private final BadWordsDao badWordsDao;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+
+  public static BadWordsService build(final Jdbi jdbi) {
+    return new BadWordsService(
+        jdbi.onDemand(BadWordsDao.class), jdbi.onDemand(ModeratorAuditHistoryDao.class));
+  }
 
   /**
    * Removes a bad word value from the bad-word table in database.

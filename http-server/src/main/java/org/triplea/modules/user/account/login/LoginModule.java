@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.UserJdbiDao;
 import org.triplea.db.data.UserRole;
 import org.triplea.domain.data.ApiKey;
@@ -15,6 +16,10 @@ import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
+import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.user.account.login.authorizer.anonymous.AnonymousLoginFactory;
+import org.triplea.modules.user.account.login.authorizer.registered.RegisteredLogin;
+import org.triplea.modules.user.account.login.authorizer.temp.password.TempPasswordLogin;
 
 @Builder
 class LoginModule {
@@ -24,6 +29,17 @@ class LoginModule {
   @Nonnull private Consumer<LoginRecord> accessLogUpdater;
   @Nonnull private final Function<LoginRecord, ApiKey> apiKeyGenerator;
   @Nonnull private final UserJdbiDao userJdbiDao;
+
+  public static LoginModule build(final Jdbi jdbi, final Chatters chatters) {
+    return LoginModule.builder()
+        .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
+        .accessLogUpdater(AccessLogUpdater.build(jdbi))
+        .apiKeyGenerator(ApiKeyGenerator.build(jdbi))
+        .anonymousLogin(AnonymousLoginFactory.build(jdbi, chatters))
+        .tempPasswordLogin(TempPasswordLogin.build(jdbi))
+        .registeredLogin(RegisteredLogin.build(jdbi))
+        .build();
+  }
 
   public LobbyLoginResponse doLogin(
       final LoginRequest loginRequest, final String systemId, final String ip) {

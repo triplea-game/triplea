@@ -34,32 +34,29 @@ import org.triplea.modules.access.authentication.ApiKeyAuthenticator;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.access.authorization.BannedPlayerFilter;
 import org.triplea.modules.access.authorization.RoleAuthorizer;
-import org.triplea.modules.chat.MessagingServiceFactory;
+import org.triplea.modules.chat.ChatMessagingService;
 import org.triplea.modules.chat.event.processing.Chatters;
-import org.triplea.modules.error.reporting.ErrorReportControllerFactory;
-import org.triplea.modules.forgot.password.ForgotPasswordControllerFactory;
-import org.triplea.modules.game.ConnectivityControllerFactory;
-import org.triplea.modules.game.hosting.GameHostingControllerFactory;
+import org.triplea.modules.error.reporting.ErrorReportController;
+import org.triplea.modules.forgot.password.ForgotPasswordController;
+import org.triplea.modules.game.ConnectivityController;
+import org.triplea.modules.game.hosting.GameHostingController;
 import org.triplea.modules.game.listing.GameListing;
-import org.triplea.modules.game.listing.GameListingControllerFactory;
+import org.triplea.modules.game.listing.GameListingController;
 import org.triplea.modules.game.listing.GameListingEventQueue;
-import org.triplea.modules.game.listing.GameListingEventQueueFactory;
-import org.triplea.modules.game.listing.GameListingFactory;
-import org.triplea.modules.game.listing.LobbyWatcherControllerFactory;
-import org.triplea.modules.moderation.access.log.AccessLogControllerFactory;
-import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryControllerFactory;
-import org.triplea.modules.moderation.bad.words.BadWordControllerFactory;
-import org.triplea.modules.moderation.ban.name.UsernameBanControllerFactory;
+import org.triplea.modules.game.listing.LobbyWatcherController;
+import org.triplea.modules.moderation.access.log.AccessLogController;
+import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryController;
+import org.triplea.modules.moderation.bad.words.BadWordsController;
+import org.triplea.modules.moderation.ban.name.UsernameBanController;
 import org.triplea.modules.moderation.ban.user.BannedPlayerEventHandler;
-import org.triplea.modules.moderation.ban.user.UserBanControllerFactory;
+import org.triplea.modules.moderation.ban.user.UserBanController;
 import org.triplea.modules.moderation.disconnect.user.DisconnectUserController;
-import org.triplea.modules.moderation.moderators.ModeratorsControllerFactory;
-import org.triplea.modules.moderation.remote.actions.RemoteActionsControllerFactory;
+import org.triplea.modules.moderation.moderators.ModeratorsController;
+import org.triplea.modules.moderation.remote.actions.RemoteActionsController;
 import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueue;
-import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueueFactory;
-import org.triplea.modules.user.account.create.CreateAccountControllerFactory;
-import org.triplea.modules.user.account.login.LoginControllerFactory;
-import org.triplea.modules.user.account.update.UpdateAccountControllerFactory;
+import org.triplea.modules.user.account.create.CreateAccountController;
+import org.triplea.modules.user.account.login.LoginController;
+import org.triplea.modules.user.account.update.UpdateAccountController;
 import org.triplea.web.socket.SessionSet;
 import org.triplea.web.socket.connections.GameConnectionWebSocket;
 import org.triplea.web.socket.connections.PlayerConnectionWebSocket;
@@ -146,11 +143,9 @@ public class ServerApplication extends Application<AppConfig> {
             .build();
 
     final var remoteActionsEventQueue =
-        RemoteActionsEventQueueFactory.newRemoteActionsEventQueue(
-            remoteActionSessions, bannedPlayerEventHandler);
+        RemoteActionsEventQueue.build(remoteActionSessions, bannedPlayerEventHandler);
 
-    final var gameListingEventQueue =
-        GameListingEventQueueFactory.newGameListingEventQueue(gameListingSessions);
+    final var gameListingEventQueue = GameListingEventQueue.build(gameListingSessions);
 
     endPointControllers(
             configuration, jdbi, chatters, remoteActionsEventQueue, gameListingEventQueue)
@@ -165,7 +160,7 @@ public class ServerApplication extends Application<AppConfig> {
         .getUserProperties()
         .put(PlayerConnectionWebSocket.GAME_LISTING_QUEUE_KEY, gameListingEventQueue);
 
-    final var messagingService = MessagingServiceFactory.build(jdbi, chatSessions, chatters);
+    final var messagingService = ChatMessagingService.build(jdbi, chatSessions, chatters);
     playerConnectionWebsocket
         .getUserProperties()
         .put(PlayerConnectionWebSocket.CHAT_MESSAGING_SERVICE_KEY, messagingService);
@@ -226,25 +221,24 @@ public class ServerApplication extends Application<AppConfig> {
       final Chatters chatters,
       final RemoteActionsEventQueue remoteActionsEventQueue,
       final GameListingEventQueue gameListingEventQueue) {
-    final GameListing gameListing =
-        GameListingFactory.buildGameListing(jdbi, gameListingEventQueue);
+    final GameListing gameListing = GameListing.build(jdbi, gameListingEventQueue);
     return ImmutableList.of(
-        AccessLogControllerFactory.buildController(jdbi),
-        BadWordControllerFactory.buildController(jdbi),
-        ConnectivityControllerFactory.buildController(),
-        CreateAccountControllerFactory.buildController(jdbi),
+        AccessLogController.build(jdbi),
+        BadWordsController.build(jdbi),
+        ConnectivityController.build(),
+        CreateAccountController.build(jdbi),
         DisconnectUserController.build(jdbi, chatters),
-        ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
-        GameHostingControllerFactory.buildController(jdbi),
-        GameListingControllerFactory.buildController(gameListing),
-        LobbyWatcherControllerFactory.buildController(gameListing),
-        LoginControllerFactory.buildController(jdbi, chatters),
-        UsernameBanControllerFactory.buildController(appConfig, jdbi),
-        UserBanControllerFactory.buildController(jdbi, chatters, remoteActionsEventQueue),
-        ErrorReportControllerFactory.buildController(appConfig, jdbi),
-        ModeratorAuditHistoryControllerFactory.buildController(appConfig, jdbi),
-        ModeratorsControllerFactory.buildController(appConfig, jdbi),
-        RemoteActionsControllerFactory.buildController(jdbi, remoteActionsEventQueue),
-        UpdateAccountControllerFactory.buildController(jdbi));
+        ForgotPasswordController.build(appConfig, jdbi),
+        GameHostingController.build(jdbi),
+        GameListingController.build(gameListing),
+        LobbyWatcherController.build(gameListing),
+        LoginController.build(jdbi, chatters),
+        UsernameBanController.build(jdbi),
+        UserBanController.build(jdbi, chatters, remoteActionsEventQueue),
+        ErrorReportController.build(appConfig, jdbi),
+        ModeratorAuditHistoryController.build(jdbi),
+        ModeratorsController.build(jdbi),
+        RemoteActionsController.build(jdbi, remoteActionsEventQueue),
+        UpdateAccountController.build(jdbi));
   }
 }

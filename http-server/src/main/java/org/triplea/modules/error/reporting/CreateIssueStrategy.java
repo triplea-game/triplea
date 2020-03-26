@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.ErrorReportingDao;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
@@ -25,6 +26,15 @@ public class CreateIssueStrategy
   @Nonnull private final Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Nonnull private final GithubIssueClient githubIssueClient;
   @Nonnull private final ErrorReportingDao errorReportingDao;
+
+  public static CreateIssueStrategy build(
+      final GithubIssueClient githubIssueClient, final Jdbi jdbi) {
+    return CreateIssueStrategy.builder()
+        .githubIssueClient(githubIssueClient)
+        .responseAdapter(new ErrorReportResponseConverter())
+        .errorReportingDao(jdbi.onDemand(ErrorReportingDao.class))
+        .build();
+  }
 
   @Override
   public ErrorReportResponse apply(

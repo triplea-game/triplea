@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
@@ -19,6 +20,12 @@ import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient
 @RolesAllowed(UserRole.MODERATOR)
 public class ModeratorAuditHistoryController extends HttpController {
   @Nonnull private final ModeratorAuditHistoryService moderatorAuditHistoryService;
+
+  public static ModeratorAuditHistoryController build(final Jdbi jdbi) {
+    return ModeratorAuditHistoryController.builder()
+        .moderatorAuditHistoryService(ModeratorAuditHistoryService.build(jdbi))
+        .build();
+  }
 
   /**
    * Use this method to retrieve moderator audit history rows. Presents a paged interface.

@@ -31,6 +31,12 @@ public class GameListingController extends HttpController {
 
   private final GameListing gameListing;
 
+  public static GameListingController build(final GameListing gameListing) {
+    return GameListingController.builder() //
+        .gameListing(gameListing)
+        .build();
+  }
+
   /** Returns a listing of the current games. */
   @RateLimited(
       keys = {KeyPart.IP},

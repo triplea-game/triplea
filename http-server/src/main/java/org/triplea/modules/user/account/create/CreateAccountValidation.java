@@ -4,7 +4,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.lobby.login.CreateAccountRequest;
+import org.triplea.modules.user.account.NameValidation;
 
 /**
  * Verifies that a new user account request is good-to-create. General validation rules are:
@@ -22,6 +24,14 @@ class CreateAccountValidation implements Function<CreateAccountRequest, Optional
   @Nonnull private final Function<String, Optional<String>> nameValidator;
   @Nonnull private final Function<String, Optional<String>> emailValidator;
   @Nonnull private final Function<String, Optional<String>> passwordValidator;
+
+  public static CreateAccountValidation build(final Jdbi jdbi) {
+    return CreateAccountValidation.builder()
+        .nameValidator(NameValidation.build(jdbi))
+        .emailValidator(new EmailValidation())
+        .passwordValidator(new PasswordValidation())
+        .build();
+  }
 
   @Override
   public Optional<String> apply(final CreateAccountRequest createAccountRequest) {
