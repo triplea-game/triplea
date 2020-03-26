@@ -9,10 +9,8 @@
   the new server
 - Commit & submit for PR
 
-
 One day, Travis will do a production deployment automatically
 on merge and deploy software to the new bot server and bring it up.
-
 
 For now, run ansible deployment by-hand:
 
