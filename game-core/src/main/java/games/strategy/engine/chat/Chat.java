@@ -35,9 +35,14 @@ public class Chat implements ChatClient {
 
   private final Collection<ChatParticipant> chatters = new HashSet<>();
 
+  /**
+   * ChatHistory is used to copy chat contents from a game staging screen to an actual game once it
+   * has started. For examples, players will chat during the staging screen, click play, then
+   * in-game there is a new chat and we'll copy the history messages to that new chat.
+   */
   @Getter
   private final Collection<ChatMessage> chatHistory =
-      Collections.synchronizedCollection(EvictingQueue.create(1000));
+      Collections.synchronizedCollection(EvictingQueue.create(50));
 
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   @Getter private final UserName localUserName;
