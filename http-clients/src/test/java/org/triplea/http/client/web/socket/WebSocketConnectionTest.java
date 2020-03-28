@@ -153,10 +153,10 @@ class WebSocketConnectionTest {
     void connectWillInitiateConnection() throws Exception {
       final HttpClient httpClient = mockHttpClient();
       webSocketConnection.setHttpClient(httpClient);
-      final WebSocket connected =
+      final WebSocket webSocket =
           webSocketConnection.connect(webSocketConnectionListener, errorHandler).get();
 
-      assertThat(connected, is(webSocket));
+      assertThat(webSocket, is(this.webSocket));
       verify(httpClient.newWebSocketBuilder())
           .connectTimeout(Duration.ofMillis(WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS));
       verifyPingerIsStarted();
