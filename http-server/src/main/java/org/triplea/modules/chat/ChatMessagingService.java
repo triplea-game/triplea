@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.websocket.Session;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.domain.data.ApiKey;
@@ -16,7 +17,11 @@ import org.triplea.domain.data.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
 import org.triplea.modules.chat.event.processing.ChatEventProcessor;
+import org.triplea.modules.chat.event.processing.Chatters;
 import org.triplea.modules.chat.event.processing.ServerResponse;
+import org.triplea.web.socket.MessageBroadcaster;
+import org.triplea.web.socket.MessageSender;
+import org.triplea.web.socket.SessionSet;
 
 @Slf4j
 @Builder
@@ -29,6 +34,17 @@ public class ChatMessagingService {
   @Nonnull private final BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
 
   @Nonnull private final Function<UserWithRoleRecord, ChatParticipant> chatParticipantAdapter;
+
+  public static ChatMessagingService build(
+      final Jdbi jdbi, final SessionSet sessionSet, final Chatters chatters) {
+    return ChatMessagingService.builder()
+        .apiKeyDaoWrapper(ApiKeyDaoWrapper.build(jdbi))
+        .chatEventProcessor(new ChatEventProcessor(chatters, sessionSet))
+        .messageSender(new MessageSender())
+        .messageBroadcaster(MessageBroadcaster.build())
+        .chatParticipantAdapter(new ChatParticipantAdapter())
+        .build();
+  }
 
   public void handleMessage(final Session session, final String message) {
     // TODO: Project#12 Bans: check API key

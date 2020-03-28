@@ -5,14 +5,23 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.TempPasswordDao;
 import org.triplea.http.client.lobby.login.LoginRequest;
+import org.triplea.modules.user.account.login.authorizer.BCryptHashVerifier;
 
 @Builder
 public class TempPasswordLogin implements Predicate<LoginRequest> {
 
   @Nonnull private final TempPasswordDao tempPasswordDao;
   @Nonnull private final BiPredicate<String, String> passwordChecker;
+
+  public static TempPasswordLogin build(final Jdbi jdbi) {
+    return TempPasswordLogin.builder()
+        .tempPasswordDao(jdbi.onDemand(TempPasswordDao.class))
+        .passwordChecker(new BCryptHashVerifier())
+        .build();
+  }
 
   @Override
   public boolean test(final LoginRequest loginRequest) {

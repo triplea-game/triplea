@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.http.client.lobby.game.listing.messages.GameListingMessageFactory;
 import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.web.socket.MessageBroadcaster;
 import org.triplea.web.socket.SessionSet;
 
 /** Receives game listing events and dispatches event messages to listeners. */
@@ -21,6 +22,13 @@ public class GameListingEventQueue {
 
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final SessionSet sessionSet;
+
+  public static GameListingEventQueue build(final SessionSet sessionSet) {
+    return GameListingEventQueue.builder()
+        .sessionSet(sessionSet)
+        .broadcaster(MessageBroadcaster.build())
+        .build();
+  }
 
   public void addListener(final Session session) {
     sessionSet.put(session);

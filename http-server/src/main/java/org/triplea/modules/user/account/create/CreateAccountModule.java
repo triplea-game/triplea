@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.lobby.login.CreateAccountRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 
@@ -16,6 +17,13 @@ class CreateAccountModule implements Function<CreateAccountRequest, CreateAccoun
 
   @Nonnull private final Function<CreateAccountRequest, Optional<String>> createAccountValidation;
   @Nonnull private final Function<CreateAccountRequest, CreateAccountResponse> accountCreator;
+
+  public static CreateAccountModule build(final Jdbi jdbi) {
+    return CreateAccountModule.builder()
+        .accountCreator(AccountCreator.build(jdbi))
+        .createAccountValidation(CreateAccountValidation.build(jdbi))
+        .build();
+  }
 
   @Override
   public CreateAccountResponse apply(final CreateAccountRequest createAccountRequest) {

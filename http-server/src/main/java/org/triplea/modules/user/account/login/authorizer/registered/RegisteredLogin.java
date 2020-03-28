@@ -6,8 +6,11 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.login.LoginRequest;
+import org.triplea.modules.user.account.login.authorizer.legacy.LegacyPasswordCheck;
+import org.triplea.modules.user.account.login.authorizer.legacy.LegacyPasswordUpdate;
 
 @Builder
 public class RegisteredLogin implements Predicate<LoginRequest> {
@@ -15,6 +18,14 @@ public class RegisteredLogin implements Predicate<LoginRequest> {
   @Nonnull private final BiPredicate<UserName, String> passwordCheck;
   @Nonnull private final BiPredicate<UserName, String> legacyPasswordCheck;
   @Nonnull private final BiConsumer<UserName, String> legacyPasswordUpdater;
+
+  public static Predicate<LoginRequest> build(final Jdbi jdbi) {
+    return RegisteredLogin.builder()
+        .legacyPasswordUpdater(LegacyPasswordUpdate.build(jdbi))
+        .legacyPasswordCheck(LegacyPasswordCheck.build(jdbi))
+        .passwordCheck(PasswordCheck.build(jdbi))
+        .build();
+  }
 
   @Override
   public boolean test(final LoginRequest loginRequest) {

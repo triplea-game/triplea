@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
@@ -19,6 +20,12 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 @RolesAllowed(UserRole.MODERATOR)
 public class BadWordsController extends HttpController {
   @Nonnull private final BadWordsService badWordsService;
+
+  public static BadWordsController build(final Jdbi jdbi) {
+    return BadWordsController.builder() //
+        .badWordsService(BadWordsService.build(jdbi))
+        .build();
+  }
 
   /**
    * Removes a bad word entry from the bad-word table.

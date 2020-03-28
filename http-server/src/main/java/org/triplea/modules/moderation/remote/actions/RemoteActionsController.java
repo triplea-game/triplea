@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.IpAddressParser;
@@ -26,6 +27,13 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 @Builder
 public class RemoteActionsController extends HttpController {
   @Nonnull private final RemoteActionsModule remoteActionsModule;
+
+  public static RemoteActionsController build(
+      final Jdbi jdbi, final RemoteActionsEventQueue remoteActionsEventQueue) {
+    return RemoteActionsController.builder()
+        .remoteActionsModule(RemoteActionsModule.build(jdbi, remoteActionsEventQueue))
+        .build();
+  }
 
   @POST
   @Path(RemoteActionsClient.SEND_SHUTDOWN_PATH)

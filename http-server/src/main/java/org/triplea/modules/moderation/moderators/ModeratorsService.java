@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.ModeratorsDao;
 import org.triplea.db.dao.UserJdbiDao;
@@ -18,6 +19,14 @@ class ModeratorsService {
   @Nonnull private final ModeratorsDao moderatorsDao;
   @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+
+  public static ModeratorsService build(final Jdbi jdbi) {
+    return ModeratorsService.builder()
+        .moderatorsDao(jdbi.onDemand(ModeratorsDao.class))
+        .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
+        .moderatorAuditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
+        .build();
+  }
 
   /** Returns a list of all users that are moderators. */
   List<ModeratorInfo> fetchModerators() {

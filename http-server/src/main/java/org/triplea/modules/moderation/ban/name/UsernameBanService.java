@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.username.ban.UsernameBanDao;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
@@ -14,6 +15,13 @@ import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanDa
 class UsernameBanService {
   @Nonnull private final UsernameBanDao bannedUserNamesDao;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+
+  public static UsernameBanService build(final Jdbi jdbi) {
+    return UsernameBanService.builder()
+        .bannedUserNamesDao(jdbi.onDemand(UsernameBanDao.class))
+        .moderatorAuditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
+        .build();
+  }
 
   boolean removeUsernameBan(final int moderatorUserId, final String nameToUnBan) {
     if (bannedUserNamesDao.removeBannedUserName(nameToUnBan) > 0) {

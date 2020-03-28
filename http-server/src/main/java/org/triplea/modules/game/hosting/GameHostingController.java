@@ -13,6 +13,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
+import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
@@ -27,6 +29,13 @@ import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 public class GameHostingController extends HttpController {
 
   @Nonnull private final Function<InetAddress, ApiKey> apiKeySupplier;
+
+  public static GameHostingController build(final Jdbi jdbi) {
+    final ApiKeyDaoWrapper apiKeyDaoWrapper = ApiKeyDaoWrapper.build(jdbi);
+    return GameHostingController.builder() //
+        .apiKeySupplier(apiKeyDaoWrapper::newGameHostKey)
+        .build();
+  }
 
   @POST
   @Path(GameHostingClient.GAME_HOSTING_REQUEST_PATH)

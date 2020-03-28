@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+import lombok.Builder;
 
 /**
  * Cache that expires values when a TTL (time to live) expires. TTL timer starts when the value is
@@ -22,6 +23,7 @@ public class ExpiringAfterWriteCache<IdT, ValueT> implements TtlCache<IdT, Value
   private final Cache<IdT, ValueT> cache;
   private final BiConsumer<IdT, ValueT> removalListener;
 
+  @Builder
   public ExpiringAfterWriteCache(
       final long duration, final TimeUnit timeUnit, final BiConsumer<IdT, ValueT> removalListener) {
     cache =

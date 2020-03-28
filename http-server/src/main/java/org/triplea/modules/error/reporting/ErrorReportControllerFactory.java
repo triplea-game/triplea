@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ErrorReportingDao;
 import org.triplea.http.AppConfig;
 import org.triplea.http.client.github.issues.GithubIssueClient;
 
@@ -27,12 +26,7 @@ public final class ErrorReportControllerFactory {
     }
 
     return ErrorReportController.builder()
-        .errorReportIngestion(
-            CreateIssueStrategy.builder()
-                .githubIssueClient(githubIssueClient)
-                .responseAdapter(new ErrorReportResponseConverter())
-                .errorReportingDao(jdbi.onDemand(ErrorReportingDao.class))
-                .build())
+        .errorReportIngestion(CreateIssueStrategy.build(githubIssueClient, jdbi))
         .build();
   }
 }

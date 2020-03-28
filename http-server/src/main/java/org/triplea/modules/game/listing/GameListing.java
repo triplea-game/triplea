@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +13,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.java.cache.TtlCache;
 
 /**
@@ -54,6 +58,19 @@ public class GameListing {
   static class GameId {
     @NonNull private final ApiKey apiKey;
     @NonNull private final String id;
+  }
+
+  public static GameListing build(
+      final Jdbi jdbi, final GameListingEventQueue gameListingEventQueue) {
+    return GameListing.builder()
+        .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
+        .gameListingEventQueue(gameListingEventQueue)
+        .games(
+            new ExpiringAfterWriteCache<>(
+                GameListingClient.KEEP_ALIVE_SECONDS,
+                TimeUnit.SECONDS,
+                new GameTtlExpiredListener(gameListingEventQueue)))
+        .build();
   }
 
   /** Adds a game. */
