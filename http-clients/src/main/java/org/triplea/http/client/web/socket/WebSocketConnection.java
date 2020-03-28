@@ -7,7 +7,6 @@ import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.net.http.WebSocket.Listener;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -132,7 +131,7 @@ class WebSocketConnection {
                 () -> {
                   if (!client.isOutputClosed()) {
                     client
-                        .sendPing(ByteBuffer.wrap("Ping".getBytes(StandardCharsets.UTF_8)))
+                        .sendPing(ByteBuffer.allocate(0))
                         .exceptionally(logWebSocketError("Failed to send ping."));
                   }
                 });
