@@ -153,23 +153,27 @@ class WebSocketConnection {
    * @param errorHandler Invoked if there is a failure to connect.
    * @throws IllegalStateException Thrown if connection is already open (eg: connect called twice).
    * @throws IllegalStateException Thrown if connection has been closed (ie: 'close()' was called)
-   * @return A {@link CompletableFuture} behaving like the {@link CompletableFuture} returned by
-   *     {@link WebSocket.Builder#buildAsync(URI, Listener)} in case of an error.
    */
-  CompletableFuture<WebSocket> connect(
+  @SuppressWarnings("FutureReturnValueIgnored")
+  void connect(final WebSocketConnectionListener listener, final Consumer<String> errorHandler) {
+    connectInternal(listener, errorHandler);
+  }
+
+  @VisibleForTesting
+  CompletableFuture<Void> connectInternal(
       final WebSocketConnectionListener listener, final Consumer<String> errorHandler) {
     this.listener = Preconditions.checkNotNull(listener);
     Preconditions.checkState(client == null);
     Preconditions.checkState(!closed);
 
     return connectAsync()
-        .whenComplete(
-            (webSocket, throwable) -> {
-              if (webSocket != null && throwable == null) {
-                pingSender.start();
-              } else {
-                errorHandler.accept("Failed to connect to: " + serverUri);
-              }
+        .thenRun(pingSender::start)
+        .exceptionally(
+            throwable -> {
+              errorHandler.accept("Failed to connect to: " + serverUri);
+              log.log(
+                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
+              return null;
             });
   }
 

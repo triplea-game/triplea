@@ -51,14 +51,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
 
   public void registerListenerAndConnect(final Consumer<ServerMessageEnvelope> messageListener) {
     this.messageListener = messageListener;
-    client
-        .connect(this, errorHandler)
-        .exceptionally(
-            throwable -> {
-              log.log(
-                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
-              return null;
-            });
+    client.connect(this, errorHandler);
   }
 
   /**

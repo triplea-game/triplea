@@ -1,9 +1,7 @@
 package org.triplea.http.client.web.socket;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -14,13 +12,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -148,10 +144,8 @@ class WebSocketConnectionTest {
     void connectWillInitiateConnection() throws Exception {
       final HttpClient httpClient = mockHttpClient();
       webSocketConnection.setHttpClient(httpClient);
-      final WebSocket webSocket =
-          webSocketConnection.connect(webSocketConnectionListener, errorHandler).get();
+      webSocketConnection.connectInternal(webSocketConnectionListener, errorHandler).get();
 
-      assertThat(webSocket, is(this.webSocket));
       verify(httpClient.newWebSocketBuilder())
           .connectTimeout(Duration.ofMillis(WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS));
       verifyPingerIsStarted();
@@ -180,14 +174,8 @@ class WebSocketConnectionTest {
 
     @Test
     @DisplayName("Verify connect failing invokes error handler and pinger is not running")
-    void connectionFailure() {
-      // ExecutionException is thrown by Future#get when the future fails with an exception.
-      final Exception exception =
-          assertThrows(
-              ExecutionException.class,
-              () -> webSocketConnection.connect(webSocketConnectionListener, errorHandler).get());
-
-      assertThat(exception.getCause(), is(instanceOf(IOException.class)));
+    void connectionFailure() throws Exception {
+      webSocketConnection.connectInternal(webSocketConnectionListener, errorHandler).get();
 
       verifyPingerNotStarted();
       verifyErrorHandlerWasCalled();
