@@ -138,11 +138,6 @@ class WebSocketConnectionTest {
           .thenReturn(CompletableFuture.completedFuture(null));
     }
 
-    private void requiresCloseAction() {
-      when(webSocket.sendClose(anyInt(), any()))
-          .thenReturn(CompletableFuture.completedFuture(null));
-    }
-
     @AfterEach
     void tearDown() {
       webSocketConnection.getPingSender().cancel();
@@ -210,7 +205,8 @@ class WebSocketConnectionTest {
     @DisplayName("Close will close the underlying socket and stops the pinger")
     void close() {
       webSocketConnection.getWebSocketListener().onOpen(webSocket);
-      requiresCloseAction();
+      when(webSocket.sendClose(anyInt(), any()))
+          .thenReturn(CompletableFuture.completedFuture(null));
       webSocketConnection.close();
 
       verify(webSocket).sendClose(eq(WebSocket.NORMAL_CLOSURE), any());
