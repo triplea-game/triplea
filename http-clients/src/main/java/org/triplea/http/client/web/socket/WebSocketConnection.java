@@ -157,6 +157,8 @@ class WebSocketConnection {
    * @param errorHandler Invoked if there is a failure to connect.
    * @throws IllegalStateException Thrown if connection is already open (eg: connect called twice).
    * @throws IllegalStateException Thrown if connection has been closed (ie: 'close()' was called)
+   * @return A {@link CompletableFuture} behaving like the {@link CompletableFuture} returned by
+   *     {@link WebSocket.Builder#buildAsync(URI, Listener)} in case of an error.
    */
   CompletableFuture<WebSocket> connect(
       final WebSocketConnectionListener listener, final Consumer<String> errorHandler) {

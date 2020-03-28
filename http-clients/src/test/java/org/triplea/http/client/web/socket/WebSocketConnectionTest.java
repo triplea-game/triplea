@@ -1,6 +1,7 @@
 package org.triplea.http.client.web.socket;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
@@ -183,9 +185,13 @@ class WebSocketConnectionTest {
     @Test
     @DisplayName("Verify connect failing invokes error handler and pinger is not running")
     void connectionFailure() {
-      assertThrows(
-          ExecutionException.class,
-          () -> webSocketConnection.connect(webSocketConnectionListener, errorHandler).get());
+      // ExecutionException is thrown by Future#get when the future fails with an exception.
+      final Exception exception =
+          assertThrows(
+              ExecutionException.class,
+              () -> webSocketConnection.connect(webSocketConnectionListener, errorHandler).get());
+
+      assertThat(exception.getCause(), is(instanceOf(IOException.class)));
 
       verifyPingerNotStarted();
       verifyErrorHandlerWasCalled();
