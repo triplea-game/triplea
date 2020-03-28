@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -212,8 +213,7 @@ class WebSocketConnectionTest {
       requiresCloseAction();
       webSocketConnection.close();
 
-      verify(webSocket)
-          .sendClose(WebSocket.NORMAL_CLOSURE, WebSocketConnection.CLIENT_DISCONNECT_MESSAGE);
+      verify(webSocket).sendClose(eq(WebSocket.NORMAL_CLOSURE), any());
       assertThat(webSocketConnection.getPingSender().isRunning(), is(false));
     }
 

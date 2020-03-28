@@ -106,9 +106,6 @@ class WebSocketConnection {
         @Override
         public CompletionStage<?> onClose(
             final WebSocket webSocket, final int statusCode, final String reason) {
-          if (!reason.equals(CLIENT_DISCONNECT_MESSAGE)) {
-            log.severe("Connection to server closed: " + reason);
-          }
           pingSender.cancel();
           listener.connectionClosed(reason);
           return null;
