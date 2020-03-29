@@ -4,7 +4,6 @@ dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "io.github.openfeign:feign-core:$feignCoreVersion"
     implementation "io.github.openfeign:feign-gson:$feignGsonVersion"
-    implementation "org.java-websocket:Java-WebSocket:$javaWebsocketVersion"
     implementation project(":domain-data")
     implementation project(":java-extras")
     testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"

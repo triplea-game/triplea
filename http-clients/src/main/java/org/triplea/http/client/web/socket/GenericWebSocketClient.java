@@ -32,7 +32,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   private Consumer<ServerMessageEnvelope> messageListener;
 
   public GenericWebSocketClient(final URI lobbyUri, final Consumer<String> errorHandler) {
-    this(new WebSocketConnection(swapHttpsToWssProtocol(lobbyUri)), errorHandler);
+    this(new WebSocketConnection(swapHttpToWsProtocol(lobbyUri)), errorHandler);
   }
 
   @VisibleForTesting
@@ -43,22 +43,15 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   }
 
   @VisibleForTesting
-  static URI swapHttpsToWssProtocol(final URI uri) {
-    return uri.getScheme().equals("https")
-        ? URI.create(uri.toString().replace("https", "wss"))
+  static URI swapHttpToWsProtocol(final URI uri) {
+    return uri.getScheme().matches("^https?$")
+        ? URI.create(uri.toString().replaceFirst("^http", "ws"))
         : uri;
   }
 
   public void registerListenerAndConnect(final Consumer<ServerMessageEnvelope> messageListener) {
     this.messageListener = messageListener;
-    client
-        .connect(this, errorHandler)
-        .exceptionally(
-            throwable -> {
-              log.log(
-                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
-              return false;
-            });
+    client.connect(this, errorHandler);
   }
 
   /**
@@ -95,7 +88,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   }
 
   @Override
-  public void handleError(final Exception exception) {
-    log.log(Level.SEVERE, "Websocket error", exception);
+  public void handleError(final Throwable error) {
+    log.log(Level.SEVERE, "Websocket error", error);
   }
 }

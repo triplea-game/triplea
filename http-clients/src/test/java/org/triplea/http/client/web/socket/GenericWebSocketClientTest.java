@@ -2,15 +2,12 @@ package org.triplea.http.client.web.socket;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import java.net.URI;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +45,6 @@ class GenericWebSocketClientTest {
 
   @BeforeEach
   void setup() {
-    when(webSocketClient.connect(any(), any())).thenReturn(new CompletableFuture<>());
     genericWebSocketClient = new GenericWebSocketClient(webSocketClient, errMsg -> {});
     genericWebSocketClient.registerListenerAndConnect(messageListener);
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
@@ -101,16 +97,16 @@ class GenericWebSocketClientTest {
     @DisplayName("Verify 'https' protocol when present is swapped to 'wss'")
     void swapHttpsProtocol() {
       final URI inputUri = URI.create("https://uri.com");
-      final URI updated = GenericWebSocketClient.swapHttpsToWssProtocol(inputUri);
+      final URI updated = GenericWebSocketClient.swapHttpToWsProtocol(inputUri);
       assertThat(updated, is(URI.create("wss://uri.com")));
     }
 
     @Test
-    @DisplayName("Verify swap is a no-op with 'http' protocol")
+    @DisplayName("Verify 'http' protocol when present is swapped to 'ws'")
     void swapHttpProtocol() {
       final URI inputUri = URI.create("http://uri.com");
-      final URI updated = GenericWebSocketClient.swapHttpsToWssProtocol(inputUri);
-      assertThat(updated, is(inputUri));
+      final URI updated = GenericWebSocketClient.swapHttpToWsProtocol(inputUri);
+      assertThat(updated, is(URI.create("ws://uri.com")));
     }
   }
 }

@@ -6,5 +6,5 @@ interface WebSocketConnectionListener {
 
   void connectionClosed(String reason);
 
-  void handleError(Exception exception);
+  void handleError(Throwable error);
 }
