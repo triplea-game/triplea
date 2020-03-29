@@ -71,7 +71,7 @@ class WebSocketConnection {
   @Getter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  private final WebSocket.Listener webSocketListener = new WebSocketListener();
+  private final WebSocket.Listener internalListener = new InternalWebSocketListener();
 
   @Getter(
       value = AccessLevel.PACKAGE,
@@ -138,7 +138,7 @@ class WebSocketConnection {
     return httpClient
         .newWebSocketBuilder()
         .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
-        .buildAsync(serverUri, webSocketListener);
+        .buildAsync(serverUri, internalListener);
   }
 
   /**
@@ -172,7 +172,7 @@ class WebSocketConnection {
   }
 
   @VisibleForTesting
-  class WebSocketListener implements Listener {
+  class InternalWebSocketListener implements Listener {
     private final StringBuilder textAccumulator = new StringBuilder();
 
     @Override

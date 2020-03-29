@@ -46,7 +46,7 @@ class WebSocketConnectionTest {
     void setup() {
       webSocketConnection = new WebSocketConnection(INVALID_URI);
       webSocketConnection.connect(webSocketConnectionListener, err -> {});
-      listener = webSocketConnection.getWebSocketListener();
+      listener = webSocketConnection.getInternalListener();
     }
 
     @AfterEach
@@ -194,7 +194,7 @@ class WebSocketConnectionTest {
     @Test
     @DisplayName("Close will close the underlying socket and stops the pinger")
     void close() {
-      webSocketConnection.getWebSocketListener().onOpen(webSocket);
+      webSocketConnection.getInternalListener().onOpen(webSocket);
       when(webSocket.sendClose(anyInt(), any()))
           .thenReturn(CompletableFuture.completedFuture(null));
       webSocketConnection.close();
@@ -207,7 +207,7 @@ class WebSocketConnectionTest {
     @DisplayName("Send will send messages if connection is open")
     void sendMessage() {
       requiresSendTextAction();
-      webSocketConnection.getWebSocketListener().onOpen(webSocket);
+      webSocketConnection.getInternalListener().onOpen(webSocket);
       webSocketConnection.setConnectionIsOpen(true);
 
       webSocketConnection.sendMessage(MESSAGE);
