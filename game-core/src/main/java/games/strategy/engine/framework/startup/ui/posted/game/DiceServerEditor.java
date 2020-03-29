@@ -45,10 +45,11 @@ public class DiceServerEditor extends JPanel {
                       this,
                       new JLabel(
                           "<html><p style='width: 400px;'>"
-                              + "Enter your your email address in the \"To\" field, and you opponents "
-                              + "in the \"CC\" field, you may enter multiple addresses each "
-                              + "separated by a space. Click the register button to register your "
-                              + "email addresses, this must be done to receive dice emails."
+                              + "Enter your your email address in the \"To\" field, and you "
+                              + "opponents in the \"CC\" field, you may enter multiple "
+                              + "addresses each separated by a space. Click the register "
+                              + "button to register your email addresses, this must be done "
+                              + "to receive dice emails."
                               + "</p></html>"),
                       "Dice Server Help",
                       JOptionPane.INFORMATION_MESSAGE))

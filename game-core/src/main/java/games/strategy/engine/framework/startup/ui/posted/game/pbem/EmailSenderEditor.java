@@ -226,8 +226,8 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
             helpMessage.setText(
                 "<html><p style='width: 400px;'>"
                     + "Email through Hotmail<br/>"
-                    + "This email sends email via Hotmails (live.com) SMTP service. To use this you "
-                    + "must have a Homtail account. Configuration:<br/>"
+                    + "This email sends email via Hotmails (live.com) SMTP service. To use this "
+                    + "you must have a Homtail account. Configuration:<br/>"
                     + "Subject: This will be the subject of the email. In addition to the text "
                     + "entered, the player and round number will be appended<br/>"
                     + "To: A list of email addresses separated by space. the email will be sent to "
