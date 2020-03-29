@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
-import games.strategy.engine.posted.game.pbf.NodeBbForumPoster;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -77,7 +76,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
           SwingComponents.highlightLabelIfNotValid(viewModel.isForumPasswordValid(), passwordLabel);
           testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
           helpMessage.setText(
-              viewModel.getForumSelection().equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+              viewModel.isForumProviderTripleA()
                   ? "<html><p style='width: 400px;'>"
                       + "Posts to forums.triplea-game.org<br/>"
                       + "You can play PBEM/PBF games via forums.triplea-game.org.<br/>"

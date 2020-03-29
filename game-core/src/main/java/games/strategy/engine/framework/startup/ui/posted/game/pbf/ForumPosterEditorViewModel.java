@@ -116,6 +116,10 @@ class ForumPosterEditorViewModel {
     return isTopicIdValid() && isForumUsernameValid() && isForumPasswordValid();
   }
 
+  boolean isForumProviderTripleA() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
+  }
+
   boolean isForumPasswordValid() {
     return forumPassword != null && forumPassword.length > 0;
   }
