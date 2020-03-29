@@ -97,6 +97,8 @@ class WebSocketConnection {
   /** Does an async close of the current websocket connection. */
   void close() {
     closed = true;
+    // Client can be null if the connection hasn't completely opened yet.
+    // This null check prevents a potential NPE, which should rarely ever occur.
     if (client != null && !client.isOutputClosed()) {
       client
           .sendClose(WebSocket.NORMAL_CLOSURE, CLIENT_DISCONNECT_MESSAGE)
