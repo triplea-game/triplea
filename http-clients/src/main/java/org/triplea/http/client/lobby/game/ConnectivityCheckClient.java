@@ -1,6 +1,5 @@
 package org.triplea.http.client.lobby.game;
 
-import com.google.common.base.Preconditions;
 import java.net.URI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,11 +26,8 @@ public class ConnectivityCheckClient {
    * is returned. This can return false when a host's IP address is not public, in those cases the
    * reverse connection would fail.
    */
-  public boolean checkConnectivity(final int port) {
-    Preconditions.checkArgument(port > 0, "Port must be a positive number, was: " + port);
-    Preconditions.checkArgument(
-        port < Math.pow(2, 16), "Port must be less than max value (2^16), was: " + port);
+  public boolean checkConnectivity(final String gameId) {
     return connectivityCheckFeignClient.checkConnectivity(
-        authenticationHeaders.createHeaders(), port);
+        authenticationHeaders.createHeaders(), gameId);
   }
 }

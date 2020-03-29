@@ -38,7 +38,7 @@ public class LobbyWatcherThread {
 
               LocalServerAvailabilityCheck.builder()
                   .gameToLobbyConnection(gameToLobbyConnection)
-                  .localPort(serverMessenger.getLocalNode().getPort())
+                  .gameId(lobbyWatcher.getInGameLobbyWatcher().getGameId())
                   .errorHandler(watcherThreadMessaging::serverNotAvailableHandler)
                   .build()
                   .run();

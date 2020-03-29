@@ -13,6 +13,7 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 
 class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheckClient> {
   private static final int PORT = 20000;
+  private static final String GAME_ID = "Some game id";
 
   ConnectivityControllerTest() {
     super(AllowedUserRole.HOST, ConnectivityCheckClient::newClient);
@@ -21,7 +22,8 @@ class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheck
   /** Negative case, check connectivity for a port that is not listening. */
   @Test
   void checkConnectivityNegativeCase() {
-    final boolean result = verifyEndpointReturningObject(client -> client.checkConnectivity(PORT));
+    final boolean result =
+        verifyEndpointReturningObject(client -> client.checkConnectivity(GAME_ID));
     assertThat(result, is(false));
   }
 
@@ -32,7 +34,9 @@ class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheck
   @Test
   void checkConnectivityPositiveCase() throws IOException {
     openSocket();
-    final boolean result = verifyEndpointReturningObject(client -> client.checkConnectivity(PORT));
+    // TODO Setup GameEntry so that the server correctly checks the connectivity.
+    final boolean result =
+        verifyEndpointReturningObject(client -> client.checkConnectivity(GAME_ID));
     assertThat(result, is(true));
   }
 
