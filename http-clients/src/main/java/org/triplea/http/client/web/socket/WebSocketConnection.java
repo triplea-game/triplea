@@ -97,7 +97,7 @@ class WebSocketConnection {
   /** Does an async close of the current websocket connection. */
   void close() {
     closed = true;
-    if (!client.isOutputClosed()) {
+    if (client != null && !client.isOutputClosed()) {
       client
           .sendClose(WebSocket.NORMAL_CLOSURE, CLIENT_DISCONNECT_MESSAGE)
           .exceptionally(logWebSocketError(Level.INFO, "Failed to close"));
