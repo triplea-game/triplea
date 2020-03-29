@@ -139,30 +139,32 @@ class WebSocketConnectionTest {
       webSocketConnection.getPingSender().cancel();
     }
 
-    @Test
-    @DisplayName("Verify connect initiates connection and starts the pinger")
-    void connectWillInitiateConnection() throws Exception {
-      final HttpClient httpClient = mockHttpClient();
-      webSocketConnection.setHttpClient(httpClient);
-      webSocketConnection.connectInternal(webSocketConnectionListener, errorHandler).get();
+    @Nested
+    class WithMockedHttpClient {
 
-      verify(httpClient.newWebSocketBuilder())
-          .connectTimeout(Duration.ofMillis(WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS));
-      verifyPingerIsStarted();
-    }
+      @Mock private HttpClient httpClient;
 
-    private HttpClient mockHttpClient() {
-      final HttpClient client = mock(HttpClient.class);
+      @BeforeEach
+      void setUp() {
+        final WebSocket.Builder builder = mock(WebSocket.Builder.class);
+        when(builder.connectTimeout(any())).thenReturn(builder);
 
-      final WebSocket.Builder builder = mock(WebSocket.Builder.class);
-      when(builder.connectTimeout(any())).thenReturn(builder);
+        when(builder.buildAsync(any(), any()))
+            .thenReturn(CompletableFuture.completedFuture(webSocket));
 
-      when(builder.buildAsync(any(), any()))
-          .thenReturn(CompletableFuture.completedFuture(webSocket));
+        when(httpClient.newWebSocketBuilder()).thenReturn(builder);
+      }
 
-      when(client.newWebSocketBuilder()).thenReturn(builder);
+      @Test
+      @DisplayName("Verify connect initiates connection and starts the pinger")
+      void connectWillInitiateConnection() throws Exception {
+        webSocketConnection.setHttpClient(httpClient);
+        webSocketConnection.connectInternal(webSocketConnectionListener, errorHandler).get();
 
-      return client;
+        verify(httpClient.newWebSocketBuilder())
+            .connectTimeout(Duration.ofMillis(WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS));
+        verifyPingerIsStarted();
+      }
     }
 
     private void verifyPingerIsStarted() {
