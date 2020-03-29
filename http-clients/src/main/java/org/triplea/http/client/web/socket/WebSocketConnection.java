@@ -71,51 +71,7 @@ class WebSocketConnection {
   @Getter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  private final WebSocket.Listener webSocketListener =
-      new Listener() {
-        private final StringBuilder textAccumulator = new StringBuilder();
-
-        @Override
-        public void onOpen(final WebSocket webSocket) {
-          synchronized (queuedMessages) {
-            client = webSocket;
-            connectionIsOpen = true;
-            queuedMessages.forEach(
-                message ->
-                    client
-                        .sendText(message, true)
-                        .exceptionally(
-                            logWebSocketError(Level.SEVERE, "Failed to send queued text.")));
-            queuedMessages.clear();
-          }
-          webSocket.request(1);
-        }
-
-        @Override
-        public CompletionStage<?> onText(
-            final WebSocket webSocket, final CharSequence data, final boolean last) {
-          textAccumulator.append(data);
-          if (last) {
-            listener.messageReceived(textAccumulator.toString());
-            textAccumulator.setLength(0);
-          }
-          webSocket.request(1);
-          return null;
-        }
-
-        @Override
-        public CompletionStage<?> onClose(
-            final WebSocket webSocket, final int statusCode, final String reason) {
-          pingSender.cancel();
-          listener.connectionClosed(reason);
-          return null;
-        }
-
-        @Override
-        public void onError(final WebSocket webSocket, final Throwable error) {
-          listener.handleError(error);
-        }
-      };
+  private final WebSocket.Listener webSocketListener = new WebSocketListener();
 
   @Getter(
       value = AccessLevel.PACKAGE,
@@ -215,10 +171,48 @@ class WebSocketConnection {
     };
   }
 
-  private <T> Function<Throwable, T> invokeErrorListenerInExceptionCase() {
-    return throwable -> {
-      listener.handleError(throwable);
+  @VisibleForTesting
+  class WebSocketListener implements Listener {
+    private final StringBuilder textAccumulator = new StringBuilder();
+
+    @Override
+    public void onOpen(final WebSocket webSocket) {
+      synchronized (queuedMessages) {
+        client = webSocket;
+        connectionIsOpen = true;
+        queuedMessages.forEach(
+            message ->
+                client
+                    .sendText(message, true)
+                    .exceptionally(logWebSocketError(Level.SEVERE, "Failed to send queued text.")));
+        queuedMessages.clear();
+      }
+      webSocket.request(1);
+    }
+
+    @Override
+    public CompletionStage<?> onText(
+        final WebSocket webSocket, final CharSequence data, final boolean last) {
+      textAccumulator.append(data);
+      if (last) {
+        listener.messageReceived(textAccumulator.toString());
+        textAccumulator.setLength(0);
+      }
+      webSocket.request(1);
       return null;
-    };
+    }
+
+    @Override
+    public CompletionStage<?> onClose(
+        final WebSocket webSocket, final int statusCode, final String reason) {
+      pingSender.cancel();
+      listener.connectionClosed(reason);
+      return null;
+    }
+
+    @Override
+    public void onError(final WebSocket webSocket, final Throwable error) {
+      listener.handleError(error);
+    }
   }
 }

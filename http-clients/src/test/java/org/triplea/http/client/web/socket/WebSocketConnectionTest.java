@@ -40,11 +40,13 @@ class WebSocketConnectionTest {
   class WebSocketClientCallbacks {
     @Mock private WebSocketConnectionListener webSocketConnectionListener;
     private WebSocketConnection webSocketConnection;
+    private WebSocket.Listener listener;
 
     @BeforeEach
     void setup() {
       webSocketConnection = new WebSocketConnection(INVALID_URI);
       webSocketConnection.connect(webSocketConnectionListener, err -> {});
+      listener = webSocketConnection.getWebSocketListener();
     }
 
     @AfterEach
@@ -54,13 +56,12 @@ class WebSocketConnectionTest {
 
     @Test
     void onMessage() {
-      webSocketConnection.getWebSocketListener().onText(mock(WebSocket.class), MESSAGE, true);
+      listener.onText(mock(WebSocket.class), MESSAGE, true);
       verify(webSocketConnectionListener).messageReceived(MESSAGE);
     }
 
     @Test
     void verifyListenerAccumulatesMessagesUntilLast() {
-      final WebSocket.Listener listener = webSocketConnection.getWebSocketListener();
       listener.onText(mock(WebSocket.class), "1", false);
       listener.onText(mock(WebSocket.class), "2", false);
       listener.onText(mock(WebSocket.class), "3", true);
@@ -70,7 +71,6 @@ class WebSocketConnectionTest {
 
     @Test
     void verifyListenerClearsMessageCorrectly() {
-      final WebSocket.Listener listener = webSocketConnection.getWebSocketListener();
       listener.onText(mock(WebSocket.class), "1", false);
       listener.onText(mock(WebSocket.class), "2", false);
       listener.onText(mock(WebSocket.class), "3", true);
@@ -83,13 +83,13 @@ class WebSocketConnectionTest {
 
     @Test
     void onClose() {
-      webSocketConnection.getWebSocketListener().onClose(mock(WebSocket.class), 0, REASON);
+      listener.onClose(mock(WebSocket.class), 0, REASON);
       verify(webSocketConnectionListener).connectionClosed(REASON);
     }
 
     @Test
     void onError() {
-      webSocketConnection.getWebSocketListener().onError(mock(WebSocket.class), exception);
+      listener.onError(mock(WebSocket.class), exception);
       verify(webSocketConnectionListener).handleError(exception);
     }
 
@@ -102,7 +102,7 @@ class WebSocketConnectionTest {
       verify(mockedWebSocket, never()).sendText(any(), anyBoolean());
 
       // onOpen should trigger message send
-      webSocketConnection.getWebSocketListener().onOpen(mockedWebSocket);
+      listener.onOpen(mockedWebSocket);
 
       verify(mockedWebSocket).sendText(any(), anyBoolean());
     }
