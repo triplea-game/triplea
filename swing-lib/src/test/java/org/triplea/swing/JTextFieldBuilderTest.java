@@ -1,6 +1,6 @@
 package org.triplea.swing;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextField;
 import org.awaitility.Awaitility;
@@ -50,7 +50,7 @@ class JTextFieldBuilderTest {
     // Eventually callback action is expected to have been called and incremented our value from 0
     // to 1.
     Awaitility.await()
-        .atMost(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2, TimeUnit.MILLISECONDS)
+        .atMost(Duration.ofMillis(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2))
         .until(() -> value.get() == 1);
   }
 
