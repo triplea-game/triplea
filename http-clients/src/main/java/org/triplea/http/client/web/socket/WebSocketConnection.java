@@ -84,7 +84,8 @@ class WebSocketConnection {
                 message ->
                     client
                         .sendText(message, true)
-                        .exceptionally(logWebSocketError("Failed to send queued text.")));
+                        .exceptionally(
+                            logWebSocketError(Level.SEVERE, "Failed to send queued text.")));
             queuedMessages.clear();
           }
           webSocket.request(1);
@@ -132,7 +133,7 @@ class WebSocketConnection {
                   if (!client.isOutputClosed()) {
                     client
                         .sendPing(ByteBuffer.allocate(0))
-                        .exceptionally(logWebSocketError("Failed to send ping."));
+                        .exceptionally(logWebSocketError(Level.INFO, "Failed to send ping."));
                   }
                 });
   }
@@ -143,7 +144,7 @@ class WebSocketConnection {
     if (!client.isOutputClosed()) {
       client
           .sendClose(WebSocket.NORMAL_CLOSURE, CLIENT_DISCONNECT_MESSAGE)
-          .exceptionally(logWebSocketError("Failed to close"));
+          .exceptionally(logWebSocketError(Level.INFO, "Failed to close"));
     }
   }
 
@@ -199,14 +200,24 @@ class WebSocketConnection {
       if (!connectionIsOpen) {
         queuedMessages.add(message);
       } else {
-        client.sendText(message, true).exceptionally(logWebSocketError("Failed to send text."));
+        client
+            .sendText(message, true)
+            .exceptionally(logWebSocketError(Level.SEVERE, "Failed to send text."));
       }
     }
   }
 
-  private <T> Function<Throwable, T> logWebSocketError(final String errorMessage) {
+  private <T> Function<Throwable, T> logWebSocketError(
+      final Level level, final String errorMessage) {
     return throwable -> {
-      log.log(Level.SEVERE, errorMessage, throwable);
+      log.log(level, errorMessage, throwable);
+      return null;
+    };
+  }
+
+  private <T> Function<Throwable, T> invokeErrorListenerInExceptionCase() {
+    return throwable -> {
+      listener.handleError(throwable);
       return null;
     };
   }
