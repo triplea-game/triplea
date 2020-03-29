@@ -44,10 +44,14 @@ public class DiceServerEditor extends JPanel {
                   JOptionPane.showMessageDialog(
                       this,
                       new JLabel(
-                          "Enter your your email address in the \"To\" field, and you opponents "
+                          "<html><p style='width: 400px;'>"
+                              + "Enter your your email address in the \"To\" field, and you opponents "
                               + "in the \"CC\" field, you may enter multiple addresses each "
                               + "separated by a space. Click the register button to register your "
-                              + "email addresses, this must be done to receive dice emails.")))
+                              + "email addresses, this must be done to receive dice emails."
+                              + "</p></html>"),
+                      "Dice Server Help",
+                      JOptionPane.INFORMATION_MESSAGE))
           .toolTip("Click this button to show help text")
           .build();
   private final JButton testDiceButton = new JButton("Test Server");

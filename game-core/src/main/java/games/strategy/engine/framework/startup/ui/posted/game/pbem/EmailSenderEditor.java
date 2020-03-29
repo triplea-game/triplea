@@ -43,7 +43,10 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
   private final JLabel helpMessage = new JLabel();
   private final JButton helpButton =
       new JButtonBuilder("Help")
-          .actionListener(() -> JOptionPane.showMessageDialog(contents, helpMessage))
+          .actionListener(
+              () ->
+                  JOptionPane.showMessageDialog(
+                      contents, helpMessage, "Play By Email Help", JOptionPane.INFORMATION_MESSAGE))
           .toolTip("Click this button to show help text")
           .build();
 
@@ -189,7 +192,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
 
           if (viewModel.isEmailProviderDisabled()) {
             helpMessage.setText(
-                "<html>"
+                "<html><p style='width: 400px;'>"
                     + "Email sender<br/>"
                     + "An email sender can email the turn summary and save game to multiple "
                     + "recipients at the end of each players turn. This allows two or more "
@@ -197,10 +200,10 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
                     + "time.<br/>"
                     + "Each email sender may require custom configuration, to learn more "
                     + "click help again after selecting a specific email sender."
-                    + "</html>");
+                    + "</p></html>");
           } else if (viewModel.isEmailProviderGmail()) {
             helpMessage.setText(
-                "<html>"
+                "<html><p style='width: 400px;'>"
                     + "Email through Gmail<br/>"
                     + "This email sends email via Gmails SMTP service. To use this you must have a "
                     + "gmail account. Configuration:<br/>"
@@ -218,10 +221,10 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
                     + "remember your credentials.<br/>"
                     + "You may have to enter your login and password again if you open the save "
                     + "game on another computer."
-                    + "</html>");
+                    + "</p></html>");
           } else if (viewModel.isEmailProviderHotmail()) {
             helpMessage.setText(
-                "<html>"
+                "<html><p style='width: 400px;'>"
                     + "Email through Hotmail<br/>"
                     + "This email sends email via Hotmails (live.com) SMTP service. To use this you "
                     + "must have a Homtail account. Configuration:<br/>"
@@ -239,10 +242,10 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
                     + "to remember your credentials.<br/>"
                     + "You may have to enter your login and password again if you open the save "
                     + "game on another computer."
-                    + "</html>");
+                    + "</p></html>");
           } else {
             helpMessage.setText(
-                "<html>"
+                "<html><p style='width: 400px;'>"
                     + "Email through SMTP<br/>"
                     + "This email sends email via any generic SMTP service. Configuration:<br/>"
                     + "Subject: This will be the subject of the email. In addition to the text "
@@ -261,7 +264,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
                     + "option to remember your credentials.<br/>"
                     + "You may have to enter your login and password again if you open the save "
                     + "game on another computer."
-                    + "</html>");
+                    + "</p></html>");
           }
           SwingComponents.highlightLabelIfNotValid(viewModel.isSmtpServerValid(), smtpServerLabel);
           updateTextFieldIfNeeded(smtpServerField, viewModel.getSmtpServer());

@@ -25,7 +25,10 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   private final JLabel helpMessage = new JLabel();
   private final JButton helpButton =
       new JButtonBuilder("Help")
-          .actionListener(() -> JOptionPane.showMessageDialog(this, helpMessage))
+          .actionListener(
+              () ->
+                  JOptionPane.showMessageDialog(
+                      this, helpMessage, "Play By Forum Help", JOptionPane.INFORMATION_MESSAGE))
           .toolTip("Click this button to show help text")
           .build();
   private final JTextField topicIdField = new JTextField();
@@ -75,7 +78,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
           testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
           helpMessage.setText(
               viewModel.getForumSelection().equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-                  ? "<html>"
+                  ? "<html><p style='width: 400px;'>"
                       + "Posts to forums.triplea-game.org<br/>"
                       + "You can play PBEM/PBF games via forums.triplea-game.org.<br/>"
                       + "Instructions:<br/>"
@@ -92,8 +95,8 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
                       + "of the save game, but they are stored encrypted in the local file system if "
                       + "you select the option to remember your credentials. You may have to enter "
                       + "your login and password again if you open the save game on another computer."
-                      + "</html>"
-                  : "<html>"
+                      + "</p></html>"
+                  : "<html><p style='width: 400px;'>"
                       + "Posts to www.AxisAndAllies.org<br/>"
                       + "This poster is build for PBEM games via AxisAndAllies.org. Instructions:<br/>"
                       + "Create a new Forum post in the Play Boardgames section "
@@ -109,7 +112,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
                       + "the save game, but they are stored encrypted in the local file system if "
                       + "you select the option to remember your credentials. You may have to enter "
                       + "your login and password again if you open the save game on another computer."
-                      + "</html>");
+                      + "</p></html>");
         });
     forums.setSelectedItem(viewModel.getForumSelection());
     add(
