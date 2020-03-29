@@ -8,19 +8,21 @@ import org.triplea.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.ModeratorAuditHistoryDao.AuditAction;
 import org.triplea.db.dao.ModeratorAuditHistoryDao.AuditArgs;
 import org.triplea.db.dao.user.ban.UserBanDao;
+import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 @Builder
 class RemoteActionsModule {
   @Nonnull private final UserBanDao userBanDao;
   @Nonnull private final ModeratorAuditHistoryDao auditHistoryDao;
-  @Nonnull private final RemoteActionsEventQueue remoteActionsEventQueue;
+  @Nonnull private final WebSocketMessagingBus gameMessagingBus;
 
   public static RemoteActionsModule build(
-      final Jdbi jdbi, final RemoteActionsEventQueue remoteActionsEventQueue) {
+      final Jdbi jdbi, final WebSocketMessagingBus gameMessagingBus) {
     return RemoteActionsModule.builder()
         .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
         .userBanDao(jdbi.onDemand(UserBanDao.class))
-        .remoteActionsEventQueue(remoteActionsEventQueue)
+        .gameMessagingBus(gameMessagingBus)
         .build();
   }
 
@@ -28,13 +30,14 @@ class RemoteActionsModule {
     return userBanDao.isBannedByIp(ip.getHostAddress());
   }
 
-  void addIpForShutdown(final int moderatorId, final InetAddress ipToShutdown) {
+  void addGameIdForShutdown(final int moderatorId, final String gameId) {
     auditHistoryDao.addAuditRecord(
         AuditArgs.builder()
             .actionName(AuditAction.REMOTE_SHUTDOWN)
-            .actionTarget(ipToShutdown.getHostAddress())
+            .actionTarget(gameId)
             .moderatorUserId(moderatorId)
             .build());
-    remoteActionsEventQueue.addShutdownRequestEvent(ipToShutdown);
+
+    gameMessagingBus.broadcastMessage(new ShutdownServerMessage(gameId));
   }
 }

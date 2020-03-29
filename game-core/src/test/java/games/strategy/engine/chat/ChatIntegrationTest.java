@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.test.common.Integration;
 
 @Integration
@@ -196,17 +195,14 @@ final class ChatIntegrationTest {
     final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
-    public void slapped(final String message, final UserName from) {}
-
-    @Override
-    public void slap(final String message) {}
+    public void slapped(final UserName from) {}
 
     @Override
     public void eventReceived(final String event) {}
 
     @Override
-    public void messageReceived(final ChatMessage chatMessage) {
-      lastMessageReceived.set(chatMessage.getMessage());
+    public void messageReceived(final UserName fromPlayer, final String chatMessage) {
+      lastMessageReceived.set(chatMessage);
       messageCount.incrementAndGet();
     }
 

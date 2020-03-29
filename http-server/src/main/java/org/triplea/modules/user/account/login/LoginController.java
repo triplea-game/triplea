@@ -16,7 +16,7 @@ import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
-import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.chat.Chatters;
 
 @Builder
 public class LoginController extends HttpController {

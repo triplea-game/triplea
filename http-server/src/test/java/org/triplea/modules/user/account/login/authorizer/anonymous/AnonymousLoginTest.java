@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.UserJdbiDao;
 import org.triplea.domain.data.UserName;
-import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.chat.Chatters;
 
 @ExtendWith(MockitoExtension.class)
 class AnonymousLoginTest {

@@ -12,7 +12,6 @@ import org.triplea.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.db.data.UserRole;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.UserName;
 
 class ChatParticipantAdapterTest {
 
@@ -42,9 +41,7 @@ class ChatParticipantAdapterTest {
 
     final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 
-    assertThat(
-        result,
-        is(ChatParticipant.builder().isModerator(true).userName(UserName.of(USERNAME)).build()));
+    assertThat(result, is(ChatParticipant.builder().isModerator(true).userName(USERNAME).build()));
   }
 
   private UserWithRoleRecord givenUserRecordWithRole(final String userRole) {
@@ -63,8 +60,6 @@ class ChatParticipantAdapterTest {
 
     final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 
-    assertThat(
-        result,
-        is(ChatParticipant.builder().isModerator(true).userName(UserName.of(USERNAME)).build()));
+    assertThat(result, is(ChatParticipant.builder().isModerator(true).userName(USERNAME).build()));
   }
 }

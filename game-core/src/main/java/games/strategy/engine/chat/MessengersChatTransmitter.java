@@ -6,8 +6,6 @@ import games.strategy.net.Messengers;
 import java.util.Collection;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
 public class MessengersChatTransmitter implements ChatTransmitter {
@@ -35,8 +33,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     return new IChatChannel() {
       @Override
       public void chatOccurred(final String message) {
-        chatClient.messageReceived(
-            new ChatMessage(MessageContext.getSender().getPlayerName(), message));
+        chatClient.messageReceived(MessageContext.getSender().getPlayerName(), message);
       }
 
       @Override
@@ -45,7 +42,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
         if (slappedPlayer.equals(userName)) {
           chatClient.slappedBy(slapper);
         } else {
-          chatClient.playerSlapped(slappedPlayer + " was slapped by " + slapper);
+          chatClient.eventReceived(slappedPlayer + " was slapped by " + slapper);
         }
       }
 
@@ -64,7 +61,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
 
       @Override
       public void statusChanged(final UserName userName, final String status) {
-        chatClient.statusUpdated(new StatusUpdate(userName, status));
+        chatClient.statusUpdated(userName, status);
       }
     };
   }

@@ -27,7 +27,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.TimeManager;
 import org.triplea.sound.ClipPlayer;
@@ -221,19 +220,14 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   @Override
-  public void messageReceived(final ChatMessage chatMessage) {
-    addMessageWithSound(
-        chatMessage.getMessage(), chatMessage.getFrom(), SoundPath.CLIP_CHAT_MESSAGE);
+  public void messageReceived(final UserName userName, final String message) {
+    addMessageWithSound(message, userName, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   @Override
-  public void slapped(final String message, final UserName from) {
+  public void slapped(final UserName from) {
+    final String message = "You were slapped by " + from;
     addMessageWithSound(message, from, SoundPath.CLIP_CHAT_SLAP);
-  }
-
-  @Override
-  public void slap(final String message) {
-    addGenericMessage(message);
   }
 
   private void addMessageWithSound(final String message, final UserName from, final String sound) {

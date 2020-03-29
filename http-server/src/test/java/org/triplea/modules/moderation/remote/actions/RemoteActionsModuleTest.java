@@ -17,6 +17,8 @@ import org.triplea.db.dao.ModeratorAuditHistoryDao.AuditAction;
 import org.triplea.db.dao.ModeratorAuditHistoryDao.AuditArgs;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.http.client.IpAddressParser;
+import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 @ExtendWith(MockitoExtension.class)
 class RemoteActionsModuleTest {
@@ -26,7 +28,7 @@ class RemoteActionsModuleTest {
 
   @Mock private UserBanDao userBanDao;
   @Mock private ModeratorAuditHistoryDao auditHistoryDao;
-  @Mock private RemoteActionsEventQueue remoteActionsEventQueue;
+  @Mock private WebSocketMessagingBus gameMessagingBus;
 
   private RemoteActionsModule remoteActionsModule;
 
@@ -36,7 +38,7 @@ class RemoteActionsModuleTest {
         RemoteActionsModule.builder()
             .userBanDao(userBanDao)
             .auditHistoryDao(auditHistoryDao)
-            .remoteActionsEventQueue(remoteActionsEventQueue)
+            .gameMessagingBus(gameMessagingBus)
             .build();
   }
 
@@ -64,10 +66,11 @@ class RemoteActionsModuleTest {
   @Nested
   class AddIpForShutdown {
     @Test
-    void addIpforShutdown() {
-      remoteActionsModule.addIpForShutdown(MODERATOR_ID, IpAddressParser.fromString(IP));
+    void addGameIdforShutdown() {
+      remoteActionsModule.addGameIdForShutdown(MODERATOR_ID, "game-id");
 
-      verify(remoteActionsEventQueue).addShutdownRequestEvent(IpAddressParser.fromString(IP));
+      verify(gameMessagingBus).broadcastMessage(new ShutdownServerMessage("game-id"));
+
       final ArgumentCaptor<AuditArgs> capture = ArgumentCaptor.forClass(AuditArgs.class);
       verify(auditHistoryDao).addAuditRecord(capture.capture());
       assertThat(

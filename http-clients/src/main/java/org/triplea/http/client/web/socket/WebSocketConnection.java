@@ -38,7 +38,7 @@ import org.triplea.java.timer.Timers;
 class WebSocketConnection {
   @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
 
-  @VisibleForTesting static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
+  private static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
 
   private WebSocketConnectionListener listener;
 
@@ -71,7 +71,7 @@ class WebSocketConnection {
   @Getter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  private final WebSocket.Listener internalListener = new InternalWebSocketListener();
+  private final java.net.http.WebSocket.Listener internalListener = new InternalWebSocketListener();
 
   @Getter(
       value = AccessLevel.PACKAGE,
@@ -113,19 +113,12 @@ class WebSocketConnection {
    * @throws IllegalStateException Thrown if connection is already open (eg: connect called twice).
    * @throws IllegalStateException Thrown if connection has been closed (ie: 'close()' was called)
    */
-  @SuppressWarnings("FutureReturnValueIgnored")
   void connect(final WebSocketConnectionListener listener, final Consumer<String> errorHandler) {
-    connectInternal(listener, errorHandler);
-  }
-
-  @VisibleForTesting
-  CompletableFuture<Void> connectInternal(
-      final WebSocketConnectionListener listener, final Consumer<String> errorHandler) {
     this.listener = Preconditions.checkNotNull(listener);
     Preconditions.checkState(client == null);
     Preconditions.checkState(!closed);
 
-    return connectAsync()
+    connectAsync()
         .thenRun(pingSender::start)
         .exceptionally(
             throwable -> {
@@ -140,7 +133,7 @@ class WebSocketConnection {
     return httpClient
         .newWebSocketBuilder()
         .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
-        .buildAsync(serverUri, internalListener);
+        .buildAsync(this.serverUri, internalListener);
   }
 
   /**

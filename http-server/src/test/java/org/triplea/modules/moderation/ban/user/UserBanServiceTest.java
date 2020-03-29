@@ -2,7 +2,9 @@ package org.triplea.modules.moderation.ban.user;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -10,12 +12,9 @@ import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import javax.websocket.Session;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,12 +27,10 @@ import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.db.dao.user.ban.UserBanRecord;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
-import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
-import org.triplea.modules.chat.event.processing.Chatters;
-import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueue;
+import org.triplea.modules.chat.Chatters;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 @ExtendWith(MockitoExtension.class)
 class UserBanServiceTest {
@@ -73,13 +70,13 @@ class UserBanServiceTest {
   @Mock private UserBanDao userBanDao;
   @Mock private Supplier<String> publicIdSupplier;
   @Mock private Chatters chatters;
-  @Mock private RemoteActionsEventQueue playerBanEvents;
 
   @SuppressWarnings("unused") // injected into UserBanService
   @Mock
   private ApiKeyDaoWrapper apiKeyDaoWrapper;
 
-  @Mock private BiConsumer<Collection<Session>, ServerMessageEnvelope> messageBroadcaster;
+  @Mock private WebSocketMessagingBus chatMessagingBus;
+  @Mock private WebSocketMessagingBus gameMessagingBus;
 
   @InjectMocks private UserBanService bannedUsersService;
 
@@ -143,9 +140,9 @@ class UserBanServiceTest {
     void banUserFailureCase() {
       givenBanDaoUpdateCount(0);
 
-      assertThat(bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS), is(false));
-      verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
-      verify(playerBanEvents, never()).addPlayerBannedEvent(any());
+      assertThrows(
+          IllegalStateException.class,
+          () -> bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS));
     }
 
     private void givenBanDaoUpdateCount(final int updateCount) {
@@ -162,9 +159,11 @@ class UserBanServiceTest {
     @Test
     void banUserSuccessCase() {
       givenBanDaoUpdateCount(1);
-      when(chatters.hasPlayer(UserName.of(USER_BAN_PARAMS.getUsername()))).thenReturn(true);
+      when(chatters.disconnectPlayerSessions(
+              eq(UserName.of(USER_BAN_PARAMS.getUsername())), anyString()))
+          .thenReturn(true);
 
-      assertThat(bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS), is(true));
+      bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS);
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(
               ModeratorAuditHistoryDao.AuditArgs.builder()
@@ -175,9 +174,8 @@ class UserBanServiceTest {
 
       verify(chatters)
           .disconnectPlayerSessions(eq(UserName.of(USER_BAN_PARAMS.getUsername())), any());
-      verify(playerBanEvents)
-          .addPlayerBannedEvent(IpAddressParser.fromString(USER_BAN_PARAMS.getIp()));
-      verify(messageBroadcaster).accept(any(), any());
+      verify(chatMessagingBus).broadcastMessage(any());
+      verify(gameMessagingBus).broadcastMessage(any());
     }
   }
 }

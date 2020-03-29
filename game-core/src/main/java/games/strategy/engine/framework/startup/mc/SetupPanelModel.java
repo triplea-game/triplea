@@ -64,7 +64,9 @@ public class SetupPanelModel implements ServerSetupModel {
         this,
         ui,
         new HeadedLaunchAction(ui),
-        error -> SwingComponents.showError(null, "Connection problem", error));
+        error -> {
+          SwingComponents.showError(null, "Connection problem", error);
+        });
   }
 
   @Override

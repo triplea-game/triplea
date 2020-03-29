@@ -26,10 +26,9 @@ import org.triplea.db.dao.api.key.GamePlayerLookup;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.messages.server.ChatServerMessageType;
-import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
-import org.triplea.modules.chat.event.processing.Chatters;
-import org.triplea.web.socket.MessageBroadcaster;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
+import org.triplea.modules.chat.Chatters;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +46,7 @@ class DisconnectUserActionTest {
   @Mock private Session session;
   @Mock private ApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private Chatters chatters;
-  @Mock private MessageBroadcaster messageBroadcaster;
+  @Mock private WebSocketMessagingBus playerConnections;
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   @InjectMocks private DisconnectUserAction disconnectUserAction;
@@ -66,7 +65,7 @@ class DisconnectUserActionTest {
 
     private void verifyNoOp() {
       verify(chatters, never()).disconnectPlayerSessions(any(), any());
-      verify(messageBroadcaster, never()).accept(any(), any());
+      verify(playerConnections, never()).broadcastMessage(any(), any());
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
 
@@ -115,20 +114,20 @@ class DisconnectUserActionTest {
     }
 
     private void verifyChattersAreNotified() {
-      final ArgumentCaptor<ServerMessageEnvelope> eventMessageCaptor =
-          ArgumentCaptor.forClass(ServerMessageEnvelope.class);
-      verify(messageBroadcaster).accept(eq(Set.of(session)), eventMessageCaptor.capture());
+      final ArgumentCaptor<ChatEventReceivedMessage> eventMessageCaptor =
+          ArgumentCaptor.forClass(ChatEventReceivedMessage.class);
+      verify(playerConnections).broadcastMessage(eventMessageCaptor.capture());
       assertThat(
           "Message type is chat event",
-          eventMessageCaptor.getValue().getMessageType(),
-          is(ChatServerMessageType.CHAT_EVENT.toString()));
+          eventMessageCaptor.getValue().toEnvelope().getMessageTypeId(),
+          is(ChatEventReceivedMessage.TYPE.getMessageTypeId()));
       assertThat(
           "Disconnect message to chatters contains 'was disconnected'",
-          eventMessageCaptor.getValue().getPayload(String.class),
+          eventMessageCaptor.getValue().getMessage(),
           containsString("was disconnected"));
       assertThat(
           "Disconnect message contains player name",
-          eventMessageCaptor.getValue().getPayload(String.class),
+          eventMessageCaptor.getValue().getMessage(),
           containsString(PLAYER_ID_LOOKUP.getUserName().getValue()));
     }
 

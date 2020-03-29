@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.google.common.util.concurrent.Runnables;
-import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.net.Node;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.SwingAction;

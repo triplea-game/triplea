@@ -6,11 +6,12 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
-import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import games.strategy.net.IServerMessenger;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 
 @AllArgsConstructor
 public class LobbyWatcherThread {
@@ -19,8 +20,11 @@ public class LobbyWatcherThread {
   @Nonnull private final IServerMessenger serverMessenger;
   @Nonnull private final WatcherThreadMessaging watcherThreadMessaging;
 
-  public void createLobbyWatcher(final GameToLobbyConnection gameToLobbyConnection) {
+  public Optional<String> getGameId() {
+    return lobbyWatcher.getGameId();
+  }
 
+  public void createLobbyWatcher(final GameToLobbyConnection gameToLobbyConnection) {
     InGameLobbyWatcher.newInGameLobbyWatcher(
             serverMessenger,
             gameToLobbyConnection,

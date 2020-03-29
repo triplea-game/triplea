@@ -1,12 +1,19 @@
 package games.strategy.engine.chat;
 
-import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatMessageListeners;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
 
 /**
  * Chat transmitter designed to work with lobby, sends and receives messages over Websocket. This
@@ -21,30 +28,47 @@ public class LobbyChatTransmitter implements ChatTransmitter {
 
   @Override
   public void setChatClient(final ChatClient chatClient) {
-    playerToLobbyConnection.addChatMessageListeners(
-        ChatMessageListeners.builder()
-            .playerStatusListener(chatClient::statusUpdated)
-            .playerLeftListener(chatClient::participantRemoved)
-            .playerJoinedListener(chatClient::participantAdded)
-            .chatMessageListener(chatClient::messageReceived)
-            .connectedListener(chatClient::connected)
-            .chatEventListener(chatClient::eventReceived)
-            .playerSlappedListener(
-                slapEvent -> {
-                  if (slapEvent.getSlapped().equals(localUserName)) {
-                    chatClient.slappedBy(slapEvent.getSlapper());
-                  } else {
-                    chatClient.playerSlapped(
-                        slapEvent.getSlapper() + " slapped " + slapEvent.getSlapped());
-                  }
-                })
-            .serverErrorListener(log::severe)
-            .build());
+    playerToLobbyConnection.addMessageListener(
+        ChatterListingMessage.TYPE, message -> chatClient.connected(message.getChatters()));
+
+    playerToLobbyConnection.addMessageListener(
+        PlayerStatusUpdateReceivedMessage.TYPE,
+        message -> chatClient.statusUpdated(message.getUserName(), message.getStatus()));
+
+    playerToLobbyConnection.addMessageListener(
+        PlayerLeftMessage.TYPE, message -> chatClient.participantRemoved(message.getUserName()));
+
+    playerToLobbyConnection.addMessageListener(
+        PlayerJoinedMessage.TYPE,
+        message -> chatClient.participantAdded(message.getChatParticipant()));
+
+    playerToLobbyConnection.addMessageListener(
+        ChatReceivedMessage.TYPE,
+        message -> chatClient.messageReceived(message.getSender(), message.getMessage()));
+
+    playerToLobbyConnection.addMessageListener(
+        PlayerJoinedMessage.TYPE,
+        message -> chatClient.participantAdded(message.getChatParticipant()));
+
+    playerToLobbyConnection.addMessageListener(
+        ChatEventReceivedMessage.TYPE, message -> chatClient.eventReceived(message.getMessage()));
+
+    playerToLobbyConnection.addMessageListener(
+        PlayerSlapReceivedMessage.TYPE,
+        message -> {
+          if (message.getSlappedPlayer().equals(localUserName)) {
+            chatClient.slappedBy(message.getSlappingPlayer());
+          } else {
+            chatClient.eventReceived(
+                message.getSlappingPlayer() + " slapped " + message.getSlappedPlayer());
+          }
+        });
+    playerToLobbyConnection.sendConnectToChatMessage();
   }
 
   @Override
   public Collection<ChatParticipant> connect() {
-    return playerToLobbyConnection.connect();
+    return List.of();
   }
 
   @Override

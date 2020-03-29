@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import org.triplea.db.dao.UserJdbiDao;
 import org.triplea.domain.data.UserName;
-import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.chat.Chatters;
 
 @Builder
 class AnonymousLogin implements Function<UserName, Optional<String>> {

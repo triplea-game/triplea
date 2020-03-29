@@ -2,7 +2,6 @@ package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -19,8 +18,11 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.java.cache.TtlCache;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 /**
  * Class that stores the set of games in the lobby. Games are identified by a combination of two
@@ -48,7 +50,7 @@ import org.triplea.java.cache.TtlCache;
 public class GameListing {
   @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
   @NonNull private final TtlCache<GameId, LobbyGame> games;
-  @NonNull private final GameListingEventQueue gameListingEventQueue;
+  @NonNull private final WebSocketMessagingBus playerMessagingBus;
 
   @AllArgsConstructor
   @EqualsAndHashCode
@@ -60,16 +62,15 @@ public class GameListing {
     @NonNull private final String id;
   }
 
-  public static GameListing build(
-      final Jdbi jdbi, final GameListingEventQueue gameListingEventQueue) {
+  public static GameListing build(final Jdbi jdbi, final WebSocketMessagingBus playerMessagingBus) {
     return GameListing.builder()
         .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
-        .gameListingEventQueue(gameListingEventQueue)
+        .playerMessagingBus(playerMessagingBus)
         .games(
             new ExpiringAfterWriteCache<>(
                 GameListingClient.KEEP_ALIVE_SECONDS,
                 TimeUnit.SECONDS,
-                new GameTtlExpiredListener(gameListingEventQueue)))
+                new GameTtlExpiredListener(playerMessagingBus)))
         .build();
   }
 
@@ -77,8 +78,9 @@ public class GameListing {
   String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
     final String id = UUID.randomUUID().toString();
     games.put(new GameId(apiKey, id), lobbyGame);
-    gameListingEventQueue.gameUpdated(
-        LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build());
+    playerMessagingBus.broadcastMessage(
+        new LobbyGameUpdatedMessage(
+            LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build()));
     log.info("Posted game: {}", id);
     return id;
   }
@@ -89,8 +91,9 @@ public class GameListing {
     final LobbyGame existingValue = games.replace(listedGameId, lobbyGame).orElse(null);
 
     if (existingValue != null) {
-      gameListingEventQueue.gameUpdated(
-          LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build());
+      playerMessagingBus.broadcastMessage(
+          new LobbyGameUpdatedMessage(
+              LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build()));
       return true;
     } else {
       return false;
@@ -101,10 +104,9 @@ public class GameListing {
     log.info("Removing game: {}", id);
     final GameId key = new GameId(apiKey, id);
 
-    final Optional<LobbyGame> value = games.invalidate(key);
-    if (value.isPresent()) {
-      gameListingEventQueue.gameRemoved(id);
-    }
+    games
+        .invalidate(key)
+        .ifPresent(value -> playerMessagingBus.broadcastMessage(new LobbyGameRemovedMessage(id)));
   }
 
   List<LobbyGameListing> getGames() {

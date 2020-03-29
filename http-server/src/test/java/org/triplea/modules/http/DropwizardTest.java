@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.http.AppConfig;
 import org.triplea.http.ServerApplication;
 import org.triplea.test.common.Integration;
@@ -20,6 +21,9 @@ import org.triplea.test.common.Integration;
 @ExtendWith(value = {DropwizardTest.DropwizardServerExtension.class, DBUnitExtension.class})
 @SuppressWarnings("PrivateConstructorForUtilityClass")
 public abstract class DropwizardTest {
+  protected static final ApiKey MODERATOR_API_KEY = AllowedUserRole.MODERATOR.getAllowedKey();
+  protected static final ApiKey CHATTER_API_KEY = AllowedUserRole.PLAYER.getAllowedKey();
+
   protected final URI localhost = URI.create("http://localhost:8080");
 
   /**

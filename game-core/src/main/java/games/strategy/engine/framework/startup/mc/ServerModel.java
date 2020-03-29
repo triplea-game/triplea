@@ -32,7 +32,6 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
-import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
@@ -71,11 +70,9 @@ import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
 import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.remote.actions.messages.server.RemoteActionListeners;
-import org.triplea.http.client.remote.actions.messages.server.ServerRemoteActionMessageType;
-import org.triplea.http.client.web.socket.WebsocketListenerBinding;
-import org.triplea.http.client.web.socket.WebsocketListenerFactory;
-import org.triplea.http.client.web.socket.WebsocketPaths;
+import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
+import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
@@ -115,8 +112,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
   @Getter @Nullable private LobbyWatcherThread lobbyWatcherThread;
-  private @Nullable WebsocketListenerBinding<ServerRemoteActionMessageType, RemoteActionListeners>
-      remoteActionsListener;
+  @Nullable private GameToLobbyConnection gameToLobbyConnection;
 
   private final IServerStartupRemote serverStartupRemote =
       new IServerStartupRemote() {
@@ -298,7 +294,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
     Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
     Optional.ofNullable(chatModelCancel).ifPresent(Runnable::run);
-    Optional.ofNullable(remoteActionsListener).ifPresent(WebsocketListenerBinding::close);
   }
 
   public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
@@ -417,20 +412,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
         gameHostingResponse = GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
 
-        ExitStatus.SUCCESS.addExitAction(this::cancel);
-        remoteActionsListener =
-            WebsocketListenerFactory.newListener(
-                lobbyUri,
-                WebsocketPaths.GAME_CONNECTIONS,
-                ServerRemoteActionMessageType::valueOf,
-                errorHandler,
-                RemoteActionListeners.builder()
-                    .bannedPlayerListener(new PlayerDisconnectAction(serverMessenger, this::cancel))
-                    .shutdownListener(
-                        emptyStringMessage -> {
-                          ExitStatus.SUCCESS.exit();
-                        })
-                    .build());
         lobbyWatcherThread =
             new LobbyWatcherThread(
                 gameSelectorModel,
@@ -439,8 +420,26 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                     ? new WatcherThreadMessaging.HeadlessWatcherThreadMessaging()
                     : new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui));
 
-        final GameToLobbyConnection gameToLobbyConnection =
+        gameToLobbyConnection =
             new GameToLobbyConnection(lobbyUri, gameHostingResponse, errorHandler);
+
+        gameToLobbyConnection.addMessageListener(
+            PlayerBannedMessage.TYPE,
+            bannedPlayerMessage ->
+                new PlayerDisconnectAction(serverMessenger, this::cancel)
+                    .accept(bannedPlayerMessage.getIpAddress()));
+
+        ExitStatus.SUCCESS.addExitAction(this::cancel);
+        gameToLobbyConnection.addMessageListener(
+            ShutdownServerMessage.TYPE,
+            shutdownServerMessage -> {
+              if (shutdownServerMessage
+                  .getGameId()
+                  .equals(lobbyWatcherThread.getGameId().orElse(""))) {
+                ExitStatus.SUCCESS.exit();
+              }
+            });
+
         lobbyWatcherThread.createLobbyWatcher(gameToLobbyConnection);
       } else {
         gameHostingResponse = null;

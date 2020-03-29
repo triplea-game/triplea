@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
+import java.util.Optional;
 import org.triplea.lobby.common.GameDescription.GameStatus;
 
 /**
@@ -10,6 +11,10 @@ import org.triplea.lobby.common.GameDescription.GameStatus;
  */
 public class InGameLobbyWatcherWrapper {
   private volatile InGameLobbyWatcher lobbyWatcher = null;
+
+  public Optional<String> getGameId() {
+    return Optional.of(lobbyWatcher).map(InGameLobbyWatcher::getGameId);
+  }
 
   public void setInGameLobbyWatcher(final InGameLobbyWatcher watcher) {
     lobbyWatcher = watcher;

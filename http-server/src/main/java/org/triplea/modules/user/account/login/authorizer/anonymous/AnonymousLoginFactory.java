@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.UserJdbiDao;
 import org.triplea.domain.data.UserName;
-import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.chat.Chatters;
 
 @UtilityClass
 public class AnonymousLoginFactory {

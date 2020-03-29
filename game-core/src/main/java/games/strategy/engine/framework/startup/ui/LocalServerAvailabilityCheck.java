@@ -1,8 +1,8 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import java.util.function.Consumer;
 import lombok.Builder;
+import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.util.ExitStatus;
 
 /**

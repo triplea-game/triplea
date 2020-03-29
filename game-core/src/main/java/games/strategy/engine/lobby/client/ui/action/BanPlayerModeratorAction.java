@@ -1,12 +1,12 @@
 package games.strategy.engine.lobby.client.ui.action;
 
-import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import lombok.Builder;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.swing.SwingAction;
 
 @Builder

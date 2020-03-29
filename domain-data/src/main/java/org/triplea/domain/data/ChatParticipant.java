@@ -17,13 +17,14 @@ import lombok.ToString;
 public class ChatParticipant implements Serializable {
   private static final long serialVersionUID = 7103177780407531008L;
 
-  @NonNull private final UserName userName;
+  @NonNull private final String userName;
+
   /**
    * Identifier attached to players when joining chat so that front-end can pass values to backend
    * to identify players, specifically useful example for moderator actions.
    */
-  // TODO: Project#12 make playerChatId @Nonnull
-  private final PlayerChatId playerChatId;
+  private final String playerChatId;
+
   /** True if the player has moderator privileges. */
   private final boolean isModerator;
 
@@ -32,5 +33,13 @@ public class ChatParticipant implements Serializable {
 
   public String getStatus() {
     return Strings.nullToEmpty(status);
+  }
+
+  public UserName getUserName() {
+    return UserName.of(userName);
+  }
+
+  public PlayerChatId getPlayerChatId() {
+    return PlayerChatId.of(playerChatId);
   }
 }

@@ -1,7 +1,5 @@
 package org.triplea.http.client.web.socket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -11,13 +9,12 @@ import java.net.URI;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
-import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.domain.data.UserName;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -25,36 +22,32 @@ class GenericWebSocketClientTest {
   private static final String REASON = "reason";
   private static final Exception exception = new Exception("example cause");
 
-  private static final ServerMessageEnvelope EXAMPLE_SERVER_MESSAGE =
-      ServerMessageEnvelope.packageMessage("message", "exampleValue");
-
-  private static final ClientMessageEnvelope EXAMPLE_CLIENT_MESSAGE =
-      ClientMessageEnvelope.builder()
-          .apiKey("api-key")
-          .messageType("type")
-          .payload("payload")
-          .build();
-
   private final Gson gson = new Gson();
 
-  @Mock private Consumer<ServerMessageEnvelope> messageListener;
   @Mock private Runnable connectionClosedListener;
-  @Mock private WebSocketConnection webSocketClient;
+  @Mock private WebSocketConnection webSocketConnection;
 
   private GenericWebSocketClient genericWebSocketClient;
 
+  @Mock private Consumer<PlayerLeftMessage> playerLeftMessageListener;
+
   @BeforeEach
   void setup() {
-    genericWebSocketClient = new GenericWebSocketClient(webSocketClient, errMsg -> {});
-    genericWebSocketClient.registerListenerAndConnect(messageListener);
+    genericWebSocketClient =
+        new GenericWebSocketClient(
+            URI.create("ws://fake"), errMsg -> {}, uri -> webSocketConnection);
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
+    genericWebSocketClient.connect();
   }
 
   @Test
   void messageReceived() {
-    genericWebSocketClient.messageReceived(gson.toJson(EXAMPLE_SERVER_MESSAGE));
+    genericWebSocketClient.addListener(PlayerLeftMessage.TYPE, playerLeftMessageListener);
 
-    verify(messageListener).accept(EXAMPLE_SERVER_MESSAGE);
+    final var playerLeftMessage = new PlayerLeftMessage(UserName.of("joe"));
+    genericWebSocketClient.messageReceived(gson.toJson(playerLeftMessage.toEnvelope()));
+
+    verify(playerLeftMessageListener).accept(playerLeftMessage);
   }
 
   @Test
@@ -72,7 +65,7 @@ class GenericWebSocketClientTest {
     genericWebSocketClient.close();
     genericWebSocketClient.connectionClosed(REASON);
 
-    verify(webSocketClient, timeout(500)).close();
+    verify(webSocketConnection, timeout(500)).close();
     verify(connectionClosedListener).run();
   }
 
@@ -86,27 +79,10 @@ class GenericWebSocketClientTest {
 
   @Test
   void send() {
-    genericWebSocketClient.send(EXAMPLE_CLIENT_MESSAGE);
+    final var playerLeftMessage = new PlayerLeftMessage(UserName.of("joe"));
 
-    verify(webSocketClient, timeout(150)).sendMessage(gson.toJson(EXAMPLE_CLIENT_MESSAGE));
-  }
+    genericWebSocketClient.sendMessage(playerLeftMessage);
 
-  @Nested
-  class SwapUri {
-    @Test
-    @DisplayName("Verify 'https' protocol when present is swapped to 'wss'")
-    void swapHttpsProtocol() {
-      final URI inputUri = URI.create("https://uri.com");
-      final URI updated = GenericWebSocketClient.swapHttpToWsProtocol(inputUri);
-      assertThat(updated, is(URI.create("wss://uri.com")));
-    }
-
-    @Test
-    @DisplayName("Verify 'http' protocol when present is swapped to 'ws'")
-    void swapHttpProtocol() {
-      final URI inputUri = URI.create("http://uri.com");
-      final URI updated = GenericWebSocketClient.swapHttpToWsProtocol(inputUri);
-      assertThat(updated, is(URI.create("ws://uri.com")));
-    }
+    verify(webSocketConnection).sendMessage(gson.toJson(playerLeftMessage.toEnvelope()));
   }
 }

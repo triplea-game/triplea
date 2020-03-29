@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import org.triplea.http.client.web.socket.MessageEnvelope;
 
 @ExtendWith(MockitoExtension.class)
 class MessageBroadcasterTest {
@@ -20,9 +20,9 @@ class MessageBroadcasterTest {
   @Mock private Session session0;
   @Mock private Session session1;
   @Mock private Session session2;
-  @Mock private ServerMessageEnvelope serverEventEnvelope;
+  @Mock private MessageEnvelope messageEnvelope;
 
-  @Mock private BiConsumer<Session, ServerMessageEnvelope> singleMessageSender;
+  @Mock private BiConsumer<Session, MessageEnvelope> singleMessageSender;
   @InjectMocks private MessageBroadcaster messageBroadcaster;
 
   @Test
@@ -31,11 +31,11 @@ class MessageBroadcasterTest {
     when(session1.isOpen()).thenReturn(true);
     when(session2.isOpen()).thenReturn(false);
 
-    messageBroadcaster.accept(Set.of(session0, session1, session2), serverEventEnvelope);
+    messageBroadcaster.accept(Set.of(session0, session1, session2), messageEnvelope);
 
-    verify(singleMessageSender).accept(session0, serverEventEnvelope);
-    verify(singleMessageSender).accept(session1, serverEventEnvelope);
+    verify(singleMessageSender).accept(session0, messageEnvelope);
+    verify(singleMessageSender).accept(session1, messageEnvelope);
     // session2 is not open, should not be used
-    verify(singleMessageSender, never()).accept(session2, serverEventEnvelope);
+    verify(singleMessageSender, never()).accept(session2, messageEnvelope);
   }
 }

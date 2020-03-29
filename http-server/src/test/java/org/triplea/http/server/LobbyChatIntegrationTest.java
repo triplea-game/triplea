@@ -13,15 +13,15 @@ import java.util.List;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.ChatMessageListeners;
-import org.triplea.http.client.lobby.chat.LobbyChatClient;
-import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
-import org.triplea.http.client.lobby.chat.messages.server.PlayerSlapped;
-import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
 import org.triplea.modules.http.DropwizardTest;
 
 /**
@@ -56,74 +56,72 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   private static final String STATUS = "status";
   private static final String MESSAGE = "sample";
 
-  // caution: api-key values must match database (integration.yml)
-  private static final ApiKey MODERATOR_API_KEY = ApiKey.of("MODERATOR");
-  private static final ApiKey CHATTER_API_KEY = ApiKey.of("PLAYER");
-
   private static final UserName MODERATOR_NAME = UserName.of("mod");
   private static final ChatParticipant MODERATOR =
-      ChatParticipant.builder().userName(MODERATOR_NAME).isModerator(true).status("").build();
+      ChatParticipant.builder()
+          .userName(MODERATOR_NAME.getValue())
+          .isModerator(true)
+          .status("")
+          .build();
 
   private static final UserName CHATTER_NAME = UserName.of("chatter");
   private static final ChatParticipant CHATTER =
-      ChatParticipant.builder().userName(CHATTER_NAME).isModerator(false).status("").build();
+      ChatParticipant.builder()
+          .userName(CHATTER_NAME.getValue())
+          .isModerator(false)
+          .status("")
+          .build();
 
-  private List<StatusUpdate> modPlayerStatusEvents = new ArrayList<>();
-  private List<UserName> modPlayerLeftEvents = new ArrayList<>();
-  private List<ChatParticipant> modPlayerJoinedEvents = new ArrayList<>();
-  private List<PlayerSlapped> modPlayerSlappedEvents = new ArrayList<>();
-  private List<ChatMessage> modMessageEvents = new ArrayList<>();
-  private List<ChatterList> modConnectedEvents = new ArrayList<>();
-  private LobbyChatClient moderator;
+  private List<PlayerStatusUpdateReceivedMessage> modPlayerStatusEvents = new ArrayList<>();
+  private List<PlayerLeftMessage> modPlayerLeftEvents = new ArrayList<>();
+  private List<PlayerJoinedMessage> modPlayerJoinedEvents = new ArrayList<>();
+  private List<PlayerSlapReceivedMessage> modPlayerSlappedEvents = new ArrayList<>();
+  private List<ChatReceivedMessage> modMessageEvents = new ArrayList<>();
+  private List<ChatterListingMessage> modConnectedEvents = new ArrayList<>();
+  private PlayerToLobbyConnection moderator;
 
-  private List<StatusUpdate> chatterPlayerStatusEvents = new ArrayList<>();
-  private List<UserName> chatterPlayerLeftEvents = new ArrayList<>();
-  private List<ChatParticipant> chatterPlayerJoinedEvents = new ArrayList<>();
-  private List<PlayerSlapped> chatterPlayerSlappedEvents = new ArrayList<>();
-  private List<ChatMessage> chatterMessageEvents = new ArrayList<>();
-  private List<ChatterList> chatterConnectedEvents = new ArrayList<>();
-  private LobbyChatClient chatter;
+  private List<PlayerStatusUpdateReceivedMessage> chatterPlayerStatusEvents = new ArrayList<>();
+  private List<PlayerLeftMessage> chatterPlayerLeftEvents = new ArrayList<>();
+  private List<PlayerJoinedMessage> chatterPlayerJoinedEvents = new ArrayList<>();
+  private List<PlayerSlapReceivedMessage> chatterPlayerSlappedEvents = new ArrayList<>();
+  private List<ChatReceivedMessage> chatterMessageEvents = new ArrayList<>();
+  private List<ChatterListingMessage> chatterConnectedEvents = new ArrayList<>();
+  private PlayerToLobbyConnection chatter;
 
-  private LobbyChatClient createModerator() {
-    final LobbyChatClient moderator =
-        // caution: api-key must match values in database (integration.yml)
-        new LobbyChatClient(localhost, MODERATOR_API_KEY, err -> {});
-
-    moderator.setChatMessageListeners(
-        ChatMessageListeners.builder()
-            .playerStatusListener(modPlayerStatusEvents::add)
-            .playerLeftListener(modPlayerLeftEvents::add)
-            .playerJoinedListener(modPlayerJoinedEvents::add)
-            .playerSlappedListener(modPlayerSlappedEvents::add)
-            .chatMessageListener(modMessageEvents::add)
-            .connectedListener(modConnectedEvents::add)
-            .chatEventListener(msg -> {})
-            .serverErrorListener(
-                error -> {
-                  throw new RuntimeException(error);
-                })
-            .build());
-    return moderator;
+  private PlayerToLobbyConnection createModerator() {
+    final PlayerToLobbyConnection newModerator =
+        new PlayerToLobbyConnection(
+            localhost,
+            MODERATOR_API_KEY,
+            err -> {
+              throw new AssertionError("Error on moderator: " + err);
+            });
+    newModerator.addMessageListener(
+        PlayerStatusUpdateReceivedMessage.TYPE, modPlayerStatusEvents::add);
+    newModerator.addMessageListener(PlayerLeftMessage.TYPE, modPlayerLeftEvents::add);
+    newModerator.addMessageListener(PlayerJoinedMessage.TYPE, modPlayerJoinedEvents::add);
+    newModerator.addMessageListener(PlayerSlapReceivedMessage.TYPE, modPlayerSlappedEvents::add);
+    newModerator.addMessageListener(ChatReceivedMessage.TYPE, modMessageEvents::add);
+    newModerator.addMessageListener(ChatterListingMessage.TYPE, modConnectedEvents::add);
+    return newModerator;
   }
 
-  private LobbyChatClient createChatter() {
-    final LobbyChatClient chatter = new LobbyChatClient(localhost, CHATTER_API_KEY, err -> {});
-
-    chatter.setChatMessageListeners(
-        ChatMessageListeners.builder()
-            .playerStatusListener(chatterPlayerStatusEvents::add)
-            .playerLeftListener(chatterPlayerLeftEvents::add)
-            .playerJoinedListener(chatterPlayerJoinedEvents::add)
-            .playerSlappedListener(chatterPlayerSlappedEvents::add)
-            .chatMessageListener(chatterMessageEvents::add)
-            .connectedListener(chatterConnectedEvents::add)
-            .chatEventListener(msg -> {})
-            .serverErrorListener(
-                error -> {
-                  throw new RuntimeException(error);
-                })
-            .build());
-    return chatter;
+  private PlayerToLobbyConnection createChatter() {
+    final PlayerToLobbyConnection newChatter =
+        new PlayerToLobbyConnection(
+            localhost,
+            CHATTER_API_KEY,
+            err -> {
+              throw new AssertionError("Error on chatter: " + err);
+            });
+    newChatter.addMessageListener(
+        PlayerStatusUpdateReceivedMessage.TYPE, chatterPlayerStatusEvents::add);
+    newChatter.addMessageListener(PlayerLeftMessage.TYPE, chatterPlayerLeftEvents::add);
+    newChatter.addMessageListener(PlayerJoinedMessage.TYPE, chatterPlayerJoinedEvents::add);
+    newChatter.addMessageListener(PlayerSlapReceivedMessage.TYPE, chatterPlayerSlappedEvents::add);
+    newChatter.addMessageListener(ChatReceivedMessage.TYPE, chatterMessageEvents::add);
+    newChatter.addMessageListener(ChatterListingMessage.TYPE, chatterConnectedEvents::add);
+    return newChatter;
   }
 
   @Test
@@ -140,7 +138,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   }
 
   private void moderatorConnects() {
-    moderator.connect();
+    moderator.sendConnectToChatMessage();
     // mod is notified that only 'mod' is in chat
     verifyConnectedPlayers(modConnectedEvents, MODERATOR);
     // mod should be notified of their own entry into chat
@@ -148,7 +146,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
   }
 
   private void chatterConnects() {
-    chatter.connect();
+    chatter.sendConnectToChatMessage();
     // chatter should be notified that both 'mod' and 'chatter' are in chat
     verifyConnectedPlayers(chatterConnectedEvents, MODERATOR, CHATTER);
     // chatter should be notified of their own entry into chat
@@ -157,35 +155,41 @@ class LobbyChatIntegrationTest extends DropwizardTest {
     waitForMessage(modPlayerJoinedEvents, 2);
     // moderator is notified that chatter has joined
     assertThat(
-        modPlayerJoinedEvents.get(1),
-        is(ChatParticipant.builder().userName(CHATTER_NAME).isModerator(true).status("").build()));
+        modPlayerJoinedEvents.get(1).getChatParticipant(),
+        is(
+            ChatParticipant.builder()
+                .userName(CHATTER_NAME.getValue())
+                .isModerator(true)
+                .status("")
+                .build()));
     // moderator should *not* receive a connected event when chatter joins
     assertThat(modConnectedEvents, hasSize(1));
   }
 
   private static void verifyConnectedPlayers(
-      final List<ChatterList> connectedEvents, final ChatParticipant... participants) {
+      final List<ChatterListingMessage> connectedEvents, final ChatParticipant... participants) {
     waitForMessage(connectedEvents);
     assertThat(connectedEvents.get(0).getChatters(), hasItems(participants));
   }
 
   private static void verifyPlayerJoinedEvent(
-      final List<ChatParticipant> playerJoinedEvents, final ChatParticipant expectedPlayer) {
+      final List<PlayerJoinedMessage> playerJoinedEvents, final ChatParticipant expectedPlayer) {
     waitForMessage(playerJoinedEvents);
-    assertThat(playerJoinedEvents.get(0), is(expectedPlayer));
+    assertThat(playerJoinedEvents.get(0).getChatParticipant(), is(expectedPlayer));
   }
 
   private void chatterChats() {
     // chatter chats
     chatter.sendChatMessage(MESSAGE);
     // moderator should receive chat message from chatter
-    verifyChatMessageEvent(modMessageEvents, new ChatMessage(CHATTER_NAME, MESSAGE));
+    verifyChatMessageEvent(modMessageEvents, new ChatReceivedMessage(CHATTER_NAME, MESSAGE));
     // chatter should receive their own chat message
-    verifyChatMessageEvent(chatterMessageEvents, new ChatMessage(CHATTER_NAME, MESSAGE));
+    verifyChatMessageEvent(chatterMessageEvents, new ChatReceivedMessage(CHATTER_NAME, MESSAGE));
   }
 
   private static void verifyChatMessageEvent(
-      final List<ChatMessage> chatMessageEvents, final ChatMessage expectedChatMessage) {
+      final List<ChatReceivedMessage> chatMessageEvents,
+      final ChatReceivedMessage expectedChatMessage) {
     waitForMessage(chatMessageEvents);
     assertThat(chatMessageEvents.get(0), is(expectedChatMessage));
   }
@@ -196,8 +200,11 @@ class LobbyChatIntegrationTest extends DropwizardTest {
     // moderator is notified of the slap
     waitForMessage(modPlayerSlappedEvents);
 
-    final PlayerSlapped moderatorSlapped =
-        PlayerSlapped.builder().slapper(CHATTER_NAME).slapped(MODERATOR_NAME).build();
+    final PlayerSlapReceivedMessage moderatorSlapped =
+        PlayerSlapReceivedMessage.builder()
+            .slappingPlayer(CHATTER_NAME.getValue())
+            .slappedPlayer(MODERATOR_NAME.getValue())
+            .build();
 
     assertThat(modPlayerSlappedEvents.get(0), is(moderatorSlapped));
     // chatter is notified of the slap
@@ -211,9 +218,13 @@ class LobbyChatIntegrationTest extends DropwizardTest {
     chatter.updateStatus(STATUS);
     // moderator is notified of the status update
     waitForMessage(modPlayerStatusEvents);
-    assertThat(modPlayerStatusEvents.get(0), is(new StatusUpdate(CHATTER_NAME, STATUS)));
+    assertThat(
+        modPlayerStatusEvents.get(0),
+        is(new PlayerStatusUpdateReceivedMessage(CHATTER_NAME, STATUS)));
     waitForMessage(chatterPlayerStatusEvents);
-    assertThat(chatterPlayerStatusEvents.get(0), is(new StatusUpdate(CHATTER_NAME, STATUS)));
+    assertThat(
+        chatterPlayerStatusEvents.get(0),
+        is(new PlayerStatusUpdateReceivedMessage(CHATTER_NAME, STATUS)));
 
     // chatter is notified of their own status update
 
@@ -227,7 +238,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
 
     // moderator is notified chatter has left
     waitForMessage(modPlayerLeftEvents);
-    assertThat(modPlayerLeftEvents.get(0), is(CHATTER_NAME));
+    assertThat(modPlayerLeftEvents.get(0).getUserName(), is(CHATTER_NAME));
   }
 
   private static <T> void waitForMessage(final Collection<T> messageBuffer) {

@@ -6,7 +6,6 @@ import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.triplea.UrlConstants;
 import java.awt.Window;
 import java.io.IOException;
@@ -21,6 +20,7 @@ import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
@@ -122,7 +122,11 @@ public class LobbyLogin {
             LobbyClient.builder()
                 .playerToLobbyConnection(
                     new PlayerToLobbyConnection(
-                        serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())))
+                        serverProperties.getUri(),
+                        ApiKey.of(loginResponse.getApiKey()),
+                        error ->
+                            SwingComponents.showError(
+                                null, "Error communicating with lobby", error)))
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .moderator(loginResponse.isModerator())
@@ -208,7 +212,9 @@ public class LobbyLogin {
       }
       return Optional.of(
           new PlayerToLobbyConnection(
-              serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())));
+              serverProperties.getUri(),
+              ApiKey.of(loginResponse.getApiKey()),
+              error -> SwingComponents.showError(null, "Error communicating with lobby", error)));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();

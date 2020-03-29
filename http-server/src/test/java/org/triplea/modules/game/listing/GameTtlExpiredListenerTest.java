@@ -7,12 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.modules.TestData;
 import org.triplea.modules.game.listing.GameListing.GameId;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 @ExtendWith(MockitoExtension.class)
 class GameTtlExpiredListenerTest {
-  @Mock private GameListingEventQueue gameListingEventQueue;
+  @Mock private WebSocketMessagingBus playerMessagingBus;
 
   @InjectMocks private GameTtlExpiredListener gameTtlExpiredListener;
 
@@ -22,6 +24,6 @@ class GameTtlExpiredListenerTest {
 
     gameTtlExpiredListener.accept(gameId, TestData.LOBBY_GAME);
 
-    verify(gameListingEventQueue).gameRemoved("id");
+    verify(playerMessagingBus).broadcastMessage(new LobbyGameRemovedMessage("id"));
   }
 }

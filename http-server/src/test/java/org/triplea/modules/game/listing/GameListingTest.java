@@ -26,8 +26,11 @@ import org.triplea.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
 import org.triplea.modules.game.listing.GameListing.GameId;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 /**
  * Items to test.: <br>
@@ -56,7 +59,7 @@ class GameListingTest {
       new ExpiringAfterWriteCache<>(1, TimeUnit.HOURS, (key, value) -> {});
 
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  @Mock private GameListingEventQueue gameListingEventQueue;
+  @Mock private WebSocketMessagingBus playerMessagingBus;
 
   private GameListing gameListing;
 
@@ -68,7 +71,7 @@ class GameListingTest {
   void setup() {
     gameListing =
         GameListing.builder()
-            .gameListingEventQueue(gameListingEventQueue)
+            .playerMessagingBus(playerMessagingBus)
             .auditHistoryDao(moderatorAuditHistoryDao)
             .games(cache)
             .build();
@@ -131,7 +134,7 @@ class GameListingTest {
       gameListing.removeGame(API_KEY_0, GAME_ID_0);
 
       assertThat(cache.asMap(), is(anEmptyMap()));
-      verify(gameListingEventQueue).gameRemoved(GAME_ID_0);
+      verify(playerMessagingBus).broadcastMessage(new LobbyGameRemovedMessage(GAME_ID_0));
     }
 
     @Test
@@ -142,7 +145,7 @@ class GameListingTest {
 
       assertThat(cache.asMap(), is(aMapWithSize(1)));
       assertThat(cache.asMap(), hasEntry(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0));
-      verify(gameListingEventQueue, never()).gameRemoved(any());
+      verify(playerMessagingBus, never()).broadcastMessage(any());
     }
   }
 
@@ -154,8 +157,10 @@ class GameListingTest {
 
       assertThat(id0, not(emptyString()));
       assertThat(cache.asMap(), is(Map.of(new GameId(API_KEY_0, id0), lobbyGame0)));
-      verify(gameListingEventQueue)
-          .gameUpdated(LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build());
+      verify(playerMessagingBus)
+          .broadcastMessage(
+              new LobbyGameUpdatedMessage(
+                  LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build()));
     }
   }
 
@@ -167,7 +172,7 @@ class GameListingTest {
 
       assertThat(result, is(false));
       assertThat(cache.asMap(), is(anEmptyMap()));
-      verify(gameListingEventQueue, never()).gameUpdated(any());
+      verify(playerMessagingBus, never()).broadcastMessage(any());
     }
 
     @Test
@@ -177,8 +182,11 @@ class GameListingTest {
       final boolean result = gameListing.updateGame(API_KEY_0, GAME_ID_0, lobbyGame0);
 
       assertThat(result, is(true));
-      verify(gameListingEventQueue)
-          .gameUpdated(LobbyGameListing.builder().gameId(GAME_ID_0).lobbyGame(lobbyGame0).build());
+
+      verify(playerMessagingBus)
+          .broadcastMessage(
+              new LobbyGameUpdatedMessage(
+                  LobbyGameListing.builder().gameId(GAME_ID_0).lobbyGame(lobbyGame0).build()));
     }
   }
 
@@ -199,7 +207,7 @@ class GameListingTest {
                   .actionTarget(HOST_NAME)
                   .moderatorUserId(MODERATOR_ID)
                   .build());
-      verify(gameListingEventQueue).gameRemoved(GAME_ID_0);
+      verify(playerMessagingBus).broadcastMessage(new LobbyGameRemovedMessage(GAME_ID_0));
     }
   }
 }
