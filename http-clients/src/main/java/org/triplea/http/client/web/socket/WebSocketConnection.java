@@ -187,17 +187,21 @@ class WebSocketConnection {
                     .exceptionally(logWebSocketError(Level.SEVERE, "Failed to send queued text.")));
         queuedMessages.clear();
       }
+      // Allow onText to be called at least once, WebSocketConnection is initialized
       webSocket.request(1);
     }
 
     @Override
     public CompletionStage<?> onText(
         final WebSocket webSocket, final CharSequence data, final boolean last) {
+      // No need to synchronize access, this listener is never called concurrently
+      // and always called in-order by the API
       textAccumulator.append(data);
       if (last) {
         listener.messageReceived(textAccumulator.toString());
         textAccumulator.setLength(0);
       }
+      // We're done processing, allow listener to be called again at least once
       webSocket.request(1);
       return null;
     }
