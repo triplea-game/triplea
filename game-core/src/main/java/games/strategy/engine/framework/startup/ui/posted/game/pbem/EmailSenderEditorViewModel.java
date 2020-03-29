@@ -16,8 +16,6 @@ import org.triplea.java.ViewModelListener;
 
 class EmailSenderEditorViewModel {
   static final String PROVIDER_DISABLED = "Disabled";
-  static final String GMAIL = "Gmail";
-  static final String HOTMAIL = "Hotmail";
   static final String GENERIC_SMTP = "Generic SMTP";
 
   private final ViewModelListener<EmailSenderEditorViewModel> view;
@@ -43,7 +41,11 @@ class EmailSenderEditorViewModel {
   }
 
   static Collection<String> getProviderOptions() {
-    return List.of(PROVIDER_DISABLED, GMAIL, HOTMAIL, GENERIC_SMTP);
+    return List.of(
+        PROVIDER_DISABLED,
+        EmailProviderPreset.GMAIL.getName(),
+        EmailProviderPreset.HOTMAIL.getName(),
+        GENERIC_SMTP);
   }
 
   boolean isTestEmailButtonEnabled() {
@@ -107,11 +109,11 @@ class EmailSenderEditorViewModel {
   }
 
   protected boolean isEmailProviderGmail() {
-    return selectedProvider.equals(GMAIL);
+    return selectedProvider.equals(EmailProviderPreset.GMAIL.getName());
   }
 
   protected boolean isEmailProviderHotmail() {
-    return selectedProvider.equals(HOTMAIL);
+    return selectedProvider.equals(EmailProviderPreset.HOTMAIL.getName());
   }
 
   void setSmtpServer(final String smtpServer) {
