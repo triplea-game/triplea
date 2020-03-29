@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.net.URI;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -35,6 +36,19 @@ public class DiceServerEditor extends JPanel {
           .toolTip(
               "<html>Opens email registration page to register with MARTI dice-roller.<br>"
                   + "Needs to be done once before MARTI dice server can be used.</html>")
+          .build();
+  private final JButton helpButton =
+      new JButtonBuilder("Help")
+          .actionListener(
+              () ->
+                  JOptionPane.showMessageDialog(
+                      this,
+                      new JLabel(
+                          "Enter your your email address in the \"To\" field, and you opponents "
+                              + "in the \"CC\" field, you may enter multiple addresses each "
+                              + "separated by a space. Click the register button to register your "
+                              + "email addresses, this must be done to receive dice emails.")))
+          .toolTip("Click this button to show help text")
           .build();
   private final JButton testDiceButton = new JButton("Test Server");
   private final JTextField toAddress = new JTextField();
@@ -78,7 +92,7 @@ public class DiceServerEditor extends JPanel {
           new GridBagConstraints(
               1,
               row,
-              2,
+              3,
               1,
               1.0,
               0,
@@ -109,7 +123,7 @@ public class DiceServerEditor extends JPanel {
         new GridBagConstraints(
             1,
             row,
-            2,
+            3,
             1,
             1.0,
             0,
@@ -138,7 +152,7 @@ public class DiceServerEditor extends JPanel {
         new GridBagConstraints(
             1,
             row,
-            2,
+            3,
             1,
             1.0,
             0,
@@ -168,7 +182,7 @@ public class DiceServerEditor extends JPanel {
         new GridBagConstraints(
             1,
             row,
-            2,
+            3,
             1,
             1.0,
             0,
@@ -202,7 +216,7 @@ public class DiceServerEditor extends JPanel {
             1,
             0,
             0,
-            GridBagConstraints.EAST,
+            GridBagConstraints.CENTER,
             GridBagConstraints.NONE,
             new Insets(0, 0, bottomSpace, 0),
             0,
@@ -213,6 +227,21 @@ public class DiceServerEditor extends JPanel {
           final PbemDiceRoller random = new PbemDiceRoller(newDiceServer());
           random.test();
         });
+
+    diceRollerOptions.add(
+        helpButton,
+        new GridBagConstraints(
+            3,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
 
     new DocumentListenerBuilder(this::checkFieldsAndNotify).attachTo(toAddress, ccAddress, gameId);
   }
