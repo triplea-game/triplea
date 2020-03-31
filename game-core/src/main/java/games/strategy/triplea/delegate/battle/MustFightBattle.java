@@ -278,14 +278,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @Override
   public List<Unit> getRemainingDefendingUnits() {
-    final List<Unit> remaining = new ArrayList<>(defendingUnitsRetreated);
+    final Set<Unit> remaining = new HashSet<>(defendingUnitsRetreated);
+    remaining.addAll(defendingUnits);
     if (getWhoWon() != WhoWon.ATTACKER || attackingUnits.stream().allMatch(Matches.unitIsAir())) {
       final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits();
       unitsLeftInTerritory.removeAll(killed);
       remaining.addAll(
-          CollectionUtils.getMatches(unitsLeftInTerritory, Matches.enemyUnit(attacker, gameData)));
+          CollectionUtils.getMatches(
+              unitsLeftInTerritory,
+              Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker, gameData))));
     }
-    return remaining;
+    return new ArrayList<>(remaining);
   }
 
   /**
