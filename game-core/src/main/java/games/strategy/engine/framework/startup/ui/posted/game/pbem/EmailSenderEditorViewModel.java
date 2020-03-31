@@ -104,16 +104,12 @@ class EmailSenderEditorViewModel {
     return !isEmailProviderDisabled();
   }
 
-  protected boolean isEmailProviderDisabled() {
+  private boolean isEmailProviderDisabled() {
     return selectedProvider.equals(PROVIDER_DISABLED);
   }
 
-  protected boolean isEmailProviderGmail() {
-    return selectedProvider.equals(EmailProviderPreset.GMAIL.getName());
-  }
-
-  protected boolean isEmailProviderHotmail() {
-    return selectedProvider.equals(EmailProviderPreset.HOTMAIL.getName());
+  protected String getEmailHelpType() {
+    return selectedProvider;
   }
 
   void setSmtpServer(final String smtpServer) {

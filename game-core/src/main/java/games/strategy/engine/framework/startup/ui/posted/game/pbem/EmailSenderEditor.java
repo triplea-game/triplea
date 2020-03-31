@@ -190,7 +190,8 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
           toggleFieldVisibility();
           emailProviderSelectionBox.setSelectedItem(viewModel.getSelectedProvider());
 
-          if (viewModel.isEmailProviderDisabled()) {
+          final String emailHelpType = viewModel.getEmailHelpType();
+          if (emailHelpType.equals(EmailSenderEditorViewModel.PROVIDER_DISABLED)) {
             helpMessage.setText(
                 "<html><p style='width: 400px;'>"
                     + "Email sender<br/>"
@@ -201,7 +202,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
                     + "Each email sender may require custom configuration, to learn more "
                     + "click help again after selecting a specific email sender."
                     + "</p></html>");
-          } else if (viewModel.isEmailProviderGmail()) {
+          } else if (emailHelpType.equals(EmailProviderPreset.GMAIL.getName())) {
             helpMessage.setText(
                 "<html><p style='width: 400px;'>"
                     + "Email through Gmail<br/>"
@@ -222,7 +223,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
                     + "You may have to enter your login and password again if you open the save "
                     + "game on another computer."
                     + "</p></html>");
-          } else if (viewModel.isEmailProviderHotmail()) {
+          } else if (emailHelpType.equals(EmailProviderPreset.HOTMAIL.getName())) {
             helpMessage.setText(
                 "<html><p style='width: 400px;'>"
                     + "Email through Hotmail<br/>"
