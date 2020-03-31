@@ -41,7 +41,11 @@ class EmailSenderEditorViewModel {
   }
 
   static Collection<String> getProviderOptions() {
-    return List.of(PROVIDER_DISABLED, "Gmail", "Hotmail", GENERIC_SMTP);
+    return List.of(
+        PROVIDER_DISABLED,
+        EmailProviderPreset.GMAIL.getName(),
+        EmailProviderPreset.HOTMAIL.getName(),
+        GENERIC_SMTP);
   }
 
   boolean isTestEmailButtonEnabled() {
@@ -102,6 +106,10 @@ class EmailSenderEditorViewModel {
 
   private boolean isEmailProviderDisabled() {
     return selectedProvider.equals(PROVIDER_DISABLED);
+  }
+
+  protected String getEmailHelpType() {
+    return selectedProvider;
   }
 
   void setSmtpServer(final String smtpServer) {
