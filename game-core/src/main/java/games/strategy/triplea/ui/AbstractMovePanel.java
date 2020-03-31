@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
@@ -59,7 +58,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     }
   }
 
-  abstract Component getUnitScrollerPanel(LocalPlayers localPlayers);
+  abstract Component getUnitScrollerPanel();
 
   /*
    * sub-classes method for done handling
@@ -239,7 +238,6 @@ abstract class AbstractMovePanel extends ActionPanel {
         () -> {
           removeAll();
           add(movedUnitsPanel(gamePlayer, actionLabel));
-          add(getUnitScrollerPanel(frame.getLocalPlayers()));
           refresh.run();
         });
   }

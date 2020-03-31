@@ -1,7 +1,7 @@
 package org.triplea.swing;
 
-import com.google.common.base.Preconditions;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.Icon;
@@ -30,8 +30,9 @@ public class JLabelBuilder {
   private String toolTip;
   private Border border;
   private Integer borderSize;
+  private int biggerFont;
 
-  private JLabelBuilder() {}
+  public JLabelBuilder() {}
 
   public static JLabelBuilder builder() {
     return new JLabelBuilder();
@@ -41,9 +42,7 @@ public class JLabelBuilder {
    * Constructs a Swing JLabel using current builder values. Values that must be set: text or icon
    */
   public JLabel build() {
-    Preconditions.checkState(text != null || icon != null);
-
-    final JLabel label = new JLabel(text);
+    final JLabel label = text == null ? new JLabel() : new JLabel(text);
 
     Optional.ofNullable(icon).ifPresent(label::setIcon);
 
@@ -54,6 +53,8 @@ public class JLabelBuilder {
             align -> {
               if (align == Alignment.LEFT) {
                 label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+              } else if (align == Alignment.CENTER) {
+                label.setAlignmentX(JComponent.CENTER_ALIGNMENT);
               }
             });
 
@@ -66,6 +67,13 @@ public class JLabelBuilder {
     Optional.ofNullable(borderSize)
         .ifPresent(size -> label.setBorder(new EmptyBorder(size, size, size, size)));
 
+    if (biggerFont > 0) {
+      label.setFont(
+          new Font(
+              label.getFont().getName(),
+              label.getFont().getStyle(),
+              label.getFont().getSize() + biggerFont));
+    }
     return label;
   }
 
@@ -81,6 +89,11 @@ public class JLabelBuilder {
 
   public JLabelBuilder leftAlign() {
     alignment = Alignment.LEFT;
+    return this;
+  }
+
+  public JLabelBuilder centerAlign() {
+    alignment = Alignment.CENTER;
     return this;
   }
 
@@ -113,7 +126,14 @@ public class JLabelBuilder {
     return this;
   }
 
+  /** Increases button text size by a default amount. */
+  public JLabelBuilder biggerFont() {
+    biggerFont = 4;
+    return this;
+  }
+
   private enum Alignment {
-    LEFT
+    LEFT,
+    CENTER
   }
 }

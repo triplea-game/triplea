@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
@@ -30,8 +29,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.DialogBuilder;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -50,15 +50,13 @@ public class UnitScroller {
     NON_COMBAT
   }
 
-  private static final int HORIZONTAL_BUTTON_GAP = 15;
+  private static final int HORIZONTAL_BUTTON_GAP = 2;
 
   private static final String PREVIOUS_UNITS_TOOLTIP =
       "Press 'm' or click this button to center the screen on the 'previous' units with "
           + "movement left";
   private static final String NEXT_UNITS_TOOLTIP =
       "Press 'n' or click this button to center the screen on the 'next' units with movement left";
-  private static final String CENTER_UNITS_TOOLTIP =
-      "Press 'c' or click this button to center the screen on current units.";
   private static final String STATION_UNITS_TOOLTIP =
       "Press 's' or click this button to station the current units, they will be automatically "
           + "skipped until you move or wake them.";
@@ -67,9 +65,6 @@ public class UnitScroller {
           + "current move phase";
   private static final String WAKE_ALL_TOOLTIP =
       "Press 'w' or click this button to activate all skipped or stationed units";
-
-  private static final String HIGHLIGHT_MOVABLE_TOOLTIP =
-      "Press 'F' key or click this button to highlight movable units";
 
   private Collection<Unit> skippedUnits = new HashSet<>();
   private final Collection<Unit> sleepingUnits = new HashSet<>();
@@ -83,9 +78,10 @@ public class UnitScroller {
   private Supplier<Boolean> parentPanelIsVisible;
 
   private final AvatarPanelFactory avatarPanelFactory;
-  private final JLabel movesLeftLabel = new JLabel();
-  private final JLabel territoryNameLabel = new JLabel();
+  private final JLabel territoryNameLabel = new JLabelBuilder().biggerFont().centerAlign().build();
   private final JPanel selectUnitImagePanel = new JPanel();
+
+  private CollapsiblePanel collapsiblePanel;
 
   public UnitScroller(
       final GameData data, final MapPanel mapPanel, final Supplier<Boolean> parentPanelIsVisible) {
@@ -127,7 +123,8 @@ public class UnitScroller {
   }
 
   private void updateMovesLeftLabel() {
-    movesLeftLabel.setText("Units left to move: " + movesLeft());
+    Optional.ofNullable(collapsiblePanel)
+        .ifPresent(panel -> panel.setTitle("Units To Move (" + movesLeft() + ")"));
   }
 
   private int movesLeft() {
@@ -149,11 +146,10 @@ public class UnitScroller {
   private void gamePhaseChanged() {
     skippedUnits = new HashSet<>();
     lastFocusedTerritory = null;
-    if (parentPanelIsVisible.get()) {
-      selectUnitImagePanel.removeAll();
-      selectUnitImagePanel.repaint();
-      focusCapital();
-    }
+    selectUnitImagePanel.removeAll();
+    selectUnitImagePanel.repaint();
+    updateMovesLeftLabel();
+    focusCapital();
   }
 
   private void focusCapital() {
@@ -192,90 +188,56 @@ public class UnitScroller {
   }
 
   /** Constructs a UI component for the UnitScroller. */
-  public Component build(final LocalPlayers localPlayers, final Runnable highlightUnitsAction) {
+  public Component build() {
     final JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    collapsiblePanel = new CollapsiblePanel(panel, "");
     updateMovesLeftLabel();
 
-    final JPanel topPanel = new JPanel();
-    topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-    final JButton centerOnUnit = new JButton(UnitScrollerIcon.CENTER_ON_UNIT.get());
-    centerOnUnit.setSize(20, 20);
-    centerOnUnit.setToolTipText(CENTER_UNITS_TOOLTIP);
-    centerOnUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    centerOnUnit.addActionListener(e -> centerOnCurrentMovableUnit());
-    topPanel.add(centerOnUnit);
-
-    topPanel.add(Box.createHorizontalStrut(HORIZONTAL_BUTTON_GAP));
-
-    final JButton highlightMovableToggle = new JButton(UnitScrollerIcon.UNIT_HIGHLIGHT.get());
-    highlightMovableToggle.setVisible(
-        localPlayers.playing(gameData.getSequence().getStep().getPlayerId()));
-    highlightMovableToggle.addActionListener(e -> highlightUnitsAction.run());
-    highlightMovableToggle.setToolTipText(HIGHLIGHT_MOVABLE_TOOLTIP);
-
-    topPanel.add(highlightMovableToggle);
-    topPanel.add(Box.createHorizontalStrut(HORIZONTAL_BUTTON_GAP));
-
-    panel.add(topPanel, BorderLayout.NORTH);
-    panel.add(Box.createVerticalStrut(2));
-
-    territoryNameLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    panel.add(selectUnitImagePanel);
     panel.add(territoryNameLabel);
+    panel.add(Box.createVerticalStrut(2));
 
     final JButton prevUnit = new JButton(UnitScrollerIcon.LEFT_ARROW.get());
     prevUnit.setToolTipText(PREVIOUS_UNITS_TOOLTIP);
     prevUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     prevUnit.addActionListener(e -> centerOnPreviousMovableUnit());
 
-    final JButton nextUnit = new JButton(UnitScrollerIcon.RIGHT_ARROW.get());
-    nextUnit.setSize(20, 0);
-    nextUnit.setToolTipText(NEXT_UNITS_TOOLTIP);
-    nextUnit.addActionListener(e -> centerOnNextMovableUnit());
-
-    final JPanel centerPanel =
-        new JPanelBuilder()
-            .boxLayoutHorizontal()
-            .add(Box.createHorizontalGlue())
-            .add(prevUnit)
-            .add(selectUnitImagePanel)
-            .add(nextUnit)
-            .add(Box.createHorizontalGlue())
-            .add(Box.createHorizontalStrut(2))
-            .build();
-    panel.add(centerPanel);
-
-    panel.add(Box.createVerticalStrut(2));
+    final JButton stationButton = new JButton(UnitScrollerIcon.STATION.get());
+    stationButton.setToolTipText(STATION_UNITS_TOOLTIP);
+    stationButton.addActionListener(e -> sleepCurrentUnits());
 
     final JButton skipButton = new JButton(UnitScrollerIcon.SKIP.get());
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
     skipButton.addActionListener(e -> skipCurrentUnits());
 
-    final JButton stationButton = new JButton(UnitScrollerIcon.STATION.get());
-    stationButton.setToolTipText(STATION_UNITS_TOOLTIP);
-    stationButton.addActionListener(e -> sleepCurrentUnits());
-
     final JButton wakeAllButton = new JButton(UnitScrollerIcon.WAKE_ALL.get());
     wakeAllButton.setToolTipText(WAKE_ALL_TOOLTIP);
     wakeAllButton.addActionListener(e -> wakeAllUnits());
 
+    final JButton nextUnit = new JButton(UnitScrollerIcon.RIGHT_ARROW.get());
+    nextUnit.setToolTipText(NEXT_UNITS_TOOLTIP);
+    nextUnit.addActionListener(e -> centerOnNextMovableUnit());
+
     final JPanel skipAndSleepPanel =
         new JPanelBuilder()
             .boxLayoutHorizontal()
-            .add(skipButton)
+            .add(prevUnit)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(stationButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
+            .add(skipButton)
+            .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(wakeAllButton)
+            .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
+            .add(nextUnit)
             .build();
     skipAndSleepPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
     panel.add(skipAndSleepPanel, BorderLayout.SOUTH);
-    panel.add(Box.createVerticalStrut(1));
-    panel.add(SwingComponents.leftBox(movesLeftLabel));
     panel.add(Box.createVerticalStrut(3));
-    return panel;
+    return collapsiblePanel;
   }
 
   /** Centers the map on the current territory shown in the unit scroller. */

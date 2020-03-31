@@ -160,6 +160,7 @@ import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.thread.ThreadPool;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.LocalizeHtml;
@@ -575,7 +576,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
     final PlacePanel placePanel = actionButtons.getPlacePanel();
-    rightHandSidePanel.add(placePanel.getDetachedUnitsToPlacePanel(), BorderLayout.SOUTH);
+
+    rightHandSidePanel.add(
+        new JPanelBuilder()
+            .borderLayout()
+            .addNorth(movePanel.getUnitScrollerPanel())
+            .addSouth(placePanel.getDetachedUnitsToPlacePanel())
+            .build(),
+        BorderLayout.SOUTH);
 
     addKeyBindings(movePanel, actionButtons);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));

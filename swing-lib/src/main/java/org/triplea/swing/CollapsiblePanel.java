@@ -4,6 +4,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  * A panel that can be collapsed and expanded via a button at the top of it.
@@ -14,9 +15,14 @@ import javax.swing.JPanel;
 public class CollapsiblePanel extends JPanel {
   private static final long serialVersionUID = 1L;
 
-  private final String title;
+  private static final String COLLAPSED_INDICATOR = " ►";
+  private static final String EXPANDED_INDICATOR = " ▼";
+
   private final JPanel content;
   private final JButton toggleButton;
+
+  private String title;
+  private String currentToggleIndicator = EXPANDED_INDICATOR;
 
   public CollapsiblePanel(final JPanel content, final String title) {
     super();
@@ -41,19 +47,22 @@ public class CollapsiblePanel extends JPanel {
     expand();
   }
 
-  public boolean isExpanded() {
-    return content.isVisible();
-  }
-
   public void collapse() {
-    toggleButton.setText(title + " ►");
+    currentToggleIndicator = COLLAPSED_INDICATOR;
+    toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(false);
     revalidate();
   }
 
   public void expand() {
-    toggleButton.setText(title + " ▼");
+    currentToggleIndicator = EXPANDED_INDICATOR;
+    toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(true);
     revalidate();
+  }
+
+  public void setTitle(final String title) {
+    this.title = title;
+    SwingUtilities.invokeLater(() -> toggleButton.setText(title + currentToggleIndicator));
   }
 }
