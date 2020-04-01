@@ -260,6 +260,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
+  /**
+   * Used by battle results to get the remaining attackers after the battle is completed. It
+   * includes remaining attackers, retreated attackers, and if attacker won/draw then any owned
+   * units left in the territory.
+   */
   @Override
   public List<Unit> getRemainingAttackingUnits() {
     final List<Unit> remaining = new ArrayList<>(attackingUnitsRetreated);
@@ -276,6 +281,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return remaining;
   }
 
+  /**
+   * Used by battle results to get the remaining defenders after the battle is completed. It
+   * includes remaining defenders, retreated defenders, and if defender won/draw then any owned
+   * units and enemy units of the attacker left in the territory.
+   */
   @Override
   public List<Unit> getRemainingDefendingUnits() {
     final Set<Unit> remaining = new HashSet<>(defendingUnitsRetreated);
