@@ -8,7 +8,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -56,6 +55,8 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import lombok.Getter;
 import lombok.Setter;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
@@ -100,6 +101,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   private String displayText = "Combat Move";
   private MoveType moveType = MoveType.DEFAULT;
   private final UnitScroller unitScroller;
+
+  @Getter(onMethod_ = @Override)
+  private final Component unitScrollerPanel;
 
   private final UnitSelectionListener unitSelectionListener =
       new UnitSelectionListener() {
@@ -731,6 +735,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     errorImage = getMap().getErrorImage().orElse(null);
 
     unitScroller = new UnitScroller(getData(), getMap(), this::isVisible);
+    unitScrollerPanel = unitScroller.build();
+    unitScrollerPanel.setVisible(false);
   }
 
   // Same as above! Delete this crap after refactoring.
@@ -1494,6 +1500,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     updateRouteAndMouseShadowUnits(null);
     forced = null;
     getMap().showMouseCursor();
+    unitScrollerPanel.setVisible(false);
   }
 
   @Override
@@ -1521,6 +1528,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   @Override
   public final void display(final GamePlayer gamePlayer) {
     super.display(gamePlayer, displayText);
+    SwingUtilities.invokeLater(() -> unitScrollerPanel.setVisible(true));
   }
 
   @Override
@@ -1619,7 +1627,10 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   }
 
   @Override
-  Component getUnitScrollerPanel(final LocalPlayers localPlayers) {
-    return unitScroller.build(localPlayers, this::highlightMovableUnits);
+  public void performDone() {
+    if (doneMoveAction()) {
+      super.performDone();
+      unitScrollerPanel.setVisible(false);
+    }
   }
 }

@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -28,11 +27,6 @@ class JLabelBuilderTest {
     final int value = 42;
     final JLabel label = JLabelBuilder.builder().text("value").iconTextGap(value).build();
     MatcherAssert.assertThat(label.getIconTextGap(), is(value));
-  }
-
-  @Test
-  void textOrIconIsRequired() {
-    assertThrows(IllegalStateException.class, JLabelBuilder.builder()::build);
   }
 
   @Test

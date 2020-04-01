@@ -3,10 +3,8 @@ package games.strategy.triplea.ui.unit.scroller;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.util.UnitCategory;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
@@ -33,29 +31,21 @@ class AvatarPanelFactory {
   private static final int WIDTH_OFFSET = 12;
 
   private final UnitImageFactory unitImageFactory;
-  private final FlagIconImageFactory flagIconImageFactory;
 
   AvatarPanelFactory(final MapPanel mapPanel) {
     unitImageFactory = mapPanel.getUiContext().getUnitImageFactory();
-    flagIconImageFactory = mapPanel.getUiContext().getFlagImageFactory();
   }
 
   JPanel buildPanel(final List<Unit> units, final GamePlayer currentPlayer) {
-    final Icon unitIcon;
-    final Icon flagIcon;
-    if (units.isEmpty()) {
-      unitIcon = new ImageIcon(createEmptyUnitStackImage());
-      flagIcon = new ImageIcon(createEmptyUnitStackImage());
-    } else {
-      final Unit firstUnit = units.iterator().next();
-      final UnitCategory unitCategory = new UnitCategory(firstUnit.getType(), currentPlayer);
-      unitIcon = new ImageIcon(createUnitStackImage(unitImageFactory, currentPlayer, units));
-      flagIcon = new ImageIcon(flagIconImageFactory.getSmallFlag(unitCategory.getOwner()));
-    }
+    final Icon unitIcon =
+        units.isEmpty()
+            ? new ImageIcon(createEmptyUnitStackImage())
+            : new ImageIcon(createUnitStackImage(unitImageFactory, currentPlayer, units));
 
-    final JLabel unitImage = new JLabel(unitIcon, SwingConstants.CENTER);
-    final JLabel unitCount = new JLabel("x" + units.size(), flagIcon, SwingConstants.CENTER);
-    return new JPanelBuilder().borderLayout().addCenter(unitImage).addSouth(unitCount).build();
+    return new JPanelBuilder() //
+        .borderLayout()
+        .addCenter(new JLabel(unitIcon, SwingConstants.CENTER))
+        .build();
   }
 
   private static Image createEmptyUnitStackImage() {
