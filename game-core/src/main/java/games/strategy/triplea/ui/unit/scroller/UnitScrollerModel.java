@@ -52,7 +52,6 @@ class UnitScrollerModel {
     return units.stream()
         .map(unit -> new UnitCategory(unit.getType(), player))
         .distinct()
-        .limit(AvatarPanelFactory.MAX_UNITS_IN_AVATAR_STACK)
         .collect(Collectors.toList());
   }
 }

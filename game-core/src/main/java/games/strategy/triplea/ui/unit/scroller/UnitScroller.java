@@ -109,7 +109,7 @@ public class UnitScroller {
     if (lastFocusedTerritory == null) {
       focusCapital();
     } else {
-      drawUnitAvatarPane(lastFocusedTerritory);
+      drawUnitAvatarPane(lastFocusedTerritory, selectUnitImagePanel.getWidth());
     }
 
     // remove any moved units from the sleeping units
@@ -161,13 +161,15 @@ public class UnitScroller {
               Optional.ofNullable(lastFocusedTerritory)
                   .ifPresent(
                       t -> {
-                        drawUnitAvatarPane(t);
+                        drawUnitAvatarPane(t, selectUnitImagePanel.getWidth());
                         territoryNameLabel.setText(t.getName());
                       });
             });
   }
 
-  private void drawUnitAvatarPane(final Territory t) {
+  private void drawUnitAvatarPane(final Territory t, final int panelWidth) {
+    // use 240 as an approximate default if the containing panel does not yet exist.
+    final int renderingWidth = panelWidth == 0 ? 240 : panelWidth;
 
     final GamePlayer player = currentPlayerSupplier.get();
     final List<Unit> moveableUnits =
@@ -180,7 +182,8 @@ public class UnitScroller {
         () -> {
           selectUnitImagePanel.removeAll();
           if (player != null) {
-            selectUnitImagePanel.add(avatarPanelFactory.buildPanel(moveableUnits, player));
+            selectUnitImagePanel.add(
+                avatarPanelFactory.buildPanel(moveableUnits, player, renderingWidth));
           }
           selectUnitImagePanel.revalidate();
           selectUnitImagePanel.repaint();
@@ -362,7 +365,7 @@ public class UnitScroller {
       final List<Unit> matchedUnits = getMovableUnits(t);
 
       if (!matchedUnits.isEmpty()) {
-        drawUnitAvatarPane(t);
+        drawUnitAvatarPane(t, selectUnitImagePanel.getWidth());
         newFocusedTerritory = t;
         mapPanel.setUnitHighlight(Set.of(matchedUnits));
         break;
