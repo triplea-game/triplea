@@ -6,14 +6,15 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import org.triplea.java.Postconditions;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -21,14 +22,17 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * images of the units contained in the 'current' territory.
  */
 class AvatarPanelFactory {
-  static final int MAX_UNITS_IN_AVATAR_STACK = 3;
+  /**
+   * Set to be about the maximum height of unit images. Note, unit images can be scaled up and down.
+   */
+  private static final int PANEL_HEIGHT = 70;
 
-  private static final int TYPICAL_UNIT_IMAGE_SIZE = 40;
-
-  /** Height difference between overlapping images. */
-  private static final int HEIGHT_OFFSET = 12;
-
-  private static final int WIDTH_OFFSET = 12;
+  /**
+   * Max rendering width is so that the unit scroller image does not stretch too wide. On top of
+   * that, once an image has been rendered, the minimum size of the right hand action panels will be
+   * equal to the rendering width.
+   */
+  private static final int MAX_RENDERING_WIDTH = 300;
 
   private final UnitImageFactory unitImageFactory;
 
@@ -36,11 +40,22 @@ class AvatarPanelFactory {
     unitImageFactory = mapPanel.getUiContext().getUnitImageFactory();
   }
 
-  JPanel buildPanel(final List<Unit> units, final GamePlayer currentPlayer) {
+  /**
+   * Draws the unit 'avatar' image and returns it on a panel.
+   *
+   * @param units The units to be drawn.
+   * @param currentPlayer The players whose turn it is.
+   * @param panelWidth How much horizontal space we have for drawing.
+   * @return A panel containing a drawing of the unique images for each unit type.
+   */
+  JPanel buildPanel(final List<Unit> units, final GamePlayer currentPlayer, final int panelWidth) {
+    final int renderingWidth = Math.min(panelWidth, MAX_RENDERING_WIDTH);
+
     final Icon unitIcon =
         units.isEmpty()
-            ? new ImageIcon(createEmptyUnitStackImage())
-            : new ImageIcon(createUnitStackImage(unitImageFactory, currentPlayer, units));
+            ? new ImageIcon(createEmptyUnitStackImage(renderingWidth))
+            : new ImageIcon(
+                createUnitStackImage(unitImageFactory, currentPlayer, units, renderingWidth));
 
     return new JPanelBuilder() //
         .borderLayout()
@@ -48,15 +63,15 @@ class AvatarPanelFactory {
         .build();
   }
 
-  private static Image createEmptyUnitStackImage() {
-    return new BufferedImage(
-        TYPICAL_UNIT_IMAGE_SIZE + (MAX_UNITS_IN_AVATAR_STACK * WIDTH_OFFSET),
-        TYPICAL_UNIT_IMAGE_SIZE + (MAX_UNITS_IN_AVATAR_STACK * HEIGHT_OFFSET),
-        BufferedImage.TYPE_INT_ARGB);
+  private static Image createEmptyUnitStackImage(final int renderingWidth) {
+    return new BufferedImage(renderingWidth, PANEL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
   }
 
   private static Image createUnitStackImage(
-      final UnitImageFactory unitImageFactory, final GamePlayer player, final List<Unit> units) {
+      final UnitImageFactory unitImageFactory,
+      final GamePlayer player,
+      final List<Unit> units,
+      final int renderingWidth) {
 
     Preconditions.checkArgument(!units.isEmpty());
 
@@ -65,17 +80,30 @@ class AvatarPanelFactory {
     final var dimension = unitImageFactory.getImageDimensions(unitsToDraw.get(0).getType(), player);
 
     final var combinedImage =
-        new BufferedImage(
-            dimension.width + (MAX_UNITS_IN_AVATAR_STACK * WIDTH_OFFSET),
-            dimension.height + (MAX_UNITS_IN_AVATAR_STACK * HEIGHT_OFFSET),
-            BufferedImage.TYPE_INT_ARGB);
+        new BufferedImage(renderingWidth, PANEL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 
     final var graphics = combinedImage.getGraphics();
-    for (int i = 0; i < unitsToDraw.size(); i++) {
-      final int x = i * WIDTH_OFFSET;
-      final int y = i * HEIGHT_OFFSET;
-      final ImageObserver observer = null;
-      graphics.drawImage(unitImageFactory.getImage(unitsToDraw.get(i)), x, y, observer);
+
+    final List<Point> drawLocations =
+        AvatarCoordinateCalculator.builder()
+            .unitImageWidth(dimension.width)
+            .unitImageHeight(dimension.height)
+            .unitImageCount(unitsToDraw.size())
+            .renderingWidth(renderingWidth)
+            .renderingHeight(PANEL_HEIGHT)
+            .build()
+            .computeDrawCoordinates();
+
+    Postconditions.assertState(
+        drawLocations.size() == unitsToDraw.size(),
+        String.format(
+            "Draw location count (%s) should have matched units draw size (%s)",
+            drawLocations.size(), unitsToDraw.size()));
+
+    for (int i = 0; i < drawLocations.size(); i++) {
+      final var imageToDraw = unitImageFactory.getImage(unitsToDraw.get(i));
+      final Point drawLocation = drawLocations.get(i);
+      graphics.drawImage(imageToDraw, drawLocation.x, drawLocation.y, null);
     }
     return combinedImage;
   }
