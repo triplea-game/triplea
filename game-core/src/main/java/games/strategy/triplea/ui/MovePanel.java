@@ -1551,9 +1551,6 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
         KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S),
         unitScrollerAction(unitScroller::sleepCurrentUnits));
     bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_C),
-        unitScrollerAction(unitScroller::centerOnCurrentMovableUnit));
-    bindings.put(
         KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_N),
         unitScrollerAction(unitScroller::centerOnNextMovableUnit));
     bindings.put(

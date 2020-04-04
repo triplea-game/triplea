@@ -8,7 +8,9 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -98,6 +101,27 @@ public class UnitScroller {
 
     gameData.addGameDataEventListener(GameDataEvent.UNIT_MOVED, this::unitMoved);
     gameData.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::gamePhaseChanged);
+
+    mapPanel.addMapSelectionListener(
+        new MapSelectionListener() {
+          @Override
+          public void territorySelected(final Territory territory, final MouseDetails md) {}
+
+          @Override
+          public void mouseEntered(@Nullable final Territory territory) {
+            if (parentPanelIsVisible.get()) {
+              if (territory != null) {
+                lastFocusedTerritory = territory;
+                drawUnitAvatarPane(territory);
+                territoryNameLabel.setText(territory.getName());
+                updateMovesLeftLabel();
+              }
+            }
+          }
+
+          @Override
+          public void mouseMoved(@Nullable final Territory territory, final MouseDetails md) {}
+        });
   }
 
   private void unitMoved() {
@@ -244,38 +268,6 @@ public class UnitScroller {
     return collapsiblePanel;
   }
 
-  /** Centers the map on the current territory shown in the unit scroller. */
-  public void centerOnCurrentMovableUnit() {
-    if (lastFocusedTerritory != null && !getMovableUnits(lastFocusedTerritory).isEmpty()) {
-      mapPanel.setUnitHighlight(
-          Set.of(
-              UnitScrollerModel.getMoveableUnits(
-                  lastFocusedTerritory,
-                  movePhaseSupplier.get(),
-                  currentPlayerSupplier.get(),
-                  getAllSkippedUnits())));
-      mapPanel.centerOnTerritoryIgnoringMapLock(lastFocusedTerritory);
-      highlightTerritory(lastFocusedTerritory);
-    } else {
-      centerOnNextMovableUnit();
-    }
-  }
-
-  private void highlightTerritory(final Territory territory) {
-    if (ClientSetting.unitScrollerHighlightTerritory.getValueOrThrow()) {
-      mapPanel.highlightTerritory(
-          territory, MapPanel.AnimationDuration.STANDARD, MapPanel.HighlightDelay.SHORT_DELAY);
-    }
-  }
-
-  private List<Unit> getMovableUnits(final Territory territory) {
-    if (territory == null) {
-      return List.of();
-    }
-    return UnitScrollerModel.getMoveableUnits(
-        territory, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
-  }
-
   /**
    * Skips the units in the current territory. Scroller will not scroll back to these units and the
    * units will not be highlighted.
@@ -286,6 +278,14 @@ public class UnitScroller {
       updateMovesLeftLabel();
     }
     centerOnNextMovableUnit();
+  }
+
+  private List<Unit> getMovableUnits(final Territory territory) {
+    if (territory == null) {
+      return List.of();
+    }
+    return UnitScrollerModel.getMoveableUnits(
+        territory, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
   }
 
   public void sleepCurrentUnits() {
@@ -300,7 +300,7 @@ public class UnitScroller {
     sleepingUnits.clear();
     skippedUnits.clear();
     updateMovesLeftLabel();
-    centerOnCurrentMovableUnit();
+    centerOnNextMovableUnit();
   }
 
   public void centerOnNextMovableUnit() {
@@ -366,7 +366,6 @@ public class UnitScroller {
       final List<Unit> matchedUnits = getMovableUnits(t);
 
       if (!matchedUnits.isEmpty()) {
-        drawUnitAvatarPane(t);
         newFocusedTerritory = t;
         mapPanel.setUnitHighlight(Set.of(matchedUnits));
         break;
@@ -379,10 +378,28 @@ public class UnitScroller {
       }
     }
     if (newFocusedTerritory != null) {
-      lastFocusedTerritory = newFocusedTerritory;
-      territoryNameLabel.setText(lastFocusedTerritory.getName());
+      // When the map is moved, the mouse is moved, we will get a territory
+      // selected event that will set the lastFocusedTerritory.
       mapPanel.centerOn(newFocusedTerritory);
-      highlightTerritory(newFocusedTerritory);
+
+      // Do an invoke later here so that these actions are after any map UI events.
+      final var selectedTerritory = newFocusedTerritory;
+      SwingUtilities.invokeLater(() -> updateRenderingToTerritory(selectedTerritory));
+    }
+  }
+
+  private void updateRenderingToTerritory(final Territory selectedTerritory) {
+    lastFocusedTerritory = selectedTerritory;
+    territoryNameLabel.setText(lastFocusedTerritory.getName());
+    highlightTerritory(selectedTerritory);
+    updateMovesLeftLabel();
+    drawUnitAvatarPane(selectedTerritory);
+  }
+
+  private void highlightTerritory(final Territory territory) {
+    if (ClientSetting.unitScrollerHighlightTerritory.getValueOrThrow()) {
+      mapPanel.highlightTerritory(
+          territory, MapPanel.AnimationDuration.STANDARD, MapPanel.HighlightDelay.SHORT_DELAY);
     }
   }
 }
