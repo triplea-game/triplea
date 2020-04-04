@@ -253,11 +253,11 @@ public class UnitScroller {
             .boxLayoutHorizontal()
             .add(prevUnit)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
+            .add(wakeAllButton)
+            .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(sleepButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(skipButton)
-            .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
-            .add(wakeAllButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(nextUnit)
             .build();
