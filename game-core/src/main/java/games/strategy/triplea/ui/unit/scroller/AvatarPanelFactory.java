@@ -23,11 +23,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  */
 class AvatarPanelFactory {
   /**
-   * Set to be about the maximum height of unit images. Note, unit images can be scaled up and down.
-   */
-  private static final int PANEL_HEIGHT = 70;
-
-  /**
    * Max rendering width is so that the unit scroller image does not stretch too wide. On top of
    * that, once an image has been rendered, the minimum size of the right hand action panels will be
    * equal to the rendering width.
@@ -64,8 +59,9 @@ class AvatarPanelFactory {
         .build();
   }
 
-  private static Image createEmptyUnitStackImage(final int renderingWidth) {
-    return new BufferedImage(renderingWidth, PANEL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+  private Image createEmptyUnitStackImage(final int renderingWidth) {
+    return new BufferedImage(
+        renderingWidth, unitImageFactory.getUnitImageHeight(), BufferedImage.TYPE_INT_ARGB);
   }
 
   private static Image createUnitStackImage(
@@ -81,7 +77,8 @@ class AvatarPanelFactory {
     final var dimension = unitImageFactory.getImageDimensions(unitsToDraw.get(0).getType(), player);
 
     final var combinedImage =
-        new BufferedImage(renderingWidth, PANEL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        new BufferedImage(
+            renderingWidth, unitImageFactory.getUnitImageHeight(), BufferedImage.TYPE_INT_ARGB);
 
     final var graphics = combinedImage.getGraphics();
 
@@ -91,7 +88,7 @@ class AvatarPanelFactory {
             .unitImageHeight(dimension.height)
             .unitImageCount(unitsToDraw.size())
             .renderingWidth(renderingWidth)
-            .renderingHeight(PANEL_HEIGHT)
+            .renderingHeight(unitImageFactory.getUnitImageHeight())
             .build()
             .computeDrawCoordinates();
 
