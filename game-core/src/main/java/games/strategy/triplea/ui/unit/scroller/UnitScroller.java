@@ -64,7 +64,7 @@ public class UnitScroller {
   private static final String SKIP_UNITS_TOOLTIP =
       "Press 'Space' or click to 'Skip' these unmoved units until next move phase.";
   private static final String WAKE_ALL_TOOLTIP =
-      "Press 'W' or click to 'Alert' all skipped and sleeping units on the map.";
+      "Click to 'Alert' all skipped and sleeping units on the map.";
 
   private Collection<Unit> skippedUnits = new HashSet<>();
   private final Collection<Unit> sleepingUnits = new HashSet<>();
