@@ -3,11 +3,19 @@ package games.strategy.triplea.ui.unit.scroller;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.util.UnitCategory;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -23,21 +31,40 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  */
 class AvatarPanelFactory {
   /**
-   * Set to be about the maximum height of unit images. Note, unit images can be scaled up and down.
-   */
-  private static final int PANEL_HEIGHT = 70;
-
-  /**
    * Max rendering width is so that the unit scroller image does not stretch too wide. On top of
    * that, once an image has been rendered, the minimum size of the right hand action panels will be
    * equal to the rendering width.
    */
   private static final int MAX_RENDERING_WIDTH = 300;
 
+  /**
+   * Add some extra height to the unit avatar image. This gives us some padding on the top and
+   * bottom of the avatar image and helps the unit count rendering at the bottom of the avatar image
+   * from being cut-off (test this with territories containing multiple subs on NWO).
+   */
+  private static final int EXTRA_DRAW_HEIGHT = 12;
+
+  /**
+   * This value nudges the rendering of units down a bit. If a unit image uses the full image draw
+   * height, the top part can appear cut off or just really close to the maximum upper limit. This
+   * value moves the unit 'down' a bit when rendering it (test this with battleships on NWO).
+   */
+  private static final int UNIT_DRAW_ADDED_VERTICAL_TRANSLATION = 7;
+
+  /**
+   * This value nudges the rendering of the unit count down a bit. Since we shift the rendering of
+   * unit images down, this does not look good for infantry where instead of the unit count being
+   * drawn between their feet, it is drawn squarely between their legs (which looks funny). So we
+   * translate the rendering to be lower by a bit. (test this with territories containing multiple
+   * infantry).
+   */
+  private static final int UNIT_COUNT_ADDED_VERTICAL_TRANSLATION = 4;
+
   private final UnitImageFactory unitImageFactory;
 
   AvatarPanelFactory(final MapPanel mapPanel) {
-    unitImageFactory = mapPanel.getUiContext().getUnitImageFactory();
+    unitImageFactory =
+        mapPanel.getUiContext().getUnitImageFactory().toBuilder().scaleFactor(1.0).build();
   }
 
   /**
@@ -63,8 +90,11 @@ class AvatarPanelFactory {
         .build();
   }
 
-  private static Image createEmptyUnitStackImage(final int renderingWidth) {
-    return new BufferedImage(renderingWidth, PANEL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+  private Image createEmptyUnitStackImage(final int renderingWidth) {
+    return new BufferedImage(
+        renderingWidth,
+        unitImageFactory.getUnitImageHeight() + EXTRA_DRAW_HEIGHT,
+        BufferedImage.TYPE_INT_ARGB);
   }
 
   private static Image createUnitStackImage(
@@ -80,9 +110,12 @@ class AvatarPanelFactory {
     final var dimension = unitImageFactory.getImageDimensions(unitsToDraw.get(0).getType(), player);
 
     final var combinedImage =
-        new BufferedImage(renderingWidth, PANEL_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        new BufferedImage(
+            renderingWidth,
+            unitImageFactory.getUnitImageHeight() + EXTRA_DRAW_HEIGHT,
+            BufferedImage.TYPE_INT_ARGB);
 
-    final var graphics = combinedImage.getGraphics();
+    final Graphics2D graphics = (Graphics2D) combinedImage.getGraphics();
 
     final List<Point> drawLocations =
         AvatarCoordinateCalculator.builder()
@@ -90,7 +123,7 @@ class AvatarPanelFactory {
             .unitImageHeight(dimension.height)
             .unitImageCount(unitsToDraw.size())
             .renderingWidth(renderingWidth)
-            .renderingHeight(PANEL_HEIGHT)
+            .renderingHeight(unitImageFactory.getUnitImageHeight())
             .build()
             .computeDrawCoordinates();
 
@@ -100,11 +133,52 @@ class AvatarPanelFactory {
             "Draw location count (%s) should have matched units draw size (%s)",
             drawLocations.size(), unitsToDraw.size()));
 
+    unitsToDraw.sort(unitRenderingOrder(player));
     for (int i = 0; i < drawLocations.size(); i++) {
       final var imageToDraw = unitImageFactory.getImage(unitsToDraw.get(i));
       final Point drawLocation = drawLocations.get(i);
-      graphics.drawImage(imageToDraw, drawLocation.x, drawLocation.y, null);
+
+      graphics.drawImage(
+          imageToDraw, drawLocation.x, drawLocation.y + UNIT_DRAW_ADDED_VERTICAL_TRANSLATION, null);
+
+      final int unitCount = countUnit(unitsToDraw.get(i).getType(), units);
+      if (unitCount > 1) {
+        UnitsDrawer.drawOutlinedText(
+            graphics,
+            String.valueOf(unitCount),
+            drawLocation.x + unitImageFactory.getUnitCounterOffsetWidth(),
+            drawLocation.y
+                + unitImageFactory.getUnitCounterOffsetHeight()
+                + UNIT_COUNT_ADDED_VERTICAL_TRANSLATION,
+            MapImage.getPropertyUnitCountColor(),
+            MapImage.getPropertyUnitCountOutline());
+      }
     }
     return combinedImage;
+  }
+
+  private static Comparator<UnitCategory> unitRenderingOrder(final GamePlayer currentPlayer) {
+    final Comparator<UnitCategory> isAir =
+        Comparator.comparing(unitCategory -> UnitAttachment.get(unitCategory.getType()).getIsAir());
+    final Comparator<UnitCategory> isSea =
+        Comparator.comparing(unitCategory -> UnitAttachment.get(unitCategory.getType()).getIsSea());
+    final Comparator<UnitCategory> unitAttackPower =
+        Comparator.comparingInt(
+            unitCategory -> UnitAttachment.get(unitCategory.getType()).getAttack(currentPlayer));
+    final Comparator<UnitCategory> unitName =
+        Comparator.comparing(unitCategory -> unitCategory.getType().getName());
+
+    return isAir //
+        .thenComparing(isSea)
+        .thenComparing(unitAttackPower)
+        .thenComparing(unitName)
+        .reversed();
+  }
+
+  private static int countUnit(final UnitType unitType, final Collection<Unit> units) {
+    return units.stream() //
+        .map(Unit::getType)
+        .mapToInt(type -> type.equals(unitType) ? 1 : 0)
+        .sum();
   }
 }

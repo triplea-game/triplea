@@ -22,8 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.swing.ImageIcon;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 /** A factory for creating unit images. */
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   /**
@@ -48,8 +54,6 @@ public class UnitImageFactory {
   private double scaleFactor;
   private ResourceLoader resourceLoader;
   private MapData mapData;
-
-  public UnitImageFactory() {}
 
   public void setResourceLoader(
       final ResourceLoader loader,
