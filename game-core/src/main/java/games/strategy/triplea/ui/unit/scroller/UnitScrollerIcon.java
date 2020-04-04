@@ -28,6 +28,6 @@ class UnitScrollerIcon implements Supplier<Icon> {
   public Icon get() {
     return new ImageIcon(
         ImageLoader.getImage(new File(IMAGE_PATH, imageFile))
-            .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+            .getScaledInstance(25, 25, Image.SCALE_SMOOTH));
   }
 }
