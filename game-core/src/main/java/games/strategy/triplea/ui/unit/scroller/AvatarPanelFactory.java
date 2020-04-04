@@ -4,15 +4,18 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.util.UnitCategory;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -130,6 +133,7 @@ class AvatarPanelFactory {
             "Draw location count (%s) should have matched units draw size (%s)",
             drawLocations.size(), unitsToDraw.size()));
 
+    unitsToDraw.sort(unitRenderingOrder(player));
     for (int i = 0; i < drawLocations.size(); i++) {
       final var imageToDraw = unitImageFactory.getImage(unitsToDraw.get(i));
       final Point drawLocation = drawLocations.get(i);
@@ -151,6 +155,24 @@ class AvatarPanelFactory {
       }
     }
     return combinedImage;
+  }
+
+  private static Comparator<UnitCategory> unitRenderingOrder(final GamePlayer currentPlayer) {
+    final Comparator<UnitCategory> isAir =
+        Comparator.comparing(unitCategory -> UnitAttachment.get(unitCategory.getType()).getIsAir());
+    final Comparator<UnitCategory> isSea =
+        Comparator.comparing(unitCategory -> UnitAttachment.get(unitCategory.getType()).getIsSea());
+    final Comparator<UnitCategory> unitAttackPower =
+        Comparator.comparingInt(
+            unitCategory -> UnitAttachment.get(unitCategory.getType()).getAttack(currentPlayer));
+    final Comparator<UnitCategory> unitName =
+        Comparator.comparing(unitCategory -> unitCategory.getType().getName());
+
+    return isAir //
+        .thenComparing(isSea)
+        .thenComparing(unitAttackPower)
+        .thenComparing(unitName)
+        .reversed();
   }
 
   private static int countUnit(final UnitType unitType, final Collection<Unit> units) {
