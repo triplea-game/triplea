@@ -196,7 +196,6 @@ public class UnitsDrawer extends AbstractDrawable {
               s,
               x,
               y,
-              MapImage.getPropertyMapFont(),
               MapImage.getPropertyUnitCountColor(),
               MapImage.getPropertyUnitCountOutline());
         }
@@ -215,7 +214,6 @@ public class UnitsDrawer extends AbstractDrawable {
             s,
             x,
             y,
-            MapImage.getPropertyMapFont(),
             MapImage.getPropertyUnitCountColor(),
             MapImage.getPropertyUnitCountOutline());
       }
@@ -255,7 +253,6 @@ public class UnitsDrawer extends AbstractDrawable {
           s,
           x,
           y,
-          MapImage.getPropertyMapFont(),
           MapImage.getPropertyUnitHitDamageColor(),
           MapImage.getPropertyUnitHitDamageOutline());
     }
@@ -273,20 +270,19 @@ public class UnitsDrawer extends AbstractDrawable {
           s,
           x,
           y,
-          MapImage.getPropertyMapFont(),
           MapImage.getPropertyUnitFactoryDamageColor(),
           MapImage.getPropertyUnitFactoryDamageOutline());
     }
   }
 
-  private static void drawOutlinedText(
+  public static void drawOutlinedText(
       final Graphics2D graphics,
       final String s,
       final int x,
       final int y,
-      final Font font,
       final Color textColor,
       final Color outlineColor) {
+    final var font = MapImage.getPropertyMapFont();
     if (font.getSize() > 0) {
       graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       graphics.setFont(font);
