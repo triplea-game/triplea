@@ -60,8 +60,8 @@ public class UnitScroller {
           + "movement left";
   private static final String NEXT_UNITS_TOOLTIP =
       "Press 'n' or click this button to center the screen on the 'next' units with movement left";
-  private static final String STATION_UNITS_TOOLTIP =
-      "Press 's' or click this button to station the current units, they will be automatically "
+  private static final String SLEEP_UNITS_TOOLTIP =
+      "Press 's' or click this button to sleep the current units, they will be automatically "
           + "skipped until you move or wake them.";
   private static final String SKIP_UNITS_TOOLTIP =
       "Press 'space' or click this button to skip the current units and not move them during the "
@@ -232,9 +232,9 @@ public class UnitScroller {
     prevUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     prevUnit.addActionListener(e -> centerOnPreviousMovableUnit());
 
-    final JButton stationButton = new JButton(UnitScrollerIcon.STATION.get());
-    stationButton.setToolTipText(STATION_UNITS_TOOLTIP);
-    stationButton.addActionListener(e -> sleepCurrentUnits());
+    final JButton sleepButton = new JButton(UnitScrollerIcon.SLEEP.get());
+    sleepButton.setToolTipText(SLEEP_UNITS_TOOLTIP);
+    sleepButton.addActionListener(e -> sleepCurrentUnits());
 
     final JButton skipButton = new JButton(UnitScrollerIcon.SKIP.get());
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
@@ -253,7 +253,7 @@ public class UnitScroller {
             .boxLayoutHorizontal()
             .add(prevUnit)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
-            .add(stationButton)
+            .add(sleepButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(skipButton)
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
