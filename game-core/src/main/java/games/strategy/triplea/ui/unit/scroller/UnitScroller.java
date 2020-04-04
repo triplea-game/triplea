@@ -56,18 +56,15 @@ public class UnitScroller {
   private static final int HORIZONTAL_BUTTON_GAP = 2;
 
   private static final String PREVIOUS_UNITS_TOOLTIP =
-      "Press 'm' or click this button to center the screen on the 'previous' units with "
-          + "movement left";
+      "Press 'M' or click to see 'Previous' unmoved units.";
   private static final String NEXT_UNITS_TOOLTIP =
-      "Press 'n' or click this button to center the screen on the 'next' units with movement left";
+      "Press 'N' or click to see 'Next' unmoved units.";
   private static final String SLEEP_UNITS_TOOLTIP =
-      "Press 's' or click this button to sleep the current units, they will be automatically "
-          + "skipped until you move or wake them.";
+      "Press 'S' or click to 'Sleep' these unmoved units until manually moved or alerted.";
   private static final String SKIP_UNITS_TOOLTIP =
-      "Press 'space' or click this button to skip the current units and not move them during the "
-          + "current move phase";
+      "Press 'Space' or click to 'Skip' these unmoved units until next move phase.";
   private static final String WAKE_ALL_TOOLTIP =
-      "Press 'w' or click this button to activate all skipped or stationed units";
+      "Press 'W' or click to 'Alert' all skipped and sleeping units on the map.";
 
   private Collection<Unit> skippedUnits = new HashSet<>();
   private final Collection<Unit> sleepingUnits = new HashSet<>();
