@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
@@ -29,7 +28,6 @@ import org.triplea.web.socket.WebSocketMessagingBus;
  * Service layer for managing user bans, get bans, add and remove. User bans are done by MAC and IP
  * address, they are removed by the 'public ban id' that is assigned when a ban is issued.
  */
-@Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
 public class UserBanService {
 

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
@@ -29,7 +28,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUp
  * send chat messages, slap players, etc.. The lobby will send messages to the player for example
  * like chat messages, slap notifications, ban notifications.
  */
-@Log
 public class PlayerToLobbyConnection {
   private final HttpLobbyClient httpLobbyClient;
   private GameListingClient gameListingClient;

@@ -3,7 +3,6 @@ package games.strategy.engine.chat;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
@@ -20,7 +19,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUp
  * class provides a send API and does wiring to connect callbacks from a {@code LobbyChatClient} to
  * a {@code ChatClient}.
  */
-@Log
 @AllArgsConstructor
 public class LobbyChatTransmitter implements ChatTransmitter {
   private final PlayerToLobbyConnection playerToLobbyConnection;
