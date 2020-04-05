@@ -43,7 +43,6 @@ public class DisconnectUserAction {
     if (chatters.disconnectPlayerSessions(
         gamePlayerLookup.getUserName(), "Disconnected by moderator")) {
       playerConnections.broadcastMessage(
-          chatters.fetchOpenSessions(),
           new ChatEventReceivedMessage(
               gamePlayerLookup.getUserName() + " was disconnected by moderator"));
     }

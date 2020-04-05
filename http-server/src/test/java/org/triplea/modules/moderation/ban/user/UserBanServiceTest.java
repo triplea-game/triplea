@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.hamcrest.collection.IsCollectionWithSize;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
@@ -78,7 +78,20 @@ class UserBanServiceTest {
   @Mock private WebSocketMessagingBus chatMessagingBus;
   @Mock private WebSocketMessagingBus gameMessagingBus;
 
-  @InjectMocks private UserBanService bannedUsersService;
+  private UserBanService bannedUsersService;
+
+  @BeforeEach
+  void setup() {
+    bannedUsersService =
+        new UserBanService(
+            moderatorAuditHistoryDao,
+            userBanDao,
+            publicIdSupplier,
+            chatters,
+            apiKeyDaoWrapper,
+            chatMessagingBus,
+            gameMessagingBus);
+  }
 
   @Test
   void getBannedUsers() {

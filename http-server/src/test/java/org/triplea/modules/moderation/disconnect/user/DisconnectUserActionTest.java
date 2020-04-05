@@ -10,8 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.Set;
-import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -43,7 +41,6 @@ class DisconnectUserActionTest {
           .systemId(SystemId.of("system-id"))
           .build();
 
-  @Mock private Session session;
   @Mock private ApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private Chatters chatters;
   @Mock private WebSocketMessagingBus playerConnections;
@@ -65,7 +62,7 @@ class DisconnectUserActionTest {
 
     private void verifyNoOp() {
       verify(chatters, never()).disconnectPlayerSessions(any(), any());
-      verify(playerConnections, never()).broadcastMessage(any(), any());
+      verify(playerConnections, never()).broadcastMessage(any());
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
 
@@ -93,7 +90,8 @@ class DisconnectUserActionTest {
       when(apiKeyDaoWrapper.lookupPlayerByChatId(PLAYER_CHAT_ID))
           .thenReturn(Optional.of(PLAYER_ID_LOOKUP));
       when(chatters.hasPlayer(PLAYER_ID_LOOKUP.getUserName())).thenReturn(true);
-      when(chatters.fetchOpenSessions()).thenReturn(Set.of(session));
+      when(chatters.disconnectPlayerSessions(eq(PLAYER_ID_LOOKUP.getUserName()), any()))
+          .thenReturn(true);
 
       disconnectUserAction.disconnectPlayer(MODERATOR_ID, PLAYER_CHAT_ID);
 

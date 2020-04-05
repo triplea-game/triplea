@@ -2,6 +2,7 @@ package org.triplea.http.client.web.socket.messages.envelopes.game.listing;
 
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.http.client.web.socket.MessageEnvelope;
@@ -15,6 +16,7 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
  */
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode
 public class LobbyGameUpdatedMessage implements WebSocketMessage {
   public static final MessageType<LobbyGameUpdatedMessage> TYPE =
       MessageType.of(LobbyGameUpdatedMessage.class);

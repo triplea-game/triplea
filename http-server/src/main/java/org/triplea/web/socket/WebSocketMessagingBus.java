@@ -3,7 +3,6 @@ package org.triplea.web.socket;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -56,12 +55,7 @@ public class WebSocketMessagingBus {
   }
 
   public <X extends WebSocketMessage> void broadcastMessage(final X broadcastMessage) {
-    broadcastMessage(sessionSet.getSessions(), broadcastMessage);
-  }
-
-  public <X extends WebSocketMessage> void broadcastMessage(
-      final Collection<Session> sessions, final X broadcastMessage) {
-    messageBroadcaster.accept(sessions, broadcastMessage.toEnvelope());
+    messageBroadcaster.accept(sessionSet.getSessions(), broadcastMessage.toEnvelope());
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})

@@ -64,7 +64,7 @@ class RemoteActionsModuleTest {
   }
 
   @Nested
-  class AddIpForShutdown {
+  class AddGameIdforShutdown {
     @Test
     void addGameIdforShutdown() {
       remoteActionsModule.addGameIdForShutdown(MODERATOR_ID, "game-id");
@@ -78,7 +78,7 @@ class RemoteActionsModuleTest {
           is(
               AuditArgs.builder()
                   .actionName(AuditAction.REMOTE_SHUTDOWN)
-                  .actionTarget(IP)
+                  .actionTarget("game-id")
                   .moderatorUserId(MODERATOR_ID)
                   .build()));
     }
