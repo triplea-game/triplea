@@ -1,9 +1,12 @@
 package org.triplea.modules.moderation.ban.user;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
@@ -27,6 +30,7 @@ import org.triplea.web.socket.WebSocketMessagingBus;
  * address, they are removed by the 'public ban id' that is assigned when a ban is issued.
  */
 @Slf4j
+@AllArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
 public class UserBanService {
 
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;

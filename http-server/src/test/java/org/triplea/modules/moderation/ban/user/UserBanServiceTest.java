@@ -134,48 +134,45 @@ class UserBanServiceTest {
     }
   }
 
-  @Nested
-  final class BanUserTest {
-    @Test
-    void banUserFailureCase() {
-      givenBanDaoUpdateCount(0);
+  @Test
+  void banUserFailureCase() {
+    givenBanDaoUpdateCount(0);
 
-      assertThrows(
-          IllegalStateException.class,
-          () -> bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS));
-    }
+    assertThrows(
+        IllegalStateException.class,
+        () -> bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS));
+  }
 
-    private void givenBanDaoUpdateCount(final int updateCount) {
-      when(publicIdSupplier.get()).thenReturn(BAN_ID);
-      when(userBanDao.addBan(
-              BAN_ID,
-              USER_BAN_PARAMS.getUsername(),
-              USER_BAN_PARAMS.getSystemId(),
-              USER_BAN_PARAMS.getIp(),
-              USER_BAN_PARAMS.getMinutesToBan()))
-          .thenReturn(updateCount);
-    }
+  private void givenBanDaoUpdateCount(final int updateCount) {
+    when(publicIdSupplier.get()).thenReturn(BAN_ID);
+    when(userBanDao.addBan(
+            BAN_ID,
+            USER_BAN_PARAMS.getUsername(),
+            USER_BAN_PARAMS.getSystemId(),
+            USER_BAN_PARAMS.getIp(),
+            USER_BAN_PARAMS.getMinutesToBan()))
+        .thenReturn(updateCount);
+  }
 
-    @Test
-    void banUserSuccessCase() {
-      givenBanDaoUpdateCount(1);
-      when(chatters.disconnectPlayerSessions(
-              eq(UserName.of(USER_BAN_PARAMS.getUsername())), anyString()))
-          .thenReturn(true);
+  @Test
+  void banUserSuccessCase() {
+    givenBanDaoUpdateCount(1);
+    when(chatters.disconnectPlayerSessions(
+            eq(UserName.of(USER_BAN_PARAMS.getUsername())), anyString()))
+        .thenReturn(true);
 
-      bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS);
-      verify(moderatorAuditHistoryDao)
-          .addAuditRecord(
-              ModeratorAuditHistoryDao.AuditArgs.builder()
-                  .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
-                  .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getMinutesToBan() + " hours")
-                  .moderatorUserId(MODERATOR_ID)
-                  .build());
+    bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS);
+    verify(moderatorAuditHistoryDao)
+        .addAuditRecord(
+            ModeratorAuditHistoryDao.AuditArgs.builder()
+                .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
+                .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getMinutesToBan() + " hours")
+                .moderatorUserId(MODERATOR_ID)
+                .build());
 
-      verify(chatters)
-          .disconnectPlayerSessions(eq(UserName.of(USER_BAN_PARAMS.getUsername())), any());
-      verify(chatMessagingBus).broadcastMessage(any());
-      verify(gameMessagingBus).broadcastMessage(any());
-    }
+    verify(chatters)
+        .disconnectPlayerSessions(eq(UserName.of(USER_BAN_PARAMS.getUsername())), any());
+    verify(chatMessagingBus).broadcastMessage(any());
+    verify(gameMessagingBus).broadcastMessage(any());
   }
 }

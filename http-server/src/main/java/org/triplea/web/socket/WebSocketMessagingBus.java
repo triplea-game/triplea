@@ -5,9 +5,12 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.websocket.Session;
 import lombok.AccessLevel;
@@ -70,31 +73,45 @@ public class WebSocketMessagingBus {
   void onMessage(final Session session, final String message) {
     final MessageEnvelope envelope = GSON.fromJson(message, MessageEnvelope.class);
 
-    messageListeners.stream()
-        .filter(
-            messageListener ->
-                messageListener.messageType.getMessageTypeId().equals(envelope.getMessageTypeId()))
-        .map(messageListener -> messageListener.messageType)
-        .findAny()
+    determineMatchingMessageType(envelope)
         .ifPresent(
             messageType -> {
-              final WebSocketMessage payload = envelope.getPayload(messageType.getPayloadType());
-              messageListeners.stream()
-                  .filter(
-                      messageListener ->
-                          messageListener
-                              .messageType
-                              .getMessageTypeId()
-                              .equals(envelope.getMessageTypeId()))
+              final var webSocketMessageContext = buildWebSocketMessageContext(envelope, session);
+
+              getListenersForMessageTypeId(envelope.getMessageTypeId())
                   .forEach(
-                      messageListener ->
-                          messageListener.listener.accept(
-                              WebSocketMessageContext.builder()
-                                  .messagingBus(this)
-                                  .senderSession(session)
-                                  .message(payload)
-                                  .build()));
+                      messageListener -> messageListener.listener.accept(webSocketMessageContext));
             });
+  }
+
+  private Optional<MessageType<?>> determineMatchingMessageType(final MessageEnvelope envelope) {
+    return messageListeners.stream()
+        .filter(matchListenersWithMessageTypeId(envelope.getMessageTypeId()))
+        .findAny()
+        .map(messageListener -> messageListener.messageType);
+  }
+
+  private static Predicate<MessageListener<?>> matchListenersWithMessageTypeId(
+      final String messageTypeId) {
+    return messageListener -> messageListener.messageType.getMessageTypeId().equals(messageTypeId);
+  }
+
+  @SuppressWarnings("rawtypes")
+  private WebSocketMessageContext buildWebSocketMessageContext(
+      final MessageEnvelope envelope, final Session session) {
+    final WebSocketMessage payload = envelope.getPayload(messageType.getPayloadType());
+    return WebSocketMessageContext.builder()
+        .messagingBus(this)
+        .senderSession(session)
+        .message(payload)
+        .build();
+  }
+
+  private Stream<MessageListener<?>> getListenersForMessageTypeId(final String messageTypeId) {
+    return messageListeners.stream()
+        .filter(
+            messageListener ->
+                messageListener.messageType.getMessageTypeId().equals(messageTypeId));
   }
 
   public void addSessionDisconnectListener(
