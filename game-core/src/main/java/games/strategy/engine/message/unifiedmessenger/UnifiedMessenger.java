@@ -298,9 +298,11 @@ public class UnifiedMessenger {
               } else {
                 result =
                     new RemoteMethodCallResults(
-                        new IllegalStateException("Invalid result count" + results.size())
-                            + " for end point:"
-                            + localFinal);
+                        new IllegalStateException(
+                            "Invalid result count"
+                                + results.size()
+                                + " for end point:"
+                                + localFinal));
               }
               send(new HubInvocationResults(result, invoke.methodCallId), from);
             }
