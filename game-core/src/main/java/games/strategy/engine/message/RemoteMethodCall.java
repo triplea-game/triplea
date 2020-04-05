@@ -1,7 +1,6 @@
 package games.strategy.engine.message;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -96,11 +95,12 @@ public class RemoteMethodCall implements Externalizable {
   }
 
   private static String[] classesToString(final Class<?>[] classes, final Object[] args) {
-    Preconditions.checkArgument(
-        args == null || classes.length == args.length,
-        "Classes and args arrays diff in length: %s, %s",
-        Arrays.toString(classes),
-        Arrays.toString(args));
+    if (args != null && classes.length != args.length) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Classes and args arrays diff in length: %s, %s",
+              Arrays.toString(classes), Arrays.toString(args)));
+    }
     // as an optimization, if args[i].getClass == classes[i] then leave classes[i] as null
     // this will reduce the amount of info we write over the network in the common
     // case where the object is the same type as its arg
