@@ -3,11 +3,11 @@ package org.triplea.web.socket;
 import javax.annotation.Nonnull;
 import javax.websocket.Session;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 @Builder
-@Value
+@Getter
 public class WebSocketMessageContext<T extends WebSocketMessage> {
   @Nonnull WebSocketMessagingBus messagingBus;
   @Nonnull Session senderSession;

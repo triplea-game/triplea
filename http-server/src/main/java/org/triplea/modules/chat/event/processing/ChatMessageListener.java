@@ -23,10 +23,8 @@ public class ChatMessageListener implements Consumer<WebSocketMessageContext<Cha
   private static void broadcastChatMessage(
       final WebSocketMessageContext<ChatSentMessage> messageContext, final ChatParticipant sender) {
 
-    messageContext
-        .getMessagingBus()
-        .broadcastMessage(
-            new ChatReceivedMessage(
-                sender.getUserName(), messageContext.getMessage().getChatMessage()));
+    messageContext.broadcastMessage(
+        new ChatReceivedMessage(
+            sender.getUserName(), messageContext.getMessage().getChatMessage()));
   }
 }
