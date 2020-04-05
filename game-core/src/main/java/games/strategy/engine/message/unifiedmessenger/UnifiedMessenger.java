@@ -186,13 +186,13 @@ public class UnifiedMessenger {
               + name
               + ", messenger addr: "
               + super.toString());
-      return endPoint.getFirstImplementor();
+      return endPoint.getOnlyImplementor();
     }
   }
 
   public boolean hasImplementor(final String name) {
     return localEndPoints.get(name) != null
-        && localEndPoints.get(name).getFirstImplementor() != null;
+        && localEndPoints.get(name).getOnlyImplementor() != null;
   }
 
   /** Removes the specified implementor for the end point with the specified name. */

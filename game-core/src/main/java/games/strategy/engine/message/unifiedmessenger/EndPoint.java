@@ -37,7 +37,11 @@ class EndPoint {
     this.singleThreaded = singleThreaded;
   }
 
-  public Object getFirstImplementor() {
+  /**
+   * Returns the implementor if this class only holds a single implementor.
+   * @throws IllegalStateException If this class has less or more than 1 implementor.
+   */
+  public Object getOnlyImplementor() {
     if (implementors.size() != 1) {
       throw new IllegalStateException("Invalid implementor count, " + implementors);
     }
