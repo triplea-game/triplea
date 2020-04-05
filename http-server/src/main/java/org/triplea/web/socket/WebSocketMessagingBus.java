@@ -76,11 +76,17 @@ public class WebSocketMessagingBus {
     determineMatchingMessageType(envelope)
         .ifPresent(
             messageType -> {
-              final var webSocketMessageContext = buildWebSocketMessageContext(envelope, session);
+              final WebSocketMessage payload = envelope.getPayload(messageType.getPayloadType());
 
               getListenersForMessageTypeId(envelope.getMessageTypeId())
                   .forEach(
-                      messageListener -> messageListener.listener.accept(webSocketMessageContext));
+                      messageListener ->
+                          messageListener.listener.accept(
+                              WebSocketMessageContext.builder()
+                                  .messagingBus(this)
+                                  .senderSession(session)
+                                  .message(payload)
+                                  .build()));
             });
   }
 
@@ -94,17 +100,6 @@ public class WebSocketMessagingBus {
   private static Predicate<MessageListener<?>> matchListenersWithMessageTypeId(
       final String messageTypeId) {
     return messageListener -> messageListener.messageType.getMessageTypeId().equals(messageTypeId);
-  }
-
-  @SuppressWarnings("rawtypes")
-  private WebSocketMessageContext buildWebSocketMessageContext(
-      final MessageEnvelope envelope, final Session session) {
-    final WebSocketMessage payload = envelope.getPayload(messageType.getPayloadType());
-    return WebSocketMessageContext.builder()
-        .messagingBus(this)
-        .senderSession(session)
-        .message(payload)
-        .build();
   }
 
   private Stream<MessageListener<?>> getListenersForMessageTypeId(final String messageTypeId) {
