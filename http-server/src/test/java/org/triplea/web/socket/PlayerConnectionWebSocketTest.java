@@ -27,7 +27,7 @@ class PlayerConnectionWebSocketTest {
 
   @Test
   void onOpen() {
-    playerConnectionWebSocket.open(session);
+    playerConnectionWebSocket.onOpen(session);
 
     verify(webSocketMessagingBus).onOpen(session);
   }
