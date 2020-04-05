@@ -191,34 +191,47 @@ public class LobbyLogin {
 
   private Optional<PlayerToLobbyConnection> createAccount(final CreateAccountPanel panel) {
     try {
-      final CreateAccountResponse createAccountResponse =
-          BackgroundTaskRunner.runInBackgroundAndReturn(
-              "Creating account...",
-              () ->
-                  lobbyLoginClient.createAccount(
-                      panel.getUsername(), panel.getEmail(), panel.getPassword()));
+      final CreateAccountResponse createAccountResponse = sendCreateAccountRequest(panel);
       if (!createAccountResponse.isSuccess()) {
         showError("Account Creation Failed", createAccountResponse.getErrorMessage());
         return Optional.empty();
       }
 
-      final LobbyLoginResponse loginResponse =
-          BackgroundTaskRunner.runInBackgroundAndReturn(
-              CONNECTING_TO_LOBBY,
-              () -> lobbyLoginClient.login(panel.getUsername(), panel.getPassword()));
-
+      final LobbyLoginResponse loginResponse = sendLoginRequest(panel);
       if (loginResponse.getFailReason() != null) {
         throw new LoginFailure(loginResponse.getFailReason());
       }
-      return Optional.of(
-          new PlayerToLobbyConnection(
-              serverProperties.getUri(),
-              ApiKey.of(loginResponse.getApiKey()),
-              error -> SwingComponents.showError(null, "Error communicating with lobby", error)));
+      return Optional.of(createPlayerToLobbyConnect(loginResponse));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();
     }
+  }
+
+  private CreateAccountResponse sendCreateAccountRequest(final CreateAccountPanel panel)
+      throws InterruptedException {
+    return BackgroundTaskRunner.runInBackgroundAndReturn(
+        "Creating account...",
+        () ->
+            lobbyLoginClient.createAccount(
+                panel.getUsername(), panel.getEmail(), panel.getPassword()));
+  }
+
+  private LobbyLoginResponse sendLoginRequest(final CreateAccountPanel panel)
+      throws InterruptedException {
+    return BackgroundTaskRunner.runInBackgroundAndReturn(
+        CONNECTING_TO_LOBBY,
+        () -> lobbyLoginClient.login(panel.getUsername(), panel.getPassword()));
+  }
+
+  private PlayerToLobbyConnection createPlayerToLobbyConnect(
+      final LobbyLoginResponse loginResponse) {
+    return PlayerToLobbyConnection.builder()
+        .lobbyUri(serverProperties.getUri())
+        .apiKey(ApiKey.of(loginResponse.getApiKey()))
+        .errorHandler(
+            error -> SwingComponents.showError(null, "Error communicating with lobby", error))
+        .build();
   }
 
   private static class LoginFailure extends RuntimeException {

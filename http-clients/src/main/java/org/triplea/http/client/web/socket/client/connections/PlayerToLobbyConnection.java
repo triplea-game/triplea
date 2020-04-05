@@ -3,6 +3,8 @@ package org.triplea.http.client.web.socket.client.connections;
 import java.net.URI;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import lombok.Builder;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
@@ -33,8 +35,11 @@ public class PlayerToLobbyConnection {
   private GameListingClient gameListingClient;
   private WebSocket webSocket;
 
+  @Builder
   public PlayerToLobbyConnection(
-      final URI lobbyUri, final ApiKey apiKey, final Consumer<String> errorHandler) {
+      @Nonnull final URI lobbyUri,
+      @Nonnull final ApiKey apiKey,
+      @Nonnull final Consumer<String> errorHandler) {
     httpLobbyClient = HttpLobbyClient.newClient(lobbyUri, apiKey);
     webSocket =
         GenericWebSocketClient.builder()
