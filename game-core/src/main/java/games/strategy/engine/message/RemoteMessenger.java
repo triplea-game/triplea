@@ -40,7 +40,7 @@ public class RemoteMessenger implements IRemoteMessenger {
 
   @Override
   public void unregisterRemote(final String name) {
-    if (unifiedMessenger.hasImplementor(name)) {
+    if (unifiedMessenger.hasSingleImplementor(name)) {
       unifiedMessenger.removeImplementor(name, unifiedMessenger.getImplementor(name));
     }
   }
@@ -52,7 +52,7 @@ public class RemoteMessenger implements IRemoteMessenger {
 
   @Override
   public boolean hasLocalImplementor(final RemoteName descriptor) {
-    return unifiedMessenger.getLocalEndPointCount(descriptor) == 1;
+    return unifiedMessenger.hasSingleImplementor(descriptor.getName());
   }
 
   @Override

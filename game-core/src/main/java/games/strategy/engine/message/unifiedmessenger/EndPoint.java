@@ -39,10 +39,11 @@ class EndPoint {
 
   /**
    * Returns the implementor if this class only holds a single implementor.
+   *
    * @throws IllegalStateException If this class has less or more than 1 implementor.
    */
   public Object getOnlyImplementor() {
-    if (implementors.size() != 1) {
+    if (!hasSingleImplementor()) {
       throw new IllegalStateException("Invalid implementor count, " + implementors);
     }
     return implementors.iterator().next();
@@ -80,8 +81,8 @@ class EndPoint {
     implementors.add(implementor);
   }
 
-  public int getLocalImplementorCount() {
-    return implementors.size();
+  public boolean hasSingleImplementor() {
+    return implementors.size() == 1;
   }
 
   /**
