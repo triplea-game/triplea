@@ -23,12 +23,10 @@ public class SlapListener implements Consumer<WebSocketMessageContext<PlayerSlap
       final WebSocketMessageContext<PlayerSlapSentMessage> messageContext,
       final ChatParticipant slapper) {
 
-    messageContext
-        .getMessagingBus()
-        .broadcastMessage(
-            PlayerSlapReceivedMessage.builder()
-                .slappingPlayer(slapper.getUserName().getValue())
-                .slappedPlayer(messageContext.getMessage().getSlappedPlayer())
-                .build());
+    messageContext.broadcastMessage(
+        PlayerSlapReceivedMessage.builder()
+            .slappingPlayer(slapper.getUserName().getValue())
+            .slappedPlayer(messageContext.getMessage().getSlappedPlayer())
+            .build());
   }
 }
