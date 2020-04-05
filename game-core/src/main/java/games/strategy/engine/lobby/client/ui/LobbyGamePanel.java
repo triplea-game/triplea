@@ -5,7 +5,6 @@ import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
-import java.net.InetAddress;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -234,8 +233,8 @@ class LobbyGamePanel extends JPanel {
       return;
     }
 
-    final InetAddress ipAddress = gameTableModel.get(selectedIndex).getHostedBy().getAddress();
-    lobbyClient.getPlayerToLobbyConnection().sendShutdownRequest(ipAddress);
+    final String gameId = gameTableModel.getGameIdForRow(selectedIndex);
+    lobbyClient.getPlayerToLobbyConnection().sendShutdownRequest(gameId);
     JOptionPane.showMessageDialog(null, "The game you selected was sent a shutdown signal");
   }
 }

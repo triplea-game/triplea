@@ -8,15 +8,12 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
-import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 
 /**
  * chat logic.
@@ -46,7 +43,7 @@ public class Chat implements ChatClient {
 
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   @Getter private final UserName localUserName;
-  private final Collection<Consumer<StatusUpdate>> statusUpdateListeners = new ArrayList<>();
+  private final Collection<BiConsumer<UserName, String>> statusUpdateListeners = new ArrayList<>();
 
   public Chat(final ChatTransmitter chatTransmitter) {
     this.localUserName = chatTransmitter.getLocalUserName();
@@ -67,18 +64,18 @@ public class Chat implements ChatClient {
   }
 
   @Override
-  public void connected(final ChatterList chatters) {
-    this.chatters.addAll(chatters.getChatters());
+  public void connected(final List<ChatParticipant> chatters) {
+    this.chatters.addAll(chatters);
     updateConnections();
   }
 
   @Override
-  public void messageReceived(final ChatMessage chatMessage) {
-    if (isIgnored(chatMessage.getFrom())) {
+  public void messageReceived(final UserName sender, final String message) {
+    if (isIgnored(sender)) {
       return;
     }
-    chatHistory.add(chatMessage);
-    chatMessageListeners.forEach(listener -> listener.messageReceived(chatMessage));
+    chatHistory.add(new ChatMessage(sender, message));
+    chatMessageListeners.forEach(listener -> listener.messageReceived(sender, message));
   }
 
   @Override
@@ -110,28 +107,18 @@ public class Chat implements ChatClient {
 
   @Override
   public void slappedBy(final UserName from) {
-    final String message = "You were slapped by " + from;
-    chatHistory.add(new ChatMessage(from, message));
-    chatMessageListeners.forEach(listener -> listener.slapped(message, from));
+    chatMessageListeners.forEach(listener -> listener.slapped(from));
   }
 
   @Override
-  public void playerSlapped(final String eventMessage) {
-    chatMessageListeners.forEach(listener -> listener.slap(eventMessage));
-  }
-
-  @Override
-  public void statusUpdated(final StatusUpdate statusUpdate) {
+  public void statusUpdated(final UserName userName, final String status) {
     chatters.stream()
-        .filter(chatter -> chatter.getUserName().equals(statusUpdate.getUserName()))
+        .filter(chatter -> chatter.getUserName().equals(userName))
         .findAny()
         .ifPresent(
             node -> {
-              chatters.stream()
-                  .filter(chatter -> chatter.getUserName().equals(statusUpdate.getUserName()))
-                  .findAny()
-                  .ifPresent(chatter -> chatter.setStatus(statusUpdate.getStatus()));
-              statusUpdateListeners.forEach(l -> l.accept(statusUpdate));
+              node.setStatus(status);
+              statusUpdateListeners.forEach(l -> l.accept(userName, status));
             });
   }
 
@@ -156,7 +143,7 @@ public class Chat implements ChatClient {
     chatMessageListeners.add(listener);
   }
 
-  void addStatusUpdateListener(final Consumer<StatusUpdate> statusUpdateListener) {
+  void addStatusUpdateListener(final BiConsumer<UserName, String> statusUpdateListener) {
     statusUpdateListeners.add(statusUpdateListener);
   }
 
@@ -168,7 +155,7 @@ public class Chat implements ChatClient {
     chatPlayerListeners.remove(listener);
   }
 
-  void removeStatusUpdateListener(final Consumer<StatusUpdate> statusUpdateListener) {
+  void removeStatusUpdateListener(final BiConsumer<UserName, String> statusUpdateListener) {
     statusUpdateListeners.remove(statusUpdateListener);
   }
 

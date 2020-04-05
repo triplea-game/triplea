@@ -18,7 +18,8 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
-import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.chat.Chatters;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @RolesAllowed(UserRole.MODERATOR)
@@ -26,8 +27,10 @@ public class DisconnectUserController extends HttpController {
 
   private final DisconnectUserAction disconnectUserAction;
 
-  public static DisconnectUserController build(final Jdbi jdbi, final Chatters chatters) {
-    return new DisconnectUserController(DisconnectUserAction.build(jdbi, chatters));
+  public static DisconnectUserController build(
+      final Jdbi jdbi, final Chatters chatters, final WebSocketMessagingBus playerConnections) {
+    return new DisconnectUserController(
+        DisconnectUserAction.build(jdbi, chatters, playerConnections));
   }
 
   @POST

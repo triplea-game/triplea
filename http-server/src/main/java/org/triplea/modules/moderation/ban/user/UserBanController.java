@@ -21,8 +21,8 @@ import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
-import org.triplea.modules.chat.event.processing.Chatters;
-import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueue;
+import org.triplea.modules.chat.Chatters;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 /** Controller for endpoints to manage user bans, to be used by moderators. */
 @Builder
@@ -33,9 +33,16 @@ public class UserBanController extends HttpController {
   public static UserBanController build(
       final Jdbi jdbi,
       final Chatters chatters,
-      final RemoteActionsEventQueue remoteActionsEventQueue) {
+      final WebSocketMessagingBus chatMessagingBus,
+      final WebSocketMessagingBus gameMessagingBus) {
     return UserBanController.builder()
-        .bannedUsersService(UserBanService.build(jdbi, chatters, remoteActionsEventQueue))
+        .bannedUsersService(
+            UserBanService.builder()
+                .jdbi(jdbi)
+                .chatters(chatters)
+                .chatMessagingBus(chatMessagingBus)
+                .gameMessagingBus(gameMessagingBus)
+                .build())
         .build();
   }
 
@@ -67,9 +74,8 @@ public class UserBanController extends HttpController {
     Preconditions.checkArgument(banUserParams.getUsername() != null);
     Preconditions.checkArgument(banUserParams.getMinutesToBan() > 0);
 
-    final boolean banned =
-        bannedUsersService.banUser(authenticatedUser.getUserIdOrThrow(), banUserParams);
-    return Response.status(banned ? 200 : 400).build();
+    bannedUsersService.banUser(authenticatedUser.getUserIdOrThrow(), banUserParams);
+    return Response.ok().build();
   }
 
   @POST
@@ -83,8 +89,7 @@ public class UserBanController extends HttpController {
     Preconditions.checkNotNull(banPlayerRequest.getPlayerChatId());
     Preconditions.checkArgument(banPlayerRequest.getBanMinutes() > 0);
 
-    final boolean banned =
-        bannedUsersService.banUser(authenticatedUser.getUserIdOrThrow(), banPlayerRequest);
-    return Response.status(banned ? 200 : 400).build();
+    bannedUsersService.banUser(authenticatedUser.getUserIdOrThrow(), banPlayerRequest);
+    return Response.ok().build();
   }
 }

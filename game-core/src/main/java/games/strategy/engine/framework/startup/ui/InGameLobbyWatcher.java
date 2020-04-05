@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.SystemPropertyReader;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
-import games.strategy.engine.lobby.connection.GameToLobbyConnection;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -17,9 +16,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
 import org.triplea.lobby.common.GameDescription;
@@ -32,7 +33,7 @@ import org.triplea.lobby.common.GameDescription;
 @Log
 public class InGameLobbyWatcher {
   private boolean isShutdown = false;
-  private String gameId;
+  @Getter private String gameId;
   private GameSelectorModel gameSelectorModel;
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame game;
@@ -95,9 +96,7 @@ public class InGameLobbyWatcher {
     final INode publicNode =
         new Node(
             serverMessenger.getLocalNode().getName(),
-            SystemPropertyReader.customHost()
-                .orElseGet(
-                    () -> gameToLobbyConnection.getGameHostingResponse().getPublicVisibleIp()),
+            SystemPropertyReader.customHost().orElseGet(gameToLobbyConnection::getPublicVisibleIp),
             SystemPropertyReader.customPort()
                 .orElseGet(() -> serverMessenger.getLocalNode().getPort()));
 

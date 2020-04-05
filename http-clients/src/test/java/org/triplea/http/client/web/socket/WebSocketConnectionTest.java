@@ -157,9 +157,9 @@ class WebSocketConnectionTest {
 
       @Test
       @DisplayName("Verify connect initiates connection and starts the pinger")
-      void connectWillInitiateConnection() throws Exception {
+      void connectWillInitiateConnection() {
         webSocketConnection.setHttpClient(httpClient);
-        webSocketConnection.connectInternal(webSocketConnectionListener, errorHandler).get();
+        webSocketConnection.connect(webSocketConnectionListener, errorHandler);
 
         verify(httpClient.newWebSocketBuilder())
             .connectTimeout(Duration.ofMillis(WebSocketConnection.DEFAULT_CONNECT_TIMEOUT_MILLIS));
@@ -172,23 +172,6 @@ class WebSocketConnectionTest {
           "Pinger should be started on successful connection",
           webSocketConnection.getPingSender().isRunning(),
           is(true));
-    }
-
-    @Test
-    @DisplayName("Verify connect failing invokes error handler and pinger is not running")
-    void connectionFailure() throws Exception {
-      webSocketConnection.connectInternal(webSocketConnectionListener, errorHandler).get();
-
-      verifyPingerNotStarted();
-      verifyErrorHandlerWasCalled();
-    }
-
-    private void verifyPingerNotStarted() {
-      assertThat(webSocketConnection.getPingSender().isRunning(), is(false));
-    }
-
-    private void verifyErrorHandlerWasCalled() {
-      verify(errorHandler).accept(any());
     }
 
     @Test

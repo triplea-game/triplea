@@ -12,5 +12,5 @@ interface RemoteActionsFeignClient {
   boolean checkIfPlayerIsBanned(@HeaderMap Map<String, Object> headers, String bannedIp);
 
   @RequestLine("POST " + RemoteActionsClient.SEND_SHUTDOWN_PATH)
-  void sendShutdown(@HeaderMap Map<String, Object> headers, String ip);
+  void sendShutdown(@HeaderMap Map<String, Object> headers, String gameId);
 }

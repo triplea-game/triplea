@@ -19,6 +19,7 @@ import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.remote.actions.RemoteActionsClient;
 import org.triplea.java.ArgChecker;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 /**
  * Endpoints for moderators to use to issue remote action commands that affect game-hosts, eg:
@@ -29,9 +30,9 @@ public class RemoteActionsController extends HttpController {
   @Nonnull private final RemoteActionsModule remoteActionsModule;
 
   public static RemoteActionsController build(
-      final Jdbi jdbi, final RemoteActionsEventQueue remoteActionsEventQueue) {
+      final Jdbi jdbi, final WebSocketMessagingBus gameMessagingBus) {
     return RemoteActionsController.builder()
-        .remoteActionsModule(RemoteActionsModule.build(jdbi, remoteActionsEventQueue))
+        .remoteActionsModule(RemoteActionsModule.build(jdbi, gameMessagingBus))
         .build();
   }
 
@@ -39,11 +40,10 @@ public class RemoteActionsController extends HttpController {
   @Path(RemoteActionsClient.SEND_SHUTDOWN_PATH)
   @RolesAllowed(UserRole.MODERATOR)
   public Response sendShutdownSignal(
-      @Auth final AuthenticatedUser authenticatedUser, final String ip) {
-    Preconditions.checkArgument(IpAddressParser.isValid(ip));
+      @Auth final AuthenticatedUser authenticatedUser, final String gameId) {
+    Preconditions.checkNotNull(gameId);
 
-    remoteActionsModule.addIpForShutdown(
-        authenticatedUser.getUserIdOrThrow(), IpAddressParser.fromString(ip));
+    remoteActionsModule.addGameIdForShutdown(authenticatedUser.getUserIdOrThrow(), gameId);
     return Response.ok().build();
   }
 

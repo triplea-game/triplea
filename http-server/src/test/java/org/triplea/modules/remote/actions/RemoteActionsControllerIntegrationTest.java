@@ -20,9 +20,7 @@ class RemoteActionsControllerIntegrationTest extends ProtectedEndpointTest<Remot
   @Test
   @DataSet(cleanBefore = true, value = "integration.yml")
   void sendShutdownSignal() {
-    verifyEndpoint(
-        AllowedUserRole.MODERATOR,
-        client -> client.sendShutdownRequest(IpAddressParser.fromString("99.99.33.33")));
+    verifyEndpoint(AllowedUserRole.MODERATOR, client -> client.sendShutdownRequest("game-id"));
   }
 
   @Test

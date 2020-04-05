@@ -28,8 +28,7 @@ public class RemoteActionsClient {
     return remoteActionsFeignClient.checkIfPlayerIsBanned(headers, ipAddress.getHostAddress());
   }
 
-  // TODO: Project#12 wire this to moderator 'shutdown action'
-  public void sendShutdownRequest(final InetAddress ipAddress) {
-    remoteActionsFeignClient.sendShutdown(headers, ipAddress.getHostAddress());
+  public void sendShutdownRequest(final String gameId) {
+    remoteActionsFeignClient.sendShutdown(headers, gameId);
   }
 }

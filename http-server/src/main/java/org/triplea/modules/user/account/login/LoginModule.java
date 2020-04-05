@@ -16,7 +16,7 @@ import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
-import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.user.account.login.authorizer.anonymous.AnonymousLoginFactory;
 import org.triplea.modules.user.account.login.authorizer.registered.RegisteredLogin;
 import org.triplea.modules.user.account.login.authorizer.temp.password.TempPasswordLogin;

@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -13,7 +12,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
-import org.triplea.http.client.lobby.game.listing.messages.GameListingListeners;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
+import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.LobbyGameUpdateListener;
 
@@ -55,11 +56,17 @@ class LobbyGameTableModel extends AbstractTableModel {
     this.admin = admin;
     this.playerToLobbyConnection = playerToLobbyConnection;
 
-    playerToLobbyConnection.addGameListingListener(
-        GameListingListeners.builder()
-            .gameUpdated(lobbyGameBroadcaster::gameUpdated)
-            .gameRemoved(lobbyGameBroadcaster::gameRemoved)
-            .build());
+    playerToLobbyConnection.addMessageListener(
+        LobbyGameUpdatedMessage.TYPE,
+        lobbyGameUpdatedMessage ->
+            lobbyGameBroadcaster.gameUpdated(lobbyGameUpdatedMessage.getLobbyGameListing()));
+
+    playerToLobbyConnection.addMessageListener(
+        LobbyGameRemovedMessage.TYPE,
+        lobbyGameRemovedMessage ->
+            lobbyGameBroadcaster.gameRemoved(lobbyGameRemovedMessage.getGameId()));
+
+    playerToLobbyConnection.fetchGameListing().forEach(lobbyGameBroadcaster::gameUpdated);
   }
 
   private void removeGame(final String gameId) {

@@ -6,7 +6,6 @@ import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.triplea.UrlConstants;
 import java.awt.Window;
 import java.io.IOException;
@@ -21,6 +20,7 @@ import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.live.servers.ServerProperties;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
@@ -122,7 +122,11 @@ public class LobbyLogin {
             LobbyClient.builder()
                 .playerToLobbyConnection(
                     new PlayerToLobbyConnection(
-                        serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())))
+                        serverProperties.getUri(),
+                        ApiKey.of(loginResponse.getApiKey()),
+                        error ->
+                            SwingComponents.showError(
+                                null, "Error communicating with lobby", error)))
                 .anonymousLogin(Strings.nullToEmpty(panel.getPassword()).isEmpty())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
                 .moderator(loginResponse.isModerator())
@@ -187,32 +191,47 @@ public class LobbyLogin {
 
   private Optional<PlayerToLobbyConnection> createAccount(final CreateAccountPanel panel) {
     try {
-      final CreateAccountResponse createAccountResponse =
-          BackgroundTaskRunner.runInBackgroundAndReturn(
-              "Creating account...",
-              () ->
-                  lobbyLoginClient.createAccount(
-                      panel.getUsername(), panel.getEmail(), panel.getPassword()));
+      final CreateAccountResponse createAccountResponse = sendCreateAccountRequest(panel);
       if (!createAccountResponse.isSuccess()) {
         showError("Account Creation Failed", createAccountResponse.getErrorMessage());
         return Optional.empty();
       }
 
-      final LobbyLoginResponse loginResponse =
-          BackgroundTaskRunner.runInBackgroundAndReturn(
-              CONNECTING_TO_LOBBY,
-              () -> lobbyLoginClient.login(panel.getUsername(), panel.getPassword()));
-
+      final LobbyLoginResponse loginResponse = sendLoginRequest(panel);
       if (loginResponse.getFailReason() != null) {
         throw new LoginFailure(loginResponse.getFailReason());
       }
-      return Optional.of(
-          new PlayerToLobbyConnection(
-              serverProperties.getUri(), ApiKey.of(loginResponse.getApiKey())));
+      return Optional.of(createPlayerToLobbyConnect(loginResponse));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       return Optional.empty();
     }
+  }
+
+  private CreateAccountResponse sendCreateAccountRequest(final CreateAccountPanel panel)
+      throws InterruptedException {
+    return BackgroundTaskRunner.runInBackgroundAndReturn(
+        "Creating account...",
+        () ->
+            lobbyLoginClient.createAccount(
+                panel.getUsername(), panel.getEmail(), panel.getPassword()));
+  }
+
+  private LobbyLoginResponse sendLoginRequest(final CreateAccountPanel panel)
+      throws InterruptedException {
+    return BackgroundTaskRunner.runInBackgroundAndReturn(
+        CONNECTING_TO_LOBBY,
+        () -> lobbyLoginClient.login(panel.getUsername(), panel.getPassword()));
+  }
+
+  private PlayerToLobbyConnection createPlayerToLobbyConnect(
+      final LobbyLoginResponse loginResponse) {
+    return PlayerToLobbyConnection.builder()
+        .lobbyUri(serverProperties.getUri())
+        .apiKey(ApiKey.of(loginResponse.getApiKey()))
+        .errorHandler(
+            error -> SwingComponents.showError(null, "Error communicating with lobby", error))
+        .build();
   }
 
   private static class LoginFailure extends RuntimeException {

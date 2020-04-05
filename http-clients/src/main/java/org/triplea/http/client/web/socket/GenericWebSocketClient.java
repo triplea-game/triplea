@@ -1,15 +1,20 @@
 package org.triplea.http.client.web.socket;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
-import org.triplea.http.client.web.socket.messages.ClientMessageEnvelope;
-import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
+import java.util.function.Function;
+import javax.annotation.Nonnull;
+import lombok.Builder;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
+import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
 
 /**
  * A generic client class for creating websocket connections to a server. This client is based
@@ -19,67 +24,96 @@ import org.triplea.http.client.web.socket.messages.ServerMessageEnvelope;
  * API, and it automatically converts incoming and outgoing messages to JSON string. In particular
  * this class makes sure that all operations are non-blocking, but keep their initial dispatch
  * order.
+ *
+ * <p>Note: The error handler passed in is invoked if we get an error connecting to server, or if
+ * server sends us an error message.
  */
-@Log
-public class GenericWebSocketClient implements WebSocketConnectionListener {
+public class GenericWebSocketClient implements WebSocket, WebSocketConnectionListener {
   private static final Gson gson = new Gson();
 
-  private final WebSocketConnection client;
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Runnable> connectionClosedListeners = new ArrayList<>();
 
+  private final URI websocketUri;
   private final Consumer<String> errorHandler;
-  private Consumer<ServerMessageEnvelope> messageListener;
+  private final Function<URI, WebSocketConnection> webSocketConnectionFactory;
 
-  public GenericWebSocketClient(final URI lobbyUri, final Consumer<String> errorHandler) {
-    this(new WebSocketConnection(swapHttpToWsProtocol(lobbyUri)), errorHandler);
+  private WebSocketConnection webSocketConnection;
+  private final Set<MessageListener<? extends WebSocketMessage>> listeners = new HashSet<>();
+
+  @Builder
+  private static class MessageListener<T extends WebSocketMessage> {
+    @Nonnull MessageType<T> messageType;
+    @Nonnull Consumer<Object> listener;
+  }
+
+  @Builder
+  public GenericWebSocketClient(
+      @Nonnull final URI websocketUri, @Nonnull final Consumer<String> errorHandler) {
+    this(
+        new WebSocketProtocolSwapper().apply(websocketUri), errorHandler, WebSocketConnection::new);
   }
 
   @VisibleForTesting
   GenericWebSocketClient(
-      final WebSocketConnection webSocketClient, final Consumer<String> errorHandler) {
-    client = webSocketClient;
+      final URI websocketUri,
+      final Consumer<String> errorHandler,
+      final Function<URI, WebSocketConnection> webSocketConnectionFactory) {
+    Preconditions.checkArgument(
+        websocketUri.getScheme().equals("ws") || websocketUri.getScheme().equals("wss"),
+        "Websocket URI scheme must be either ws or wss, but was: " + websocketUri);
+
+    this.websocketUri = websocketUri;
     this.errorHandler = errorHandler;
+    this.webSocketConnectionFactory = webSocketConnectionFactory;
   }
 
-  @VisibleForTesting
-  static URI swapHttpToWsProtocol(final URI uri) {
-    return uri.getScheme().matches("^https?$")
-        ? URI.create(uri.toString().replaceFirst("^http", "ws"))
-        : uri;
+  @Override
+  public void connect() {
+    addListener(ServerErrorMessage.TYPE, message -> errorHandler.accept(message.getError()));
+    webSocketConnection = webSocketConnectionFactory.apply(websocketUri);
+    webSocketConnection.connect(this, errorHandler);
   }
 
-  public void registerListenerAndConnect(final Consumer<ServerMessageEnvelope> messageListener) {
-    this.messageListener = messageListener;
-    client.connect(this, errorHandler);
-  }
-
-  /**
-   * Non-blocking send of a message to the server. Implementation note: data is sent as a JSON
-   * string, this method handles conversion of the parameter object to JSON.
-   *
-   * @param message The data object to send to the server.
-   */
-  public void send(final ClientMessageEnvelope message) {
-    // we get by doing the send on a new thread.
-    client.sendMessage(gson.toJson(message));
-  }
-
-  /**
-   * Removes connection lost listeners and starts a non-blocking close of the websocket connection.
-   */
+  /** Starts a non-blocking close of the websocket connection. */
+  @Override
   public void close() {
-    client.close();
+    webSocketConnection.close();
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends WebSocketMessage> void addListener(
+      final MessageType<T> messageType, final Consumer<T> messageHandler) {
+
+    final Consumer<Object> messageConsumer = object -> messageHandler.accept((T) object);
+    listeners.add(
+        MessageListener.<T>builder() //
+            .messageType(messageType)
+            .listener(messageConsumer)
+            .build());
+  }
+
+  @Override
+  public void sendMessage(final WebSocketMessage message) {
+    webSocketConnection.sendMessage(gson.toJson(message.toEnvelope()));
+  }
+
+  @Override
   public void addConnectionClosedListener(final Runnable connectionClosedListener) {
     connectionClosedListeners.add(connectionClosedListener);
   }
 
   @Override
   public void messageReceived(final String message) {
-    final ServerMessageEnvelope converted = gson.fromJson(message, ServerMessageEnvelope.class);
-    messageListener.accept(converted);
+    final MessageEnvelope converted = gson.fromJson(message, MessageEnvelope.class);
+
+    listeners.stream()
+        .filter(listener -> converted.messageTypeIs(listener.messageType))
+        .forEach(
+            listener ->
+                listener.listener.accept(
+                    converted.getPayload(listener.messageType.getPayloadType())));
   }
 
   @Override
@@ -88,7 +122,7 @@ public class GenericWebSocketClient implements WebSocketConnectionListener {
   }
 
   @Override
-  public void handleError(final Throwable error) {
-    log.log(Level.SEVERE, "Websocket error", error);
+  public void handleError(final Throwable exception) {
+    errorHandler.accept(exception.getMessage());
   }
 }

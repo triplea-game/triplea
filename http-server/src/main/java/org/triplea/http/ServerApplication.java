@@ -19,7 +19,6 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
 import java.time.Duration;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.server.ServerEndpointConfig;
@@ -35,31 +34,28 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.access.authorization.BannedPlayerFilter;
 import org.triplea.modules.access.authorization.RoleAuthorizer;
 import org.triplea.modules.chat.ChatMessagingService;
-import org.triplea.modules.chat.event.processing.Chatters;
+import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.error.reporting.ErrorReportController;
 import org.triplea.modules.forgot.password.ForgotPasswordController;
 import org.triplea.modules.game.ConnectivityController;
 import org.triplea.modules.game.hosting.GameHostingController;
 import org.triplea.modules.game.listing.GameListing;
 import org.triplea.modules.game.listing.GameListingController;
-import org.triplea.modules.game.listing.GameListingEventQueue;
 import org.triplea.modules.game.listing.LobbyWatcherController;
 import org.triplea.modules.moderation.access.log.AccessLogController;
 import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryController;
 import org.triplea.modules.moderation.bad.words.BadWordsController;
 import org.triplea.modules.moderation.ban.name.UsernameBanController;
-import org.triplea.modules.moderation.ban.user.BannedPlayerEventHandler;
 import org.triplea.modules.moderation.ban.user.UserBanController;
 import org.triplea.modules.moderation.disconnect.user.DisconnectUserController;
 import org.triplea.modules.moderation.moderators.ModeratorsController;
 import org.triplea.modules.moderation.remote.actions.RemoteActionsController;
-import org.triplea.modules.moderation.remote.actions.RemoteActionsEventQueue;
 import org.triplea.modules.user.account.create.CreateAccountController;
 import org.triplea.modules.user.account.login.LoginController;
 import org.triplea.modules.user.account.update.UpdateAccountController;
-import org.triplea.web.socket.SessionSet;
-import org.triplea.web.socket.connections.GameConnectionWebSocket;
-import org.triplea.web.socket.connections.PlayerConnectionWebSocket;
+import org.triplea.web.socket.GameConnectionWebSocket;
+import org.triplea.web.socket.PlayerConnectionWebSocket;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 /**
  * Main entry-point for launching drop wizard HTTP server. This class is responsible for configuring
@@ -128,42 +124,39 @@ public class ServerApplication extends Application<AppConfig> {
 
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
 
-    final var chatters = new Chatters();
+    //    final SessionSet remoteActionSessions = new SessionSet();
+    //    final SessionSet gameListingSessions = new SessionSet();
+    //    final SessionSet chatSessions = new SessionSet();
+    //    final BannedPlayerEventHandler bannedPlayerEventHandler =
+    //        BannedPlayerEventHandler.builder()
+    //            .sessionSets(
+    //                Set.of(
+    //                    remoteActionSessions, //
+    //                    gameListingSessions,
+    //                    chatSessions))
+    //            .build();
 
-    final SessionSet remoteActionSessions = new SessionSet();
-    final SessionSet gameListingSessions = new SessionSet();
-    final SessionSet chatSessions = new SessionSet();
-    final BannedPlayerEventHandler bannedPlayerEventHandler =
-        BannedPlayerEventHandler.builder()
-            .sessionSets(
-                Set.of(
-                    remoteActionSessions, //
-                    gameListingSessions,
-                    chatSessions))
-            .build();
+    //    final var remoteActionsEventQueue =
+    //        RemoteActionsEventQueue.build(remoteActionSessions, bannedPlayerEventHandler);
 
-    final var remoteActionsEventQueue =
-        RemoteActionsEventQueue.build(remoteActionSessions, bannedPlayerEventHandler);
+    final var chatters = Chatters.build(jdbi);
 
-    final var gameListingEventQueue = GameListingEventQueue.build(gameListingSessions);
-
-    endPointControllers(
-            configuration, jdbi, chatters, remoteActionsEventQueue, gameListingEventQueue)
-        .forEach(controller -> environment.jersey().register(controller));
-
+    final var gameConnectionMessagingBus = new WebSocketMessagingBus();
     // Inject beans into websocket endpoints
     gameConnectionWebsocket
         .getUserProperties()
-        .put(GameConnectionWebSocket.REMOTE_ACTIONS_QUEUE_KEY, remoteActionsEventQueue);
+        .put(WebSocketMessagingBus.MESSAGING_BUS_KEY, gameConnectionMessagingBus);
 
+    final var playerConnectionMessagingBus = new WebSocketMessagingBus();
     playerConnectionWebsocket
         .getUserProperties()
-        .put(PlayerConnectionWebSocket.GAME_LISTING_QUEUE_KEY, gameListingEventQueue);
+        .put(WebSocketMessagingBus.MESSAGING_BUS_KEY, playerConnectionMessagingBus);
 
-    final var messagingService = ChatMessagingService.build(jdbi, chatSessions, chatters);
-    playerConnectionWebsocket
-        .getUserProperties()
-        .put(PlayerConnectionWebSocket.CHAT_MESSAGING_SERVICE_KEY, messagingService);
+    ChatMessagingService.build(chatters).configure(playerConnectionMessagingBus);
+
+    endPointControllers(
+            configuration, jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus)
+        .forEach(controller -> environment.jersey().register(controller));
   }
 
   private static void enableRequestResponseLogging(final Environment environment) {
@@ -219,26 +212,26 @@ public class ServerApplication extends Application<AppConfig> {
       final AppConfig appConfig,
       final Jdbi jdbi,
       final Chatters chatters,
-      final RemoteActionsEventQueue remoteActionsEventQueue,
-      final GameListingEventQueue gameListingEventQueue) {
-    final GameListing gameListing = GameListing.build(jdbi, gameListingEventQueue);
+      final WebSocketMessagingBus playerMessagingBus,
+      final WebSocketMessagingBus gameMessagingBus) {
+    final GameListing gameListing = GameListing.build(jdbi, playerMessagingBus);
     return ImmutableList.of(
         AccessLogController.build(jdbi),
         BadWordsController.build(jdbi),
         ConnectivityController.build(),
         CreateAccountController.build(jdbi),
-        DisconnectUserController.build(jdbi, chatters),
+        DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
         ForgotPasswordController.build(appConfig, jdbi),
         GameHostingController.build(jdbi),
         GameListingController.build(gameListing),
         LobbyWatcherController.build(gameListing),
         LoginController.build(jdbi, chatters),
         UsernameBanController.build(jdbi),
-        UserBanController.build(jdbi, chatters, remoteActionsEventQueue),
+        UserBanController.build(jdbi, chatters, playerMessagingBus, gameMessagingBus),
         ErrorReportController.build(appConfig, jdbi),
         ModeratorAuditHistoryController.build(jdbi),
         ModeratorsController.build(jdbi),
-        RemoteActionsController.build(jdbi, remoteActionsEventQueue),
+        RemoteActionsController.build(jdbi, gameMessagingBus),
         UpdateAccountController.build(jdbi));
   }
 }

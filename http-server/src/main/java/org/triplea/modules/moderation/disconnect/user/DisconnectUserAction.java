@@ -7,23 +7,24 @@ import org.triplea.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.db.dao.api.key.GamePlayerLookup;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.lobby.chat.messages.server.ChatServerEnvelopeFactory;
-import org.triplea.modules.chat.event.processing.Chatters;
-import org.triplea.web.socket.MessageBroadcaster;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
+import org.triplea.modules.chat.Chatters;
+import org.triplea.web.socket.WebSocketMessagingBus;
 
 @Builder
 public class DisconnectUserAction {
 
   @Nonnull private final ApiKeyDaoWrapper apiKeyDaoWrapper;
   @Nonnull private final Chatters chatters;
-  @Nonnull private final MessageBroadcaster messageBroadcaster;
+  @Nonnull private final WebSocketMessagingBus playerConnections;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  static DisconnectUserAction build(final Jdbi jdbi, final Chatters chatters) {
+  static DisconnectUserAction build(
+      final Jdbi jdbi, final Chatters chatters, final WebSocketMessagingBus playerConnections) {
     return DisconnectUserAction.builder()
         .apiKeyDaoWrapper(ApiKeyDaoWrapper.build(jdbi))
         .chatters(chatters)
-        .messageBroadcaster(MessageBroadcaster.build())
+        .playerConnections(playerConnections)
         .moderatorAuditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
         .build();
   }
@@ -39,11 +40,12 @@ public class DisconnectUserAction {
       return false;
     }
 
-    chatters.disconnectPlayerSessions(gamePlayerLookup.getUserName(), "Disconnected by moderator");
-    messageBroadcaster.accept(
-        chatters.fetchOpenSessions(),
-        ChatServerEnvelopeFactory.newEventMessage(
-            gamePlayerLookup.getUserName() + " was disconnected by moderator"));
+    if (chatters.disconnectPlayerSessions(
+        gamePlayerLookup.getUserName(), "Disconnected by moderator")) {
+      playerConnections.broadcastMessage(
+          new ChatEventReceivedMessage(
+              gamePlayerLookup.getUserName() + " was disconnected by moderator"));
+    }
 
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()

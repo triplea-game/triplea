@@ -47,17 +47,17 @@ class RemoteActionsClientTest extends WireMockTest {
   class SendShutdownRequest {
     @Test
     void sendShutdownRequest(@WiremockResolver.Wiremock final WireMockServer server) {
-      givenServerStubForSendShutdownRequest(IPV4, server);
+      givenServerStubForSendShutdownRequest("gameId", server);
 
-      WireMockTest.newClient(server, RemoteActionsClient::new)
-          .sendShutdownRequest(IpAddressParser.fromString(IPV4));
+      WireMockTest.newClient(server, RemoteActionsClient::new) //
+          .sendShutdownRequest("gameId");
     }
 
     private void givenServerStubForSendShutdownRequest(
-        final String ip, final WireMockServer server) {
+        final String gameId, final WireMockServer server) {
       server.stubFor(
           post(RemoteActionsClient.SEND_SHUTDOWN_PATH)
-              .withRequestBody(equalTo(ip))
+              .withRequestBody(equalTo(gameId))
               .willReturn(WireMock.aResponse().withStatus(200)));
     }
   }

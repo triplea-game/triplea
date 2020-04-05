@@ -112,7 +112,7 @@ public class ChatController implements IChatController {
       getChatBroadcaster()
           .speakerAdded(
               ChatParticipant.builder()
-                  .userName(node.getPlayerName())
+                  .userName(node.getPlayerName().getValue())
                   .isModerator(tag == Tag.MODERATOR)
                   .build());
 
@@ -121,7 +121,7 @@ public class ChatController implements IChatController {
               entry ->
                   ChatParticipant.builder()
                       .isModerator(entry.getValue() == Tag.MODERATOR)
-                      .userName(entry.getKey().getPlayerName())
+                      .userName(entry.getKey().getPlayerName().getValue())
                       .status(chatterStatus.get(entry.getKey().getPlayerName()))
                       .build())
           .collect(Collectors.toSet());

@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.login;
 
-import games.strategy.engine.lobby.connection.PlayerToLobbyConnection;
 import games.strategy.ui.Util;
 import java.awt.Window;
 import java.util.function.Consumer;
@@ -13,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.triplea.domain.data.PlayerEmailValidation;
+import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;

@@ -76,28 +76,11 @@ class UserBanControllerTest {
 
   @Nested
   final class AddBanTest {
-
     @Test
-    void addBanFailureCase() {
-      givenBanServiceAddBanResult(false);
-
-      final Response response = bannedUsersController.banUser(AUTHENTICATED_USER, banUserParams);
-
-      assertThat(response.getStatus(), is(400));
-    }
-
-    @Test
-    void addBanSuccessCase() {
-      givenBanServiceAddBanResult(true);
-
+    void addBan() {
       final Response response = bannedUsersController.banUser(AUTHENTICATED_USER, banUserParams);
 
       assertThat(response.getStatus(), is(200));
-    }
-
-    private void givenBanServiceAddBanResult(final boolean result) {
-      when(bannedUsersService.banUser(AUTHENTICATED_USER.getUserId(), banUserParams))
-          .thenReturn(result);
     }
   }
 }

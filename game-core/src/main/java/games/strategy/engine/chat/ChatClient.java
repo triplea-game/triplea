@@ -1,10 +1,8 @@
 package games.strategy.engine.chat;
 
+import java.util.List;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.messages.server.ChatMessage;
-import org.triplea.http.client.lobby.chat.messages.server.ChatterList;
-import org.triplea.http.client.lobby.chat.messages.server.StatusUpdate;
 
 /**
  * ChatClient can also be thought of as a 'ChatListener' (it is not named so to avoid confusion with
@@ -18,10 +16,10 @@ public interface ChatClient {
   /**
    * Initial (async) connection to server is established. Not invoked for synchronous connections.
    */
-  void connected(ChatterList chatters);
+  void connected(List<ChatParticipant> chatters);
 
   /** A chat message has been received. */
-  void messageReceived(ChatMessage chatMessage);
+  void messageReceived(UserName sender, String message);
 
   void eventReceived(String chatEvent);
 
@@ -42,9 +40,6 @@ public interface ChatClient {
    */
   void slappedBy(UserName slapper);
 
-  /** A message that notifies players that another player has been slapped, eg: "x slapped y". */
-  void playerSlapped(String eventMessage);
-
   /** Indicates a players status has changed. */
-  void statusUpdated(StatusUpdate statusUpdate);
+  void statusUpdated(UserName player, String status);
 }

@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.websocket.Session;
@@ -31,7 +30,10 @@ import org.triplea.modules.chat.InetExtractor;
 public class SessionSet {
 
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
-  private final Set<Session> sessions = ConcurrentHashMap.newKeySet();
+  private final Collection<Session> sessions = ConcurrentHashMap.newKeySet();
+
+  //  private final MessageSender messageSender = new MessageSender();
+  //  private final MessageBroadcaster messageBroadcaster = new MessageBroadcaster(messageSender);
 
   public void put(final Session session) {
     sessions.add(session);
