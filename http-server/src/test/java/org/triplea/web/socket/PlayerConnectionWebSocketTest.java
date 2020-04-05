@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.websocket.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,13 +24,16 @@ class PlayerConnectionWebSocketTest {
 
   @BeforeEach
   void setup() {
+    final Predicate<Session> banCheck = session -> false;
     when(session.getUserProperties())
         .thenReturn(
             Map.of(
                 WebSocketMessagingBus.MESSAGING_BUS_KEY,
                 webSocketMessagingBus,
                 InetExtractor.IP_ADDRESS_KEY,
-                "/1.1.1.1:123"));
+                "/1.1.1.1:123",
+                SessionBannedCheck.BAN_CHECK_KEY,
+                banCheck));
   }
 
   @Test

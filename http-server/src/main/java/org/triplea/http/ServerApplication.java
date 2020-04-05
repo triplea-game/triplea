@@ -19,6 +19,7 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.server.ServerEndpointConfig;
@@ -55,6 +56,7 @@ import org.triplea.modules.user.account.login.LoginController;
 import org.triplea.modules.user.account.update.UpdateAccountController;
 import org.triplea.web.socket.GameConnectionWebSocket;
 import org.triplea.web.socket.PlayerConnectionWebSocket;
+import org.triplea.web.socket.SessionBannedCheck;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
 /**
@@ -124,33 +126,30 @@ public class ServerApplication extends Application<AppConfig> {
 
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
 
-    //    final SessionSet remoteActionSessions = new SessionSet();
-    //    final SessionSet gameListingSessions = new SessionSet();
-    //    final SessionSet chatSessions = new SessionSet();
-    //    final BannedPlayerEventHandler bannedPlayerEventHandler =
-    //        BannedPlayerEventHandler.builder()
-    //            .sessionSets(
-    //                Set.of(
-    //                    remoteActionSessions, //
-    //                    gameListingSessions,
-    //                    chatSessions))
-    //            .build();
-
-    //    final var remoteActionsEventQueue =
-    //        RemoteActionsEventQueue.build(remoteActionSessions, bannedPlayerEventHandler);
-
     final var chatters = Chatters.build(jdbi);
 
     final var gameConnectionMessagingBus = new WebSocketMessagingBus();
+    final var sessionIsBannedCheck = SessionBannedCheck.build(jdbi);
+
     // Inject beans into websocket endpoints
     gameConnectionWebsocket
         .getUserProperties()
-        .put(WebSocketMessagingBus.MESSAGING_BUS_KEY, gameConnectionMessagingBus);
+        .putAll(
+            Map.of(
+                WebSocketMessagingBus.MESSAGING_BUS_KEY,
+                gameConnectionMessagingBus,
+                SessionBannedCheck.BAN_CHECK_KEY,
+                sessionIsBannedCheck));
 
     final var playerConnectionMessagingBus = new WebSocketMessagingBus();
     playerConnectionWebsocket
         .getUserProperties()
-        .put(WebSocketMessagingBus.MESSAGING_BUS_KEY, playerConnectionMessagingBus);
+        .putAll(
+            Map.of(
+                WebSocketMessagingBus.MESSAGING_BUS_KEY, //
+                playerConnectionMessagingBus,
+                SessionBannedCheck.BAN_CHECK_KEY,
+                sessionIsBannedCheck));
 
     ChatMessagingService.build(chatters).configure(playerConnectionMessagingBus);
 

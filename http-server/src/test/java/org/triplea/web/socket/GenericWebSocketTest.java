@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateSentMessage;
 
-@SuppressWarnings("SameParameterValue")
+@SuppressWarnings({"SameParameterValue", "InnerClassMayBeStatic"})
 @ExtendWith(MockitoExtension.class)
 class GenericWebSocketTest {
 
@@ -40,11 +41,47 @@ class GenericWebSocketTest {
 
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
 
+  @Mock private Predicate<Session> banCheck;
+
   private Cache<InetAddress, AtomicInteger> cache =
       Caffeine.newBuilder().expireAfterWrite(Duration.ofSeconds(60)).build();
 
   private ArgumentCaptor<MessageEnvelope> messageCaptor =
       ArgumentCaptor.forClass(MessageEnvelope.class);
+
+  @Test
+  void verifyBannedSessionsAreDisconnected() throws Exception {
+    givenOnOpenSessionWithIp("1.1.1.1");
+    when(banCheck.test(session)).thenReturn(true);
+
+    GenericWebSocket.onOpen(session);
+
+    verify(webSocketMessagingBus, never()).onOpen(any());
+    verify(session).close(any());
+  }
+
+  @Test
+  void verifyNotBannedSessionsAreSentToMessagingBux() throws Exception {
+    givenOnOpenSessionWithIp("1.1.1.1");
+    when(banCheck.test(session)).thenReturn(false);
+
+    GenericWebSocket.onOpen(session);
+
+    verify(webSocketMessagingBus).onOpen(session);
+    verify(session, never()).close(any());
+  }
+
+  void givenOnOpenSessionWithIp(final String ip) {
+    when(session.getUserProperties())
+        .thenReturn(
+            Map.of(
+                InetExtractor.IP_ADDRESS_KEY,
+                "/" + ip + ":777",
+                SessionBannedCheck.BAN_CHECK_KEY,
+                banCheck,
+                WebSocketMessagingBus.MESSAGING_BUS_KEY,
+                webSocketMessagingBus));
+  }
 
   @Test
   @DisplayName(

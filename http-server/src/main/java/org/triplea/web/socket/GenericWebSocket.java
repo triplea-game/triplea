@@ -8,10 +8,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ascii;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
 import lombok.experimental.UtilityClass;
@@ -36,7 +38,25 @@ class GenericWebSocket {
       Caffeine.newBuilder().expireAfterWrite(Duration.ofSeconds(30)).build();
 
   static void onOpen(final Session session) {
-    ((WebSocketMessagingBus) session.getUserProperties().get(MESSAGING_BUS_KEY)).onOpen(session);
+    if (isSessionBanned(session)) {
+      disconnectBannedSession(session);
+    } else {
+      ((WebSocketMessagingBus) session.getUserProperties().get(MESSAGING_BUS_KEY)).onOpen(session);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static boolean isSessionBanned(final Session session) {
+    return ((Predicate<Session>) session.getUserProperties().get(SessionBannedCheck.BAN_CHECK_KEY))
+        .test(session);
+  }
+
+  private static void disconnectBannedSession(final Session session) {
+    try {
+      session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "You have been banned"));
+    } catch (final IOException e) {
+      log.warn("IOException while closing new session of banned user", e);
+    }
   }
 
   static void onMessage(final Session session, final String message) {
