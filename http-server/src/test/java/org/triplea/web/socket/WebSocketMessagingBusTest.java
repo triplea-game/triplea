@@ -11,7 +11,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.gson.Gson;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -35,8 +34,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("InnerClassMayBeStatic")
 class WebSocketMessagingBusTest {
-  private static final Gson GSON = new Gson();
-
   private static class StringMessage implements WebSocketMessage {
     private static final MessageType<StringMessage> TYPE = MessageType.of(StringMessage.class);
 
@@ -76,7 +73,7 @@ class WebSocketMessagingBusTest {
 
       // trigger message
       final BooleanMessage message = new BooleanMessage(true);
-      webSocketMessagingBus.onMessage(session, GSON.toJson(message.toEnvelope()));
+      webSocketMessagingBus.onMessage(session, message.toEnvelope());
 
       // capture argument passed to listener
       final ArgumentCaptor<WebSocketMessageContext<BooleanMessage>> argumentCaptor =
@@ -103,7 +100,7 @@ class WebSocketMessagingBusTest {
       webSocketMessagingBus.addListener(BooleanMessage.TYPE, booleanMessageListener);
       webSocketMessagingBus.addListener(StringMessage.TYPE, stringMessageListener);
 
-      webSocketMessagingBus.onMessage(session, GSON.toJson(new BooleanMessage(true).toEnvelope()));
+      webSocketMessagingBus.onMessage(session, new BooleanMessage(true).toEnvelope());
 
       verify(booleanMessageListener).accept(any());
       verify(stringMessageListener, never()).accept(any());
@@ -117,7 +114,7 @@ class WebSocketMessagingBusTest {
       webSocketMessagingBus.addListener(BooleanMessage.TYPE, booleanMessageListener);
       webSocketMessagingBus.addListener(BooleanMessage.TYPE, booleanMessageListenerSecond);
 
-      webSocketMessagingBus.onMessage(session, GSON.toJson(new BooleanMessage(true).toEnvelope()));
+      webSocketMessagingBus.onMessage(session, new BooleanMessage(true).toEnvelope());
 
       verify(booleanMessageListener).accept(any());
       verify(booleanMessageListenerSecond).accept(any());

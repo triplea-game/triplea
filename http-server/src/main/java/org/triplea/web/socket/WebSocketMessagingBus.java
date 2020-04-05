@@ -1,7 +1,6 @@
 package org.triplea.web.socket;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
 @Slf4j
 public class WebSocketMessagingBus {
   public static final String MESSAGING_BUS_KEY = "messaging.bus";
-  private static final Gson GSON = new Gson();
 
   @Nonnull private final MessageBroadcaster messageBroadcaster;
   @Nonnull private final MessageSender messageSender;
@@ -64,9 +62,7 @@ public class WebSocketMessagingBus {
     messageListeners.add(new MessageListener(type, listener));
   }
 
-  void onMessage(final Session session, final String message) {
-    final MessageEnvelope envelope = GSON.fromJson(message, MessageEnvelope.class);
-
+  void onMessage(final Session session, final MessageEnvelope envelope) {
     determineMatchingMessageType(envelope)
         .ifPresent(
             messageType -> {
