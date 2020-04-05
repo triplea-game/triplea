@@ -51,7 +51,7 @@ final class FileMenu extends JMenu {
         .accelerator(KeyCode.S)
         .actionListener(
             () -> {
-              final File f = SaveGameFileChooser.getSaveGameLocation(frame);
+              final File f = SaveGameFileChooser.getSaveGameLocation(frame, gameData);
               if (f != null) {
                 game.saveGame(f);
                 JOptionPane.showMessageDialog(

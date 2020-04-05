@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -58,6 +59,10 @@ import org.triplea.util.Version;
  */
 public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
+
+  /** When we load a game from a save file, this property will be the name of that file. */
+  private static final String SAVE_GAME_FILE_NAME_PROPERTY = "save.game.file.name";
+
   private transient ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient volatile boolean forceInSwingEventThread = false;
   private String gameName;
@@ -456,5 +461,13 @@ public class GameData implements Serializable {
     } finally {
       releaseReadLock();
     }
+  }
+
+  public Optional<String> getSaveGameFileName() {
+    return Optional.ofNullable(getProperties().get(SAVE_GAME_FILE_NAME_PROPERTY, null));
+  }
+
+  public void setSaveGameFileName(final String saveGameFileName) {
+    getProperties().set(SAVE_GAME_FILE_NAME_PROPERTY, saveGameFileName);
   }
 }
