@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
@@ -119,7 +120,12 @@ public class UnifiedMessenger {
     final Invoke invoke = new HubInvoke(methodCallId, true, remoteCall);
     send(invoke, messenger.getServerNode());
 
-    Interruptibles.await(latch);
+    if (!Interruptibles.awaitResult(() -> latch.await(1, TimeUnit.MINUTES)).result.orElse(false)) {
+      throw new IllegalStateException(
+          String.format(
+              "Server timed out while waiting for result of method %s for remote %s with id %s",
+              remoteCall.getMethodName(), remoteCall.getRemoteName(), methodCallId));
+    }
 
     synchronized (pendingLock) {
       final RemoteMethodCallResults methodCallResults = results.remove(methodCallId);
