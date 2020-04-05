@@ -143,22 +143,6 @@ public class ServerApplication extends Application<AppConfig> {
         .forEach(controller -> environment.jersey().register(controller));
   }
 
-  private static void setupWebSocket(
-      final ServerEndpointConfig websocket,
-      final WebSocketMessagingBus webSocketMessagingBus,
-      final Predicate<Session> sessionBanCheck) {
-
-    // Inject beans into websocket endpoints
-    websocket
-        .getUserProperties()
-        .putAll(
-            Map.of(
-                WebSocketMessagingBus.MESSAGING_BUS_KEY, //
-                webSocketMessagingBus,
-                SessionBannedCheck.BAN_CHECK_KEY,
-                sessionBanCheck));
-  }
-
   private static void enableRequestResponseLogging(final Environment environment) {
     environment
         .jersey()
@@ -206,6 +190,22 @@ public class ServerApplication extends Application<AppConfig> {
 
   private List<Object> exceptionMappers() {
     return ImmutableList.of(new IllegalArgumentMapper());
+  }
+
+  private static void setupWebSocket(
+      final ServerEndpointConfig websocket,
+      final WebSocketMessagingBus webSocketMessagingBus,
+      final Predicate<Session> sessionBanCheck) {
+
+    // Inject beans into websocket endpoints
+    websocket
+        .getUserProperties()
+        .putAll(
+            Map.of(
+                WebSocketMessagingBus.MESSAGING_BUS_KEY, //
+                webSocketMessagingBus,
+                SessionBannedCheck.BAN_CHECK_KEY,
+                sessionBanCheck));
   }
 
   private List<Object> endPointControllers(
