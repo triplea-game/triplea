@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -276,37 +277,7 @@ public class UnifiedMessenger {
         }
         return;
       }
-      // very important
-      // we are guaranteed that here messages will be read in the same order that they are sent from
-      // the client
-      // however, once we delegate to the thread pool, there is no guarantee that the thread pool
-      // task will run before
-      // we get the next message notification
-      // get the number for the invocation here
-      final long methodRunNumber = local.takeANumber();
-      // we don't want to block the message thread, only one thread is
-      // reading messages per connection, so run with out thread pool
-      final EndPoint localFinal = local;
-      threadPool.execute(
-          () -> {
-            final List<RemoteMethodCallResults> results =
-                localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
-            if (invoke.needReturnValues) {
-              final RemoteMethodCallResults result;
-              if (results.size() == 1) {
-                result = results.get(0);
-              } else {
-                result =
-                    new RemoteMethodCallResults(
-                        new IllegalStateException(
-                            "Invalid result count"
-                                + results.size()
-                                + " for end point:"
-                                + localFinal));
-              }
-              send(new HubInvocationResults(result, invoke.methodCallId), from);
-            }
-          });
+      processMessage(local, invoke, from);
     } else if (msg instanceof SpokeInvocationResults) { // a remote machine is returning results
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
@@ -327,6 +298,54 @@ public class UnifiedMessenger {
         latch.countDown();
       }
     }
+  }
+
+  private void processMessage(final EndPoint local, final SpokeInvoke invoke, final INode from) {
+    // very important
+    // we are guaranteed that here messages will be read in the same order that they are sent from
+    // the client
+    // however, once we delegate to the thread pool, there is no guarantee that the thread pool
+    // task will run before
+    // we get the next message notification
+    // get the number for the invocation here
+    final long methodRunNumber = local.takeANumber();
+    // we don't want to block the message thread, only one thread is
+    // reading messages per connection, so run with out thread pool
+    CompletableFuture.runAsync(
+            () -> {
+              final List<RemoteMethodCallResults> results =
+                  local.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
+              if (invoke.needReturnValues) {
+                final RemoteMethodCallResults result;
+                if (results.size() == 1) {
+                  result = results.get(0);
+                } else {
+                  result =
+                      new RemoteMethodCallResults(
+                          new IllegalStateException(
+                              String.format(
+                                  "Invalid result count '%d' for end point '%s'",
+                                  results.size(), local)));
+                }
+                send(new HubInvocationResults(result, invoke.methodCallId), from);
+              }
+            },
+            threadPool)
+        .exceptionally(
+            throwable -> {
+              log.log(Level.SEVERE, "Exception during execution of client request", throwable);
+              if (invoke.needReturnValues) {
+                try {
+                  send(
+                      new HubInvocationResults(
+                          new RemoteMethodCallResults(throwable), invoke.methodCallId),
+                      from);
+                } catch (final RuntimeException e) {
+                  log.log(Level.SEVERE, "Exception while sending exception to client", throwable);
+                }
+              }
+              return null;
+            });
   }
 
   private void assertIsServer(final INode from) {
