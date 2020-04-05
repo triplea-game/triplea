@@ -54,16 +54,19 @@ public class LobbyChatTransmitter implements ChatTransmitter {
         ChatEventReceivedMessage.TYPE, message -> chatClient.eventReceived(message.getMessage()));
 
     playerToLobbyConnection.addMessageListener(
-        PlayerSlapReceivedMessage.TYPE,
-        message -> {
-          if (message.getSlappedPlayer().equals(localUserName)) {
-            chatClient.slappedBy(message.getSlappingPlayer());
-          } else {
-            chatClient.eventReceived(
-                message.getSlappingPlayer() + " slapped " + message.getSlappedPlayer());
-          }
-        });
+        PlayerSlapReceivedMessage.TYPE, message -> handleSlapMessage(chatClient, message));
+
     playerToLobbyConnection.sendConnectToChatMessage();
+  }
+
+  private void handleSlapMessage(
+      final ChatClient chatClient, final PlayerSlapReceivedMessage message) {
+    if (message.getSlappedPlayer().equals(localUserName)) {
+      chatClient.slappedBy(message.getSlappingPlayer());
+    } else {
+      chatClient.eventReceived(
+          message.getSlappingPlayer() + " slapped " + message.getSlappedPlayer());
+    }
   }
 
   @Override
