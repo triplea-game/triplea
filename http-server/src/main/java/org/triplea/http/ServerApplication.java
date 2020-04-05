@@ -20,8 +20,10 @@ import io.dropwizard.websockets.WebsocketBundle;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.websocket.Session;
 import javax.websocket.server.ServerEndpointConfig;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -126,36 +128,35 @@ public class ServerApplication extends Application<AppConfig> {
 
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
 
-    final var chatters = Chatters.build(jdbi);
-
-    final var gameConnectionMessagingBus = new WebSocketMessagingBus();
     final var sessionIsBannedCheck = SessionBannedCheck.build(jdbi);
-
-    // Inject beans into websocket endpoints
-    gameConnectionWebsocket
-        .getUserProperties()
-        .putAll(
-            Map.of(
-                WebSocketMessagingBus.MESSAGING_BUS_KEY,
-                gameConnectionMessagingBus,
-                SessionBannedCheck.BAN_CHECK_KEY,
-                sessionIsBannedCheck));
+    final var gameConnectionMessagingBus = new WebSocketMessagingBus();
+    setupWebSocket(gameConnectionWebsocket, gameConnectionMessagingBus, sessionIsBannedCheck);
 
     final var playerConnectionMessagingBus = new WebSocketMessagingBus();
-    playerConnectionWebsocket
-        .getUserProperties()
-        .putAll(
-            Map.of(
-                WebSocketMessagingBus.MESSAGING_BUS_KEY, //
-                playerConnectionMessagingBus,
-                SessionBannedCheck.BAN_CHECK_KEY,
-                sessionIsBannedCheck));
+    setupWebSocket(playerConnectionWebsocket, playerConnectionMessagingBus, sessionIsBannedCheck);
 
+    final var chatters = Chatters.build(jdbi);
     ChatMessagingService.build(chatters).configure(playerConnectionMessagingBus);
 
     endPointControllers(
             configuration, jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus)
         .forEach(controller -> environment.jersey().register(controller));
+  }
+
+  private static void setupWebSocket(
+      final ServerEndpointConfig websocket,
+      final WebSocketMessagingBus webSocketMessagingBus,
+      final Predicate<Session> sessionBanCheck) {
+
+    // Inject beans into websocket endpoints
+    websocket
+        .getUserProperties()
+        .putAll(
+            Map.of(
+                WebSocketMessagingBus.MESSAGING_BUS_KEY, //
+                webSocketMessagingBus,
+                SessionBannedCheck.BAN_CHECK_KEY,
+                sessionBanCheck));
   }
 
   private static void enableRequestResponseLogging(final Environment environment) {
