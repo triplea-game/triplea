@@ -2,47 +2,37 @@ package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.File;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 
 /** A file chooser for save games. Defaults to the user's configured save game folder. */
 public final class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
 
-  private static SaveGameFileChooser instance;
+  /**
+   * Displays a file chooser dialog for the user to select the file to which the current game should
+   * be saved.
+   *
+   * @param frame The owner of the file chooser dialog; may be {@code null}.
+   * @return The file to which the current game should be saved or {@code null} if the user
+   *     cancelled the operation.
+   */
+  public static File getSaveGameLocation(final Frame frame) {
+    final FileDialog fileDialog = new FileDialog(frame);
+    fileDialog.setMode(FileDialog.SAVE);
+    fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().toString());
+    fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
+    fileDialog.setVisible(true);
 
-  private SaveGameFileChooser() {
-    setFileFilter(newGameDataFileFilter());
-    final File saveGamesFolder = ClientSetting.saveGamesFolderPath.getValueOrThrow().toFile();
-    ensureDirectoryExists(saveGamesFolder);
-    setCurrentDirectory(saveGamesFolder);
-  }
-
-  public static SaveGameFileChooser getInstance() {
-    if (instance == null) {
-      instance = new SaveGameFileChooser();
+    final String fileName = fileDialog.getFile();
+    if (fileName == null) {
+      return null;
     }
-    return instance;
-  }
 
-  private static void ensureDirectoryExists(final File f) {
-    if (!f.mkdirs() && !f.exists()) {
-      throw new IllegalStateException("Unable to create save game folder: " + f.getAbsolutePath());
-    }
-  }
-
-  private static FileFilter newGameDataFileFilter() {
-    return new FileFilter() {
-      @Override
-      public boolean accept(final File file) {
-        return file.isDirectory() || GameDataFileUtils.isCandidateFileName(file.getName());
-      }
-
-      @Override
-      public String getDescription() {
-        return "Saved Games, *" + GameDataFileUtils.getExtension();
-      }
-    };
+    // If the user selects a filename that already exists,
+    // the AWT Dialog will ask the user for confirmation
+    return new File(fileDialog.getDirectory(), GameDataFileUtils.addExtensionIfAbsent(fileName));
   }
 }

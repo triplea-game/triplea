@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.network.ui;
 
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import java.awt.Component;
 import java.awt.Frame;
@@ -29,7 +30,7 @@ public class GetGameSaveClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final Frame frame = JOptionPane.getFrameForComponent(parent);
-    final File f = TripleAMenuBar.getSaveGameLocation(frame);
+    final File f = SaveGameFileChooser.getSaveGameLocation(frame);
     if (f != null) {
       final byte[] bytes = serverRemote.getSaveGame();
       try (var fileOutputStream = new FileOutputStream(f)) {

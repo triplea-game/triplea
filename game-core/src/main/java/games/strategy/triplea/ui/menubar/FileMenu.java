@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacOsIntegration;
@@ -50,7 +51,7 @@ final class FileMenu extends JMenu {
         .accelerator(KeyCode.S)
         .actionListener(
             () -> {
-              final File f = TripleAMenuBar.getSaveGameLocation(frame);
+              final File f = SaveGameFileChooser.getSaveGameLocation(frame);
               if (f != null) {
                 game.saveGame(f);
                 JOptionPane.showMessageDialog(
