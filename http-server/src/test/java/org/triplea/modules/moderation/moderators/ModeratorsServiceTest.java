@@ -61,7 +61,7 @@ class ModeratorsServiceTest {
           .addAuditRecord(
               ModeratorAuditHistoryDao.AuditArgs.builder()
                   .moderatorUserId(MODERATOR_ID)
-                  .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_MODERATOR)
                   .actionTarget(USERNAME)
                   .build());
     }
