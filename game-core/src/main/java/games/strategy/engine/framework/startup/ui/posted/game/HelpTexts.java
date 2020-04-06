@@ -61,46 +61,7 @@ public class HelpTexts {
           + "Each email sender may require custom configuration, to learn more "
           + "click help again after selecting a specific email sender."
           + "</p></html>";
-  public static final String GMAIL =
-      "<html><p style='width: 400px;'>"
-          + "Email through Gmail<br/>"
-          + "This email sends email via Gmails SMTP service. To use this you must have a "
-          + "gmail account. Configuration:<br/>"
-          + "<b>Subject:</b> This will be the subject of the email. In addition to the text "
-          + "entered, the player and round number will be appended<br/>"
-          + "<b>To:</b> A list of email addresses separated by space. the email will be sent to "
-          + "all these users<br/>"
-          + "<b>Login:</b> Your gmail login used to authenticate against the gmail smtp service"
-          + "<br/>"
-          + "<b>Password:</b> Your gmail password used to authenticate against the gmail smtp "
-          + "service<br/>"
-          + "<i>Note:</i> All communication with the Gmail service uses TLS encryption. Your "
-          + "Gmail login and password are not stored as part of the save game, but they "
-          + "are stored encrypted in the local file system if you select the option to "
-          + "remember your credentials.<br/>"
-          + "You may have to enter your login and password again if you open the save "
-          + "game on another computer."
-          + "</p></html>";
-  public static final String HOTMAIL =
-      "<html><p style='width: 400px;'>"
-          + "Email through Hotmail<br/>"
-          + "This email sends email via Hotmails (live.com) SMTP service. To use this "
-          + "you must have a Homtail account. Configuration:<br/>"
-          + "<b>Subject:</b> This will be the subject of the email. In addition to the text "
-          + "entered, the player and round number will be appended<br/>"
-          + "<b>To:</b> A list of email addresses separated by space. the email will be sent to "
-          + "all these users<br/>"
-          + "<b>Login:</b> Your hotmail login used to authenticate against the hotmail smtp "
-          + "service<br/>"
-          + "<b>Password:</b> Your hotmail password used to authenticate against the hotmail "
-          + "smtp service<br/>"
-          + "<i>Note:</i> All communication with the Hotmail service uses TLS encryption. Your "
-          + "Hotmail login and password are not stored as part of the save game, but "
-          + "they are stored encrypted in the local file system if you select the option "
-          + "to remember your credentials.<br/>"
-          + "You may have to enter your login and password again if you open the save "
-          + "game on another computer."
-          + "</p></html>";
+
   public static final String GENERIC_SMTP_SERVER =
       "<html><p style='width: 400px;'>"
           + "Email through SMTP<br/>"
@@ -122,6 +83,38 @@ public class HelpTexts {
           + "You may have to enter your login and password again if you open the save "
           + "game on another computer."
           + "</p></html>";
+
+  public static String gmailHelpText() {
+    return emailProviderHelpText("Gmail", "Gmails");
+  }
+
+  public static String hotmailHelpText() {
+    return emailProviderHelpText("Hotmail", "Hotmails (live.com)");
+  }
+
+  private static String emailProviderHelpText(final String name, final String possisiveName) {
+    return String.format(
+        "<html><p style='width: 400px;'>"
+            + "Email through %s<br/>"
+            + "This email sends email via %s SMTP service. To use this "
+            + "you must have a %s account. Configuration:<br/>"
+            + "<b>Subject:</b> This will be the subject of the email. In addition to the text "
+            + "entered, the player and round number will be appended<br/>"
+            + "<b>To:</b> A list of email addresses separated by space. the email will be sent to "
+            + "all these users<br/>"
+            + "<b>Login:</b> Your %s login used to authenticate against the %s smtp "
+            + "service<br/>"
+            + "<b>Password:</b> Your %s password used to authenticate against the %s "
+            + "smtp service<br/>"
+            + "<i>Note:</i> All communication with the %s service uses TLS encryption. Your "
+            + "%s login and password are not stored as part of the save game, but "
+            + "they are stored encrypted in the local file system if you select the option "
+            + "to remember your credentials.<br/>"
+            + "You may have to enter your login and password again if you open the save "
+            + "game on another computer."
+            + "</p></html>",
+        name, possisiveName, name, name, name, name, name, name, name);
+  }
 
   public static String rememberPlayByForumPassword() {
     return rememberPassword("play-by-forum");

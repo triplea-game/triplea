@@ -123,9 +123,9 @@ class EmailSenderEditorViewModel {
     if (selectedProvider.equals(EmailSenderEditorViewModel.PROVIDER_DISABLED)) {
       return HelpTexts.SMTP_DISABLED;
     } else if (selectedProvider.equals(EmailProviderPreset.GMAIL.getName())) {
-      return HelpTexts.GMAIL;
+      return HelpTexts.gmailHelpText();
     } else if (selectedProvider.equals(EmailProviderPreset.HOTMAIL.getName())) {
-      return HelpTexts.HOTMAIL;
+      return HelpTexts.hotmailHelpText();
     } else {
       return HelpTexts.GENERIC_SMTP_SERVER;
     }
