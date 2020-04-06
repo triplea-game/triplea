@@ -20,6 +20,27 @@ class UserBanDaoTest extends DaoTest {
   private final UserBanDao userBanDao = DaoTest.newDao(UserBanDao.class);
 
   @Nested
+  @DataSet(cleanBefore = true, value = "user_ban/banned_by_ip.yml")
+  class IsBannedByIp {
+    @Test
+    void isBannedByIpPositiveCase() {
+      assertThat(userBanDao.isBannedByIp("127.0.0.1"), is(true));
+    }
+
+    @Test
+    void notBannedWhenIpNotPresent() {
+      assertThat(userBanDao.isBannedByIp("1.1.1.1"), is(false));
+    }
+
+    @Test
+    void notBannedWhenBanIsExpired() {
+      assertThat(userBanDao.isBannedByIp("127.0.0.2"), is(false));
+    }
+
+
+  }
+
+    @Nested
   @DataSet(cleanBefore = true, value = "user_ban/lookup_bans.yml")
   class BanLookups {
     @Test
