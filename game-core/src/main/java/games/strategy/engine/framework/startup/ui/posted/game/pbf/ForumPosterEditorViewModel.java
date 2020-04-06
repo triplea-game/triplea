@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.TestPostAction;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
@@ -122,8 +123,10 @@ class ForumPosterEditorViewModel {
     return isTopicIdValid() && isForumUsernameValid() && isForumPasswordValid();
   }
 
-  boolean isForumProviderTripleA() {
-    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
+  String getForumProviderHelpText() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? HelpTexts.TRIPLEA_FORUM
+        : HelpTexts.AXIS_AND_ALLIES_DOT_ORG_FORUM;
   }
 
   boolean isForumPasswordValid() {

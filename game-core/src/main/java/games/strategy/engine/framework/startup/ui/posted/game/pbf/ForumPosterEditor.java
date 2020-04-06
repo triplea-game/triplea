@@ -95,10 +95,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
           SwingComponents.highlightLabelIfNotValid(viewModel.isForumUsernameValid(), usernameLabel);
           SwingComponents.highlightLabelIfNotValid(viewModel.isForumPasswordValid(), passwordLabel);
           testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
-          helpMessage.setText(
-              viewModel.isForumProviderTripleA()
-                  ? HelpTexts.TRIPLEA_FORUM
-                  : HelpTexts.AXIS_AND_ALLIES_DOT_ORG_FORUM);
+          helpMessage.setText(viewModel.getForumProviderHelpText());
         });
     forums.setSelectedItem(viewModel.getForumSelection());
     add(
