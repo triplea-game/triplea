@@ -120,7 +120,7 @@ public class UnifiedMessenger {
     final Invoke invoke = new HubInvoke(methodCallId, true, remoteCall);
     send(invoke, messenger.getServerNode());
 
-    if (!Interruptibles.awaitResult(() -> latch.await(1, TimeUnit.MINUTES)).result.orElse(false)) {
+    if (!Interruptibles.awaitResult(() -> latch.await(20, TimeUnit.SECONDS)).result.orElse(false)) {
       throw new IllegalStateException(
           String.format(
               "Server timed out while waiting for result of method %s for remote %s with id %s",
