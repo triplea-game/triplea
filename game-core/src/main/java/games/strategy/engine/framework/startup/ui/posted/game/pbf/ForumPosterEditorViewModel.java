@@ -17,7 +17,6 @@ import org.triplea.java.Postconditions;
 import org.triplea.java.StringUtils;
 import org.triplea.java.ViewModelListener;
 
-@SuppressWarnings("UnstableApiUsage")
 class ForumPosterEditorViewModel {
   private final Runnable readyCallback;
 
@@ -37,14 +36,17 @@ class ForumPosterEditorViewModel {
   @Setter @Getter private boolean alsoPostAfterCombatMove;
   @Getter private String forumUsername;
   @Getter private char[] forumPassword;
+  @Setter private boolean rememberPassword;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
+    rememberPassword = ClientSetting.rememberForumPassword.getValue().orElse(false);
     setForumSelection("");
   }
 
   ForumPosterEditorViewModel(final Runnable readyCallback, final GameProperties properties) {
     this.readyCallback = readyCallback;
+    rememberPassword = ClientSetting.rememberForumPassword.getValue().orElse(false);
     populateFromGameProperties(properties);
   }
 
@@ -158,5 +160,9 @@ class ForumPosterEditorViewModel {
     if (areFieldsValid()) {
       testPostAction.accept(forumSelection, Integer.parseInt(topicId));
     }
+  }
+
+  boolean isForgetPasswordOnShutdown() {
+    return !rememberPassword;
   }
 }

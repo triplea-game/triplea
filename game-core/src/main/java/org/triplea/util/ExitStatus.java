@@ -1,7 +1,7 @@
 package org.triplea.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import lombok.AllArgsConstructor;
 
 /** A process exit status. */
@@ -14,10 +14,10 @@ public enum ExitStatus {
   /** The process exited due to a failure (1). */
   FAILURE(1);
 
+  private static final Collection<Runnable> exitActions = new HashSet<>();
   private final int status;
-  private final List<Runnable> exitActions = new ArrayList<>();
 
-  public void addExitAction(final Runnable runnable) {
+  public static void addExitAction(final Runnable runnable) {
     exitActions.add(runnable);
   }
 

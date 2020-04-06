@@ -108,6 +108,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> proxyPort = new IntegerClientSetting("PROXY_PORT");
   public static final BooleanClientSetting rememberLoginPassword =
       new BooleanClientSetting("REMEMBER_PASSWORD", false);
+  public static final BooleanClientSetting rememberEmailPassword =
+      new BooleanClientSetting("REMEMBER_EMAIL_PASSWORD", false);
+  public static final BooleanClientSetting rememberForumPassword =
+      new BooleanClientSetting("REMEMBER_FORUM_PASSWORD", false);
   public static final ClientSetting<Path> saveGamesFolderPath =
       new PathClientSetting(
           "SAVE_GAMES_FOLDER_PATH",

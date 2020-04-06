@@ -89,7 +89,8 @@ public final class SwingComponents {
    * default color.
    */
   public static void highlightLabelIfNotValid(final boolean valid, final JLabel label) {
-    label.setForeground(valid ? SwingComponents.getDefaultLabelColor() : Color.RED);
+    SwingUtilities.invokeLater(
+        () -> label.setForeground(valid ? SwingComponents.getDefaultLabelColor() : Color.RED));
   }
 
   /**
