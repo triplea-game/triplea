@@ -121,6 +121,9 @@ public class UnifiedMessenger {
     send(invoke, messenger.getServerNode());
 
     if (!Interruptibles.awaitResult(() -> latch.await(20, TimeUnit.SECONDS)).result.orElse(false)) {
+      synchronized (pendingLock) {
+        pendingInvocations.remove(methodCallId);
+      }
       throw new IllegalStateException(
           String.format(
               "Server timed out while waiting for result of method %s for remote %s with id %s",
@@ -295,13 +298,10 @@ public class UnifiedMessenger {
       synchronized (pendingLock) {
         results.put(methodId, spokeInvocationResults.results);
         final CountDownLatch latch = pendingInvocations.remove(methodId);
-        Preconditions.checkNotNull(
-            latch,
-            String.format(
-                "method id: %s, was not present in pending invocations: %s, "
-                    + "unified messenger addr: %s",
-                methodId, pendingInvocations, super.toString()));
-        latch.countDown();
+        if (latch != null) {
+          log.info("Missing latch. Did the method time out?");
+          latch.countDown();
+        }
       }
     }
   }
