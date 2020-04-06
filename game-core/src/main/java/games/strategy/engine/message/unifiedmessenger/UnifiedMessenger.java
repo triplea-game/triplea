@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -186,13 +187,16 @@ public class UnifiedMessenger {
               + name
               + ", messenger addr: "
               + super.toString());
-      return endPoint.getFirstImplementor();
+      return endPoint.getOnlyImplementor();
     }
   }
 
-  public boolean hasImplementor(final String name) {
-    return localEndPoints.get(name) != null
-        && localEndPoints.get(name).getFirstImplementor() != null;
+  public boolean hasSingleImplementor(final String name) {
+    synchronized (endPointMutex) {
+      return Optional.ofNullable(localEndPoints.get(name))
+          .map(EndPoint::hasSingleImplementor)
+          .orElse(false);
+    }
   }
 
   /** Removes the specified implementor for the end point with the specified name. */
@@ -238,15 +242,6 @@ public class UnifiedMessenger {
 
   public boolean isServer() {
     return messenger.isServer();
-  }
-
-  public int getLocalEndPointCount(final RemoteName descriptor) {
-    synchronized (endPointMutex) {
-      if (!localEndPoints.containsKey(descriptor.getName())) {
-        return 0;
-      }
-      return localEndPoints.get(descriptor.getName()).getLocalImplementorCount();
-    }
   }
 
   /**

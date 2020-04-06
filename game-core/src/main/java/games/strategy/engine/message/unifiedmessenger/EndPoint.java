@@ -6,10 +6,12 @@ import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.net.INode;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 
 /**
@@ -24,10 +26,9 @@ class EndPoint {
   // the next number we can run
   private long currentRunnableNumber = 0;
   private final Object numberMutex = new Object();
-  private final Object implementorsMutex = new Object();
   private final String name;
   private final Class<?> remoteClass;
-  private final List<Object> implementors = new ArrayList<>();
+  private final Set<Object> implementors = new CopyOnWriteArraySet<>();
   private final boolean singleThreaded;
 
   EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded) {
@@ -36,13 +37,16 @@ class EndPoint {
     this.singleThreaded = singleThreaded;
   }
 
-  public Object getFirstImplementor() {
-    synchronized (implementorsMutex) {
-      if (implementors.size() != 1) {
-        throw new IllegalStateException("Invalid implementor count, " + implementors);
-      }
-      return implementors.get(0);
+  /**
+   * Returns the implementor if this class only holds a single implementor.
+   *
+   * @throws IllegalStateException If this class has less or more than 1 implementor.
+   */
+  public Object getOnlyImplementor() {
+    if (!hasSingleImplementor()) {
+      throw new IllegalStateException("Invalid implementor count, " + implementors);
     }
+    return implementors.iterator().next();
   }
 
   public long takeANumber() {
@@ -74,15 +78,11 @@ class EndPoint {
       throw new IllegalArgumentException(
           remoteClass + " is not assignable from " + implementor.getClass());
     }
-    synchronized (implementorsMutex) {
-      implementors.add(implementor);
-    }
+    implementors.add(implementor);
   }
 
-  public int getLocalImplementorCount() {
-    synchronized (implementorsMutex) {
-      return implementors.size();
-    }
+  public boolean hasSingleImplementor() {
+    return implementors.size() == 1;
   }
 
   /**
@@ -91,19 +91,16 @@ class EndPoint {
    * @return we have no more implementors.
    */
   boolean removeImplementor(final Object implementor) {
-    synchronized (implementorsMutex) {
-      if (!implementors.remove(implementor)) {
-        throw new IllegalStateException(
-            "Not removed, impl:" + implementor + " have " + implementors);
-      }
-      return implementors.isEmpty();
+    if (!implementors.remove(implementor)) {
+      throw new IllegalStateException("Not removed, impl:" + implementor + " have " + implementors);
     }
+    return implementors.isEmpty();
   }
 
-  /*
-   * @param number - like the number you get in a bank line, if we are single
-   * threaded, then the method will not run until the number comes up. Acquire
-   * with getNumber() @return a List of RemoteMethodCallResults
+  /**
+   * @param number - like the number you get in a bank line, if we are single threaded, then the
+   *     method will not run until the number comes up. Acquire with {@link #takeANumber()}
+   * @return a List of RemoteMethodCallResults
    */
   public List<RemoteMethodCallResults> invokeLocal(
       final RemoteMethodCall call, final long number, final INode messageOriginator) {
@@ -119,16 +116,9 @@ class EndPoint {
 
   private List<RemoteMethodCallResults> invokeMultiple(
       final RemoteMethodCall call, final INode messageOriginator) {
-    // copy the implementors
-    final List<Object> implementorsCopy;
-    synchronized (implementorsMutex) {
-      implementorsCopy = new ArrayList<>(implementors);
-    }
-    final List<RemoteMethodCallResults> results = new ArrayList<>(implementorsCopy.size());
-    for (final Object implementor : implementorsCopy) {
-      results.add(invokeSingle(call, implementor, messageOriginator));
-    }
-    return results;
+    return implementors.stream()
+        .map(implementor -> invokeSingle(call, implementor, messageOriginator))
+        .collect(Collectors.toUnmodifiableList());
   }
 
   private RemoteMethodCallResults invokeSingle(

@@ -2,7 +2,7 @@ package games.strategy.engine.message;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
@@ -82,7 +82,7 @@ class ChannelMessengerTest {
     final ChannelSubscriber client1Subscriber = new ChannelSubscriber();
     clientChannelMessenger.registerChannelSubscriber(client1Subscriber, test);
     assertHasChannel(test, unifiedMessengerHub);
-    assertEquals(1, clientChannelMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
+    assertTrue(clientChannelMessenger.getUnifiedMessenger().hasSingleImplementor(test.getName()));
     // add a new client
     final SystemId systemId = SystemId.of("system-id2");
     final ClientMessenger clientMessenger2 =
