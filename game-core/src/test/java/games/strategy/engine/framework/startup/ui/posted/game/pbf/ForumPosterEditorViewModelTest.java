@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.text.IsEmptyString.emptyString;
 import static org.mockito.ArgumentMatchers.any;
@@ -291,7 +292,12 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     viewModel.setForumSelection(NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
 
     assertThat(viewModel.getForumUsername(), is("a"));
-    assertThat(viewModel.getForumPassword(), is(new char[] {'b'}));
+    assertThat(viewModel.getForumPassword().length() > 0, is(true));
+    assertThat(
+        "we do not store the actual password, we'll set a dummy password in the text field "
+            + "to represent it being set, password is only stored in ClientSettings.",
+        String.valueOf(viewModel.getForumPassword()),
+        is(not("b")));
   }
 
   @Test
@@ -303,6 +309,6 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     viewModel.setForumSelection(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
 
     assertThat(viewModel.getForumUsername(), is("c"));
-    assertThat(viewModel.getForumPassword(), is(new char[] {'d'}));
+    assertThat(viewModel.getForumPassword().length() > 0, is(true));
   }
 }

@@ -35,7 +35,7 @@ class ForumPosterEditorViewModel {
   @Setter @Getter private boolean attachSaveGameToSummary = true;
   @Setter @Getter private boolean alsoPostAfterCombatMove;
   @Getter private String forumUsername;
-  @Getter private char[] forumPassword;
+  private boolean forumPasswordIsSet;
   @Setter private boolean rememberPassword;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
@@ -57,7 +57,7 @@ class ForumPosterEditorViewModel {
             : ClientSetting.aaForumPassword;
 
     passwordSetting.setValueAndFlush(password);
-    forumPassword = password;
+    forumPasswordIsSet = password.length > 0;
     readyCallback.run();
   }
 
@@ -87,11 +87,15 @@ class ForumPosterEditorViewModel {
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
-    forumPassword =
+    forumPasswordIsSet =
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0])
-            : ClientSetting.aaForumPassword.getValue().orElse(new char[0]);
+            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0]).length > 0
+            : ClientSetting.aaForumPassword.getValue().orElse(new char[0]).length > 0;
     readyCallback.run();
+  }
+
+  String getForumPassword() {
+    return forumPasswordIsSet ? "********" : "";
   }
 
   public String getForumSelection() {
@@ -123,7 +127,7 @@ class ForumPosterEditorViewModel {
   }
 
   boolean isForumPasswordValid() {
-    return forumPassword != null && forumPassword.length > 0;
+    return forumPasswordIsSet;
   }
 
   boolean isForumUsernameValid() {
