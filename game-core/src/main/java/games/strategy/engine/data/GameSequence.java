@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 /** A contiguous sequence of {@link GameStep}s within a single game round. */
@@ -10,6 +11,7 @@ import lombok.extern.java.Log;
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
 
+  @Getter
   private final List<GameStep> steps = new ArrayList<>();
   private int currentIndex;
   private int round = 1;

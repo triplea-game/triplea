@@ -29,14 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.swing.CollapsiblePanel;
 import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
@@ -45,7 +43,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private final JLabel leftToPlaceLabel = new JLabel();
   private PlaceData placeData;
 
-  private final CollapsiblePanel detachedCollapsiblePanel;
   private final SimpleUnitPanel unitsToPlacePanel;
 
   private GamePlayer lastPlayer;
@@ -110,16 +107,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     undoableMovesPanel = new UndoablePlacementsPanel(this);
-    unitsToPlacePanel =
-        new SimpleUnitPanel(
-            map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units To Place");
+    unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
     data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
     leftToPlaceLabel.setText("Units left to place:");
-  }
-
-  public JComponent getDetachedUnitsToPlacePanel() {
-    return detachedCollapsiblePanel;
   }
 
   private void updateStep() {
@@ -164,11 +154,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         () -> {
           if (showUnitsToPlace) {
             unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
-            detachedCollapsiblePanel.setVisible(true);
             unitsToPlacePanel.revalidate();
             unitsToPlacePanel.repaint();
           } else {
-            detachedCollapsiblePanel.setVisible(false);
             unitsToPlacePanel.removeAll();
           }
         });
