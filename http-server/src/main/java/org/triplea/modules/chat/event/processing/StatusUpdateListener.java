@@ -26,10 +26,8 @@ public class StatusUpdateListener
       final WebSocketMessageContext<PlayerStatusUpdateSentMessage> messageContext,
       final ChatParticipant chatParticipant) {
 
-    messageContext
-        .getMessagingBus()
-        .broadcastMessage(
-            new PlayerStatusUpdateReceivedMessage(
-                chatParticipant.getUserName(), messageContext.getMessage().getStatus()));
+    messageContext.broadcastMessage(
+        new PlayerStatusUpdateReceivedMessage(
+            chatParticipant.getUserName(), messageContext.getMessage().getStatus()));
   }
 }
