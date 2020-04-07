@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
@@ -118,7 +120,15 @@ public class UnifiedMessenger {
     final Invoke invoke = new HubInvoke(methodCallId, true, remoteCall);
     send(invoke, messenger.getServerNode());
 
-    Interruptibles.await(latch);
+    if (!Interruptibles.awaitResult(() -> latch.await(20, TimeUnit.SECONDS)).result.orElse(false)) {
+      synchronized (pendingLock) {
+        pendingInvocations.remove(methodCallId);
+      }
+      throw new IllegalStateException(
+          String.format(
+              "Server timed out while waiting for result of method %s for remote %s with id %s",
+              remoteCall.getMethodName(), remoteCall.getRemoteName(), methodCallId));
+    }
 
     synchronized (pendingLock) {
       final RemoteMethodCallResults methodCallResults = results.remove(methodCallId);
@@ -276,35 +286,7 @@ public class UnifiedMessenger {
         }
         return;
       }
-      // very important
-      // we are guaranteed that here messages will be read in the same order that they are sent from
-      // the client
-      // however, once we delegate to the thread pool, there is no guarantee that the thread pool
-      // task will run before
-      // we get the next message notification
-      // get the number for the invocation here
-      final long methodRunNumber = local.takeANumber();
-      // we don't want to block the message thread, only one thread is
-      // reading messages per connection, so run with out thread pool
-      final EndPoint localFinal = local;
-      threadPool.execute(
-          () -> {
-            final List<RemoteMethodCallResults> results =
-                localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
-            if (invoke.needReturnValues) {
-              final RemoteMethodCallResults result;
-              if (results.size() == 1) {
-                result = results.get(0);
-              } else {
-                result =
-                    new RemoteMethodCallResults(
-                        new IllegalStateException("Invalid result count" + results.size())
-                            + " for end point:"
-                            + localFinal);
-              }
-              send(new HubInvocationResults(result, invoke.methodCallId), from);
-            }
-          });
+      processMessage(local, invoke, from);
     } else if (msg instanceof SpokeInvocationResults) { // a remote machine is returning results
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
@@ -316,15 +298,60 @@ public class UnifiedMessenger {
       synchronized (pendingLock) {
         results.put(methodId, spokeInvocationResults.results);
         final CountDownLatch latch = pendingInvocations.remove(methodId);
-        Preconditions.checkNotNull(
-            latch,
-            String.format(
-                "method id: %s, was not present in pending invocations: %s, "
-                    + "unified messenger addr: %s",
-                methodId, pendingInvocations, super.toString()));
-        latch.countDown();
+        if (latch != null) {
+          log.info("Missing latch. Did the method time out?");
+          latch.countDown();
+        }
       }
     }
+  }
+
+  private void processMessage(final EndPoint local, final SpokeInvoke invoke, final INode from) {
+    // very important
+    // we are guaranteed that here messages will be read in the same order that they are sent from
+    // the client
+    // however, once we delegate to the thread pool, there is no guarantee that the thread pool
+    // task will run before
+    // we get the next message notification
+    // get the number for the invocation here
+    final long methodRunNumber = local.takeANumber();
+    // we don't want to block the message thread, only one thread is
+    // reading messages per connection, so run with out thread pool
+    CompletableFuture.runAsync(
+            () -> {
+              final List<RemoteMethodCallResults> results =
+                  local.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
+              if (invoke.needReturnValues) {
+                final RemoteMethodCallResults result;
+                if (results.size() == 1) {
+                  result = results.get(0);
+                } else {
+                  result =
+                      new RemoteMethodCallResults(
+                          new IllegalStateException(
+                              String.format(
+                                  "Invalid result count '%d' for end point '%s'",
+                                  results.size(), local)));
+                }
+                send(new HubInvocationResults(result, invoke.methodCallId), from);
+              }
+            },
+            threadPool)
+        .exceptionally(
+            throwable -> {
+              log.log(Level.SEVERE, "Exception during execution of client request", throwable);
+              if (invoke.needReturnValues) {
+                try {
+                  send(
+                      new HubInvocationResults(
+                          new RemoteMethodCallResults(throwable), invoke.methodCallId),
+                      from);
+                } catch (final RuntimeException e) {
+                  log.log(Level.SEVERE, "Exception while sending exception to client", throwable);
+                }
+              }
+              return null;
+            });
   }
 
   private void assertIsServer(final INode from) {
