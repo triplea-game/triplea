@@ -30,6 +30,7 @@ public interface ModeratorAuditHistoryDao {
     REMOVE_BAD_WORD,
     BAN_USER,
     REMOVE_USER_BAN,
+    ADD_MODERATOR,
     REMOVE_MODERATOR,
     ADD_SUPER_MOD,
     DISCONNECT_USER,

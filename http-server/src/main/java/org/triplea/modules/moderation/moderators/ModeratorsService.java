@@ -52,7 +52,7 @@ class ModeratorsService {
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorUserId(moderatorIdRequesting)
-            .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
+            .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_MODERATOR)
             .actionTarget(username)
             .build());
     log.info(username + " was promoted to moderator");
