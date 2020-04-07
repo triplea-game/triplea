@@ -461,7 +461,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotGetGameSaveClientAction(final Component parent) {
-    return new GetGameSaveClientAction(parent, getServerStartup());
+    return new GetGameSaveClientAction(parent, getServerStartup(), gameDataOnStartup);
   }
 
   /** Simple data object for which host we are connecting to and with which name. */
