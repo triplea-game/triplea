@@ -82,6 +82,7 @@ public class UnitScroller {
   private final JPanel selectUnitImagePanel = new JPanel();
 
   private CollapsiblePanel collapsiblePanel;
+  private int movesLeft;
 
   public UnitScroller(
       final GameData data, final MapPanel mapPanel, final Supplier<Boolean> parentPanelIsVisible) {
@@ -93,6 +94,7 @@ public class UnitScroller {
             gameData.getSequence().getStep().isNonCombat()
                 ? MovePhase.NON_COMBAT
                 : MovePhase.COMBAT;
+    movesLeft = movesLeft();
     this.parentPanelIsVisible = parentPanelIsVisible;
     avatarPanelFactory = new AvatarPanelFactory(mapPanel);
 
@@ -107,11 +109,10 @@ public class UnitScroller {
           @Override
           public void mouseEntered(@Nullable final Territory territory) {
             if (parentPanelIsVisible.get()) {
-              if (territory != null) {
+              if (territory != null && movesLeft > 0) {
                 lastFocusedTerritory = territory;
                 drawUnitAvatarPane(territory);
                 territoryNameLabel.setText(territory.getName());
-                updateMovesLeftLabel();
               }
             }
           }
@@ -126,7 +127,7 @@ public class UnitScroller {
       return;
     }
 
-    updateMovesLeftLabel();
+    updateMovesLeft();
     if (lastFocusedTerritory == null) {
       focusCapital();
     } else {
@@ -143,9 +144,26 @@ public class UnitScroller {
                 .build()));
   }
 
-  private void updateMovesLeftLabel() {
+  private void updateMovesLeft() {
     Optional.ofNullable(collapsiblePanel)
-        .ifPresent(panel -> panel.setTitle("Units To Move (" + movesLeft() + ")"));
+        .ifPresent(
+            panel -> {
+              movesLeft = movesLeft();
+              SwingUtilities.invokeLater(
+                  () -> {
+                    panel.setTitle("Units To Move (" + movesLeft + ")");
+
+                    if (movesLeft == 0) {
+                      clearUnitAvatarArea();
+                    }
+                  });
+            });
+  }
+
+  private void clearUnitAvatarArea() {
+    lastFocusedTerritory = null;
+    territoryNameLabel.setText("");
+    selectUnitImagePanel.removeAll();
   }
 
   private int movesLeft() {
@@ -169,7 +187,7 @@ public class UnitScroller {
     lastFocusedTerritory = null;
     selectUnitImagePanel.removeAll();
     selectUnitImagePanel.repaint();
-    updateMovesLeftLabel();
+    updateMovesLeft();
     focusCapital();
   }
 
@@ -216,7 +234,7 @@ public class UnitScroller {
   public Component build() {
     final JPanel panel = new JPanel();
     collapsiblePanel = new CollapsiblePanel(panel, "");
-    updateMovesLeftLabel();
+    updateMovesLeft();
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -272,7 +290,7 @@ public class UnitScroller {
   public void skipCurrentUnits() {
     if (lastFocusedTerritory != null) {
       skippedUnits.addAll(getMovableUnits(lastFocusedTerritory));
-      updateMovesLeftLabel();
+      updateMovesLeft();
     }
     centerOnNextMovableUnit();
   }
@@ -288,7 +306,7 @@ public class UnitScroller {
   public void sleepCurrentUnits() {
     if (lastFocusedTerritory != null) {
       sleepingUnits.addAll(getMovableUnits(lastFocusedTerritory));
-      updateMovesLeftLabel();
+      updateMovesLeft();
     }
     centerOnNextMovableUnit();
   }
@@ -296,7 +314,7 @@ public class UnitScroller {
   private void wakeAllUnits() {
     sleepingUnits.clear();
     skippedUnits.clear();
-    updateMovesLeftLabel();
+    updateMovesLeft();
     centerOnNextMovableUnit();
   }
 
@@ -389,7 +407,7 @@ public class UnitScroller {
     lastFocusedTerritory = selectedTerritory;
     territoryNameLabel.setText(lastFocusedTerritory.getName());
     highlightTerritory(selectedTerritory);
-    updateMovesLeftLabel();
+    updateMovesLeft();
     drawUnitAvatarPane(selectedTerritory);
   }
 
