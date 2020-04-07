@@ -10,7 +10,6 @@ import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.modules.chat.InetExtractor;
 
 /**
  * Tracks sessions, can be used to listen to IP session ban events and close any matching sessions.

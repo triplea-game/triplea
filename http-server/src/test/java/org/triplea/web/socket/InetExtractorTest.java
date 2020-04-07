@@ -1,4 +1,4 @@
-package org.triplea.modules.chat;
+package org.triplea.web.socket;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

@@ -1,4 +1,4 @@
-package org.triplea.modules.chat;
+package org.triplea.web.socket;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;

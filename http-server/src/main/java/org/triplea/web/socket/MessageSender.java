@@ -11,7 +11,7 @@ import org.triplea.java.Interruptibles;
 /** Sends a server message (encoded as a JSON string) to a specific connected websocket sessions. */
 @Slf4j
 class MessageSender implements BiConsumer<Session, MessageEnvelope> {
-  private final Gson gson = new Gson();
+  private static final Gson GSON = new Gson();
 
   @Override
   public void accept(final Session session, final MessageEnvelope message) {
@@ -24,7 +24,7 @@ class MessageSender implements BiConsumer<Session, MessageEnvelope> {
       throws InterruptedException {
     try {
       if (session.isOpen()) {
-        session.getAsyncRemote().sendText(gson.toJson(message)).get();
+        session.getAsyncRemote().sendText(GSON.toJson(message)).get();
       }
     } catch (final ExecutionException e) {
       log.warn("Failed to send message: " + message, e);
