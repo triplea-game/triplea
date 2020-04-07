@@ -32,11 +32,10 @@ public class WebSocketMessagingBus {
   private final List<BiConsumer<WebSocketMessagingBus, Session>> sessionClosedListeners =
       new ArrayList<>();
 
-  @SuppressWarnings("rawtypes")
   @Value
   private static class MessageListener<T extends WebSocketMessage> {
     MessageType<T> messageType;
-    Consumer<WebSocketMessageContext> listener;
+    Consumer<WebSocketMessageContext<T>> listener;
   }
 
   private final List<MessageListener<?>> messageListeners = new ArrayList<>();
@@ -56,23 +55,25 @@ public class WebSocketMessagingBus {
     messageBroadcaster.accept(sessionSet.getSessions(), broadcastMessage.toEnvelope());
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
   public <T extends WebSocketMessage> void addListener(
       final MessageType<T> type, final Consumer<WebSocketMessageContext<T>> listener) {
-    messageListeners.add(new MessageListener(type, listener));
+    messageListeners.add(new MessageListener<>(type, listener));
   }
 
-  void onMessage(final Session session, final MessageEnvelope envelope) {
+  @SuppressWarnings("unchecked")
+  <T extends WebSocketMessage> void onMessage(
+      final Session session, final MessageEnvelope envelope) {
     determineMatchingMessageType(envelope)
         .ifPresent(
             messageType -> {
-              final WebSocketMessage payload = envelope.getPayload(messageType.getPayloadType());
+              final T payload = (T) envelope.getPayload(messageType.getPayloadType());
 
               getListenersForMessageTypeId(envelope.getMessageTypeId())
+                  .map(messageListener -> (MessageListener<T>) messageListener)
                   .forEach(
                       messageListener ->
                           messageListener.listener.accept(
-                              WebSocketMessageContext.builder()
+                              WebSocketMessageContext.<T>builder()
                                   .messagingBus(this)
                                   .senderSession(session)
                                   .message(payload)
