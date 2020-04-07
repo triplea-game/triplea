@@ -11,8 +11,7 @@ import lombok.extern.java.Log;
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
 
-  @Getter
-  private final List<GameStep> steps = new ArrayList<>();
+  @Getter private final List<GameStep> steps = new ArrayList<>();
   private int currentIndex;
   private int round = 1;
   private int roundOffset = 0;
