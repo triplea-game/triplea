@@ -156,7 +156,6 @@ public class SimpleUnitPanel extends JPanel {
             false);
       }
     }
-    addEmptyLabelIfNeeded();
   }
 
   /**
@@ -188,7 +187,6 @@ public class SimpleUnitPanel extends JPanel {
         }
       }
     }
-    addEmptyLabelIfNeeded();
   }
 
   /**
@@ -206,7 +204,6 @@ public class SimpleUnitPanel extends JPanel {
           category.hasDamageOrBombingUnitDamage(),
           category.getDisabled());
     }
-    addEmptyLabelIfNeeded();
   }
 
   private void addUnits(
@@ -228,11 +225,5 @@ public class SimpleUnitPanel extends JPanel {
           uiContext.getResourceImageFactory().getIcon(unit, style == Style.LARGE_ICONS_COLUMN));
     }
     add(label);
-  }
-
-  private void addEmptyLabelIfNeeded() {
-    if (style == Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY && getComponentCount() == 0) {
-      add(new JLabel("(None)"));
-    }
   }
 }

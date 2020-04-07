@@ -166,7 +166,11 @@ public class GameStep extends GameDataComponent {
   }
 
   public static boolean isPurchaseOrBidStep(final String stepName) {
-    return stepName.endsWith("Bid") || stepName.endsWith("Purchase");
+    return stepName.endsWith("Bid") || isPurchase(stepName);
+  }
+
+  public static boolean isPurchase(final String stepName) {
+    return stepName.endsWith("Purchase");
   }
 
   public static boolean isPlaceStep(final String stepName) {

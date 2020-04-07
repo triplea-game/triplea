@@ -23,25 +23,26 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.swing.CollapsiblePanel;
+import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private static final long serialVersionUID = -4411301492537704785L;
   private final JLabel actionLabel = new JLabel();
+  private final JLabel leftToPlaceLabel = new JLabel();
   private PlaceData placeData;
 
-  private final CollapsiblePanel detachedCollapsiblePanel;
   private final SimpleUnitPanel unitsToPlacePanel;
 
   private GamePlayer lastPlayer;
@@ -94,6 +95,10 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
           if (option == JOptionPane.OK_OPTION) {
             final Collection<Unit> choosen = chooser.getSelected();
             placeData = new PlaceData(choosen, territory);
+            updateUnits();
+            if (choosen.containsAll(units)) {
+              leftToPlaceLabel.setText("");
+            }
             release();
           }
         }
@@ -102,15 +107,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     undoableMovesPanel = new UndoablePlacementsPanel(this);
-    unitsToPlacePanel =
-        new SimpleUnitPanel(
-            map.getUiContext(), SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    detachedCollapsiblePanel = new CollapsiblePanel(unitsToPlacePanel, "Units to Place");
+    unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
     data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
-  }
-
-  public JComponent getDetachedUnitsToPlacePanel() {
-    return detachedCollapsiblePanel;
+    leftToPlaceLabel.setText("Units left to place:");
   }
 
   private void updateStep() {
@@ -155,11 +154,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         () -> {
           if (showUnitsToPlace) {
             unitsToPlacePanel.setUnitsFromCategories(unitsToPlace);
-            detachedCollapsiblePanel.setVisible(true);
             unitsToPlacePanel.revalidate();
             unitsToPlacePanel.repaint();
           } else {
-            detachedCollapsiblePanel.setVisible(false);
             unitsToPlacePanel.removeAll();
           }
         });
@@ -288,7 +285,10 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   @Override
-  protected final void undoMoveSpecific() {}
+  protected final void undoMoveSpecific() {
+    leftToPlaceLabel.setText("Units left to place:");
+    updateUnits();
+  }
 
   @Override
   protected final void cleanUpSpecific() {
@@ -321,5 +321,17 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   @Override
   protected boolean setCancelButton() {
     return false;
+  }
+
+  @Override
+  protected final List<Component> getAdditionalButtons() {
+    updateUnits();
+    return Arrays.asList(SwingComponents.leftBox(leftToPlaceLabel), add(unitsToPlacePanel));
+  }
+
+  private void updateUnits() {
+    final Collection<UnitCategory> unitCategories =
+        UnitSeparator.categorize(getCurrentPlayer().getUnits());
+    unitsToPlacePanel.setUnitsFromCategories(unitCategories);
   }
 }

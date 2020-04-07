@@ -576,13 +576,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
-    final PlacePanel placePanel = actionButtons.getPlacePanel();
 
     rightHandSidePanel.add(
         new JPanelBuilder()
             .borderLayout()
-            .addNorth(movePanel.getUnitScrollerPanel())
-            .addSouth(placePanel.getDetachedUnitsToPlacePanel())
+            .addNorth(new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel())
+            .addSouth(movePanel.getUnitScrollerPanel())
             .build(),
         BorderLayout.SOUTH);
 
