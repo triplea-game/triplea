@@ -258,6 +258,7 @@ public class UnitScroller {
     final JButton wakeAllButton = new JButton(UnitScrollerIcon.WAKE_ALL.get());
     wakeAllButton.setToolTipText(WAKE_ALL_TOOLTIP);
     wakeAllButton.addActionListener(e -> wakeAllUnits());
+    wakeAllButton.setFocusable(false);
 
     final JButton nextUnit = new JButton(UnitScrollerIcon.RIGHT_ARROW.get());
     nextUnit.setToolTipText(NEXT_UNITS_TOOLTIP);
