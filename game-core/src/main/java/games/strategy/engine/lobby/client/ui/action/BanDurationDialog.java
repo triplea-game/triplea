@@ -19,13 +19,18 @@ public final class BanDurationDialog extends JDialog {
   static final int MAX_DURATION = 10_000_000;
   private static final long serialVersionUID = 1367343948352548021L;
 
+  private static final String TITLE = "Select Timespan";
+  private static final String MESSAGE =
+      "Please consult other admins before banning longer than 1 day. \n"
+          + "And please remember to report this ban.";
+
   private final JSpinner durationSpinner =
       new JSpinner(new SpinnerNumberModel(1, 1, MAX_DURATION, 1));
   private final JComboBox<BanTimeUnit> timeUnitComboBox = new JComboBox<>(BanTimeUnit.values());
   private Result result = Result.CANCEL;
 
-  private BanDurationDialog(final Frame owner, final String title, final String message) {
-    super(owner, title, true);
+  private BanDurationDialog(final Frame owner) {
+    super(owner, TITLE, true);
 
     add(
         new JPanelBuilder()
@@ -34,7 +39,7 @@ public final class BanDurationDialog extends JDialog {
             .add(
                 new JPanelBuilder()
                     .boxLayoutHorizontal()
-                    .add(JLabelBuilder.builder().text(message).build())
+                    .add(JLabelBuilder.builder().text(MESSAGE).build())
                     .addHorizontalGlue()
                     .build())
             .addVerticalStrut(10)
@@ -105,16 +110,10 @@ public final class BanDurationDialog extends JDialog {
    * Prompts the user to enter a timespan. If the operation is not cancelled, the action Consumer is
    * run. Not that the Date passed to the consumer can be null if the user chose forever.
    */
-  public static void prompt(
-      final Frame owner,
-      final String title,
-      final String message,
-      final Consumer<BanDuration> action) {
+  public static void prompt(final Frame owner, final Consumer<BanDuration> action) {
     checkNotNull(owner);
-    checkNotNull(title);
-    checkNotNull(message);
     checkNotNull(action);
 
-    new BanDurationDialog(owner, title, message).open().ifPresent(action);
+    new BanDurationDialog(owner).open().ifPresent(action);
   }
 }
