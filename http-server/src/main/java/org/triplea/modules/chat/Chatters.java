@@ -114,6 +114,6 @@ public class Chatters {
                 e);
           }
         });
-    return sessions.isEmpty();
+    return !sessions.isEmpty();
   }
 }

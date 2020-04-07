@@ -168,7 +168,9 @@ class ChattersTest {
   class DisconnectPlayerSessions {
     @Test
     void noOpIfPlayerNotConnected() {
-      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+      final boolean result =
+          chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+      assertThat(result, is(false));
     }
 
     @Test
@@ -177,7 +179,9 @@ class ChattersTest {
       when(session.getId()).thenReturn("100");
       chatters.connectPlayer(API_KEY, session);
 
-      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+      final boolean result =
+          chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+      assertThat(result, is(true));
 
       verify(session).close(any(CloseReason.class));
     }
@@ -194,7 +198,9 @@ class ChattersTest {
       chatters.connectPlayer(API_KEY, session);
       chatters.connectPlayer(API_KEY_2, session2);
 
-      chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+      final boolean result =
+          chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+      assertThat(result, is(true));
 
       verify(session).close(any(CloseReason.class));
       verify(session2).close(any(CloseReason.class));
