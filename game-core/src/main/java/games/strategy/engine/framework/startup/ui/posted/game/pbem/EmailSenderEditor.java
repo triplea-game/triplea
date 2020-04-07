@@ -1,16 +1,20 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
+import games.strategy.triplea.settings.ClientSetting;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import org.triplea.java.ViewModelListener;
+import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.JComboBoxBuilder;
@@ -40,13 +44,15 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
               })
           .build();
 
-  private final JLabel helpMessage = new JLabel();
   private final JButton helpButton =
       new JButtonBuilder("Help")
           .actionListener(
               () ->
                   JOptionPane.showMessageDialog(
-                      contents, helpMessage, "Play By Email Help", JOptionPane.INFORMATION_MESSAGE))
+                      contents,
+                      new JLabel(viewModel.getEmailHelpText()),
+                      "Play By Email Help",
+                      JOptionPane.INFORMATION_MESSAGE))
           .toolTip("Click this button to show help text")
           .build();
 
@@ -113,6 +119,39 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
           .columns(FIELD_LENGTH)
           .build();
 
+  private final JLabel userNameLabel = new JLabel("Email Username:");
+  private final JTextField userNameField =
+      JTextFieldBuilder.builder()
+          .text(viewModel.getEmailUsername())
+          .textListener(
+              fieldValue -> {
+                if (syncToModel) {
+                  viewModel.setEmailUsername(fieldValue);
+                }
+              })
+          .columns(FIELD_LENGTH)
+          .build();
+
+  private final JLabel passwordLabel = new JLabel("Email Password:");
+  private final JPasswordField passwordField =
+      new JPasswordField(viewModel.getEmailPassword(), FIELD_LENGTH);
+
+  private final JCheckBox rememberPassword =
+      new JCheckBoxBuilder("Remember Password")
+          .actionListener(viewModel::setRememberPassword)
+          .bind(ClientSetting.rememberEmailPassword)
+          .build();
+  private final JButton rememberPasswordHelpButton =
+      new JButtonBuilder("Help")
+          .actionListener(
+              button ->
+                  JOptionPane.showMessageDialog(
+                      button,
+                      HelpTexts.rememberPlayByEmailPassword(),
+                      "Remember Password",
+                      JOptionPane.INFORMATION_MESSAGE))
+          .build();
+
   private final JCheckBox sendEmailAfterCombatMoveCheckBox =
       new JCheckBoxBuilder("Also Send Email After Combat Move")
           .selected(viewModel.isSendEmailAfterCombatMove())
@@ -133,6 +172,9 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
   public EmailSenderEditor(final Runnable readyCallback) {
     viewModel.setValidatedFieldsChangedListener(readyCallback);
     this.viewModelChanged(viewModel);
+
+    new DocumentListenerBuilder(() -> viewModel.setEmailPassword(passwordField.getPassword()))
+        .attachTo(passwordField);
     syncToModel = true;
   }
 
@@ -175,9 +217,26 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
     contents.add(subjectField, new GridBagConstraintsBuilder(1, row).build());
 
     row++;
+    contents.add(userNameLabel, new GridBagConstraintsBuilder(0, row).build());
+    contents.add(userNameField, new GridBagConstraintsBuilder(1, row).build());
+
+    row++;
+    contents.add(passwordLabel, new GridBagConstraintsBuilder(0, row).build());
+    contents.add(passwordField, new GridBagConstraintsBuilder(1, row).build());
+
+    row++;
+    contents.add(
+        new JPanelBuilder()
+            .boxLayoutHorizontal()
+            .add(rememberPassword)
+            .add(rememberPasswordHelpButton)
+            .build(),
+        new GridBagConstraintsBuilder(1, row).build());
+
+    row++;
     contents.add(
         sendEmailAfterCombatMoveCheckBox,
-        new GridBagConstraintsBuilder(0, row).gridWidth(2).build());
+        new GridBagConstraintsBuilder(1, row).gridWidth(2).build());
 
     return contents;
   }
@@ -189,84 +248,6 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
         () -> {
           toggleFieldVisibility();
           emailProviderSelectionBox.setSelectedItem(viewModel.getSelectedProvider());
-
-          final String emailHelpType = viewModel.getEmailHelpType();
-          if (emailHelpType.equals(EmailSenderEditorViewModel.PROVIDER_DISABLED)) {
-            helpMessage.setText(
-                "<html><p style='width: 400px;'>"
-                    + "Email sender<br/>"
-                    + "An email sender can email the turn summary and save game to multiple "
-                    + "recipients at the end of each players turn. This allows two or more "
-                    + "players to play a game where you don't have to be online at the same "
-                    + "time.<br/>"
-                    + "Each email sender may require custom configuration, to learn more "
-                    + "click help again after selecting a specific email sender."
-                    + "</p></html>");
-          } else if (emailHelpType.equals(EmailProviderPreset.GMAIL.getName())) {
-            helpMessage.setText(
-                "<html><p style='width: 400px;'>"
-                    + "Email through Gmail<br/>"
-                    + "This email sends email via Gmails SMTP service. To use this you must have a "
-                    + "gmail account. Configuration:<br/>"
-                    + "Subject: This will be the subject of the email. In addition to the text "
-                    + "entered, the player and round number will be appended<br/>"
-                    + "To: A list of email addresses separated by space. the email will be sent to "
-                    + "all these users<br/>"
-                    + "Login: Your gmail login used to authenticate against the gmail smtp service"
-                    + "<br/>"
-                    + "Password: Your gmail password used to authenticate against the gmail smtp "
-                    + "service<br/>"
-                    + "Note: All communication with the Gmail service uses TLS encryption. Your "
-                    + "Gmail login and password are not stored as part of the save game, but they "
-                    + "are stored encrypted in the local file system if you select the option to "
-                    + "remember your credentials.<br/>"
-                    + "You may have to enter your login and password again if you open the save "
-                    + "game on another computer."
-                    + "</p></html>");
-          } else if (emailHelpType.equals(EmailProviderPreset.HOTMAIL.getName())) {
-            helpMessage.setText(
-                "<html><p style='width: 400px;'>"
-                    + "Email through Hotmail<br/>"
-                    + "This email sends email via Hotmails (live.com) SMTP service. To use this "
-                    + "you must have a Homtail account. Configuration:<br/>"
-                    + "Subject: This will be the subject of the email. In addition to the text "
-                    + "entered, the player and round number will be appended<br/>"
-                    + "To: A list of email addresses separated by space. the email will be sent to "
-                    + "all these users<br/>"
-                    + "Login: Your hotmail login used to authenticate against the hotmail smtp "
-                    + "service<br/>"
-                    + "Password: Your hotmail password used to authenticate against the hotmail "
-                    + "smtp service<br/>"
-                    + "Note: All communication with the Hotmail service uses TLS encryption. Your "
-                    + "Hotmail login and password are not stored as part of the save game, but "
-                    + "they are stored encrypted in the local file system if you select the option "
-                    + "to remember your credentials.<br/>"
-                    + "You may have to enter your login and password again if you open the save "
-                    + "game on another computer."
-                    + "</p></html>");
-          } else {
-            helpMessage.setText(
-                "<html><p style='width: 400px;'>"
-                    + "Email through SMTP<br/>"
-                    + "This email sends email via any generic SMTP service. Configuration:<br/>"
-                    + "Subject: This will be the subject of the email. In addition to the text "
-                    + "entered, the player and round number will be appended<br/>"
-                    + "To: A list of email addresses separated by space. the email will be sent "
-                    + "to all these users<br/>"
-                    + "Login: Your login to the smtp server<br/>"
-                    + "Password: Your password smtp server<br/>"
-                    + "Host: The host address (or ip) of the SMTP server<br/>"
-                    + "Post: The post of the smtp server (typically 25 for unencrypted, and 587 "
-                    + "for TLS encrypted servers)<br/>"
-                    + "Use TLS encryption: check this if yor server supports the TLS protocol for "
-                    + "email encryption<br/>"
-                    + "Note: Your SMTP login and password are not stored as part of the save game, "
-                    + "but they are stored encrypted in the local file system if you select the "
-                    + "option to remember your credentials.<br/>"
-                    + "You may have to enter your login and password again if you open the save "
-                    + "game on another computer."
-                    + "</p></html>");
-          }
           SwingComponents.highlightLabelIfNotValid(viewModel.isSmtpServerValid(), smtpServerLabel);
           updateTextFieldIfNeeded(smtpServerField, viewModel.getSmtpServer());
 
@@ -281,6 +262,11 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
 
           SwingComponents.highlightLabelIfNotValid(viewModel.isSubjectValid(), subjectLabel);
           updateTextFieldIfNeeded(subjectField, viewModel.getSubject());
+
+          SwingComponents.highlightLabelIfNotValid(viewModel.isUsernameValid(), userNameLabel);
+          updateTextFieldIfNeeded(userNameField, viewModel.getEmailUsername());
+
+          SwingComponents.highlightLabelIfNotValid(viewModel.isPasswordValid(), passwordLabel);
 
           sendEmailAfterCombatMoveCheckBox.setSelected(viewModel.isSendEmailAfterCombatMove());
           syncToModel = true;
@@ -308,6 +294,12 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
     subjectLabel.setVisible(viewModel.showEmailOptions());
     toAddressLabel.setVisible(viewModel.showEmailOptions());
     toAddressField.setVisible(viewModel.showEmailOptions());
+    userNameLabel.setVisible(viewModel.showEmailOptions());
+    userNameField.setVisible(viewModel.showEmailOptions());
+    passwordLabel.setVisible(viewModel.showEmailOptions());
+    passwordField.setVisible(viewModel.showEmailOptions());
+    rememberPassword.setVisible(viewModel.showEmailOptions());
+    rememberPasswordHelpButton.setVisible(viewModel.showEmailOptions());
     sendEmailAfterCombatMoveCheckBox.setVisible(viewModel.showEmailOptions());
   }
 
@@ -321,5 +313,9 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
 
   boolean areFieldsValid() {
     return viewModel.areFieldsValid();
+  }
+
+  boolean isForgetPasswordOnShutdown() {
+    return viewModel.isForgetPasswordOnShutdown();
   }
 }

@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
+import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -14,11 +16,15 @@ import javax.swing.JTextField;
 import org.triplea.java.ViewModelListener;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** A class for selecting which Forum poster to use. */
 class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterEditorViewModel> {
   private static final long serialVersionUID = -6069315084412575053L;
+
+  private final ForumPosterEditorViewModel viewModel;
   private final JButton viewPosts = new JButton("View Forum");
   private final JButton testForum = new JButton("Test Post");
   private final JLabel helpMessage = new JLabel();
@@ -40,11 +46,25 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   private final JCheckBox attachSaveGameToSummary = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JComboBox<String> forums = new JComboBox<>();
+  private final JCheckBox rememberPassword =
+      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberEmailPassword).build();
+  private final JButton rememberPasswordHelpButton =
+      new JButtonBuilder("Help")
+          .actionListener(
+              button ->
+                  JOptionPane.showMessageDialog(
+                      button,
+                      HelpTexts.rememberPlayByForumPassword(),
+                      "Remember Password",
+                      JOptionPane.INFORMATION_MESSAGE))
+          .build();
 
   ForumPosterEditor(final ForumPosterEditorViewModel viewModel) {
     super(new GridBagLayout());
-
+    this.viewModel = viewModel;
     viewModel.setView(this);
+    rememberPassword.addActionListener(
+        e -> viewModel.setRememberPassword(rememberPassword.isSelected()));
 
     final int bottomSpace = 1;
     final int labelSpace = 2;
@@ -75,48 +95,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
           SwingComponents.highlightLabelIfNotValid(viewModel.isForumUsernameValid(), usernameLabel);
           SwingComponents.highlightLabelIfNotValid(viewModel.isForumPasswordValid(), passwordLabel);
           testForum.setEnabled(viewModel.isTestForumPostButtonEnabled());
-          helpMessage.setText(
-              viewModel.isForumProviderTripleA()
-                  ? "<html><p style='width: 400px;'>"
-                      + "Posts to forums.triplea-game.org<br/>"
-                      + "You can play PBEM/PBF games via forums.triplea-game.org.<br/>"
-                      + "Instructions:<br/>"
-                      + "Create a new Forum post in the Play by Forum category "
-                      + "https://forums.triplea-game.org/category/6/<br/>"
-                      + "Copy the topic id from the URL displayed in the address bar of you "
-                      + "browser. "
-                      + "If the URL is https://forums.triplea-game.org/topic/24/ put the topic "
-                      + "number (24) into the Topic ID field in TripleA<br/>"
-                      + "Put your username and password for the forums.triplea-game.org forum "
-                      + "into the username and password fields<br/>"
-                      + "Click the Test Post button, to check that TripleA can reply to your "
-                      + "forum post<br/>"
-                      + "Note: Your forums.triplea-game.org username and password are not stored "
-                      + "as part of the save game, but they are stored encrypted in the local "
-                      + "file system if you select the option to remember your credentials. You "
-                      + "may have to enter your username and password again if you open the save "
-                      + "game on another computer."
-                      + "</p></html>"
-                  : "<html><p style='width: 400px;'>"
-                      + "Posts to www.AxisAndAllies.org<br/>"
-                      + "This poster is build for PBEM games via AxisAndAllies.org. Instructions:"
-                      + "<br/>"
-                      + "Create a new Forum post in the Play Boardgames section "
-                      + "http://www.axisandallies.org/forums/index.php?board=40.0<br/>"
-                      + "Copy the topic id from the URL displayed in the address bar of you "
-                      + "browser. If the URL is "
-                      + "http://www.axisandallies.org/forums/index.php?topic=25252.0, "
-                      + "put this 5 digit number (25252) into the Topic ID field in TripleA<br/>"
-                      + "Put your username and password for the AxisAndAllies.org forum into the "
-                      + "username and password fields<br/>"
-                      + "Click the Test Post button, to check that TripleA can reply to your forum "
-                      + "post<br/>"
-                      + "Note: Your AxisAndAllies.org username and password are not stored as part "
-                      + "of the save game, but they are stored encrypted in the local file system "
-                      + "if you select the option to remember your credentials. You may have to "
-                      + "enter your username and password again if you open the save game on "
-                      + "another computer."
-                      + "</p></html>");
+          helpMessage.setText(viewModel.getForumProviderHelpText());
         });
     forums.setSelectedItem(viewModel.getForumSelection());
     add(
@@ -282,7 +261,24 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
             0,
             0));
     row++;
-
+    add(
+        new JPanelBuilder()
+            .boxLayoutHorizontal()
+            .add(rememberPassword)
+            .add(rememberPasswordHelpButton)
+            .build(),
+        new GridBagConstraints(
+            1,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
     add(
         new JLabel(""),
         new GridBagConstraints(
@@ -304,7 +300,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
     add(
         attachSaveGameToSummary,
         new GridBagConstraints(
-            0,
+            1,
             row,
             2,
             1,
@@ -337,7 +333,7 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
     add(
         alsoPostAfterCombatMove,
         new GridBagConstraints(
-            0,
+            1,
             row,
             2,
             1,
@@ -366,5 +362,9 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
         forumPosterEditorViewModel.isForumPasswordValid(), passwordLabel);
     viewPosts.setEnabled(forumPosterEditorViewModel.isViewForumPostButtonEnabled());
     testForum.setEnabled(forumPosterEditorViewModel.isTestForumPostButtonEnabled());
+  }
+
+  boolean isForgetPasswordOnShutdown() {
+    return viewModel.isForgetPasswordOnShutdown();
   }
 }

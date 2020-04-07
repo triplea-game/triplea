@@ -88,6 +88,8 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       assertThat(viewModel.getSmtpServer(), is(emptyString()));
       assertThat(viewModel.getSmtpPort(), is(emptyString()));
+      assertThat(viewModel.getEmailUsername(), is(emptyString()));
+      assertThat(viewModel.getEmailPassword(), is(emptyString()));
     }
 
     @Test
@@ -165,6 +167,29 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       verify(view).viewModelChanged(viewModel);
       verify(callback).run();
     }
+
+    @Test
+    void setUsernameInvokesViewCallback() {
+      final var viewModel = new EmailSenderEditorViewModel(view);
+      viewModel.setValidatedFieldsChangedListener(callback);
+
+      viewModel.setEmailUsername("user-name");
+      viewModel.setEmailUsername("user-name");
+
+      verify(view).viewModelChanged(viewModel);
+      verify(callback).run();
+    }
+
+    @Test
+    void setPasswordInvokesViewCallback() {
+      final var viewModel = new EmailSenderEditorViewModel(view);
+      viewModel.setValidatedFieldsChangedListener(callback);
+
+      viewModel.setEmailPassword(new char[0]);
+
+      verify(view).viewModelChanged(viewModel);
+      verify(callback).run();
+    }
   }
 
   @Nested
@@ -193,8 +218,8 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSmtpServer("server");
       viewModel.setSmtpPort("22");
       viewModel.setToAddress("toAddress@valid.com");
-      ClientSetting.emailUsername.setValue("username".toCharArray());
-      ClientSetting.emailPassword.setValueAndFlush("passsword".toCharArray());
+      viewModel.setEmailUsername("username");
+      viewModel.setEmailPassword("password".toCharArray());
       return viewModel;
     }
 
@@ -219,28 +244,10 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    void smtpServerUsernameMustNotBeBlank() {
-      final var viewModel = givenViewModelWithEnabledSendTestEmailButton();
-
-      ClientSetting.emailUsername.setValueAndFlush("".toCharArray());
-
-      assertThat(viewModel.isTestEmailButtonEnabled(), is(false));
-    }
-
-    @Test
     void smtpServerUsernameMustBeSet() {
       final var viewModel = givenViewModelWithEnabledSendTestEmailButton();
 
-      ClientSetting.emailUsername.resetValue();
-
-      assertThat(viewModel.isTestEmailButtonEnabled(), is(false));
-    }
-
-    @Test
-    void smtpServerPasswordMustNotBeBlank() {
-      final var viewModel = givenViewModelWithEnabledSendTestEmailButton();
-
-      ClientSetting.emailPassword.setValueAndFlush("".toCharArray());
+      viewModel.setEmailUsername("");
 
       assertThat(viewModel.isTestEmailButtonEnabled(), is(false));
     }
@@ -249,7 +256,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void smtpServerPasswordMustBeSet() {
       final var viewModel = givenViewModelWithEnabledSendTestEmailButton();
 
-      ClientSetting.emailPassword.resetValue();
+      viewModel.setEmailPassword(new char[0]);
 
       assertThat(viewModel.isTestEmailButtonEnabled(), is(false));
     }
@@ -299,6 +306,30 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
 
       assertThat(viewModel.isUseTls(), is(false));
+    }
+
+    @Test
+    void userNameDefaultsToClientSetting() {
+      ClientSetting.emailUsername.setValueAndFlush("user-name".toCharArray());
+      final var viewModel = new EmailSenderEditorViewModel(view);
+
+      assertThat(viewModel.getEmailUsername(), is("user-name"));
+    }
+
+    @Test
+    void noClientSettingsPasswordWillSetBlankPassword() {
+      ClientSetting.emailPassword.resetValue();
+      final var viewModel = new EmailSenderEditorViewModel(view);
+
+      assertThat(String.valueOf(viewModel.getEmailPassword()), is(emptyString()));
+    }
+
+    @Test
+    void rememberPasswordWillDefaultToClientSetting() {
+      ClientSetting.rememberEmailPassword.setValueAndFlush(true);
+      final var viewModel = new EmailSenderEditorViewModel(view);
+
+      assertThat(viewModel.isForgetPasswordOnShutdown(), is(false));
     }
   }
 
@@ -367,6 +398,27 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GMAIL.getName());
       viewModel.setSelectedProvider(GENERIC_SMTP);
       assertGenericSmtpProviderSettings();
+    }
+
+    @Test
+    void username() {
+      final var viewModel = new EmailSenderEditorViewModel(view);
+      viewModel.setEmailUsername("user");
+      assertThat(ClientSetting.emailUsername.getValueOrThrow(), is("user".toCharArray()));
+    }
+
+    @Test
+    void password() {
+      final var viewModel = new EmailSenderEditorViewModel(view);
+      viewModel.setEmailPassword("password123".toCharArray());
+      assertThat(ClientSetting.emailPassword.getValueOrThrow(), is("password123".toCharArray()));
+    }
+
+    @Test
+    void rememberPassword() {
+      final var viewModel = new EmailSenderEditorViewModel(view);
+      viewModel.setRememberPassword(true);
+      assertThat(ClientSetting.rememberEmailPassword.getValueOrThrow(), is(true));
     }
   }
 
@@ -448,6 +500,8 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       assertThat(viewModel.isSmtpPortValid(), is(true));
       assertThat(viewModel.isToAddressValid(), is(true));
       assertThat(viewModel.isSubjectValid(), is(true));
+      assertThat(viewModel.isUsernameValid(), is(true));
+      assertThat(viewModel.isPasswordValid(), is(true));
     }
 
     @ParameterizedTest
@@ -525,6 +579,22 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       assertThat(viewModel.isSubjectValid(), is(true));
     }
+
+    @Test
+    void usernameValidWhenSet() {
+      final var viewModel = new EmailSenderEditorViewModel(view);
+      viewModel.setEmailUsername("name");
+
+      assertThat(viewModel.isUsernameValid(), is(true));
+    }
+
+    @Test
+    void passwordValidWhenSet() {
+      final var viewModel = new EmailSenderEditorViewModel(view);
+      viewModel.setEmailPassword("password".toCharArray());
+
+      assertThat(viewModel.isPasswordValid(), is(true));
+    }
   }
 
   @Nested
@@ -551,10 +621,10 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(GENERIC_SMTP);
 
-      ClientSetting.emailServerHost.setValue("server");
-      ClientSetting.emailServerPort.setValue(200);
-      ClientSetting.emailUsername.setValue("username".toCharArray());
-      ClientSetting.emailPassword.setValue("password".toCharArray());
+      viewModel.setSmtpServer("server");
+      viewModel.setSmtpPort("200");
+      viewModel.setEmailUsername("username");
+      viewModel.setEmailPassword("password".toCharArray());
 
       viewModel.setToAddress("to@to");
       viewModel.setSubject("subject");
@@ -582,8 +652,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     @Test
     void allFieldsNotValidWhenMissingUsername() {
       final var viewModel = givenGenericProviderWithValidSettings();
-      ClientSetting.emailUsername.resetValue();
-      ClientSetting.flush();
+      viewModel.setEmailUsername("");
 
       assertThat(viewModel.areFieldsValid(), is(false));
     }
@@ -591,8 +660,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     @Test
     void allFieldsNotValidWhenMissingPassword() {
       final var viewModel = givenGenericProviderWithValidSettings();
-      ClientSetting.emailPassword.resetValue();
-      ClientSetting.flush();
+      viewModel.setEmailPassword(new char[0]);
 
       assertThat(viewModel.areFieldsValid(), is(false));
     }

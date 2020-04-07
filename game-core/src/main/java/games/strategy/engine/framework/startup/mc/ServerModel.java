@@ -429,7 +429,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
                 new PlayerDisconnectAction(serverMessenger, this::cancel)
                     .accept(bannedPlayerMessage.getIpAddress()));
 
-        ExitStatus.SUCCESS.addExitAction(this::cancel);
+        ExitStatus.addExitAction(this::cancel);
         gameToLobbyConnection.addMessageListener(
             ShutdownServerMessage.TYPE,
             shutdownServerMessage -> {

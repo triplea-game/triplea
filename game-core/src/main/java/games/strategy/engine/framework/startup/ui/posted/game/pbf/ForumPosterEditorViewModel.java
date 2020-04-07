@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.SwingTestPostProgressDisplayFactory;
 import games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post.TestPostAction;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
@@ -17,7 +18,6 @@ import org.triplea.java.Postconditions;
 import org.triplea.java.StringUtils;
 import org.triplea.java.ViewModelListener;
 
-@SuppressWarnings("UnstableApiUsage")
 class ForumPosterEditorViewModel {
   private final Runnable readyCallback;
 
@@ -36,15 +36,18 @@ class ForumPosterEditorViewModel {
   @Setter @Getter private boolean attachSaveGameToSummary = true;
   @Setter @Getter private boolean alsoPostAfterCombatMove;
   @Getter private String forumUsername;
-  @Getter private char[] forumPassword;
+  private boolean forumPasswordIsSet;
+  @Setter private boolean rememberPassword;
 
   ForumPosterEditorViewModel(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
+    rememberPassword = ClientSetting.rememberForumPassword.getValue().orElse(false);
     setForumSelection("");
   }
 
   ForumPosterEditorViewModel(final Runnable readyCallback, final GameProperties properties) {
     this.readyCallback = readyCallback;
+    rememberPassword = ClientSetting.rememberForumPassword.getValue().orElse(false);
     populateFromGameProperties(properties);
   }
 
@@ -55,7 +58,7 @@ class ForumPosterEditorViewModel {
             : ClientSetting.aaForumPassword;
 
     passwordSetting.setValueAndFlush(password);
-    forumPassword = password;
+    forumPasswordIsSet = password.length > 0;
     readyCallback.run();
   }
 
@@ -85,11 +88,15 @@ class ForumPosterEditorViewModel {
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
-    forumPassword =
+    forumPasswordIsSet =
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0])
-            : ClientSetting.aaForumPassword.getValue().orElse(new char[0]);
+            ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0]).length > 0
+            : ClientSetting.aaForumPassword.getValue().orElse(new char[0]).length > 0;
     readyCallback.run();
+  }
+
+  String getForumPassword() {
+    return forumPasswordIsSet ? "********" : "";
   }
 
   public String getForumSelection() {
@@ -116,12 +123,14 @@ class ForumPosterEditorViewModel {
     return isTopicIdValid() && isForumUsernameValid() && isForumPasswordValid();
   }
 
-  boolean isForumProviderTripleA() {
-    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
+  String getForumProviderHelpText() {
+    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
+        ? HelpTexts.TRIPLEA_FORUM
+        : HelpTexts.AXIS_AND_ALLIES_DOT_ORG_FORUM;
   }
 
   boolean isForumPasswordValid() {
-    return forumPassword != null && forumPassword.length > 0;
+    return forumPasswordIsSet;
   }
 
   boolean isForumUsernameValid() {
@@ -158,5 +167,9 @@ class ForumPosterEditorViewModel {
     if (areFieldsValid()) {
       testPostAction.accept(forumSelection, Integer.parseInt(topicId));
     }
+  }
+
+  boolean isForgetPasswordOnShutdown() {
+    return !rememberPassword;
   }
 }

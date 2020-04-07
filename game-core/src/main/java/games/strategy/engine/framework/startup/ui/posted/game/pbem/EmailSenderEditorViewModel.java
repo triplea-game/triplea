@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.engine.posted.game.pbem.IEmailSender;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
@@ -30,6 +31,9 @@ class EmailSenderEditorViewModel {
   @Getter private String subject = "";
   @Getter private String toAddress = "";
   @Getter @Setter private boolean sendEmailAfterCombatMove;
+  @Getter private String emailUsername;
+  private boolean emailPasswordIsSet;
+  private boolean rememberPassword;
   @Setter private Runnable validatedFieldsChangedListener;
 
   EmailSenderEditorViewModel(final ViewModelListener<EmailSenderEditorViewModel> view) {
@@ -38,6 +42,13 @@ class EmailSenderEditorViewModel {
     smtpServer = ClientSetting.emailServerHost.getValue().orElse("");
     smtpPort = ClientSetting.emailServerPort.getValue().map(String::valueOf).orElse("");
     useTls = ClientSetting.emailServerSecurity.getValue().orElse(true);
+    emailUsername = ClientSetting.emailUsername.getValue().map(String::valueOf).orElse("");
+    emailPasswordIsSet = ClientSetting.emailPassword.isSet();
+    rememberPassword = ClientSetting.rememberEmailPassword.getValue().orElse(false);
+  }
+
+  String getEmailPassword() {
+    return emailPasswordIsSet ? "********" : "";
   }
 
   static Collection<String> getProviderOptions() {
@@ -108,8 +119,16 @@ class EmailSenderEditorViewModel {
     return selectedProvider.equals(PROVIDER_DISABLED);
   }
 
-  protected String getEmailHelpType() {
-    return selectedProvider;
+  String getEmailHelpText() {
+    if (selectedProvider.equals(EmailSenderEditorViewModel.PROVIDER_DISABLED)) {
+      return HelpTexts.SMTP_DISABLED;
+    } else if (selectedProvider.equals(EmailProviderPreset.GMAIL.getName())) {
+      return HelpTexts.gmailHelpText();
+    } else if (selectedProvider.equals(EmailProviderPreset.HOTMAIL.getName())) {
+      return HelpTexts.hotmailHelpText();
+    } else {
+      return HelpTexts.GENERIC_SMTP_SERVER;
+    }
   }
 
   void setSmtpServer(final String smtpServer) {
@@ -173,8 +192,51 @@ class EmailSenderEditorViewModel {
     ClientSetting.emailServerSecurity.setValueAndFlush(useTls);
   }
 
+  void setEmailUsername(final String value) {
+    Preconditions.checkNotNull(value);
+    if (!this.emailUsername.equals(value)) {
+      this.emailUsername = value;
+      ClientSetting.emailUsername.setValueAndFlush(value.toCharArray());
+      invokeCallbacks();
+    }
+  }
+
+  boolean isUsernameValid() {
+    return isEmailProviderDisabled() || !emailUsername.isBlank();
+  }
+
+  void setEmailPassword(final char[] emailPassword) {
+    // note, we do not store the email password locally so that it can be in one few places
+    // on the system.
+    Preconditions.checkNotNull(emailPassword);
+    if (emailPassword.length == 0) {
+      emailPasswordIsSet = false;
+      ClientSetting.emailPassword.resetValue();
+      ClientSetting.flush();
+    } else {
+      emailPasswordIsSet = true;
+      ClientSetting.emailPassword.setValueAndFlush(emailPassword);
+    }
+    invokeCallbacks();
+  }
+
+  boolean isPasswordValid() {
+    return isEmailProviderDisabled() || emailPasswordIsSet;
+  }
+
+  boolean isForgetPasswordOnShutdown() {
+    return !rememberPassword;
+  }
+
   void sendTestEmail() {
     sendTestEmailAction.send(toAddress.trim());
+  }
+
+  void setRememberPassword(final boolean rememberPassword) {
+    if (this.rememberPassword != rememberPassword) {
+      this.rememberPassword = rememberPassword;
+      ClientSetting.rememberEmailPassword.setValueAndFlush(rememberPassword);
+    }
   }
 
   void populateFromGameProperties(final GameProperties properties) {
