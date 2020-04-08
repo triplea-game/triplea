@@ -21,9 +21,6 @@ public class BanPlayerModeratorAction {
         e ->
             BanDurationDialog.prompt(
                 parent,
-                "Select Timespan",
-                "Please consult other admins before banning longer than 1 day. \n"
-                    + "And please remember to report this ban.",
                 timespan ->
                     // do confirmation
                     playerToLobbyConnection.banPlayer(

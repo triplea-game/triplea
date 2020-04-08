@@ -4,12 +4,17 @@ import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-final class BanDuration {
+public final class BanDuration {
   private final Integer duration;
   private final BanTimeUnit timeUnit;
 
-  long toMinutes() {
+  public long toMinutes() {
     Preconditions.checkNotNull(duration);
     return timeUnit.toMinutes(duration);
+  }
+
+  @Override
+  public String toString() {
+    return duration + " " + timeUnit;
   }
 }
