@@ -161,7 +161,10 @@ class LobbyGameTableModel extends AbstractTableModel {
       case GV:
         return description.getMapVersion();
       case Status:
-        return description.getStatus();
+        // Note, we update status client side to avoid a headless game from reporting
+        // a new status when players leave or join. We expect a player count of 0 in
+        // headless games if there are no players connected.
+        return description.getPlayerCount() == 0 ? "Available" : description.getStatus();
       case Comments:
         return description.getComments();
       case Started:
