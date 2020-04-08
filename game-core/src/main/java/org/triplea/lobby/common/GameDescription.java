@@ -14,7 +14,6 @@ import lombok.Value;
 import lombok.experimental.Wither;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 
 /**
  * Immutable Data class being used to send information about the current game state to the lobby.
@@ -58,14 +57,6 @@ public class GameDescription implements Serializable {
   public boolean isBot() {
     return hostedBy.getName().startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
         && HeadlessGameServer.BOT_GAME_HOST_COMMENT.equals(comment);
-  }
-
-  public String getHostName() {
-    return hostedBy.getName();
-  }
-
-  public static GameDescription fromLobbyGame(final LobbyGameListing lobbyGameListing) {
-    return fromLobbyGame(lobbyGameListing.getLobbyGame());
   }
 
   /**
