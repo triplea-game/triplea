@@ -148,7 +148,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         }
       } else {
         // notify the player he hasn't got enough money;
-        notifyMoney(paa, false);
+        notifyMoney(paa);
       }
     } else {
       // notify the player the action isn't valid anymore (shouldn't happen)
@@ -262,15 +262,10 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * Let the player know he is being charged for money or that he hasn't got enough money.
    *
    * @param paa the actionattachment the player is notified about
-   * @param enough is this a notification about enough or not enough money.
    */
-  private void notifyMoney(final PoliticalActionAttachment paa, final boolean enough) {
+  private void notifyMoney(final PoliticalActionAttachment paa) {
     final String cost = ResourceCollection.toString(paa.getCostResources(), getData());
-    if (enough) {
-      sendNotification("Charging " + cost + " to perform this action");
-    } else {
-      sendNotification("You don't have enough money, you need " + cost + " to perform this action");
-    }
+    sendNotification("You don't have enough money, you need " + cost + " to perform this action");
   }
 
   /**
