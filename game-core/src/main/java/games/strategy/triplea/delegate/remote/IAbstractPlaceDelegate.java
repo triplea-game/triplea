@@ -19,7 +19,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
   @RemoteActionCode(13)
   String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
-  @RemoteActionCode(12)
+  /** Convenience method for testing. Never called over the network. */
   default String placeUnits(final Collection<Unit> units, final Territory at) {
     return placeUnits(units, at, BidMode.NOT_BID);
   }
@@ -55,4 +55,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    */
   @RemoteActionCode(9)
   Collection<Territory> getTerritoriesWhereAirCantLand();
+
+  @RemoteActionCode(17)
+  @Override
+  String undoMove(int moveIndex);
 }
