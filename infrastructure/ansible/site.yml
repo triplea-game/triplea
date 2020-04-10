@@ -45,6 +45,8 @@
       tags: [ http_server ]
     - role: nginx
       tags: [ nginx ]
+    - role: postfix
+      tags: [ postfix ]
 
 - hosts: letsEncrypt
   gather_facts: no
