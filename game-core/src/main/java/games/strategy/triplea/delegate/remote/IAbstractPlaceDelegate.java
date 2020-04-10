@@ -55,4 +55,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    */
   @RemoteActionCode(9)
   Collection<Territory> getTerritoriesWhereAirCantLand();
+
+  @RemoteActionCode(17)
+  @Override
+  String undoMove(int moveIndex);
 }

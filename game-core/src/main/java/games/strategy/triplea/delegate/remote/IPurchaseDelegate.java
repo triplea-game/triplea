@@ -21,4 +21,8 @@ public interface IPurchaseDelegate extends IAbstractForumPosterDelegate {
   /** Returns an error code, or null if all is good. */
   @RemoteActionCode(11)
   String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
+
+  @RemoteActionCode(14)
+  @Override
+  void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
 }

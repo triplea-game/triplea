@@ -4,8 +4,10 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.RemoteActionCode;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.UndoableMove;
 import java.util.Collection;
+import java.util.List;
 
 /** Remote interface for MoveDelegate. */
 public interface IMoveDelegate
@@ -38,4 +40,20 @@ public interface IMoveDelegate
    */
   @RemoteActionCode(10)
   Collection<Territory> getTerritoriesWhereUnitsCantFight();
+
+  @RemoteActionCode(17)
+  @Override
+  void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
+
+  @RemoteActionCode(14)
+  @Override
+  boolean postTurnSummary(PbemMessagePoster poster, String title);
+
+  @RemoteActionCode(19)
+  @Override
+  String undoMove(int moveIndex);
+
+  @RemoteActionCode(5)
+  @Override
+  List<UndoableMove> getMovesMade();
 }
