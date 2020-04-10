@@ -19,6 +19,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
   @RemoteActionCode(13)
   String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
+  /** Convenience method for testing. Never called over the network. */
   default String placeUnits(final Collection<Unit> units, final Territory at) {
     return placeUnits(units, at, BidMode.NOT_BID);
   }
