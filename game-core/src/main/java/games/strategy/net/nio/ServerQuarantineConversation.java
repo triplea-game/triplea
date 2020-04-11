@@ -20,12 +20,6 @@ import org.triplea.domain.data.UserName;
 /** Server-side implementation of {@link QuarantineConversation}. */
 @Log
 public class ServerQuarantineConversation extends QuarantineConversation {
-  /**
-   * Magic authentication error string to indicate temporary password was used to authenticate and
-   * password should be reset.
-   */
-  public static final String CHANGE_PASSWORD = "change_password";
-
   /*
    * Communication sequence
    * 1) server reads client name
@@ -98,7 +92,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                             remoteMac,
                             (InetSocketAddress) channel.socket().getRemoteSocketAddress()))
                     .orElseGet(() -> UserName.validate(remoteName));
-            if (error != null && !error.equals(CHANGE_PASSWORD)) {
+            if (error != null) {
               step = Step.ACK_ERROR;
               send(error);
               return Action.NONE;
