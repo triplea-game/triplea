@@ -7,9 +7,12 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that defines a method number, methods are called by method number using the {@link
- * RemoteMethodCall} mechanism}". In order to stay compatible over the network, annotated methods'
- * signature should not be altered (including: changes in signature, or changes in the method
- * number).
+ * RemoteMethodCall} mechanism}".
+ *
+ * <p>In order to stay compatible over the network, an annotated methods' signature should not be
+ * altered (including: changes in signature, or changes in the method number).
+ *
+ * <p>A unit test checks backwards compatibility.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
