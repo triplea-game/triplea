@@ -24,6 +24,7 @@ class CreateAccountValidationTest {
           .password("password")
           .build();
 
+  @Mock private Function<String, Optional<String>> nameIsAvailableValidator;
   @Mock private Function<String, Optional<String>> nameValidator;
   @Mock private Function<String, Optional<String>> emailValidator;
   @Mock private Function<String, Optional<String>> passwordValidator;
@@ -33,12 +34,15 @@ class CreateAccountValidationTest {
   @BeforeEach
   void setup() {
     createAccountValidation =
-        new CreateAccountValidation(nameValidator, emailValidator, passwordValidator);
+        new CreateAccountValidation(
+            nameValidator, nameIsAvailableValidator, emailValidator, passwordValidator);
   }
 
   @Test
   void allValid() {
     when(nameValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername())).thenReturn(Optional.empty());
+    when(nameIsAvailableValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername()))
+        .thenReturn(Optional.empty());
     when(emailValidator.apply(CREATE_ACCOUNT_REQUEST.getEmail())).thenReturn(Optional.empty());
     when(passwordValidator.apply(CREATE_ACCOUNT_REQUEST.getPassword()))
         .thenReturn(Optional.empty());
@@ -59,8 +63,22 @@ class CreateAccountValidationTest {
   }
 
   @Test
+  void nameIsTaken() {
+    when(nameValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername())).thenReturn(Optional.empty());
+
+    when(nameIsAvailableValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername()))
+        .thenReturn(Optional.of(ERROR_MESSAGE));
+
+    final Optional<String> result = createAccountValidation.apply(CREATE_ACCOUNT_REQUEST);
+
+    assertThat(result, isPresentAndIs(ERROR_MESSAGE));
+  }
+
+  @Test
   void invalidEmail() {
     when(nameValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername())).thenReturn(Optional.empty());
+    when(nameIsAvailableValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername()))
+        .thenReturn(Optional.empty());
     when(emailValidator.apply(CREATE_ACCOUNT_REQUEST.getEmail()))
         .thenReturn(Optional.of(ERROR_MESSAGE));
 
@@ -72,6 +90,8 @@ class CreateAccountValidationTest {
   @Test
   void invalidPassword() {
     when(nameValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername())).thenReturn(Optional.empty());
+    when(nameIsAvailableValidator.apply(CREATE_ACCOUNT_REQUEST.getUsername()))
+        .thenReturn(Optional.empty());
     when(emailValidator.apply(CREATE_ACCOUNT_REQUEST.getEmail())).thenReturn(Optional.empty());
     when(passwordValidator.apply(CREATE_ACCOUNT_REQUEST.getPassword()))
         .thenReturn(Optional.of(ERROR_MESSAGE));

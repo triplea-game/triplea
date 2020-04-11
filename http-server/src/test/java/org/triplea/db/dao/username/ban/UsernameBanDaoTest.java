@@ -45,14 +45,9 @@ class UsernameBanDaoTest extends DaoTest {
         is(true));
 
     assertThat(
-        "White space should be trimmed and match",
-        usernameBanDao.nameIsBanned(" username1 "),
-        is(true));
-
-    assertThat(
         "Non-exact match should return false",
         usernameBanDao.nameIsBanned("username1_"), //
-        is(true));
+        is(false));
   }
 
   @Test

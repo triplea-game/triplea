@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.BadWordsDao;
 import org.triplea.db.dao.UserJdbiDao;
+import org.triplea.db.dao.username.ban.UsernameBanDao;
 
 @ExtendWith(MockitoExtension.class)
 class NameValidationTest {
@@ -25,6 +26,7 @@ class NameValidationTest {
   @Mock private Function<String, Optional<String>> syntaxValidation;
   @Mock private BadWordsDao badWordsDao;
   @Mock private UserJdbiDao userJdbiDao;
+  @Mock private UsernameBanDao usernameBanDao;
 
   private NameValidation nameValidation;
 
@@ -35,6 +37,7 @@ class NameValidationTest {
             .syntaxValidation(syntaxValidation)
             .badWordsDao(badWordsDao)
             .userJdbiDao(userJdbiDao)
+            .usernameBanDao(usernameBanDao)
             .build();
   }
 
@@ -58,21 +61,9 @@ class NameValidationTest {
   }
 
   @Test
-  void userAlreadyExists() {
-    when(syntaxValidation.apply(NAME)).thenReturn(Optional.empty());
-    when(badWordsDao.containsBadWord(NAME)).thenReturn(false);
-    when(userJdbiDao.lookupUserIdByName(NAME)).thenReturn(Optional.of(1));
-
-    final Optional<String> result = nameValidation.apply(NAME);
-
-    assertThat(result, isPresent());
-  }
-
-  @Test
   void valid() {
     when(syntaxValidation.apply(NAME)).thenReturn(Optional.empty());
     when(badWordsDao.containsBadWord(NAME)).thenReturn(false);
-    when(userJdbiDao.lookupUserIdByName(NAME)).thenReturn(Optional.empty());
 
     final Optional<String> result = nameValidation.apply(NAME);
 

@@ -6,23 +6,29 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.NonNull;
-import org.triplea.db.dao.UserJdbiDao;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.domain.data.UserName;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.modules.user.account.NameIsAvailableValidation;
 
 @Builder
-class AnonymousLogin implements Function<UserName, Optional<String>> {
+public class AnonymousLogin implements Function<UserName, Optional<String>> {
   @NonNull private final Chatters chatters;
-  @Nonnull private final UserJdbiDao userJdbiDao;
+  @Nonnull private final Function<String, Optional<String>> nameIsAvailableValidation;
 
-  // TODO: Project#12 bad-words check
-  // TODO: Project#12 banned username check
+  public static Function<UserName, Optional<String>> build(
+      final Jdbi jdbi, final Chatters chatters) {
+    return AnonymousLogin.builder()
+        .chatters(chatters)
+        .nameIsAvailableValidation(NameIsAvailableValidation.build(jdbi))
+        .build();
+  }
 
   @Override
   public Optional<String> apply(final UserName userName) {
     Preconditions.checkNotNull(userName);
     return (!chatters.hasPlayer(userName)
-            && userJdbiDao.lookupUserIdByName(userName.getValue()).isEmpty())
+            && nameIsAvailableValidation.apply(userName.getValue()).isEmpty())
         ? Optional.empty()
         : Optional.of("Name is already in use, please choose another");
   }

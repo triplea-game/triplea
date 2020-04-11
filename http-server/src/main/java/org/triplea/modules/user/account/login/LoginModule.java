@@ -18,7 +18,7 @@ import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.user.account.NameValidation;
-import org.triplea.modules.user.account.login.authorizer.anonymous.AnonymousLoginFactory;
+import org.triplea.modules.user.account.login.authorizer.anonymous.AnonymousLogin;
 import org.triplea.modules.user.account.login.authorizer.registered.RegisteredLogin;
 import org.triplea.modules.user.account.login.authorizer.temp.password.TempPasswordLogin;
 
@@ -37,7 +37,7 @@ class LoginModule {
         .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
         .accessLogUpdater(AccessLogUpdater.build(jdbi))
         .apiKeyGenerator(ApiKeyGenerator.build(jdbi))
-        .anonymousLogin(AnonymousLoginFactory.build(jdbi, chatters))
+        .anonymousLogin(AnonymousLogin.build(jdbi, chatters))
         .tempPasswordLogin(TempPasswordLogin.build(jdbi))
         .registeredLogin(RegisteredLogin.build(jdbi))
         .nameValidation(NameValidation.build(jdbi))

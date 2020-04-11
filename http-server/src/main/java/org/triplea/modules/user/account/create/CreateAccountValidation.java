@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.lobby.login.CreateAccountRequest;
+import org.triplea.modules.user.account.NameIsAvailableValidation;
 import org.triplea.modules.user.account.NameValidation;
 
 /**
@@ -22,6 +23,7 @@ import org.triplea.modules.user.account.NameValidation;
 class CreateAccountValidation implements Function<CreateAccountRequest, Optional<String>> {
 
   @Nonnull private final Function<String, Optional<String>> nameValidator;
+  @Nonnull private final Function<String, Optional<String>> nameIsAvailableValidator;
   @Nonnull private final Function<String, Optional<String>> emailValidator;
   @Nonnull private final Function<String, Optional<String>> passwordValidator;
 
@@ -30,6 +32,7 @@ class CreateAccountValidation implements Function<CreateAccountRequest, Optional
         .nameValidator(NameValidation.build(jdbi))
         .emailValidator(new EmailValidation())
         .passwordValidator(new PasswordValidation())
+        .nameIsAvailableValidator(NameIsAvailableValidation.build(jdbi))
         .build();
   }
 
@@ -37,6 +40,7 @@ class CreateAccountValidation implements Function<CreateAccountRequest, Optional
   public Optional<String> apply(final CreateAccountRequest createAccountRequest) {
     return nameValidator
         .apply(createAccountRequest.getUsername())
+        .or(() -> nameIsAvailableValidator.apply(createAccountRequest.getUsername()))
         .or(() -> emailValidator.apply(createAccountRequest.getEmail()))
         .or(() -> passwordValidator.apply(createAccountRequest.getPassword()));
   }

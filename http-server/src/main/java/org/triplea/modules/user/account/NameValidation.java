@@ -33,13 +33,9 @@ public class NameValidation implements Function<String, Optional<String>> {
         .apply(playerName)
         .or(
             () ->
-                badWordsDao.containsBadWord(playerName) || usernameBanDao.nameIsBanned(playerName)
+                badWordsDao.containsBadWord(playerName)
+                        || usernameBanDao.nameIsBanned(playerName.trim())
                     ? Optional.of("That is not a nice name")
-                    : Optional.empty())
-        .or(
-            () ->
-                userJdbiDao.lookupUserIdByName(playerName).isPresent()
-                    ? Optional.of("That name is already taken, please choose another")
                     : Optional.empty());
   }
 }
