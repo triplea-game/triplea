@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 
 /**
  * Test class that verifies that remote operation codes didn't change unexpectedly due to some
- * random change.
+ * seemingly unrelated.
  *
  * <p>Please update {@code /required-op-codes.csv} accordingly in case the remote interfaces are
  * ever altered. All lines in {@code /required-op-codes.csv} must follow the scheme:
