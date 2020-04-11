@@ -176,7 +176,7 @@ public final class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
-  private static int findMaxLandMassSize(final GamePlayer player) {
+  protected static int findMaxLandMassSize(final GamePlayer player) {
     final GameData data = player.getData();
     final Predicate<Territory> cond = ProMatches.territoryCanPotentiallyMoveLandUnits(player, data);
     class LandMassFinder extends BreadthFirstSearch {

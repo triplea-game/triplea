@@ -3,8 +3,10 @@ package games.strategy.triplea.ai.pro.util;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -61,5 +63,15 @@ public class ProTerritoryValueUtilsTest {
             + ") of newSouthWales:",
         result,
         containsInAnyOrder(northJapan));
+  }
+
+  @Test
+  @DisplayName("checks the computation of the max land mass size")
+  void testFindMaxLandMassSize() {
+    // The result should be the same for each player since territoryCanPotentiallyMoveLandUnits()
+    // should be the same for all players.
+    for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
+      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(89));
+    }
   }
 }
