@@ -1578,16 +1578,18 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
   @Override
   protected boolean doneMoveAction() {
-    if (undoableMovesPanel.getCountOfMovesMade() == 0) {
-      final int selectedOption =
-          JOptionPane.showConfirmDialog(
-              JOptionPane.getFrameForComponent(MovePanel.this),
-              "Are you sure you do not want to move?",
-              "End Move",
-              JOptionPane.YES_NO_OPTION);
-      return selectedOption == JOptionPane.YES_OPTION;
+    final boolean performDone =
+        (undoableMovesPanel.getCountOfMovesMade() == 0)
+            && JOptionPane.showConfirmDialog(
+                    JOptionPane.getFrameForComponent(MovePanel.this),
+                    "Are you sure you do not want to move?",
+                    "End Move",
+                    JOptionPane.YES_NO_OPTION)
+                == JOptionPane.YES_OPTION;
+    if (performDone) {
+      unitScrollerPanel.setVisible(false);
     }
-    return true;
+    return performDone;
   }
 
   @Override
@@ -1620,14 +1622,6 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     }
     if (!highlight.isEmpty()) {
       getMap().setUnitHighlight(highlight);
-    }
-  }
-
-  @Override
-  public void performDone() {
-    if (doneMoveAction()) {
-      super.performDone();
-      unitScrollerPanel.setVisible(false);
     }
   }
 }
