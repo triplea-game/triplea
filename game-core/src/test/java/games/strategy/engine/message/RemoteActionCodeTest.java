@@ -20,7 +20,7 @@ public class RemoteActionCodeTest {
   @CsvFileSource(resources = "/required-op-codes.txt")
   void verifyCorrectOpCode(
       final int opCode, @AggregateWith(MethodAggregator.class) final Method method) {
-    var remoteActionCode = method.getAnnotation(RemoteActionCode.class);
+    final var remoteActionCode = method.getAnnotation(RemoteActionCode.class);
 
     assertThat("No annotation present for " + method, remoteActionCode, is(notNullValue()));
 
