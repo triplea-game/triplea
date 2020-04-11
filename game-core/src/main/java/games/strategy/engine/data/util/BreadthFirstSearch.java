@@ -64,13 +64,7 @@ public class BreadthFirstSearch {
     Territory lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
     while (!territoriesToCheck.isEmpty()) {
       final Territory node = territoriesToCheck.removeFirst();
-      // Note: We don't pass cond to getNeighbors() because that implementation is much slower.
-      for (final Territory neighbor : map.getNeighbors(node)) {
-        if (cond.test(neighbor) && visited.add(neighbor)) {
-          territoriesToCheck.add(neighbor);
-          visit(neighbor);
-        }
-      }
+      visitNeighbors(node);
 
       // If we just processed the last territory at the current distance, increment the distance
       // and set the territory at which we need to update it again to be the last one added.
@@ -80,6 +74,16 @@ public class BreadthFirstSearch {
           return;
         }
         lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
+      }
+    }
+  }
+
+  private void visitNeighbors(final Territory territory) {
+    // Note: We don't pass cond to getNeighbors() because that implementation is much slower.
+    for (final Territory neighbor : map.getNeighbors(territory)) {
+      if (cond.test(neighbor) && visited.add(neighbor)) {
+        territoriesToCheck.add(neighbor);
+        visit(neighbor);
       }
     }
   }
