@@ -18,15 +18,15 @@ import org.junit.jupiter.params.provider.CsvFileSource;
  * Test class that verifies that remote operation codes didn't change unexpectedly due to some
  * random change.
  *
- * <p>Please update {@code /required-op-codes.txt} accordingly in case the remote interfaces are
- * ever altered. All lines in {@code /required-op-codes.txt} must follow the scheme:
+ * <p>Please update {@code /required-op-codes.csv} accordingly in case the remote interfaces are
+ * ever altered. All lines in {@code /required-op-codes.csv} must follow the scheme:
  *
  * <p>{@code op-code,interface-name,method-name,method-param-type-0,...,method-param-type-n}
  */
 public class RemoteActionCodeTest {
 
   @ParameterizedTest
-  @CsvFileSource(resources = "/required-op-codes.txt")
+  @CsvFileSource(resources = "/required-op-codes.csv")
   void verifyCorrectOpCode(
       final int opCode, @AggregateWith(MethodAggregator.class) final Method method) {
     final RemoteActionCode remoteActionCode = method.getAnnotation(RemoteActionCode.class);
