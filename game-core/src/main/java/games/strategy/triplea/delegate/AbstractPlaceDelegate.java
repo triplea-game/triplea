@@ -1652,14 +1652,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (to == null) {
       return new ArrayList<>();
     }
-    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
     if (Matches.territoryIsWater().test(to)) {
       for (final Territory current : getAllProducers(to, player, null, true)) {
         unitsPlacedAlready.addAll(getAlreadyProduced(current));
       }
     }
-    final Collection<Unit> unitsAtStartOfTurnInTo = new ArrayList<>(unitsInTo);
+    final Collection<Unit> unitsAtStartOfTurnInTo = new ArrayList<>(to.getUnits());
     unitsAtStartOfTurnInTo.removeAll(unitsPlacedAlready);
     return unitsAtStartOfTurnInTo;
   }
@@ -1668,7 +1667,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (to == null) {
       return new ArrayList<>();
     }
-    final Collection<Unit> unitsInTo = to.getUnits();
+    final Collection<Unit> unitsInTo = new ArrayList<>(to.getUnits());
     final Collection<Unit> unitsAtStartOfStep = unitsAtStartOfStepInTerritory(to);
     unitsInTo.removeAll(unitsAtStartOfStep);
     return unitsInTo;

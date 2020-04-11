@@ -111,7 +111,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public Collection<Unit> getUnits() {
-    return new ArrayList<>(units);
+    return Collections.unmodifiableList(units);
   }
 
   /** Returns integer map of UnitType. */
