@@ -6,12 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.UserJdbiDao;
 import org.triplea.domain.data.UserName;
 import org.triplea.modules.chat.Chatters;
 
@@ -19,14 +19,18 @@ import org.triplea.modules.chat.Chatters;
 class AnonymousLoginTest {
   private static final UserName PLAYER_NAME = UserName.of("Player");
 
-  @Mock private UserJdbiDao userJdbiDao;
+  @Mock private Function<String, Optional<String>> nameIsAvailableValidator;
   @Mock private Chatters chatters;
 
   private AnonymousLogin anonymousLogin;
 
   @BeforeEach
   void setup() {
-    anonymousLogin = AnonymousLogin.builder().userJdbiDao(userJdbiDao).chatters(chatters).build();
+    anonymousLogin =
+        AnonymousLogin.builder()
+            .nameIsAvailableValidation(nameIsAvailableValidator)
+            .chatters(chatters)
+            .build();
   }
 
   @Test
@@ -40,7 +44,7 @@ class AnonymousLoginTest {
 
   @Test
   void nameIsRegistered() {
-    when(userJdbiDao.lookupUserIdByName(PLAYER_NAME.getValue())).thenReturn(Optional.of(1));
+    when(nameIsAvailableValidator.apply(PLAYER_NAME.getValue())).thenReturn(Optional.of("present"));
 
     final Optional<String> result = anonymousLogin.apply(PLAYER_NAME);
 
@@ -50,7 +54,7 @@ class AnonymousLoginTest {
   @Test
   void allowLogin() {
     when(chatters.hasPlayer(PLAYER_NAME)).thenReturn(false);
-    when(userJdbiDao.lookupUserIdByName(PLAYER_NAME.getValue())).thenReturn(Optional.empty());
+    when(nameIsAvailableValidator.apply(PLAYER_NAME.getValue())).thenReturn(Optional.empty());
 
     final Optional<String> result = anonymousLogin.apply(PLAYER_NAME);
 

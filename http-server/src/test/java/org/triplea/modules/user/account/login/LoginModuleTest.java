@@ -53,6 +53,7 @@ class LoginModuleTest {
   @Mock private Function<LoginRecord, ApiKey> apiKeyGenerator;
   @Mock private Consumer<LoginRecord> accessLogUpdater;
   @Mock private UserJdbiDao userJdbiDao;
+  @Mock private Function<String, Optional<String>> nameValidation;
 
   private LoginModule loginModule;
 
@@ -66,6 +67,7 @@ class LoginModuleTest {
             .apiKeyGenerator(apiKeyGenerator)
             .accessLogUpdater(accessLogUpdater)
             .userJdbiDao(userJdbiDao)
+            .nameValidation(nameValidation)
             .build();
   }
 
@@ -80,6 +82,8 @@ class LoginModuleTest {
   @MethodSource
   void rejectLoginOnBadArgs(
       final LoginRequest loginRequest, final String systemIdString, final String ip) {
+    givenNameValidationIsOkay();
+
     final LobbyLoginResponse result = loginModule.doLogin(loginRequest, systemIdString, ip);
 
     assertFailedLogin(result);
@@ -99,9 +103,25 @@ class LoginModuleTest {
   }
 
   @Nested
+  class NameValidation {
+    @Test
+    void nameIsValidatedOnLogin() {
+      when(nameValidation.apply(ANONYMOUS_LOGIN_REQUEST.getName()))
+          .thenReturn(Optional.of("bad-name!"));
+
+      final LobbyLoginResponse result =
+          loginModule.doLogin(ANONYMOUS_LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
+
+      assertFailedLogin(result);
+      assertThat(result.getFailReason(), is("bad-name!"));
+    }
+  }
+
+  @Nested
   class AnonymousLogin {
     @Test
     void loginRejected() {
+      givenNameValidationIsOkay();
       when(anonymousLogin.apply(UserName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
           .thenReturn(Optional.of("error"));
 
@@ -116,6 +136,7 @@ class LoginModuleTest {
 
     @Test
     void loginSuccess() {
+      givenNameValidationIsOkay();
       when(anonymousLogin.apply(UserName.of(ANONYMOUS_LOGIN_REQUEST.getName())))
           .thenReturn(Optional.empty());
       when(apiKeyGenerator.apply(any())).thenReturn(API_KEY);
@@ -135,10 +156,15 @@ class LoginModuleTest {
     }
   }
 
+  private void givenNameValidationIsOkay() {
+    when(nameValidation.apply(any())).thenReturn(Optional.empty());
+  }
+
   @Nested
   class RegisteredLogin {
     @Test
     void loginRejected() {
+      givenNameValidationIsOkay();
       final LobbyLoginResponse result =
           loginModule.doLogin(LOGIN_REQUEST, SYSTEM_ID.getValue(), IP);
 
@@ -150,6 +176,7 @@ class LoginModuleTest {
 
     @Test
     void loginSuccess() {
+      givenNameValidationIsOkay();
       when(registeredLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(UserRole.PLAYER));
@@ -172,6 +199,7 @@ class LoginModuleTest {
   class TempPasswordLogin {
     @Test
     void loginSuccess() {
+      givenNameValidationIsOkay();
       when(tempPasswordLogin.test(LOGIN_REQUEST)).thenReturn(true);
       when(userJdbiDao.lookupUserRoleByUserName(LOGIN_REQUEST.getName()))
           .thenReturn(Optional.of(UserRole.PLAYER));
@@ -193,6 +221,7 @@ class LoginModuleTest {
     @ParameterizedTest
     @ValueSource(strings = {UserRole.MODERATOR, UserRole.ADMIN})
     void loginSuccessWithModerator(final String moderatorUserRole) {
+      givenNameValidationIsOkay();
       givenLoginWithUserRole(moderatorUserRole);
 
       final LobbyLoginResponse result =
@@ -211,6 +240,7 @@ class LoginModuleTest {
     @ParameterizedTest
     @ValueSource(strings = {UserRole.ANONYMOUS, UserRole.PLAYER})
     void loginSuccessWithNonModerator(final String nonModeratorUserRole) {
+      givenNameValidationIsOkay();
       givenLoginWithUserRole(nonModeratorUserRole);
 
       final LobbyLoginResponse result =

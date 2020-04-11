@@ -1,5 +1,6 @@
 package org.triplea.modules.user.account.login;
 
+import com.google.common.base.Preconditions;
 import es.moki.ratelimij.dropwizard.annotation.Rate;
 import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
@@ -35,6 +36,7 @@ public class LoginController extends HttpController {
   @Path(LobbyLoginClient.LOGIN_PATH)
   public LobbyLoginResponse login(
       @Context final HttpServletRequest request, final LoginRequest loginRequest) {
+    Preconditions.checkNotNull(loginRequest);
     return loginModule.doLogin(
         loginRequest, request.getHeader(SystemIdHeader.SYSTEM_ID_HEADER), request.getRemoteAddr());
   }
