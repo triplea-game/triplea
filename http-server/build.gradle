@@ -20,6 +20,8 @@ configurations {
 }
 
 dependencies {
+    errorprone "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+
     implementation "com.liveperson:dropwizard-websockets:$dropwizardWebsocketsVersion"
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
