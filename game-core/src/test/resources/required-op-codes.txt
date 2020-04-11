@@ -153,7 +153,6 @@ games.strategy.triplea.delegate.remote.IEditDelegate,6,changeTerritoryOwner,game
 games.strategy.triplea.delegate.remote.IEditDelegate,7,changeUnitBombingDamage,org.triplea.java.collections.IntegerMap,games.strategy.engine.data.Territory
 games.strategy.triplea.delegate.remote.IEditDelegate,4,changePoliticalRelationships,java.util.Collection
 games.strategy.triplea.delegate.remote.IEditDelegate,8,changeUnitHitDamage,org.triplea.java.collections.IntegerMap,games.strategy.engine.data.Territory
-games.strategy.triplea.delegate.remote.IEditDelegate,5,changeTechTokens,games.strategy.engine.data.GamePlayer,int
 games.strategy.triplea.delegate.remote.IEditDelegate,3,changePUs,games.strategy.engine.data.GamePlayer,int
 games.strategy.triplea.delegate.remote.IEditDelegate,10,removeTechAdvance,games.strategy.engine.data.GamePlayer,java.util.Collection
 games.strategy.triplea.delegate.remote.IEditDelegate,1,addTechAdvance,games.strategy.engine.data.GamePlayer,java.util.Collection
