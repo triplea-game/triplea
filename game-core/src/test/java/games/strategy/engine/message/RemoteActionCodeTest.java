@@ -31,7 +31,10 @@ public class RemoteActionCodeTest {
       final int opCode, @AggregateWith(MethodAggregator.class) final Method method) {
     final RemoteActionCode remoteActionCode = method.getAnnotation(RemoteActionCode.class);
 
-    assertThat("No annotation present for " + method, remoteActionCode, is(notNullValue()));
+    assertThat(
+        "Expected @RemoteActionCode annotation to be present for " + method,
+        remoteActionCode,
+        is(notNullValue()));
 
     assertThat("Invalid value for " + method, remoteActionCode.value(), is(opCode));
   }
