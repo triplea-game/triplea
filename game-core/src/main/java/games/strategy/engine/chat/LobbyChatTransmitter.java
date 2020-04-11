@@ -45,10 +45,6 @@ public class LobbyChatTransmitter implements ChatTransmitter {
         message -> chatClient.messageReceived(message.getSender(), message.getMessage()));
 
     playerToLobbyConnection.addMessageListener(
-        PlayerJoinedMessage.TYPE,
-        message -> chatClient.participantAdded(message.getChatParticipant()));
-
-    playerToLobbyConnection.addMessageListener(
         ChatEventReceivedMessage.TYPE, message -> chatClient.eventReceived(message.getMessage()));
 
     playerToLobbyConnection.addMessageListener(
