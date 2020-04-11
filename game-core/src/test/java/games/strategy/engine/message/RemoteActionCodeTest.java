@@ -2,7 +2,7 @@ package games.strategy.engine.message;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.lang.reflect.Method;
 import java.util.stream.IntStream;
@@ -22,9 +22,9 @@ public class RemoteActionCodeTest {
       final int opCode, @AggregateWith(MethodAggregator.class) final Method method) {
     var remoteActionCode = method.getAnnotation(RemoteActionCode.class);
 
-    assumeTrue(remoteActionCode != null);
+    assertThat("No annotation present for " + method, remoteActionCode, is(notNullValue()));
 
-    assertThat(remoteActionCode.value(), is(opCode));
+    assertThat("Invalid value for " + method, remoteActionCode.value(), is(opCode));
   }
 
   static class MethodAggregator implements ArgumentsAggregator {
