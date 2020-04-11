@@ -26,4 +26,11 @@ public interface UsernameBanDao {
 
   @SqlUpdate("delete from banned_username where username = :nameToRemove")
   int removeBannedUserName(@Bind("nameToRemove") String nameToRemove);
+
+  @SqlQuery(
+      "select exists ( "
+          + "select * "
+          + "from banned_username "
+          + "where username = lower(:playerName))")
+  boolean nameIsBanned(@Bind("playerName") String playerName);
 }

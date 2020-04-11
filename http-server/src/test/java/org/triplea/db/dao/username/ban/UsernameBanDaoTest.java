@@ -31,6 +31,31 @@ class UsernameBanDaoTest extends DaoTest {
   }
 
   @Test
+  @DisplayName("Verify name matching")
+  @DataSet(cleanBefore = true, value = "username_ban/get_banned_usernames.yml")
+  void nameIsBanned() {
+    assertThat(
+        "Exact match should return true",
+        usernameBanDao.nameIsBanned("username1"), //
+        is(true));
+
+    assertThat(
+        "Case insensitive match should return true",
+        usernameBanDao.nameIsBanned("username1".toUpperCase()),
+        is(true));
+
+    assertThat(
+        "White space should be trimmed and match",
+        usernameBanDao.nameIsBanned(" username1 "),
+        is(true));
+
+    assertThat(
+        "Non-exact match should return false",
+        usernameBanDao.nameIsBanned("username1_"), //
+        is(true));
+  }
+
+  @Test
   @DisplayName("Verify adding a username ban")
   @DataSet(cleanBefore = true, value = "username_ban/add_banned_username_before.yml")
   @ExpectedDataSet("username_ban/add_banned_username_after.yml")

@@ -17,6 +17,7 @@ import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
 import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.modules.user.account.NameValidation;
 import org.triplea.modules.user.account.login.authorizer.anonymous.AnonymousLoginFactory;
 import org.triplea.modules.user.account.login.authorizer.registered.RegisteredLogin;
 import org.triplea.modules.user.account.login.authorizer.temp.password.TempPasswordLogin;
@@ -29,6 +30,7 @@ class LoginModule {
   @Nonnull private Consumer<LoginRecord> accessLogUpdater;
   @Nonnull private final Function<LoginRecord, ApiKey> apiKeyGenerator;
   @Nonnull private final UserJdbiDao userJdbiDao;
+  @Nonnull private final Function<String, Optional<String>> nameValidation;
 
   public static LoginModule build(final Jdbi jdbi, final Chatters chatters) {
     return LoginModule.builder()
@@ -38,13 +40,19 @@ class LoginModule {
         .anonymousLogin(AnonymousLoginFactory.build(jdbi, chatters))
         .tempPasswordLogin(TempPasswordLogin.build(jdbi))
         .registeredLogin(RegisteredLogin.build(jdbi))
+        .nameValidation(NameValidation.build(jdbi))
         .build();
   }
 
   public LobbyLoginResponse doLogin(
       final LoginRequest loginRequest, final String systemId, final String ip) {
-    if (loginRequest == null
-        || Strings.nullToEmpty(loginRequest.getName()).isEmpty()
+
+    final Optional<String> nameValidationError = nameValidation.apply(loginRequest.getName());
+    if (nameValidationError.isPresent()) {
+      return LobbyLoginResponse.builder().failReason(nameValidationError.get()).build();
+    }
+
+    if (Strings.nullToEmpty(loginRequest.getName()).isEmpty()
         || Strings.nullToEmpty(systemId).isEmpty()) {
       return LobbyLoginResponse.builder().failReason("Invalid login request").build();
     }
@@ -108,7 +116,6 @@ class LoginModule {
     return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, false);
   }
 
-  // TODO: Project#12 also update access log
   @SuppressWarnings("unused")
   private ApiKey recordLoginAndGenerateApiKey(
       final LoginRequest loginRequest,
