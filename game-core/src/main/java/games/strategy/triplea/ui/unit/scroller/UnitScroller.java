@@ -56,9 +56,9 @@ public class UnitScroller {
   private static final int HORIZONTAL_BUTTON_GAP = 2;
 
   private static final String PREVIOUS_UNITS_TOOLTIP =
-      "Press 'M' or click to see 'Previous' unmoved units.";
+      "Press ',' or click to see 'Previous' unmoved units.";
   private static final String NEXT_UNITS_TOOLTIP =
-      "Press 'N' or click to see 'Next' unmoved units.";
+      "Press '.' or click to see 'Next' unmoved units.";
   private static final String SLEEP_UNITS_TOOLTIP =
       "Press 'S' or click to 'Sleep' these unmoved units until manually moved or alerted.";
   private static final String SKIP_UNITS_TOOLTIP =
