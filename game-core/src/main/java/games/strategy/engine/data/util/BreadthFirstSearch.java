@@ -24,7 +24,7 @@ public class BreadthFirstSearch {
 
   public BreadthFirstSearch(final Territory startTerritory, final Predicate<Territory> cond) {
     this.map = startTerritory.getData().getMap();
-    this.visited = new HashSet<Territory>(List.of(startTerritory));
+    this.visited = new HashSet<>(List.of(startTerritory));
     this.territoriesToCheck = new ArrayDeque<>(List.of(startTerritory));
     this.cond = cond;
   }
