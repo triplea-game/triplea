@@ -48,6 +48,8 @@ public class Chatters {
   }
 
   public Optional<ChatParticipant> connectPlayer(final ApiKey apiKey, final Session session) {
+    // Make sure chatter has logged in (has a valid API key)
+    // Based on the API key we'll know if the player is a moderator.
     final Optional<ChatParticipant> chatParticipant =
         apiKeyDaoWrapper.lookupByApiKey(apiKey).map(chatParticipantAdapter);
     // add chatter
