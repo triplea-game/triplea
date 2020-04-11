@@ -116,7 +116,6 @@ class LoginModule {
     return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, false);
   }
 
-  @SuppressWarnings("unused")
   private ApiKey recordLoginAndGenerateApiKey(
       final LoginRequest loginRequest,
       final SystemId systemId,
