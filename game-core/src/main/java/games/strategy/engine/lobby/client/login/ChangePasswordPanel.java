@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.client.login;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnec
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
+import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.FlowLayoutBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
@@ -39,6 +41,7 @@ public final class ChangePasswordPanel extends JPanel {
   private final JButton okButton = new JButton("OK");
   private final JCheckBox rememberPassword =
       new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
+  private final JLabel validationLabel = new JLabelBuilder().foregroundColor(Color.RED).build();
 
   public enum AllowCancelMode {
     SHOW_CANCEL_BUTTON,
@@ -92,6 +95,14 @@ public final class ChangePasswordPanel extends JPanel {
             .insets(5, 5, 0, 0)
             .build());
 
+    main.add(
+        validationLabel,
+        new GridBagConstraintsBuilder(0, 3)
+            .anchor(GridBagConstraintsAnchor.WEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(5, 5, 0, 0)
+            .build());
+
     final JPanel buttons =
         new JPanelBuilder()
             .border(BorderFactory.createEmptyBorder(10, 5, 10, 5))
@@ -117,7 +128,8 @@ public final class ChangePasswordPanel extends JPanel {
 
     SwingComponents.addEnterKeyListener(this, this::close);
 
-    new DocumentListenerBuilder(() -> okButton.setEnabled(validatePasswords()))
+    new DocumentListenerBuilder(
+            () -> okButton.setEnabled(validatePasswordsAndUpdateValidationText()))
         .attachTo(passwordField, passwordConfirmField);
   }
 
@@ -127,9 +139,17 @@ public final class ChangePasswordPanel extends JPanel {
     }
   }
 
-  private boolean validatePasswords() {
-    return Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword())
-        && passwordField.getPassword().length > 4;
+  private boolean validatePasswordsAndUpdateValidationText() {
+    if (!Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword())) {
+      validationLabel.setText("Passwords must match");
+      return false;
+    } else if (passwordField.getPassword().length <= 4) {
+      validationLabel.setText("Password is too short");
+      return false;
+    } else {
+      validationLabel.setText("");
+      return true;
+    }
   }
 
   /**
@@ -147,7 +167,7 @@ public final class ChangePasswordPanel extends JPanel {
     dialog.setVisible(true);
     dialog.dispose();
     dialog = null;
-    if (!validatePasswords()) {
+    if (!validatePasswordsAndUpdateValidationText()) {
       return Optional.empty();
     }
 

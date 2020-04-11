@@ -1,5 +1,6 @@
 package org.triplea.swing;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class JLabelBuilder {
   private Border border;
   private Integer borderSize;
   private int biggerFont;
+  private Color foregroundColor;
 
   public JLabelBuilder() {}
 
@@ -66,6 +68,8 @@ public class JLabelBuilder {
 
     Optional.ofNullable(borderSize)
         .ifPresent(size -> label.setBorder(new EmptyBorder(size, size, size, size)));
+
+    Optional.ofNullable(foregroundColor).ifPresent(label::setForeground);
 
     if (biggerFont > 0) {
       label.setFont(
@@ -129,6 +133,11 @@ public class JLabelBuilder {
   /** Increases button text size by a default amount. */
   public JLabelBuilder biggerFont() {
     biggerFont = 4;
+    return this;
+  }
+
+  public JLabelBuilder foregroundColor(final Color foregroundColor) {
+    this.foregroundColor = foregroundColor;
     return this;
   }
 
