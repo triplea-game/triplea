@@ -50,7 +50,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
     }
 
     if (SwingUtilities.isEventDispatchThread()) {
-      log.log(Level.INFO, "Blocking Network operation performed from EDT", new Exception());
+      log.log(Level.INFO, "Blocking network operation performed from EDT", new Exception());
     }
 
     final RemoteMethodCallResults response = messenger.invokeAndWait(endPointName, remoteMethodMsg);
