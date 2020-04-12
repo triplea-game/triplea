@@ -23,11 +23,12 @@ public class JMenuItemBuilder {
   private final String title;
   private final KeyCode mnemonic;
   private Runnable actionListener;
-  private int acceleratorKey;
+  private Integer acceleratorKey;
   private boolean selected;
 
   public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
     ArgChecker.checkNotEmpty(title);
+    Preconditions.checkNotNull(mnemonic);
     this.title = title;
     this.mnemonic = mnemonic;
   }
