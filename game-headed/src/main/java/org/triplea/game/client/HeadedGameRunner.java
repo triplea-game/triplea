@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.debug.ErrorMessage;
 import org.triplea.debug.LoggerManager;
+import org.triplea.debug.console.window.ConsoleConfiguration;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
@@ -87,6 +88,7 @@ public final class HeadedGameRunner {
     initializeLookAndFeel();
 
     initializeDesktopIntegrations(args);
+    SwingUtilities.invokeLater(ConsoleConfiguration::initialize);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
     GameRunner.start();
   }
