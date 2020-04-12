@@ -15,20 +15,13 @@ import javax.swing.SwingUtilities;
 public class CollapsiblePanel extends JPanel {
   private static final long serialVersionUID = 1L;
 
-  private static final String COLLAPSED_INDICATOR = " ►";
-  private static final String EXPANDED_INDICATOR = " ▼";
-
   private final JPanel content;
   private final JButton toggleButton;
 
-  private String title;
-  private String currentToggleIndicator = EXPANDED_INDICATOR;
-
   public CollapsiblePanel(final JPanel content, final String title) {
     super();
-    this.title = title;
     this.content = content;
-    this.toggleButton = new JButton();
+    this.toggleButton = new JButton(title);
     // We want the button to have square edges. On Mac, there's a special property for that.
     if (SystemProperties.isMac()) {
       toggleButton.putClientProperty("JButton.buttonType", "gradient");
@@ -48,21 +41,16 @@ public class CollapsiblePanel extends JPanel {
   }
 
   public void collapse() {
-    currentToggleIndicator = COLLAPSED_INDICATOR;
-    toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(false);
     revalidate();
   }
 
   public void expand() {
-    currentToggleIndicator = EXPANDED_INDICATOR;
-    toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(true);
     revalidate();
   }
 
   public void setTitle(final String title) {
-    this.title = title;
-    SwingUtilities.invokeLater(() -> toggleButton.setText(title + currentToggleIndicator));
+    SwingUtilities.invokeLater(() -> toggleButton.setText(title));
   }
 }
