@@ -308,7 +308,7 @@ public final class CreateAccountPanel extends JPanel {
   }
 
   public String getPassword() {
-    // TODO: Project#12 SHA512 hash password on client side here
+    // TODO: Md5-Deprecation SHA512 hash password on client side here
     return new String(passwordField.getPassword());
   }
 

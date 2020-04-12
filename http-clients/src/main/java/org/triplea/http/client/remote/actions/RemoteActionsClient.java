@@ -23,7 +23,6 @@ public class RemoteActionsClient {
     headers = new AuthenticationHeaders(apiKey).createHeaders();
   }
 
-  // TODO: Project#12 invoke this method when new players join a hosted game-server
   public boolean checkIfPlayerIsBanned(final InetAddress ipAddress) {
     return remoteActionsFeignClient.checkIfPlayerIsBanned(headers, ipAddress.getHostAddress());
   }

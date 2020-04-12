@@ -70,8 +70,6 @@ class ApiKeyAuthenticatorTest {
                 .build()));
   }
 
-  // TODO: Project#12 When host keys are split from user keys, we should never get a host
-  // record from lobby api keys.
   @Test
   void hostKeyFound() {
     when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.of(HOST_RECORD));
