@@ -8,7 +8,6 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 /** DAO for managing user bans (CRUD operations). */
 public interface UserBanDao {
-  // TODO: Project#11 use paging
   @SqlQuery(
       "select "
           + UserBanRecord.SELECT_CLAUSE

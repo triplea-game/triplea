@@ -39,7 +39,6 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
     final ClientLoginValidator loginValidator = new ClientLoginValidator();
     loginValidator.setServerMessenger(checkNotNull(serverModel.getMessenger()));
-    // TODO: Project#12 Wrap loginValidator here and instead inject headlessLoginValidator
     serverModel.getMessenger().setLoginValidator(loginValidator);
     Optional.ofNullable(serverModel.getLobbyWatcherThread())
         .map(LobbyWatcherThread::getLobbyWatcher)

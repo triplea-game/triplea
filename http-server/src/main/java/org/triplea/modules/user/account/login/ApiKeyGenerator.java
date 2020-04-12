@@ -9,7 +9,6 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.domain.data.ApiKey;
 
-// TODO: Project#12 test-me
 @Builder
 class ApiKeyGenerator implements Function<LoginRecord, ApiKey> {
 

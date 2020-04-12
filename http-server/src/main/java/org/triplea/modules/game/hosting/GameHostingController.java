@@ -43,7 +43,6 @@ public class GameHostingController extends HttpController {
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
   public GameHostingResponse hostingRequest(@Context final HttpServletRequest request) {
-    // TODO: Project#12 check that IP address is allowed to host
     try {
       return GameHostingResponse.builder()
           .apiKey(apiKeySupplier.apply(InetAddress.getByName(request.getRemoteAddr())).getValue())
