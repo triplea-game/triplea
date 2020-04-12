@@ -18,8 +18,13 @@ final class RemoteInterfaceHelper {
     return annotation.value();
   }
 
+  private static boolean isRemotelyExecutable(final Method method) {
+    return method.getAnnotation(RemoteActionCode.class) != null;
+  }
+
   static Method getMethod(final int methodNumber, final Class<?> remoteInterface) {
     return Arrays.stream(remoteInterface.getMethods())
+        .filter(RemoteInterfaceHelper::isRemotelyExecutable)
         .filter(method -> getNumber(method) == methodNumber)
         .findAny()
         .orElseThrow(
