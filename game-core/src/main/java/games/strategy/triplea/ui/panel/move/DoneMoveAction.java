@@ -28,10 +28,10 @@ class DoneMoveAction {
               == JOptionPane.YES_OPTION;
 
   boolean doneMoveAction() {
-    final boolean performDone = undoableMovesPanel.noMovesMade() && confirmNoMovement.apply(parentComponent);
-    if (performDone) {
+    final boolean done = undoableMovesPanel.movesMade() || confirmNoMovement.apply(parentComponent);
+    if (done) {
       unitScrollerPanel.setVisible(false);
     }
-    return performDone;
+    return done;
   }
 }
