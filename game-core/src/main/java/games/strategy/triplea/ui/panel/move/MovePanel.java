@@ -1586,18 +1586,12 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
   @Override
   protected boolean doneMoveAction() {
-    final boolean performDone =
-        (undoableMovesPanel.getCountOfMovesMade() == 0)
-            && JOptionPane.showConfirmDialog(
-                    JOptionPane.getFrameForComponent(MovePanel.this),
-                    "Are you sure you do not want to move?",
-                    "End Move",
-                    JOptionPane.YES_NO_OPTION)
-                == JOptionPane.YES_OPTION;
-    if (performDone) {
-      unitScrollerPanel.setVisible(false);
-    }
-    return performDone;
+    return DoneMoveAction.builder()
+        .parentComponent(this)
+        .undoableMovesPanel(undoableMovesPanel)
+        .unitScrollerPanel(unitScrollerPanel)
+        .build()
+        .doneMoveAction();
   }
 
   @Override
