@@ -21,7 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.UserWithRoleRecord;
+import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.data.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
@@ -39,8 +39,8 @@ class ChattersTest {
   private static final ApiKey API_KEY = ApiKey.of("api-key");
   private static final ApiKey API_KEY_2 = ApiKey.of("api-key-2");
 
-  private static final UserWithRoleRecord USER_WITH_ROLE_RECORD =
-      UserWithRoleRecord.builder()
+  private static final ApiKeyLookupRecord USER_WITH_ROLE_RECORD =
+      ApiKeyLookupRecord.builder()
           .role(UserRole.PLAYER)
           .playerChatId("chat-id")
           .userId(123)
@@ -155,7 +155,7 @@ class ChattersTest {
   @SuppressWarnings("SameParameterValue")
   private void givenChatterWithApiKey(final ApiKey apiKey, final ChatParticipant chatParticipant) {
     final var userWithRoleRecord =
-        UserWithRoleRecord.builder()
+        ApiKeyLookupRecord.builder()
             .userId(123)
             .playerChatId(chatParticipant.getPlayerChatId().getValue())
             .username(chatParticipant.getUserName().getValue())

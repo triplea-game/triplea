@@ -1,19 +1,19 @@
 package org.triplea.modules.chat;
 
 import java.util.function.Function;
-import org.triplea.db.dao.api.key.UserWithRoleRecord;
+import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.data.UserRole;
 import org.triplea.domain.data.ChatParticipant;
 
-class ChatParticipantAdapter implements Function<UserWithRoleRecord, ChatParticipant> {
+class ChatParticipantAdapter implements Function<ApiKeyLookupRecord, ChatParticipant> {
   @Override
-  public ChatParticipant apply(final UserWithRoleRecord userWithRoleRecord) {
+  public ChatParticipant apply(final ApiKeyLookupRecord apiKeyLookupRecord) {
     return ChatParticipant.builder()
-        .userName(userWithRoleRecord.getUsername())
+        .userName(apiKeyLookupRecord.getUsername())
         .isModerator(
-            userWithRoleRecord.getRole().equals(UserRole.ADMIN)
-                || userWithRoleRecord.getRole().equals(UserRole.MODERATOR))
-        .playerChatId(userWithRoleRecord.getPlayerChatId())
+            apiKeyLookupRecord.getRole().equals(UserRole.ADMIN)
+                || apiKeyLookupRecord.getRole().equals(UserRole.MODERATOR))
+        .playerChatId(apiKeyLookupRecord.getPlayerChatId())
         .build();
   }
 }

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.db.dao.api.key.UserWithRoleRecord;
+import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.data.UserRole;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
@@ -22,7 +22,7 @@ class ChatParticipantAdapterTest {
   @DisplayName("Verify player chat Id will be generated")
   void playerChatIdIsGenerated() {
     final var userWithRoleRecord =
-        UserWithRoleRecord.builder()
+        ApiKeyLookupRecord.builder()
             .username(USERNAME)
             .role(UserRole.PLAYER)
             .playerChatId(PlayerChatId.newId().getValue())
@@ -44,8 +44,8 @@ class ChatParticipantAdapterTest {
     assertThat(result, is(ChatParticipant.builder().isModerator(true).userName(USERNAME).build()));
   }
 
-  private UserWithRoleRecord givenUserRecordWithRole(final String userRole) {
-    return UserWithRoleRecord.builder()
+  private ApiKeyLookupRecord givenUserRecordWithRole(final String userRole) {
+    return ApiKeyLookupRecord.builder()
         .username(USERNAME)
         .role(userRole)
         .playerChatId(PlayerChatId.newId().getValue())

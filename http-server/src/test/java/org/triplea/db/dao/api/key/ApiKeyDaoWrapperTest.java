@@ -65,7 +65,7 @@ class ApiKeyDaoWrapperTest {
 
   @InjectMocks private ApiKeyDaoWrapper wrapper;
 
-  @Mock private UserWithRoleRecord apiKeyUserData;
+  @Mock private ApiKeyLookupRecord apiKeyUserData;
 
   @Nested
   class LookupByApiKey {
@@ -74,14 +74,14 @@ class ApiKeyDaoWrapperTest {
     void foundCase() {
       givenKeyLookupResult(Optional.of(apiKeyUserData));
 
-      final Optional<UserWithRoleRecord> result = wrapper.lookupByApiKey(API_KEY);
+      final Optional<ApiKeyLookupRecord> result = wrapper.lookupByApiKey(API_KEY);
 
       assertThat(result, isPresent());
       assertThat(result.get(), sameInstance(apiKeyUserData));
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private void givenKeyLookupResult(final Optional<UserWithRoleRecord> dataResult) {
+    private void givenKeyLookupResult(final Optional<ApiKeyLookupRecord> dataResult) {
       when(keyHashingFunction.apply(API_KEY)).thenReturn(HASHED_KEY);
       when(lobbyApiKeyDao.lookupByApiKey(HASHED_KEY)).thenReturn(dataResult);
     }
@@ -90,7 +90,7 @@ class ApiKeyDaoWrapperTest {
     void notFoundCase() {
       givenKeyLookupResult(Optional.empty());
 
-      final Optional<UserWithRoleRecord> result = wrapper.lookupByApiKey(API_KEY);
+      final Optional<ApiKeyLookupRecord> result = wrapper.lookupByApiKey(API_KEY);
 
       assertThat(result, isEmpty());
     }

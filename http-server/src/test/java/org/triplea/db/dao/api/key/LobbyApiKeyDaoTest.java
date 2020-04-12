@@ -19,15 +19,15 @@ class LobbyApiKeyDaoTest extends DaoTest {
 
   private static final int USER_ID = 50;
 
-  private static final UserWithRoleRecord EXPECTED_MODERATOR_DATA =
-      UserWithRoleRecord.builder()
+  private static final ApiKeyLookupRecord EXPECTED_MODERATOR_DATA =
+      ApiKeyLookupRecord.builder()
           .userId(USER_ID)
           .username("registered-user")
           .role(UserRole.MODERATOR)
           .playerChatId("chat-id0")
           .build();
-  private static final UserWithRoleRecord EXPECTED_ANONYMOUS_DATA =
-      UserWithRoleRecord.builder()
+  private static final ApiKeyLookupRecord EXPECTED_ANONYMOUS_DATA =
+      ApiKeyLookupRecord.builder()
           .username("some-other-name")
           .role(UserRole.ANONYMOUS)
           .playerChatId("chat-id1")
@@ -42,14 +42,14 @@ class LobbyApiKeyDaoTest extends DaoTest {
 
   @Test
   void registeredUser() {
-    final Optional<UserWithRoleRecord> result = lobbyApiKeyDao.lookupByApiKey("zapi-key1");
+    final Optional<ApiKeyLookupRecord> result = lobbyApiKeyDao.lookupByApiKey("zapi-key1");
 
     assertThat(result, isPresentAndIs(EXPECTED_MODERATOR_DATA));
   }
 
   @Test
   void anonymousUser() {
-    final Optional<UserWithRoleRecord> result = lobbyApiKeyDao.lookupByApiKey("zapi-key2");
+    final Optional<ApiKeyLookupRecord> result = lobbyApiKeyDao.lookupByApiKey("zapi-key2");
 
     assertThat(result, isPresentAndIs(EXPECTED_ANONYMOUS_DATA));
   }
