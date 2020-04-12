@@ -1,0 +1,11 @@
+org.gradle.caching=true
+org.gradle.parallel=true
+
+# increase number of retries from a default of 3
+org.gradle.internal.repository.max.retries=4
+
+# initial retry default is 125ms
+# backoff is exponential, increasing to get longer
+# retries on final attempts.
+org.gradle.internal.repository.initial.backoff=250
+
