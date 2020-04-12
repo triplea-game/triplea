@@ -91,7 +91,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final ServerSetupModel serverSetupModel;
-  private IServerMessenger serverMessenger;
+  private ServerMessenger serverMessenger;
   private Messengers messengers;
   private GameData data;
   private Map<String, String> playersToNodeListing = new HashMap<>();
@@ -422,6 +422,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
         gameToLobbyConnection =
             new GameToLobbyConnection(lobbyUri, gameHostingResponse, errorHandler);
+
+        serverMessenger.setGameToLobbyConnection(gameToLobbyConnection);
 
         gameToLobbyConnection.addMessageListener(
             PlayerBannedMessage.TYPE,

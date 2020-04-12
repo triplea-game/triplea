@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
 import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
@@ -67,6 +68,12 @@ public class GameToLobbyConnection {
 
   public boolean checkConnectivity(final int localPort) {
     return lobbyClient.getConnectivityCheckClient().checkConnectivity(localPort);
+  }
+
+  public boolean isPlayerBanned(final String ip) {
+    return lobbyClient
+        .getRemoteActionsClient()
+        .checkIfPlayerIsBanned(IpAddressParser.fromString(ip));
   }
 
   public void close() {
