@@ -20,7 +20,7 @@ class PlacementUnitsCollapsiblePanel {
     unitsToPlacePanel =
         new SimpleUnitPanel(
             uiContext, SimpleUnitPanel.Style.SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY);
-    panel = new CollapsiblePanel(unitsToPlacePanel, "");
+    panel = new CollapsiblePanel(unitsToPlacePanel, "Units To Place");
     panel.setVisible(false);
     gameData.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
   }
@@ -38,7 +38,6 @@ class PlacementUnitsCollapsiblePanel {
           final boolean hasUnitsToPlace = !step.getPlayerId().getUnits().isEmpty();
 
           if (hasUnitsToPlace || stepIsAfterPurchaseAndBeforePlacement(step)) {
-            panel.setTitle("Units To Place (" + step.getPlayerId().getUnits().size() + ")");
             unitsToPlacePanel.setUnitsFromCategories(
                 UnitSeparator.categorize(step.getPlayerId().getUnits()));
             panel.setVisible(true);
