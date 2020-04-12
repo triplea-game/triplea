@@ -295,7 +295,7 @@ public final class AirMovementValidator {
       if (airCanReach.isEmpty()) {
         continue;
       }
-      final Collection<Unit> unitsInLandingSpot = landingSpot.getUnits();
+      final Collection<Unit> unitsInLandingSpot = new ArrayList<>(landingSpot.getUnits());
       unitsInLandingSpot.removeAll(movedCarriersAndTheirFighters.keySet());
       // make sure to remove any units we have already moved, or units that are excluded
       unitsInLandingSpot.removeAll(airNotToConsider);
