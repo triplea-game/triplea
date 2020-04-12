@@ -21,7 +21,7 @@ import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.MovePanel;
+import games.strategy.triplea.ui.panel.move.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import java.io.Serializable;
 import java.math.BigDecimal;

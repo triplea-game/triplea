@@ -70,6 +70,7 @@ import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import games.strategy.triplea.ui.panel.move.MovePanel;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.util.TuvUtils;

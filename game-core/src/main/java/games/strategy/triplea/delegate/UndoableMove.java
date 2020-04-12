@@ -13,7 +13,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
-import games.strategy.triplea.ui.MovePanel;
+import games.strategy.triplea.ui.panel.move.MovePanel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
