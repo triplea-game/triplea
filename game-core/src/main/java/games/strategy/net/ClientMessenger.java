@@ -9,7 +9,6 @@ import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
@@ -67,13 +66,8 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
           socketChannel.close();
           throw new IOException("Connection refused");
         }
-        try {
-          if (socketChannel.finishConnect()) {
-            break;
-          }
-        } catch (final ConnectException e) {
-          throw new RuntimeException(
-              String.format("Could not connect host: %s, port: %s", host, port), e);
+        if (socketChannel.finishConnect()) {
+          break;
         }
         if (!Interruptibles.sleep(50)) {
           shutDown();

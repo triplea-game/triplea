@@ -36,6 +36,7 @@ import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
 import java.awt.Frame;
@@ -64,6 +65,7 @@ import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /** Represents a network aware game client connecting to another game that is acting as a server. */
 @Log
@@ -227,7 +229,21 @@ public class ClientModel implements IMessengerErrorListener {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
     } catch (final Exception ioe) {
-      log.log(Level.SEVERE, "Unable to connect:" + ioe.getMessage(), ioe);
+      log.log(Level.INFO, "Error connecting to host", ioe);
+      SwingComponents.showError(
+          ui,
+          "Error Connecting to Host",
+          "Error: "
+              + ioe.getMessage()
+              + "\n\nCheck:\n"
+              + "- The host is running\n"
+              + "- You have the right port and IP address\n"
+              + "- The host should use and can check their public IP address by "
+              + "visiting 'whatismyip.com'\n"
+              + "- The host can check that they are able to connect to their own game\n"
+              + "using their public IP\n"
+              + "Additional help can be found on the user-guide: "
+              + UrlConstants.USER_GUIDE);
       return false;
     }
     messenger.addErrorListener(this);
