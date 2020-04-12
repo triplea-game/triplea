@@ -12,10 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.extern.java.Log;
+import org.triplea.swing.Toast;
 
 /** View-model for console window. */
-@Log
 @Builder
 class ConsoleModel {
   private final Consumer<String> clipboardAction;
@@ -101,6 +100,6 @@ class ConsoleModel {
   static void setLogLevel(final String selectedLevel) {
     final Level level = LogLevelItem.fromLabel(selectedLevel);
     ClientSetting.loggingVerbosity.setValueAndFlush(level.getName());
-    log.info("Log level set to: " + level);
+    Toast.showToast("Log level set to: " + level.getName());
   }
 }
