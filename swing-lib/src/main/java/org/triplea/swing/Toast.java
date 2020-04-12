@@ -18,11 +18,19 @@ import lombok.Builder;
 public class Toast {
 
   @Nonnull private final String message;
-  @Nonnull private final Duration sleepTime;
-  @Nonnull private final JFrame parent;
+  @Builder.Default private final Duration sleepTime = Duration.ofSeconds(1);
+  private final JFrame parent;
 
   private final int windowHeight = 75;
   private final int windowWidth = 400;
+
+  public static void showToast(final JFrame parent, final String message) {
+    builder().parent(parent).message(message).build().showToast();
+  }
+
+  public static void showToast(final String message) {
+    showToast(null, message);
+  }
 
   public void showToast() {
     SwingUtilities.invokeLater(this::showInBackground);
@@ -32,10 +40,8 @@ public class Toast {
     final JWindow window = new JWindow(parent);
 
     window.setLocationRelativeTo(parent);
-    // make the background transparent
     window.setBackground(Color.DARK_GRAY);
 
-    // create a panel
     final JPanel panel =
         new JPanel() {
           @Override
@@ -45,21 +51,11 @@ public class Toast {
 
             // draw the boundary of the toast and fill it
             g.setColor(Color.DARK_GRAY);
-            g.fillRect(10, 10, width + 30, height + 10);
-            // g.setColor(Color.black);
             g.drawRect(10, 10, width + 30, height + 10);
 
             // set the color of text
             g.setColor(new Color(255, 255, 255, 240));
             g.drawString(message, 25, 27);
-            int t = 250;
-
-            // draw the shadow of the toast
-            for (int i = 0; i < 4; i++) {
-              t -= 60;
-              g.setColor(new Color(0, 0, 0, t));
-              g.drawRect(10 - i, 10 - i, width + 30 + i * 2, height + 10 + i * 2);
-            }
           }
         };
 
