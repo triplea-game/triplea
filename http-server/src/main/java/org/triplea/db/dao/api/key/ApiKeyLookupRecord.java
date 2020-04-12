@@ -19,8 +19,7 @@ import org.triplea.java.Postconditions;
 @Getter
 @EqualsAndHashCode
 @ToString
-// TODO: Project#12 rename to ApiKeyLookupRecord
-public class UserWithRoleRecord {
+public class ApiKeyLookupRecord {
   public static final String PLAYER_CHAT_ID_COLUMN = "player_chat_id";
   public static final String ROLE_COLUMN = "role";
   public static final String USERNAME_COLUMN = "username";
@@ -32,10 +31,10 @@ public class UserWithRoleRecord {
   private String role;
 
   /** Returns a JDBI row mapper used to convert a ResultSet into an instance of this bean object. */
-  public static RowMapper<UserWithRoleRecord> buildResultMapper() {
+  public static RowMapper<ApiKeyLookupRecord> buildResultMapper() {
     return (rs, ctx) -> {
       final var userWithRoleRecord =
-          UserWithRoleRecord.builder()
+          ApiKeyLookupRecord.builder()
               .userId(rs.getInt(USER_ID_COLUMN) == 0 ? null : rs.getInt(USER_ID_COLUMN))
               .playerChatId(Preconditions.checkNotNull(rs.getString(PLAYER_CHAT_ID_COLUMN)))
               .role(Preconditions.checkNotNull(rs.getString(ROLE_COLUMN)))

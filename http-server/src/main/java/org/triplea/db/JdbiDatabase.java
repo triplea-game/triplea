@@ -10,8 +10,8 @@ import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.db.dao.access.log.AccessLogRecord;
+import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.dao.api.key.GamePlayerLookup;
-import org.triplea.db.dao.api.key.UserWithRoleRecord;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanRecord;
 import org.triplea.db.dao.username.ban.UsernameBanRecord;
@@ -52,7 +52,7 @@ public final class JdbiDatabase {
     jdbi.registerRowMapper(AccessLogRecord.class, AccessLogRecord.buildResultMapper());
     jdbi.registerRowMapper(BanLookupRecord.class, BanLookupRecord.buildResultMapper());
     jdbi.registerRowMapper(GamePlayerLookup.class, GamePlayerLookup.buildResultMapper());
-    jdbi.registerRowMapper(UserWithRoleRecord.class, UserWithRoleRecord.buildResultMapper());
+    jdbi.registerRowMapper(ApiKeyLookupRecord.class, ApiKeyLookupRecord.buildResultMapper());
     jdbi.registerRowMapper(UserBanRecord.class, UserBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UsernameBanRecord.class, UsernameBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UserRoleLookup.class, UserRoleLookup.buildResultMapper());

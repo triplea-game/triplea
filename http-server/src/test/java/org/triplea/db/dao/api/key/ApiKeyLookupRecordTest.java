@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.data.UserRole;
 
 @ExtendWith(MockitoExtension.class)
-class UserWithRoleRecordTest {
+class ApiKeyLookupRecordTest {
   private static final String ROLE = UserRole.PLAYER;
   private static final int USER_ID = 55;
   private static final String NAME = "player-name";
@@ -31,7 +31,7 @@ class UserWithRoleRecordTest {
   void buildResultMapper() throws Exception {
     givenResults(USER_ID, CHAT_ID, ROLE, NAME);
 
-    final UserWithRoleRecord result = UserWithRoleRecord.buildResultMapper().map(resultSet, null);
+    final ApiKeyLookupRecord result = ApiKeyLookupRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUserId(), is(USER_ID));
     assertThat(result.getRole(), is(UserRole.PLAYER));
@@ -43,17 +43,17 @@ class UserWithRoleRecordTest {
   private void givenResults(
       final int userId, final String chatId, final String role, final String name)
       throws Exception {
-    when(resultSet.getInt(UserWithRoleRecord.USER_ID_COLUMN)).thenReturn(userId);
-    when(resultSet.getString(UserWithRoleRecord.PLAYER_CHAT_ID_COLUMN)).thenReturn(chatId);
-    when(resultSet.getString(UserWithRoleRecord.ROLE_COLUMN)).thenReturn(role);
-    when(resultSet.getString(UserWithRoleRecord.USERNAME_COLUMN)).thenReturn(name);
+    when(resultSet.getInt(ApiKeyLookupRecord.USER_ID_COLUMN)).thenReturn(userId);
+    when(resultSet.getString(ApiKeyLookupRecord.PLAYER_CHAT_ID_COLUMN)).thenReturn(chatId);
+    when(resultSet.getString(ApiKeyLookupRecord.ROLE_COLUMN)).thenReturn(role);
+    when(resultSet.getString(ApiKeyLookupRecord.USERNAME_COLUMN)).thenReturn(name);
   }
 
   @Test
   void zeroUserIdIsMappedToNull() throws Exception {
     givenResults(0, CHAT_ID, UserRole.HOST, null);
 
-    final UserWithRoleRecord result = UserWithRoleRecord.buildResultMapper().map(resultSet, null);
+    final ApiKeyLookupRecord result = ApiKeyLookupRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUserId(), nullValue());
   }
@@ -68,7 +68,7 @@ class UserWithRoleRecordTest {
 
   void assertPostconditionFailure() {
     assertThrows(
-        AssertionError.class, () -> UserWithRoleRecord.buildResultMapper().map(resultSet, null));
+        AssertionError.class, () -> ApiKeyLookupRecord.buildResultMapper().map(resultSet, null));
   }
 
   @ParameterizedTest

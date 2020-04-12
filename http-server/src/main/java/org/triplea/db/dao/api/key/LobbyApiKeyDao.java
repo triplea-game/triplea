@@ -29,18 +29,18 @@ interface LobbyApiKeyDao {
 
   @SqlQuery(
       "select lu.id as "
-          + UserWithRoleRecord.USER_ID_COLUMN
+          + ApiKeyLookupRecord.USER_ID_COLUMN
           + ", ak.username as "
-          + UserWithRoleRecord.USERNAME_COLUMN
+          + ApiKeyLookupRecord.USERNAME_COLUMN
           + ", ur.name as "
-          + UserWithRoleRecord.ROLE_COLUMN
+          + ApiKeyLookupRecord.ROLE_COLUMN
           + ", ak.player_chat_id  as "
-          + UserWithRoleRecord.PLAYER_CHAT_ID_COLUMN
+          + ApiKeyLookupRecord.PLAYER_CHAT_ID_COLUMN
           + " from lobby_api_key ak "
           + " join user_role ur on ur.id = ak.user_role_id "
           + " left join lobby_user lu on lu.id = ak.lobby_user_id "
           + " where ak.key = :apiKey")
-  Optional<UserWithRoleRecord> lookupByApiKey(@Bind("apiKey") String apiKey);
+  Optional<ApiKeyLookupRecord> lookupByApiKey(@Bind("apiKey") String apiKey);
 
   @SqlUpdate("delete from lobby_api_key where date_created < (now() - '7 days'::interval)")
   void deleteOldKeys();

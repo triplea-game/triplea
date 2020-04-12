@@ -46,13 +46,13 @@ public class ApiKeyDaoWrapper {
   }
 
   // TODO: update tests
-  public Optional<UserWithRoleRecord> lookupByApiKey(final ApiKey apiKey) {
+  public Optional<ApiKeyLookupRecord> lookupByApiKey(final ApiKey apiKey) {
     return lobbyApiKeyDao
         .lookupByApiKey(keyHashingFunction.apply(apiKey))
         .or(
             () ->
                 gameHostApiKeyDao.keyExists(keyHashingFunction.apply(apiKey))
-                    ? Optional.of(UserWithRoleRecord.builder().role(UserRole.HOST).build())
+                    ? Optional.of(ApiKeyLookupRecord.builder().role(UserRole.HOST).build())
                     : Optional.empty());
   }
 
