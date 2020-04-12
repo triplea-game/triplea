@@ -562,4 +562,12 @@ public final class SwingComponents {
 
     private final int optionPaneFlag;
   }
+
+  /**
+   * Checks if the current font can display a given character. Not all fonts can display all unicode
+   * characters. EG: not all fonts can display '►'.
+   */
+  public static boolean canDisplayCharacter(final char character) {
+    return new JLabel().getFont().canDisplay(character);
+  }
 }

@@ -15,14 +15,19 @@ import javax.swing.SwingUtilities;
 public class CollapsiblePanel extends JPanel {
   private static final long serialVersionUID = 1L;
 
-  private static final String COLLAPSED_INDICATOR = " ►";
-  private static final String EXPANDED_INDICATOR = " ▼";
+  private static final char COLLAPSED_INDICATOR = '►';
+  private static final String COLLAPSED_TEXT =
+      SwingComponents.canDisplayCharacter(COLLAPSED_INDICATOR) ? " " + COLLAPSED_INDICATOR : "";
+
+  private static final char EXPANDED_INDICATOR = '▼';
+  private static final String EXPANDED_TEXT =
+      SwingComponents.canDisplayCharacter(EXPANDED_INDICATOR) ? " " + EXPANDED_INDICATOR : "";
 
   private final JPanel content;
   private final JButton toggleButton;
 
   private String title;
-  private String currentToggleIndicator = EXPANDED_INDICATOR;
+  private String currentToggleIndicator = EXPANDED_TEXT;
 
   public CollapsiblePanel(final JPanel content, final String title) {
     super();
@@ -33,6 +38,7 @@ public class CollapsiblePanel extends JPanel {
     if (SystemProperties.isMac()) {
       toggleButton.putClientProperty("JButton.buttonType", "gradient");
     }
+
     toggleButton.addActionListener(
         e -> {
           if (content.isVisible()) {
@@ -48,14 +54,14 @@ public class CollapsiblePanel extends JPanel {
   }
 
   public void collapse() {
-    currentToggleIndicator = COLLAPSED_INDICATOR;
+    currentToggleIndicator = COLLAPSED_TEXT;
     toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(false);
     revalidate();
   }
 
   public void expand() {
-    currentToggleIndicator = EXPANDED_INDICATOR;
+    currentToggleIndicator = EXPANDED_TEXT;
     toggleButton.setText(title + currentToggleIndicator);
     content.setVisible(true);
     revalidate();
