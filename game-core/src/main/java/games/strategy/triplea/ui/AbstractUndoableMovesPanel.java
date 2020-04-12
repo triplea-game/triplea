@@ -164,8 +164,8 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     return containerBox;
   }
 
-  public int getCountOfMovesMade() {
-    return moves.size();
+  public boolean noMovesMade() {
+    return moves.size() == 0;
   }
 
   protected void setSize(final Dimension buttonSize, final JButton cancelButton) {

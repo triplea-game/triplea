@@ -2,13 +2,15 @@ package games.strategy.triplea.ui.panel.move;
 
 import games.strategy.triplea.ui.AbstractUndoableMovesPanel;
 import java.awt.Component;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Builder
+@AllArgsConstructor
 class DoneMoveAction {
 
   @Nonnull private final JComponent parentComponent;
@@ -16,8 +18,8 @@ class DoneMoveAction {
   @Nonnull private final Component unitScrollerPanel;
 
   @Builder.Default
-  private Supplier<Boolean> confirmNoMovement =
-      () ->
+  private Function<JComponent, Boolean> confirmNoMovement =
+      parentComponent ->
           JOptionPane.showConfirmDialog(
                   JOptionPane.getFrameForComponent(parentComponent),
                   "Are you sure you do not want to move?",
@@ -26,8 +28,7 @@ class DoneMoveAction {
               == JOptionPane.YES_OPTION;
 
   boolean doneMoveAction() {
-    final boolean performDone =
-        (undoableMovesPanel.getCountOfMovesMade() == 0) && confirmNoMovement.get();
+    final boolean performDone = undoableMovesPanel.noMovesMade() && confirmNoMovement.apply(parentComponent);
     if (performDone) {
       unitScrollerPanel.setVisible(false);
     }
