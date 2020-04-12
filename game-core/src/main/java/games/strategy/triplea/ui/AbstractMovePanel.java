@@ -26,11 +26,11 @@ import lombok.Getter;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
 
-abstract class AbstractMovePanel extends ActionPanel {
+public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
   private static final int entryPadding = 15;
 
-  AbstractUndoableMovesPanel undoableMovesPanel;
+  protected AbstractUndoableMovesPanel undoableMovesPanel;
   private final TripleAFrame frame;
   private boolean listening = false;
   private final JLabel actionLabel = new JLabel();
@@ -43,7 +43,7 @@ abstract class AbstractMovePanel extends ActionPanel {
   private final JButton cancelMoveButton =
       new JButtonBuilder().title("Cancel").actionListener(this::cancelMove).build();
 
-  AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
+  protected AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
     disableCancelButton();
@@ -58,7 +58,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     }
   }
 
-  abstract Component getUnitScrollerPanel();
+  protected abstract Component getUnitScrollerPanel();
 
   /*
    * sub-classes method for done handling
@@ -72,31 +72,31 @@ abstract class AbstractMovePanel extends ActionPanel {
 
   // frame methods
 
-  final void clearStatusMessage() {
+  protected final void clearStatusMessage() {
     frame.clearStatusMessage();
   }
 
-  final void setStatusErrorMessage(final String message) {
+  protected final void setStatusErrorMessage(final String message) {
     frame.setStatusErrorMessage(message);
   }
 
-  final void setStatusWarningMessage(final String message) {
+  protected final void setStatusWarningMessage(final String message) {
     frame.setStatusWarningMessage(message);
   }
 
-  final boolean getListening() {
+  protected final boolean getListening() {
     return listening;
   }
 
-  final void setMoveMessage(final MoveDescription message) {
+  protected final void setMoveMessage(final MoveDescription message) {
     moveMessage = message;
   }
 
-  final List<UndoableMove> getUndoableMoves() {
+  protected final List<UndoableMove> getUndoableMoves() {
     return undoableMoves;
   }
 
-  final void enableCancelButton() {
+  protected final void enableCancelButton() {
     cancelMoveButton.setEnabled(true);
   }
 
@@ -118,7 +118,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     this.undoableMovesPanel.setMoves(new ArrayList<>(undoableMoves));
   }
 
-  final void cancelMove() {
+  protected final void cancelMove() {
     cancelMoveAction();
     if (frame != null) {
       frame.clearStatusMessage();
@@ -296,7 +296,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     // used by some subclasses
   }
 
-  final MoveDescription waitForMove(final IPlayerBridge bridge) {
+  public final MoveDescription waitForMove(final IPlayerBridge bridge) {
     setUp(bridge);
     waitForRelease();
     cleanUp();

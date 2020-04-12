@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import org.triplea.java.collections.IntegerMap;
 
-final class UnitChooser extends JPanel {
+public final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
   private final List<ChooserEntry> entries = new ArrayList<>();
   private final Map<Unit, Collection<Unit>> dependents;
@@ -94,7 +94,7 @@ final class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  UnitChooser(
+  public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent,
@@ -107,7 +107,7 @@ final class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  UnitChooser(
+  public UnitChooser(
       final Collection<Unit> units,
       final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent,
@@ -135,7 +135,7 @@ final class UnitChooser extends JPanel {
     autoSelectButton.setText("Max");
   }
 
-  void setTitle(final String title) {
+  public void setTitle(final String title) {
     this.title.setText(title);
     this.title.setVisible(true);
   }
@@ -294,7 +294,7 @@ final class UnitChooser extends JPanel {
     }
   }
 
-  Collection<Unit> getSelected() {
+  public Collection<Unit> getSelected() {
     return getSelected(true);
   }
 
@@ -302,7 +302,7 @@ final class UnitChooser extends JPanel {
    * get the units selected. If units are two hit enabled, returns those with two hits (ie: those
    * killed).
    */
-  List<Unit> getSelected(final boolean selectDependents) {
+  public List<Unit> getSelected(final boolean selectDependents) {
     final List<Unit> selectedUnits = new ArrayList<>();
     for (final ChooserEntry entry : entries) {
       addToCollection(selectedUnits, entry, entry.getFinalHit(), selectDependents);

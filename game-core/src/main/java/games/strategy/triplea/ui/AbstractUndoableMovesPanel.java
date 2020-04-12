@@ -29,7 +29,7 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-abstract class AbstractUndoableMovesPanel extends JPanel {
+public abstract class AbstractUndoableMovesPanel extends JPanel {
   private static final long serialVersionUID = 1910945925958952416L;
   protected List<AbstractUndoableMove> moves;
 
@@ -49,7 +49,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     SwingUtilities.invokeLater(this::initLayout);
   }
 
-  void undoMoves(final Collection<Collection<Unit>> highlightUnitByTerritory) {
+  public void undoMoves(final Collection<Collection<Unit>> highlightUnitByTerritory) {
     final var units =
         highlightUnitByTerritory.stream().flatMap(Collection::stream).collect(Collectors.toSet());
     movePanel.undoMoves(units);
@@ -164,7 +164,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     return containerBox;
   }
 
-  int getCountOfMovesMade() {
+  public int getCountOfMovesMade() {
     return moves.size();
   }
 

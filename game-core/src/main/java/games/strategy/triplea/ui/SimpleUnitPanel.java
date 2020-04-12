@@ -31,7 +31,7 @@ public class SimpleUnitPanel extends JPanel {
   private final UiContext uiContext;
   private final Style style;
 
-  enum Style {
+  public enum Style {
     LARGE_ICONS_COLUMN,
     SMALL_ICONS_WRAPPED_WITH_LABEL_WHEN_EMPTY
   }

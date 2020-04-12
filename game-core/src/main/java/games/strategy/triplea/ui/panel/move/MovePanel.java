@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.panel.move;
 
 import com.google.common.collect.ImmutableList;
 import games.strategy.engine.data.GameData;
@@ -22,6 +22,14 @@ import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.AbstractMovePanel;
+import games.strategy.triplea.ui.DefaultMapSelectionListener;
+import games.strategy.triplea.ui.KeyBindingSupplier;
+import games.strategy.triplea.ui.MouseDetails;
+import games.strategy.triplea.ui.SimpleUnitPanel;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UndoableMovesPanel;
+import games.strategy.triplea.ui.UnitChooser;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.MouseOverUnitListener;
