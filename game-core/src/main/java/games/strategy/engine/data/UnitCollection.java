@@ -1,5 +1,8 @@
 package games.strategy.engine.data;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -78,23 +81,14 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    * @param type referring unit type
    * @param maxUnits maximal number of units
    */
+  @VisibleForTesting
   public Collection<Unit> getUnits(final UnitType type, final int maxUnits) {
-    if (maxUnits == 0) {
-      return new ArrayList<>();
-    }
-    if (maxUnits < 0) {
-      throw new IllegalArgumentException("value must be positive.  Instead its:" + maxUnits);
-    }
-    final Collection<Unit> units = new ArrayList<>();
-    for (final Unit current : this.units) {
-      if (current.getType().equals(type)) {
-        units.add(current);
-        if (units.size() == maxUnits) {
-          return units;
-        }
-      }
-    }
-    return units;
+    Preconditions.checkArgument(
+        maxUnits >= 0, "MaxUnits parameter must be non-negative.  Instead it is:" + maxUnits);
+    return units.stream()
+        .filter(Matches.unitIsOfTypes(type))
+        .limit(maxUnits)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -103,11 +97,10 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    * @param types map of unit types
    */
   public Collection<Unit> getUnits(final IntegerMap<UnitType> types) {
-    final Collection<Unit> units = new ArrayList<>();
-    for (final UnitType type : types.keySet()) {
-      units.addAll(getUnits(type, types.getInt(type)));
-    }
-    return units;
+    return types.keySet().stream()
+        .map(type -> getUnits(type, types.getInt(type)))
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public Collection<Unit> getUnits() {
