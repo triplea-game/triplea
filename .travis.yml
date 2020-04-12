@@ -3,7 +3,7 @@ dist: xenial
 sudo: false
 language: java
 jdk: openjdk11
-cache: { directories: [ ".gradle", "~/.gradle" ] }
+cache: { directories: [ ".gradle" ] }
 install: skip
 
 env:
