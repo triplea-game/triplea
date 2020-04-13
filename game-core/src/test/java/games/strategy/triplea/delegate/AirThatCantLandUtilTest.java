@@ -20,6 +20,7 @@ import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 import org.junit.jupiter.api.Test;
 
@@ -291,7 +292,7 @@ class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz11.getUnits(), new Route(sz11, sz9));
+    moveDelegate.move(List.copyOf(sz11.getUnits()), new Route(sz11, sz9));
     moveDelegate.move(
         sz9.getUnitCollection().getUnits(infantryType, 1), new Route(sz9, eastCanada));
     moveDelegate.end();
