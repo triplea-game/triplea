@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 
 /** Default implementation of {@link IChatController}. */
@@ -28,6 +29,7 @@ public class ChatController implements IChatController {
   private final Predicate<INode> isModerator;
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
+  private final Map<INode, PlayerChatId> chatterIds = new HashMap<>();
   private final Map<UserName, String> chatterStatus = new HashMap<>();
 
   private final Object mutex = new Object();
@@ -108,11 +110,14 @@ public class ChatController implements IChatController {
     log.info("Chatter:" + node + " is joining chat:" + chatName);
     final Tag tag = isModerator.test(node) ? Tag.MODERATOR : Tag.NONE;
     synchronized (mutex) {
+      final PlayerChatId id = PlayerChatId.newId();
+      chatterIds.put(node, id);
       chatters.put(node, tag);
       getChatBroadcaster()
           .speakerAdded(
               ChatParticipant.builder()
                   .userName(node.getPlayerName().getValue())
+                  .playerChatId(id.getValue())
                   .isModerator(tag == Tag.MODERATOR)
                   .build());
 
@@ -122,6 +127,7 @@ public class ChatController implements IChatController {
                   ChatParticipant.builder()
                       .isModerator(entry.getValue() == Tag.MODERATOR)
                       .userName(entry.getKey().getPlayerName().getValue())
+                      .playerChatId(chatterIds.get(entry.getKey()).getValue())
                       .status(chatterStatus.get(entry.getKey().getPlayerName()))
                       .build())
           .collect(Collectors.toSet());
