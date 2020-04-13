@@ -997,14 +997,9 @@ public class DiceRoll implements Externalizable {
       final GameData data,
       final boolean defence,
       final boolean allies) {
-    final Set<UnitSupportAttachment> rules =
-        UnitSupportAttachment.get(data)
-            .parallelStream()
-            .filter(usa -> (usa.getRoll() || usa.getStrength()))
-            .collect(Collectors.toSet());
     getSupport(
         unitsGivingTheSupport,
-        rules,
+        data.getUnitTypeList().getSupportRules(),
         supportsAvailable,
         supportLeft,
         supportUnitsLeft,
