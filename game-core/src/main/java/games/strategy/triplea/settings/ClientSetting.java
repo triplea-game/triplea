@@ -86,7 +86,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new ProtectedStringClientSetting("LOBBY_LOGIN_SAVED_PASSWORD");
   public static final BooleanClientSetting lockMap = new BooleanClientSetting("LOCK_MAP");
   public static final BooleanClientSetting loginAnonymously =
-      new BooleanClientSetting("LOGIN_ANONYMOUSLY", false);
+      new BooleanClientSetting("LOGIN_ANONYMOUSLY", true);
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
   public static final ClientSetting<Integer> mapEdgeScrollSpeed =
