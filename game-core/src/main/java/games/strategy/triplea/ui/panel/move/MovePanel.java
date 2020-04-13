@@ -24,7 +24,6 @@ import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.AbstractMovePanel;
 import games.strategy.triplea.ui.DefaultMapSelectionListener;
-import games.strategy.triplea.ui.KeyBindingSupplier;
 import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -43,7 +42,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -60,9 +58,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,9 +70,11 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /** The action panel displayed during the combat and non-combat move actions. */
-public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
+public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
   /**
@@ -735,6 +735,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
 
   public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
+
     undoableMovesPanel = new UndoableMovesPanel(this);
     mouseCurrentTerritory = null;
     unitsThatCanMoveOnRoute = List.of();
@@ -745,6 +746,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     unitScroller = new UnitScroller(getData(), getMap(), this::isVisible);
     unitScrollerPanel = unitScroller.build();
     unitScrollerPanel.setVisible(false);
+    registerKeyBindings(frame);
   }
 
   // Same as above! Delete this crap after refactoring.
@@ -1548,27 +1550,20 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     getMap().addMouseOverUnitListener(mouseOverUnitListener);
   }
 
-  @Override
-  public Map<KeyStroke, Runnable> get() {
-    final Map<KeyStroke, Runnable> bindings = new HashMap<>();
-
-    bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_SPACE),
-        unitScrollerAction(unitScroller::skipCurrentUnits));
-    bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S),
-        unitScrollerAction(unitScroller::sleepCurrentUnits));
-    bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_PERIOD),
-        unitScrollerAction(unitScroller::centerOnNextMovableUnit));
-    bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_COMMA),
-        unitScrollerAction(unitScroller::centerOnPreviousMovableUnit));
-    bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_F), this::highlightMovableUnits);
-    bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_U),
+  private void registerKeyBindings(final JFrame frame) {
+    SwingKeyBinding.addKeyBinding(
+        frame, KeyCode.SPACE, unitScrollerAction(unitScroller::skipCurrentUnits));
+    SwingKeyBinding.addKeyBinding(
+        frame, KeyCode.S, unitScrollerAction(unitScroller::sleepCurrentUnits));
+    SwingKeyBinding.addKeyBinding(
+        frame, KeyCode.PERIOD, unitScrollerAction(unitScroller::centerOnNextMovableUnit));
+    SwingKeyBinding.addKeyBinding(
+        frame, KeyCode.COMMA, unitScrollerAction(unitScroller::centerOnPreviousMovableUnit));
+    SwingKeyBinding.addKeyBinding(frame, KeyCode.F, this::highlightMovableUnits);
+    SwingKeyBinding.addKeyBinding(
+        frame,
+        KeyCode.U,
         unitScrollerAction(() -> undoableMovesPanel.undoMoves(getMap().getHighlightedUnits())));
-    return bindings;
   }
 
   /**

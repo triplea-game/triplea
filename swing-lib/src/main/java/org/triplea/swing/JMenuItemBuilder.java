@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import org.triplea.java.ArgChecker;
+import org.triplea.swing.key.binding.KeyCode;
 
 /**
  * Builder to creates a menu item with title and mnemonic key.
@@ -58,7 +59,7 @@ public class JMenuItemBuilder {
   private void buildImpl(final JMenuItem menuItem) {
     Preconditions.checkNotNull(actionListener);
 
-    menuItem.setMnemonic(mnemonic.getKeyEvent());
+    menuItem.setMnemonic(mnemonic.getInputEventCode());
     menuItem.addActionListener(e -> actionListener.run());
     Optional.ofNullable(acceleratorKey)
         .ifPresent(
@@ -88,12 +89,7 @@ public class JMenuItemBuilder {
    *     key will fire the action bound to this menu item.
    */
   public JMenuItemBuilder accelerator(final KeyCode acceleratorKey) {
-    this.acceleratorKey = acceleratorKey.getKeyEvent();
-    return this;
-  }
-
-  public JMenuItemBuilder accelerator(final int keyEvent) {
-    this.acceleratorKey = keyEvent;
+    this.acceleratorKey = acceleratorKey.getInputEventCode();
     return this;
   }
 

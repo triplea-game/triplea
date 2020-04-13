@@ -78,6 +78,8 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.util.Tuple;
 
 /** Displays a running battle. */
@@ -715,14 +717,12 @@ public class BattleDisplay extends JPanel {
     setDefaultWidths(attackerTable);
 
     // press space to continue
-    SwingComponents.addSpaceKeyListener(
+    SwingKeyBinding.addKeyBinding(
         this,
-        () -> {
-          final Action a = actionButton.getAction();
-          if (a != null) {
-            a.actionPerformed(null);
-          }
-        });
+        KeyCode.SPACE,
+        () ->
+            Optional.ofNullable(actionButton.getAction()) //
+                .ifPresent(a -> a.actionPerformed(null)));
   }
 
   /** Shorten columns with no units. */

@@ -23,7 +23,8 @@ import javax.swing.JTextField;
 import org.triplea.domain.data.UserName;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 final class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
@@ -212,7 +213,7 @@ final class LoginPanel extends JPanel {
           returnValue = ReturnValue.FORGOT_PASSWORD;
           close();
         });
-    SwingComponents.addEnterKeyListener(this, this::logonPressed);
+    SwingKeyBinding.addKeyBinding(this, KeyCode.ENTER, this::logonPressed);
   }
 
   private void close() {
@@ -270,7 +271,7 @@ final class LoginPanel extends JPanel {
   ReturnValue show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "", true);
     dialog.getContentPane().add(this);
-    SwingComponents.addEscapeKeyListener(dialog, this::close);
+    SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, this::close);
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
     dialog.setVisible(true);

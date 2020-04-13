@@ -1,6 +1,7 @@
-package org.triplea.swing;
+package org.triplea.swing.key.binding;
 
 import java.awt.event.KeyEvent;
+import javax.swing.KeyStroke;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,15 @@ import lombok.Getter;
  * stores them as enums which can then be mapped to the magic number defined in {@code KeyEvent}
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public enum KeyCode {
+  SPACE(KeyEvent.VK_SPACE),
+  ENTER(KeyEvent.VK_ENTER),
+  ESCAPE(KeyEvent.VK_ESCAPE),
+  PERIOD(KeyEvent.VK_PERIOD),
+  COMMA(KeyEvent.VK_COMMA),
+  EQUALS(KeyEvent.VK_EQUALS),
+  MINUS(KeyEvent.VK_MINUS),
   A(KeyEvent.VK_A),
   B(KeyEvent.VK_B),
   C(KeyEvent.VK_C),
@@ -36,7 +45,19 @@ public enum KeyCode {
   W(KeyEvent.VK_W),
   X(KeyEvent.VK_X),
   Y(KeyEvent.VK_Y),
-  Z(KeyEvent.VK_Z);
+  Z(KeyEvent.VK_Z),
+  ;
 
-  @Getter private final int keyEvent;
+  private final int inputEventCode;
+
+  @SuppressWarnings("MagicConstant")
+  KeyStroke toKeyStroke() {
+    final KeyStroke result =
+        KeyStroke.getKeyStroke(inputEventCode, ButtonDownMask.NONE.getInputEventCode());
+    if (result.toString().contains("UNKNOWN")) {
+      throw new IllegalArgumentException(
+          "Unknown key constant: " + inputEventCode + ", from enum value: " + this);
+    }
+    return result;
+  }
 }

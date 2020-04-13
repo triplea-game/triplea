@@ -16,6 +16,8 @@ import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import lombok.extern.java.Log;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /**
  * Provides a builder API for creating a JFrame that will include project specific defaults when
@@ -81,7 +83,7 @@ public class JFrameBuilder {
     }
 
     if (escapeClosesWindow) {
-      SwingComponents.addEscapeKeyListener(frame, frame::dispose);
+      SwingKeyBinding.addKeyBinding(frame, KeyCode.ESCAPE, frame::dispose);
     }
     if (alwaysOnTop) {
       frame.setAlwaysOnTop(true);

@@ -103,7 +103,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -163,6 +162,8 @@ import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.thread.ThreadPool;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.LocalizeHtml;
@@ -586,26 +587,25 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             .build(),
         BorderLayout.SOUTH);
 
-    addKeyBindings(movePanel, actionButtons);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 
-    addTab("Actions", actionButtons, 'C');
+    addTab("Actions", actionButtons, KeyCode.C);
     actionButtons.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
-    addTab("Players", statsPanel, 'P');
+    addTab("Players", statsPanel, KeyCode.P);
     economyPanel = new EconomyPanel(data, uiContext);
-    addTab("Resources", economyPanel, 'R');
+    addTab("Resources", economyPanel, KeyCode.R);
     objectivePanel = new ObjectivePanel(data);
     if (objectivePanel.isEmpty()) {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
     } else {
-      addTab(objectivePanel.getName(), objectivePanel, 'O');
+      addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
     }
     notesPanel = new NotesPanel(data.getProperties().get("notes", "").trim());
-    addTab("Notes", notesPanel, 'N');
+    addTab("Notes", notesPanel, KeyCode.N);
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
-    addTab("Territory", details, 'T');
+    addTab("Territory", details, KeyCode.T);
     editPanel = new EditPanel(data, mapPanel, this);
     // Register a change listener
     tabsPanel.addChangeListener(
@@ -680,15 +680,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         0);
   }
 
-  private void addKeyBindings(final KeyBindingSupplier... keyBindings) {
-    Arrays.stream(keyBindings)
-        .map(Supplier::get)
-        .map(Map::entrySet)
-        .flatMap(Collection::stream)
-        .forEach(
-            binding -> SwingComponents.addKeyBinding(this, binding.getKey(), binding.getValue()));
-  }
-
   /**
    * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
    */
@@ -742,24 +733,24 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private void addZoomKeyboardShortcuts() {
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
         this,
-        '=',
+        KeyCode.EQUALS,
         () ->
             mapPanel.setScale(
                 mapPanel.getScale() + (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
 
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
         this,
-        '-',
+        KeyCode.MINUS,
         () ->
             mapPanel.setScale(
                 mapPanel.getScale() - (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
   }
 
-  private void addTab(final String title, final Component component, final char hotkey) {
+  private void addTab(final String title, final Component component, final KeyCode hotkey) {
     tabsPanel.addTab(title, null, component, "Hotkey: CTRL+" + hotkey);
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
         this,
         hotkey,
         () -> tabsPanel.setSelectedIndex(List.of(tabsPanel.getComponents()).indexOf(component)));
@@ -2109,13 +2100,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               new HistoryDetailsPanel(clonedGameData, mapPanel);
           tabsPanel.removeAll();
           tabsPanel.add("History", historyDetailPanel);
-          addTab("Players", statsPanel, 'P');
-          addTab("Resources", economyPanel, 'R');
+          addTab("Players", statsPanel, KeyCode.P);
+          addTab("Resources", economyPanel, KeyCode.R);
           if (objectivePanel != null && !objectivePanel.isEmpty()) {
-            addTab(objectivePanel.getName(), objectivePanel, 'O');
+            addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
           }
-          addTab("Notes", notesPanel, 'N');
-          addTab("Territory", details, 'T');
+          addTab("Notes", notesPanel, KeyCode.N);
+          addTab("Territory", details, KeyCode.T);
           if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }
@@ -2288,14 +2279,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             tabsPanel.removeAll();
           }
           setWidgetActivation();
-          addTab("Actions", actionButtons, 'C');
-          addTab("Players", statsPanel, 'P');
-          addTab("Resources", economyPanel, 'R');
+          addTab("Actions", actionButtons, KeyCode.C);
+          addTab("Players", statsPanel, KeyCode.P);
+          addTab("Resources", economyPanel, KeyCode.R);
           if (objectivePanel != null && !objectivePanel.isEmpty()) {
-            addTab(objectivePanel.getName(), objectivePanel, 'O');
+            addTab(objectivePanel.getName(), objectivePanel, KeyCode.O);
           }
-          addTab("Notes", notesPanel, 'N');
-          addTab("Territory", details, 'T');
+          addTab("Notes", notesPanel, KeyCode.N);
+          addTab("Territory", details, KeyCode.T);
           if (mapPanel.getEditMode()) {
             tabsPanel.add("Edit", editPanel);
           }

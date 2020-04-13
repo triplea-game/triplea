@@ -25,6 +25,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
@@ -282,7 +284,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
           }
           listening = true;
           if (getRootPane() != null) {
-            SwingComponents.addEscapeKeyListener(this, this::cancelMove);
+            SwingKeyBinding.addKeyBinding(this, KeyCode.ESCAPE, this::cancelMove);
           }
         });
   }

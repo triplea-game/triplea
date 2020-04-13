@@ -13,7 +13,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,7 +32,10 @@ import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.ButtonDownMask;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.KeyCombination;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /**
  * This panel is fired by ActionButtons and controls the selection of a valid political action to
@@ -127,15 +129,13 @@ public class PoliticsPanel extends ActionPanel {
                       insets,
                       0,
                       0));
-
-              SwingComponents.addKeyBinding(
+              SwingKeyBinding.addKeyBinding(
                   politicalChoiceDialog,
-                  KeyBindingSupplier.fromKeyEventCode(
-                      KeyEvent.VK_D, KeyBindingSupplier.ModifierKey.SHIFT),
+                  KeyCombination.of(KeyCode.ENTER, ButtonDownMask.CTRL),
                   () -> politicalChoiceDialog.setVisible(false));
-              SwingComponents.addKeyBinding(
+              SwingKeyBinding.addKeyBinding(
                   politicalChoiceDialog,
-                  KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_ESCAPE),
+                  KeyCode.ESCAPE,
                   () -> politicalChoiceDialog.setVisible(false));
               final JButton doneButton =
                   new JButton(

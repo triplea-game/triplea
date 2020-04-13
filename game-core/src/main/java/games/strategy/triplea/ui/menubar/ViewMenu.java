@@ -48,8 +48,8 @@ import javax.swing.event.MenuListener;
 import lombok.extern.java.Log;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
-import org.triplea.swing.KeyCode;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 
 @Log
 final class ViewMenu extends JMenu {

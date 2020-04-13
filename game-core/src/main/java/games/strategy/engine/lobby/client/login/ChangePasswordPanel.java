@@ -23,12 +23,13 @@ import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.FlowLayoutBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /** Panel dedicated to changing password after user has logged in with a temporary password. */
 public final class ChangePasswordPanel extends JPanel {
@@ -126,7 +127,7 @@ public final class ChangePasswordPanel extends JPanel {
     okButton.setEnabled(false);
     okButton.addActionListener(e -> close());
 
-    SwingComponents.addEnterKeyListener(this, this::close);
+    SwingKeyBinding.addKeyBinding(this, KeyCode.ENTER, this::close);
 
     new DocumentListenerBuilder(
             () -> okButton.setEnabled(validatePasswordsAndUpdateValidationText()))
@@ -161,7 +162,7 @@ public final class ChangePasswordPanel extends JPanel {
   private Optional<String> show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "", true);
     dialog.getContentPane().add(this);
-    SwingComponents.addEscapeKeyListener(dialog, this::close);
+    SwingKeyBinding.addKeyBinding(this, KeyCode.ESCAPE, this::close);
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
     dialog.setVisible(true);
