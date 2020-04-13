@@ -103,7 +103,7 @@ subprojects {
         jaxbImplVersion = '2.3.2'
         jdbiVersion = '3.12.2'
         jlayerVersion = '1.0.1.4'
-        junitJupiterVersion = '5.6.1'
+        junitJupiterVersion = '5.6.2'
         junitPioneerVersion = '0.5.6'
         junitPlatformLauncherVersion = '1.5.2' // do not upgrade this to beyond 1.5.2 without testing IDEA test runner.
         mockitoVersion = '3.3.3'
