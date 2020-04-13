@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.LayoutManager;
