@@ -16,7 +16,8 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   private static final long serialVersionUID = 9002927658524651749L;
 
   private final Map<String, UnitType> unitTypes = new LinkedHashMap<>();
-  private @Nullable Set<UnitSupportAttachment> supportRules;
+  // Cached support rules. Marked transient as the cache does not need to be part of saved games.
+  private transient @Nullable Set<UnitSupportAttachment> supportRules;
 
   public UnitTypeList(final GameData data) {
     super(data);
@@ -52,8 +53,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   public Set<UnitSupportAttachment> getSupportRules() {
     if (supportRules == null) {
       supportRules =
-          UnitSupportAttachment.get(getData())
-              .parallelStream()
+          UnitSupportAttachment.get(getData()).stream()
               .filter(usa -> (usa.getRoll() || usa.getStrength()))
               .collect(Collectors.toSet());
     }
