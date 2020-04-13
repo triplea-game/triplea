@@ -295,7 +295,7 @@ public final class AirMovementValidator {
       if (airCanReach.isEmpty()) {
         continue;
       }
-      final Collection<Unit> unitsInLandingSpot = landingSpot.getUnits();
+      final Collection<Unit> unitsInLandingSpot = new ArrayList<>(landingSpot.getUnits());
       unitsInLandingSpot.removeAll(movedCarriersAndTheirFighters.keySet());
       // make sure to remove any units we have already moved, or units that are excluded
       unitsInLandingSpot.removeAll(airNotToConsider);
@@ -344,7 +344,7 @@ public final class AirMovementValidator {
       final Iterator<Territory> iter = potentialCarrierOrigins.iterator();
       while (iter.hasNext()) {
         final Territory carrierSpot = iter.next();
-        final Collection<Unit> unitsInCarrierSpot = carrierSpot.getUnits();
+        final Collection<Unit> unitsInCarrierSpot = new ArrayList<>(carrierSpot.getUnits());
         // remove carriers we have already moved
         unitsInCarrierSpot.removeAll(movedCarriersAndTheirFighters.keySet());
         // remove units we do not want to consider because they are in our mouse selection
