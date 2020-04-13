@@ -95,7 +95,6 @@ public class JFrameBuilder {
     if (pack) {
       frame.pack();
     }
-    frame.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
     frame.setVisible(visible);
     return frame;
   }
