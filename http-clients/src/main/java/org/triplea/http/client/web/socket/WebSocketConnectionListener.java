@@ -4,7 +4,9 @@ interface WebSocketConnectionListener {
 
   void messageReceived(String message);
 
-  void connectionClosed(String reason);
+  void connectionClosed();
+
+  void connectionTerminated(String reason);
 
   void handleError(Throwable error);
 }

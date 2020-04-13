@@ -82,9 +82,15 @@ class WebSocketConnectionTest {
     }
 
     @Test
-    void onClose() {
+    void onCloseDueToClientDisconnect() {
+      listener.onClose(mock(WebSocket.class), 0, WebSocketConnection.CLIENT_DISCONNECT_MESSAGE);
+      verify(webSocketConnectionListener).connectionClosed();
+    }
+
+    @Test
+    void onCloseDueToTermination() {
       listener.onClose(mock(WebSocket.class), 0, REASON);
-      verify(webSocketConnectionListener).connectionClosed(REASON);
+      verify(webSocketConnectionListener).connectionTerminated(REASON);
     }
 
     @Test

@@ -38,7 +38,7 @@ import org.triplea.java.timer.Timers;
 class WebSocketConnection {
   @VisibleForTesting static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
 
-  private static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
+  @VisibleForTesting static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
 
   private WebSocketConnectionListener listener;
 
@@ -205,7 +205,11 @@ class WebSocketConnection {
     public CompletionStage<?> onClose(
         final WebSocket webSocket, final int statusCode, final String reason) {
       pingSender.cancel();
-      listener.connectionClosed(reason);
+      if (reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
+        listener.connectionClosed();
+      } else {
+        listener.connectionTerminated(reason.isBlank() ? "Server disconnected" : reason);
+      }
       return null;
     }
 

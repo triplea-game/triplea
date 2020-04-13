@@ -23,6 +23,7 @@ import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.live.servers.ServerProperties;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JFrameBuilder;
 
 /** The top-level frame window for the lobby client UI. */
@@ -30,6 +31,8 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   private static final long serialVersionUID = -388371674076362572L;
 
   @Getter private final LobbyClient lobbyClient;
+  private final ChatTransmitter chatTransmitter;
+  private final LobbyGameTableModel tableModel;
 
   public LobbyFrame(final LobbyClient lobbyClient, final ServerProperties serverProperties) {
     super("TripleA Lobby");
@@ -37,7 +40,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     setIconImage(JFrameBuilder.getGameIcon());
     this.lobbyClient = lobbyClient;
     setJMenuBar(new LobbyMenu(this));
-    final ChatTransmitter chatTransmitter =
+    chatTransmitter =
         new LobbyChatTransmitter(
             lobbyClient.getPlayerToLobbyConnection(), lobbyClient.getUserName());
     final Chat chat = new Chat(chatTransmitter);
@@ -47,7 +50,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::newModeratorActions);
 
-    final LobbyGameTableModel tableModel =
+    tableModel =
         new LobbyGameTableModel(
             lobbyClient.isModerator(), lobbyClient.getPlayerToLobbyConnection());
     final LobbyGamePanel gamePanel =
@@ -71,18 +74,20 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     setLocationRelativeTo(null);
     lobbyClient
         .getPlayerToLobbyConnection()
-        .addConnectionClosedListener(
-            () -> {
-              tableModel.shutdown();
-              dispose();
+        .addConnectionTerminatedListener(
+            reason -> {
+              DialogBuilder.builder()
+                  .parent(this)
+                  .title("Connection to Lobby Closed")
+                  .errorMessage("Connection closed: " + reason)
+                  .showDialog();
               shutdown();
             });
+    lobbyClient.getPlayerToLobbyConnection().addConnectionClosedListener(this::shutdown);
     addWindowListener(
         new WindowAdapter() {
           @Override
           public void windowClosing(final WindowEvent e) {
-            chatTransmitter.disconnect();
-            tableModel.shutdown();
             shutdown();
           }
         });
@@ -119,6 +124,8 @@ public class LobbyFrame extends JFrame implements QuitHandler {
   public boolean shutdown() {
     setVisible(false);
     dispose();
+    chatTransmitter.disconnect();
+    tableModel.shutdown();
     new Thread(
             () -> {
               GameRunner.showMainFrame();

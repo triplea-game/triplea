@@ -1,7 +1,6 @@
 package org.triplea.http.client.web.socket;
 
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import com.google.gson.Gson;
@@ -25,18 +24,21 @@ class GenericWebSocketClientTest {
   private final Gson gson = new Gson();
 
   @Mock private Runnable connectionClosedListener;
-  @Mock private WebSocketConnection webSocketConnection;
+  @Mock private Consumer<String> connectionTerminatedListener;
+  @Mock private Consumer<String> errorHandler;
 
   private GenericWebSocketClient genericWebSocketClient;
 
+  @Mock private WebSocketConnection webSocketConnection;
   @Mock private Consumer<PlayerLeftMessage> playerLeftMessageListener;
 
   @BeforeEach
   void setup() {
     genericWebSocketClient =
         new GenericWebSocketClient(
-            URI.create("ws://fake"), errMsg -> {}, uri -> webSocketConnection);
+            URI.create("ws://fake"), errorHandler, uri -> webSocketConnection);
     genericWebSocketClient.addConnectionClosedListener(connectionClosedListener);
+    genericWebSocketClient.addConnectionTerminatedListener(connectionTerminatedListener);
     genericWebSocketClient.connect();
   }
 
@@ -51,22 +53,21 @@ class GenericWebSocketClientTest {
   }
 
   @Test
-  @DisplayName("Verify connection closed by socket triggers calls to connection closed listener")
+  @DisplayName("Verify connection terminated calls connection terminated listeners")
   void connectionLost() {
-    genericWebSocketClient.connectionClosed(REASON);
+    genericWebSocketClient.connectionTerminated(REASON);
 
-    verify(connectionClosedListener).run();
+    verify(connectionTerminatedListener).accept(REASON);
+    verify(connectionClosedListener, never()).run();
   }
 
   @Test
   @DisplayName("Verify client close calls connection closed listener")
   void connectionClosed() {
-    // this call is expected to remove connection lost listeners
-    genericWebSocketClient.close();
-    genericWebSocketClient.connectionClosed(REASON);
+    genericWebSocketClient.connectionClosed();
 
-    verify(webSocketConnection, timeout(500)).close();
     verify(connectionClosedListener).run();
+    verify(connectionTerminatedListener, never()).accept(REASON);
   }
 
   @Test
@@ -74,7 +75,7 @@ class GenericWebSocketClientTest {
   void handleError() {
     genericWebSocketClient.handleError(exception);
 
-    verify(connectionClosedListener, never()).run();
+    verify(errorHandler).accept(exception.getMessage());
   }
 
   @Test
