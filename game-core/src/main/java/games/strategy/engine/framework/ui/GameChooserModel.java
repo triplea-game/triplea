@@ -144,7 +144,10 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     try {
       return Optional.of(GameChooserEntry.newInstance(uri));
     } catch (final EngineVersionException e) {
-      log.log(Level.SEVERE, "Engine version problem:" + uri, e);
+      // suppress any maps that have version problems (map requires a min version
+      // not compatible with current version). Returning empty here should
+      // remove such maps from the map selection list.
+      return Optional.empty();
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Could not parse: " + uri, e);
     }
