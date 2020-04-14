@@ -23,7 +23,7 @@ public class BreadthFirstSearch {
      *
      * @param territory The new territory.
      */
-    public abstract void visit(final Territory territory);
+    public abstract void visit(Territory territory);
 
     /**
      * Called after all territories within the specified distance have been searched. Can be
