@@ -158,7 +158,7 @@ public class UserBanService {
             .moderatorUserId(moderatorId)
             .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
             .actionTarget(
-                userBanParams.getUsername() + " " + userBanParams.getMinutesToBan() + " hours")
+                userBanParams.getUsername() + " " + userBanParams.getMinutesToBan() + " minutes")
             .build());
   }
 }

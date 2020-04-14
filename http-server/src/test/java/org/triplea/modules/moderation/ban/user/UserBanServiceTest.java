@@ -179,7 +179,7 @@ class UserBanServiceTest {
         .addAuditRecord(
             ModeratorAuditHistoryDao.AuditArgs.builder()
                 .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
-                .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getMinutesToBan() + " hours")
+                .actionTarget(USERNAME + " " + USER_BAN_PARAMS.getMinutesToBan() + " minutes")
                 .moderatorUserId(MODERATOR_ID)
                 .build());
 
