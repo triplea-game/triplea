@@ -89,7 +89,7 @@ subprojects {
         feignCoreVersion = '10.2.3'
         feignGsonVersion = '10.2.0'
         gsonVersion = '2.8.6'
-        guavaVersion = "28.2-jre"
+        guavaVersion = "29.0-jre"
         hamcrestJsonVersion = '0.2'
         hamcrestOptionalVersion = '2.0.0'
         hamcrestVersion = '2.0.0.0'
