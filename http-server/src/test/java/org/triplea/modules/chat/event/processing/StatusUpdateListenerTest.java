@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateSentMessage;
@@ -49,7 +50,12 @@ class StatusUpdateListenerTest {
   void ifPlayerSessionDoesExistThenRelayTheirMessage() {
     when(messageContext.getSenderSession()).thenReturn(session);
     when(messageContext.getMessage()).thenReturn(new PlayerStatusUpdateSentMessage("status"));
-    givenChatterSession(session, ChatParticipant.builder().userName("user-name").build());
+    givenChatterSession(
+        session,
+        ChatParticipant.builder()
+            .playerChatId(PlayerChatId.newId().getValue())
+            .userName("user-name")
+            .build());
 
     statusUpdateListener.accept(messageContext);
 

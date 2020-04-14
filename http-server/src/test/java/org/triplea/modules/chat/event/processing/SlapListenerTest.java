@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapSentMessage;
@@ -50,7 +51,12 @@ class SlapListenerTest {
     when(messageContext.getSenderSession()).thenReturn(session);
     when(messageContext.getMessage())
         .thenReturn(new PlayerSlapSentMessage(UserName.of("slapped-player")));
-    givenChatterSession(session, ChatParticipant.builder().userName("user-name").build());
+    givenChatterSession(
+        session,
+        ChatParticipant.builder()
+            .playerChatId(PlayerChatId.newId().getValue())
+            .userName("user-name")
+            .build());
 
     slapListener.accept(messageContext);
 
