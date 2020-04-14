@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-import lombok.Getter;
 import org.triplea.java.ObjectUtils;
 
 /**
@@ -17,8 +16,29 @@ import org.triplea.java.ObjectUtils;
  * and shouldContinueSearch() that can be overridden to customize the behavior.
  */
 public class BreadthFirstSearch {
+  public abstract static class Visitor {
+    /**
+     * Called when a new territory is encountered. Can be overridden to provide custom search
+     * behavior.
+     *
+     * @param territory The new territory.
+     */
+    public abstract void visit(final Territory territory);
+
+    /**
+     * Called after all territories within the specified distance have been searched. Can be
+     * overridden to terminate the search.
+     *
+     * @param distanceSearched The current distance searched
+     * @return Whether the search should continue.
+     */
+    public boolean shouldContinueSearch(final int distanceSearched) {
+      return true;
+    }
+  }
+
   private final GameMap map;
-  @Getter private final Set<Territory> visited;
+  private final Set<Territory> visited;
   private final ArrayDeque<Territory> territoriesToCheck;
   private final Predicate<Territory> cond;
 
@@ -34,42 +54,25 @@ public class BreadthFirstSearch {
   }
 
   /**
-   * Called when a new territory is encountered. Can be overridden to provide custom search
-   * behavior.
-   *
-   * @param territory The new territory.
-   */
-  public void visit(final Territory territory) {}
-
-  /**
-   * Called after all territories within the specified distance have been searched. Can be
-   * overridden to terminate the search.
-   *
-   * @param distanceSearched The current distance searched
-   * @return Whether the search should continue.
-   */
-  public boolean shouldContinueSearch(final int distanceSearched) {
-    return true;
-  }
-
-  /**
    * Performs the search. It will end when either all territories have been visited or
    * shouldContinueSearch() returns false.
+   *
+   * @param visitor The visitor object to customize the search.
    */
-  public void search() {
+  public void traverse(final Visitor visitor) {
     // Since we process territories in order of distance, we can keep track of the last territory
     // at the current distance that's in the territoriesToCheck queue. When we encounter it, we
     // increment the distance and update lastTerritoryAtCurrentDistance.
     int currentDistance = 0;
     Territory lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
     while (!territoriesToCheck.isEmpty()) {
-      final Territory territory = checkNextTerritory();
+      final Territory territory = checkNextTerritory(visitor);
 
       // If we just processed the last territory at the current distance, increment the distance
       // and set the territory at which we need to update it again to be the last one added.
       if (ObjectUtils.referenceEquals(territory, lastTerritoryAtCurrentDistance)) {
         currentDistance++;
-        if (!shouldContinueSearch(currentDistance)) {
+        if (!visitor.shouldContinueSearch(currentDistance)) {
           return;
         }
         lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
@@ -77,13 +80,13 @@ public class BreadthFirstSearch {
     }
   }
 
-  private Territory checkNextTerritory() {
+  private Territory checkNextTerritory(final Visitor visitor) {
     final Territory territory = territoriesToCheck.removeFirst();
     // Note: We don't pass cond to getNeighbors() because that implementation is much slower.
     for (final Territory neighbor : map.getNeighbors(territory)) {
       if (cond.test(neighbor) && visited.add(neighbor)) {
         territoriesToCheck.add(neighbor);
-        visit(neighbor);
+        visitor.visit(neighbor);
       }
     }
     return territory;

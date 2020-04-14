@@ -179,28 +179,25 @@ public final class ProTerritoryValueUtils {
   protected static int findMaxLandMassSize(final GamePlayer player) {
     final GameData data = player.getData();
     final Predicate<Territory> cond = ProMatches.territoryCanPotentiallyMoveLandUnits(player, data);
-    class LandMassFinder extends BreadthFirstSearch {
-      int landMassSize = 0;
 
-      LandMassFinder(final Territory startTerritory) {
-        super(startTerritory, cond);
-      }
-
-      @Override
-      public void visit(final Territory territory) {
-        landMassSize++;
-      }
-    }
+    final var visited = new HashSet<Territory>();
 
     int maxLandMassSize = 1;
-    final var fullVisited = new HashSet<Territory>();
     for (final Territory t : data.getMap().getTerritories()) {
-      if (!t.isWater() && !fullVisited.contains(t)) {
-        final LandMassFinder finder = new LandMassFinder(t);
-        finder.search();
-        fullVisited.addAll(finder.getVisited());
-        if (finder.landMassSize > maxLandMassSize) {
-          maxLandMassSize = finder.landMassSize;
+      if (!t.isWater() && !visited.contains(t)) {
+        visited.add(t);
+        final int[] landMassSize = new int[1];
+        new BreadthFirstSearch(t, cond)
+            .traverse(
+                new BreadthFirstSearch.Visitor() {
+                  @Override
+                  public void visit(final Territory territory) {
+                    visited.add(territory);
+                    landMassSize[0]++;
+                  }
+                });
+        if (landMassSize[0] > maxLandMassSize) {
+          maxLandMassSize = landMassSize[0];
         }
       }
     }
@@ -460,25 +457,24 @@ public final class ProTerritoryValueUtils {
   protected static Collection<Territory> findNearbyEnemyCapitalsAndFactories(
       final Territory startTerritory, final Set<Territory> enemyCapitalsAndFactories) {
     final var found = new HashSet<Territory>();
-    final BreadthFirstSearch bfs =
-        new BreadthFirstSearch(startTerritory) {
-          @Override
-          public void visit(final Territory territory) {
-            if (enemyCapitalsAndFactories.contains(territory)) {
-              found.add(territory);
-            }
-          }
+    new BreadthFirstSearch(startTerritory)
+        .traverse(
+            new BreadthFirstSearch.Visitor() {
+              @Override
+              public void visit(final Territory territory) {
+                if (enemyCapitalsAndFactories.contains(territory)) {
+                  found.add(territory);
+                }
+              }
 
-          @Override
-          public boolean shouldContinueSearch(final int distanceSearched) {
-            if (distanceSearched >= MIN_FACTORY_CHECK_DISTANCE && !found.isEmpty()) {
-              return false;
-            }
-            return true;
-          }
-        };
-
-    bfs.search();
+              @Override
+              public boolean shouldContinueSearch(final int distanceSearched) {
+                if (distanceSearched >= MIN_FACTORY_CHECK_DISTANCE && !found.isEmpty()) {
+                  return false;
+                }
+                return true;
+              }
+            });
     return found;
   }
 }
