@@ -1,7 +1,6 @@
 package org.triplea.swing.key.binding;
 
 import java.awt.event.KeyEvent;
-import javax.swing.KeyStroke;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,15 +48,4 @@ public enum KeyCode {
   ;
 
   private final int inputEventCode;
-
-  @SuppressWarnings("MagicConstant")
-  KeyStroke toKeyStroke() {
-    final KeyStroke result =
-        KeyStroke.getKeyStroke(inputEventCode, ButtonDownMask.NONE.getInputEventCode());
-    if (result.toString().contains("UNKNOWN")) {
-      throw new IllegalArgumentException(
-          "Unknown key constant: " + inputEventCode + ", from enum value: " + this);
-    }
-    return result;
-  }
 }
