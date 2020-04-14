@@ -15,4 +15,13 @@ public interface WebSocket {
   void sendMessage(WebSocketMessage message);
 
   void addConnectionClosedListener(Runnable connectionClosedListener);
+
+  /**
+   * Adds a listener that is invoked when the connection is closed for any reason other than the
+   * client initiated a disconnect. EG: bans, server shuts down.
+   *
+   * @param connectionTerminatedListener Callback handler invoked on the disconnect, the passed in
+   *     string arg is the close reason reported from server.
+   */
+  void addConnectionTerminatedListener(Consumer<String> connectionTerminatedListener);
 }

@@ -34,6 +34,8 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Runnable> connectionClosedListeners = new ArrayList<>();
 
+  private final Collection<Consumer<String>> connectionTerminatedListeners = new ArrayList<>();
+
   private final URI websocketUri;
   private final Consumer<String> errorHandler;
   private final Function<URI, WebSocketConnection> webSocketConnectionFactory;
@@ -105,6 +107,11 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
+  public void addConnectionTerminatedListener(final Consumer<String> connectionTerminatedListener) {
+    connectionTerminatedListeners.add(connectionTerminatedListener);
+  }
+
+  @Override
   public void messageReceived(final String message) {
     final MessageEnvelope converted = gson.fromJson(message, MessageEnvelope.class);
 
@@ -117,8 +124,14 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
-  public void connectionClosed(final String reason) {
+  public void connectionClosed() {
     connectionClosedListeners.forEach(Runnable::run);
+  }
+
+  @Override
+  public void connectionTerminated(final String reason) {
+    connectionTerminatedListeners.forEach(
+        terminationListener -> terminationListener.accept(reason));
   }
 
   @Override

@@ -89,6 +89,15 @@ public class PlayerToLobbyConnection {
     httpLobbyClient.getRemoteActionsClient().sendShutdownRequest(gameId);
   }
 
+  /**
+   * Adds a listener that is invoked when the server closes the connection or we have an unexpected
+   * close connection reason.
+   */
+  public void addConnectionTerminatedListener(final Consumer<String> closedListener) {
+    webSocket.addConnectionTerminatedListener(closedListener);
+  }
+
+  /** Adds a listener that is invoked when the client disconnects. */
   public void addConnectionClosedListener(final Runnable closedListener) {
     webSocket.addConnectionClosedListener(closedListener);
   }
