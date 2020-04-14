@@ -23,7 +23,7 @@ public class ChatParticipant implements Serializable {
    * Identifier attached to players when joining chat so that front-end can pass values to backend
    * to identify players, specifically useful example for moderator actions.
    */
-  private final String playerChatId;
+  @NonNull private final String playerChatId;
 
   /** True if the player has moderator privileges. */
   private final boolean isModerator;

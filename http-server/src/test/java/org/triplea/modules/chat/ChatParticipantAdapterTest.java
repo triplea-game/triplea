@@ -41,7 +41,8 @@ class ChatParticipantAdapterTest {
 
     final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 
-    assertThat(result, is(ChatParticipant.builder().isModerator(true).userName(USERNAME).build()));
+    assertThat(result.isModerator(), is(true));
+    assertThat(result.getUserName().getValue(), is(USERNAME));
   }
 
   private ApiKeyLookupRecord givenUserRecordWithRole(final String userRole) {
@@ -60,6 +61,7 @@ class ChatParticipantAdapterTest {
 
     final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
 
-    assertThat(result, is(ChatParticipant.builder().isModerator(true).userName(USERNAME).build()));
+    assertThat(result.isModerator(), is(false));
+    assertThat(result.getUserName().getValue(), is(USERNAME));
   }
 }

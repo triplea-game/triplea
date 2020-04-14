@@ -62,6 +62,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
           .userName(MODERATOR_NAME.getValue())
           .isModerator(true)
           .status("")
+          .playerChatId("moderator-chat-id")
           .build();
 
   private static final UserName CHATTER_NAME = UserName.of("chatter");
@@ -70,6 +71,7 @@ class LobbyChatIntegrationTest extends DropwizardTest {
           .userName(CHATTER_NAME.getValue())
           .isModerator(false)
           .status("")
+          .playerChatId("player-chat-id")
           .build();
 
   private List<PlayerStatusUpdateReceivedMessage> modPlayerStatusEvents = new ArrayList<>();
@@ -155,13 +157,9 @@ class LobbyChatIntegrationTest extends DropwizardTest {
     waitForMessage(modPlayerJoinedEvents, 2);
     // moderator is notified that chatter has joined
     assertThat(
-        modPlayerJoinedEvents.get(1).getChatParticipant(),
-        is(
-            ChatParticipant.builder()
-                .userName(CHATTER_NAME.getValue())
-                .isModerator(true)
-                .status("")
-                .build()));
+        modPlayerJoinedEvents.get(1).getChatParticipant().getUserName().getValue(),
+        is(CHATTER_NAME.getValue()));
+    assertThat(modPlayerJoinedEvents.get(1).getChatParticipant().isModerator(), is(false));
     // moderator should *not* receive a connected event when chatter joins
     assertThat(modConnectedEvents, hasSize(1));
   }
