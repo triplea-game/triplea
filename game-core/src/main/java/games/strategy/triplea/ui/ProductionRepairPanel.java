@@ -39,7 +39,8 @@ import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;
@@ -116,7 +117,7 @@ class ProductionRepairPanel extends JPanel {
   private void initDialog(final JFrame root) {
     dialog = new JDialog(root, "Repair", true);
     dialog.getContentPane().add(this);
-    SwingComponents.addEscapeKeyListener(dialog, () -> dialog.setVisible(false));
+    SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, () -> dialog.setVisible(false));
   }
 
   private void initRules(

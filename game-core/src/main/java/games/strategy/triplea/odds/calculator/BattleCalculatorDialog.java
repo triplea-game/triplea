@@ -16,7 +16,8 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /**
  * A dialog that allows the user to set up an arbitrary battle and calculate the attacker's odds of
@@ -79,8 +80,9 @@ public class BattleCalculatorDialog extends JDialog {
         });
 
     // close when hitting the escape key
-    SwingComponents.addEscapeKeyListener(
+    SwingKeyBinding.addKeyBinding(
         dialog,
+        KeyCode.ESCAPE,
         () -> {
           dialog.setVisible(false);
           dialog.dispose();

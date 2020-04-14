@@ -18,7 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.domain.data.UserName;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /**
  * Panel used to request a new temporary password. The panel displays a single text field for
@@ -133,7 +134,7 @@ final class ForgotPasswordPanel extends JPanel {
     cancelButton.addActionListener(e -> close());
     okButton.addActionListener(e -> okPressed());
 
-    SwingComponents.addEnterKeyListener(this, this::okPressed);
+    SwingKeyBinding.addKeyBinding(this, KeyCode.ENTER, this::okPressed);
   }
 
   private void close() {
@@ -175,7 +176,7 @@ final class ForgotPasswordPanel extends JPanel {
   ReturnValue show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), title, true);
     dialog.getContentPane().add(this);
-    SwingComponents.addEscapeKeyListener(dialog, this::close);
+    SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, this::close);
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
     dialog.setVisible(true);

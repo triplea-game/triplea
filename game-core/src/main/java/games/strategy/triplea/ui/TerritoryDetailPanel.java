@@ -23,7 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
@@ -66,18 +67,18 @@ class TerritoryDetailPanel extends AbstractStatPanel {
 
     showOdds.addActionListener(
         e -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
+    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
         frame,
-        'B',
+        KeyCode.B,
         () -> BattleCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
 
     addAttackers.addActionListener(e -> BattleCalculatorDialog.addAttackers(currentTerritory));
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
-        frame, 'A', () -> BattleCalculatorDialog.addAttackers(currentTerritory));
+    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+        frame, KeyCode.A, () -> BattleCalculatorDialog.addAttackers(currentTerritory));
 
     addDefenders.addActionListener(e -> BattleCalculatorDialog.addDefenders(currentTerritory));
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
-        frame, 'D', () -> BattleCalculatorDialog.addDefenders(currentTerritory));
+    SwingKeyBinding.addKeyListenerWithMetaAndCtrlMasks(
+        frame, KeyCode.D, () -> BattleCalculatorDialog.addDefenders(currentTerritory));
     units.setBorder(BorderFactory.createEmptyBorder());
     units.getVerticalScrollBar().setUnitIncrement(20);
     add(showOdds);

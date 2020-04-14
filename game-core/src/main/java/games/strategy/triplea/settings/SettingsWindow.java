@@ -28,6 +28,8 @@ import org.triplea.swing.JScrollPaneBuilder;
 import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /**
  * UI window with controls to update game settings and preferences. Settings are grouped by type,
@@ -71,7 +73,7 @@ public enum SettingsWindow {
       dialog.setLocationRelativeTo(dialog.getOwner());
       dialog.setVisible(true);
       SwingComponents.addWindowClosingListener(dialog, this::close);
-      SwingComponents.addEscapeKeyListener(dialog, this::close);
+      SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, this::close);
     } else {
       // window is already visible, bring it to the front
       dialog.toFront();

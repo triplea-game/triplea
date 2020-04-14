@@ -18,7 +18,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,7 +40,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.ButtonDownMask;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.KeyCombination;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
@@ -93,14 +95,11 @@ class ProductionPanel extends JPanel {
     dialog = new JDialog(parent, "Produce", true);
     dialog.getContentPane().add(this);
 
-    SwingComponents.addKeyBinding(
+    SwingKeyBinding.addKeyBinding(
         dialog,
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_D, KeyBindingSupplier.ModifierKey.SHIFT),
+        KeyCombination.of(KeyCode.ENTER, ButtonDownMask.CTRL),
         () -> dialog.setVisible(false));
-    SwingComponents.addKeyBinding(
-        dialog,
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_ESCAPE),
-        () -> dialog.setVisible(false));
+    SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, () -> dialog.setVisible(false));
 
     this.bid = bid;
     this.data = data;
@@ -237,7 +236,7 @@ class ProductionPanel extends JPanel {
             0));
     done = new JButton(doneAction);
     done.setToolTipText(
-        "Click this button or press 'shift+d' to confirm purchase and close this window");
+        "Click this button or press 'ctrl+enter' to confirm purchase and close this window");
     this.add(
         done,
         new GridBagConstraints(

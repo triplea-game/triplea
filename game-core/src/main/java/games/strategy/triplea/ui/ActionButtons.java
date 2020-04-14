@@ -21,26 +21,28 @@ import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.ui.panel.move.MovePanel;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.CardLayout;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.key.binding.ButtonDownMask;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.KeyCombination;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.util.Tuple;
 
 /** Root panel for all action buttons in a triplea game. */
-public class ActionButtons extends JPanel implements KeyBindingSupplier {
+public class ActionButtons extends JPanel {
   public static final String DONE_BUTTON_TOOLTIP =
-      "Press shift+D or click this button to end the current turn phase";
+      "Press ctrl+enter or click this button to end the current turn phase";
   private static final long serialVersionUID = 2175685892863042399L;
   private final CardLayout layout = new CardLayout();
 
@@ -66,6 +68,7 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
       final MapPanel map,
       final MovePanel movePanel,
       final TripleAFrame parent) {
+    registerKeyBindings(parent);
     battlePanel = new BattlePanel(data, map);
     this.movePanel = movePanel;
     purchasePanel = new PurchasePanel(data, map);
@@ -285,10 +288,10 @@ public class ActionButtons extends JPanel implements KeyBindingSupplier {
    * Adds a hotkey listener to 'click the done button'. If the current phase has no done button (eg:
    * combat phase), then the hotkey will be a no-op.
    */
-  @Override
-  public Map<KeyStroke, Runnable> get() {
-    return Map.of(
-        KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK),
+  private void registerKeyBindings(final JFrame frame) {
+    SwingKeyBinding.addKeyBinding(
+        frame,
+        KeyCombination.of(KeyCode.ENTER, ButtonDownMask.CTRL),
         () -> Optional.ofNullable(actionPanel).ifPresent(ActionPanel::performDone));
   }
 }

@@ -11,8 +11,9 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /** A UI-Utility class that can be used to prompt the user for a ban or mute time. */
 public final class BanDurationDialog extends JDialog {
@@ -71,7 +72,7 @@ public final class BanDurationDialog extends JDialog {
     pack();
     setLocationRelativeTo(owner);
 
-    SwingComponents.addEscapeKeyListener(this, () -> close(Result.CANCEL));
+    SwingKeyBinding.addKeyBinding(this, KeyCode.ESCAPE, () -> close(Result.CANCEL));
     timeUnitComboBox.addActionListener(e -> updateComponents());
   }
 

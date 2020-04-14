@@ -19,8 +19,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import org.triplea.swing.JMenuItemBuilder;
-import org.triplea.swing.KeyCode;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 
 final class FileMenu extends JMenu {
   private static final long serialVersionUID = -3855695429784752428L;

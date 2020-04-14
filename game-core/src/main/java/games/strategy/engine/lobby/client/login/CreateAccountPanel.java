@@ -27,7 +27,8 @@ import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.domain.data.UserName;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.KeyTypeValidator;
-import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /** The panel used to create a new lobby account or update an existing lobby account. */
 public final class CreateAccountPanel extends JPanel {
@@ -230,8 +231,9 @@ public final class CreateAccountPanel extends JPanel {
     cancelButton.addActionListener(e -> close());
     okButton.addActionListener(e -> okPressed());
 
-    SwingComponents.addEnterKeyListener(
+    SwingKeyBinding.addKeyBinding(
         this,
+        KeyCode.ENTER,
         () -> {
           if (okButton.isEnabled()) {
             okPressed();
@@ -298,7 +300,7 @@ public final class CreateAccountPanel extends JPanel {
   public ReturnValue show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "", true);
     dialog.getContentPane().add(this);
-    SwingComponents.addEscapeKeyListener(dialog, this::close);
+    SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, this::close);
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
     dialog.setVisible(true);

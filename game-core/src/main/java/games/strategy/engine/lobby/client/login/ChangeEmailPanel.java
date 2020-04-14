@@ -16,11 +16,12 @@ import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnec
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.FlowLayoutBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /** Panel dedicated to changing user email. */
 public final class ChangeEmailPanel {
@@ -72,16 +73,16 @@ public final class ChangeEmailPanel {
           dialog.dispose();
           submitAction.accept(emailField.getText());
         });
-    SwingComponents.addEnterKeyListener(
+    SwingKeyBinding.addKeyBinding(
         panel,
+        KeyCode.ENTER,
         () -> {
           if (okButton.isEnabled()) {
             dialog.dispose();
             submitAction.accept(emailField.getText());
           }
         });
-
-    SwingComponents.addEscapeKeyListener(panel, dialog::dispose);
+    SwingKeyBinding.addKeyBinding(panel, KeyCode.ESCAPE, dialog::dispose);
 
     new DocumentListenerBuilder(
             () ->

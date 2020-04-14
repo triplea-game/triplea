@@ -12,8 +12,9 @@ import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 final class FindTerritoryDialog extends JDialog {
   private static final long serialVersionUID = -1601616824595826610L;
@@ -67,7 +68,7 @@ final class FindTerritoryDialog extends JDialog {
     pack();
     setLocation(getInitialLocation());
 
-    SwingComponents.addEscapeKeyListener(this, () -> close(Result.CANCEL));
+    SwingKeyBinding.addKeyBinding(this, KeyCode.ESCAPE, () -> close(Result.CANCEL));
   }
 
   private Point getInitialLocation() {

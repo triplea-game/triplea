@@ -8,24 +8,17 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.KeyboardFocusManager;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -33,26 +26,21 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import javax.swing.ListModel;
-import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.JTextComponent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.experimental.UtilityClass;
@@ -68,21 +56,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public final class SwingComponents {
   private static final String PERIOD = ".";
   private static final Collection<String> visiblePrompts = new HashSet<>();
-
-  /**
-   * Enum for swing codes that represent key events. In this case holding control or the meta keys.
-   */
-  public enum KeyDownMask {
-    META_DOWN(InputEvent.META_DOWN_MASK),
-
-    CTRL_DOWN(InputEvent.CTRL_DOWN_MASK);
-
-    private final int code;
-
-    KeyDownMask(final int code) {
-      this.code = code;
-    }
-  }
 
   /**
    * Colors a label text to a highlight color if not valid, otherwise returns the label text to a
@@ -103,74 +76,6 @@ public final class SwingComponents {
   private static Color getDefaultLabelColor() {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     return new JLabel().getForeground();
-  }
-
-  public static void addSpaceKeyListener(final JComponent component, final Runnable runnable) {
-    addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), runnable);
-  }
-
-  public static void addEnterKeyListener(final JComponent component, final Runnable runnable) {
-    addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), runnable);
-  }
-
-  /** To a given dialog, adds a key listener that is fired if a key is pressed. */
-  public static void addEscapeKeyListener(
-      final RootPaneContainer dialog, final Runnable keyDownAction) {
-    if (dialog.getRootPane() != null) {
-      addKeyListener(
-          dialog.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
-    }
-  }
-
-  /** To a given component, adds a key listener that is fired if a key is pressed. */
-  public static void addEscapeKeyListener(
-      final JComponent component, final Runnable keyDownAction) {
-
-    // TODO: null checks are bit questionable, have them here because they were here before...
-    if (component.getRootPane() != null) {
-      addKeyListener(
-          component.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
-    }
-  }
-
-  public static void addKeyListenerWithMetaAndCtrlMasks(
-      final JFrame component, final char key, final Runnable action) {
-    addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.CTRL_DOWN, action);
-    addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.META_DOWN, action);
-  }
-
-  private static void addKeyListener(
-      final JComponent component,
-      final char key,
-      final KeyDownMask keyDownMask,
-      final Runnable keyDownAction) {
-    addKeyListener(component, KeyStroke.getKeyStroke(key, keyDownMask.code), keyDownAction);
-  }
-
-  private static void addKeyListener(
-      final JComponent component, final KeyStroke keyStroke, final Runnable keyDownAction) {
-
-    // We are using the object address here of our action.
-    // It is okay since we only need it to be the same value when we store it in the input and
-    // action maps below. Having
-    // the address be logged could be useful for debugging, otherwise no particular reason to use
-    // this exact value.
-    final String actionKey = keyDownAction.toString();
-
-    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, actionKey);
-
-    component
-        .getActionMap()
-        .put(
-            actionKey,
-            new AbstractAction() {
-              private static final long serialVersionUID = -280371946771796597L;
-
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                keyDownAction.run();
-              }
-            });
   }
 
   public static JTabbedPane newJTabbedPane(final int width, final int height) {
@@ -475,46 +380,6 @@ public final class SwingComponents {
     b.add(c);
     b.add(Box.createHorizontalGlue());
     return b;
-  }
-
-  public static void addKeyBinding(
-      final JFrame frame, final KeyStroke keyStroke, final Runnable action) {
-    final JComponent component = (JComponent) frame.getContentPane();
-    addKeyBinding(component, keyStroke, action);
-  }
-
-  public static void addKeyBinding(
-      final JDialog component, final KeyStroke keyStroke, final Runnable action) {
-    addKeyBinding(component.getRootPane(), keyStroke, action);
-  }
-
-  private static void addKeyBinding(
-      final JComponent component, final KeyStroke keyStroke, final Runnable action) {
-    final String keyBindingIdentifier = UUID.randomUUID().toString();
-
-    final AtomicBoolean enabled = new AtomicBoolean(true);
-
-    // Disable keybindings if focus is on a text component. We do not want to fire
-    // keybindings while user is typing (chatting).
-    KeyboardFocusManager.getCurrentKeyboardFocusManager()
-        .addPropertyChangeListener(
-            "focusOwner",
-            evt ->
-                enabled.set(
-                    evt.getNewValue() == null
-                        || !JTextComponent.class.isAssignableFrom(evt.getNewValue().getClass())));
-
-    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, keyBindingIdentifier);
-    component
-        .getActionMap()
-        .put(
-            keyBindingIdentifier,
-            SwingAction.of(
-                e -> {
-                  if (enabled.get()) {
-                    action.run();
-                  }
-                }));
   }
 
   public static void showError(

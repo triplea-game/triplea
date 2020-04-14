@@ -53,7 +53,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.java.Log;
 import org.triplea.swing.JMenuItemBuilder;
-import org.triplea.swing.KeyCode;
+import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
 
 @Log
