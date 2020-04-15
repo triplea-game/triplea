@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
@@ -94,7 +93,6 @@ public class NodeBbForumPoster {
         throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
     }
   }
-  
   public static ImmutableSet<String> availablePosters() {
     return ImmutableSet.of(
         NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME,
@@ -234,13 +232,13 @@ public class NodeBbForumPoster {
               Preconditions.checkNotNull((Map<?, ?>) jsonObject.get("payload")).get("token");
         }
         throw new IllegalStateException(
-            "Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.get("message"));
+            "Incorrect password or server error.\nReturn Code: "
+                + code
+                + "\nMessage from server: "
+                + jsonObject.get("message"));
       }
       throw new IllegalStateException(
-          "Failed to retrieve Token, server did not return correct response: "
-              + response.getStatusLine()
-              + "; JSON: "
-              + rawJson);
+          "Error, bad server response: " + response.getStatusLine() + "; JSON: " + rawJson);
     }
   }
 
