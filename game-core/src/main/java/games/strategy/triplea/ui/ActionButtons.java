@@ -69,7 +69,7 @@ public class ActionButtons extends JPanel {
       final MovePanel movePanel,
       final TripleAFrame parent) {
     registerKeyBindings(parent);
-    battlePanel = new BattlePanel(data, map);
+    battlePanel = new BattlePanel(data, map, parent);
     this.movePanel = movePanel;
     purchasePanel = new PurchasePanel(data, map);
     repairPanel = new RepairPanel(data, map);
