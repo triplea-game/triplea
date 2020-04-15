@@ -12,10 +12,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.extern.java.Log;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -39,7 +37,6 @@ import org.triplea.util.Arrays;
  *
  * <p>URL format is {@code https://your.forumurl.com/api/v2/topics/<topicID>}.
  */
-@Log
 public class NodeBbForumPoster {
 
   public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
@@ -95,16 +92,6 @@ public class NodeBbForumPoster {
     }
   }
 
-  public static boolean isClientSettingSetupValidForServer(final String server) {
-    if (NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME.equals(server)) {
-      return ClientSetting.tripleaForumUsername.isSet()
-          && ClientSetting.tripleaForumPassword.isSet();
-    } else if (NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME.equals(server)) {
-      return ClientSetting.aaForumUsername.isSet() && ClientSetting.aaForumPassword.isSet();
-    }
-    return false;
-  }
-
   public static ImmutableSet<String> availablePosters() {
     return ImmutableSet.of(
         NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME,
@@ -130,7 +117,6 @@ public class NodeBbForumPoster {
         deleteToken(client, userId, token);
       }
     } catch (final IOException | IllegalStateException e) {
-      log.log(Level.SEVERE, "Failed to post game to forum", e);
       final CompletableFuture<String> result = new CompletableFuture<>();
       result.completeExceptionally(e);
       return result;
@@ -245,13 +231,13 @@ public class NodeBbForumPoster {
               Preconditions.checkNotNull((Map<?, ?>) jsonObject.get("payload")).get("token");
         }
         throw new IllegalStateException(
-            "Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.get("message"));
+            "Incorrect password or server error.\nReturn Code: "
+                + code
+                + "\nMessage from server: "
+                + jsonObject.get("message"));
       }
       throw new IllegalStateException(
-          "Failed to retrieve Token, server did not return correct response: "
-              + response.getStatusLine()
-              + "; JSON: "
-              + rawJson);
+          "Error, bad server response: " + response.getStatusLine() + "; JSON: " + rawJson);
     }
   }
 

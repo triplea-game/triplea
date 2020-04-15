@@ -16,12 +16,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.ProgressWindow;
 
 /**
@@ -78,7 +80,7 @@ public class PbemMessagePoster implements Serializable {
    * Post summary to form and/or email, and writes the action performed to the history writer.
    *
    * @param historyWriter the history writer (which has no effect since save game has already be
-   *     generated) // todo (kg)
+   *     generated)
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
@@ -92,7 +94,7 @@ public class PbemMessagePoster implements Serializable {
         .append(roundNumber)
         .append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1));
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
-    Future<String> forumSuccess = null;
+    CompletableFuture<String> forumSuccess = null;
     if (forumPoster.isPresent()) {
       try {
         forumSuccess =
@@ -102,7 +104,24 @@ public class PbemMessagePoster implements Serializable {
                     (gameNameAndInfo + "\n\n" + turnSummary),
                     "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber,
                     saveGameFile.toPath());
-        turnSummaryRef = forumSuccess.get();
+        final AtomicBoolean success = new AtomicBoolean(false);
+        turnSummaryRef =
+            forumSuccess
+                .exceptionally(
+                    e -> {
+                      DialogBuilder.builder()
+                          .parent(null)
+                          .title("Error Posting to Forum")
+                          .errorMessage(e.getMessage())
+                          .showDialog();
+                      return null;
+                    })
+                .whenComplete((v1, v2) -> success.set(true))
+                .get();
+        if (!success.get()) {
+          return false;
+        }
+
         if (turnSummaryRef != null && historyWriter != null) {
           historyWriter.startEvent("Turn Summary: " + turnSummaryRef);
         }
