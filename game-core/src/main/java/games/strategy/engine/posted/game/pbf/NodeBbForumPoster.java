@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import lombok.extern.java.Log;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -38,7 +37,6 @@ import org.triplea.util.Arrays;
  *
  * <p>URL format is {@code https://your.forumurl.com/api/v2/topics/<topicID>}.
  */
-@Log
 public class NodeBbForumPoster {
 
   public static final String AXIS_AND_ALLIES_ORG_DISPLAY_NAME = "www.axisandallies.org/forums/";
