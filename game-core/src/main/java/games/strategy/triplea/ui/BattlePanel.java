@@ -57,13 +57,13 @@ public final class BattlePanel extends ActionPanel {
   // only be set after
   // the display is shown on the screen
   private volatile UUID currentBattleDisplayed;
-  private final JDialog battleFrame;
+  private final JDialog battleWindow;
   private Map<BattleType, Collection<Territory>> battles;
 
   BattlePanel(final GameData data, final MapPanel map, final JFrame parent) {
     super(data, map);
-    battleFrame = new JDialog(parent);
-    battleFrame.addWindowListener(
+    battleWindow = new JDialog(parent);
+    battleWindow.addWindowListener(
         new WindowAdapter() {
           @Override
           public void windowActivated(final WindowEvent e) {
@@ -71,7 +71,7 @@ public final class BattlePanel extends ActionPanel {
                 () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
           }
         });
-    getMap().getUiContext().addShutdownWindow(battleFrame);
+    getMap().getUiContext().addShutdownWindow(battleWindow);
   }
 
   void setBattlesAndBombing(final Map<BattleType, Collection<Territory>> battles) {
@@ -173,7 +173,7 @@ public final class BattlePanel extends ActionPanel {
     SwingUtilities.invokeLater(
         () -> {
           if (battleDisplay != null) {
-            battleDisplay.endBattle(message, battleFrame);
+            battleDisplay.endBattle(message, battleWindow);
           }
         });
   }
@@ -182,7 +182,7 @@ public final class BattlePanel extends ActionPanel {
     if (battleDisplay != null) {
       currentBattleDisplayed = null;
       battleDisplay.cleanUp();
-      battleFrame.getContentPane().removeAll();
+      battleWindow.getContentPane().removeAll();
       battleDisplay = null;
       //      PbemDiceRoller.setFocusWindow(battleFrame);
     }
@@ -209,7 +209,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   boolean isBattleShowing() {
-    return battleFrame.isVisible();
+    return battleWindow.isVisible();
   }
 
   public void listBattle(final List<String> steps) {
@@ -258,12 +258,12 @@ public final class BattlePanel extends ActionPanel {
                   isAmphibious,
                   battleType,
                   amphibiousLandAttackers);
-          battleFrame.setTitle(
+          battleWindow.setTitle(
               attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-          battleFrame.getContentPane().removeAll();
-          battleFrame.getContentPane().add(battleDisplay);
-          battleFrame.setMinimumSize(new Dimension(800, 600));
-          battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+          battleWindow.getContentPane().removeAll();
+          battleWindow.getContentPane().add(battleDisplay);
+          battleWindow.setMinimumSize(new Dimension(800, 600));
+          battleWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
           //          PbemDiceRoller.setFocusWindow(battleFrame);
           boolean foundHumanInBattle = false;
           for (final Player gamePlayer :
@@ -276,17 +276,17 @@ public final class BattlePanel extends ActionPanel {
             }
           }
           if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
-            battleFrame.setVisible(true);
-            battleFrame.validate();
-            battleFrame.invalidate();
-            battleFrame.repaint();
-            battleFrame.toFront();
+            battleWindow.setVisible(true);
+            battleWindow.validate();
+            battleWindow.invalidate();
+            battleWindow.repaint();
+            battleWindow.toFront();
           } else {
-            battleFrame.setVisible(false);
+            battleWindow.setVisible(false);
           }
-          battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+          battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
           currentBattleDisplayed = battleId;
-          SwingUtilities.invokeLater(battleFrame::toFront);
+          SwingUtilities.invokeLater(battleWindow::toFront);
         });
   }
 
