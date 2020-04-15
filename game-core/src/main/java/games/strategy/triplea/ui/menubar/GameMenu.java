@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
@@ -63,7 +64,10 @@ final class GameMenu extends JMenu {
     add(SoundOptions.buildSoundOptionsMenuItem());
     addSeparator();
     addMenuItemWithHotkey(frame.getShowGameAction(), KeyEvent.VK_G);
-    addMenuItemWithHotkey(frame.getShowHistoryAction(), KeyEvent.VK_H);
+    addMenuItemWithHotkey(
+        frame.getShowHistoryAction(),
+        // 'H' is a reserved hotkey in Mac, used to minimize apps use 'Y' instead for MacOs.
+        SystemProperties.isMac() ? KeyEvent.VK_Y : KeyEvent.VK_H);
     addSeparator();
     addGameOptionsMenu();
     addShowVerifiedDice();
