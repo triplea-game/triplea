@@ -93,6 +93,7 @@ public class NodeBbForumPoster {
         throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
     }
   }
+
   public static ImmutableSet<String> availablePosters() {
     return ImmutableSet.of(
         NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME,
