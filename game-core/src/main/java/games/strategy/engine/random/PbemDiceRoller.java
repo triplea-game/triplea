@@ -28,21 +28,10 @@ import org.triplea.util.ExitStatus;
  * error we wait until we get a good roll before returning.
  */
 public class PbemDiceRoller implements IRandomSource {
-  private static Frame focusWindow;
-
   private final IRemoteDiceServer remoteDiceServer;
 
   public PbemDiceRoller(final IRemoteDiceServer diceServer) {
     remoteDiceServer = diceServer;
-  }
-
-  /**
-   * If the game has multiple frames, allows the UI to set what frame should be the parent of the
-   * dice rolling window. If set to null, or not set, we try to guess by finding the currently
-   * focused window (or a visible window if none are focused).
-   */
-  public static void setFocusWindow(final Frame w) {
-    focusWindow = w;
   }
 
   /** Do a test roll, leaving the dialog open after the roll is done. */
@@ -74,9 +63,6 @@ public class PbemDiceRoller implements IRandomSource {
   }
 
   private static Frame getFocusedFrame() {
-    if (focusWindow != null) {
-      return focusWindow;
-    }
     final Frame[] frames = Frame.getFrames();
     Frame focusedFrame = null;
     for (final Frame frame : frames) {

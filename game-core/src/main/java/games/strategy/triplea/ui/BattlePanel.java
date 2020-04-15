@@ -184,7 +184,6 @@ public final class BattlePanel extends ActionPanel {
       battleDisplay.cleanUp();
       battleWindow.getContentPane().removeAll();
       battleDisplay = null;
-      //      PbemDiceRoller.setFocusWindow(battleFrame);
     }
   }
 
@@ -264,7 +263,6 @@ public final class BattlePanel extends ActionPanel {
           battleWindow.getContentPane().add(battleDisplay);
           battleWindow.setMinimumSize(new Dimension(800, 600));
           battleWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-          //          PbemDiceRoller.setFocusWindow(battleFrame);
           boolean foundHumanInBattle = false;
           for (final Player gamePlayer :
               getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
