@@ -42,7 +42,7 @@ final class LoginPanel extends JPanel {
   private final JCheckBox rememberPassword =
       new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
   private final JCheckBox anonymousLogin =
-      new JCheckBoxBuilder("Login Anonymously")
+      new JCheckBoxBuilder("Login Without An Account")
           .bind(ClientSetting.loginAnonymously)
           .actionListener(selected -> updateComponents())
           .build();
