@@ -5,7 +5,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.player.Player;
-import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -17,6 +16,8 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -40,7 +42,6 @@ import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -56,20 +57,21 @@ public final class BattlePanel extends ActionPanel {
   // only be set after
   // the display is shown on the screen
   private volatile UUID currentBattleDisplayed;
-  private final JFrame battleFrame =
-      JFrameBuilder.builder()
-          .windowClosedAction(() -> PbemDiceRoller.setFocusWindow(null))
-          .windowActivatedAction(
-              () ->
-                  SwingUtilities.invokeLater(
-                      () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus)))
-          .build();
-
+  private final JDialog battleWindow;
   private Map<BattleType, Collection<Territory>> battles;
 
-  BattlePanel(final GameData data, final MapPanel map) {
+  BattlePanel(final GameData data, final MapPanel map, final JFrame parent) {
     super(data, map);
-    getMap().getUiContext().addShutdownWindow(battleFrame);
+    battleWindow = new JDialog(parent);
+    battleWindow.addWindowListener(
+        new WindowAdapter() {
+          @Override
+          public void windowActivated(final WindowEvent e) {
+            SwingUtilities.invokeLater(
+                () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
+          }
+        });
+    getMap().getUiContext().addShutdownWindow(battleWindow);
   }
 
   void setBattlesAndBombing(final Map<BattleType, Collection<Territory>> battles) {
@@ -171,7 +173,7 @@ public final class BattlePanel extends ActionPanel {
     SwingUtilities.invokeLater(
         () -> {
           if (battleDisplay != null) {
-            battleDisplay.endBattle(message, battleFrame);
+            battleDisplay.endBattle(message, battleWindow);
           }
         });
   }
@@ -180,9 +182,8 @@ public final class BattlePanel extends ActionPanel {
     if (battleDisplay != null) {
       currentBattleDisplayed = null;
       battleDisplay.cleanUp();
-      battleFrame.getContentPane().removeAll();
+      battleWindow.getContentPane().removeAll();
       battleDisplay = null;
-      PbemDiceRoller.setFocusWindow(battleFrame);
     }
   }
 
@@ -207,7 +208,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   boolean isBattleShowing() {
-    return battleFrame.isVisible();
+    return battleWindow.isVisible();
   }
 
   public void listBattle(final List<String> steps) {
@@ -256,13 +257,12 @@ public final class BattlePanel extends ActionPanel {
                   isAmphibious,
                   battleType,
                   amphibiousLandAttackers);
-          battleFrame.setTitle(
+          battleWindow.setTitle(
               attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-          battleFrame.getContentPane().removeAll();
-          battleFrame.getContentPane().add(battleDisplay);
-          battleFrame.setMinimumSize(new Dimension(800, 600));
-          battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-          PbemDiceRoller.setFocusWindow(battleFrame);
+          battleWindow.getContentPane().removeAll();
+          battleWindow.getContentPane().add(battleDisplay);
+          battleWindow.setMinimumSize(new Dimension(800, 600));
+          battleWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
           boolean foundHumanInBattle = false;
           for (final Player gamePlayer :
               getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
@@ -274,17 +274,17 @@ public final class BattlePanel extends ActionPanel {
             }
           }
           if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
-            battleFrame.setAlwaysOnTop(true);
-            battleFrame.setVisible(true);
-            battleFrame.validate();
-            battleFrame.invalidate();
-            battleFrame.repaint();
+            battleWindow.setVisible(true);
+            battleWindow.validate();
+            battleWindow.invalidate();
+            battleWindow.repaint();
+            battleWindow.toFront();
           } else {
-            battleFrame.setVisible(false);
+            battleWindow.setVisible(false);
           }
-          battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+          battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
           currentBattleDisplayed = battleId;
-          SwingUtilities.invokeLater(battleFrame::toFront);
+          SwingUtilities.invokeLater(battleWindow::toFront);
         });
   }
 
