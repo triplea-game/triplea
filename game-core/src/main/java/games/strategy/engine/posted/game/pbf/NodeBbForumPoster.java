@@ -130,7 +130,6 @@ public class NodeBbForumPoster {
         deleteToken(client, userId, token);
       }
     } catch (final IOException | IllegalStateException e) {
-      log.log(Level.SEVERE, "Failed to post game to forum", e);
       final CompletableFuture<String> result = new CompletableFuture<>();
       result.completeExceptionally(e);
       return result;
