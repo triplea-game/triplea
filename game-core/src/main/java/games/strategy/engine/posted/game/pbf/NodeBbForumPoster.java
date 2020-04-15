@@ -94,17 +94,7 @@ public class NodeBbForumPoster {
         throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
     }
   }
-
-  public static boolean isClientSettingSetupValidForServer(final String server) {
-    if (NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME.equals(server)) {
-      return ClientSetting.tripleaForumUsername.isSet()
-          && ClientSetting.tripleaForumPassword.isSet();
-    } else if (NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME.equals(server)) {
-      return ClientSetting.aaForumUsername.isSet() && ClientSetting.aaForumPassword.isSet();
-    }
-    return false;
-  }
-
+  
   public static ImmutableSet<String> availablePosters() {
     return ImmutableSet.of(
         NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME,
