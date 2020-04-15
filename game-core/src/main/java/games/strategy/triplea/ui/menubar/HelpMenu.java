@@ -120,12 +120,6 @@ final class HelpMenu extends JMenu {
                       + "artwork.<br>"
                       + "Select a new 'Map Skin' from the 'View' menu to show a different kind of "
                       + "artwork (not all maps have skins).<br>"
-                      + "<br><b> Cycling Through Available Units</b><br>"
-                      + "Press 'n' to cycle through units with movement left.<br>"
-                      + "Press 'm' to cycle to previous units with movement left.<br>"
-                      + "Press 'space' to skip current units and not cycle through them anymore."
-                      + "<br>"
-                      + "Press 'c' to center on current units.<br>"
                       + "<br><b> Other Things</b><br>"
                       + "Press 'f' to highlight all units you own that have movement left "
                       + "(move phases only).<br>"
@@ -134,15 +128,7 @@ final class HelpMenu extends JMenu {
                       + "Press 'u' while mousing over a unit to undo all moves that unit has made "
                       + "(beta).<br>"
                       + "To list specific units from a territory in the Territory panel, drag and "
-                      + "drop from the territory on the map to the territory panel.<br>"
-                      + "Press CTRL+(key) to select a specific tab panel "
-                      + "(C-Actions, P-Players, R-Resources, O-Objectives, N-Notes, "
-                      + "T-Territory).<br>"
-                      + "Press CTRL+E to toggle edit mode.<br>"
-                      + "Press CTRL+H and CTRL+G to show history or game modes.<br>"
-                      + "Press CTRL+W to show politics panel.<br>"
-                      + "Press CTRL+L to show unit help list.<br>"
-                      + "Press CTRL+Z to show full screen and minimize right panel.<br>";
+                      + "drop from the territory on the map to the territory panel.<br>";
               editorPane.setText(hints);
               final JScrollPane scroll = new JScrollPane(editorPane);
               JOptionPane.showMessageDialog(
