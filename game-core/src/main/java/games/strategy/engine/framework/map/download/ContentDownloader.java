@@ -13,6 +13,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.triplea.java.Interruptibles;
 
 /**
  * Downloads content from HTTP resources. Meant to be used with a try-with-resources block, eg:
@@ -57,7 +58,7 @@ public final class ContentDownloader implements CloseableDownloader {
     this.httpClient = httpClient;
     final HttpGet request = new HttpGet(uri);
     proxySettings.accept(request);
-    response = httpClient.execute(request);
+    response = downloadWithSingleRetryOnError(request);
 
     final int statusCode = response.getStatusLine().getStatusCode();
     if (statusCode != HttpStatus.SC_OK) {
@@ -68,6 +69,17 @@ public final class ContentDownloader implements CloseableDownloader {
         Optional.ofNullable(response.getEntity())
             .orElseThrow(() -> new IOException("Entity is missing"));
     stream = entity.getContent();
+  }
+
+  private CloseableHttpResponse downloadWithSingleRetryOnError(final HttpGet request)
+      throws IOException {
+    try {
+      return httpClient.execute(request);
+    } catch (final IOException e) {
+      // short back-off before a single retry
+      Interruptibles.sleep(1000L);
+      return httpClient.execute(request);
+    }
   }
 
   @Override
