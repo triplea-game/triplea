@@ -701,8 +701,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
   private void removeAirThatCantLand() {
     final GameData data = getData();
     final boolean lhtrCarrierProd =
-        AirThatCantLandUtil.isLhtrCarrierProduction(data)
-            || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
+        Properties.getLhtrCarrierProductionRules(data)
+            || Properties.getLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
     for (final GamePlayer p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
       if (p.getUnitCollection().anyMatch(Matches.unitIsCarrier())) {

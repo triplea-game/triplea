@@ -48,7 +48,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final StringBuilder endTurnReport = new StringBuilder();
 
     // do national objectives
-    if (isNationalObjectives()) {
+    if (Properties.getNationalObjectives(getData())) {
       final String nationalObjectivesText = determineNationalObjectives(bridge);
       if (nationalObjectivesText.trim().length() > 0) {
         endTurnReport.append(nationalObjectivesText).append("<br />");
@@ -384,10 +384,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // Now test all the conditions
     return AbstractConditionsAttachment.testAllConditionsRecursive(
         allConditionsNeeded, null, bridge);
-  }
-
-  private boolean isNationalObjectives() {
-    return Properties.getNationalObjectives(getData());
   }
 
   @Override

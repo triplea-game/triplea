@@ -148,7 +148,7 @@ public class CasualtySelector {
         !defendingAa.isEmpty()
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (isChooseAa(data)) {
+    if (Properties.getChooseAaCasualties(data)) {
       final String text =
           "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return selectCasualties(
@@ -184,7 +184,7 @@ public class CasualtySelector {
 
     // priority goes: choose -> individually -> random
     // if none are set, we roll individually
-    if (isRollAaIndividually(data)) {
+    if (Properties.getRollAaIndividually(data)) {
       return individuallyFiredAaCasualties(
           defending,
           planes,
@@ -195,7 +195,7 @@ public class CasualtySelector {
           bridge,
           allowMultipleHitsPerUnit);
     }
-    if (isRandomAaCasualties(data)) {
+    if (Properties.getRandomAaCasualties(data)) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     return individuallyFiredAaCasualties(
@@ -634,7 +634,7 @@ public class CasualtySelector {
               allowMultipleHitsPerUnit);
       final List<Unit> killed = editSelection.getKilled();
       // if partial retreat is possible, kill amphibious units first
-      if (isPartialAmphibiousRetreat(data)) {
+      if (Properties.getPartialAmphibiousRetreat(data)) {
         killAmphibiousFirst(killed, targetsToPickFrom);
       }
       return editSelection;
@@ -643,7 +643,7 @@ public class CasualtySelector {
       return new CasualtyDetails(List.of(), List.of(), true);
     }
     int hitsRemaining = dice.getHits();
-    if (isTransportCasualtiesRestricted(data)) {
+    if (Properties.getTransportCasualtiesRestricted(data)) {
       hitsRemaining = extraHits;
     }
     if (!isEditMode && allTargetsOneTypeOneHitPoint(targetsToPickFrom, dependents)) {
@@ -709,7 +709,7 @@ public class CasualtySelector {
     }
     final List<Unit> killed = casualtySelection.getKilled();
     // if partial retreat is possible, kill amphibious units first
-    if (isPartialAmphibiousRetreat(data)) {
+    if (Properties.getPartialAmphibiousRetreat(data)) {
       killAmphibiousFirst(killed, sortedTargetsToPickFrom);
     }
     final List<Unit> damaged = casualtySelection.getDamaged();
@@ -1177,30 +1177,5 @@ public class CasualtySelector {
       return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;
     }
     return false;
-  }
-
-  /** Indicates transports can be used as cannon fodder. */
-  private static boolean isTransportCasualtiesRestricted(final GameData data) {
-    return Properties.getTransportCasualtiesRestricted(data);
-  }
-
-  /** Indicates AA casualties are randomly assigned. */
-  private static boolean isRandomAaCasualties(final GameData data) {
-    return Properties.getRandomAaCasualties(data);
-  }
-
-  /** Indicates AA is rolled against each aircraft. */
-  private static boolean isRollAaIndividually(final GameData data) {
-    return Properties.getRollAaIndividually(data);
-  }
-
-  /** Indicates attacker selects AA casualties. */
-  private static boolean isChooseAa(final GameData data) {
-    return Properties.getChooseAaCasualties(data);
-  }
-
-  /** Indicates the attacker can retreat non-amphibious units. */
-  private static boolean isPartialAmphibiousRetreat(final GameData data) {
-    return Properties.getPartialAmphibiousRetreat(data);
   }
 }

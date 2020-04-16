@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Dimension;
 import java.util.concurrent.CountDownLatch;
@@ -47,22 +46,6 @@ public abstract class ActionPanel extends JPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
     setMinimumSize(new Dimension(240, 0));
-  }
-
-  protected final boolean isWW2V2() {
-    return Properties.getWW2V2(data);
-  }
-
-  protected final boolean isWW2V3TechModel() {
-    return Properties.getWW2V3TechModel(data);
-  }
-
-  protected final boolean isRestrictedPurchase() {
-    return Properties.getPlacementRestrictedByFactory(data);
-  }
-
-  protected final boolean isSelectableTechRoll() {
-    return Properties.getSelectableTechRoll(data);
   }
 
   /**

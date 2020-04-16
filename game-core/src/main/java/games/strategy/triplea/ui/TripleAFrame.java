@@ -48,7 +48,6 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
-import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -1005,8 +1004,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     sb.append("</ul></html>");
     final boolean lhtrProd =
-        AirThatCantLandUtil.isLhtrCarrierProduction(data)
-            || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
+        Properties.getLhtrCarrierProductionRules(data)
+            || Properties.getLandExistingFightersOnNewCarriers(data);
     final int carrierCount =
         GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer).stream()
             .map(GamePlayer::getUnitCollection)

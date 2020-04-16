@@ -248,7 +248,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, RAID);
-            if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
+            if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData)) {
               bridge
                   .getHistoryWriter()
                   .addChildToEvent(
@@ -272,7 +272,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                           + MyFormatter.pluralize("PU", bombingRaidTotal));
             }
             // TODO remove the reference to the constant.japanese- replace with a rule
-            if (isPacificTheater() || isSbrVictoryPoints()) {
+            if (Properties.getPacificTheater(gameData)
+                || Properties.getSbrVictoryPoints(gameData)) {
               if (defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
                 final PlayerAttachment pa = PlayerAttachment.get(defender);
                 if (pa != null) {
@@ -361,7 +362,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void end(final IDelegateBridge bridge) {
-    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
+    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData)) {
       bridge
           .getDisplayChannelBroadcaster()
           .battleEnd(
@@ -565,34 +566,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
       }
     }
-  }
-
-  private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories() {
-    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData);
-  }
-
-  private boolean isWW2V2() {
-    return Properties.getWW2V2(gameData);
-  }
-
-  private boolean isLimitSbrDamageToProduction() {
-    return Properties.getLimitRocketAndSbrDamageToProduction(gameData);
-  }
-
-  private static boolean isLimitSbrDamagePerTurn(final GameData data) {
-    return Properties.getLimitSbrDamagePerTurn(data);
-  }
-
-  private static boolean isPuCap(final GameData data) {
-    return Properties.getPuCap(data);
-  }
-
-  private boolean isSbrVictoryPoints() {
-    return Properties.getSbrVictoryPoints(gameData);
-  }
-
-  private boolean isPacificTheater() {
-    return Properties.getPacificTheater(gameData);
   }
 
   private CasualtyDetails calculateCasualties(
@@ -883,7 +856,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       int cost = 0;
       final boolean lhtrBombers = Properties.getLhtrHeavyBombers(gameData);
       int index = 0;
-      final boolean limitDamage = isWW2V2() || isLimitSbrDamageToProduction();
+      final boolean limitDamage =
+          Properties.getWW2V2(gameData)
+              || Properties.getLimitRocketAndSbrDamageToProduction(gameData);
       final List<Die> dice = new ArrayList<>();
       final Map<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage
@@ -941,7 +916,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
       }
       // Limit PUs lost if we would like to cap PUs lost at territory value
-      if (isPuCap(gameData) || isLimitSbrDamagePerTurn(gameData)) {
+      if (Properties.getPuCap(gameData) || Properties.getLimitSbrDamagePerTurn(gameData)) {
         final int alreadyLost = DelegateFinder.moveDelegate(gameData).pusAlreadyLost(battleSite);
         final int limit = Math.max(0, damageLimit - alreadyLost);
         cost = Math.min(cost, limit);
@@ -954,7 +929,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
       }
       // If we damage units instead of territories
-      if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData)) {
         // at this point, bombingRaidDamage should contain all units that targets contains
         if (!targets.keySet().containsAll(bombingRaidDamage.keySet())) {
           throw new IllegalStateException("targets should contain all damaged units");

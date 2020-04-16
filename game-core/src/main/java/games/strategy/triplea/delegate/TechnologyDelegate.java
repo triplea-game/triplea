@@ -159,22 +159,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return techs;
   }
 
-  private boolean isWW2V2() {
-    return Properties.getWW2V2(getData());
-  }
-
-  private boolean isWW2V3TechModel() {
-    return Properties.getWW2V3TechModel(getData());
-  }
-
-  private boolean isSelectableTechRoll() {
-    return Properties.getSelectableTechRoll(getData());
-  }
-
-  private boolean isLowLuckTechOnly() {
-    return Properties.getLowLuckTechOnly(getData());
-  }
-
   @Override
   public TechResults rollTech(
       final int techRolls,
@@ -182,7 +166,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       final int newTokens,
       final IntegerMap<GamePlayer> whoPaysHowMuch) {
     int rollCount = techRolls;
-    if (isWW2V3TechModel()) {
+    if (Properties.getWW2V3TechModel(getData())) {
       rollCount = newTokens;
     }
     final boolean canPay = checkEnoughMoney(rollCount, whoPaysHowMuch);
@@ -191,12 +175,12 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     chargeForTechRolls(rollCount, whoPaysHowMuch);
     int currTokens = 0;
-    if (isWW2V3TechModel()) {
+    if (Properties.getWW2V3TechModel(getData())) {
       currTokens = player.getResources().getQuantity(Constants.TECH_TOKENS);
     }
     final GameData data = getData();
     if (getAvailableTechs(player, data).isEmpty()) {
-      if (isWW2V3TechModel()) {
+      if (Properties.getWW2V3TechModel(getData())) {
         final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
         final String transcriptText = player.getName() + " No more available tech advances.";
         bridge.getHistoryWriter().startEvent(transcriptText);
@@ -215,7 +199,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(techRolls, diceSides, annotation, diceSides);
       techHits = getTechHits(random);
-    } else if (isLowLuckTechOnly()) {
+    } else if (Properties.getLowLuckTechOnly(getData())) {
       techHits = techRolls / diceSides;
       remainder = techRolls % diceSides;
       if (remainder > 0) {
@@ -231,10 +215,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       random = bridge.getRandom(diceSides, techRolls, player, DiceType.TECH, annotation);
       techHits = getTechHits(random);
     }
-    final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
+    final boolean isRevisedModel =
+        Properties.getWW2V2(getData())
+            || (Properties.getSelectableTechRoll(getData())
+                && !Properties.getWW2V3TechModel(getData()));
     final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
     final DiceRoll renderDice =
-        (isLowLuckTechOnly()
+        (Properties.getLowLuckTechOnly(getData())
             ? new DiceRoll(random, techHits, remainder, false)
             : new DiceRoll(random, techHits, diceSides - 1, true));
     bridge
@@ -249,7 +236,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
                 + " "
                 + MyFormatter.pluralize("hit", techHits),
             renderDice);
-    if (isWW2V3TechModel()
+    if (Properties.getWW2V3TechModel(getData())
         && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
       techCategory = techToRollFor;
       // remove all the tokens
@@ -348,7 +335,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         bridge.addChange(charge);
       }
     }
-    if (isWW2V3TechModel()) {
+    if (Properties.getWW2V3TechModel(getData())) {
       final Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
       final Change newTokens =
           ChangeFactory.changeResourcesChange(bridge.getGamePlayer(), tokens, rolls);
@@ -369,7 +356,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   private Collection<TechAdvance> getTechAdvances(final int initialHits) {
     final List<TechAdvance> available;
     int hits = initialHits;
-    if (hits > 0 && isWW2V3TechModel()) {
+    if (hits > 0 && Properties.getWW2V3TechModel(getData())) {
       available = getAvailableAdvancesForCategory(techCategory);
       hits = 1;
     } else {
@@ -387,7 +374,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final Collection<TechAdvance> newAdvances = new ArrayList<>(hits);
     final String annotation = player.getName() + " rolling to see what tech advances are acquired";
     final int[] random;
-    if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
+    if (Properties.getSelectableTechRoll(getData()) || BaseEditDelegate.getEditMode(getData())) {
       final Player tripleaPlayer = bridge.getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, annotation, available.size());
     } else {

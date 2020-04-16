@@ -261,14 +261,6 @@ public class TransportTracker {
     return false;
   }
 
-  private static boolean isWW2V2(final GameData data) {
-    return Properties.getWW2V2(data);
-  }
-
-  private static boolean isTransportUnloadRestricted(final GameData data) {
-    return Properties.getTransportUnloadRestricted(data);
-  }
-
   /**
    * In some versions, a transport can never unload into multiple territories in a given turn. In
    * WW2V1 a transport can unload to multiple territories in non-combat phase, provided they are
@@ -284,7 +276,7 @@ public class TransportTracker {
     final GameData data = transport.getData();
     for (final Unit u : unloaded) {
       final TripleAUnit taUnit = (TripleAUnit) u;
-      if (isWW2V2(data) || isTransportUnloadRestricted(data)) {
+      if (Properties.getWW2V2(data) || Properties.getTransportUnloadRestricted(data)) {
         // cannot unload to two different territories
         if (!taUnit.getUnloadedTo().equals(territory)) {
           return true;

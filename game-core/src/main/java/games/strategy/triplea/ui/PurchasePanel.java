@@ -8,6 +8,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -146,7 +147,7 @@ public class PurchasePanel extends ActionPanel {
     }
     // give a warning if the
     // player tries to produce too much
-    if (isWW2V2() || isRestrictedPurchase()) {
+    if (Properties.getWW2V2(getData()) || Properties.getPlacementRestrictedByFactory(getData())) {
       getData().acquireReadLock();
       int totalProd = 0;
       try {

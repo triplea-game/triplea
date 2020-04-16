@@ -220,7 +220,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         unitsCanBePlacedByThisProducer = new ArrayList<>(unitsLeftToPlace);
       } else {
         unitsCanBePlacedByThisProducer =
-            (isUnitPlacementRestrictions()
+            (Properties.getUnitPlacementRestrictions(getData())
                 ? CollectionUtils.getMatches(
                     unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
                 : new ArrayList<>(unitsLeftToPlace));
@@ -381,7 +381,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         // around at all
         if (placeTerritory.isWater()
             && !placeTerritory.equals(producer)
-            && (!isUnitPlacementRestrictions()
+            && (!Properties.getUnitPlacementRestrictions(getData())
                 || placement.getUnits().stream()
                     .noneMatch(Matches.unitRequiresUnitsOnCreation()))) {
           // found placement move of producer that can be taken over
@@ -507,8 +507,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (!at.isWater()) {
       return null;
     }
-    if (!canMoveExistingFightersToNewCarriers()
-        || AirThatCantLandUtil.isLhtrCarrierProduction(getData())) {
+    if (!Properties.getMoveExistingFightersToNewCarriers(getData())
+        || Properties.getLhtrCarrierProductionRules(getData())) {
       return null;
     }
     if (units.stream().noneMatch(Matches.unitIsCarrier())) {
@@ -694,13 +694,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return null;
     }
     // make sure some unit has fullfilled requiresUnits requirements
-    if (isUnitPlacementRestrictions()
+    if (Properties.getUnitPlacementRestrictions(getData())
         && !testUnits.isEmpty()
         && testUnits.stream().noneMatch(unitWhichRequiresUnitsHasRequiredUnits(producer, true))) {
       return "You do not have the required units to build in " + producer.getName();
     }
     if (to.isWater()
-        && (!isWW2V2() && !isUnitPlacementInEnemySeas())
+        && (!Properties.getWW2V2(getData()) && !Properties.getUnitPlacementInEnemySeas(getData()))
         && to.getUnitCollection().anyMatch(Matches.enemyUnit(player, getData()))) {
       return "Cannot place sea units with enemy naval units";
     }
@@ -865,7 +865,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return "Units Cannot Go Over Stacking Limit";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
-    if (!isUnitPlacementRestrictions()) {
+    if (!Properties.getUnitPlacementRestrictions(getData())) {
       return null;
     }
     // account for any unit placement restrictions by territory
@@ -920,7 +920,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory to, final Collection<Unit> allUnits, final GamePlayer player) {
     final boolean water = to.isWater();
     if (water
-        && (!isWW2V2() && !isUnitPlacementInEnemySeas())
+        && (!Properties.getWW2V2(getData()) && !Properties.getUnitPlacementInEnemySeas(getData()))
         && to.getUnitCollection().anyMatch(Matches.enemyUnit(player, getData()))) {
       return null;
     }
@@ -947,12 +947,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             CollectionUtils.getMatches(
                 units, Matches.unitIsAir().and(Matches.unitIsNotConstruction())));
       } else if (((isBid
-                  || canProduceFightersOnCarriers()
-                  || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
+                  || Properties.getProduceFightersOnCarriers(getData())
+                  || Properties.getLhtrCarrierProductionRules(getData()))
               && allProducedUnits.stream().anyMatch(Matches.unitIsCarrier()))
           || ((isBid
-                  || canProduceNewFightersOnOldCarriers()
-                  || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
+                  || Properties.getProduceNewFightersOnOldCarriers(getData())
+                  || Properties.getLhtrCarrierProductionRules(getData()))
               && to.getUnitCollection()
                   .anyMatch(
                       Matches.unitIsCarrier()
@@ -1016,7 +1016,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                   "placementLimit", ut, to, player, getData()),
               Matches.unitIsOfType(ut)));
     }
-    if (!isUnitPlacementRestrictions()) {
+    if (!Properties.getUnitPlacementRestrictions(getData())) {
       return placeableUnits2;
     }
     final Collection<Unit> placeableUnits3 = new ArrayList<>();
@@ -1134,7 +1134,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final Map<Territory, Integer> currentAvailablePlacementForOtherProducers = new HashMap<>();
     for (final Territory producerTerritory : producers) {
       final Collection<Unit> unitsCanBePlacedByThisProducer =
-          (isUnitPlacementRestrictions()
+          (Properties.getUnitPlacementRestrictions(getData())
               ? CollectionUtils.getMatches(
                   units, unitWhichRequiresUnitsHasRequiredUnits(producerTerritory, true))
               : new ArrayList<>(units));
@@ -1172,7 +1172,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     // we may have special units with requiresUnits restrictions
     final Collection<Unit> unitsCanBePlacedByThisProducer =
-        (isUnitPlacementRestrictions()
+        (Properties.getUnitPlacementRestrictions(getData())
             ? CollectionUtils.getMatches(
                 units, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
             : new ArrayList<>(units));
@@ -1188,7 +1188,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             .and(producer.isWater() ? Matches.unitIsLand().negate() : Matches.unitIsSea().negate());
     final Collection<Unit> factoryUnits = producer.getUnitCollection().getMatches(factoryMatch);
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
-    final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
+    final boolean unitPlacementPerTerritoryRestricted =
+        Properties.getUnitPlacementPerTerritoryRestricted(getData());
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
         !factoryUnits.isEmpty() && this.player.equals(getOriginalFactoryOwner(producer));
@@ -1273,7 +1274,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           // to mess with
           // logically, so we ignore them for our special 'move shit around' methods.
           if (!placeTerritory.isWater()
-              || (isUnitPlacementRestrictions()
+              || (Properties.getUnitPlacementRestrictions(getData())
                   && unitsPlacedByCurrentPlacementMove.stream()
                       .anyMatch(Matches.unitRequiresUnitsOnCreation()))) {
             productionCanNotBeMoved += unitsPlacedByCurrentPlacementMove.size();
@@ -1387,7 +1388,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
       final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
       // account for any unit placement restrictions by territory
-      if (isUnitPlacementRestrictions()) {
+      if (Properties.getUnitPlacementRestrictions(getData())) {
         final String[] terrs = ua.getUnitPlacementRestrictions();
         final Collection<Territory> listedTerrs = getListedTerritories(terrs);
         if (listedTerrs.contains(to)) {
@@ -1534,7 +1535,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(
       final Collection<Unit> units, final Territory to) {
-    if (!isUnitPlacementRestrictions()
+    if (!Properties.getUnitPlacementRestrictions(getData())
         || units.stream().noneMatch(Matches.unitRequiresUnitsOnCreation())) {
       return true;
     }
@@ -1731,45 +1732,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return new AirThatCantLandUtil(bridge).getTerritoriesWhereAirCantLand(player);
   }
 
-  private boolean canProduceFightersOnCarriers() {
-    return Properties.getProduceFightersOnCarriers(getData());
-  }
-
-  private boolean canProduceNewFightersOnOldCarriers() {
-    return Properties.getProduceNewFightersOnOldCarriers(getData());
-  }
-
-  private boolean canMoveExistingFightersToNewCarriers() {
-    return Properties.getMoveExistingFightersToNewCarriers(getData());
-  }
-
-  protected boolean isWW2V2() {
-    return Properties.getWW2V2(getData());
-  }
-
-  private boolean isUnitPlacementInEnemySeas() {
-    return Properties.getUnitPlacementInEnemySeas(getData());
-  }
-
   protected boolean wasConquered(final Territory t) {
     final BattleTracker tracker = DelegateFinder.battleDelegate(getData()).getBattleTracker();
     return tracker.wasConquered(t);
   }
 
-  private boolean isPlaceInAnyTerritory() {
-    return Properties.getPlaceInAnyTerritory(getData());
-  }
-
-  private boolean isUnitPlacementPerTerritoryRestricted() {
-    return Properties.getUnitPlacementPerTerritoryRestricted(getData());
-  }
-
-  protected boolean isUnitPlacementRestrictions() {
-    return Properties.getUnitPlacementRestrictions(getData());
-  }
-
   private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final GamePlayer player) {
-    if (isPlaceInAnyTerritory()) {
+    if (Properties.getPlaceInAnyTerritory(getData())) {
       final RulesAttachment ra =
           (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
       return ra != null && ra.getPlacementAnyTerritory();
@@ -1778,7 +1747,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private boolean isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(final GamePlayer player) {
-    if (isPlaceInAnyTerritory()) {
+    if (Properties.getPlaceInAnyTerritory(getData())) {
       final RulesAttachment ra =
           (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
       return ra != null && ra.getPlacementAnySeaZone();

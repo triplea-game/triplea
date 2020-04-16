@@ -46,7 +46,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     String victoryMessage;
     final GameData data = getData();
-    if (isPacificTheater()) {
+    if (Properties.getPacificTheater(getData())) {
       final GamePlayer japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
       final PlayerAttachment pa = PlayerAttachment.get(japanese);
       if (pa != null && pa.getVps() >= 22) {
@@ -60,19 +60,19 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       }
     }
     // Check for Winning conditions
-    if (isTotalVictory()) { // Check for Win by Victory Cities
+    if (Properties.getTotalVictory(getData())) { // Check for Win by Victory Cities
       victoryMessage = " achieve TOTAL VICTORY with ";
       checkVictoryCities(bridge, victoryMessage, " Total Victory VCs");
     }
-    if (isHonorableSurrender()) {
+    if (Properties.getHonorableSurrender(getData())) {
       victoryMessage = " achieve an HONORABLE VICTORY with ";
       checkVictoryCities(bridge, victoryMessage, " Honorable Victory VCs");
     }
-    if (isProjectionOfPower()) {
+    if (Properties.getProjectionOfPower(getData())) {
       victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
       checkVictoryCities(bridge, victoryMessage, " Projection of Power VCs");
     }
-    if (isEconomicVictory()) { // Check for regular economic victory
+    if (Properties.getEconomicVictory(getData())) { // Check for regular economic victory
       for (final String allianceName : data.getAllianceTracker().getAlliances()) {
         final int victoryAmount = getEconomicVictoryAmount(data, allianceName);
         final Set<GamePlayer> teamMembers =
@@ -92,7 +92,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       }
     }
     // now check for generic trigger based victories
-    if (isTriggeredVictory()) {
+    if (Properties.getTriggeredVictory(getData())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out
       // as a composite match
       // OR.
@@ -125,7 +125,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // signalGameOver itself
       }
     }
-    if (isWW2V2() || isWW2V3()) {
+    if (Properties.getWW2V2(getData()) || Properties.getWW2V3(getData())) {
       return;
     }
     final PlayerList playerList = data.getPlayerList();
@@ -348,38 +348,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       return null;
     }
     return winners;
-  }
-
-  private boolean isWW2V2() {
-    return Properties.getWW2V2(getData());
-  }
-
-  private boolean isWW2V3() {
-    return Properties.getWW2V3(getData());
-  }
-
-  private boolean isPacificTheater() {
-    return Properties.getPacificTheater(getData());
-  }
-
-  private boolean isTotalVictory() {
-    return Properties.getTotalVictory(getData());
-  }
-
-  private boolean isHonorableSurrender() {
-    return Properties.getHonorableSurrender(getData());
-  }
-
-  private boolean isProjectionOfPower() {
-    return Properties.getProjectionOfPower(getData());
-  }
-
-  private boolean isEconomicVictory() {
-    return Properties.getEconomicVictory(getData());
-  }
-
-  private boolean isTriggeredVictory() {
-    return Properties.getTriggeredVictory(getData());
   }
 
   private int getProduction(final GamePlayer gamePlayer) {

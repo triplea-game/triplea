@@ -51,7 +51,7 @@ public class RocketsFireHelper implements Serializable {
     // WW2V2/WW2V3, now fires at the start of the BattleDelegate
     // WW2V1, fires at end of non combat move so does not call here
     helper.needToFindRocketTargets = false;
-    if ((isWW2V2(data) || isAllRocketsAttack(data))
+    if ((Properties.getWW2V2(data) || Properties.getAllRocketsAttack(data))
         && TechTracker.hasRocket(bridge.getGamePlayer())) {
       if (Properties.getSequentiallyTargetedRockets(data)) {
         helper.needToFindRocketTargets = true;
@@ -92,34 +92,6 @@ public class RocketsFireHelper implements Serializable {
     }
   }
 
-  private static boolean isWW2V2(final GameData data) {
-    return Properties.getWW2V2(data);
-  }
-
-  private static boolean isAllRocketsAttack(final GameData data) {
-    return Properties.getAllRocketsAttack(data);
-  }
-
-  private static boolean isRocketsCanFlyOverImpassables(final GameData data) {
-    return Properties.getRocketsCanFlyOverImpassables(data);
-  }
-
-  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
-  }
-
-  private static boolean isPuCap(final GameData data) {
-    return Properties.getPuCap(data);
-  }
-
-  private static boolean isLimitRocketDamagePerTurn(final GameData data) {
-    return Properties.getLimitRocketDamagePerTurn(data);
-  }
-
-  private static boolean isLimitRocketDamageToProduction(final GameData data) {
-    return Properties.getLimitRocketAndSbrDamageToProduction(data);
-  }
-
   /**
    * Find Rocket Targets and load up fire rockets for later execution if necessary. Directly fired
    * with Sequentially Targeted rockets.
@@ -156,7 +128,7 @@ public class RocketsFireHelper implements Serializable {
             CollectionUtils.getMatches(
                 enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(targetTerritory).negate());
         Unit unitTarget = null;
-        if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           final Collection<Unit> rocketTargets =
               new ArrayList<>(
                   CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
@@ -253,7 +225,9 @@ public class RocketsFireHelper implements Serializable {
     final Set<Territory> hasFactory = new HashSet<>();
     final Predicate<Territory> allowed =
         PredicateBuilder.of(Matches.territoryAllowsRocketsCanFlyOver(player, data))
-            .andIf(!isRocketsCanFlyOverImpassables(data), Matches.territoryIsNotImpassable())
+            .andIf(
+                !Properties.getRocketsCanFlyOverImpassables(data),
+                Matches.territoryIsNotImpassable())
             .build();
     final Collection<Territory> possible =
         data.getMap().getNeighbors(territory, maxDistance, allowed);
@@ -290,7 +264,7 @@ public class RocketsFireHelper implements Serializable {
     final GamePlayer attacked = attackedTerritory.getOwner();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean damageFromBombingDoneToUnits =
-        isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+        Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits =
         attackedTerritory
@@ -481,9 +455,10 @@ public class RocketsFireHelper implements Serializable {
       bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
       // attackedTerritory.notifyChanged();
       // in WW2V2, limit rocket attack cost to production value of factory.
-    } else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
+    } else if (Properties.getWW2V2(data)
+        || Properties.getLimitRocketAndSbrDamageToProduction(data)) {
       // If we are limiting total PUs lost then take that into account
-      if (isPuCap(data) || isLimitRocketDamagePerTurn(data)) {
+      if (Properties.getPuCap(data) || Properties.getLimitRocketDamagePerTurn(data)) {
         final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);

@@ -50,10 +50,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   private boolean needToInitialize = true;
   private boolean hasPostedTurnSummary = false;
 
-  private boolean isGiveUnitsByTerritory() {
-    return Properties.getGiveUnitsByTerritory(getData());
-  }
-
   private static boolean canPlayerCollectIncome(final GamePlayer player, final GameData data) {
     return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
   }
@@ -228,7 +224,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     if (GameStepPropertiesHelper.isRepairUnits(data)) {
       MoveDelegate.repairMultipleHitPointUnits(bridge, bridge.getGamePlayer());
     }
-    if (isGiveUnitsByTerritory()
+    if (Properties.getGiveUnitsByTerritory(getData())
         && pa != null
         && pa.getGiveUnitControl() != null
         && !pa.getGiveUnitControl().isEmpty()) {
