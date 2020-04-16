@@ -37,7 +37,7 @@ public class ProTerritoryValueUtilsTest {
   }
 
   @Test
-  @DisplayName("only targets within distance the min distance are found")
+  @DisplayName("only targets within the min distance are found")
   void testFindNearbyEnemyCapitalsAndFactoriesSomeWithinDistance9() {
     final var toFind = Set.of(swUsa, england, northJapan, moscow);
     final Collection<Territory> result =
@@ -66,12 +66,30 @@ public class ProTerritoryValueUtilsTest {
   }
 
   @Test
-  @DisplayName("checks the computation of the max land mass size")
-  void testFindMaxLandMassSize() {
+  @DisplayName("checks the computation of the max land mass size on big world")
+  void testFindMaxLandMassSizeBigWorld() {
     // The result should be the same for each player since territoryCanPotentiallyMoveLandUnits()
     // should be the same for all players.
     for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
       assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(89));
+    }
+  }
+
+  @Test
+  @DisplayName("checks the computation of the max land mass size on revised")
+  void testFindMaxLandSizeRevised() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
+      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(37));
+    }
+  }
+
+  @Test
+  @DisplayName("checks the computation of the max land mass size on minimap (single continent)")
+  void testFindMaxLandSizeMinimap() {
+    final GameData gameData = TestMapGameData.MINIMAP.getGameData();
+    for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
+      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(14));
     }
   }
 }

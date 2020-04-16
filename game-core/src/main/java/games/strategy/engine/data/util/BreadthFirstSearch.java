@@ -12,14 +12,13 @@ import org.triplea.java.ObjectUtils;
 
 /**
  * Implements Breadth First Search (BFS) to traverse / find territories. Since the search criteria
- * varies depending on the use case, the class is designed to be sub-classed, with methods visit()
- * and shouldContinueSearch() that can be overridden to customize the behavior.
+ * varies depending on the use case, the class is designed to take a Visitor object with methods
+ * visit() and shouldContinueSearch() for customizing the behavior.
  */
-public class BreadthFirstSearch {
+public final class BreadthFirstSearch {
   public abstract static class Visitor {
     /**
-     * Called when a new territory is encountered. Can be overridden to provide custom search
-     * behavior.
+     * Called when a new territory is encountered.
      *
      * @param territory The new territory.
      */
@@ -40,13 +39,19 @@ public class BreadthFirstSearch {
   private final GameMap map;
   private final Set<Territory> visited;
   private final ArrayDeque<Territory> territoriesToCheck;
-  private final Predicate<Territory> cond;
+  private final Predicate<Territory> neighborCondition;
 
-  public BreadthFirstSearch(final Territory startTerritory, final Predicate<Territory> cond) {
+  /**
+   * @param startTerritory The territory from where to start the search.
+   * @param neighborCondition Condition that neighboring territories must match to be considered
+   *     neighbors.
+   */
+  public BreadthFirstSearch(
+      final Territory startTerritory, final Predicate<Territory> neighborCondition) {
     this.map = startTerritory.getData().getMap();
     this.visited = new HashSet<>(List.of(startTerritory));
     this.territoriesToCheck = new ArrayDeque<>(List.of(startTerritory));
-    this.cond = cond;
+    this.neighborCondition = neighborCondition;
   }
 
   public BreadthFirstSearch(final Territory startTerritory) {
@@ -82,9 +87,9 @@ public class BreadthFirstSearch {
 
   private Territory checkNextTerritory(final Visitor visitor) {
     final Territory territory = territoriesToCheck.removeFirst();
-    // Note: We don't pass cond to getNeighbors() because that implementation is much slower.
+    // Note: The condition isn't passed to getNeighbors() because that implementation is very slow.
     for (final Territory neighbor : map.getNeighbors(territory)) {
-      if (cond.test(neighbor) && visited.add(neighbor)) {
+      if (neighborCondition.test(neighbor) && visited.add(neighbor)) {
         territoriesToCheck.add(neighbor);
         visitor.visit(neighbor);
       }

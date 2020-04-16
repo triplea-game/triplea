@@ -469,10 +469,7 @@ public final class ProTerritoryValueUtils {
 
               @Override
               public boolean shouldContinueSearch(final int distanceSearched) {
-                if (distanceSearched >= MIN_FACTORY_CHECK_DISTANCE && !found.isEmpty()) {
-                  return false;
-                }
-                return true;
+                return distanceSearched < MIN_FACTORY_CHECK_DISTANCE || found.isEmpty();
               }
             });
     return found;
