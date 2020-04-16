@@ -521,10 +521,7 @@
         <!-- Map Name: also used for map utils when asked -->
         <property name="mapName" value="minimap" editable="false"/>
         <property name="notes">
-            <value><![CDATA[
-
-		        	A simple two player game.
-	        	]]></value>
+            <value><![CDATA[A simple two player game.]]></value>
         </property>
     </propertyList>
 </game>
