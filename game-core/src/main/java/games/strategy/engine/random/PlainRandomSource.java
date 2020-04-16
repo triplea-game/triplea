@@ -17,8 +17,8 @@ public final class PlainRandomSource implements IRandomSource {
 
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) {
-    checkArgument(max > 0, String.format("max must be > 0 (%s)", annotation));
-    checkArgument(count > 0, String.format("count must be > 0 (%s)", annotation));
+    checkArgument(max > 0, "max must be > 0 (%s)", annotation);
+    checkArgument(count > 0, "count must be > 0 (%s)", annotation);
 
     final int[] numbers = new int[count];
     for (int i = 0; i < count; i++) {
@@ -29,7 +29,7 @@ public final class PlainRandomSource implements IRandomSource {
 
   @Override
   public int getRandom(final int max, final String annotation) {
-    checkArgument(max > 0, String.format("max must be > 0 (%s)", annotation));
+    checkArgument(max > 0, "max must be > 0 (%s)", annotation);
 
     synchronized (lock) {
       return random.nextInt(max);
