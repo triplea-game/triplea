@@ -8,12 +8,9 @@ public final class Properties implements Constants {
   private Properties() {}
 
   // These should always default to false, if boolean, and if not should default to whatever is the
-  // "default" behavior
-  // of TripleA.
-  // If you want something to default to "true", when change the wording of the constant to make it
-  // a negative of
-  // itself, then default to false. (ex: "Do not do something", false; instead of "Do something",
-  // true;)
+  // "default" behavior  of TripleA.  If you want something to default to "true", when change the
+  // wording of the constant to make it a negative of itself, then default to false.
+  // (ex: "Do not do something", false; instead of "Do something", true;)
 
   public static int getNeutralCharge(final GameData data) {
     return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);
@@ -29,6 +26,16 @@ public final class Properties implements Constants {
 
   public static boolean getWW2V2(final GameData data) {
     return data.getProperties().get(WW2V2, false);
+  }
+
+  /** World War 2 Version 3. */
+  public static boolean getWW2V3(final GameData data) {
+    return data.getProperties().get(WW2V3, false);
+  }
+
+  /** Can the player select the type of technology they are rolling for. */
+  public static boolean getWW2V3TechModel(final GameData data) {
+    return data.getProperties().get(WW2V3_TECH_MODEL, false);
   }
 
   public static boolean getPartialAmphibiousRetreat(final GameData data) {
@@ -72,11 +79,6 @@ public final class Properties implements Constants {
     return data.getProperties().get(PACIFIC_THEATER, false);
   }
 
-  /** World War 2 Version 3. */
-  public static boolean getWW2V3(final GameData data) {
-    return data.getProperties().get(WW2V3, false);
-  }
-
   /** Economic Victory Condition. */
   public static boolean getEconomicVictory(final GameData data) {
     return data.getProperties().get(ECONOMIC_VICTORY, false);
@@ -95,11 +97,6 @@ public final class Properties implements Constants {
   /** Can the player select the type of technology they are rolling for. */
   public static boolean getSelectableTechRoll(final GameData data) {
     return data.getProperties().get(SELECTABLE_TECH_ROLL, false);
-  }
-
-  /** Can the player select the type of technology they are rolling for. */
-  public static boolean getWW2V3TechModel(final GameData data) {
-    return data.getProperties().get(WW2V3_TECH_MODEL, false);
   }
 
   /** Use Advanced Technology. */
