@@ -207,18 +207,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     return placeData;
   }
 
-  private boolean canProduceFightersOnCarriers() {
-    return Properties.getProduceFightersOnCarriers(getData());
-  }
-
-  private boolean canProduceNewFightersOnOldCarriers() {
-    return Properties.getProduceNewFightersOnOldCarriers(getData());
-  }
-
-  private boolean isLhtrCarrierProductionRules() {
-    return Properties.getLhtrCarrierProductionRules(getData());
-  }
-
   private PlaceableUnits getUnitsToPlace(final Territory territory) {
     getData().acquireReadLock();
     try {
@@ -241,9 +229,9 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       // get the units that can be placed on this territory.
       Collection<Unit> units = getCurrentPlayer().getUnits();
       if (territory.isWater()) {
-        if (!(canProduceFightersOnCarriers()
-            || canProduceNewFightersOnOldCarriers()
-            || isLhtrCarrierProductionRules()
+        if (!(Properties.getProduceFightersOnCarriers(getData())
+            || Properties.getProduceNewFightersOnOldCarriers(getData())
+            || Properties.getLhtrCarrierProductionRules(getData())
             || GameStepPropertiesHelper.isBid(getData()))) {
           units = CollectionUtils.getMatches(units, Matches.unitIsSea());
         } else {

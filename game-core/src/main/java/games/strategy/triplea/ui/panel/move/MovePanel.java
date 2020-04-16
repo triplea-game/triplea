@@ -282,7 +282,7 @@ public class MovePanel extends AbstractMovePanel {
             mouseLastUpdatePoint = mouseDetails.getMapPoint();
             final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
             // Load Bombers with paratroops
-            if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
+            if ((!nonCombat || Properties.getParatroopersCanMoveDuringNonCombat(getData()))
                 && TechAttachment.isAirTransportable(getCurrentPlayer())
                 && selectedUnits.stream()
                     .anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
@@ -1460,10 +1460,6 @@ public class MovePanel extends AbstractMovePanel {
 
   private Territory getSelectedEndpointTerritory() {
     return selectedEndpointTerritory;
-  }
-
-  private static boolean isParatroopersCanMoveDuringNonCombat(final GameData data) {
-    return Properties.getParatroopersCanMoveDuringNonCombat(data);
   }
 
   private List<Unit> userChooseUnits(

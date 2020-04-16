@@ -219,7 +219,7 @@ public class UnitsDrawer extends AbstractDrawable {
     }
     displayHitDamage(bounds, graphics);
     // Display Factory Damage
-    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
         && Matches.unitTypeCanBeDamaged().test(type)) {
       displayFactoryDamage(bounds, graphics);
     }
@@ -326,9 +326,5 @@ public class UnitsDrawer extends AbstractDrawable {
         + MyFormatter.pluralize(unitType)
         + " in  "
         + territoryName;
-  }
-
-  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 }

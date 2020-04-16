@@ -26,7 +26,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
   @Override
   public void start() {
     super.start();
-    isPacific = isPacificTheater();
+    isPacific = Properties.getPacificTheater(getData());
     final GamePlayer player = bridge.getGamePlayer();
     final Collection<Territory> territories = getData().getMap().getTerritoriesOwnedBy(player);
     final Collection<Unit> units = getProductionUnits(territories, player);
@@ -39,7 +39,8 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
   private Collection<Unit> getProductionUnits(
       final Collection<Territory> territories, final GamePlayer player) {
     final Collection<Unit> productionUnits = new ArrayList<>();
-    if (!(isProductionPerXTerritoriesRestricted() || isProductionPerValuedTerritoryRestricted())) {
+    if (!(Properties.getProductionPerXTerritoriesRestricted(getData())
+        || Properties.getProductionPerValuedTerritoryRestricted(getData()))) {
       return productionUnits;
     }
     IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<>();
@@ -48,13 +49,13 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     // if they have no rules attachments, but are calling NoPU purchase, and have the game property
     // isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with
     // PU value > 0
-    if (isProductionPerValuedTerritoryRestricted()
+    if (Properties.getProductionPerValuedTerritoryRestricted(getData())
         && (ra == null
             || ra.getProductionPerXTerritories() == null
             || ra.getProductionPerXTerritories().isEmpty())) {
       productionPerXTerritories.put(
           getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
-    } else if (isProductionPerXTerritoriesRestricted() && ra != null) {
+    } else if (Properties.getProductionPerXTerritoriesRestricted(getData()) && ra != null) {
       productionPerXTerritories = ra.getProductionPerXTerritories();
     } else {
       return productionUnits;
@@ -68,7 +69,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
       }
       int terrCount = 0;
       for (final Territory current : territories) {
-        if (!isProductionPerValuedTerritoryRestricted()) {
+        if (!Properties.getProductionPerValuedTerritoryRestricted(getData())) {
           terrCount++;
         } else {
           if (TerritoryAttachment.getProduction(current) > 0) {
@@ -100,17 +101,5 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
       return 1;
     }
     return 0;
-  }
-
-  private boolean isPacificTheater() {
-    return Properties.getPacificTheater(getData());
-  }
-
-  private boolean isProductionPerValuedTerritoryRestricted() {
-    return Properties.getProductionPerValuedTerritoryRestricted(getData());
-  }
-
-  private boolean isProductionPerXTerritoriesRestricted() {
-    return Properties.getProductionPerXTerritoriesRestricted(getData());
   }
 }

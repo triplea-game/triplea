@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -51,7 +52,9 @@ class TechPanel extends ActionPanel {
           "Roll Tech...",
           e -> {
             TechAdvance advance = null;
-            if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
+            if (Properties.getWW2V2(getData())
+                || (Properties.getSelectableTechRoll(getData())
+                    && !Properties.getWW2V3TechModel(getData()))) {
               final List<TechAdvance> available = getAvailableTechs();
               if (available.isEmpty()) {
                 JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
@@ -227,7 +230,7 @@ class TechPanel extends ActionPanel {
           removeAll();
           actionLabel.setText(gamePlayer.getName() + " Tech Roll");
           add(actionLabel);
-          if (isWW2V3TechModel()) {
+          if (Properties.getWW2V3TechModel(getData())) {
             add(new JButton(getTechTokenAction));
             add(new JButton(justRollTech));
           } else {

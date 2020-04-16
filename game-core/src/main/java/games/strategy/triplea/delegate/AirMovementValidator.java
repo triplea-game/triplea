@@ -51,9 +51,8 @@ public final class AirMovementValidator {
         // we can land at the end, nothing left to check
         || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
             .test(route.getEnd())
-        || isKamikazeAircraft(
-            data) // we do not do any validation at all, cus they can all die and we don't care
-    ) {
+        // if kamikaze - we do not do any validation at all, cus they can all die and we don't care
+        || Properties.getKamikazeAirplanes(data)) {
       return result;
     }
     // Find which aircraft cannot find friendly land to land on
@@ -205,8 +204,8 @@ public final class AirMovementValidator {
             .and(Matches.isUnitAllied(player, data))
             .and(Matches.unitIsCarrier());
     final boolean landAirOnNewCarriers =
-        AirThatCantLandUtil.isLhtrCarrierProduction(data)
-            || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
+        Properties.getLhtrCarrierProductionRules(data)
+            || Properties.getLandExistingFightersOnNewCarriers(data);
     final List<Unit> carriersInProductionQueue =
         GameStepPropertiesHelper.getCombinedTurns(data, player).stream()
             .map(GamePlayer::getUnitCollection)
@@ -839,16 +838,8 @@ public final class AirMovementValidator {
     return territory.getUnitCollection().getMatches(Matches.alliedUnit(player, data));
   }
 
-  private static boolean isKamikazeAircraft(final GameData data) {
-    return Properties.getKamikazeAirplanes(data);
-  }
-
   private static boolean areNeutralsPassableByAir(final GameData data) {
-    return Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data);
-  }
-
-  private static boolean isNeutralsImpassable(final GameData data) {
-    return Properties.getNeutralsImpassable(data);
+    return Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data);
   }
 
   private static int getNeutralCharge(final GameData data, final Route route) {

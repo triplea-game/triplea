@@ -193,7 +193,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // Filter out allied units if WW2V2
     final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(attacker);
     final Collection<Unit> attackingUnits =
-        isWW2V2() ? CollectionUtils.getMatches(units, ownedBy) : units;
+        Properties.getWW2V2(gameData) ? CollectionUtils.getMatches(units, ownedBy) : units;
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     this.attackingFrom.add(attackingFrom);
     this.attackingUnits.addAll(attackingUnits);
@@ -827,7 +827,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
     }
     // Check if defending subs can submerge before battle
-    if (isSubRetreatBeforeBattle()) {
+    if (Properties.getSubRetreatBeforeBattle(gameData)) {
       if (defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
           && attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
         steps.add(attacker.getName() + SUBS_SUBMERGE);
@@ -838,7 +838,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
     }
     // See if there any unescorted transports
-    if (battleSite.isWater() && isTransportCasualtiesRestricted()) {
+    if (battleSite.isWater() && Properties.getTransportCasualtiesRestricted(gameData)) {
       if (attackingUnits.stream().anyMatch(Matches.unitIsTransport())
           || defendingUnits.stream().anyMatch(Matches.unitIsTransport())) {
         steps.add(REMOVE_UNESCORTED_TRANSPORTS);
@@ -922,8 +922,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     steps.add(REMOVE_CASUALTIES);
     // retreat attacking subs
     if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
-      if (canSubsSubmerge()) {
-        if (!isSubRetreatBeforeBattle()) {
+      if (Properties.getSubmersibleSubs(gameData)) {
+        if (!Properties.getSubRetreatBeforeBattle(gameData)) {
           steps.add(attacker.getName() + SUBS_SUBMERGE);
         }
       } else {
@@ -949,8 +949,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // retreat defending subs
     if (defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
-      if (canSubsSubmerge()) {
-        if (!isSubRetreatBeforeBattle()) {
+      if (Properties.getSubmersibleSubs(gameData)) {
+        if (!Properties.getSubRetreatBeforeBattle(gameData)) {
           steps.add(defender.getName() + SUBS_SUBMERGE);
         }
       } else {
@@ -988,7 +988,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final ReturnFire returnFireAgainstAttackingSubs;
     if (!attackingSubsSneakAttack) {
       returnFireAgainstAttackingSubs = ReturnFire.ALL;
-    } else if (defendingSubsSneakAttack || isWW2V2()) {
+    } else if (defendingSubsSneakAttack || Properties.getWW2V2(gameData)) {
       returnFireAgainstAttackingSubs = ReturnFire.SUBS;
     } else {
       returnFireAgainstAttackingSubs = ReturnFire.NONE;
@@ -1003,7 +1003,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final ReturnFire returnFireAgainstDefendingSubs;
     if (!defendingSubsSneakAttack) {
       returnFireAgainstDefendingSubs = ReturnFire.ALL;
-    } else if (attackingSubsSneakAttack || isWW2V2()) {
+    } else if (attackingSubsSneakAttack || Properties.getWW2V2(gameData)) {
       returnFireAgainstDefendingSubs = ReturnFire.SUBS;
     } else {
       returnFireAgainstDefendingSubs = ReturnFire.NONE;
@@ -1017,7 +1017,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean defendingSubsSneakAttack() {
-    return isWW2V2() || Properties.getDefendingSubsSneakAttack(gameData);
+    return Properties.getWW2V2(gameData) || Properties.getDefendingSubsSneakAttack(gameData);
   }
 
   private static boolean canAirAttackSubs(
@@ -1031,7 +1031,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return false;
     }
     return defendingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (canAttackerRetreat() || canSubsSubmerge());
+        && (canAttackerRetreat() || Properties.getSubmersibleSubs(gameData));
   }
 
   private boolean canAttackerRetreat() {
@@ -1045,7 +1045,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean onlyDefenselessDefendingTransportsLeft() {
-    return isTransportCasualtiesRestricted()
+    return Properties.getTransportCasualtiesRestricted(gameData)
         && !defendingUnits.isEmpty()
         && defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
@@ -1082,7 +1082,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
-    if (isWW2V2() || isWW2V3()) {
+    if (Properties.getWW2V2(gameData) || Properties.getWW2V3(gameData)) {
       possible =
           CollectionUtils.getMatches(
               possible,
@@ -1110,15 +1110,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean canAttackerRetreatPlanes() {
-    return (isWW2V2()
+    return (Properties.getWW2V2(gameData)
             || Properties.getAttackerRetreatPlanes(gameData)
-            || isPartialAmphibiousRetreat())
+            || Properties.getPartialAmphibiousRetreat(gameData))
         && isAmphibious
         && attackingUnits.stream().anyMatch(Matches.unitIsAir());
   }
 
   private boolean canAttackerRetreatPartialAmphib() {
-    if (isAmphibious && isPartialAmphibiousRetreat()) {
+    if (isAmphibious && Properties.getPartialAmphibiousRetreat(gameData)) {
       // Only include land units when checking for allow amphibious retreat
       final List<Unit> landUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand());
       for (final Unit unit : landUnits) {
@@ -1141,7 +1141,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                         CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
                     .size()
                 != 0
-            || canSubsSubmerge());
+            || Properties.getSubmersibleSubs(gameData));
   }
 
   private Collection<Territory> getEmptyOrFriendlySeaNeighbors(
@@ -1544,7 +1544,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void addFightSteps(final List<IExecutable> steps) {
     // Ask to retreat defending subs before battle
-    if (isSubRetreatBeforeBattle()) {
+    if (Properties.getSubRetreatBeforeBattle(gameData)) {
       steps.add(
           new IExecutable() {
             private static final long serialVersionUID = 6775880082912594489L;
@@ -1569,7 +1569,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           });
     }
     // Remove undefended transports
-    if (isTransportCasualtiesRestricted()) {
+    if (Properties.getTransportCasualtiesRestricted(gameData)) {
       steps.add(
           new IExecutable() {
             private static final long serialVersionUID = 99989L;
@@ -1934,7 +1934,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size()
                 == 0) {
-              if (!isTransportCasualtiesRestricted()) {
+              if (!Properties.getTransportCasualtiesRestricted(gameData)) {
                 endBattle(bridge);
                 defenderWins(bridge);
               } else {
@@ -1961,7 +1961,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             } else if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure())
                     .size()
                 == 0) {
-              if (isTransportCasualtiesRestricted()) {
+              if (Properties.getTransportCasualtiesRestricted(gameData)) {
                 // If there are undefended attacking transports, determine if they automatically die
                 checkUndefendedTransports(bridge, defender);
               }
@@ -2011,7 +2011,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!isOver && canAttackerRetreatSubs() && !isSubRetreatBeforeBattle()) {
+            if (!isOver
+                && canAttackerRetreatSubs()
+                && !Properties.getSubRetreatBeforeBattle(gameData)) {
               attackerRetreatSubs(bridge);
             }
           }
@@ -2056,7 +2058,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver) {
-              if (canDefenderRetreatSubs() && !isSubRetreatBeforeBattle()) {
+              if (canDefenderRetreatSubs() && !Properties.getSubRetreatBeforeBattle(gameData)) {
                 defenderRetreatSubs(bridge);
               }
               // If no defenders left, then battle is over. The reason we test a "second" time here,
@@ -2162,7 +2164,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Collection<Territory> initialAvailableTerritories) {
     final boolean planes = retreatType == RetreatType.PLANES;
     final boolean subs = retreatType == RetreatType.SUBS;
-    final boolean canSubsSubmerge = canSubsSubmerge();
+    final boolean canSubsSubmerge = Properties.getSubmersibleSubs(gameData);
     final boolean canDefendingSubsSubmergeOrRetreat =
         subs && defender && Properties.getSubmarinesDefendingMaySubmergeOrRetreat(gameData);
     final boolean partialAmphib = retreatType == RetreatType.PARTIAL_AMPHIB;
@@ -2398,7 +2400,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     retreating = CollectionUtils.getMatches(retreating, notMyAir);
     final String transcriptText;
     // in WW2V1, defending subs can retreat so show owner
-    if (isWW2V2()) {
+    if (Properties.getWW2V2(gameData)) {
       transcriptText = MyFormatter.unitsToTextNoOwner(retreating) + " retreated to " + to.getName();
     } else {
       transcriptText = MyFormatter.unitsToText(retreating) + " retreated to " + to.getName();
@@ -2651,30 +2653,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             new ArrayList<>(killed));
     attackerLostTuv += tuvLostAttacker;
     defenderLostTuv += tuvLostDefender;
-  }
-
-  private boolean isWW2V2() {
-    return Properties.getWW2V2(gameData);
-  }
-
-  private boolean isWW2V3() {
-    return Properties.getWW2V3(gameData);
-  }
-
-  private boolean isPartialAmphibiousRetreat() {
-    return Properties.getPartialAmphibiousRetreat(gameData);
-  }
-
-  private boolean canSubsSubmerge() {
-    return Properties.getSubmersibleSubs(gameData);
-  }
-
-  private boolean isSubRetreatBeforeBattle() {
-    return Properties.getSubRetreatBeforeBattle(gameData);
-  }
-
-  private boolean isTransportCasualtiesRestricted() {
-    return Properties.getTransportCasualtiesRestricted(gameData);
   }
 
   @Override

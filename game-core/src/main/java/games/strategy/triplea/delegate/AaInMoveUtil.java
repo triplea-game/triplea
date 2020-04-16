@@ -50,14 +50,6 @@ class AaInMoveUtil implements Serializable {
     return bridge.getData();
   }
 
-  private boolean isAlwaysOnAaEnabled() {
-    return Properties.getAlwaysOnAa(getData());
-  }
-
-  private boolean isAaTerritoryRestricted() {
-    return Properties.getAaTerritoryRestricted(getData());
-  }
-
   /** Fire aa guns. Returns units to remove. */
   Collection<Unit> fireAa(
       final Route route,
@@ -226,9 +218,9 @@ class AaInMoveUtil implements Serializable {
 
   Collection<Territory> getTerritoriesWhereAaWillFire(
       final Route route, final Collection<Unit> units) {
-    final boolean alwaysOnAa = isAlwaysOnAaEnabled();
+    final boolean alwaysOnAa = Properties.getAlwaysOnAa(getData());
     // Just the attacked territory will have AA firing
-    if (!alwaysOnAa && isAaTerritoryRestricted()) {
+    if (!alwaysOnAa && Properties.getAaTerritoryRestricted(getData())) {
       return List.of();
     }
     final GameData data = getData();

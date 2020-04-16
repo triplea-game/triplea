@@ -409,7 +409,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
         && gamePlayer.getRepairFrontier().getRules() != null
         && !gamePlayer.getRepairFrontier().getRules().isEmpty()) {
 
-      if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         Predicate<Unit> myDamaged =
             Matches.unitIsOwnedBy(gamePlayer).and(Matches.unitHasTakenSomeBombingUnitDamage());
         if (isOnlyRepairIfDisabled) {
@@ -746,10 +746,6 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
   @Override
   public void confirmOwnCasualties(final UUID battleId, final String message) {
     ui.getBattlePanel().confirmCasualties(battleId, message);
-  }
-
-  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
   @Override

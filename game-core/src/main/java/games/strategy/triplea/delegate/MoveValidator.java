@@ -493,7 +493,8 @@ public class MoveValidator {
     }
     if (units.stream().anyMatch(Matches.unitIsAir())) { // check aircraft
       if (route.hasSteps()
-          && (!Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
+          && (!Properties.getNeutralFlyoverAllowed(data)
+              || Properties.getNeutralsImpassable(data))) {
         if (route.getMiddleSteps().stream().anyMatch(Matches.territoryIsNeutralButNotWater())) {
           return result.setErrorReturnResult("Air units cannot fly over neutral territories");
         }
@@ -550,7 +551,8 @@ public class MoveValidator {
         Matches.territoryIsNeutralButNotWater()
             .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
     final boolean navalMayNotNonComIntoControlled =
-        isWW2V2(data) || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
+        Properties.getWW2V2(data)
+            || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
     // TODO need to account for subs AND transports that are ignored, not just OR
     final Territory end = route.getEnd();
     if (neutralOrEnemy.test(end)) {
@@ -588,7 +590,8 @@ public class MoveValidator {
       // otherwise we can generally fly over anything in noncombat
       if (route.anyMatch(
               Matches.territoryIsNeutralButNotWater().and(Matches.territoryIsWater().negate()))
-          && (!Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
+          && (!Properties.getNeutralFlyoverAllowed(data)
+              || Properties.getNeutralsImpassable(data))) {
         return result.setErrorReturnResult(
             "Air units cannot fly over neutral territories in non combat");
       }
@@ -618,7 +621,7 @@ public class MoveValidator {
     if (getEditMode(data)) {
       return result;
     }
-    if (!isMovementByTerritoryRestricted(data)) {
+    if (!Properties.getMovementByTerritoryRestricted(data)) {
       return result;
     }
     final RulesAttachment ra =
@@ -837,7 +840,7 @@ public class MoveValidator {
     if (canCrossNeutralTerritory(route, player, result).getError() != null) {
       return result;
     }
-    if (isNeutralsImpassable(data)
+    if (Properties.getNeutralsImpassable(data)
         && !isNeutralsBlitzable(data)
         && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
       return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
@@ -970,7 +973,7 @@ public class MoveValidator {
             .or(Matches.unitCanBeMovedThroughByEnemies())
             .or(Matches.enemyUnit(player, data).negate());
     final Predicate<Unit> transportOrSubOnly = transportOnly.or(subOnly);
-    final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
+    final boolean getIgnoreTransportInMovement = Properties.getIgnoreTransportInMovement(data);
     final List<Territory> steps;
     if (ignoreRouteEnd) {
       steps = route.getMiddleSteps();
@@ -1452,7 +1455,7 @@ public class MoveValidator {
       return result;
     }
     final GameData data = player.getData();
-    if (nonCombat && !isAirTransportableCanMoveDuringNonCombat(data)) {
+    if (nonCombat && !Properties.getParatroopersCanMoveDuringNonCombat(data)) {
       return result.setErrorReturnResult("Paratroops may not move during NonCombat");
     }
     if (!getEditMode(data)) {
@@ -1486,12 +1489,12 @@ public class MoveValidator {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         if (Matches.isTerritoryFriendly(player, data).test(routeEnd)
-            && !isAirTransportableCanMoveDuringNonCombat(data)) {
+            && !Properties.getParatroopersCanMoveDuringNonCombat(data)) {
           result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
         }
         if (!nonCombat
             && Matches.isTerritoryFriendly(player, data).test(routeEnd)
-            && isAirTransportableCanMoveDuringNonCombat(data)) {
+            && Properties.getParatroopersCanMoveDuringNonCombat(data)) {
           result.addDisallowedUnit(
               "Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
         }
@@ -1723,7 +1726,8 @@ public class MoveValidator {
     final boolean hasLand = units.stream().anyMatch(Matches.unitIsLand());
     final boolean hasAir = units.stream().anyMatch(Matches.unitIsAir());
     final boolean isNeutralsImpassable =
-        isNeutralsImpassable(data) || (hasAir && !Properties.getNeutralFlyoverAllowed(data));
+        Properties.getNeutralsImpassable(data)
+            || (hasAir && !Properties.getNeutralFlyoverAllowed(data));
     final Predicate<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().negate();
     final Predicate<Territory> noImpassableOrRestrictedOrNeutral =
         PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player, data))
@@ -1859,31 +1863,11 @@ public class MoveValidator {
     return defaultRoute;
   }
 
-  private static boolean isWW2V2(final GameData data) {
-    return Properties.getWW2V2(data);
-  }
-
-  private static boolean isNeutralsImpassable(final GameData data) {
-    return Properties.getNeutralsImpassable(data);
-  }
-
   private static boolean isNeutralsBlitzable(final GameData data) {
-    return Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
-  }
-
-  private static boolean isMovementByTerritoryRestricted(final GameData data) {
-    return Properties.getMovementByTerritoryRestricted(data);
-  }
-
-  private static boolean isAirTransportableCanMoveDuringNonCombat(final GameData data) {
-    return Properties.getParatroopersCanMoveDuringNonCombat(data);
+    return Properties.getNeutralsBlitzable(data) && !Properties.getNeutralsImpassable(data);
   }
 
   private static int getNeutralCharge(final GameData data, final int numberOfTerritories) {
     return numberOfTerritories * Properties.getNeutralCharge(data);
-  }
-
-  private static boolean isIgnoreTransportInMovement(final GameData data) {
-    return Properties.getIgnoreTransportInMovement(data);
   }
 }

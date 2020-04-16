@@ -408,7 +408,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final BattleTracker battleTracker, final IDelegateBridge bridge) {
     final GamePlayer player = bridge.getGamePlayer();
     final GameData data = bridge.getData();
-    final boolean ignoreTransports = isIgnoreTransportInMovement(data);
+    final boolean ignoreTransports = Properties.getIgnoreTransportInMovement(data);
     final Predicate<Unit> seaTransports =
         Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea());
     final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
@@ -1642,10 +1642,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       whereCanLand.addAll(availableWater);
     }
     return whereCanLand;
-  }
-
-  private static boolean isIgnoreTransportInMovement(final GameData data) {
-    return Properties.getIgnoreTransportInMovement(data);
   }
 
   @Override

@@ -253,7 +253,7 @@ public class MovePerformer implements Serializable {
                 }
               }
               // Ignore Trn on Trn forces.
-              if (isIgnoreTransportInMovement(bridge.getData())) {
+              if (Properties.getIgnoreTransportInMovement(bridge.getData())) {
                 final boolean allOwnedTransports =
                     !arrived.isEmpty()
                         && arrived.stream()
@@ -525,9 +525,5 @@ public class MovePerformer implements Serializable {
             route, units, UnitComparator.getLowestToHighestMovementComparator(), currentMove);
     aaInMoveUtil = null;
     return unitsToRemove;
-  }
-
-  private static boolean isIgnoreTransportInMovement(final GameData data) {
-    return Properties.getIgnoreTransportInMovement(data);
   }
 }
