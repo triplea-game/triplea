@@ -410,10 +410,7 @@ public class MovePanel extends AbstractMovePanel {
             final List<Unit> unitsToLoad =
                 TransportUtils.findUnitsToLoadOnAirTransports(
                     capableUnitsToLoad, airTransportsToLoad);
-            final String title = "Load air transports";
-            final String action = "load";
-            loadedUnits =
-                userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
+            loadedUnits = userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad);
             final Map<Unit, Unit> mapping =
                 TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
             for (final Unit unit : mapping.keySet()) {
@@ -1469,9 +1466,8 @@ public class MovePanel extends AbstractMovePanel {
   private List<Unit> userChooseUnits(
       final Set<Unit> defaultSelections,
       final Predicate<Collection<Unit>> unitsToLoadMatch,
-      final List<Unit> unitsToLoad,
-      final String title,
-      final String action) {
+      final List<Unit> unitsToLoad) {
+
     // Allow player to select which to load.
     final UnitChooser chooser =
         new UnitChooser(
@@ -1483,12 +1479,12 @@ public class MovePanel extends AbstractMovePanel {
             false,
             getMap().getUiContext(),
             unitsToLoadMatch);
-    chooser.setTitle(title);
+    chooser.setTitle("Load air transports");
     final int option =
         JOptionPane.showOptionDialog(
             getTopLevelAncestor(),
             chooser,
-            "What units do you want to " + action,
+            "What units do you want to load",
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE,
             null,
