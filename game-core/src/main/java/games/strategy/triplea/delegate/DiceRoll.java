@@ -1,6 +1,8 @@
 package games.strategy.triplea.delegate;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -1133,17 +1135,23 @@ public class DiceRoll implements Externalizable {
    *     otherwise the units will be sorted by their attack strength.
    */
   public static void sortByStrength(final List<Unit> units, final boolean defending) {
+    // Pre-compute unit strength information to speed up the sort.
+    final Table<UnitType, GamePlayer, Integer> strengthTable = HashBasedTable.create();
+    for (final Unit unit : units) {
+      final UnitType type = unit.getType();
+      final GamePlayer owner = unit.getOwner();
+      if (!strengthTable.contains(type, owner)) {
+        if (defending) {
+          strengthTable.put(type, owner, UnitAttachment.get(type).getDefense(owner));
+        } else {
+          strengthTable.put(type, owner, UnitAttachment.get(type).getAttack(owner));
+        }
+      }
+    }
     final Comparator<Unit> comp =
         (u1, u2) -> {
-          final int v1;
-          final int v2;
-          if (defending) {
-            v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
-            v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());
-          } else {
-            v1 = UnitAttachment.get(u1.getType()).getAttack(u1.getOwner());
-            v2 = UnitAttachment.get(u2.getType()).getAttack(u2.getOwner());
-          }
+          final int v1 = strengthTable.get(u1.getType(), u1.getOwner());
+          final int v2 = strengthTable.get(u2.getType(), u2.getOwner());
           return Integer.compare(v1, v2);
         };
     units.sort(comp);
