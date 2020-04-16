@@ -38,7 +38,9 @@ public enum TestMapGameData {
 
   GAME_EXAMPLE("GameExample.xml"),
 
-  TWW("Total_World_War_Dec1941.xml");
+  TWW("Total_World_War_Dec1941.xml"),
+
+  MINIMAP("minimap.xml");
 
   private final String fileName;
 

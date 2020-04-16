@@ -1,14 +1,13 @@
 package games.strategy.triplea.ai.pro.util;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.util.BreadthFirstSearch;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.triplea.java.ObjectUtils;
+import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI battle utilities. */
@@ -177,19 +176,28 @@ public final class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
-  private static int findMaxLandMassSize(final GamePlayer player) {
-    int maxLandMassSize = 1;
+  protected static int findMaxLandMassSize(final GamePlayer player) {
     final GameData data = player.getData();
+    final Predicate<Territory> cond = ProMatches.territoryCanPotentiallyMoveLandUnits(player, data);
+
+    final var visited = new HashSet<Territory>();
+
+    int maxLandMassSize = 1;
     for (final Territory t : data.getMap().getTerritories()) {
-      if (!t.isWater()) {
-        final int landMassSize =
-            1
-                + data.getMap()
-                    .getNeighbors(
-                        t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data))
-                    .size();
-        if (landMassSize > maxLandMassSize) {
-          maxLandMassSize = landMassSize;
+      if (!t.isWater() && !visited.contains(t)) {
+        visited.add(t);
+        final int[] landMassSize = new int[1];
+        new BreadthFirstSearch(t, cond)
+            .traverse(
+                new BreadthFirstSearch.Visitor() {
+                  @Override
+                  public void visit(final Territory territory) {
+                    visited.add(territory);
+                    landMassSize[0]++;
+                  }
+                });
+        if (landMassSize[0] > maxLandMassSize) {
+          maxLandMassSize = landMassSize[0];
         }
       }
     }
@@ -448,39 +456,22 @@ public final class ProTerritoryValueUtils {
    */
   protected static Collection<Territory> findNearbyEnemyCapitalsAndFactories(
       final Territory startTerritory, final Set<Territory> enemyCapitalsAndFactories) {
-    final GameMap map = startTerritory.getData().getMap();
-    // Use breadth first search to traverse territories, keeping track of which have already been
-    // visited and which territories from the target list have  been found.
     final var found = new HashSet<Territory>();
-    final var visited = new HashSet<Territory>(List.of(startTerritory));
-    final var territoriesToCheck = new ArrayDeque<Territory>(List.of(startTerritory));
+    new BreadthFirstSearch(startTerritory)
+        .traverse(
+            new BreadthFirstSearch.Visitor() {
+              @Override
+              public void visit(final Territory territory) {
+                if (enemyCapitalsAndFactories.contains(territory)) {
+                  found.add(territory);
+                }
+              }
 
-    // Since we process territories in order of distance, we can keep track of the last territory
-    // at the current distance that's in the territoriesToCheck queue. When we encounter it, we
-    // increment the distance and update lastTerritoryAtCurrentDistance.
-    int distance = 0;
-    Territory lastTerritoryAtCurrentDistance = startTerritory;
-    while (!territoriesToCheck.isEmpty()) {
-      final Territory node = territoriesToCheck.removeFirst();
-      for (final Territory neighbor : map.getNeighbors(node)) {
-        if (visited.add(neighbor)) {
-          territoriesToCheck.add(neighbor);
-          if (enemyCapitalsAndFactories.contains(neighbor)) {
-            found.add(neighbor);
-          }
-        }
-      }
-
-      // If we just processed the last territory at the current distance, increment the distance
-      // and set the territory at which we need to update it again to be the last one added.
-      if (ObjectUtils.referenceEquals(node, lastTerritoryAtCurrentDistance)) {
-        distance++;
-        if (distance >= MIN_FACTORY_CHECK_DISTANCE && !found.isEmpty()) {
-          break;
-        }
-        lastTerritoryAtCurrentDistance = territoriesToCheck.peekLast();
-      }
-    }
+              @Override
+              public boolean shouldContinueSearch(final int distanceSearched) {
+                return distanceSearched < MIN_FACTORY_CHECK_DISTANCE || found.isEmpty();
+              }
+            });
     return found;
   }
 }
