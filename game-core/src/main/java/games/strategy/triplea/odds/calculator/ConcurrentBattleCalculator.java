@@ -92,6 +92,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
                                     final Collection<Unit> bombarding,
                                     final Collection<TerritoryEffect> territoryEffects,
                                     final int runCount) throws IllegalStateException {
+    final long start = System.currentTimeMillis();
     final List<Future<AggregateResults>> results = new ArrayList<>();
     int remainingRuns = runCount;
     final int runsPerWorker = runCount / MAX_THREADS;
@@ -118,15 +119,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     final AggregateResults result = new AggregateResults(runsPerWorker);
     for (Future<AggregateResults> future : results) {
       try {
-        final AggregateResults currentResult = future.get();
-        result.addResults(currentResult.getResults());
-        result.setTime(result.getTime() + currentResult.getTime());
+        result.addResults(future.get().getResults());
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (ExecutionException e) {
         throw new IllegalStateException("Exception from worker", e);
       }
     }
+    result.setTime(System.currentTimeMillis() - start);
     return result;
   }
 
