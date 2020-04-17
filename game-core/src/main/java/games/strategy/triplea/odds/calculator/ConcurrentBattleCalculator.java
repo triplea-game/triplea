@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,6 +33,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
 
   private final ExecutorService executor;
+  private final Set<BattleCalculator> calculators = ConcurrentHashMap.newKeySet(MAX_THREADS);
   // do not let calc start until it is set
   private volatile boolean isDataSet = false;
   // shortcut everything if we are shutting down
@@ -99,21 +102,24 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     while (remainingRuns > 0) {
       final int individualRemaining = Math.min(remainingRuns, runsPerWorker);
       remainingRuns -= runsPerWorker;
+      BattleCalculator calculator = new BattleCalculator();
+      calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
+      calculator.setAmphibious(amphibious);
+      calculator.setRetreatAfterRound(retreatAfterRound);
+      calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
+      calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
+      calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
+      calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
+      calculators.add(calculator);
       results.add(executor.submit(() -> {
-        BattleCalculator calculator = new BattleCalculator();
-        calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
-        calculator.setAmphibious(amphibious);
-        calculator.setRetreatAfterRound(retreatAfterRound);
-        calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
-        calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
-        calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
-        calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
         try {
           calculator.setGameData(IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
+          return calculator.calculate(attacker, defender, location, attacking, defending, bombarding, territoryEffects, individualRemaining);
         } catch (final IOException e) {
           throw new RuntimeException("Failed to deserialize", e);
+        } finally {
+          calculators.remove(calculator);
         }
-        return calculator.calculate(attacker, defender, location, attacking, defending, bombarding, territoryEffects, individualRemaining);
       }));
     }
     final AggregateResults result = new AggregateResults(runsPerWorker);
@@ -172,5 +178,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
 
   // not on purpose, we need to be able to cancel at any time
   @Override
-  public void cancel() {}
+  public void cancel() {
+    calculators.forEach(BattleCalculator::cancel);
+  }
 }
