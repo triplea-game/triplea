@@ -156,6 +156,7 @@ class BattleCalculator implements IBattleCalculator {
       battle.fight(bridge);
       aggregateResults.addResult(new BattleResults(battle, gameData));
       // restore the game to its original state
+      gameData.performChange(allChanges.invert());
       battleTracker.clear();
       battleTracker.clearBattleRecords();
     }
