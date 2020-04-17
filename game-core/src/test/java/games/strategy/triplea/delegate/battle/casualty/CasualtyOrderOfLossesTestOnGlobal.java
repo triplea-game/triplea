@@ -175,7 +175,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
     assertThat(result, hasSize(6));
-    assertThat(result.get(0).getType(), is(MARINE)); // 4
+    assertThat(result.get(0).getType(), is(MARINE));
     assertThat(result.get(1).getType(), is(MARINE));
     assertThat(result.get(2).getType(), is(MARINE));
     assertThat(result.get(3).getType(), is(ARTILLERY));
