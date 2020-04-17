@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle;
+package games.strategy.triplea.delegate.battle.casualty;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
@@ -83,7 +83,7 @@ class CasualtySelectorTest {
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     whenGetRandom(bridge).thenAnswer(withValues(0));
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -114,7 +114,7 @@ class CasualtySelectorTest {
     whenGetRandom(bridge).thenAnswer(withValues(0));
     TripleAUnit.get(planes.get(0)).setAlreadyMoved(BigDecimal.ONE);
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -125,7 +125,7 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                null,
+                List.of(),
                 false,
                 null)
             .getKilled();
@@ -158,7 +158,7 @@ class CasualtySelectorTest {
             territory("Germany", data),
             true);
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -169,7 +169,7 @@ class CasualtySelectorTest {
                 null,
                 null,
                 territory("Germany", data),
-                null,
+                List.of(),
                 false,
                 null)
             .getKilled();
@@ -208,7 +208,7 @@ class CasualtySelectorTest {
             true);
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -258,7 +258,7 @@ class CasualtySelectorTest {
             territory("Germany", data),
             true);
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -269,7 +269,7 @@ class CasualtySelectorTest {
                 british(data),
                 null,
                 territory("Germany", data),
-                null,
+                List.of(),
                 false,
                 null)
             .getKilled();
@@ -308,7 +308,7 @@ class CasualtySelectorTest {
             territory("Germany", data),
             true);
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -319,7 +319,7 @@ class CasualtySelectorTest {
                 british(data),
                 null,
                 territory("Germany", data),
-                null,
+                List.of(),
                 false,
                 null)
             .getKilled();
@@ -360,7 +360,7 @@ class CasualtySelectorTest {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -416,7 +416,7 @@ class CasualtySelectorTest {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -467,7 +467,7 @@ class CasualtySelectorTest {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,

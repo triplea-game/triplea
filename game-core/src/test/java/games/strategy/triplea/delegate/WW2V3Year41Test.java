@@ -77,10 +77,10 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
-import games.strategy.triplea.delegate.battle.CasualtySelector;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
@@ -181,7 +181,7 @@ class WW2V3Year41Test {
             territory("Germany", gameData),
             true);
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -238,7 +238,7 @@ class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,
@@ -298,7 +298,7 @@ class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
                 false,
                 planes,
                 planes,

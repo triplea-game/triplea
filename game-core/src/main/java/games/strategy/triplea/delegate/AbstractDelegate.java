@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.battle.CasualtySelector;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import java.io.Serializable;
 
 /**

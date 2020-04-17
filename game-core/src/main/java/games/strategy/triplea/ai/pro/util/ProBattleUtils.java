@@ -14,8 +14,8 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.battle.CasualtySelector;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,8 +82,7 @@ public final class ProBattleUtils {
             data);
     final List<Unit> defendersWithHitPoints =
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
-    final int totalDefenderHitPoints =
-        CasualtySelector.getTotalHitpointsLeft(defendersWithHitPoints);
+    final int totalDefenderHitPoints = CasualtyUtil.getTotalHitpointsLeft(defendersWithHitPoints);
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
   }
 
@@ -136,7 +135,7 @@ public final class ProBattleUtils {
           CollectionUtils.getMatches(
               unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
     }
-    final int myHitPoints = CasualtySelector.getTotalHitpointsLeft(unitsThatCanFight);
+    final int myHitPoints = CasualtyUtil.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(proData, t, myUnits, enemyUnits, attacking);
     return (2.0 * myHitPoints) + myPower;
   }

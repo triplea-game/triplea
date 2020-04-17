@@ -13,6 +13,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
+import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -187,7 +188,7 @@ public class FireAa implements IExecutable {
                 + BattleStepStrings.SELECT_PREFIX
                 + currentTypeAa
                 + BattleStepStrings.CASUALTIES_SUFFIX);
-    return CasualtySelector.getAaCasualties(
+    return AaCasualtySelector.getAaCasualties(
         !defending,
         validAttackingUnitsForThisRoll,
         attackableUnits,

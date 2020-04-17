@@ -28,6 +28,9 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -194,7 +197,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       endBeforeRolling(bridge);
       return;
     }
-    CasualtySelector.sortPreBattle(attackingUnits);
+    CasualtySortingUtil.sortPreBattle(attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property
     // isAAforBombingThisUnitOnly
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
@@ -603,7 +606,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           allowMultipleHitsPerUnit);
     }
     final CasualtyDetails casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
             false,
             validAttackingUnitsForThisRoll,
             attackingUnits,

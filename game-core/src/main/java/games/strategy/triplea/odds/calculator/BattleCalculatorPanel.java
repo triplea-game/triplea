@@ -13,8 +13,8 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
-import games.strategy.triplea.delegate.battle.CasualtySelector;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
@@ -1422,8 +1422,8 @@ class BattleCalculatorPanel extends JPanel {
           "TUV: "
               + TuvUtils.getTuv(
                   defenders, getDefender(), TuvUtils.getCostsForTuv(getDefender(), data), data));
-      final int attackHitPoints = CasualtySelector.getTotalHitpointsLeft(attackers);
-      final int defenseHitPoints = CasualtySelector.getTotalHitpointsLeft(defenders);
+      final int attackHitPoints = CasualtyUtil.getTotalHitpointsLeft(attackers);
+      final int defenseHitPoints = CasualtyUtil.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
