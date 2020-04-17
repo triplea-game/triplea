@@ -12,7 +12,7 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.delegate.battle.CasualtySelector;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

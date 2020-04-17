@@ -25,6 +25,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;

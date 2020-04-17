@@ -19,6 +19,8 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -120,8 +122,8 @@ public class AirBattle extends AbstractBattle {
     }
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Air Battle in " + battleSite, battleSite);
-    CasualtySelector.sortPreBattle(attackingUnits);
-    CasualtySelector.sortPreBattle(defendingUnits);
+    CasualtySortingUtil.sortPreBattle(attackingUnits);
+    CasualtySortingUtil.sortPreBattle(defendingUnits);
     steps = determineStepStrings(true);
     showBattle(bridge);
     pushFightLoopOnStack(true);

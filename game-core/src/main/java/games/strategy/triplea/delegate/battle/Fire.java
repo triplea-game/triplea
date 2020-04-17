@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;

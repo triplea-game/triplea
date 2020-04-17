@@ -25,6 +25,7 @@ import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -635,11 +636,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!headless) {
       // take the casualties with least movement first
       if (isAmphibious()) {
-        CasualtySelector.sortAmphib(attackingUnits, amphibiousLandAttackers);
+        CasualtySortingUtil.sortAmphib(attackingUnits, amphibiousLandAttackers);
       } else {
-        CasualtySelector.sortPreBattle(attackingUnits);
+        CasualtySortingUtil.sortPreBattle(attackingUnits);
       }
-      CasualtySelector.sortPreBattle(defendingUnits);
+      CasualtySortingUtil.sortPreBattle(defendingUnits);
       SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
     }
     // push on stack in opposite order of execution

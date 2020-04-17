@@ -12,8 +12,8 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.battle.CasualtySelector;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -225,7 +225,7 @@ public class BattleDisplay extends JPanel {
     final Map<Unit, Collection<Unit>> dependentsMap;
     gameData.acquireReadLock();
     try {
-      dependentsMap = CasualtySelector.getDependents(killedUnits);
+      dependentsMap = CasualtyUtil.getDependents(killedUnits);
     } finally {
       gameData.releaseReadLock();
     }

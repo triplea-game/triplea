@@ -13,7 +13,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleTracker;
-import games.strategy.triplea.delegate.battle.CasualtySelector;
+import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -324,7 +324,7 @@ class AaInMoveUtil implements Serializable {
       final Territory territory,
       final String currentTypeAa) {
     final CasualtyDetails casualties =
-        CasualtySelector.getAaCasualties(
+        AaCasualtySelector.getAaCasualties(
             false,
             validTargetedUnitsForThisRoll,
             allFriendlyUnits,
