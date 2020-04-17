@@ -576,6 +576,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   @Override
   public void fight(final IDelegateBridge bridge) {
     removeUnitsThatNoLongerExist();
+    removeDisabledUnits();
     if (stack.isExecuting()) {
       final IDisplay display = bridge.getDisplayChannelBroadcaster();
       display.showBattle(
@@ -649,6 +650,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private String getBattleTitle() {
     return attacker.getName() + " attack " + defender.getName() + " in " + battleSite.getName();
+  }
+
+  private void removeDisabledUnits() {
+    defendingUnits = CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotDisabled());
+    attackingUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotDisabled());
   }
 
   private void removeAirNoLongerInTerritory() {
@@ -1488,8 +1494,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                     (removeForNextRound ? round + 1 : round),
                     false)
                 .negate()));
-    // remove any disabled units from combat
-    unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitIsDisabled()));
     // remove capturableOnEntering units (veqryn)
     unitList.removeAll(
         CollectionUtils.getMatches(
