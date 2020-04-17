@@ -1253,7 +1253,7 @@ class BattleCalculatorPanel extends JPanel {
                 defenders.set(defending);
                 attackers.set(attacking);
                 results.set(
-                    calculator.setCalculateDataAndCalculate(
+                    calculator.calculate(
                         getAttacker(),
                         getDefender(),
                         location,

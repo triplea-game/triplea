@@ -229,7 +229,7 @@ public class ProOddsCalculator {
       calc.setRetreatWhenOnlyAirLeft(true);
     }
     final AggregateResults results =
-        calc.setCalculateDataAndCalculate(
+        calc.calculate(
             attacker,
             defender,
             t,

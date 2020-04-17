@@ -31,9 +31,10 @@ class BattleCalculatorTest {
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(100, russians);
     final List<Unit> bombardingUnits = List.of();
-    final IBattleCalculator calculator = new BattleCalculator(gameData);
+    final IBattleCalculator calculator = new BattleCalculator();
+    calculator.setGameData(gameData);
     final AggregateResults results =
-        calculator.setCalculateDataAndCalculate(
+        calculator.calculate(
             russians,
             germans,
             germany,
@@ -60,10 +61,11 @@ class BattleCalculatorTest {
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(1, germans, false);
     attackingUnits.addAll(GameDataTestUtil.bomber(gameData).create(1, germans, false));
     final List<Unit> bombardingUnits = List.of();
-    final IBattleCalculator calculator = new BattleCalculator(gameData);
+    final IBattleCalculator calculator = new BattleCalculator();
+    calculator.setGameData(gameData);
     calculator.setKeepOneAttackingLandUnit(true);
     final AggregateResults results =
-        calculator.setCalculateDataAndCalculate(
+        calculator.calculate(
             germans,
             british,
             eastCanada,
@@ -82,10 +84,11 @@ class BattleCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = transport(gameData).create(2, americans(gameData));
     final List<Unit> defending = submarine(gameData).create(2, germans(gameData));
-    final IBattleCalculator calculator = new BattleCalculator(gameData);
+    final IBattleCalculator calculator = new BattleCalculator();
+    calculator.setGameData(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
-        calculator.setCalculateDataAndCalculate(
+        calculator.calculate(
             americans(gameData),
             germans(gameData),
             sz1,
@@ -106,10 +109,11 @@ class BattleCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = submarine(gameData).create(2, americans(gameData));
     final List<Unit> defending = transport(gameData).create(2, germans(gameData));
-    final IBattleCalculator calculator = new BattleCalculator(gameData);
+    final IBattleCalculator calculator = new BattleCalculator();
+    calculator.setGameData(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
-        calculator.setCalculateDataAndCalculate(
+        calculator.calculate(
             americans(gameData),
             germans(gameData),
             sz1,

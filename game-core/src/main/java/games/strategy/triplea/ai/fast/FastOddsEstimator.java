@@ -17,9 +17,6 @@ import java.util.List;
 class FastOddsEstimator implements IBattleCalculator {
 
   private final ProData proData;
-  private Territory location = null;
-  private Collection<Unit> attackingUnits = new ArrayList<>();
-  private Collection<Unit> defendingUnits = new ArrayList<>();
 
   FastOddsEstimator(final ProData proData) {
     this.proData = proData;
@@ -29,22 +26,15 @@ class FastOddsEstimator implements IBattleCalculator {
   public void setGameData(final GameData data) {}
 
   @Override
-  public void setCalculateData(
-      final GamePlayer attacker,
-      final GamePlayer defender,
-      final Territory location,
-      final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final Collection<Unit> bombardingUnits,
-      final Collection<TerritoryEffect> territoryEffects,
-      final int runCount) {
-    this.location = location;
-    this.attackingUnits = attackingUnits;
-    this.defendingUnits = defendingUnits;
-  }
-
-  @Override
-  public AggregateResults calculate() {
+  public AggregateResults calculate(
+          final GamePlayer attacker,
+          final GamePlayer defender,
+          final Territory location,
+          final Collection<Unit> attackingUnits,
+          final Collection<Unit> defendingUnits,
+          final Collection<Unit> bombardingUnits,
+          final Collection<TerritoryEffect> territoryEffects,
+          final int runCount) {
     final double winPercentage =
         ProBattleUtils.estimateStrengthDifference(
             proData, location, new ArrayList<>(attackingUnits), new ArrayList<>(defendingUnits));
@@ -66,26 +56,6 @@ class FastOddsEstimator implements IBattleCalculator {
     final int battleRoundsFought = 3;
     return new AggregateEstimate(
         battleRoundsFought, winPercentage / 100, remainingAttackingUnits, remainingDefendingUnits);
-  }
-
-  @Override
-  public AggregateResults setCalculateDataAndCalculate(
-      final GamePlayer attacker,
-      final GamePlayer defender,
-      final Territory location,
-      final Collection<Unit> attacking,
-      final Collection<Unit> defending,
-      final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects,
-      final int runCount) {
-    setCalculateData(
-        attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
-    return calculate();
-  }
-
-  @Override
-  public int getRunCount() {
-    return 1;
   }
 
   @Override
