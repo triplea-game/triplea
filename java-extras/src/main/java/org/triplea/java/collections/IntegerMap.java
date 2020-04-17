@@ -30,6 +30,10 @@ public final class IntegerMap<T> implements Serializable {
     this(integerMap.mapValues);
   }
 
+  public static <X> IntegerMap<X> of(final Map<X, Integer> map) {
+    return new IntegerMap<>(map);
+  }
+
   public int size() {
     return mapValues.size();
   }
