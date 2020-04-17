@@ -4,12 +4,12 @@ version: "2"
 # https://docs.codeclimate.com/docs/maintainability#section-checks
 # https://docs.codeclimate.com/docs/advanced-configuration
 checks:
-  - method-complexity: 
-      config:
-        threshold: 7
-  - method-lines:
-      config:
-        threshold: 30
+  method-complexity: 
+    config:
+      threshold: 7
+  method-lines:
+    config:
+      threshold: 30
 plugins:
   # https://docs.codeclimate.com/docs/git-legal
   git-legal:
