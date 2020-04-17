@@ -14,14 +14,15 @@ import java.util.Collection;
 public interface IBattleCalculator {
   void setGameData(GameData data);
 
-  AggregateResults calculate(GamePlayer attacker,
-                             GamePlayer defender,
-                             Territory location,
-                             Collection<Unit> attacking,
-                             Collection<Unit> defending,
-                             Collection<Unit> bombarding,
-                             Collection<TerritoryEffect> territoryEffects,
-                             int runCount);
+  AggregateResults calculate(
+      GamePlayer attacker,
+      GamePlayer defender,
+      Territory location,
+      Collection<Unit> attacking,
+      Collection<Unit> defending,
+      Collection<Unit> bombarding,
+      Collection<TerritoryEffect> territoryEffects,
+      int runCount);
 
   void setKeepOneAttackingLandUnit(boolean bool);
 

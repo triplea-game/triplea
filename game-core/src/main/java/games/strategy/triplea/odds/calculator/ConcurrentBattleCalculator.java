@@ -9,7 +9,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,14 +86,16 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
    * results. Then waits for all the future results and combines them together.
    */
   @Override
-  public AggregateResults calculate(final GamePlayer attacker,
-                                    final GamePlayer defender,
-                                    final Territory location,
-                                    final Collection<Unit> attacking,
-                                    final Collection<Unit> defending,
-                                    final Collection<Unit> bombarding,
-                                    final Collection<TerritoryEffect> territoryEffects,
-                                    final int runCount) throws IllegalStateException {
+  public AggregateResults calculate(
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runCount)
+      throws IllegalStateException {
     final long start = System.currentTimeMillis();
     final List<Future<AggregateResults>> results = new ArrayList<>();
     int remainingRuns = runCount;
@@ -111,16 +112,26 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
       calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
       calculators.add(calculator);
-      results.add(executor.submit(() -> {
-        try {
-          calculator.setGameData(IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
-          return calculator.calculate(attacker, defender, location, attacking, defending, bombarding, territoryEffects, individualRemaining);
-        } catch (final IOException e) {
-          throw new RuntimeException("Failed to deserialize", e);
-        } finally {
-          calculators.remove(calculator);
-        }
-      }));
+      results.add(
+          executor.submit(
+              () -> {
+                try {
+                  calculator.setGameData(IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
+                  return calculator.calculate(
+                      attacker,
+                      defender,
+                      location,
+                      attacking,
+                      defending,
+                      bombarding,
+                      territoryEffects,
+                      individualRemaining);
+                } catch (final IOException e) {
+                  throw new RuntimeException("Failed to deserialize", e);
+                } finally {
+                  calculators.remove(calculator);
+                }
+              }));
     }
     final AggregateResults result = new AggregateResults(runsPerWorker);
     for (Future<AggregateResults> future : results) {

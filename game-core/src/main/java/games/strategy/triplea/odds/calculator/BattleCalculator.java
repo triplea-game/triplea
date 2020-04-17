@@ -95,16 +95,16 @@ class BattleCalculator implements IBattleCalculator {
 
   @Override
   public AggregateResults calculate(
-          final GamePlayer attacker,
-          final GamePlayer defender,
-          final Territory location,
-          final Collection<Unit> attacking,
-          final Collection<Unit> defending,
-          final Collection<Unit> bombarding,
-          final Collection<TerritoryEffect> territoryEffects,
-          final int runCount) {
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runCount) {
     setCalculateData(
-            attacker, defender, location, attacking, defending, bombarding, territoryEffects);
+        attacker, defender, location, attacking, defending, bombarding, territoryEffects);
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }
@@ -116,12 +116,10 @@ class BattleCalculator implements IBattleCalculator {
     final long start = System.currentTimeMillis();
     final AggregateResults aggregateResults = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
-    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at
-    // the same time (like if
-    // the AI and a human are both using the calc)
+    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calculated
+    // at the same time (like if the AI and a human are both using the calc)
     // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference
-    // then convert it to a
-    // per-thread, per-calc caching
+    // then convert it to a per-thread, per-calc caching
     final List<Unit> attackerOrderOfLosses =
         OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
             this.attackerOrderOfLosses, attackingUnits, gameData);

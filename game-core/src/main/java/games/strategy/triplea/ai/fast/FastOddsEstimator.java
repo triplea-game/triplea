@@ -27,14 +27,14 @@ class FastOddsEstimator implements IBattleCalculator {
 
   @Override
   public AggregateResults calculate(
-          final GamePlayer attacker,
-          final GamePlayer defender,
-          final Territory location,
-          final Collection<Unit> attackingUnits,
-          final Collection<Unit> defendingUnits,
-          final Collection<Unit> bombardingUnits,
-          final Collection<TerritoryEffect> territoryEffects,
-          final int runCount) {
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runCount) {
     final double winPercentage =
         ProBattleUtils.estimateStrengthDifference(
             proData, location, new ArrayList<>(attackingUnits), new ArrayList<>(defendingUnits));
