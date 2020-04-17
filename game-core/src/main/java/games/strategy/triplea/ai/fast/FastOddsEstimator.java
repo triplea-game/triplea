@@ -59,11 +59,6 @@ class FastOddsEstimator implements IBattleCalculator {
   }
 
   @Override
-  public boolean getIsReady() {
-    return true;
-  }
-
-  @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {}
 
   @Override

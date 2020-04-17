@@ -137,11 +137,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   @Override
-  public boolean getIsReady() {
-    return isDataSet && !isShutDown;
-  }
-
-  @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {
     keepOneAttackingLandUnit = bool;
   }

@@ -23,8 +23,6 @@ public interface IBattleCalculator {
                              Collection<TerritoryEffect> territoryEffects,
                              int runCount);
 
-  boolean getIsReady();
-
   void setKeepOneAttackingLandUnit(boolean bool);
 
   void setAmphibious(boolean bool);

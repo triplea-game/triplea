@@ -166,7 +166,6 @@ class BattleCalculator implements IBattleCalculator {
     return aggregateResults;
   }
 
-  @Override
   public boolean getIsReady() {
     return isDataSet && isCalcSet;
   }
