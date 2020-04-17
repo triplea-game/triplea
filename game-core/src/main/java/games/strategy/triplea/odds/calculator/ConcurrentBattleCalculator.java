@@ -96,6 +96,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     int remainingRuns = runCount;
     final int runsPerWorker = runCount / MAX_THREADS;
     while (remainingRuns > 0) {
+      final int individualRemaining = Math.min(remainingRuns, runsPerWorker);
       remainingRuns -= runsPerWorker;
       results.add(executor.submit(() -> {
         BattleCalculator calculator = new BattleCalculator();
@@ -111,7 +112,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         } catch (final IOException e) {
           throw new RuntimeException("Failed to deserialize", e);
         }
-        return calculator.calculate(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runsPerWorker);
+        return calculator.calculate(attacker, defender, location, attacking, defending, bombarding, territoryEffects, individualRemaining);
       }));
     }
     final AggregateResults result = new AggregateResults(runsPerWorker);
