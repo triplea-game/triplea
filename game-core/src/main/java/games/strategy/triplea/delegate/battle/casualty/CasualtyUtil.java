@@ -6,7 +6,9 @@ import games.strategy.triplea.delegate.TransportTracker;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class CasualtyUtil {
   /** Find total remaining hit points of units. */
   public static int getTotalHitpointsLeft(final Collection<Unit> units) {

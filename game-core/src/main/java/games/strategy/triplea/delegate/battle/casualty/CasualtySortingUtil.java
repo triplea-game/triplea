@@ -6,7 +6,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.UnitComparator;
 import java.util.Comparator;
 import java.util.List;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class CasualtySortingUtil {
   /**
    * In an amphibious assault, sort on who is unloading from transports first as this will allow the

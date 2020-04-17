@@ -22,9 +22,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.experimental.UtilityClass;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
 
+@UtilityClass
 public class AaCasualtySelector {
   /** Choose plane casualties according to specified rules. */
   public static CasualtyDetails getAaCasualties(

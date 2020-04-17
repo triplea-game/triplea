@@ -21,9 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Value;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
+@UtilityClass
 class CasualtyOrderOfLosses {
   private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 

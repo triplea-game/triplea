@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -39,9 +40,8 @@ import org.triplea.util.Tuple;
  * all over the place.
  */
 @Log
+@UtilityClass
 public class CasualtySelector {
-
-  private CasualtySelector() {}
 
   public static void clearOolCache() {
     CasualtyOrderOfLosses.clearOolCache();
