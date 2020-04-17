@@ -49,8 +49,7 @@ class CasualtyOrderOfLosses {
       final Territory battlesite,
       final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects,
-      final GameData data,
-      final boolean bonus) {
+      final GameData data) {
 
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();
@@ -105,11 +104,11 @@ class CasualtyOrderOfLosses {
     // Sort enough units to kill off
     final List<Unit> sortedUnitsList = new ArrayList<>(targetsToPickFrom);
     sortedUnitsList.sort(
-        new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false)
+        new UnitBattleComparator(defending, costs, territoryEffects, data, true, false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
-        new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
+        new UnitBattleComparator(defending, costs, territoryEffects, data, true, true);
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =

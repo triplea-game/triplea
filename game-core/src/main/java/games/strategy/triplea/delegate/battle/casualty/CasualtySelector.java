@@ -331,8 +331,7 @@ public class CasualtySelector {
             battlesite,
             costs,
             territoryEffects,
-            data,
-            true);
+            data);
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
     if (allowMultipleHitsPerUnit) {
