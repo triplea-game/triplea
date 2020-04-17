@@ -40,7 +40,10 @@ public enum TestMapGameData {
 
   TWW("Total_World_War_Dec1941.xml"),
 
-  MINIMAP("minimap.xml");
+  MINIMAP("minimap.xml"),
+
+  NAPOLEONIC_EMPIRES("Napoleonic_Empires.xml"),
+  ;
 
   private final String fileName;
 
