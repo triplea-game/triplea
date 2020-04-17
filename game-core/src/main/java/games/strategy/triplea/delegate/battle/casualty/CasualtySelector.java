@@ -328,7 +328,8 @@ public class CasualtySelector {
                 .player(player)
                 .enemyUnits(enemyUnits)
                 .amphibious(amphibious)
-                .amphibiousLandAttackers(amphibiousLandAttackers)
+                .amphibiousLandAttackers(
+                    amphibiousLandAttackers == null ? List.of() : amphibiousLandAttackers)
                 .battlesite(battlesite)
                 .costs(costs)
                 .territoryEffects(territoryEffects)

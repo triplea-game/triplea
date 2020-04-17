@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
@@ -33,16 +34,16 @@ class CasualtyOrderOfLosses {
   @Builder
   @Value
   static class Parameters {
-    final Collection<Unit> targetsToPickFrom;
-    final boolean defending;
-    final GamePlayer player;
-    final Collection<Unit> enemyUnits;
-    final boolean amphibious;
-    final Collection<Unit> amphibiousLandAttackers;
-    final Territory battlesite;
-    final IntegerMap<UnitType> costs;
-    final Collection<TerritoryEffect> territoryEffects;
-    final GameData data;
+    @Nonnull final Collection<Unit> targetsToPickFrom;
+    @Nonnull final Boolean defending;
+    @Nonnull final GamePlayer player;
+    @Nonnull final Collection<Unit> enemyUnits;
+    @Nonnull final Boolean amphibious;
+    @Nonnull final Collection<Unit> amphibiousLandAttackers;
+    @Nonnull final Territory battlesite;
+    @Nonnull final IntegerMap<UnitType> costs;
+    @Nonnull final Collection<TerritoryEffect> territoryEffects;
+    @Nonnull final GameData data;
   }
 
   /**
@@ -63,10 +64,8 @@ class CasualtyOrderOfLosses {
       targetTypes.add(u.getType());
     }
     final List<UnitType> amphibTypes = new ArrayList<>();
-    if (parameters.amphibiousLandAttackers != null) {
-      for (final Unit u : parameters.amphibiousLandAttackers) {
-        amphibTypes.add(u.getType());
-      }
+    for (final Unit u : parameters.amphibiousLandAttackers) {
+      amphibTypes.add(u.getType());
     }
     // Calculate hashes and cache key
     int targetsHashCode = 1;
