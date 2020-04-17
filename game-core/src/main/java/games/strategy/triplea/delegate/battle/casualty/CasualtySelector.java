@@ -322,16 +322,18 @@ public class CasualtySelector {
     final List<Unit> sorted;
     sorted =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
-            targetsToPickFrom,
-            defending,
-            player,
-            enemyUnits,
-            amphibious,
-            amphibiousLandAttackers,
-            battlesite,
-            costs,
-            territoryEffects,
-            data);
+            CasualtyOrderOfLosses.Parameters.builder()
+                .targetsToPickFrom(targetsToPickFrom)
+                .defending(defending)
+                .player(player)
+                .enemyUnits(enemyUnits)
+                .amphibious(amphibious)
+                .amphibiousLandAttackers(amphibiousLandAttackers)
+                .battlesite(battlesite)
+                .costs(costs)
+                .territoryEffects(territoryEffects)
+                .data(data)
+                .build());
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
     if (allowMultipleHitsPerUnit) {

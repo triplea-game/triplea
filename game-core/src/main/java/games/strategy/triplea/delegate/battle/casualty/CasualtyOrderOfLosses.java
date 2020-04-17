@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.Builder;
+import lombok.Value;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -26,6 +28,21 @@ class CasualtyOrderOfLosses {
 
   static void clearOolCache() {
     oolCache.clear();
+  }
+
+  @Builder
+  @Value
+  static class Parameters {
+    final Collection<Unit> targetsToPickFrom;
+    final boolean defending;
+    final GamePlayer player;
+    final Collection<Unit> enemyUnits;
+    final boolean amphibious;
+    final Collection<Unit> amphibiousLandAttackers;
+    final Territory battlesite;
+    final IntegerMap<UnitType> costs;
+    final Collection<TerritoryEffect> territoryEffects;
+    final GameData data;
   }
 
   /**
@@ -39,26 +56,15 @@ class CasualtyOrderOfLosses {
    * all artillery, or the other way around, you will be missing out on some important support
    * provided. (Veqryn)
    */
-  static List<Unit> sortUnitsForCasualtiesWithSupport(
-      final Collection<Unit> targetsToPickFrom,
-      final boolean defending,
-      final GamePlayer player,
-      final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers,
-      final Territory battlesite,
-      final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects,
-      final GameData data) {
-
+  static List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();
-    for (final Unit u : targetsToPickFrom) {
+    for (final Unit u : parameters.targetsToPickFrom) {
       targetTypes.add(u.getType());
     }
     final List<UnitType> amphibTypes = new ArrayList<>();
-    if (amphibiousLandAttackers != null) {
-      for (final Unit u : amphibiousLandAttackers) {
+    if (parameters.amphibiousLandAttackers != null) {
+      for (final Unit u : parameters.amphibiousLandAttackers) {
         amphibTypes.add(u.getType());
       }
     }
@@ -74,13 +80,13 @@ class CasualtyOrderOfLosses {
     }
     amphibHashCode *= 31;
     String key =
-        player.getName()
+        parameters.player.getName()
             + "|"
-            + battlesite.getName()
+            + parameters.battlesite.getName()
             + "|"
-            + defending
+            + parameters.defending
             + "|"
-            + amphibious
+            + parameters.amphibious
             + "|"
             + targetsHashCode
             + "|"
@@ -89,7 +95,7 @@ class CasualtyOrderOfLosses {
     final List<UnitType> stored = oolCache.get(key);
     if (stored != null) {
       final List<Unit> result = new ArrayList<>();
-      final List<Unit> selectFrom = new ArrayList<>(targetsToPickFrom);
+      final List<Unit> selectFrom = new ArrayList<>(parameters.targetsToPickFrom);
       for (final UnitType ut : stored) {
         for (final Iterator<Unit> it = selectFrom.iterator(); it.hasNext(); ) {
           final Unit u = it.next();
@@ -102,26 +108,38 @@ class CasualtyOrderOfLosses {
       return result;
     }
     // Sort enough units to kill off
-    final List<Unit> sortedUnitsList = new ArrayList<>(targetsToPickFrom);
+    final List<Unit> sortedUnitsList = new ArrayList<>(parameters.targetsToPickFrom);
     sortedUnitsList.sort(
-        new UnitBattleComparator(defending, costs, territoryEffects, data, true, false)
+        new UnitBattleComparator(
+                parameters.defending,
+                parameters.costs,
+                parameters.territoryEffects,
+                parameters.data,
+                true,
+                false)
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
-        new UnitBattleComparator(defending, costs, territoryEffects, data, true, true);
+        new UnitBattleComparator(
+            parameters.defending,
+            parameters.costs,
+            parameters.territoryEffects,
+            parameters.data,
+            true,
+            true);
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             sortedUnitsList,
-            new ArrayList<>(enemyUnits),
+            new ArrayList<>(parameters.enemyUnits),
             sortedUnitsList,
-            defending,
-            data,
-            battlesite,
-            territoryEffects,
-            amphibious,
-            amphibiousLandAttackers,
+            parameters.defending,
+            parameters.data,
+            parameters.battlesite,
+            parameters.territoryEffects,
+            parameters.amphibious,
+            parameters.amphibiousLandAttackers,
             unitSupportPowerMap,
             unitSupportRollsMap);
     // Sort units starting with weakest for finding the worst units
@@ -140,7 +158,8 @@ class CasualtyOrderOfLosses {
         }
         unitTypes.add(u.getType());
         // Find unit power
-        int power = DiceRoll.getTotalPower(Map.of(u, originalUnitPowerAndRollsMap.get(u)), data);
+        int power =
+            DiceRoll.getTotalPower(Map.of(u, originalUnitPowerAndRollsMap.get(u)), parameters.data);
         // Add any support power that it provides to other units
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {
@@ -166,14 +185,15 @@ class CasualtyOrderOfLosses {
             // Find supported unit power with support
             final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<>();
             supportedUnitMap.put(supportedUnit, strengthAndRolls);
-            final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
+            final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
             // Find supported unit power without support
             final int strengthWithoutSupport =
                 strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
                 Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-            final int powerWithoutSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
+            final int powerWithoutSupport =
+                DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -191,14 +211,15 @@ class CasualtyOrderOfLosses {
             // Find supported unit power with support
             final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<>();
             supportedUnitMap.put(supportedUnit, strengthAndRolls);
-            final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
+            final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
             // Find supported unit power without support
             final int rollsWithoutSupport =
                 strengthAndRolls.getSecond() - unitSupportRollsMap.get(u).getInt(supportedUnit);
             final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
                 Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
-            final int powerWithoutSupport = DiceRoll.getTotalPower(supportedUnitMap, data);
+            final int powerWithoutSupport =
+                DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
             // Add the actual power provided by the support
             final int addedPower = powerWithSupport - powerWithoutSupport;
             power += addedPower;
@@ -276,13 +297,13 @@ class CasualtyOrderOfLosses {
       }
       amphibHashCode *= 31;
       key =
-          player.getName()
+          parameters.player.getName()
               + "|"
-              + battlesite.getName()
+              + parameters.battlesite.getName()
               + "|"
-              + defending
+              + parameters.defending
               + "|"
-              + amphibious
+              + parameters.amphibious
               + "|"
               + targetsHashCode
               + "|"
