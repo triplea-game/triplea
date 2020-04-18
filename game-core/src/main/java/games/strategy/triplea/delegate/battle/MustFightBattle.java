@@ -14,7 +14,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -421,7 +421,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final List<Unit> toAdd = unitType.create(1, unit.getOwner());
         if (translateAttributes) {
           final Change translate =
-              TripleAUnit.translateAttributesToOtherUnits(unit, toAdd, battleSite);
+              UnitUtils.translateAttributesToOtherUnits(unit, toAdd, battleSite);
           changes.add(translate);
         }
         unitsToAdd.addAll(toAdd);

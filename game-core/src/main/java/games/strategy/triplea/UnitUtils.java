@@ -14,16 +14,18 @@ import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
 /**
- * Extended unit for triplea games.
+ * Utility class providing static operations to Unit objects.
  *
- * <p>As with all game data components, changes made to this unit must be made through a Change
- * instance. Calling setters on this directly will not serialize the changes across the network.
+ * <p>Note: avoid adding methods to this class, instead favor placing utils into topic specific
+ * utility classes.
  */
-public class TripleAUnit {
+@UtilityClass
+public class UnitUtils {
 
   public static int getProductionPotentialOfTerritory(
       final Collection<Unit> unitsAtStartOfStepInTerritory,

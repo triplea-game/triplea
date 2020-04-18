@@ -15,7 +15,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -827,7 +827,7 @@ public class WeakAi extends AbstractAi {
           continue;
         }
         final Unit possibleFactoryNeedingRepair =
-            TripleAUnit.getBiggestProducer(
+            UnitUtils.getBiggestProducer(
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
@@ -838,13 +838,13 @@ public class WeakAi extends AbstractAi {
         }
         if (fixTerr.equals(capitol)) {
           capProduction =
-              TripleAUnit.getHowMuchCanUnitProduce(
+              UnitUtils.getHowMuchCanUnitProduce(
                   possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
           capUnit = possibleFactoryNeedingRepair;
           capUnitTerritory = fixTerr;
         }
         currentProduction +=
-            TripleAUnit.getHowMuchCanUnitProduce(
+            UnitUtils.getHowMuchCanUnitProduce(
                 possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
       }
       repairFactories.remove(capitol);
@@ -871,7 +871,7 @@ public class WeakAi extends AbstractAi {
           }
           diff = capUnit.getUnitDamage();
           final int unitProductionAllowNegative =
-              TripleAUnit.getHowMuchCanUnitProduce(
+              UnitUtils.getHowMuchCanUnitProduce(
                       capUnit, capUnitTerritory, player, data, false, true)
                   - diff;
           if (!repairFactories.isEmpty()) {
@@ -918,7 +918,7 @@ public class WeakAi extends AbstractAi {
             }
             diff = fixUnit.getUnitDamage();
             final int unitProductionAllowNegative =
-                TripleAUnit.getHowMuchCanUnitProduce(
+                UnitUtils.getHowMuchCanUnitProduce(
                         fixUnit,
                         unitsThatCanProduceNeedingRepair.get(fixUnit),
                         player,

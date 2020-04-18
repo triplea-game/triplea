@@ -13,7 +13,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
@@ -539,7 +539,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final List<Unit> toAdd = unitType.create(1, unit.getOwner());
         if (translateAttributes) {
           final Change translate =
-              TripleAUnit.translateAttributesToOtherUnits(unit, toAdd, territory);
+              UnitUtils.translateAttributesToOtherUnits(unit, toAdd, territory);
           changes.add(translate);
         }
         unitsToRemove.add(unit);

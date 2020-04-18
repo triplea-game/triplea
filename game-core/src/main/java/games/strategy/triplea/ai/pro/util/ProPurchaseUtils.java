@@ -9,7 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -217,7 +217,7 @@ public final class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       return Integer.MAX_VALUE;
     }
-    return TripleAUnit.getProductionPotentialOfTerritory(
+    return UnitUtils.getProductionPotentialOfTerritory(
         territory.getUnits(), territory, player, data, true, true);
   }
 

@@ -18,7 +18,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -1018,7 +1018,7 @@ public class BattleTracker implements Serializable {
           if (!toAdd.isEmpty()) {
             if (translateAttributes) {
               final Change translate =
-                  TripleAUnit.translateAttributesToOtherUnits(u, toAdd, territory);
+                  UnitUtils.translateAttributesToOtherUnits(u, toAdd, territory);
               if (!translate.isEmpty()) {
                 changes.add(translate);
               }

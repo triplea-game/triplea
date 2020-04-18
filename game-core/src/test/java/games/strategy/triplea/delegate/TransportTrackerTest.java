@@ -12,7 +12,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class TransportTrackerTest {
     assertThat(TransportTracker.isTransporting(transport), is(false));
 
     addTo(sz18, List.of(tank));
-    final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, tank);
+    final Change change = TransportTracker.loadTransportChange((UnitUtils) transport, tank);
     gameData.performChange(change);
     assertThat(TransportTracker.isTransporting(transport), is(true));
   }

@@ -11,7 +11,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -1238,7 +1238,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // getHowMuchCanUnitProduce accounts for IncreasedFactoryProduction, but does not account for
     // maxConstructions
     int production =
-        TripleAUnit.getProductionPotentialOfTerritory(
+        UnitUtils.getProductionPotentialOfTerritory(
             unitsAtStartOfStepInTerritory(producer), producer, player, getData(), true, true);
     // increase the production by the number of constructions allowed
     if (maxConstructions > 0) {
