@@ -30,4 +30,5 @@ plugins:
 
 exclude_patterns:
   - "gradlew"
+  - ".github/ISSUE_TEMPLATES/*"
 
