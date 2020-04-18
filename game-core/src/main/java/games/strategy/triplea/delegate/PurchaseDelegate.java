@@ -14,7 +14,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
@@ -274,14 +273,13 @@ public class PurchaseDelegate extends BaseTripleADelegate
     final CompositeChange changes = new CompositeChange();
     final Set<Unit> repairUnits = new HashSet<>(repairMap.keySet());
     final IntegerMap<Unit> damageMap = new IntegerMap<>();
-    for (final Unit u : repairUnits) {
-      final int repairCount = repairMap.getInt(u);
+    for (final Unit unit : repairUnits) {
+      final int repairCount = repairMap.getInt(unit);
       // Display appropriate damaged/repaired factory and factory damage totals
       if (repairCount > 0) {
-        final TripleAUnit taUnit = (TripleAUnit) u;
-        final int newDamageTotal = Math.max(0, taUnit.getUnitDamage() - repairCount);
-        if (newDamageTotal != taUnit.getUnitDamage()) {
-          damageMap.put(u, newDamageTotal);
+        final int newDamageTotal = Math.max(0, unit.getUnitDamage() - repairCount);
+        if (newDamageTotal != unit.getUnitDamage()) {
+          damageMap.put(unit, newDamageTotal);
         }
       }
     }

@@ -1,14 +1,11 @@
 package games.strategy.triplea;
 
-import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -17,7 +14,6 @@ import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -207,7 +203,7 @@ public class TripleAUnit {
     final IntegerMap<Unit> damageMap = new IntegerMap<>();
     if (unitDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
-        final int maxDamage = u.getHowMuchDamageCanThisUnitTakeTotal(u, t);
+        final int maxDamage = u.getHowMuchDamageCanThisUnitTakeTotal(t);
         final int transferDamage = Math.max(0, Math.min(unitDamage, maxDamage));
         if (transferDamage <= 0) {
           continue;

@@ -13,7 +13,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.AirBattle;
@@ -353,9 +352,7 @@ public class MovePerformer implements Serializable {
     }
     // only units owned by us need to be marked
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
-    for (final Unit baseUnit :
-        CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(gamePlayer))) {
-      final TripleAUnit unit = (TripleAUnit) baseUnit;
+    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(gamePlayer))) {
       BigDecimal moved = route.getMovementCost(unit);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {
@@ -372,7 +369,7 @@ public class MovePerformer implements Serializable {
       }
       change.add(
           ChangeFactory.unitPropertyChange(
-              unit, moved.add(unit.getAlreadyMoved()), TripleAUnit.ALREADY_MOVED));
+              unit, moved.add(unit.getAlreadyMoved()), Unit.ALREADY_MOVED));
     }
     // if neutrals were taken over mark land units with 0 movement
     // if entered a non blitzed conquered territory, mark with 0 movement
@@ -442,7 +439,7 @@ public class MovePerformer implements Serializable {
       for (final Unit load : transporting.keySet()) {
         final Unit transport = transporting.get(load);
         if (!TransportTracker.transporting(transport).contains(load)) {
-          final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
+          final Change change = TransportTracker.loadTransportChange(transport, load);
           currentMove.addChange(change);
           currentMove.load(transport);
           bridge.addChange(change);
@@ -451,8 +448,7 @@ public class MovePerformer implements Serializable {
       if (transporting.isEmpty()) {
         for (final Unit airTransport : dependentAirTransportableUnits.keySet()) {
           for (final Unit unit : dependentAirTransportableUnits.get(airTransport)) {
-            final Change change =
-                TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
+            final Change change = TransportTracker.loadTransportChange(airTransport, unit);
             currentMove.addChange(change);
             currentMove.load(airTransport);
             bridge.addChange(change);
@@ -492,7 +488,7 @@ public class MovePerformer implements Serializable {
         // unload the transports
         final Change change1 =
             TransportTracker.unloadTransportChange(
-                (TripleAUnit) unit, currentMove.getRoute().getEnd(), pendingBattles);
+                unit, currentMove.getRoute().getEnd(), pendingBattles);
         currentMove.addChange(change1);
         currentMove.unload(unit);
         bridge.addChange(change1);

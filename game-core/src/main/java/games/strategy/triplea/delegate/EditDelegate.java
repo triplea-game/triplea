@@ -10,7 +10,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -126,8 +125,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     if (mapLoading != null && !mapLoading.isEmpty()) {
       for (final Entry<Unit, Unit> entry : mapLoading.entrySet()) {
-        bridge.addChange(
-            TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));
+        bridge.addChange(TransportTracker.loadTransportChange(entry.getValue(), entry.getKey()));
       }
     }
     return null;
@@ -277,7 +275,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
-      final int currentDamage = ((TripleAUnit) u).getUnitDamage();
+      final int currentDamage = u.getUnitDamage();
       if (currentDamage == dmg) {
         unitDamageMap.removeKey(u);
       }

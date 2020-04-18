@@ -2,7 +2,6 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;

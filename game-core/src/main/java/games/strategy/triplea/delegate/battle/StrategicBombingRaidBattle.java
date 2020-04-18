@@ -15,7 +15,6 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -941,14 +940,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           int currentUnitCost = bombingRaidDamage.getInt(current);
           // determine the max allowed damage
           // UnitAttachment ua = UnitAttachment.get(current.getType());
-          final TripleAUnit taUnit = (TripleAUnit) current;
-          damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(current, battleSite);
+          damageLimit = current.getHowMuchMoreDamageCanThisUnitTake(battleSite);
           if (bombingRaidDamage.getInt(current) > damageLimit) {
             bombingRaidDamage.put(current, damageLimit);
             cost = (cost - currentUnitCost) + damageLimit;
             currentUnitCost = bombingRaidDamage.getInt(current);
           }
-          final int totalDamage = taUnit.getUnitDamage() + currentUnitCost;
+          final int totalDamage = current.getUnitDamage() + currentUnitCost;
           // display the results
           bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
           if (currentUnitCost > 0) {

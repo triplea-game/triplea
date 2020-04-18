@@ -869,8 +869,7 @@ public class WeakAi extends AbstractAi {
               .test(capitol)) {
             continue;
           }
-          final TripleAUnit taUnit = (TripleAUnit) capUnit;
-          diff = taUnit.getUnitDamage();
+          diff = capUnit.getUnitDamage();
           final int unitProductionAllowNegative =
               TripleAUnit.getHowMuchCanUnitProduce(
                       capUnit, capUnitTerritory, player, data, false, true)
@@ -917,8 +916,7 @@ public class WeakAi extends AbstractAi {
             if (currentProduction >= maxUnits) {
               continue;
             }
-            final TripleAUnit taUnit = (TripleAUnit) fixUnit;
-            diff = taUnit.getUnitDamage();
+            diff = fixUnit.getUnitDamage();
             final int unitProductionAllowNegative =
                 TripleAUnit.getHowMuchCanUnitProduce(
                         fixUnit,

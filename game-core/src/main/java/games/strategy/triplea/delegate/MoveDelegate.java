@@ -278,7 +278,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : data.getUnits()) {
       if (u.getBonusMovement() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
+        change.add(ChangeFactory.unitPropertyChange(u, 0, Unit.BONUS_MOVEMENT));
       }
     }
     return change;
@@ -302,45 +302,39 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : data.getUnits()) {
       if (unit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
-        change.add(
-            ChangeFactory.unitPropertyChange(unit, BigDecimal.ZERO, TripleAUnit.ALREADY_MOVED));
+        change.add(ChangeFactory.unitPropertyChange(unit, BigDecimal.ZERO, Unit.ALREADY_MOVED));
       }
       if (unit.getWasInCombat()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_IN_COMBAT));
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.WAS_IN_COMBAT));
       }
       if (unit.getSubmerged()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.SUBMERGED));
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.SUBMERGED));
       }
       if (unit.getAirborne()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.AIRBORNE));
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.AIRBORNE));
       }
       if (unit.getLaunched() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(unit, 0, TripleAUnit.LAUNCHED));
+        change.add(ChangeFactory.unitPropertyChange(unit, 0, Unit.LAUNCHED));
       }
       if (!unit.getUnloaded().isEmpty()) {
-        change.add(
-            ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
+        change.add(ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, Unit.UNLOADED));
       }
       if (unit.getWasLoadedThisTurn()) {
-        change.add(
-            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
+        change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.LOADED_THIS_TURN));
       }
       if (unit.getUnloadedTo() != null) {
-        change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.UNLOADED_TO));
+        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.UNLOADED_TO));
       }
       if (unit.getWasUnloadedInCombatPhase()) {
         change.add(
-            ChangeFactory.unitPropertyChange(
-                unit, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.UNLOADED_IN_COMBAT_PHASE));
       }
       if (unit.getWasAmphibious()) {
-        change.add(
-            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
+        change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.UNLOADED_AMPHIBIOUS));
       }
       if (unit.getChargedFlatFuelCost()) {
         change.add(
-            ChangeFactory.unitPropertyChange(
-                unit, Boolean.FALSE, TripleAUnit.CHARGED_FLAT_FUEL_COST));
+            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.CHARGED_FLAT_FUEL_COST));
       }
     }
     return change;
@@ -373,9 +367,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
         continue;
       }
       for (final Unit fighter : ownedFighters) {
-        final TripleAUnit taUnit = (TripleAUnit) fighter;
-        if (taUnit.getTransportedBy() != null) {
-          if (crippledAlliedCarriers.contains(taUnit.getTransportedBy())) {
+        if (fighter.getTransportedBy() != null) {
+          if (crippledAlliedCarriers.contains(fighter.getTransportedBy())) {
             change.add(ChangeFactory.markNoMovementChange(fighter));
           }
         }
@@ -435,8 +428,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
           bonusMovement =
               Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
-          change.add(
-              ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
+          change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, Unit.BONUS_MOVEMENT));
         }
       }
     }

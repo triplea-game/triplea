@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -60,7 +59,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private final UnitType type;
 
   // the transport that is currently transporting us
-  private TripleAUnit transportedBy = null;
+  private Unit transportedBy = null;
   // the units we have unloaded this turn
   private List<Unit> unloaded = List.of();
   // was this unit loaded this turn?
@@ -129,23 +128,21 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         && hits == unit.getHits();
   }
 
-  public int getHowMuchCanThisUnitBeRepaired(final Unit u, final Territory t) {
+  public int getHowMuchCanThisUnitBeRepaired(final Territory t) {
     return Math.max(
-        0,
-        (this.getHowMuchDamageCanThisUnitTakeTotal(u, t)
-            - this.getHowMuchMoreDamageCanThisUnitTake(t)));
+        0, (getHowMuchDamageCanThisUnitTakeTotal(t) - getHowMuchMoreDamageCanThisUnitTake(t)));
   }
 
   /**
    * How much more damage can this unit take? Will return 0 if the unit cannot be damaged, or is at
    * max damage.
    */
-  private int getHowMuchMoreDamageCanThisUnitTake(final Territory t) {
+  public int getHowMuchMoreDamageCanThisUnitTake(final Territory t) {
     if (!Matches.unitCanBeDamaged().test(this)) {
       return 0;
     }
     return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())
-        ? Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(this, t) - getUnitDamage())
+        ? Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(t) - getUnitDamage())
         : Integer.MAX_VALUE;
   }
 
@@ -153,13 +150,13 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * How much damage is the max this unit can take, accounting for territory, etc. Will return -1 if
    * the unit is of the type that cannot be damaged
    */
-  public int getHowMuchDamageCanThisUnitTakeTotal(final Unit u, final Territory t) {
-    if (!Matches.unitCanBeDamaged().test(u)) {
+  public int getHowMuchDamageCanThisUnitTakeTotal(final Territory t) {
+    if (!Matches.unitCanBeDamaged().test(this)) {
       return -1;
     }
-    final UnitAttachment ua = UnitAttachment.get(u.getType());
+    final UnitAttachment ua = UnitAttachment.get(getType());
     final int territoryUnitProduction = TerritoryAttachment.getUnitProduction(t);
-    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData())) {
+    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       if (ua.getMaxDamage() <= 0) {
         // factories may or may not have max damage set, so we must still determine here
         // assume that if maxDamage <= 0, then the max damage must be based on the territory value
@@ -167,7 +164,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         return territoryUnitProduction * 2;
       }
 
-      if (Matches.unitCanProduceUnits().test(u)) {
+      if (Matches.unitCanProduceUnits().test(this)) {
         // can use "production" or "unitProduction"
         return (ua.getCanProduceXUnits() < 0)
             ? territoryUnitProduction * ua.getMaxDamage()
@@ -377,7 +374,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     disabled = value;
   }
 
-  private void setTransportedBy(final TripleAUnit transportedBy) {
+  private void setTransportedBy(final Unit transportedBy) {
     this.transportedBy = transportedBy;
   }
 

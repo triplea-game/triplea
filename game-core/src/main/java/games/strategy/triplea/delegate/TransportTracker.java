@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import java.util.ArrayList;
@@ -115,28 +114,25 @@ public class TransportTracker {
     }
     final List<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
     newUnloaded.add(unit);
-    change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
+    change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
-      change.add(
-          ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
-      change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
-      change.add(
-          ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
-      change.add(
-          ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
+      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_IN_COMBAT_PHASE));
+      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_AMPHIBIOUS));
+      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_IN_COMBAT_PHASE));
+      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_AMPHIBIOUS));
     }
     if (!dependentBattle) {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling
       // creates a battle,
       // there is no longer any way to have the units removed if those transports die.
-      change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+      change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
     }
-    change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
+    change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, Unit.UNLOADED));
     return change;
   }
 
   public static Change unloadAirTransportChange(
-      final TripleAUnit unit, final Territory territory, final boolean dependentBattle) {
+      final Unit unit, final Territory territory, final boolean dependentBattle) {
     final CompositeChange change = new CompositeChange();
     final Unit transport = unit.getTransportedBy();
     if (transport == null) {
@@ -147,13 +143,11 @@ public class TransportTracker {
       throw new IllegalStateException(
           "Not being carried, unit:" + unit + " transport:" + transport);
     }
-    change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
+    change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
-      change.add(
-          ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_IN_COMBAT_PHASE));
       // change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
-      change.add(
-          ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_IN_COMBAT_PHASE));
       // change.add(ChangeFactory.unitPropertyChange(transport, true,
       // TripleAUnit.UNLOADED_AMPHIBIOUS));
     }
@@ -161,7 +155,7 @@ public class TransportTracker {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling
       // creates a battle,
       // there is no longer any way to have the units removed if those transports die.
-      change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+      change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
     }
     // dependencies for battle calc and casualty selection include unloaded. therefore even if we
     // have unloaded this
@@ -177,29 +171,27 @@ public class TransportTracker {
     // Put units back on their transports
     for (final Unit transport : transports) {
       for (final Unit load : transport.getUnloaded()) {
-        final Change loadChange =
-            TransportTracker.loadTransportChange((TripleAUnit) transport, load);
+        final Change loadChange = TransportTracker.loadTransportChange(transport, load);
         change.add(loadChange);
       }
     }
   }
 
-  static Change loadTransportChange(final TripleAUnit transport, final Unit unit) {
+  static Change loadTransportChange(final Unit transport, final Unit unit) {
     assertTransport(transport);
     final CompositeChange change = new CompositeChange();
     // clear the loaded by
-    change.add(ChangeFactory.unitPropertyChange(unit, transport, TripleAUnit.TRANSPORTED_BY));
+    change.add(ChangeFactory.unitPropertyChange(unit, transport, Unit.TRANSPORTED_BY));
     final Collection<Unit> newCarrying = new ArrayList<>(transport.getTransporting());
     if (newCarrying.contains(unit)) {
       throw new IllegalStateException("Already carrying, transport:" + transport + " unt:" + unit);
     }
     newCarrying.add(unit);
-    change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.LOADED_THIS_TURN));
-    change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.LOADED_THIS_TURN));
+    change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, Unit.LOADED_THIS_TURN));
+    change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.LOADED_THIS_TURN));
     // If the transport was in combat, flag it as being loaded AFTER combat
     if (transport.getWasInCombat()) {
-      change.add(
-          ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.LOADED_AFTER_COMBAT));
+      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.LOADED_AFTER_COMBAT));
     }
     return change;
   }
@@ -222,19 +214,16 @@ public class TransportTracker {
 
   static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units) {
     final Collection<Unit> loadedUnits = new ArrayList<>();
-    for (final Unit u : units) {
+    for (final Unit unit : units) {
       // a unit loaded onto an allied transport cannot be unloaded in the same turn, so if we check
-      // both
-      // wasLoadedThisTurn and the transport that transports us, we can tell if we were loaded onto
-      // an allied transport
-      // if we are no longer being transported, then we must have been transported on our own
-      // transport
-      final TripleAUnit taUnit = (TripleAUnit) u;
-      // an allied transport if the owner of the transport is not the owner of the unit
-      if (taUnit.getWasLoadedThisTurn()
-          && taUnit.getTransportedBy() != null
-          && !taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner())) {
-        loadedUnits.add(u);
+      // both wasLoadedThisTurn and the transport that transports us, we can tell if we were loaded
+      // onto an allied transport if we are no longer being transported, then we must have been
+      // transported on our own transport an allied transport if the owner of the transport is not
+      // the owner of the unit
+      if (unit.getWasLoadedThisTurn()
+          && unit.getTransportedBy() != null
+          && !unit.getTransportedBy().getOwner().equals(unit.getOwner())) {
+        loadedUnits.add(unit);
       }
     }
     return loadedUnits;
@@ -242,13 +231,12 @@ public class TransportTracker {
 
   /** Detects if a unit has unloaded units in a previous game phase. */
   public static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {
-    final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+    final Collection<Unit> unloaded = transport.getUnloaded();
     // See if transport has unloaded anywhere yet
-    for (final Unit u : unloaded) {
-      final TripleAUnit taUnit = (TripleAUnit) u;
+    for (final Unit unit : unloaded) {
       // cannot unload in two different phases
       if (GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
-          && taUnit.getWasUnloadedInCombatPhase()) {
+          && unit.getWasUnloadedInCombatPhase()) {
         return true;
       }
     }
@@ -262,23 +250,22 @@ public class TransportTracker {
    */
   static boolean isTransportUnloadRestrictedToAnotherTerritory(
       final Unit transport, final Territory territory) {
-    final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+    final Collection<Unit> unloaded = transport.getUnloaded();
     if (unloaded.isEmpty()) {
       return false;
     }
     // See if transport has unloaded anywhere yet
     final GameData data = transport.getData();
-    for (final Unit u : unloaded) {
-      final TripleAUnit taUnit = (TripleAUnit) u;
+    for (final Unit unit : unloaded) {
       if (Properties.getWW2V2(data) || Properties.getTransportUnloadRestricted(data)) {
         // cannot unload to two different territories
-        if (!taUnit.getUnloadedTo().equals(territory)) {
+        if (!unit.getUnloadedTo().equals(territory)) {
           return true;
         }
       } else {
         // cannot unload to two different territories in combat phase
         if (!GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
-            && !taUnit.getUnloadedTo().equals(territory)) {
+            && !unit.getUnloadedTo().equals(territory)) {
           return true;
         }
       }
@@ -293,28 +280,26 @@ public class TransportTracker {
    * we only need to return one territory, not multiple territories.
    */
   public static Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
-    final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+    final Collection<Unit> unloaded = transport.getUnloaded();
     if (unloaded.isEmpty()) {
       return null;
     }
-    return ((TripleAUnit) unloaded.iterator().next()).getUnloadedTo();
+    return unloaded.iterator().next().getUnloadedTo();
   }
 
   /** If a transport has been in combat, it cannot both load AND unload in NCM. */
   static boolean isTransportUnloadRestrictedInNonCombat(final Unit transport) {
-    final TripleAUnit taUnit = (TripleAUnit) transport;
     return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
-        && taUnit.getWasInCombat()
-        && taUnit.getWasLoadedAfterCombat();
+        && transport.getWasInCombat()
+        && transport.getWasLoadedAfterCombat();
   }
 
   /** For ww2v3+ and LHTR, if a transport has been in combat then it can't load in NCM. */
   static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
-    final TripleAUnit taUnit = (TripleAUnit) transport;
     final GameData data = transport.getData();
     return (Properties.getWW2V3(data) || Properties.getLhtrCarrierProductionRules(data))
         && GameStepPropertiesHelper.isNonCombatMove(data, true)
-        && taUnit.getWasInCombat();
+        && transport.getWasInCombat();
   }
 
   public static CompositeChange clearTransportedByForAlliedAirOnCarrier(
@@ -340,12 +325,11 @@ public class TransportTracker {
                   Sets.newHashSet(attackingUnits), Sets.newHashSet(battleSite.getUnitCollection())),
               alliedFighters);
       for (final Unit fighter : alliedAirInTerr) {
-        final TripleAUnit taUnit = (TripleAUnit) fighter;
-        if (taUnit.getTransportedBy() != null) {
-          final Unit carrierTransportingThisUnit = taUnit.getTransportedBy();
+        if (fighter.getTransportedBy() != null) {
+          final Unit carrierTransportingThisUnit = fighter.getTransportedBy();
           if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER)
               .test(carrierTransportingThisUnit)) {
-            change.add(ChangeFactory.unitPropertyChange(fighter, null, TripleAUnit.TRANSPORTED_BY));
+            change.add(ChangeFactory.unitPropertyChange(fighter, null, Unit.TRANSPORTED_BY));
           }
         }
       }

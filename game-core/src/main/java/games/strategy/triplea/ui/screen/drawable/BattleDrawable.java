@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Color;
 import java.awt.GradientPaint;

@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import games.strategy.triplea.TripleAUnit;
 import java.util.Collections;
 import java.util.Set;
 import org.triplea.java.collections.IntegerMap;
@@ -19,23 +18,17 @@ public class BombingUnitDamageChange extends Change {
   }
 
   public BombingUnitDamageChange(final IntegerMap<Unit> hits) {
-    for (final Unit u : hits.keySet()) {
-      if (!(u instanceof TripleAUnit)) {
-        throw new IllegalArgumentException(
-            "BombingUnitDamage can only apply to a TripleAUnit object");
-      }
-    }
     this.hits = new IntegerMap<>(hits);
     undoHits = new IntegerMap<>();
     for (final Unit unit : this.hits.keySet()) {
-      undoHits.put(unit, ((TripleAUnit) unit).getUnitDamage());
+      undoHits.put(unit, unit.getUnitDamage());
     }
   }
 
   @Override
   protected void perform(final GameData data) {
     for (final Unit item : hits.keySet()) {
-      ((TripleAUnit) item).setUnitDamage(hits.getInt(item));
+      item.setUnitDamage(hits.getInt(item));
     }
     final Set<Unit> units = hits.keySet();
     for (final Territory element : data.getMap().getTerritories()) {

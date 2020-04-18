@@ -14,7 +14,6 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -389,8 +388,8 @@ public class RocketsFireHelper implements Serializable {
         int highestMaxDice = 0;
         int highestBonus = 0;
         final int diceSides = data.getDiceSides();
-        for (final Unit u : rockets) {
-          final UnitAttachment ua = UnitAttachment.get(u.getType());
+        for (final Unit rocket : rockets) {
+          final UnitAttachment ua = UnitAttachment.get(rocket.getType());
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default
@@ -441,17 +440,16 @@ public class RocketsFireHelper implements Serializable {
       }
     }
     int territoryProduction = TerritoryAttachment.getProduction(attackedTerritory);
-    final TripleAUnit taUnit =
-        attackFrom == null ? null : (TripleAUnit) attackedUnits.get(attackFrom);
+    final Unit unit = attackFrom == null ? null : attackedUnits.get(attackFrom);
     if (damageFromBombingDoneToUnits && attackFrom != null) {
-      final int damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(taUnit, attackedTerritory);
+      final int damageLimit = unit.getHowMuchMoreDamageCanThisUnitTake(attackedTerritory);
       cost = Math.max(0, Math.min(cost, damageLimit));
-      final int totalDamage = taUnit.getUnitDamage() + cost;
+      final int totalDamage = unit.getUnitDamage() + cost;
       // Record production lost
       // DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
       // apply the hits to the targets
       final IntegerMap<Unit> damageMap = new IntegerMap<>();
-      damageMap.put(taUnit, totalDamage);
+      damageMap.put(unit, totalDamage);
       bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
       // attackedTerritory.notifyChanged();
       // in WW2V2, limit rocket attack cost to production value of factory.
@@ -469,7 +467,7 @@ public class RocketsFireHelper implements Serializable {
     }
     // Record the PUs lost
     DelegateFinder.moveDelegate(data).pusLost(attackedTerritory, cost);
-    if (damageFromBombingDoneToUnits && taUnit != null) {
+    if (damageFromBombingDoneToUnits && unit != null) {
       getRemote(bridge)
           .reportMessage(
               "Rocket attack in "
@@ -477,13 +475,13 @@ public class RocketsFireHelper implements Serializable {
                   + " does "
                   + cost
                   + " damage to "
-                  + taUnit,
+                  + unit,
               "Rocket attack in "
                   + attackedTerritory.getName()
                   + " does "
                   + cost
                   + " damage to "
-                  + taUnit);
+                  + unit);
       bridge
           .getHistoryWriter()
           .startEvent(
@@ -492,7 +490,7 @@ public class RocketsFireHelper implements Serializable {
                   + " does "
                   + cost
                   + " damage to "
-                  + taUnit);
+                  + unit);
     } else {
       cost *= Properties.getPuMultiplier(data);
       getRemote(bridge)
@@ -524,7 +522,7 @@ public class RocketsFireHelper implements Serializable {
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)
-    final Collection<Unit> targetUnitCol = taUnit == null ? enemyTargetsTotal : Set.of(taUnit);
+    final Collection<Unit> targetUnitCol = unit == null ? enemyTargetsTotal : Set.of(unit);
     if (targetUnitCol.stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
       final List<Unit> unitsCanDie =
           CollectionUtils.getMatches(targetUnitCol, Matches.unitCanDieFromReachingMaxDamage());

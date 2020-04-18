@@ -14,7 +14,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -58,7 +57,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     final Collection<Unit> collection = bomber.create(1, british);
     assertEquals(new BigDecimal(6), MoveValidator.getLeastMovement(collection));
     final Object[] objs = collection.toArray();
-    ((TripleAUnit) objs[0]).setAlreadyMoved(BigDecimal.ONE);
+    ((Unit) objs[0]).setAlreadyMoved(BigDecimal.ONE);
     assertEquals(new BigDecimal(5), MoveValidator.getLeastMovement(collection));
     collection.addAll(factory.create(2, british));
     assertEquals(BigDecimal.ZERO, MoveValidator.getLeastMovement(collection));

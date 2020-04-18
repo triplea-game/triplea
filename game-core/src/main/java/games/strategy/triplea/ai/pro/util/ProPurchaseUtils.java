@@ -18,7 +18,6 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
 import java.util.Collection;

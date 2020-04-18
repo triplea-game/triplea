@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -217,8 +216,8 @@ public class ScrambleLogic {
     }
     // find how many is the max this territory can scramble
     int maxScrambled = 0;
-    for (final Unit base : airbases) {
-      final int baseMax = ((TripleAUnit) base).getMaxScrambleCount();
+    for (final Unit airbase : airbases) {
+      final int baseMax = airbase.getMaxScrambleCount();
       if (baseMax == -1) {
         return Integer.MAX_VALUE;
       }

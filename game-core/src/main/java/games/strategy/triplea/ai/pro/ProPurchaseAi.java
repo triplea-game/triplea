@@ -117,8 +117,7 @@ class ProPurchaseAi {
               .test(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
             continue;
           }
-          final TripleAUnit taUnit = (TripleAUnit) fixUnit;
-          final int diff = taUnit.getUnitDamage();
+          final int diff = fixUnit.getUnitDamage();
           if (diff > 0) {
             final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
             repairMap.add(repairRule, diff);
