@@ -9,6 +9,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -80,7 +81,6 @@ import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
-import org.triplea.util.Tuple;
 
 /** Displays a running battle. */
 @Log
@@ -874,7 +874,7 @@ public class BattleDisplay extends JPanel {
       }
       final List<Unit> units = new ArrayList<>(this.units);
       DiceRoll.sortByStrength(units, !attack);
-      final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
+      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap;
       final boolean isAirPreBattleOrPreRaid = battleType.isAirPreBattleOrPreRaid();
       if (isAirPreBattleOrPreRaid) {
         unitPowerAndRollsMap = Map.of();
@@ -912,7 +912,7 @@ public class BattleDisplay extends JPanel {
             }
           } else {
             // normal battle
-            strength = unitPowerAndRollsMap.get(current).getFirst();
+            strength = unitPowerAndRollsMap.get(current).getTotalPower();
           }
           strength = Math.min(Math.max(strength, 0), diceSides);
           shift[strength]++;
