@@ -12,7 +12,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -24,12 +23,12 @@ class TransportTrackerTest {
   private final Unit tank = armour(gameData).create(americans(gameData));
 
   @Test
-  void testIsTransporting() throws Exception {
+  void testIsTransporting() {
     addTo(sz18, List.of(transport));
     assertThat(TransportTracker.isTransporting(transport), is(false));
 
     addTo(sz18, List.of(tank));
-    final Change change = TransportTracker.loadTransportChange((UnitUtils) transport, tank);
+    final Change change = TransportTracker.loadTransportChange(transport, tank);
     gameData.performChange(change);
     assertThat(TransportTracker.isTransporting(transport), is(true));
   }
