@@ -2630,6 +2630,9 @@ class ProNonCombatMoveAi {
       ProLogger.trace("  --- My actual units ---");
       final Map<String, Integer> printMap3 = new HashMap<>();
       for (final Unit unit : units3) {
+        if(unit == null) {
+          continue;
+        }
         if (printMap3.containsKey(unit.toStringNoOwner())) {
           printMap3.put(unit.toStringNoOwner(), printMap3.get(unit.toStringNoOwner()) + 1);
         } else {
