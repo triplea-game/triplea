@@ -91,10 +91,6 @@ public class TripleAUnit extends Unit {
     super(type, owner, data);
   }
 
-  public TripleAUnit getTransportedBy() {
-    return transportedBy;
-  }
-
   /**
    * Returns a tuple whose first element indicates the minimum movement remaining for the specified
    * collection of units, and whose second element indicates the maximum movement remaining for the

@@ -1293,7 +1293,7 @@ public class MoveValidator {
         }
         // make sure units dont leave their transports behind
         if (ua.getTransportCost() != -1) {
-          final Unit transport = TransportTracker.transportedBy(unit);
+          final Unit transport = unit.getTransportedBy();
           if (transport != null && !units.contains(transport)) {
             result.addDisallowedUnit("Unit must stay with its transport while moving", unit);
           }

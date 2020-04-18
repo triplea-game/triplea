@@ -40,15 +40,23 @@ public class TransportTracker {
     }
   }
 
-  /** @return Unmodifiable collection of units that the given transport is transporting. */
+  /**
+   * @return Unmodifiable collection of units that the given transport is transporting.
+   * @deprecated Invoke unit.getTransporting() directly
+   */
+  @Deprecated
   public static List<Unit> transporting(final Unit transport) {
-    return ((TripleAUnit) transport).getTransporting();
+    return transport.getTransporting();
   }
 
-  /** @return Unmodifiable collection of units that the given transport is transporting. */
+  /**
+   * @return Unmodifiable collection of units that the given transport is transporting.
+   * @deprecated Invoke unit.getTransporting(Collection) directly
+   */
+  @Deprecated
   public static List<Unit> transporting(
       final Unit transport, final Collection<Unit> transportedUnitsPossible) {
-    return ((TripleAUnit) transport).getTransporting(transportedUnitsPossible);
+    return transport.getTransporting(transportedUnitsPossible);
   }
 
   /** @return Unmodifiable map of transport -> collection of transported units. */
@@ -61,7 +69,7 @@ public class TransportTracker {
       final Function<Unit, Collection<Unit>> getUnitsTransportedByTransport) {
     final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
     for (final Unit transported : units) {
-      final Unit transport = transportedBy(transported);
+      final Unit transport = transported.getTransportedBy();
       Collection<Unit> transporting = null;
       if (transport != null) {
         transporting = getUnitsTransportedByTransport.apply(transport);
@@ -87,29 +95,16 @@ public class TransportTracker {
     return !transporting(transport).isEmpty();
   }
 
-  /**
-   * Returns the collection of units that the given transport has unloaded this turn. Could be
-   * empty.
-   */
-  public static Collection<Unit> unloaded(final Unit transport) {
-    return ((TripleAUnit) transport).getUnloaded();
-  }
-
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
     final Collection<Unit> units = new ArrayList<>(transporting(transport));
-    units.addAll(unloaded(transport));
+    units.addAll(transport.getUnloaded());
     return units;
   }
 
-  /** Return the transport that holds the given unit. Could be null. */
-  public static Unit transportedBy(final Unit unit) {
-    return ((TripleAUnit) unit).getTransportedBy();
-  }
-
   static Change unloadTransportChange(
-      final TripleAUnit unit, final Territory territory, final boolean dependentBattle) {
+      final Unit unit, final Territory territory, final boolean dependentBattle) {
     final CompositeChange change = new CompositeChange();
-    final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
+    final Unit transport = unit.getTransportedBy();
     if (transport == null) {
       return change;
     }
@@ -143,7 +138,7 @@ public class TransportTracker {
   public static Change unloadAirTransportChange(
       final TripleAUnit unit, final Territory territory, final boolean dependentBattle) {
     final CompositeChange change = new CompositeChange();
-    final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
+    final Unit transport = unit.getTransportedBy();
     if (transport == null) {
       return change;
     }
@@ -181,8 +176,7 @@ public class TransportTracker {
         CollectionUtils.getMatches(units, Matches.unitCanTransport());
     // Put units back on their transports
     for (final Unit transport : transports) {
-      final Collection<Unit> unloaded = TransportTracker.unloaded(transport);
-      for (final Unit load : unloaded) {
+      for (final Unit load : transport.getUnloaded()) {
         final Change loadChange =
             TransportTracker.loadTransportChange((TripleAUnit) transport, load);
         change.add(loadChange);
@@ -222,7 +216,7 @@ public class TransportTracker {
     }
     final int capacity = ua.getTransportCapacity();
     final int used = getCost(transporting(unit));
-    final int unloaded = getCost(unloaded(unit));
+    final int unloaded = getCost(unit.getUnloaded());
     return capacity - used - unloaded;
   }
 

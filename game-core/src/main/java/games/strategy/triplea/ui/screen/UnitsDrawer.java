@@ -126,7 +126,7 @@ public class UnitsDrawer extends AbstractDrawable {
               + territoryName);
     }
 
-    final int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
+    final int maxRange = new Unit(type, owner, data).getMaxMovementAllowed();
 
     final UnitFlagDrawMode drawMode =
         ClientSetting.unitFlagDrawMode.getValue().orElse(UnitFlagDrawMode.NONE);

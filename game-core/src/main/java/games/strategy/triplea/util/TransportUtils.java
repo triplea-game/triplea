@@ -130,7 +130,7 @@ public final class TransportUtils {
 
     final Map<Unit, Unit> mapping = new HashMap<>();
     for (final Unit currentTransported : canBeTransported) {
-      final Unit transport = TransportTracker.transportedBy(currentTransported);
+      final Unit transport = currentTransported.getTransportedBy();
 
       // Already being transported, make sure it is in transports
       if (transport == null || !canTransport.contains(transport)) {

@@ -61,7 +61,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
 
     private static Collection<Unit> createUnit(final UnitType unitType, final int count) {
       return IntStream.range(0, count)
-          .mapToObj(i -> new TripleAUnit(unitType, BRITISH, data))
+          .mapToObj(i -> new Unit(unitType, BRITISH, data))
           .collect(Collectors.toSet());
     }
   }
