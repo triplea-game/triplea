@@ -30,3 +30,6 @@ plugins:
   sonar-java:
     enabled: true
 
+exclude_patterns:
+  - "gradlew"
+
