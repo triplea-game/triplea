@@ -1513,7 +1513,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       } else {
         final IntegerMap<Unit> hitMap = new IntegerMap<>();
         hitMap.put(unitUnderFire, hits);
-        change.add(newDamageChange(hitMap, bridge));
+        change.add(newDamageChange(hitMap, bridge, location));
       }
     }
     if (!change.isEmpty()) {
@@ -1531,7 +1531,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         .reportMessageToPlayers(playersInvolved, null, title + dice, title);
   }
 
-  public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
+  public static void markDamaged(
+      final Collection<Unit> damaged, final IDelegateBridge bridge, final Territory territory) {
     if (damaged.isEmpty()) {
       return;
     }
@@ -1539,16 +1540,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Unit u : damaged) {
       damagedMap.add(u, 1);
     }
-    bridge.addChange(newDamageChange(damagedMap, bridge));
+    bridge.addChange(newDamageChange(damagedMap, bridge, territory));
   }
 
   private static Change newDamageChange(
-      final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge) {
+      final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge, final Territory territory) {
     final Set<Unit> units = new HashSet<>(damagedMap.keySet());
     for (final Unit u : units) {
       damagedMap.add(u, u.getHits());
     }
-    final Change damagedChange = ChangeFactory.unitsHit(damagedMap);
+    final Change damagedChange = ChangeFactory.unitsHit(damagedMap, List.of(territory));
     bridge
         .getHistoryWriter()
         .addChildToEvent("Units damaged: " + MyFormatter.unitsToText(units), units);

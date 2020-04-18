@@ -343,7 +343,7 @@ class AaInMoveUtil implements Serializable {
         .reportMessage(
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());
-    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), bridge);
+    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), bridge, territory);
     bridge
         .getHistoryWriter()
         .addChildToEvent(

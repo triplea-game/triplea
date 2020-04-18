@@ -533,7 +533,7 @@ public class TripleAUnit extends Unit {
       }
     }
     if (!hits.isEmpty()) {
-      changes.add(ChangeFactory.unitsHit(hits));
+      changes.add(ChangeFactory.unitsHit(hits, List.of(t)));
     }
     final int unitDamage = taUnit.getUnitDamage();
     final IntegerMap<Unit> damageMap = new IntegerMap<>();

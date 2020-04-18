@@ -129,8 +129,9 @@ public class ChangeFactory {
   }
 
   /** Must already include existing damage to the unit. This does not add damage, it sets damage. */
-  public static Change unitsHit(final IntegerMap<Unit> newHits) {
-    return new UnitHitsChange(newHits);
+  public static Change unitsHit(
+      final IntegerMap<Unit> newHits, final Collection<Territory> territoriesToNotify) {
+    return new UnitHitsChange(newHits, territoriesToNotify);
   }
 
   /** Must already include existing damage to the unit. This does not add damage, it sets damage. */

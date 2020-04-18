@@ -477,6 +477,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     final Map<Unit, Territory> fullyRepaired = new HashMap<>();
     final IntegerMap<Unit> newHitsMap = new IntegerMap<>();
+    final var territoriesToNotify = new HashSet<Territory>();
     for (final Entry<Territory, Set<Unit>> entry : damagedMap.entrySet()) {
       for (final Unit u : entry.getValue()) {
         final int repairAmount = getLargestRepairRateForThisUnit(u, entry.getKey(), data);
@@ -484,6 +485,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final int newHits = Math.max(0, Math.min(currentHits, (currentHits - repairAmount)));
         if (newHits != currentHits) {
           newHitsMap.put(u, newHits);
+          territoriesToNotify.add(entry.getKey());
         }
         if (newHits <= 0) {
           fullyRepaired.put(u, entry.getKey());
@@ -498,7 +500,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
                 + MyFormatter.pluralize("unit", newHitsMap.size())
                 + " repaired.",
             new HashSet<>(newHitsMap.keySet()));
-    bridge.addChange(ChangeFactory.unitsHit(newHitsMap));
+    bridge.addChange(ChangeFactory.unitsHit(newHitsMap, territoriesToNotify));
 
     // now if damaged includes any carriers that are repairing, and have damaged abilities set for
     // not allowing air
