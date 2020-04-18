@@ -221,8 +221,7 @@ public final class TransportUtils {
     canTransport.sort(
         Comparator.comparing(TransportTracker::hasTransportUnloadedInPreviousPhase)
             .thenComparingInt(TransportTracker::getAvailableCapacity)
-            .thenComparing(
-                TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft).reversed()));
+            .thenComparing(Comparator.comparing(Unit::getMovementLeft).reversed()));
     return canTransport;
   }
 

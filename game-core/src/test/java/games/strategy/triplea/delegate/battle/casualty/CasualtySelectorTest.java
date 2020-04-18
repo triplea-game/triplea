@@ -112,7 +112,7 @@ class CasualtySelectorTest {
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     whenGetRandom(bridge).thenAnswer(withValues(0));
-    TripleAUnit.get(planes.get(0)).setAlreadyMoved(BigDecimal.ONE);
+    planes.get(0).setAlreadyMoved(BigDecimal.ONE);
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 false,

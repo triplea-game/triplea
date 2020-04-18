@@ -4,7 +4,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import java.math.BigDecimal;
@@ -19,8 +18,7 @@ public final class UnitComparator {
   private UnitComparator() {}
 
   public static Comparator<Unit> getLowestToHighestMovementComparator() {
-    return Comparator.comparing(
-        TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft));
+    return Comparator.comparing(Unit::getMovementLeft);
   }
 
   public static Comparator<Unit> getHighestToLowestMovementComparator() {
@@ -39,9 +37,7 @@ public final class UnitComparator {
   public static Comparator<Unit> getIncreasingCapacityComparator() {
     final Map<Unit, Integer> cache = new HashMap<>();
     return Comparator.comparingInt(
-        u ->
-            cache.computeIfAbsent(
-                u, k -> TransportUtils.getTransportCost(TripleAUnit.get(u).getTransporting())));
+        u -> cache.computeIfAbsent(u, k -> TransportUtils.getTransportCost(u.getTransporting())));
   }
 
   private static Comparator<Unit> getDecreasingCapacityComparator() {
@@ -54,8 +50,7 @@ public final class UnitComparator {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
         .thenComparing(getDecreasingCapacityComparator())
-        .thenComparing(
-            TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft).reversed())
+        .thenComparing(Comparator.comparing(Unit::getMovementLeft).reversed())
         .thenComparingInt(Object::hashCode);
   }
 
@@ -65,7 +60,7 @@ public final class UnitComparator {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals))
         .thenComparing(getDecreasingCapacityComparator())
-        .thenComparing(TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft))
+        .thenComparing(Unit::getMovementLeft)
         .thenComparingInt(t -> noTies ? t.hashCode() : 0);
   }
 
@@ -75,8 +70,8 @@ public final class UnitComparator {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator();
     return (u1, u2) -> {
       // Ensure units have enough movement
-      final BigDecimal left1 = TripleAUnit.get(u1).getMovementLeft();
-      final BigDecimal left2 = TripleAUnit.get(u2).getMovementLeft();
+      final BigDecimal left1 = u1.getMovementLeft();
+      final BigDecimal left2 = u2.getMovementLeft();
       if (route != null) {
         if (left1.compareTo(route.getMovementCost(u1)) >= 0
             && left2.compareTo(route.getMovementCost(u2)) < 0) {
@@ -89,8 +84,8 @@ public final class UnitComparator {
       }
 
       // Prefer transports for which dependents are also selected
-      final Collection<Unit> transporting1 = TripleAUnit.get(u1).getTransporting();
-      final Collection<Unit> transporting2 = TripleAUnit.get(u2).getTransporting();
+      final Collection<Unit> transporting1 = u1.getTransporting();
+      final Collection<Unit> transporting2 = u2.getTransporting();
       final int hasDepends1 = units.containsAll(transporting1) ? 1 : 0;
       final int hasDepends2 = units.containsAll(transporting2) ? 1 : 0;
       if (hasDepends1 != hasDepends2) {
@@ -133,10 +128,8 @@ public final class UnitComparator {
   public static Comparator<Unit> getUnloadableUnitsComparator(
       final List<Unit> units, final Route route, final GamePlayer player) {
     return Comparator.comparing(
-            TripleAUnit::get,
-            Comparator.comparing(
-                TripleAUnit::getTransportedBy,
-                Comparator.nullsLast(getUnloadableTransportsComparator(route, player, false))))
+            Unit::getTransportedBy,
+            Comparator.nullsLast(getUnloadableTransportsComparator(route, player, false)))
         .thenComparing(getMovableUnitsComparator(units, route));
   }
 

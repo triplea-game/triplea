@@ -34,7 +34,7 @@ public class BattleDrawable extends TerritoryDrawable {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final Set<GamePlayer> players = new HashSet<>();
     for (final Unit u : territory.getUnitCollection()) {
-      if (!TripleAUnit.get(u).getSubmerged()) {
+      if (!u.getSubmerged()) {
         players.add(u.getOwner());
       }
     }

@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -561,14 +560,14 @@ public final class ProMatches {
       final GamePlayer player, final UnitType unitType) {
     return Matches.unitIsOwnedBy(player)
         .and(Matches.unitIsOfType(unitType))
-        .and(Matches.unitIsTransporting());
+        .and(Unit::isTransporting);
   }
 
   public static Predicate<Unit> unitIsOwnedAndMatchesTypeAndNotTransporting(
       final GamePlayer player, final UnitType unitType) {
     return Matches.unitIsOwnedBy(player)
         .and(Matches.unitIsOfType(unitType))
-        .and(Matches.unitIsTransporting().negate());
+        .and(Unit::isTransporting);
   }
 
   public static Predicate<Unit> unitIsOwnedCarrier(final GamePlayer player) {
@@ -610,7 +609,6 @@ public final class ProMatches {
   }
 
   public static Predicate<Unit> unitHasLessMovementThan(final Unit unit) {
-    return u ->
-        TripleAUnit.get(u).getMovementLeft().compareTo(TripleAUnit.get(unit).getMovementLeft()) < 0;
+    return u -> u.getMovementLeft().compareTo(unit.getMovementLeft()) < 0;
   }
 }

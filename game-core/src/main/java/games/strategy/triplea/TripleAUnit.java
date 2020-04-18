@@ -15,9 +15,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -93,15 +91,9 @@ public class TripleAUnit extends Unit {
     super(type, owner, data);
   }
 
-  public static TripleAUnit get(final Unit u) {
-    return (TripleAUnit) u;
-  }
-
   public TripleAUnit getTransportedBy() {
     return transportedBy;
   }
-
-
 
   /**
    * Returns a tuple whose first element indicates the minimum movement remaining for the specified

@@ -40,10 +40,6 @@ public class OriginalOwnerTracker implements Serializable {
     return change;
   }
 
-  public static GamePlayer getOriginalOwner(final Unit unit) {
-    return TripleAUnit.get(unit).getOriginalOwner();
-  }
-
   public static @Nullable GamePlayer getOriginalOwner(final Territory t) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null) {

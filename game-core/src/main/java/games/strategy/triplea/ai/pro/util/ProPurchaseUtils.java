@@ -249,12 +249,11 @@ public final class ProPurchaseUtils {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
     for (final Unit factory2 : factoryUnits) {
-      if (player.equals(OriginalOwnerTracker.getOriginalOwner(factory2))) {
-        return OriginalOwnerTracker.getOriginalOwner(factory2);
+      if (player.equals(factory2.getOriginalOwner())) {
+        return factory2.getOriginalOwner();
       }
     }
-    final Unit factory = factoryUnits.iterator().next();
-    return OriginalOwnerTracker.getOriginalOwner(factory);
+    return factoryUnits.iterator().next().getOriginalOwner();
   }
 
   /** Comparator that sorts cheaper units before expensive ones. */

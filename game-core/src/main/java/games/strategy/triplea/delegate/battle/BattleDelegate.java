@@ -989,11 +989,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           t.getUnitCollection().getMatches(Matches.unitWasScrambled());
       for (final Unit u : wasScrambled) {
         final CompositeChange change = new CompositeChange();
-        final Territory originatedFrom = TripleAUnit.get(u).getOriginatedFrom();
         Territory landingTerr = null;
         final String historyText;
         if (!mustReturnToBase
-            || !Matches.isTerritoryAllied(u.getOwner(), data).test(originatedFrom)) {
+            || !Matches.isTerritoryAllied(u.getOwner(), data).test(u.getOriginatedFrom())) {
           final Collection<Territory> possible =
               whereCanAirLand(u, t, u.getOwner(), data, battleTracker, carrierCostOfCurrentTerr);
           if (possible.size() > 1) {
@@ -1017,7 +1016,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 "Moving scrambled unit from " + t.getName() + " to " + landingTerr.getName();
           }
         } else {
-          landingTerr = originatedFrom;
+          landingTerr = u.getOriginatedFrom();
           historyText =
               "Moving scrambled unit from "
                   + t.getName()

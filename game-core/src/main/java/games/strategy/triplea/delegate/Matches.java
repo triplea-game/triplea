@@ -197,7 +197,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasMoved() {
-    return unit -> TripleAUnit.get(unit).getAlreadyMoved().compareTo(BigDecimal.ZERO) > 0;
+    return unit -> unit.hasMoved();
   }
 
   public static Predicate<Unit> unitHasNotMoved() {
@@ -205,7 +205,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasNotBeenChargedFlatFuelCost() {
-    return unit -> !TripleAUnit.get(unit).getChargedFlatFuelCost();
+    return unit -> !unit.getChargedFlatFuelCost();
   }
 
   // TODO: this should really be improved to check more properties like support attachments
@@ -1111,7 +1111,7 @@ public final class Matches {
 
   public static Predicate<Unit> unitHasEnoughMovementForRoute(final Route route) {
     return unit -> {
-      BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      BigDecimal left = unit.getMovementLeft();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final GamePlayer player = unit.getOwner();
       if (ua.getIsAir()) {
@@ -1161,7 +1161,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasMovementLeft() {
-    return o -> TripleAUnit.get(o).getMovementLeft().compareTo(BigDecimal.ZERO) > 0;
+    return Unit::hasMovementLeft;
   }
 
   public static Predicate<Unit> unitCanMove() {
@@ -1192,14 +1192,10 @@ public final class Matches {
     return unit -> players.contains(unit.getOwner());
   }
 
-  public static Predicate<Unit> unitIsTransporting() {
-    return unit -> !TripleAUnit.get(unit).getTransporting().isEmpty();
-  }
-
   public static Predicate<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units) {
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
     return unit -> {
-      final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
+      final Collection<Unit> transporting = unit.getTransporting();
       return !Collections.disjoint(UnitSeparator.categorize(transporting), unitCategories);
     };
   }
@@ -1520,7 +1516,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsSubmerged() {
-    return u -> TripleAUnit.get(u).getSubmerged();
+    return Unit::getSubmerged;
   }
 
   public static Predicate<UnitType> unitTypeIsFirstStrike() {
@@ -1888,7 +1884,7 @@ public final class Matches {
   public static Predicate<Unit> unitCanInvade() {
     return unit -> {
       // is the unit being transported?
-      final Unit transport = TripleAUnit.get(unit).getTransportedBy();
+      final Unit transport = unit.getTransportedBy();
       if (transport == null) {
         // Unit isn't transported so can Invade
         return true;

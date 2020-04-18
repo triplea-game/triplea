@@ -219,7 +219,7 @@ public class MoveValidator {
       return result.setErrorReturnResult("No units");
     }
     for (final Unit unit : units) {
-      if (TripleAUnit.get(unit).getSubmerged()) {
+      if (unit.getSubmerged()) {
         result.addDisallowedUnit("Cannot move submerged units", unit);
       } else if (Matches.unitIsDisabled().test(unit)) {
         result.addDisallowedUnit("Cannot move disabled units", unit);
@@ -525,7 +525,7 @@ public class MoveValidator {
         result.addDisallowedUnit(
             unit.getType().getName()
                 + " can't invade from "
-                + TripleAUnit.get(unit).getTransportedBy().getType().getName(),
+                + unit.getTransportedBy().getType().getName(),
             unit);
       }
     }
@@ -1100,7 +1100,7 @@ public class MoveValidator {
     }
     BigDecimal max = BigDecimal.ZERO;
     for (final Unit unit : units) {
-      final BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      final BigDecimal left = unit.getMovementLeft();
       max = left.max(max);
     }
     return max;
@@ -1112,7 +1112,7 @@ public class MoveValidator {
     }
     BigDecimal least = new BigDecimal(Integer.MAX_VALUE);
     for (final Unit unit : units) {
-      final BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      final BigDecimal left = unit.getMovementLeft();
       least = left.min(least);
     }
     return least;
@@ -1317,7 +1317,7 @@ public class MoveValidator {
       if (!isEditMode) {
         for (final Unit baseUnit : land) {
           final TripleAUnit unit = (TripleAUnit) baseUnit;
-          if (Matches.unitHasMoved().test(unit)) {
+          if (unit.hasMoved()) {
             result.addDisallowedUnit("Units cannot move before loading onto transports", unit);
           }
           final Unit transport = unitsToTransports.get(unit);
@@ -1436,7 +1436,7 @@ public class MoveValidator {
         Matches.unitIsAirTransportable()
             .and(
                 u ->
-                    (TripleAUnit.get(u).getMovementLeft().compareTo(route.getMovementCost(u)) < 0)
+                    (u.getMovementLeft().compareTo(route.getMovementCost(u)) < 0)
                         || route.crossesWater()
                         || route.getEnd().isWater()));
   }
@@ -1475,17 +1475,17 @@ public class MoveValidator {
       final Map<Unit, Unit> airTransportsAndParatroops =
           TransportUtils.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
-        if (Matches.unitHasMoved().test(paratroop)) {
+        if (paratroop.hasMoved()) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         final Unit transport = airTransportsAndParatroops.get(paratroop);
-        if (Matches.unitHasMoved().test(transport)) {
+        if (transport.hasMoved()) {
           result.addDisallowedUnit("Cannot move then transport paratroops", transport);
         }
       }
       final Territory routeEnd = route.getEnd();
       for (final Unit paratroop : paratroopsRequiringTransport) {
-        if (Matches.unitHasMoved().test(paratroop)) {
+        if (paratroop.hasMoved()) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         if (Matches.isTerritoryFriendly(player, data).test(routeEnd)

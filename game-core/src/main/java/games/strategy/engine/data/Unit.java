@@ -59,7 +59,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   @Setter private int hits = 0;
   private final UnitType type;
 
-
   // the transport that is currently transporting us
   private TripleAUnit transportedBy = null;
   // the units we have unloaded this turn
@@ -151,7 +150,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         : Integer.MAX_VALUE;
   }
 
-
   /**
    * How much damage is the max this unit can take, accounting for territory, etc. Will return -1 if
    * the unit is of the type that cannot be damaged
@@ -182,8 +180,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
     return Integer.MAX_VALUE;
   }
-
-
 
   @Override
   public String toString() {
@@ -275,7 +271,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         .put(
             "chargedFlatFuelCost",
             MutableProperty.ofSimple(this::setChargedFlatFuelCost, this::getChargedFlatFuelCost))
-
         .build();
   }
 
@@ -412,8 +407,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
     return Collections.unmodifiableList(
-        CollectionUtils.getMatches(
-            transportedUnitsPossible, o -> equals(get(o).getTransportedBy())));
+        CollectionUtils.getMatches(transportedUnitsPossible, o -> equals(o.getTransportedBy())));
   }
 
   public List<Unit> getUnloaded() {
@@ -485,5 +479,29 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return new BigDecimal(UnitAttachment.get(getType()).getMovement(getOwner()))
         .add(new BigDecimal(bonusMovement))
         .subtract(alreadyMoved);
+  }
+
+  public boolean hasMovementLeft() {
+    return getMovementLeft().compareTo(BigDecimal.ZERO) > 0;
+  }
+
+  public boolean isDamaged() {
+    return unitDamage > 0 && hits > 0;
+  }
+
+  public boolean hasMoved() {
+    return alreadyMoved.compareTo(BigDecimal.ZERO) > 0;
+  }
+
+  /**
+   * Avoid calling this method, it checks every territory on the map. To undeprecate we should
+   * optimize this to halt on the first territory we have found with a transporting unit, or
+   * otherwise optimize this to not check every territory.
+   *
+   * @deprecated Avoid callling this method, it is slow, needs optimization.
+   */
+  @Deprecated
+  public boolean isTransporting() {
+    return !getTransporting().isEmpty();
   }
 }

@@ -277,7 +277,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = getData();
     final CompositeChange change = new CompositeChange();
     for (final Unit u : data.getUnits()) {
-      if (TripleAUnit.get(u).getBonusMovement() != 0) {
+      if (u.getBonusMovement() != 0) {
         change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
       }
     }
@@ -300,46 +300,47 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   static Change getResetUnitStateChange(final GameData data) {
     final CompositeChange change = new CompositeChange();
-    for (final Unit u : data.getUnits()) {
-      final TripleAUnit taUnit = TripleAUnit.get(u);
-      if (taUnit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, BigDecimal.ZERO, TripleAUnit.ALREADY_MOVED));
-      }
-      if (taUnit.getWasInCombat()) {
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_COMBAT));
-      }
-      if (taUnit.getSubmerged()) {
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
-      }
-      if (taUnit.getAirborne()) {
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.AIRBORNE));
-      }
-      if (taUnit.getLaunched() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.LAUNCHED));
-      }
-      if (!taUnit.getUnloaded().isEmpty()) {
+    for (final Unit unit : data.getUnits()) {
+      if (unit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
         change.add(
-            ChangeFactory.unitPropertyChange(u, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
+            ChangeFactory.unitPropertyChange(unit, BigDecimal.ZERO, TripleAUnit.ALREADY_MOVED));
       }
-      if (taUnit.getWasLoadedThisTurn()) {
+      if (unit.getWasInCombat()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_IN_COMBAT));
+      }
+      if (unit.getSubmerged()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.SUBMERGED));
+      }
+      if (unit.getAirborne()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.AIRBORNE));
+      }
+      if (unit.getLaunched() != 0) {
+        change.add(ChangeFactory.unitPropertyChange(unit, 0, TripleAUnit.LAUNCHED));
+      }
+      if (!unit.getUnloaded().isEmpty()) {
         change.add(
-            ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
+            ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
       }
-      if (taUnit.getUnloadedTo() != null) {
-        change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.UNLOADED_TO));
+      if (unit.getWasLoadedThisTurn()) {
+        change.add(
+            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
       }
-      if (taUnit.getWasUnloadedInCombatPhase()) {
+      if (unit.getUnloadedTo() != null) {
+        change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.UNLOADED_TO));
+      }
+      if (unit.getWasUnloadedInCombatPhase()) {
         change.add(
             ChangeFactory.unitPropertyChange(
-                u, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+                unit, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
       }
-      if (taUnit.getWasAmphibious()) {
+      if (unit.getWasAmphibious()) {
         change.add(
-            ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
+            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
       }
-      if (taUnit.getChargedFlatFuelCost()) {
+      if (unit.getChargedFlatFuelCost()) {
         change.add(
-            ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.CHARGED_FLAT_FUEL_COST));
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, TripleAUnit.CHARGED_FLAT_FUEL_COST));
       }
     }
     return change;

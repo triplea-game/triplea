@@ -1363,7 +1363,7 @@ public class ProCombatMoveAi {
               Matches.territoryHasNeighborMatching(
                       data, Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player)))
                   .test(t);
-          final int range = TripleAUnit.get(unit).getMovementLeft().intValue();
+          final int range = unit.getMovementLeft().intValue();
           final int distance =
               data.getMap()
                   .getDistance_IgnoreEndForCondition(
@@ -1431,7 +1431,7 @@ public class ProCombatMoveAi {
               Matches.territoryHasNeighborMatching(
                       data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
                   .test(t);
-          final int range = TripleAUnit.get(unit).getMovementLeft().intValue();
+          final int range = unit.getMovementLeft().intValue();
           final int distance =
               data.getMap()
                   .getDistance_IgnoreEndForCondition(
@@ -1990,7 +1990,7 @@ public class ProCombatMoveAi {
         Matches.territoryHasNeighborMatching(
                 data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
             .test(t);
-    final int range = TripleAUnit.get(unit).getMovementLeft().intValue();
+    final int range = unit.getMovementLeft().intValue();
     final int distance =
         data.getMap()
             .getDistance_IgnoreEndForCondition(

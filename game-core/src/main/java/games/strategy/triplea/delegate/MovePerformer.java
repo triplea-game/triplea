@@ -480,7 +480,7 @@ public class MovePerformer implements Serializable {
         if (Matches.unitIsAir().test(unit)) {
           continue;
         }
-        final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
+        final Unit transportedBy = unit.getTransportedBy();
         // we will unload our paratroopers after they land in battle (after aa guns fire)
         if (paratroopsLanding
             && transportedBy != null

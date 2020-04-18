@@ -774,7 +774,7 @@ public class ProTerritoryManager {
         }
 
         // Find range
-        BigDecimal range = TripleAUnit.get(mySeaUnit).getMovementLeft();
+        BigDecimal range = mySeaUnit.getMovementLeft();
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
@@ -887,7 +887,7 @@ public class ProTerritoryManager {
       // Check each land unit individually since they can have different ranges
       for (final Unit myLandUnit : myLandUnits) {
         final Territory startTerritory = proData.getUnitTerritory(myLandUnit);
-        final BigDecimal range = TripleAUnit.get(myLandUnit).getMovementLeft();
+        final BigDecimal range = myLandUnit.getMovementLeft();
         Set<Territory> possibleMoveTerritories =
             data.getMap()
                 .getNeighborsByMovementCost(
@@ -1048,7 +1048,7 @@ public class ProTerritoryManager {
       for (final Unit myAirUnit : myAirUnits) {
 
         // Find range
-        BigDecimal range = TripleAUnit.get(myAirUnit).getMovementLeft();
+        BigDecimal range = myAirUnit.getMovementLeft();
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(myAirUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
@@ -1185,7 +1185,7 @@ public class ProTerritoryManager {
       for (final Unit myTransportUnit : myTransportUnits) {
 
         // Get remaining moves
-        int movesLeft = TripleAUnit.get(myTransportUnit).getMovementLeft().intValue();
+        int movesLeft = myTransportUnit.getMovementLeft().intValue();
         if (isCheckingEnemyAttacks) {
           movesLeft = UnitAttachment.get(myTransportUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
@@ -1396,7 +1396,7 @@ public class ProTerritoryManager {
       for (final Unit mySeaUnit : mySeaUnits) {
 
         // Find range
-        BigDecimal range = TripleAUnit.get(mySeaUnit).getMovementLeft();
+        BigDecimal range = mySeaUnit.getMovementLeft();
         if (isCheckingEnemyAttacks) {
           range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(

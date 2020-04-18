@@ -1704,11 +1704,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       throw new IllegalStateException("No factory in territory:" + territory);
     }
     for (final Unit factory : factoryUnits) {
-      if (player.equals(OriginalOwnerTracker.getOriginalOwner(factory))) {
-        return OriginalOwnerTracker.getOriginalOwner(factory);
+      if (player.equals(factory.getOriginalOwner())) {
+        return factory.getOriginalOwner();
       }
     }
-    return OriginalOwnerTracker.getOriginalOwner(factoryUnits.iterator().next());
+    return factoryUnits.iterator().next().getOriginalOwner();
   }
 
   /**

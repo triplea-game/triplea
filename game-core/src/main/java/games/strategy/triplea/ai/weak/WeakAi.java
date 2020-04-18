@@ -247,9 +247,7 @@ public class WeakAi extends AbstractAi {
     final Territory lastSeaZoneOnAmphib =
         amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     final Predicate<Unit> ownedAndNotMoved =
-        Matches.unitIsOwnedBy(player)
-            .and(Matches.unitHasNotMoved())
-            .and(Matches.unitIsTransporting());
+        Matches.unitIsOwnedBy(player).and(Matches.unitHasNotMoved()).and(Unit::isTransporting);
     final List<Unit> unitsToMove = new ArrayList<>();
     final List<Unit> transports =
         firstSeaZoneOnAmphib.getUnitCollection().getMatches(ownedAndNotMoved);
