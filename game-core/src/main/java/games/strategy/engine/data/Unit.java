@@ -133,19 +133,19 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return Math.max(
         0,
         (this.getHowMuchDamageCanThisUnitTakeTotal(u, t)
-            - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
+            - this.getHowMuchMoreDamageCanThisUnitTake(t)));
   }
 
   /**
    * How much more damage can this unit take? Will return 0 if the unit cannot be damaged, or is at
    * max damage.
    */
-  public int getHowMuchMoreDamageCanThisUnitTake(final Unit unit, final Territory t) {
-    if (!Matches.unitCanBeDamaged().test(unit)) {
+  private int getHowMuchMoreDamageCanThisUnitTake(final Territory t) {
+    if (!Matches.unitCanBeDamaged().test(this)) {
       return 0;
     }
-    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())
-        ? Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(unit, t) - unit.getUnitDamage())
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())
+        ? Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(this, t) - getUnitDamage())
         : Integer.MAX_VALUE;
   }
 
