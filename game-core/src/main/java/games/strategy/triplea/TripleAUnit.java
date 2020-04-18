@@ -29,67 +29,7 @@ import org.triplea.util.Tuple;
  * <p>As with all game data components, changes made to this unit must be made through a Change
  * instance. Calling setters on this directly will not serialize the changes across the network.
  */
-public class TripleAUnit extends Unit {
-  public static final String TRANSPORTED_BY = "transportedBy";
-  public static final String UNLOADED = "unloaded";
-  public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
-  public static final String UNLOADED_TO = "unloadedTo";
-  public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
-  public static final String ALREADY_MOVED = "alreadyMoved";
-  public static final String BONUS_MOVEMENT = "bonusMovement";
-  public static final String SUBMERGED = "submerged";
-  public static final String WAS_IN_COMBAT = "wasInCombat";
-  public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
-  public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
-  public static final String ORIGINATED_FROM = "originatedFrom";
-  public static final String WAS_SCRAMBLED = "wasScrambled";
-  public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
-  public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
-  public static final String LAUNCHED = "launched";
-  public static final String AIRBORNE = "airborne";
-  public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
-  private static final long serialVersionUID = 8811372406957115036L;
-
-  // the transport that is currently transporting us
-  private TripleAUnit transportedBy = null;
-  // the units we have unloaded this turn
-  private List<Unit> unloaded = List.of();
-  // was this unit loaded this turn?
-  private boolean wasLoadedThisTurn = false;
-  // the territory this unit was unloaded to this turn
-  private Territory unloadedTo = null;
-  // was this unit unloaded in combat phase this turn?
-  private boolean wasUnloadedInCombatPhase = false;
-  // movement used this turn
-  private BigDecimal alreadyMoved = BigDecimal.ZERO;
-  // movement used this turn
-  private int bonusMovement = 0;
-  // amount of damage unit has sustained
-  private int unitDamage = 0;
-  // is this submarine submerged
-  private boolean submerged = false;
-  // original owner of this unit
-  private GamePlayer originalOwner = null;
-  // Was this unit in combat
-  private boolean wasInCombat = false;
-  private boolean wasLoadedAfterCombat = false;
-  private boolean wasAmphibious = false;
-  // the territory this unit started in (for use with scrambling)
-  private Territory originatedFrom = null;
-  private boolean wasScrambled = false;
-  private int maxScrambleCount = -1;
-  private boolean wasInAirBattle = false;
-  private boolean disabled = false;
-  // the number of airborne units launched by this unit this turn
-  private int launched = 0;
-  // was this unit airborne and launched this turn
-  private boolean airborne = false;
-  // was charged flat fuel cost already this turn
-  private boolean chargedFlatFuelCost = false;
-
-  public TripleAUnit(final UnitType type, final GamePlayer owner, final GameData data) {
-    super(type, owner, data);
-  }
+public class TripleAUnit {
 
   /**
    * Returns a tuple whose first element indicates the minimum movement remaining for the specified
@@ -100,8 +40,8 @@ public class TripleAUnit extends Unit {
       final Collection<Unit> units) {
     BigDecimal min = new BigDecimal(100000);
     BigDecimal max = BigDecimal.ZERO;
-    for (final Unit u : units) {
-      final BigDecimal left = ((TripleAUnit) u).getMovementLeft();
+    for (final Unit unit : units) {
+      final BigDecimal left = unit.getMovementLeft();
       if (left.compareTo(max) > 0) {
         max = left;
       }
@@ -176,20 +116,19 @@ public class TripleAUnit extends Unit {
    *     {@code false} to allow a negative production capacity.
    */
   public static int getHowMuchCanUnitProduce(
-      final Unit u,
+      final Unit unit,
       final Territory producer,
       final GamePlayer player,
       final GameData data,
       final boolean accountForDamage,
       final boolean mathMaxZero) {
-    if (u == null) {
+    if (unit == null) {
       return 0;
     }
-    if (!Matches.unitCanProduceUnits().test(u)) {
+    if (!Matches.unitCanProduceUnits().test(unit)) {
       return 0;
     }
-    final UnitAttachment ua = UnitAttachment.get(u.getType());
-    final TripleAUnit taUnit = (TripleAUnit) u;
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     int territoryProduction = 0;
     int territoryUnitProduction = 0;
@@ -204,9 +143,9 @@ public class TripleAUnit extends Unit {
           // we could use territoryUnitProduction OR
           // territoryProduction if we wanted to, however we should
           // change damage to be based on whichever we choose.
-          productionCapacity = territoryUnitProduction - taUnit.getUnitDamage();
+          productionCapacity = territoryUnitProduction - unit.getUnitDamage();
         } else {
-          productionCapacity = ua.getCanProduceXUnits() - taUnit.getUnitDamage();
+          productionCapacity = ua.getCanProduceXUnits() - unit.getUnitDamage();
         }
       } else {
         productionCapacity = territoryProduction;
@@ -232,7 +171,7 @@ public class TripleAUnit extends Unit {
     // Increase production if have industrial technology
     if (territoryProduction
         >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(player, data)) {
-      productionCapacity += TechAbilityAttachment.getProductionBonus(u.getType(), player, data);
+      productionCapacity += TechAbilityAttachment.getProductionBonus(unit.getType(), player, data);
     }
     return mathMaxZero ? Math.max(0, productionCapacity) : productionCapacity;
   }
@@ -249,8 +188,7 @@ public class TripleAUnit extends Unit {
       final Territory t) {
     final CompositeChange changes = new CompositeChange();
     // must look for hits, unitDamage,
-    final TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
-    final int combatDamage = taUnit.getHits();
+    final int combatDamage = unitGivingAttributes.getHits();
     final IntegerMap<Unit> hits = new IntegerMap<>();
     if (combatDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
@@ -265,12 +203,11 @@ public class TripleAUnit extends Unit {
     if (!hits.isEmpty()) {
       changes.add(ChangeFactory.unitsHit(hits, List.of(t)));
     }
-    final int unitDamage = taUnit.getUnitDamage();
+    final int unitDamage = unitGivingAttributes.getUnitDamage();
     final IntegerMap<Unit> damageMap = new IntegerMap<>();
     if (unitDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
-        final TripleAUnit taNew = (TripleAUnit) u;
-        final int maxDamage = taNew.getHowMuchDamageCanThisUnitTakeTotal(u, t);
+        final int maxDamage = u.getHowMuchDamageCanThisUnitTakeTotal(u, t);
         final int transferDamage = Math.max(0, Math.min(unitDamage, maxDamage));
         if (transferDamage <= 0) {
           continue;
@@ -282,12 +219,5 @@ public class TripleAUnit extends Unit {
       changes.add(ChangeFactory.bombingUnitDamage(damageMap));
     }
     return changes;
-  }
-
-  @Override
-  public Map<String, MutableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, MutableProperty<?>>builder()
-        .putAll(super.getPropertyMap())
-        .build();
   }
 }
