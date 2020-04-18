@@ -66,9 +66,4 @@ public class TripleA implements IGameLoader {
     game.setDisplay(launchAction.startGame(localPlayers, game, players, chat));
     game.setSoundChannel(launchAction.getSoundChannel(localPlayers));
   }
-
-  @Override
-  public Unit newUnit(final UnitType type, final GamePlayer owner, final GameData data) {
-    return new TripleAUnit(type, owner, data);
-  }
 }

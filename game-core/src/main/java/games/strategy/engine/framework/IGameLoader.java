@@ -32,6 +32,4 @@ public interface IGameLoader extends Serializable {
   void startGame(IGame game, Set<Player> players, LaunchAction launchAction, @Nullable Chat chat);
 
   void shutDown();
-
-  Unit newUnit(UnitType type, GamePlayer owner, GameData data);
 }
