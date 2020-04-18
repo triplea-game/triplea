@@ -15,7 +15,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
-import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
