@@ -517,7 +517,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         CollectionUtils.getMatches(killed, Matches.unitAtMaxHitPointDamageChangesInto())) {
       lethallyDamagedMap.put(unit, unit.getUnitAttachment().getHitPoints());
     }
-    final Change lethallyDamagedChange = ChangeFactory.unitsHit(lethallyDamagedMap);
+    final Change lethallyDamagedChange =
+        ChangeFactory.unitsHit(lethallyDamagedMap, List.of(battleSite));
     bridge.addChange(lethallyDamagedChange);
 
     // Remove units

@@ -357,7 +357,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
-    BattleDelegate.markDamaged(damaged, bridge);
+    BattleDelegate.markDamaged(damaged, bridge, battleSite);
   }
 
   protected static Player getRemote(final IDelegateBridge bridge) {
