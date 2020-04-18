@@ -11,13 +11,11 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Tuple;
 
 /**
  * Extended unit for triplea games.
@@ -26,30 +24,6 @@ import org.triplea.util.Tuple;
  * instance. Calling setters on this directly will not serialize the changes across the network.
  */
 public class TripleAUnit {
-
-  /**
-   * Returns a tuple whose first element indicates the minimum movement remaining for the specified
-   * collection of units, and whose second element indicates the maximum movement remaining for the
-   * specified collection of units.
-   */
-  public static Tuple<BigDecimal, BigDecimal> getMinAndMaxMovementLeft(
-      final Collection<Unit> units) {
-    BigDecimal min = new BigDecimal(100000);
-    BigDecimal max = BigDecimal.ZERO;
-    for (final Unit unit : units) {
-      final BigDecimal left = unit.getMovementLeft();
-      if (left.compareTo(max) > 0) {
-        max = left;
-      }
-      if (left.compareTo(max) < 0) {
-        min = left;
-      }
-    }
-    if (max.compareTo(min) < 0) {
-      min = max;
-    }
-    return Tuple.of(min, max);
-  }
 
   public static int getProductionPotentialOfTerritory(
       final Collection<Unit> unitsAtStartOfStepInTerritory,
