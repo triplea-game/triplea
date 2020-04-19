@@ -63,13 +63,12 @@ public class GameSelectorModel extends Observable implements GameSelector {
     if (entry == null) {
       ClientSetting.defaultGameName.resetValue();
       ClientSetting.defaultGameUri.resetValue();
-      ClientSetting.flush();
     } else {
       setGameData(entry.getGameData());
       ClientSetting.defaultGameName.setValue(entry.getGameData().getGameName());
       ClientSetting.defaultGameUri.setValue(entry.getUri().toString());
-      ClientSetting.flush();
     }
+    ClientSetting.flush();
   }
 
   /**
