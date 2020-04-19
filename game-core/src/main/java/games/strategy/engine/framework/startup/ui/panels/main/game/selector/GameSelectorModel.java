@@ -60,9 +60,14 @@ public class GameSelectorModel extends Observable implements GameSelector {
 
   public void load(final GameChooserEntry entry) {
     fileName = null;
-    setGameData(entry.getGameData());
-    ClientSetting.defaultGameName.setValue(entry.getGameData().getGameName());
-    ClientSetting.defaultGameUri.setValue(entry.getUri().toString());
+    if (entry == null) {
+      ClientSetting.defaultGameName.resetValue();
+      ClientSetting.defaultGameUri.resetValue();
+    } else {
+      setGameData(entry.getGameData());
+      ClientSetting.defaultGameName.setValue(entry.getGameData().getGameName());
+      ClientSetting.defaultGameUri.setValue(entry.getUri().toString());
+    }
     ClientSetting.flush();
   }
 
