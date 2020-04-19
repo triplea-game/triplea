@@ -8,7 +8,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProOtherMoveOptions;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
@@ -95,7 +95,7 @@ class ProPurchaseAi {
           continue;
         }
         final Unit possibleFactoryNeedingRepair =
-            TripleAUnit.getBiggestProducer(
+            UnitUtils.getBiggestProducer(
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
@@ -117,8 +117,7 @@ class ProPurchaseAi {
               .test(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
             continue;
           }
-          final TripleAUnit taUnit = (TripleAUnit) fixUnit;
-          final int diff = taUnit.getUnitDamage();
+          final int diff = fixUnit.getUnitDamage();
           if (diff > 0) {
             final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
             repairMap.add(repairRule, diff);

@@ -9,7 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -18,7 +18,6 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -218,7 +217,7 @@ public final class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       return Integer.MAX_VALUE;
     }
-    return TripleAUnit.getProductionPotentialOfTerritory(
+    return UnitUtils.getProductionPotentialOfTerritory(
         territory.getUnits(), territory, player, data, true, true);
   }
 
@@ -249,12 +248,11 @@ public final class ProPurchaseUtils {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
     for (final Unit factory2 : factoryUnits) {
-      if (player.equals(OriginalOwnerTracker.getOriginalOwner(factory2))) {
-        return OriginalOwnerTracker.getOriginalOwner(factory2);
+      if (player.equals(factory2.getOriginalOwner())) {
+        return factory2.getOriginalOwner();
       }
     }
-    final Unit factory = factoryUnits.iterator().next();
-    return OriginalOwnerTracker.getOriginalOwner(factory);
+    return factoryUnits.iterator().next().getOriginalOwner();
   }
 
   /** Comparator that sorts cheaper units before expensive ones. */

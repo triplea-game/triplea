@@ -13,7 +13,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
@@ -277,8 +277,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = getData();
     final CompositeChange change = new CompositeChange();
     for (final Unit u : data.getUnits()) {
-      if (TripleAUnit.get(u).getBonusMovement() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
+      if (u.getBonusMovement() != 0) {
+        change.add(ChangeFactory.unitPropertyChange(u, 0, Unit.BONUS_MOVEMENT));
       }
     }
     return change;
@@ -300,46 +300,41 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   static Change getResetUnitStateChange(final GameData data) {
     final CompositeChange change = new CompositeChange();
-    for (final Unit u : data.getUnits()) {
-      final TripleAUnit taUnit = TripleAUnit.get(u);
-      if (taUnit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, BigDecimal.ZERO, TripleAUnit.ALREADY_MOVED));
+    for (final Unit unit : data.getUnits()) {
+      if (unit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
+        change.add(ChangeFactory.unitPropertyChange(unit, BigDecimal.ZERO, Unit.ALREADY_MOVED));
       }
-      if (taUnit.getWasInCombat()) {
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_COMBAT));
+      if (unit.getWasInCombat()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.WAS_IN_COMBAT));
       }
-      if (taUnit.getSubmerged()) {
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
+      if (unit.getSubmerged()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.SUBMERGED));
       }
-      if (taUnit.getAirborne()) {
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.AIRBORNE));
+      if (unit.getAirborne()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.AIRBORNE));
       }
-      if (taUnit.getLaunched() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.LAUNCHED));
+      if (unit.getLaunched() != 0) {
+        change.add(ChangeFactory.unitPropertyChange(unit, 0, Unit.LAUNCHED));
       }
-      if (!taUnit.getUnloaded().isEmpty()) {
+      if (!unit.getUnloaded().isEmpty()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, Unit.UNLOADED));
+      }
+      if (unit.getWasLoadedThisTurn()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.LOADED_THIS_TURN));
+      }
+      if (unit.getUnloadedTo() != null) {
+        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.UNLOADED_TO));
+      }
+      if (unit.getWasUnloadedInCombatPhase()) {
         change.add(
-            ChangeFactory.unitPropertyChange(u, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
+            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.UNLOADED_IN_COMBAT_PHASE));
       }
-      if (taUnit.getWasLoadedThisTurn()) {
+      if (unit.getWasAmphibious()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.UNLOADED_AMPHIBIOUS));
+      }
+      if (unit.getChargedFlatFuelCost()) {
         change.add(
-            ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
-      }
-      if (taUnit.getUnloadedTo() != null) {
-        change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.UNLOADED_TO));
-      }
-      if (taUnit.getWasUnloadedInCombatPhase()) {
-        change.add(
-            ChangeFactory.unitPropertyChange(
-                u, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
-      }
-      if (taUnit.getWasAmphibious()) {
-        change.add(
-            ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
-      }
-      if (taUnit.getChargedFlatFuelCost()) {
-        change.add(
-            ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.CHARGED_FLAT_FUEL_COST));
+            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.CHARGED_FLAT_FUEL_COST));
       }
     }
     return change;
@@ -372,9 +367,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
         continue;
       }
       for (final Unit fighter : ownedFighters) {
-        final TripleAUnit taUnit = (TripleAUnit) fighter;
-        if (taUnit.getTransportedBy() != null) {
-          if (crippledAlliedCarriers.contains(taUnit.getTransportedBy())) {
+        if (fighter.getTransportedBy() != null) {
+          if (crippledAlliedCarriers.contains(fighter.getTransportedBy())) {
             change.add(ChangeFactory.markNoMovementChange(fighter));
           }
         }
@@ -434,8 +428,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
           bonusMovement =
               Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
-          change.add(
-              ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
+          change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, Unit.BONUS_MOVEMENT));
         }
       }
     }
@@ -546,7 +539,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final List<Unit> toAdd = unitType.create(1, unit.getOwner());
         if (translateAttributes) {
           final Change translate =
-              TripleAUnit.translateAttributesToOtherUnits(unit, toAdd, territory);
+              UnitUtils.translateAttributesToOtherUnits(unit, toAdd, territory);
           changes.add(translate);
         }
         unitsToRemove.add(unit);

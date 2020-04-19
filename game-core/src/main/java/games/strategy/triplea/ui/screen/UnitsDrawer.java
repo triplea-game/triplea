@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -126,7 +125,7 @@ public class UnitsDrawer extends AbstractDrawable {
               + territoryName);
     }
 
-    final int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
+    final int maxRange = new Unit(type, owner, data).getMaxMovementAllowed();
 
     final UnitFlagDrawMode drawMode =
         ClientSetting.unitFlagDrawMode.getValue().orElse(UnitFlagDrawMode.NONE);

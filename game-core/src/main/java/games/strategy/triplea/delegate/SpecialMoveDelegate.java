@@ -13,7 +13,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleTracker;
@@ -146,7 +145,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // make the units airborne
     final CompositeChange airborneChange = new CompositeChange();
     for (final Unit u : units) {
-      airborneChange.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.AIRBORNE));
+      airborneChange.add(ChangeFactory.unitPropertyChange(u, true, Unit.AIRBORNE));
     }
     currentMove.addChange(airborneChange);
     // make the bases start filling up their capacity
@@ -344,7 +343,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       if (newNumberLaunched <= 0) {
         break;
       }
-      final int numberLaunchedAlready = ((TripleAUnit) u).getLaunched();
+      final int numberLaunchedAlready = u.getLaunched();
       final int capacity = capacityMap.getInt(u.getType());
       final int toAdd = Math.min(newNumberLaunched, capacity - numberLaunchedAlready);
       if (toAdd <= 0) {
@@ -352,8 +351,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       }
       newNumberLaunched -= toAdd;
       launchedChange.add(
-          ChangeFactory.unitPropertyChange(
-              u, (toAdd + numberLaunchedAlready), TripleAUnit.LAUNCHED));
+          ChangeFactory.unitPropertyChange(u, (toAdd + numberLaunchedAlready), Unit.LAUNCHED));
     }
     return launchedChange;
   }

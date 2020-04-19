@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.data.changefactory.ObjectPropertyChange;
-import games.strategy.triplea.TripleAUnit;
 import java.util.Optional;
 
 /** Enum that represents various possible game data change events. */
@@ -33,6 +32,6 @@ public enum GameDataEvent {
       }
     }
     return (change instanceof ObjectPropertyChange
-        && ((ObjectPropertyChange) change).getProperty().equals(TripleAUnit.ALREADY_MOVED));
+        && ((ObjectPropertyChange) change).getProperty().equals(Unit.ALREADY_MOVED));
   }
 }

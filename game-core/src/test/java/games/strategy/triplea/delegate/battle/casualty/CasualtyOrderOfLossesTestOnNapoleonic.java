@@ -11,7 +11,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +60,7 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
 
     static Collection<Unit> createUnit(final UnitType unitType, final int count) {
       return IntStream.range(0, count)
-          .mapToObj(i -> new TripleAUnit(unitType, BRITISH, data))
+          .mapToObj(i -> new Unit(unitType, BRITISH, data))
           .collect(Collectors.toSet());
     }
   }

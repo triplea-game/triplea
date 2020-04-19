@@ -72,7 +72,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -1573,8 +1572,7 @@ class WW2V3Year41Test {
         germany.getUnitCollection().getMatches(Matches.unitIsAirTransport());
     for (final Unit airTransport : airTransports) {
       for (final Unit unit : paratroopers) {
-        final Change change =
-            TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
+        final Change change = TransportTracker.loadTransportChange(airTransport, unit);
         bridge.addChange(change);
       }
     }
@@ -1614,8 +1612,7 @@ class WW2V3Year41Test {
         CollectionUtils.getMatches(bomberAndParatroop, Matches.unitIsAirTransport());
     for (final Unit airTransport : airTransports) {
       for (final Unit unit : paratrooper) {
-        final Change change =
-            TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
+        final Change change = TransportTracker.loadTransportChange(airTransport, unit);
         bridge.addChange(change);
       }
     }
@@ -1717,7 +1714,7 @@ class WW2V3Year41Test {
     IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
     gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
-    assertEquals(1, ((TripleAUnit) factory).getUnitDamage());
+    assertEquals(1, factory.getUnitDamage());
     RepairRule repair = germans(gameData).getRepairFrontier().getRules().get(0);
     IntegerMap<RepairRule> repairs = new IntegerMap<>();
     repairs.put(repair, 1);
@@ -1729,7 +1726,7 @@ class WW2V3Year41Test {
                     .next(),
                 repairs));
     assertValid(error);
-    assertEquals(0, ((TripleAUnit) factory).getUnitDamage());
+    assertEquals(0, factory.getUnitDamage());
     // Find cost
     final int midPUs = germans.getResources().getQuantity("PUs");
     assertEquals(initPUs, midPUs + 1);
@@ -1747,7 +1744,7 @@ class WW2V3Year41Test {
     startHits = new IntegerMap<>();
     startHits.put(factory, 2);
     gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
-    assertEquals(2, ((TripleAUnit) factory).getUnitDamage());
+    assertEquals(2, factory.getUnitDamage());
     repair = germans(gameData).getRepairFrontier().getRules().get(0);
     repairs = new IntegerMap<>();
     repairs.put(repair, 2);
@@ -1759,7 +1756,7 @@ class WW2V3Year41Test {
                     .next(),
                 repairs));
     assertValid(error);
-    assertEquals(0, ((TripleAUnit) factory).getUnitDamage());
+    assertEquals(0, factory.getUnitDamage());
     // Find cost
     final int finalPUs = germans.getResources().getQuantity("PUs");
     assertEquals(midPUs, finalPUs + 1);
@@ -1776,7 +1773,7 @@ class WW2V3Year41Test {
     final IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
     gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
-    assertEquals(1, ((TripleAUnit) factory).getUnitDamage());
+    assertEquals(1, factory.getUnitDamage());
     final RepairRule repair = germans(gameData).getRepairFrontier().getRules().get(0);
     final IntegerMap<RepairRule> repairs = new IntegerMap<>();
     // we have 1 damaged marker, but trying to repair 2
@@ -1790,7 +1787,7 @@ class WW2V3Year41Test {
                 repairs));
     // it is no longer an error, we just math max 0 it
     assertValid(error);
-    assertEquals(0, ((TripleAUnit) factory).getUnitDamage());
+    assertEquals(0, factory.getUnitDamage());
   }
 
   @Test

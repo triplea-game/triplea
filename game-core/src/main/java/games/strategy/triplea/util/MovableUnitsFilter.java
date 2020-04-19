@@ -7,7 +7,6 @@ import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
@@ -180,8 +179,8 @@ public final class MovableUnitsFilter {
 
   // Whether the two units are equivalent for the purposes of movement.
   private boolean unitsAreEquivalentWithSameMovementLeft(final Unit u1, final Unit u2) {
-    final BigDecimal left1 = TripleAUnit.get(u1).getMovementLeft();
-    final BigDecimal left2 = TripleAUnit.get(u2).getMovementLeft();
+    final BigDecimal left1 = u1.getMovementLeft();
+    final BigDecimal left2 = u2.getMovementLeft();
     return u1.isEquivalent(u2) && left1.equals(left2);
   }
 

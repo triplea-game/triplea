@@ -24,7 +24,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.IBattle;
@@ -328,7 +327,7 @@ class DiceRollTest {
     GameDataTestUtil.addTo(westRussia, aaGunList);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     final List<Unit> fighterList = fighterType.create(6, russians);
-    TripleAUnit.get(fighterList.get(0)).setAlreadyMoved(BigDecimal.ONE);
+    fighterList.get(0).setAlreadyMoved(BigDecimal.ONE);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // aa hits at 0 (0 based)
     final DiceRoll hit =

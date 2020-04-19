@@ -11,7 +11,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -219,7 +218,7 @@ public class MoveValidator {
       return result.setErrorReturnResult("No units");
     }
     for (final Unit unit : units) {
-      if (TripleAUnit.get(unit).getSubmerged()) {
+      if (unit.getSubmerged()) {
         result.addDisallowedUnit("Cannot move submerged units", unit);
       } else if (Matches.unitIsDisabled().test(unit)) {
         result.addDisallowedUnit("Cannot move disabled units", unit);
@@ -481,9 +480,8 @@ public class MoveValidator {
                   && units.stream().anyMatch(Matches.unitIsLandTransport()))) {
             continue;
           }
-          final TripleAUnit taUnit = (TripleAUnit) unit;
           if (wasStartFoughtOver
-              || taUnit.getWasInCombat()
+              || unit.getWasInCombat()
               || route.anyMatch(notEndOrFriendlyTerrs)
               || route.anyMatch(notEndWasFought)) {
             result.addDisallowedUnit(NOT_ALL_UNITS_CAN_BLITZ, unit);
@@ -525,7 +523,7 @@ public class MoveValidator {
         result.addDisallowedUnit(
             unit.getType().getName()
                 + " can't invade from "
-                + TripleAUnit.get(unit).getTransportedBy().getType().getName(),
+                + unit.getTransportedBy().getType().getName(),
             unit);
       }
     }
@@ -1100,7 +1098,7 @@ public class MoveValidator {
     }
     BigDecimal max = BigDecimal.ZERO;
     for (final Unit unit : units) {
-      final BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      final BigDecimal left = unit.getMovementLeft();
       max = left.max(max);
     }
     return max;
@@ -1112,7 +1110,7 @@ public class MoveValidator {
     }
     BigDecimal least = new BigDecimal(Integer.MAX_VALUE);
     for (final Unit unit : units) {
-      final BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      final BigDecimal left = unit.getMovementLeft();
       least = left.min(least);
     }
     return least;
@@ -1293,7 +1291,7 @@ public class MoveValidator {
         }
         // make sure units dont leave their transports behind
         if (ua.getTransportCost() != -1) {
-          final Unit transport = TransportTracker.transportedBy(unit);
+          final Unit transport = unit.getTransportedBy();
           if (transport != null && !units.contains(transport)) {
             result.addDisallowedUnit("Unit must stay with its transport while moving", unit);
           }
@@ -1316,29 +1314,28 @@ public class MoveValidator {
       }
       if (!isEditMode) {
         for (final Unit baseUnit : land) {
-          final TripleAUnit unit = (TripleAUnit) baseUnit;
-          if (Matches.unitHasMoved().test(unit)) {
-            result.addDisallowedUnit("Units cannot move before loading onto transports", unit);
+          if (baseUnit.hasMoved()) {
+            result.addDisallowedUnit("Units cannot move before loading onto transports", baseUnit);
           }
-          final Unit transport = unitsToTransports.get(unit);
+          final Unit transport = unitsToTransports.get(baseUnit);
           if (transport == null) {
             continue;
           }
           if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
             result.addDisallowedUnit(
-                TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
+                TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, baseUnit);
           } else if (TransportTracker.isTransportLoadRestrictedAfterCombat(transport)) {
-            result.addDisallowedUnit(TRANSPORT_CANNOT_LOAD_AFTER_COMBAT, unit);
+            result.addDisallowedUnit(TRANSPORT_CANNOT_LOAD_AFTER_COMBAT, baseUnit);
           } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(
               transport, route.getEnd())) {
             Territory alreadyUnloadedTo =
                 getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
             for (final Unit transportToLoad : unitsToTransports.values()) {
-              final TripleAUnit trn = (TripleAUnit) transportToLoad;
               if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(
-                  trn, route.getEnd())) {
-                final UnitAttachment ua = UnitAttachment.get(unit.getType());
-                if (TransportTracker.getAvailableCapacity(trn) >= ua.getTransportCost()) {
+                  transportToLoad, route.getEnd())) {
+                final UnitAttachment ua = UnitAttachment.get(baseUnit.getType());
+                if (TransportTracker.getAvailableCapacity(transportToLoad)
+                    >= ua.getTransportCost()) {
                   alreadyUnloadedTo = null;
                   break;
                 }
@@ -1346,7 +1343,7 @@ public class MoveValidator {
             }
             if (alreadyUnloadedTo != null) {
               result.addDisallowedUnit(
-                  TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+                  TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), baseUnit);
             }
           }
         }
@@ -1436,7 +1433,7 @@ public class MoveValidator {
         Matches.unitIsAirTransportable()
             .and(
                 u ->
-                    (TripleAUnit.get(u).getMovementLeft().compareTo(route.getMovementCost(u)) < 0)
+                    (u.getMovementLeft().compareTo(route.getMovementCost(u)) < 0)
                         || route.crossesWater()
                         || route.getEnd().isWater()));
   }
@@ -1475,17 +1472,17 @@ public class MoveValidator {
       final Map<Unit, Unit> airTransportsAndParatroops =
           TransportUtils.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
-        if (Matches.unitHasMoved().test(paratroop)) {
+        if (paratroop.hasMoved()) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         final Unit transport = airTransportsAndParatroops.get(paratroop);
-        if (Matches.unitHasMoved().test(transport)) {
+        if (transport.hasMoved()) {
           result.addDisallowedUnit("Cannot move then transport paratroops", transport);
         }
       }
       final Territory routeEnd = route.getEnd();
       for (final Unit paratroop : paratroopsRequiringTransport) {
-        if (Matches.unitHasMoved().test(paratroop)) {
+        if (paratroop.hasMoved()) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         if (Matches.isTerritoryFriendly(player, data).test(routeEnd)
@@ -1691,15 +1688,13 @@ public class MoveValidator {
     final UnitAttachment ua = UnitAttachment.get(carrier.getType());
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();
-    final TripleAUnit taCarrier = (TripleAUnit) carrier;
     for (final Unit plane : selectFrom) {
-      final TripleAUnit taPlane = (TripleAUnit) plane;
       final UnitAttachment planeAttachment = UnitAttachment.get(plane.getType());
       final int cost = planeAttachment.getCarrierCost();
       if (available >= cost) {
         // this is to test if they started in the same sea zone or not, and its not a very good way
         // of testing it.
-        if ((taCarrier.getAlreadyMoved().compareTo(taPlane.getAlreadyMoved()) == 0)
+        if ((carrier.getAlreadyMoved().compareTo(plane.getAlreadyMoved()) == 0)
             || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
             || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).negate().test(plane)
                 && Matches.alliedUnit(playerWhoIsDoingTheMovement, data).test(plane))) {

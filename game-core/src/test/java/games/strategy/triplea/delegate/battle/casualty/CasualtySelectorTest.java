@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -112,7 +111,7 @@ class CasualtySelectorTest {
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     whenGetRandom(bridge).thenAnswer(withValues(0));
-    TripleAUnit.get(planes.get(0)).setAlreadyMoved(BigDecimal.ONE);
+    planes.get(0).setAlreadyMoved(BigDecimal.ONE);
     final Collection<Unit> casualties =
         AaCasualtySelector.getAaCasualties(
                 false,

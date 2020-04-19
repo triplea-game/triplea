@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AirMovementValidator;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
@@ -351,8 +350,7 @@ public class Route implements Serializable, Iterable<Territory> {
       changes.add(ChangeFactory.removeResourceCollection(player, tuple.getFirst()));
       for (final Unit unit : tuple.getSecond()) {
         changes.add(
-            ChangeFactory.unitPropertyChange(
-                unit, Boolean.TRUE, TripleAUnit.CHARGED_FLAT_FUEL_COST));
+            ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, Unit.CHARGED_FLAT_FUEL_COST));
       }
     }
     return changes;

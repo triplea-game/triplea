@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -34,7 +33,7 @@ public class BattleDrawable extends TerritoryDrawable {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final Set<GamePlayer> players = new HashSet<>();
     for (final Unit u : territory.getUnitCollection()) {
-      if (!TripleAUnit.get(u).getSubmerged()) {
+      if (!u.getSubmerged()) {
         players.add(u.getOwner());
       }
     }

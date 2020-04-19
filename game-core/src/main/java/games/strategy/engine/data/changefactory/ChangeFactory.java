@@ -16,7 +16,6 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHitsChange;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.data.BattleRecords;
@@ -222,7 +221,7 @@ public class ChangeFactory {
   public static Change markNoMovementChange(final Collection<Unit> units) {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
-      if (TripleAUnit.get(unit).getMovementLeft().compareTo(BigDecimal.ZERO) >= 0) {
+      if (unit.getMovementLeft().compareTo(BigDecimal.ZERO) >= 0) {
         change.add(markNoMovementChange(unit));
       }
     }
@@ -234,8 +233,6 @@ public class ChangeFactory {
 
   public static Change markNoMovementChange(final Unit unit) {
     return unitPropertyChange(
-        unit,
-        new BigDecimal(TripleAUnit.get(unit).getMaxMovementAllowed() + 1),
-        TripleAUnit.ALREADY_MOVED);
+        unit, new BigDecimal(unit.getMaxMovementAllowed() + 1), Unit.ALREADY_MOVED);
   }
 }

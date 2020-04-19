@@ -22,7 +22,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
@@ -62,7 +61,7 @@ class LhtrTest {
     delegate.move(
         easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
-    final TripleAUnit carrier = new TripleAUnit(carrirType, germans, gameData);
+    final Unit carrier = new Unit(carrirType, germans, gameData);
     gameData.performChange(ChangeFactory.addUnits(germans, Set.of(carrier)));
     // end the move phase
     delegate.end();

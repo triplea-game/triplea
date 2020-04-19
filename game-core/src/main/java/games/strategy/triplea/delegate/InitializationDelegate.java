@@ -17,7 +17,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.BonusIncomeUtils;
@@ -135,8 +134,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
               historyItemCreated = true;
             }
             try {
-              bridge.addChange(
-                  TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
+              bridge.addChange(TransportTracker.loadTransportChange(transport, toLoad));
             } catch (final IllegalStateException e) {
               log.log(
                   Level.SEVERE,

@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import java.math.BigDecimal;
@@ -185,9 +184,9 @@ public final class AirMovementValidator {
       final Unit airBeingValidated, final Route route) {
     return route.getEnd().getUnits().contains(airBeingValidated)
         // they are not being moved, they are already at the end
-        ? ((TripleAUnit) airBeingValidated).getMovementLeft()
+        ? airBeingValidated.getMovementLeft()
         // they are being moved (they are still at the start location)
-        : ((TripleAUnit) airBeingValidated)
+        : airBeingValidated //
             .getMovementLeft()
             .subtract(route.getMovementCost(airBeingValidated));
   }
@@ -552,7 +551,7 @@ public final class AirMovementValidator {
     final Predicate<Unit> ownedCarrier = Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit carrier : t.getUnitCollection().getMatches(ownedCarrier)) {
-        max = max.max(((TripleAUnit) carrier).getMovementLeft());
+        max = max.max(carrier.getMovementLeft());
       }
     }
     return max;
@@ -672,7 +671,7 @@ public final class AirMovementValidator {
 
   private static boolean canFindLand(
       final GameData data, final Unit unit, final Territory current) {
-    final BigDecimal movementLeft = ((TripleAUnit) unit).getMovementLeft();
+    final BigDecimal movementLeft = unit.getMovementLeft();
     return canFindLand(data, unit, current, movementLeft);
   }
 
@@ -795,10 +794,9 @@ public final class AirMovementValidator {
                   .getUnitCollection()
                   .getMatches(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier()));
           for (final Unit airUnit : airCargo) {
-            final TripleAUnit taUnit = (TripleAUnit) airUnit;
-            if (taUnit.getTransportedBy() != null && taUnit.getTransportedBy().equals(unit)) {
+            if (airUnit.getTransportedBy() != null && airUnit.getTransportedBy().equals(unit)) {
               // capacity = are cargo only
-              cargo += UnitAttachment.get(taUnit.getType()).getCarrierCost();
+              cargo += UnitAttachment.get(airUnit.getType()).getCarrierCost();
             }
           }
           return cargo;
