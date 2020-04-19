@@ -2026,7 +2026,10 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitHasWhenCombatDamagedEffect(final String filterForEffect) {
-    return unitHasWhenCombatDamagedEffect().and(unit -> {
+    return unit -> {
+      if (!unitHasWhenCombatDamagedEffect().test(unit)) {
+        return false;
+      }
       final int currentDamage = unit.getHits();
       final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList =
           UnitAttachment.get(unit.getType()).getWhenCombatDamaged();
