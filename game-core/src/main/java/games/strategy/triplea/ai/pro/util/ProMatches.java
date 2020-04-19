@@ -560,7 +560,7 @@ public final class ProMatches {
       final GamePlayer player, final UnitType unitType) {
     return Matches.unitIsOwnedBy(player)
         .and(Matches.unitIsOfType(unitType))
-        .and(Unit::isTransporting);
+        .and(Predicate.not(Unit::isTransporting));
   }
 
   public static Predicate<Unit> unitIsOwnedAndMatchesTypeAndNotTransporting(
