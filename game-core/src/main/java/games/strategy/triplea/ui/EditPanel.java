@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -952,23 +951,21 @@ class EditPanel extends ActionPanel {
   }
 
   private static Comparator<Unit> getRemovableUnitsOrder() {
-    return Comparator.comparing(
-        Function.identity(),
-        (u1, u2) -> {
-          if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
-            // Sort by decreasing transport capacity
-            return Comparator.<Unit, Collection<Unit>>comparing(
-                    Unit::getTransporting,
-                    Comparator.comparingInt(TransportUtils::getTransportCost).reversed())
-                .thenComparing(Unit::getMovementLeft)
-                .thenComparingInt(Object::hashCode)
-                .compare(u1, u2);
-          }
-          // Sort by increasing movement left
-          return Comparator.comparing(Unit::getMovementLeft)
-              .thenComparingInt(Object::hashCode)
-              .compare(u1, u2);
-        });
+    return (u1, u2) -> {
+      if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
+        // Sort by decreasing transport capacity
+        return Comparator.<Unit, Collection<Unit>>comparing(
+                Unit::getTransporting,
+                Comparator.comparingInt(TransportUtils::getTransportCost).reversed())
+            .thenComparing(Unit::getMovementLeft)
+            .thenComparingInt(Object::hashCode)
+            .compare(u1, u2);
+      }
+      // Sort by increasing movement left
+      return Comparator.comparing(Unit::getMovementLeft)
+          .thenComparingInt(Object::hashCode)
+          .compare(u1, u2);
+    };
   }
 
   private void setWidgetActivation() {
