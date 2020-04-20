@@ -2026,24 +2026,26 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitHasWhenCombatDamagedEffect(final String filterForEffect) {
-    return unitHasWhenCombatDamagedEffect().and(unit -> {
-      final int currentDamage = unit.getHits();
-      final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList =
-          UnitAttachment.get(unit.getType()).getWhenCombatDamaged();
-      for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key :
-          whenCombatDamagedList) {
-        final String effect = key.getSecond().getFirst();
-        if (!effect.equals(filterForEffect)) {
-          continue;
-        }
-        final int damagedFrom = key.getFirst().getFirst();
-        final int damagedTo = key.getFirst().getSecond();
-        if (currentDamage >= damagedFrom && currentDamage <= damagedTo) {
-          return true;
-        }
-      }
-      return false;
-    });
+    return unitHasWhenCombatDamagedEffect()
+        .and(
+            unit -> {
+              final int currentDamage = unit.getHits();
+              final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>
+                  whenCombatDamagedList = UnitAttachment.get(unit.getType()).getWhenCombatDamaged();
+              for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key :
+                  whenCombatDamagedList) {
+                final String effect = key.getSecond().getFirst();
+                if (!effect.equals(filterForEffect)) {
+                  continue;
+                }
+                final int damagedFrom = key.getFirst().getFirst();
+                final int damagedTo = key.getFirst().getSecond();
+                if (currentDamage >= damagedFrom && currentDamage <= damagedTo) {
+                  return true;
+                }
+              }
+              return false;
+            });
   }
 
   public static Predicate<Territory> territoryHasCaptureOwnershipChanges() {
