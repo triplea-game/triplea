@@ -2026,10 +2026,7 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitHasWhenCombatDamagedEffect(final String filterForEffect) {
-    return unit -> {
-      if (!unitHasWhenCombatDamagedEffect().test(unit)) {
-        return false;
-      }
+    return unitHasWhenCombatDamagedEffect().and(unit -> {
       final int currentDamage = unit.getHits();
       final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList =
           UnitAttachment.get(unit.getType()).getWhenCombatDamaged();
@@ -2046,7 +2043,7 @@ public final class Matches {
         }
       }
       return false;
-    };
+    });
   }
 
   public static Predicate<Territory> territoryHasCaptureOwnershipChanges() {

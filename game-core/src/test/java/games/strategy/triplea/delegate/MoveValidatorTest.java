@@ -56,8 +56,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
   void testGetLeastMovement() {
     final Collection<Unit> collection = bomber.create(1, british);
     assertEquals(new BigDecimal(6), MoveValidator.getLeastMovement(collection));
-    final Object[] objs = collection.toArray();
-    ((Unit) objs[0]).setAlreadyMoved(BigDecimal.ONE);
+    collection.iterator().next().setAlreadyMoved(BigDecimal.ONE);
     assertEquals(new BigDecimal(5), MoveValidator.getLeastMovement(collection));
     collection.addAll(factory.create(2, british));
     assertEquals(BigDecimal.ZERO, MoveValidator.getLeastMovement(collection));
