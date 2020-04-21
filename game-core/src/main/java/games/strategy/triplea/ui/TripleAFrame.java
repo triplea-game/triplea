@@ -40,7 +40,6 @@ import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -1242,7 +1241,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         final boolean isSelected,
         final boolean cellHasFocus) {
 
-      setText(unit.toString() + ", damage=" + TripleAUnit.get(unit).getUnitDamage());
+      setText(unit.toString() + ", damage=" + unit.getUnitDamage());
       final Optional<ImageIcon> icon =
           uiContext
               .getUnitImageFactory()

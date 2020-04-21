@@ -12,7 +12,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -786,9 +785,9 @@ class EditPanel extends ActionPanel {
               currentDamageMap.put(
                   u,
                   Triple.of(
-                      ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, selectedTerritory),
+                      u.getHowMuchDamageCanThisUnitTakeTotal(selectedTerritory),
                       0,
-                      ((TripleAUnit) u).getUnitDamage()));
+                      u.getUnitDamage()));
             }
             final IndividualUnitPanel unitPanel =
                 new IndividualUnitPanel(
@@ -952,23 +951,21 @@ class EditPanel extends ActionPanel {
   }
 
   private static Comparator<Unit> getRemovableUnitsOrder() {
-    return Comparator.comparing(
-        TripleAUnit::get,
-        (u1, u2) -> {
-          if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
-            // Sort by decreasing transport capacity
-            return Comparator.<TripleAUnit, Collection<Unit>>comparing(
-                    TripleAUnit::getTransporting,
-                    Comparator.comparingInt(TransportUtils::getTransportCost).reversed())
-                .thenComparing(TripleAUnit::getMovementLeft)
-                .thenComparingInt(Object::hashCode)
-                .compare(u1, u2);
-          }
-          // Sort by increasing movement left
-          return Comparator.comparing(TripleAUnit::getMovementLeft)
-              .thenComparingInt(Object::hashCode)
-              .compare(u1, u2);
-        });
+    return (u1, u2) -> {
+      if (UnitAttachment.get(u1.getType()).getTransportCapacity() != -1) {
+        // Sort by decreasing transport capacity
+        return Comparator.<Unit, Collection<Unit>>comparing(
+                Unit::getTransporting,
+                Comparator.comparingInt(TransportUtils::getTransportCost).reversed())
+            .thenComparing(Unit::getMovementLeft)
+            .thenComparingInt(Object::hashCode)
+            .compare(u1, u2);
+      }
+      // Sort by increasing movement left
+      return Comparator.comparing(Unit::getMovementLeft)
+          .thenComparingInt(Object::hashCode)
+          .compare(u1, u2);
+    };
   }
 
   private void setWidgetActivation() {

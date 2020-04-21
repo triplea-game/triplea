@@ -2,7 +2,6 @@ package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -130,7 +129,7 @@ public final class TransportUtils {
 
     final Map<Unit, Unit> mapping = new HashMap<>();
     for (final Unit currentTransported : canBeTransported) {
-      final Unit transport = TransportTracker.transportedBy(currentTransported);
+      final Unit transport = currentTransported.getTransportedBy();
 
       // Already being transported, make sure it is in transports
       if (transport == null || !canTransport.contains(transport)) {
@@ -221,8 +220,7 @@ public final class TransportUtils {
     canTransport.sort(
         Comparator.comparing(TransportTracker::hasTransportUnloadedInPreviousPhase)
             .thenComparingInt(TransportTracker::getAvailableCapacity)
-            .thenComparing(
-                TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft).reversed()));
+            .thenComparing(Comparator.comparing(Unit::getMovementLeft).reversed()));
     return canTransport;
   }
 

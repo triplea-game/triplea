@@ -18,7 +18,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -234,7 +234,7 @@ public class BattleTracker implements Serializable {
     // say they weren't in combat
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
-      change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_IN_COMBAT));
+      change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.WAS_IN_COMBAT));
     }
     bridge.addChange(change);
   }
@@ -358,7 +358,7 @@ public class BattleTracker implements Serializable {
     }
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
-      change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.WAS_IN_COMBAT));
+      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.WAS_IN_COMBAT));
     }
     bridge.addChange(change);
     if (changeTracker != null) {
@@ -1018,7 +1018,7 @@ public class BattleTracker implements Serializable {
           if (!toAdd.isEmpty()) {
             if (translateAttributes) {
               final Change translate =
-                  TripleAUnit.translateAttributesToOtherUnits(u, toAdd, territory);
+                  UnitUtils.translateAttributesToOtherUnits(u, toAdd, territory);
               if (!translate.isEmpty()) {
                 changes.add(translate);
               }
@@ -1062,12 +1062,11 @@ public class BattleTracker implements Serializable {
       final IntegerMap<Unit> damageMap = new IntegerMap<>();
       for (final Unit unit :
           CollectionUtils.getMatches(nonCom, Matches.unitWhenCapturedSustainsDamage())) {
-        final TripleAUnit taUnit = (TripleAUnit) unit;
-        final int damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(unit, territory);
+        final int damageLimit = unit.getHowMuchMoreDamageCanThisUnitTake(territory);
         final int sustainedDamage =
             UnitAttachment.get(unit.getType()).getWhenCapturedSustainsDamage();
         final int actualDamage = Math.max(0, Math.min(sustainedDamage, damageLimit));
-        final int totalDamage = taUnit.getUnitDamage() + actualDamage;
+        final int totalDamage = unit.getUnitDamage() + actualDamage;
         damageMap.put(unit, totalDamage);
       }
       if (!damageMap.isEmpty()) {

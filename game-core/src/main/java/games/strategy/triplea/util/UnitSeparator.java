@@ -5,7 +5,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -105,7 +104,7 @@ public class UnitSeparator {
       BigDecimal unitMovement = new BigDecimal(-1);
       if (categorizeMovement
           || (categorizeTrnMovement && Matches.unitIsTransport().test(current))) {
-        unitMovement = TripleAUnit.get(current).getMovementLeft();
+        unitMovement = current.getMovementLeft();
       }
       int unitTransportCost = -1;
       if (categorizeTransportCost) {
@@ -122,7 +121,7 @@ public class UnitSeparator {
               currentDependents,
               unitMovement,
               current.getHits(),
-              TripleAUnit.get(current).getUnitDamage(),
+              current.getUnitDamage(),
               disabled,
               unitTransportCost);
       // we test to see if we have the key using equals, then since

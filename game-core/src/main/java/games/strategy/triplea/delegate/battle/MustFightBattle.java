@@ -14,7 +14,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -226,8 +226,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         fighters.retainAll(CollectionUtils.getMatches(fighters, Matches.unitIsAir()));
         for (final Unit fighter : fighters) {
           // Set transportedBy for fighter
-          change.add(
-              ChangeFactory.unitPropertyChange(fighter, carrier, TripleAUnit.TRANSPORTED_BY));
+          change.add(ChangeFactory.unitPropertyChange(fighter, carrier, Unit.TRANSPORTED_BY));
         }
         // remove transported fighters from battle display
         this.attackingUnits.removeAll(fighters);
@@ -422,7 +421,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final List<Unit> toAdd = unitType.create(1, unit.getOwner());
         if (translateAttributes) {
           final Change translate =
-              TripleAUnit.translateAttributesToOtherUnits(unit, toAdd, battleSite);
+              UnitUtils.translateAttributesToOtherUnits(unit, toAdd, battleSite);
           changes.add(translate);
         }
         unitsToAdd.addAll(toAdd);
@@ -518,7 +517,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         CollectionUtils.getMatches(killed, Matches.unitAtMaxHitPointDamageChangesInto())) {
       lethallyDamagedMap.put(unit, unit.getUnitAttachment().getHitPoints());
     }
-    final Change lethallyDamagedChange = ChangeFactory.unitsHit(lethallyDamagedMap);
+    final Change lethallyDamagedChange =
+        ChangeFactory.unitsHit(lethallyDamagedMap, List.of(battleSite));
     bridge.addChange(lethallyDamagedChange);
 
     // Remove units
@@ -713,7 +713,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final Collection<Unit> transports =
             CollectionUtils.getMatches(attackingUnits, Matches.unitCanTransport());
         for (final Unit unit : transports) {
-          change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.WAS_IN_COMBAT));
+          change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.WAS_IN_COMBAT));
         }
         bridge.addChange(change);
       }
@@ -1129,8 +1129,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // Only include land units when checking for allow amphibious retreat
       final List<Unit> landUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand());
       for (final Unit unit : landUnits) {
-        final TripleAUnit taUnit = (TripleAUnit) unit;
-        if (!taUnit.getWasAmphibious()) {
+        if (!unit.getWasAmphibious()) {
           return true;
         }
       }
@@ -1522,8 +1521,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           final CompositeChange change = new CompositeChange();
           // remove dependency from paratroopers by unloading the air transports
           for (final Unit unit : dependents) {
-            change.add(
-                TransportTracker.unloadAirTransportChange((TripleAUnit) unit, battleSite, false));
+            change.add(TransportTracker.unloadAirTransportChange(unit, battleSite, false));
           }
           bridge.addChange(change);
           // remove bombers from dependentUnits
@@ -2303,7 +2301,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         defender ? defendingUnitsRetreated : attackingUnitsRetreated;
     final CompositeChange change = new CompositeChange();
     for (final Unit u : submerging) {
-      change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.SUBMERGED));
+      change.add(ChangeFactory.unitPropertyChange(u, true, Unit.SUBMERGED));
     }
     bridge.addChange(change);
     units.removeAll(submerging);

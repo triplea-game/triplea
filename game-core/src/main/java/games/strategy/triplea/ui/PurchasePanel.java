@@ -9,7 +9,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -156,7 +156,7 @@ public class PurchasePanel extends ActionPanel {
                 getData().getMap().getTerritories(),
                 Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
           totalProd +=
-              TripleAUnit.getProductionPotentialOfTerritory(
+              UnitUtils.getProductionPotentialOfTerritory(
                   t.getUnits(), t, getCurrentPlayer(), getData(), true, true);
         }
       } finally {

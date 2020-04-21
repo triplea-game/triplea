@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -160,7 +159,7 @@ public final class ProTransportUtils {
       final Comparator<Unit> comparator;
       if (Matches.unitIsLandTransport().test(transport)) {
         comparator =
-            Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft().intValue())
+            Comparator.<Unit>comparingInt(u -> u.getMovementLeft().intValue())
                 .thenComparing(getDecreasingAttackComparator(transport.getOwner()));
       } else {
         comparator = getDecreasingAttackComparator(transport.getOwner());
@@ -244,12 +243,12 @@ public final class ProTransportUtils {
     results.add(unit);
     if (Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
       units.sort(
-          Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft().intValue())
+          Comparator.<Unit>comparingInt(u -> u.getMovementLeft().intValue())
               .thenComparing(getDecreasingAttackComparator(player)));
       results.add(units.get(0));
     } else {
       units.sort(
-          Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft().intValue())
+          Comparator.<Unit>comparingInt(u -> u.getMovementLeft().intValue())
               .thenComparingInt(u -> UnitAttachment.get(u.getType()).getTransportCost())
               .thenComparing(getDecreasingAttackComparator(player)));
       results.addAll(selectUnitsToTransportFromList(unit, units));

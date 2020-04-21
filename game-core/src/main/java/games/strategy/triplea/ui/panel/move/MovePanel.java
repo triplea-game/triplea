@@ -9,7 +9,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
@@ -859,7 +858,7 @@ public class MovePanel extends AbstractMovePanel {
           // track the changing capacities of the transports as we assign units
           final IntegerMap<Unit> capacityMap = new IntegerMap<>();
           for (final Unit transport : sortedTransports) {
-            final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
+            final Collection<Unit> transporting = transport.getTransporting();
             capacityMap.add(transport, TransportUtils.getTransportCost(transporting));
           }
           boolean hasChanged;
@@ -878,7 +877,7 @@ public class MovePanel extends AbstractMovePanel {
             final Iterator<Unit> transportIter = sortedTransports.iterator();
             while (transportIter.hasNext()) {
               final Unit transport = transportIter.next();
-              final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
+              final Collection<Unit> transporting = transport.getTransporting();
               if (transporting == null) {
                 continue;
               }
@@ -938,7 +937,7 @@ public class MovePanel extends AbstractMovePanel {
         CollectionUtils.getMatches(chooser.getSelected(), Matches.unitIsTransport());
     final List<Unit> allUnitsInSelectedTransports = new ArrayList<>();
     for (final Unit transport : chosenTransports) {
-      final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
+      final Collection<Unit> transporting = transport.getTransporting();
       if (transporting != null) {
         allUnitsInSelectedTransports.addAll(transporting);
       }
@@ -956,7 +955,7 @@ public class MovePanel extends AbstractMovePanel {
       final Iterator<Unit> selectedIter = selectedUnits.iterator();
       while (selectedIter.hasNext()) {
         final Unit selected = selectedIter.next();
-        final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
+        final Collection<Unit> transporting = transport.getTransporting();
         for (final Unit candidate : transporting) {
           if (selected.getType().equals(candidate.getType())
               && selected.getOwner().equals(candidate.getOwner())
@@ -1014,8 +1013,7 @@ public class MovePanel extends AbstractMovePanel {
       final Predicate<Unit> enoughMovement =
           u ->
               BaseEditDelegate.getEditMode(getData())
-                  || (TripleAUnit.get(u).getMovementLeft().compareTo(route.getMovementCost(u))
-                      >= 0);
+                  || (u.getMovementLeft().compareTo(route.getMovementCost(u)) >= 0);
 
       if (route.isUnload()) {
         final Predicate<Unit> notLandAndCanMove = enoughMovement.and(Matches.unitIsNotLand());

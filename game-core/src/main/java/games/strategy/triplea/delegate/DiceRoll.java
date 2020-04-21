@@ -36,6 +36,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import lombok.Builder;
+import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
@@ -675,7 +678,7 @@ public class DiceRoll implements Externalizable {
    * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is
    *     called, for the actual battle.
    */
-  public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
+  public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -706,7 +709,7 @@ public class DiceRoll implements Externalizable {
    * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is
    *     called, for the actual battle.
    */
-  public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
+  public static Map<Unit, TotalPowerAndTotalRolls> getUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> unitsGettingPowerFor,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -719,7 +722,7 @@ public class DiceRoll implements Externalizable {
       final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
 
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRolls = new HashMap<>();
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
       return unitPowerAndRolls;
     }
@@ -856,19 +859,41 @@ public class DiceRoll implements Externalizable {
         }
       }
 
-      unitPowerAndRolls.put(unit, Tuple.of(strength, rolls));
+      unitPowerAndRolls.put(
+          unit, TotalPowerAndTotalRolls.builder().totalPower(strength).totalRolls(rolls).build());
     }
 
     return unitPowerAndRolls;
   }
 
   public static int getTotalPower(
-      final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
-    return getTotalPowerAndRolls(unitPowerAndRollsMap, data).getFirst();
+      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap, final GameData data) {
+    return getTotalPowerAndRolls(unitPowerAndRollsMap, data).getTotalPower();
   }
 
-  private static Tuple<Integer, Integer> getTotalPowerAndRolls(
-      final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
+  @Value
+  @Builder
+  public static class TotalPowerAndTotalRolls {
+    @Nonnull Integer totalPower;
+    @Nonnull Integer totalRolls;
+
+    public TotalPowerAndTotalRolls subtractPower(final int powerToSubtract) {
+      return TotalPowerAndTotalRolls.builder()
+          .totalPower(totalPower - powerToSubtract)
+          .totalRolls(totalRolls)
+          .build();
+    }
+
+    public TotalPowerAndTotalRolls subtractRolls(final int rollsToSubtract) {
+      return TotalPowerAndTotalRolls.builder()
+          .totalPower(totalPower)
+          .totalRolls(totalRolls - rollsToSubtract)
+          .build();
+    }
+  }
+
+  private static TotalPowerAndTotalRolls getTotalPowerAndRolls(
+      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap, final GameData data) {
 
     final int diceSides = data.getDiceSides();
     final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
@@ -878,9 +903,9 @@ public class DiceRoll implements Externalizable {
 
     int totalPower = 0;
     int totalRolls = 0;
-    for (final Entry<Unit, Tuple<Integer, Integer>> entry : unitPowerAndRollsMap.entrySet()) {
-      int unitStrength = Math.min(Math.max(0, entry.getValue().getFirst()), diceSides);
-      final int unitRolls = entry.getValue().getSecond();
+    for (final Entry<Unit, TotalPowerAndTotalRolls> entry : unitPowerAndRollsMap.entrySet()) {
+      int unitStrength = Math.min(Math.max(0, entry.getValue().getTotalPower()), diceSides);
+      final int unitRolls = entry.getValue().getTotalRolls();
       if (unitStrength <= 0 || unitRolls <= 0) {
         continue;
       }
@@ -902,7 +927,7 @@ public class DiceRoll implements Externalizable {
       }
     }
 
-    return Tuple.of(totalPower, totalRolls);
+    return TotalPowerAndTotalRolls.builder().totalPower(totalPower).totalRolls(totalRolls).build();
   }
 
   /** Roll dice for units using low luck rules. */
@@ -922,7 +947,7 @@ public class DiceRoll implements Externalizable {
     final Territory location = battle.getTerritory();
     final boolean isAmphibiousBattle = battle.isAmphibious();
     final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
             allEnemyUnitsAliveOrWaitingToDie,
@@ -1436,7 +1461,7 @@ public class DiceRoll implements Externalizable {
     final Territory location = battle.getTerritory();
     final boolean isAmphibiousBattle = battle.isAmphibious();
     final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             units,
             allEnemyUnitsAliveOrWaitingToDie,
@@ -1448,10 +1473,9 @@ public class DiceRoll implements Externalizable {
             isAmphibiousBattle,
             amphibiousLandAttackers);
 
-    final Tuple<Integer, Integer> totalPowerAndRolls =
+    final TotalPowerAndTotalRolls totalPowerAndRolls =
         getTotalPowerAndRolls(unitPowerAndRollsMap, data);
-    final int totalPower = totalPowerAndRolls.getFirst();
-    final int rollCount = totalPowerAndRolls.getSecond();
+    final int rollCount = totalPowerAndRolls.getTotalRolls();
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
@@ -1464,9 +1488,9 @@ public class DiceRoll implements Externalizable {
     int diceIndex = 0;
     for (final Unit current : units) {
       final UnitAttachment ua = UnitAttachment.get(current.getType());
-      final Tuple<Integer, Integer> powerAndRolls = unitPowerAndRollsMap.get(current);
-      final int strength = powerAndRolls.getFirst();
-      final int rolls = powerAndRolls.getSecond();
+      final TotalPowerAndTotalRolls powerAndRolls = unitPowerAndRollsMap.get(current);
+      final int strength = powerAndRolls.getTotalPower();
+      final int rolls = powerAndRolls.getTotalRolls();
       // lhtr heavy bombers take best of n dice for both attack and defense
       if (rolls <= 0 || strength <= 0) {
         continue;
@@ -1510,6 +1534,7 @@ public class DiceRoll implements Externalizable {
       }
     }
 
+    final int totalPower = totalPowerAndRolls.getTotalPower();
     final double expectedHits = ((double) totalPower) / data.getDiceSides();
     final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
     bridge

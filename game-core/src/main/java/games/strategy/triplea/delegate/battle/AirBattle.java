@@ -13,7 +13,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -324,8 +323,7 @@ public class AirBattle extends AbstractBattle {
       final Collection<Unit> units, final IDelegateBridge bridge) {
     final CompositeChange wasInAirBattleChange = new CompositeChange();
     for (final Unit u : units) {
-      wasInAirBattleChange.add(
-          ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
+      wasInAirBattleChange.add(ChangeFactory.unitPropertyChange(u, true, Unit.WAS_IN_AIR_BATTLE));
     }
     if (!wasInAirBattleChange.isEmpty()) {
       bridge.addChange(wasInAirBattleChange);

@@ -14,7 +14,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -52,7 +51,7 @@ class BattleTrackerTest {
     final GamePlayer gamePlayer = new GamePlayer("name", mockGameData);
 
     // need at least one attacker for there to be considered a battle.
-    final Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), gamePlayer, mockGameData);
+    final Unit unit = new Unit(new UnitType("unit", mockGameData), gamePlayer, mockGameData);
     final List<Unit> attackers = List.of(unit);
 
     when(mockDelegateBridge.getData()).thenReturn(mockGameData);

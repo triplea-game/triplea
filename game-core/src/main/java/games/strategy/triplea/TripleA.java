@@ -1,10 +1,6 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -65,10 +61,5 @@ public class TripleA implements IGameLoader {
     final LocalPlayers localPlayers = new LocalPlayers(players);
     game.setDisplay(launchAction.startGame(localPlayers, game, players, chat));
     game.setSoundChannel(launchAction.getSoundChannel(localPlayers));
-  }
-
-  @Override
-  public Unit newUnit(final UnitType type, final GamePlayer owner, final GameData data) {
-    return new TripleAUnit(type, owner, data);
   }
 }

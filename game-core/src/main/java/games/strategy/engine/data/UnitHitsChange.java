@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.Collection;
 import org.triplea.java.collections.IntegerMap;
 
 /** A game data change that captures the damage done to a collection of units. */
@@ -10,18 +9,28 @@ public class UnitHitsChange extends Change {
 
   private final IntegerMap<Unit> hits;
   private final IntegerMap<Unit> undoHits;
+  private final Collection<Territory> territoriesToNotify;
 
-  private UnitHitsChange(final IntegerMap<Unit> hits, final IntegerMap<Unit> undoHits) {
+  private UnitHitsChange(
+      final IntegerMap<Unit> hits,
+      final IntegerMap<Unit> undoHits,
+      final Collection<Territory> territoriesToNotify) {
     this.hits = hits;
     this.undoHits = undoHits;
+    this.territoriesToNotify = territoriesToNotify;
   }
 
-  public UnitHitsChange(final IntegerMap<Unit> hits) {
-    this.hits = new IntegerMap<>(hits);
-    undoHits = new IntegerMap<>();
-    for (final Unit item : this.hits.keySet()) {
+  public UnitHitsChange(
+      final IntegerMap<Unit> hits, final Collection<Territory> territoriesToNotify) {
+    this(new IntegerMap<>(hits), undoHits(hits), territoriesToNotify);
+  }
+
+  private static IntegerMap<Unit> undoHits(final IntegerMap<Unit> hits) {
+    final var undoHits = new IntegerMap<Unit>();
+    for (final Unit item : hits.keySet()) {
       undoHits.put(item, item.getHits());
     }
+    return undoHits;
   }
 
   @Override
@@ -29,16 +38,13 @@ public class UnitHitsChange extends Change {
     for (final Unit item : hits.keySet()) {
       item.setHits(hits.getInt(item));
     }
-    final Set<Unit> units = hits.keySet();
-    for (final Territory element : data.getMap().getTerritories()) {
-      if (!Collections.disjoint(element.getUnits(), units)) {
-        element.notifyChanged();
-      }
+    for (final Territory territory : territoriesToNotify) {
+      territory.notifyChanged();
     }
   }
 
   @Override
   public Change invert() {
-    return new UnitHitsChange(undoHits, hits);
+    return new UnitHitsChange(undoHits, hits, territoriesToNotify);
   }
 }

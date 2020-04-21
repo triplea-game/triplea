@@ -106,7 +106,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
 
     private static Collection<Unit> createUnit(final UnitType unitType, final int count) {
       return IntStream.range(0, count)
-          .mapToObj(i -> new TripleAUnit(unitType, BRITISH, data))
+          .mapToObj(i -> new Unit(unitType, BRITISH, data))
           .collect(Collectors.toSet());
     }
   }
@@ -215,7 +215,8 @@ class CasualtyOrderOfLossesTestOnGlobal {
   }
 
   @Test
-  void marinesAndArtillery() {
+  @DisplayName("Verify that amphib assualting marines and artillery are interleaved")
+  void interleaveArtilleryAndMarines() {
     final Collection<Unit> attackingUnits = new ArrayList<>();
     attackingUnits.addAll(DataFactory.britishMarine(3));
     attackingUnits.addAll(DataFactory.britishArtillery(3));

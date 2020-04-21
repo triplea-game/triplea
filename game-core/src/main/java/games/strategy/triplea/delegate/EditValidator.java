@@ -7,7 +7,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
@@ -134,7 +133,7 @@ final class EditValidator {
     }
     // if transported units selected, transport must be deleted too
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitCanBeTransported())) {
-      final Unit transport = TransportTracker.transportedBy(unit);
+      final Unit transport = unit.getTransportedBy();
       if (transport != null && !units.contains(transport)) {
         return "Can't remove transported units without removing transport";
       }
@@ -256,7 +255,7 @@ final class EditValidator {
     }
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
-      if (dmg < 0 || dmg > ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, territory)) {
+      if (dmg < 0 || dmg > u.getHowMuchDamageCanThisUnitTakeTotal(territory)) {
         return "Damage cannot be less than zero or greater than the max damage of the unit";
       }
     }

@@ -7,7 +7,6 @@ import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
@@ -180,7 +179,7 @@ public final class ProMoveUtils {
       // Loop through each amphib attack map
       final Map<Unit, List<Unit>> amphibAttackMap = attackMap.get(t).getAmphibAttackMap();
       for (final Unit transport : amphibAttackMap.keySet()) {
-        int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
+        int movesLeft = transport.getMovementLeft().intValue();
         Territory transportTerritory = proData.getUnitTerritory(transport);
         moves.newSequence();
 

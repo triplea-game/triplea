@@ -7,7 +7,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProOtherMoveOptions;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
@@ -1507,7 +1506,7 @@ class ProNonCombatMoveAi {
       for (final Iterator<Unit> it = currentTransportMoveMap.keySet().iterator(); it.hasNext(); ) {
         final Unit transport = it.next();
         final Territory currentTerritory = unitTerritoryMap.get(transport);
-        final int moves = TripleAUnit.get(transport).getMovementLeft().intValue();
+        final int moves = transport.getMovementLeft().intValue();
         if (TransportTracker.isTransporting(transport) || moves <= 0) {
           continue;
         }
@@ -2307,7 +2306,7 @@ class ProNonCombatMoveAi {
         }
 
         // Find number of potential attack options next turn
-        final int range = TripleAUnit.get(u).getMaxMovementAllowed();
+        final int range = u.getMaxMovementAllowed();
         final Set<Territory> possibleAttackTerritories =
             data.getMap()
                 .getNeighbors(
@@ -2630,6 +2629,9 @@ class ProNonCombatMoveAi {
       ProLogger.trace("  --- My actual units ---");
       final Map<String, Integer> printMap3 = new HashMap<>();
       for (final Unit unit : units3) {
+        if (unit == null) {
+          continue;
+        }
         if (printMap3.containsKey(unit.toStringNoOwner())) {
           printMap3.put(unit.toStringNoOwner(), printMap3.get(unit.toStringNoOwner()) + 1);
         } else {

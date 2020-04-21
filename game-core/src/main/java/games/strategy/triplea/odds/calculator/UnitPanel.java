@@ -2,7 +2,6 @@ package games.strategy.triplea.odds.calculator;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TooltipProperties;
@@ -105,8 +104,8 @@ public class UnitPanel extends JPanel {
         // add 1 because it is the max operational damage and we want to disable it
         final int unitDamage =
             Math.max(0, 1 + UnitAttachment.get(category.getType()).getMaxOperationalDamage());
-        for (final Unit u : units) {
-          ((TripleAUnit) u).setUnitDamage(unitDamage);
+        for (final Unit unit : units) {
+          unit.setUnitDamage(unitDamage);
         }
       }
     }

@@ -15,7 +15,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
@@ -868,7 +867,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
 
     final Tuple<BigDecimal, BigDecimal> movementLeft =
-        TripleAUnit.getMinAndMaxMovementLeft(
+        getMinAndMaxMovementLeft(
             CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate()));
     movementLeftForCurrentUnits =
         movementLeft.getFirst()
@@ -924,6 +923,30 @@ public class MapPanel extends ImageScrollerLargeView {
     mouseShadowImage = img;
     SwingUtilities.invokeLater(this::repaint);
     g.dispose();
+  }
+
+  /**
+   * Returns a tuple whose first element indicates the minimum movement remaining for the specified
+   * collection of units, and whose second element indicates the maximum movement remaining for the
+   * specified collection of units.
+   */
+  private static Tuple<BigDecimal, BigDecimal> getMinAndMaxMovementLeft(
+      final Collection<Unit> units) {
+    BigDecimal min = new BigDecimal(100000);
+    BigDecimal max = BigDecimal.ZERO;
+    for (final Unit unit : units) {
+      final BigDecimal left = unit.getMovementLeft();
+      if (left.compareTo(max) > 0) {
+        max = left;
+      }
+      if (left.compareTo(max) < 0) {
+        min = left;
+      }
+    }
+    if (max.compareTo(min) < 0) {
+      min = max;
+    }
+    return Tuple.of(min, max);
   }
 
   public void setTerritoryOverlay(final Territory territory, final Color color, final int alpha) {

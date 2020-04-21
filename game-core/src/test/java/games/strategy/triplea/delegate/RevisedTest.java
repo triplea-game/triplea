@@ -63,7 +63,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
@@ -177,7 +176,7 @@ class RevisedTest {
     final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
     final Territory sz7 = gameData.getMap().getTerritory("7 Sea Zone");
     final Territory sz8 = gameData.getMap().getTerritory("8 Sea Zone");
-    final TripleAUnit sub = (TripleAUnit) sz8.getUnitCollection().iterator().next();
+    final Unit sub = sz8.getUnitCollection().iterator().next();
     sub.setSubmerged(true);
     // now move to attack it
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
@@ -263,11 +262,10 @@ class RevisedTest {
     gameData.performChange(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
     gameData.performChange(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
     // submerge the russian sub
-    final TripleAUnit sub =
-        (TripleAUnit)
-            CollectionUtils.getMatches(sz5.getUnits(), Matches.unitIsOwnedBy(russians))
-                .iterator()
-                .next();
+    final Unit sub =
+        CollectionUtils.getMatches(sz5.getUnits(), Matches.unitIsOwnedBy(russians))
+            .iterator()
+            .next();
     sub.setSubmerged(true);
     // now move an infantry through the sz
     load(
@@ -431,8 +429,7 @@ class RevisedTest {
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport =
-        (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
+    final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     final String error =
         moveDelegate.performMove(
             new MoveDescription(
@@ -442,12 +439,12 @@ class RevisedTest {
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
     // make sure it was laoded
     assertTrue(transport.getTransporting().containsAll(infantry));
-    assertTrue(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
+    assertTrue(infantry.get(0).getWasLoadedThisTurn());
     // udo the move
     moveDelegate.undoMove(0);
     // make sure that loaded is not set
     assertTrue(transport.getTransporting().isEmpty());
-    assertFalse(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
+    assertFalse(infantry.get(0).getWasLoadedThisTurn());
   }
 
   @Test
@@ -467,8 +464,7 @@ class RevisedTest {
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport =
-        (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
+    final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     // load the transport
     String error =
         moveDelegate.performMove(
@@ -514,8 +510,7 @@ class RevisedTest {
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport =
-        (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
+    final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     // load the transports
     // in two moves
     String error =
@@ -536,7 +531,7 @@ class RevisedTest {
     moveDelegate.undoMove(0);
     // make sure that loaded is not set
     assertTrue(transport.getTransporting().isEmpty());
-    assertFalse(((TripleAUnit) infantry.get(0)).getWasLoadedThisTurn());
+    assertFalse(infantry.get(0).getWasLoadedThisTurn());
   }
 
   @Test
@@ -561,8 +556,7 @@ class RevisedTest {
             .getUnitCollection()
             .getMatches(Matches.unitIsOfType(infantryType).and(Matches.unitIsOwnedBy(japanese)));
     assertEquals(1, infantry.size());
-    final TripleAUnit transport =
-        (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
+    final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     String error =
         moveDelegate.performMove(
             new MoveDescription(infantry, eeToSz5, Map.of(infantry.get(0), transport)));
@@ -590,8 +584,7 @@ class RevisedTest {
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport =
-        (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
+    final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     String error =
         moveDelegate.performMove(
             new MoveDescription(
@@ -642,8 +635,7 @@ class RevisedTest {
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport =
-        (TripleAUnit) sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
+    final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsTransport()).get(0);
     String error =
         moveDelegate.performMove(
             new MoveDescription(
@@ -654,7 +646,7 @@ class RevisedTest {
     final Route sz5ToNorway = new Route(sz5, norway);
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
     assertNull(error, error);
-    assertTrue(((TripleAUnit) infantry.get(0)).getWasUnloadedInCombatPhase());
+    assertTrue(infantry.get(0).getWasUnloadedInCombatPhase());
     // start non combat
     moveDelegate.end();
     advanceToStep(bridge, "germanNonCombatMove");

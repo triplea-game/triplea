@@ -14,7 +14,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractUserActionAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -197,7 +196,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasMoved() {
-    return unit -> TripleAUnit.get(unit).getAlreadyMoved().compareTo(BigDecimal.ZERO) > 0;
+    return unit -> unit.hasMoved();
   }
 
   public static Predicate<Unit> unitHasNotMoved() {
@@ -205,7 +204,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasNotBeenChargedFlatFuelCost() {
-    return unit -> !TripleAUnit.get(unit).getChargedFlatFuelCost();
+    return unit -> !unit.getChargedFlatFuelCost();
   }
 
   // TODO: this should really be improved to check more properties like support attachments
@@ -350,8 +349,7 @@ public final class Matches {
         return true;
       }
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())) {
-        final TripleAUnit taUnit = (TripleAUnit) unit;
-        return taUnit.getUnitDamage() >= taUnit.getHowMuchDamageCanThisUnitTakeTotal(unit, t);
+        return unit.getUnitDamage() >= unit.getHowMuchDamageCanThisUnitTakeTotal(t);
       }
       return false;
     };
@@ -366,7 +364,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasTakenSomeBombingUnitDamage() {
-    return unit -> ((TripleAUnit) unit).getUnitDamage() > 0;
+    return unit -> unit.getUnitDamage() > 0;
   }
 
   public static Predicate<Unit> unitHasNotTakenAnyBombingUnitDamage() {
@@ -382,7 +380,6 @@ public final class Matches {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      final TripleAUnit taUnit = (TripleAUnit) unit;
       if (ua.getMaxOperationalDamage() < 0) {
         // factories may or may not have max operational damage set, so we must still determine here
         // assume that if maxOperationalDamage < 0, then the max damage must be based on the
@@ -393,7 +390,7 @@ public final class Matches {
         return false;
       }
       // only greater than. if == then we can still operate
-      return taUnit.getUnitDamage() > ua.getMaxOperationalDamage();
+      return unit.getUnitDamage() > ua.getMaxOperationalDamage();
     };
   }
 
@@ -459,11 +456,11 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitWasScrambled() {
-    return obj -> ((TripleAUnit) obj).getWasScrambled();
+    return Unit::getWasScrambled;
   }
 
   public static Predicate<Unit> unitWasInAirBattle() {
-    return obj -> ((TripleAUnit) obj).getWasInAirBattle();
+    return Unit::getWasInAirBattle;
   }
 
   public static Predicate<Unit> unitCanBombard(final GamePlayer gamePlayer) {
@@ -548,7 +545,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitWasAmphibious() {
-    return obj -> ((TripleAUnit) obj).getWasAmphibious();
+    return Unit::getWasAmphibious;
   }
 
   public static Predicate<Unit> unitWasNotAmphibious() {
@@ -556,15 +553,15 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitWasInCombat() {
-    return obj -> ((TripleAUnit) obj).getWasInCombat();
+    return Unit::getWasInCombat;
   }
 
   public static Predicate<Unit> unitWasUnloadedThisTurn() {
-    return obj -> ((TripleAUnit) obj).getUnloadedTo() != null;
+    return obj -> obj.getUnloadedTo() != null;
   }
 
   private static Predicate<Unit> unitWasLoadedThisTurn() {
-    return obj -> ((TripleAUnit) obj).getWasLoadedThisTurn();
+    return Unit::getWasLoadedThisTurn;
   }
 
   static Predicate<Unit> unitWasNotLoadedThisTurn() {
@@ -1111,7 +1108,7 @@ public final class Matches {
 
   public static Predicate<Unit> unitHasEnoughMovementForRoute(final Route route) {
     return unit -> {
-      BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      BigDecimal left = unit.getMovementLeft();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final GamePlayer player = unit.getOwner();
       if (ua.getIsAir()) {
@@ -1161,7 +1158,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasMovementLeft() {
-    return o -> TripleAUnit.get(o).getMovementLeft().compareTo(BigDecimal.ZERO) > 0;
+    return Unit::hasMovementLeft;
   }
 
   public static Predicate<Unit> unitCanMove() {
@@ -1192,14 +1189,10 @@ public final class Matches {
     return unit -> players.contains(unit.getOwner());
   }
 
-  public static Predicate<Unit> unitIsTransporting() {
-    return unit -> !TripleAUnit.get(unit).getTransporting().isEmpty();
-  }
-
   public static Predicate<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units) {
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
     return unit -> {
-      final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
+      final Collection<Unit> transporting = unit.getTransporting();
       return !Collections.disjoint(UnitSeparator.categorize(transporting), unitCategories);
     };
   }
@@ -1454,7 +1447,7 @@ public final class Matches {
    * fighters sitting as cargo on a ship. (Not sure if set for mech inf or not.)
    */
   public static Predicate<Unit> unitIsBeingTransported() {
-    return dependent -> ((TripleAUnit) dependent).getTransportedBy() != null;
+    return dependent -> dependent.getTransportedBy() != null;
   }
 
   /**
@@ -1476,7 +1469,7 @@ public final class Matches {
         forceLoadParatroopersIfPossible ? TransportUtils.mapParatroopers(units) : Map.of();
     return dependent -> {
       // transported on a sea transport
-      final Unit transportedBy = ((TripleAUnit) dependent).getTransportedBy();
+      final Unit transportedBy = dependent.getTransportedBy();
       if (transportedBy != null && units.contains(transportedBy)) {
         return true;
       }
@@ -1520,7 +1513,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsSubmerged() {
-    return u -> TripleAUnit.get(u).getSubmerged();
+    return Unit::getSubmerged;
   }
 
   public static Predicate<UnitType> unitTypeIsFirstStrike() {
@@ -1888,7 +1881,7 @@ public final class Matches {
   public static Predicate<Unit> unitCanInvade() {
     return unit -> {
       // is the unit being transported?
-      final Unit transport = TripleAUnit.get(unit).getTransportedBy();
+      final Unit transport = unit.getTransportedBy();
       if (transport == null) {
         // Unit isn't transported so can Invade
         return true;
@@ -2033,28 +2026,26 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitHasWhenCombatDamagedEffect(final String filterForEffect) {
-    return u -> {
-      if (!unitHasWhenCombatDamagedEffect().test(u)) {
-        return false;
-      }
-      final TripleAUnit taUnit = (TripleAUnit) u;
-      final int currentDamage = taUnit.getHits();
-      final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList =
-          UnitAttachment.get(u.getType()).getWhenCombatDamaged();
-      for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key :
-          whenCombatDamagedList) {
-        final String effect = key.getSecond().getFirst();
-        if (!effect.equals(filterForEffect)) {
-          continue;
-        }
-        final int damagedFrom = key.getFirst().getFirst();
-        final int damagedTo = key.getFirst().getSecond();
-        if (currentDamage >= damagedFrom && currentDamage <= damagedTo) {
-          return true;
-        }
-      }
-      return false;
-    };
+    return unitHasWhenCombatDamagedEffect()
+        .and(
+            unit -> {
+              final int currentDamage = unit.getHits();
+              final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>
+                  whenCombatDamagedList = UnitAttachment.get(unit.getType()).getWhenCombatDamaged();
+              for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key :
+                  whenCombatDamagedList) {
+                final String effect = key.getSecond().getFirst();
+                if (!effect.equals(filterForEffect)) {
+                  continue;
+                }
+                final int damagedFrom = key.getFirst().getFirst();
+                final int damagedTo = key.getFirst().getSecond();
+                if (currentDamage >= damagedFrom && currentDamage <= damagedTo) {
+                  return true;
+                }
+              }
+              return false;
+            });
   }
 
   public static Predicate<Territory> territoryHasCaptureOwnershipChanges() {
@@ -2338,7 +2329,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsAirborne() {
-    return obj -> ((TripleAUnit) obj).getAirborne();
+    return Unit::getAirborne;
   }
 
   public static <T> Predicate<T> isNotInList(final List<T> list) {

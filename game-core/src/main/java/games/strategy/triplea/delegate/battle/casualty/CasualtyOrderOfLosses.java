@@ -7,6 +7,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +24,6 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Tuple;
 
 @UtilityClass
 class CasualtyOrderOfLosses {
@@ -36,16 +36,16 @@ class CasualtyOrderOfLosses {
   @Builder
   @Value
   static class Parameters {
-    @Nonnull final Collection<Unit> targetsToPickFrom;
-    @Nonnull final Boolean defending;
-    @Nonnull final GamePlayer player;
-    @Nonnull final Collection<Unit> enemyUnits;
-    @Nonnull final Boolean amphibious;
-    @Nonnull final Collection<Unit> amphibiousLandAttackers;
-    @Nonnull final Territory battlesite;
-    @Nonnull final IntegerMap<UnitType> costs;
-    @Nonnull final Collection<TerritoryEffect> territoryEffects;
-    @Nonnull final GameData data;
+    @Nonnull Collection<Unit> targetsToPickFrom;
+    @Nonnull Boolean defending;
+    @Nonnull GamePlayer player;
+    @Nonnull Collection<Unit> enemyUnits;
+    @Nonnull Boolean amphibious;
+    @Nonnull Collection<Unit> amphibiousLandAttackers;
+    @Nonnull Territory battlesite;
+    @Nonnull IntegerMap<UnitType> costs;
+    @Nonnull Collection<TerritoryEffect> territoryEffects;
+    @Nonnull GameData data;
   }
 
   /**
@@ -60,6 +60,7 @@ class CasualtyOrderOfLosses {
    * provided. (Veqryn)
    */
   static List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
+
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {
@@ -130,7 +131,7 @@ class CasualtyOrderOfLosses {
             true);
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(
             sortedUnitsList,
             new ArrayList<>(parameters.enemyUnits),
@@ -143,10 +144,11 @@ class CasualtyOrderOfLosses {
             parameters.amphibiousLandAttackers,
             unitSupportPowerMap,
             unitSupportRollsMap);
+
     // Sort units starting with weakest for finding the worst units
     Collections.reverse(sortedUnitsList);
     final List<Unit> sortedWellEnoughUnitsList = new ArrayList<>();
-    final Map<Unit, Tuple<Integer, Integer>> originalUnitPowerAndRollsMap =
+    final Map<Unit, TotalPowerAndTotalRolls> originalUnitPowerAndRollsMap =
         new HashMap<>(unitPowerAndRollsMap);
     for (int i = 0; i < sortedUnitsList.size(); ++i) {
       // Loop through all target units to find the best unit to take as casualty
@@ -165,7 +167,7 @@ class CasualtyOrderOfLosses {
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {
           for (final Unit supportedUnit : unitSupportPowerMapForUnit.keySet()) {
-            Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+            TotalPowerAndTotalRolls strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
             if (strengthAndRolls == null) {
               continue;
             }
@@ -173,25 +175,21 @@ class CasualtyOrderOfLosses {
             final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
             if (unitSupportRollsMapForUnit != null) {
               strengthAndRolls =
-                  Tuple.of(
-                      strengthAndRolls.getFirst(),
-                      strengthAndRolls.getSecond()
-                          - unitSupportRollsMapForUnit.getInt(supportedUnit));
+                  strengthAndRolls.subtractRolls(unitSupportRollsMapForUnit.getInt(supportedUnit));
             }
             // If one roll then just add the power
-            if (strengthAndRolls.getSecond() == 1) {
+            if (strengthAndRolls.getTotalRolls() == 1) {
               power += unitSupportPowerMapForUnit.getInt(supportedUnit);
               continue;
             }
             // Find supported unit power with support
-            final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<>();
+            final Map<Unit, TotalPowerAndTotalRolls> supportedUnitMap = new HashMap<>();
             supportedUnitMap.put(supportedUnit, strengthAndRolls);
             final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
             // Find supported unit power without support
-            final int strengthWithoutSupport =
-                strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
-            final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
+
+            final TotalPowerAndTotalRolls strengthAndRollsWithoutSupport =
+                strengthAndRolls.subtractPower(unitSupportPowerMapForUnit.getInt(supportedUnit));
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
             final int powerWithoutSupport =
                 DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
@@ -204,20 +202,18 @@ class CasualtyOrderOfLosses {
         final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
         if (unitSupportRollsMapForUnit != null) {
           for (final Unit supportedUnit : unitSupportRollsMapForUnit.keySet()) {
-            final Tuple<Integer, Integer> strengthAndRolls =
+            final TotalPowerAndTotalRolls strengthAndRolls =
                 unitPowerAndRollsMap.get(supportedUnit);
             if (strengthAndRolls == null) {
               continue;
             }
             // Find supported unit power with support
-            final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<>();
+            final Map<Unit, TotalPowerAndTotalRolls> supportedUnitMap = new HashMap<>();
             supportedUnitMap.put(supportedUnit, strengthAndRolls);
             final int powerWithSupport = DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
             // Find supported unit power without support
-            final int rollsWithoutSupport =
-                strengthAndRolls.getSecond() - unitSupportRollsMap.get(u).getInt(supportedUnit);
-            final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-                Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
+            final TotalPowerAndTotalRolls strengthAndRollsWithoutSupport =
+                strengthAndRolls.subtractRolls(unitSupportRollsMap.get(u).getInt(supportedUnit));
             supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
             final int powerWithoutSupport =
                 DiceRoll.getTotalPower(supportedUnitMap, parameters.data);
@@ -238,14 +234,12 @@ class CasualtyOrderOfLosses {
       final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(worstUnit);
       if (unitSupportPowerMapForUnit != null) {
         for (final Unit supportedUnit : unitSupportPowerMapForUnit.keySet()) {
-          final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+          final TotalPowerAndTotalRolls strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
           if (strengthAndRolls == null) {
             continue;
           }
-          final int strengthWithoutSupport =
-              strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
-          final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              Tuple.of(strengthWithoutSupport, strengthAndRolls.getSecond());
+          final TotalPowerAndTotalRolls strengthAndRollsWithoutSupport =
+              strengthAndRolls.subtractPower(unitSupportPowerMapForUnit.getInt(supportedUnit));
           unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
           sortedUnitsList.remove(supportedUnit);
           sortedUnitsList.add(0, supportedUnit);
@@ -254,14 +248,12 @@ class CasualtyOrderOfLosses {
       final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(worstUnit);
       if (unitSupportRollsMapForUnit != null) {
         for (final Unit supportedUnit : unitSupportRollsMapForUnit.keySet()) {
-          final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+          final TotalPowerAndTotalRolls strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
           if (strengthAndRolls == null) {
             continue;
           }
-          final int rollsWithoutSupport =
-              strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit);
-          final Tuple<Integer, Integer> strengthAndRollsWithoutSupport =
-              Tuple.of(strengthAndRolls.getFirst(), rollsWithoutSupport);
+          final TotalPowerAndTotalRolls strengthAndRollsWithoutSupport =
+              strengthAndRolls.subtractRolls(unitSupportRollsMapForUnit.getInt(supportedUnit));
           unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
           sortedUnitsList.remove(supportedUnit);
           sortedUnitsList.add(0, supportedUnit);

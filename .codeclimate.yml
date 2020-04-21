@@ -27,6 +27,8 @@ plugins:
   # https://docs.codeclimate.com/docs/shellcheck
   shellcheck:
     enabled: true
-  sonar-java:
-    enabled: true
+
+exclude_patterns:
+  - "gradlew"
+  - ".github/ISSUE_TEMPLATES/*"
 

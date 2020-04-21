@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -118,7 +117,7 @@ abstract class AbstractBattle implements IBattle {
         for (final Unit unit : dependents) {
           // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
           if (Matches.unitWasUnloadedThisTurn().test(unit)) {
-            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+            change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
           }
         }
         bridge.addChange(change);
@@ -357,7 +356,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
-    BattleDelegate.markDamaged(damaged, bridge);
+    BattleDelegate.markDamaged(damaged, bridge, battleSite);
   }
 
   protected static Player getRemote(final IDelegateBridge bridge) {

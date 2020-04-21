@@ -13,7 +13,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -584,8 +583,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     final IntegerMap<UnitType> capacityMap = getAirborneCapacity(player, data);
     int airborneCapacity = 0;
     for (final Unit u : units) {
-      airborneCapacity +=
-          Math.max(0, (capacityMap.getInt(u.getType()) - ((TripleAUnit) u).getLaunched()));
+      airborneCapacity += Math.max(0, (capacityMap.getInt(u.getType()) - u.getLaunched()));
     }
     return airborneCapacity;
   }

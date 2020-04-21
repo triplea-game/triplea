@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Image;
@@ -51,11 +50,9 @@ public class UnitType extends NamedAttachable {
       final boolean isTemp,
       final int hitsTaken,
       final int bombingUnitDamage) {
-    final Unit u = getData().getGameLoader().newUnit(this, owner, getData());
+    final Unit u = new Unit(this, owner, getData());
     u.setHits(hitsTaken);
-    if (u instanceof TripleAUnit) {
-      ((TripleAUnit) u).setUnitDamage(bombingUnitDamage);
-    }
+    u.setUnitDamage(bombingUnitDamage);
     if (!isTemp) {
       getData().getUnits().put(u);
     }

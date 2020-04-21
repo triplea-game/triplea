@@ -22,7 +22,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -380,13 +379,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               battleSite.getUnitCollection(), Matches.unitIsAirTransportable());
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
         final CompositeChange change = new CompositeChange();
-        for (final Unit u : paratroops) {
-          final TripleAUnit taUnit = (TripleAUnit) u;
-          final Unit transport = taUnit.getTransportedBy();
+        for (final Unit paratroop : paratroops) {
+          final Unit transport = paratroop.getTransportedBy();
           if (transport == null || !airTransports.contains(transport)) {
             continue;
           }
-          change.add(TransportTracker.unloadAirTransportChange(taUnit, battleSite, false));
+          change.add(TransportTracker.unloadAirTransportChange(paratroop, battleSite, false));
         }
         if (!change.isEmpty()) {
           bridge
@@ -805,7 +803,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (maxCanScramble != Integer.MAX_VALUE) {
             // TODO: maybe sort from biggest to smallest first?
             for (final Unit airbase : airbases) {
-              final int allowedScramble = ((TripleAUnit) airbase).getMaxScrambleCount();
+              final int allowedScramble = airbase.getMaxScrambleCount();
               if (allowedScramble > 0) {
                 final int newAllowed;
                 if (allowedScramble >= numberScrambled) {
@@ -816,8 +814,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   numberScrambled -= allowedScramble;
                 }
                 change.add(
-                    ChangeFactory.unitPropertyChange(
-                        airbase, newAllowed, TripleAUnit.MAX_SCRAMBLE_COUNT));
+                    ChangeFactory.unitPropertyChange(airbase, newAllowed, Unit.MAX_SCRAMBLE_COUNT));
               }
               if (numberScrambled <= 0) {
                 break;
@@ -825,8 +822,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
           }
           for (final Unit u : scrambling) {
-            change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
-            change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
+            change.add(ChangeFactory.unitPropertyChange(u, t, Unit.ORIGINATED_FROM));
+            change.add(ChangeFactory.unitPropertyChange(u, true, Unit.WAS_SCRAMBLED));
             change.add(Route.getFuelChanges(Set.of(u), new Route(t, to), u.getOwner(), data));
           }
           // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
@@ -989,11 +986,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           t.getUnitCollection().getMatches(Matches.unitWasScrambled());
       for (final Unit u : wasScrambled) {
         final CompositeChange change = new CompositeChange();
-        final Territory originatedFrom = TripleAUnit.get(u).getOriginatedFrom();
         Territory landingTerr = null;
         final String historyText;
         if (!mustReturnToBase
-            || !Matches.isTerritoryAllied(u.getOwner(), data).test(originatedFrom)) {
+            || !Matches.isTerritoryAllied(u.getOwner(), data).test(u.getOriginatedFrom())) {
           final Collection<Territory> possible =
               whereCanAirLand(u, t, u.getOwner(), data, battleTracker, carrierCostOfCurrentTerr);
           if (possible.size() > 1) {
@@ -1017,7 +1013,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 "Moving scrambled unit from " + t.getName() + " to " + landingTerr.getName();
           }
         } else {
-          landingTerr = originatedFrom;
+          landingTerr = u.getOriginatedFrom();
           historyText =
               "Moving scrambled unit from "
                   + t.getName()
@@ -1029,8 +1025,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           change.add(
               Route.getFuelChanges(Set.of(u), new Route(t, landingTerr), u.getOwner(), data));
         }
-        change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.ORIGINATED_FROM));
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_SCRAMBLED));
+        change.add(ChangeFactory.unitPropertyChange(u, null, Unit.ORIGINATED_FROM));
+        change.add(ChangeFactory.unitPropertyChange(u, false, Unit.WAS_SCRAMBLED));
         if (!change.isEmpty()) {
           bridge.getHistoryWriter().startEvent(historyText, u);
           bridge.addChange(change);
@@ -1048,13 +1044,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> airbases = t.getUnitCollection().getMatches(Matches.unitIsAirBase());
-      for (final Unit u : airbases) {
-        final UnitAttachment ua = UnitAttachment.get(u.getType());
-        final int currentMax = ((TripleAUnit) u).getMaxScrambleCount();
+      for (final Unit airbase : airbases) {
+        final UnitAttachment ua = UnitAttachment.get(airbase.getType());
+        final int currentMax = airbase.getMaxScrambleCount();
         final int allowedMax = ua.getMaxScrambleCount();
         if (currentMax != allowedMax) {
           change.add(
-              ChangeFactory.unitPropertyChange(u, allowedMax, TripleAUnit.MAX_SCRAMBLE_COUNT));
+              ChangeFactory.unitPropertyChange(airbase, allowedMax, Unit.MAX_SCRAMBLE_COUNT));
         }
       }
     }
@@ -1072,7 +1068,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit u : t.getUnitCollection().getMatches(Matches.unitWasInAirBattle())) {
-        change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_AIR_BATTLE));
+        change.add(ChangeFactory.unitPropertyChange(u, false, Unit.WAS_IN_AIR_BATTLE));
       }
     }
     if (!change.isEmpty()) {
@@ -1513,7 +1509,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       } else {
         final IntegerMap<Unit> hitMap = new IntegerMap<>();
         hitMap.put(unitUnderFire, hits);
-        change.add(newDamageChange(hitMap, bridge));
+        change.add(newDamageChange(hitMap, bridge, location));
       }
     }
     if (!change.isEmpty()) {
@@ -1531,7 +1527,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         .reportMessageToPlayers(playersInvolved, null, title + dice, title);
   }
 
-  public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
+  public static void markDamaged(
+      final Collection<Unit> damaged, final IDelegateBridge bridge, final Territory territory) {
     if (damaged.isEmpty()) {
       return;
     }
@@ -1539,16 +1536,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Unit u : damaged) {
       damagedMap.add(u, 1);
     }
-    bridge.addChange(newDamageChange(damagedMap, bridge));
+    bridge.addChange(newDamageChange(damagedMap, bridge, territory));
   }
 
   private static Change newDamageChange(
-      final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge) {
+      final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge, final Territory territory) {
     final Set<Unit> units = new HashSet<>(damagedMap.keySet());
     for (final Unit u : units) {
       damagedMap.add(u, u.getHits());
     }
-    final Change damagedChange = ChangeFactory.unitsHit(damagedMap);
+    final Change damagedChange = ChangeFactory.unitsHit(damagedMap, List.of(territory));
     bridge
         .getHistoryWriter()
         .addChildToEvent("Units damaged: " + MyFormatter.unitsToText(units), units);
