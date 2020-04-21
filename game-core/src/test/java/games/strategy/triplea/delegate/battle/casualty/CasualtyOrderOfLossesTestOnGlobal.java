@@ -11,6 +11,10 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.delegate.HeavyBomberAdvance;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.experimental.UtilityClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,8 +42,28 @@ class CasualtyOrderOfLossesTestOnGlobal {
   private static final UnitType MARINE = checkNotNull(data.getUnitTypeList().getUnitType("marine"));
   private static final UnitType ARTILLERY =
       checkNotNull(data.getUnitTypeList().getUnitType("artillery"));
+  private static final UnitType SUBMARINE =
+      checkNotNull(data.getUnitTypeList().getUnitType("submarine"));
+  private static final UnitType DESTROYER =
+      checkNotNull(data.getUnitTypeList().getUnitType("destroyer"));
+  private static final UnitType CARRIER =
+      checkNotNull(data.getUnitTypeList().getUnitType("carrier"));
+  private static final UnitType BOMBER = checkNotNull(data.getUnitTypeList().getUnitType("bomber"));
+  private static final UnitType BATTLESHIP =
+      checkNotNull(data.getUnitTypeList().getUnitType("battleship"));
+
   private static final IntegerMap<UnitType> COST_MAP =
-      IntegerMap.of(Map.of(INFANTRY, 3, TANK, 5, MARINE, 4, ARTILLERY, 4));
+      IntegerMap.of(
+          Map.of(
+              INFANTRY, 3,
+              TANK, 5,
+              MARINE, 4,
+              ARTILLERY, 4,
+              SUBMARINE, 6,
+              DESTROYER, 8,
+              CARRIER, 16,
+              BOMBER, 12,
+              BATTLESHIP, 20));
 
   @UtilityClass
   static class DataFactory {
@@ -58,11 +83,36 @@ class CasualtyOrderOfLossesTestOnGlobal {
       return createUnit(ARTILLERY, count);
     }
 
+    static Collection<Unit> britishCarrier(final int count) {
+      return createUnit(CARRIER, count);
+    }
+
+    static Collection<Unit> britishDestroyer(final int count) {
+      return createUnit(DESTROYER, count);
+    }
+
+    static Collection<Unit> britishSubmarine(final int count) {
+      return createUnit(SUBMARINE, count);
+    }
+
+    static Collection<Unit> britishBattleship(final int count) {
+      return createUnit(BATTLESHIP, count);
+    }
+
+    static Collection<Unit> britishBomber(final int count) {
+      return createUnit(BOMBER, count);
+    }
+
     private static Collection<Unit> createUnit(final UnitType unitType, final int count) {
       return IntStream.range(0, count)
           .mapToObj(i -> new Unit(unitType, BRITISH, data))
           .collect(Collectors.toSet());
     }
+  }
+
+  @BeforeEach
+  void clearCache() {
+    CasualtyOrderOfLosses.clearOolCache();
   }
 
   @ParameterizedTest
@@ -180,5 +230,96 @@ class CasualtyOrderOfLossesTestOnGlobal {
     assertThat(result.get(3).getType(), is(ARTILLERY));
     assertThat(result.get(4).getType(), is(ARTILLERY));
     assertThat(result.get(5).getType(), is(ARTILLERY));
+  }
+
+  @Test
+  void navalOrderingOnAttack() {
+    final Collection<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(DataFactory.britishSubmarine(1));
+    attackingUnits.addAll(DataFactory.britishDestroyer(1));
+    attackingUnits.addAll(DataFactory.britishCarrier(1));
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
+
+    assertThat(result, hasSize(3));
+    assertThat(result.get(0).getType(), is(CARRIER));
+    assertThat(result.get(1).getType(), is(SUBMARINE));
+    assertThat(result.get(2).getType(), is(DESTROYER));
+  }
+
+  @Test
+  void navalOrderingOnDefense() {
+    final Collection<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(DataFactory.britishSubmarine(1));
+    attackingUnits.addAll(DataFactory.britishDestroyer(1));
+    attackingUnits.addAll(DataFactory.britishCarrier(1));
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(defendingWith(attackingUnits));
+
+    assertThat(result, hasSize(3));
+    assertThat(result.get(0).getType(), is(SUBMARINE));
+    assertThat(result.get(1).getType(), is(DESTROYER));
+    assertThat(result.get(2).getType(), is(CARRIER));
+  }
+
+  private CasualtyOrderOfLosses.Parameters defendingWith(final Collection<Unit> units) {
+    return CasualtyOrderOfLosses.Parameters.builder()
+        .targetsToPickFrom(units)
+        .defending(true)
+        .player(BRITISH)
+        .enemyUnits(List.of()) // << TODO: remove this parameter should not matter
+        .amphibious(false)
+        .amphibiousLandAttackers(List.of())
+        .battlesite(FRANCE)
+        .costs(COST_MAP)
+        .territoryEffects(List.of())
+        .data(data)
+        .build();
+  }
+
+  @Test
+  @DisplayName("Heavy bomber has a higher attack power than bship, we select bship first")
+  void heavyBomberAndBattleship() {
+    givenHeavyBombers();
+
+    final Collection<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(DataFactory.britishBomber(1));
+    attackingUnits.addAll(DataFactory.britishBattleship(1));
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
+
+    assertThat(result, hasSize(2));
+    assertThat(result.get(0).getType(), is(BATTLESHIP));
+    assertThat(result.get(1).getType(), is(BOMBER));
+  }
+
+  private void givenHeavyBombers() {
+    addTech(new HeavyBomberAdvance(data));
+  }
+
+  private void addTech(final TechAdvance techAdvance) {
+    final var change =
+        ChangeFactory.attachmentPropertyChange(
+            TechAttachment.get(BRITISH), true, techAdvance.getProperty());
+    data.performChange(change);
+  }
+
+  @Test
+  @DisplayName(
+      "bomber has an equal attack power as bship, select bomber first as it is less expensive")
+  void bomberAndBattleship() {
+    final Collection<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(DataFactory.britishBomber(1));
+    attackingUnits.addAll(DataFactory.britishBattleship(1));
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
+
+    assertThat(result, hasSize(2));
+    assertThat(result.get(0).getType(), is(BOMBER));
+    assertThat(result.get(1).getType(), is(BATTLESHIP));
   }
 }

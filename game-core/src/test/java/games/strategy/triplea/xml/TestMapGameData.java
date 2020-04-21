@@ -14,6 +14,8 @@ import java.util.Map;
 public enum TestMapGameData {
   BIG_WORLD_1942("big_world_1942_test.xml"),
 
+  BIG_WORLD_1942_V3("Big_World_1942_v3rules.xml"),
+
   IRON_BLITZ("iron_blitz_test.xml"),
 
   LHTR("lhtr_test.xml"),

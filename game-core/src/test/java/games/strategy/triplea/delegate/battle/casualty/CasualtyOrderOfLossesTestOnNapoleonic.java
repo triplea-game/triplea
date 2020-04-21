@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.experimental.UtilityClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
@@ -63,6 +64,11 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
           .mapToObj(i -> new Unit(unitType, BRITISH, data))
           .collect(Collectors.toSet());
     }
+  }
+
+  @BeforeEach
+  void clearCache() {
+    CasualtyOrderOfLosses.clearOolCache();
   }
 
   @Test
