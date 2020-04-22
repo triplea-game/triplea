@@ -93,7 +93,7 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
 
   private static String throwableToString(final Throwable e) {
     final var outputStream = new ByteArrayOutputStream();
-    try (PrintWriter printWriter = new PrintWriter(outputStream)) {
+    try (PrintWriter printWriter = new PrintWriter(outputStream, false, StandardCharsets.UTF_8)) {
       e.printStackTrace(printWriter);
     }
     return "## Exception \n"
