@@ -3,11 +3,12 @@ package org.triplea.debug.error.reporting;
 import com.google.common.base.Strings;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.SystemProperties;
-import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.logging.LogRecord;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 
@@ -91,18 +92,15 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
   }
 
   private static String throwableToString(final Throwable e) {
+    final var outputStream = new ByteArrayOutputStream();
+    try (PrintWriter printWriter = new PrintWriter(outputStream)) {
+      e.printStackTrace(printWriter);
+    }
     return "## Exception \n"
         + e.getClass().getName()
         + Optional.ofNullable(e.getMessage()).map(msg -> ": " + msg).orElse("")
-        + "\n\n"
-        + Optional.ofNullable(e.getStackTrace())
-            .map(trace -> "## Stack Trace\n" + stackTraceToString(trace) + "\n\n")
-            .orElse("");
-  }
-
-  private static String stackTraceToString(final StackTraceElement[] stackTrace) {
-    return Arrays.stream(stackTrace)
-        .map(StackTraceElement::toString)
-        .collect(Collectors.joining("\n"));
+        + "\n\n## Stack Trace\n```\n"
+        + outputStream.toString(StandardCharsets.UTF_8)
+        + "\n```\n\n";
   }
 }
