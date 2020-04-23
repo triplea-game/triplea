@@ -10,6 +10,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.SystemProperties;
 import java.util.Arrays;
 import java.util.logging.LogRecord;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ class StackTraceErrorReportFormatterTest {
   private static final Exception EXCEPTION_WITH_MESSAGE =
       new RuntimeException("simulated exception");
   private static final Exception EXCEPTION_WITH_NO_MESSAGE = new NullPointerException();
+  private static final Exception EXCEPTION_WITH_CAUSE =
+      new RuntimeException(EXCEPTION_WITH_MESSAGE);
 
   @Mock private LogRecord logRecord;
 
@@ -136,17 +139,24 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsStackTraceData() {
-      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
+      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_CAUSE);
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
-      Arrays.stream(EXCEPTION_WITH_NO_MESSAGE.getStackTrace())
+      Stream.of(EXCEPTION_WITH_CAUSE, EXCEPTION_WITH_MESSAGE)
+          .map(Throwable::getStackTrace)
+          .flatMap(Arrays::stream)
           .forEach(
               trace ->
                   assertThat(
                       "should contain each element of stack trace",
                       errorReportResult.getBody(),
                       containsString(trace.toString())));
+
+      assertThat(
+          "should contain message of cause",
+          errorReportResult.getBody(),
+          containsString(EXCEPTION_WITH_MESSAGE.getMessage()));
     }
 
     @Test
