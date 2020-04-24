@@ -236,7 +236,8 @@ public final class BattlePanel extends ActionPanel {
       final boolean isAmphibious,
       final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers) {
-    // Copy all collection params so that they don't change underneath us while we execute async code.
+    // Copy all collection params so that they don't change underneath us while we execute async
+    // code.
     final Collection<Unit> attackingUnitsCopy = List.copyOf(attackingUnits);
     final Collection<Unit> defendingUnitsCopy = List.copyOf(defendingUnits);
     final Collection<Unit> killedUnitsCopy = List.copyOf(killedUnits);
