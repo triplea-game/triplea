@@ -236,6 +236,14 @@ public final class BattlePanel extends ActionPanel {
       final boolean isAmphibious,
       final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers) {
+    // Copy all collection params so that they don't change underneath us while we execute async
+    // code.
+    final Collection<Unit> attackingUnitsCopy = List.copyOf(attackingUnits);
+    final Collection<Unit> defendingUnitsCopy = List.copyOf(defendingUnits);
+    final Collection<Unit> killedUnitsCopy = List.copyOf(killedUnits);
+    final Collection<Unit> attackingWaitingToDieCopy = List.copyOf(attackingWaitingToDie);
+    final Collection<Unit> defendingWaitingToDieCopy = List.copyOf(defendingWaitingToDie);
+    final Collection<Unit> amphibiousLandAttackersCopy = List.copyOf(amphibiousLandAttackers);
     SwingUtilities.invokeLater(
         () -> {
           if (battleDisplay != null) {
@@ -248,15 +256,15 @@ public final class BattlePanel extends ActionPanel {
                   location,
                   attacker,
                   defender,
-                  attackingUnits,
-                  defendingUnits,
-                  killedUnits,
-                  attackingWaitingToDie,
-                  defendingWaitingToDie,
+                  attackingUnitsCopy,
+                  defendingUnitsCopy,
+                  killedUnitsCopy,
+                  attackingWaitingToDieCopy,
+                  defendingWaitingToDieCopy,
                   BattlePanel.this.getMap(),
                   isAmphibious,
                   battleType,
-                  amphibiousLandAttackers);
+                  amphibiousLandAttackersCopy);
           battleWindow.setTitle(
               attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
           battleWindow.getContentPane().removeAll();
