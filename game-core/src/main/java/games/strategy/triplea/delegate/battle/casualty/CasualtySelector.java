@@ -14,6 +14,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -324,15 +325,18 @@ public class CasualtySelector {
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
             CasualtyOrderOfLosses.Parameters.builder()
                 .targetsToPickFrom(targetsToPickFrom)
-                .defending(defending)
                 .player(player)
                 .enemyUnits(enemyUnits)
-                .amphibious(amphibious)
+                .combatModifiers(
+                    CombatModifiers.builder()
+                        .territoryEffects(territoryEffects)
+                        .amphibious(amphibious)
+                        .defending(defending)
+                        .build())
                 .amphibiousLandAttackers(
                     amphibiousLandAttackers == null ? List.of() : amphibiousLandAttackers)
                 .battlesite(battlesite)
                 .costs(costs)
-                .territoryEffects(territoryEffects)
                 .data(data)
                 .build());
     // Remove two hit bb's selecting them first for default casualties

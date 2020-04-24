@@ -3,12 +3,12 @@ package games.strategy.triplea.delegate.battle.casualty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
+import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,9 +27,9 @@ import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
 class CasualtyOrderOfLosses {
-  private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
+  private final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
-  static void clearOolCache() {
+  void clearOolCache() {
     oolCache.clear();
   }
 
@@ -37,14 +37,12 @@ class CasualtyOrderOfLosses {
   @Value
   static class Parameters {
     @Nonnull Collection<Unit> targetsToPickFrom;
-    @Nonnull Boolean defending;
     @Nonnull GamePlayer player;
     @Nonnull Collection<Unit> enemyUnits;
-    @Nonnull Boolean amphibious;
     @Nonnull Collection<Unit> amphibiousLandAttackers;
     @Nonnull Territory battlesite;
     @Nonnull IntegerMap<UnitType> costs;
-    @Nonnull Collection<TerritoryEffect> territoryEffects;
+    @Nonnull CombatModifiers combatModifiers;
     @Nonnull GameData data;
   }
 
@@ -59,8 +57,7 @@ class CasualtyOrderOfLosses {
    * all artillery, or the other way around, you will be missing out on some important support
    * provided. (Veqryn)
    */
-  static List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
-
+  List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {
@@ -86,9 +83,9 @@ class CasualtyOrderOfLosses {
             + "|"
             + parameters.battlesite.getName()
             + "|"
-            + parameters.defending
+            + parameters.combatModifiers.isDefending()
             + "|"
-            + parameters.amphibious
+            + parameters.combatModifiers.isAmphibious()
             + "|"
             + targetsHashCode
             + "|"
@@ -113,22 +110,24 @@ class CasualtyOrderOfLosses {
     final List<Unit> sortedUnitsList = new ArrayList<>(parameters.targetsToPickFrom);
     sortedUnitsList.sort(
         new UnitBattleComparator(
-                parameters.defending,
+                parameters.combatModifiers.isDefending(),
                 parameters.costs,
-                parameters.territoryEffects,
+                parameters.combatModifiers.getTerritoryEffects(),
                 parameters.data,
                 true,
-                false)
+                false,
+                parameters.combatModifiers.isAmphibious())
             .reversed());
     // Sort units starting with strongest so that support gets added to them first
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(
-            parameters.defending,
+            parameters.combatModifiers.isDefending(),
             parameters.costs,
-            parameters.territoryEffects,
+            parameters.combatModifiers.getTerritoryEffects(),
             parameters.data,
             true,
-            true);
+            true,
+            parameters.combatModifiers.isAmphibious());
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
     final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
@@ -136,11 +135,11 @@ class CasualtyOrderOfLosses {
             sortedUnitsList,
             new ArrayList<>(parameters.enemyUnits),
             sortedUnitsList,
-            parameters.defending,
+            parameters.combatModifiers.isDefending(),
             parameters.data,
             parameters.battlesite,
-            parameters.territoryEffects,
-            parameters.amphibious,
+            parameters.combatModifiers.getTerritoryEffects(),
+            parameters.combatModifiers.isAmphibious(),
             parameters.amphibiousLandAttackers,
             unitSupportPowerMap,
             unitSupportRollsMap);
@@ -294,9 +293,9 @@ class CasualtyOrderOfLosses {
               + "|"
               + parameters.battlesite.getName()
               + "|"
-              + parameters.defending
+              + parameters.combatModifiers.isDefending()
               + "|"
-              + parameters.amphibious
+              + parameters.combatModifiers.isAmphibious()
               + "|"
               + targetsHashCode
               + "|"

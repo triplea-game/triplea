@@ -1428,8 +1428,7 @@ class BattleCalculatorPanel extends JPanel {
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
-      attackers.sort(
-          new UnitBattleComparator(false, costs, territoryEffects, data, false, false).reversed());
+      attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data).reversed());
       final int attackPower =
           DiceRoll.getTotalPower(
               DiceRoll.getUnitPowerAndRollsForNormalBattles(

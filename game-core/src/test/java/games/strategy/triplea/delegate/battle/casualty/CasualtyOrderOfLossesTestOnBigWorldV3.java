@@ -15,6 +15,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,14 +102,17 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(amphibUnits)
-        .defending(false)
+        .combatModifiers(
+            CombatModifiers.builder()
+                .defending(false)
+                .territoryEffects(List.of())
+                .amphibious(true)
+                .build())
         .player(BRITISH)
-        .enemyUnits(List.of()) // << TODO: remove this parameter should not matter
-        .amphibious(true)
+        .enemyUnits(List.of())
         .amphibiousLandAttackers(amphibUnits)
         .battlesite(FRANCE)
         .costs(COST_MAP)
-        .territoryEffects(List.of())
         .data(data)
         .build();
   }

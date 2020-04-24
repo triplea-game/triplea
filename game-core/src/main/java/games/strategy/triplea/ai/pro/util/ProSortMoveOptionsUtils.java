@@ -166,9 +166,7 @@ public final class ProSortMoveOptionsUtils {
                           false,
                           proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
-                          data,
-                          false,
-                          false)
+                          data)
                       .reversed());
               final int powerWithout =
                   DiceRoll.getTotalPower(
@@ -189,9 +187,7 @@ public final class ProSortMoveOptionsUtils {
                           false,
                           proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
-                          data,
-                          false,
-                          false)
+                          data)
                       .reversed());
               final int powerWith =
                   DiceRoll.getTotalPower(
@@ -229,9 +225,7 @@ public final class ProSortMoveOptionsUtils {
                           false,
                           proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
-                          data,
-                          false,
-                          false)
+                          data)
                       .reversed());
               final int powerWithout =
                   DiceRoll.getTotalPower(
@@ -252,9 +246,7 @@ public final class ProSortMoveOptionsUtils {
                           false,
                           proData.getUnitValueMap(),
                           TerritoryEffectHelper.getEffects(t),
-                          data,
-                          false,
-                          false)
+                          data)
                       .reversed());
               final int powerWith =
                   DiceRoll.getTotalPower(
