@@ -196,10 +196,10 @@ class CasualtyOrderOfLossesTestOnGlobal {
     assertThat(result, hasSize(6));
     assertThat(result.get(0).getType(), is(INFANTRY));
     assertThat(result.get(1).getType(), is(INFANTRY));
-    assertThat(result.get(2).getType(), is(MARINE));
-    assertThat(result.get(3).getType(), is(MARINE));
-    assertThat(result.get(4).getType(), is(ARTILLERY));
-    assertThat(result.get(5).getType(), is(ARTILLERY));
+    assertThat(result.get(2).getType(), is(ARTILLERY));
+    assertThat(result.get(3).getType(), is(ARTILLERY));
+    assertThat(result.get(4).getType(), is(MARINE));
+    assertThat(result.get(5).getType(), is(MARINE));
   }
 
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
@@ -221,8 +221,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
   }
 
   @Test
-  @DisplayName("Verify that amphib assualting marines and artillery are interleaved")
-  void interleaveArtilleryAndMarines() {
+  void amphibAssaultingMarinesWithEqualNumberOfArtillery() {
     final Collection<Unit> attackingUnits = new ArrayList<>();
     attackingUnits.addAll(DataFactory.britishMarine(3));
     attackingUnits.addAll(DataFactory.britishArtillery(3));
@@ -231,12 +230,12 @@ class CasualtyOrderOfLossesTestOnGlobal {
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
     assertThat(result, hasSize(6));
-    assertThat(result.get(0).getType(), is(MARINE));
-    assertThat(result.get(1).getType(), is(MARINE));
-    assertThat(result.get(2).getType(), is(MARINE));
-    assertThat(result.get(3).getType(), is(ARTILLERY));
-    assertThat(result.get(4).getType(), is(ARTILLERY));
-    assertThat(result.get(5).getType(), is(ARTILLERY));
+    assertThat(result.get(0).getType(), is(ARTILLERY));
+    assertThat(result.get(1).getType(), is(ARTILLERY));
+    assertThat(result.get(2).getType(), is(ARTILLERY));
+    assertThat(result.get(3).getType(), is(MARINE));
+    assertThat(result.get(4).getType(), is(MARINE));
+    assertThat(result.get(5).getType(), is(MARINE));
   }
 
   @Test

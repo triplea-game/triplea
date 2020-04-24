@@ -85,11 +85,9 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
 
     assertThat(result, hasSize(4));
     assertThat(result.get(0).getType(), is(TANK));
-    assertThat(result.get(1).getType(), is(MARINE));
+    assertThat(result.get(1).getType(), is(ARTILLERY));
     assertThat(result.get(2).getType(), is(MARINE));
-    assertThat(
-        result.get(3).getType(),
-        is(ARTILLERY)); // << bug we should pick the artillery second or third
+    assertThat(result.get(3).getType(), is(MARINE));
   }
 
   private void addTech(final TechAdvance techAdvance) {
@@ -130,8 +128,8 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
 
     assertThat(result, hasSize(4));
     assertThat(result.get(0).getType(), is(TANK)); // << bug, should be marine or artillery first
-    assertThat(result.get(1).getType(), is(MARINE)); // << bug should be artillery
+    assertThat(result.get(1).getType(), is(ARTILLERY));
     assertThat(result.get(2).getType(), is(MARINE));
-    assertThat(result.get(3).getType(), is(ARTILLERY)); // << bug, should be tank
+    assertThat(result.get(3).getType(), is(MARINE)); // << bug, should be tank
   }
 }
