@@ -1,4 +1,4 @@
-3,games.strategy.engine.chat.IChatChannel,speakerAdded,org.triplea.http.client.lobby.chat.ChatParticipant
+3,games.strategy.engine.chat.IChatChannel,speakerAdded,org.triplea.domain.data.ChatParticipant
 1,games.strategy.engine.chat.IChatChannel,ping
 5,games.strategy.engine.chat.IChatChannel,statusChanged,org.triplea.domain.data.UserName,java.lang.String
 4,games.strategy.engine.chat.IChatChannel,speakerRemoved,org.triplea.domain.data.UserName
@@ -114,7 +114,6 @@
 0,games.strategy.triplea.delegate.remote.IAbstractMoveDelegate,delegateCurrentlyRequiresUserInput
 9,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,getTerritoriesWhereAirCantLand
 13,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,placeUnits,java.util.Collection,games.strategy.engine.data.Territory,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate$BidMode
-12,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,placeUnits,java.util.Collection,games.strategy.engine.data.Territory
 6,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,getPlaceableUnits,java.util.Collection,games.strategy.engine.data.Territory
 7,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,getPlacementsMade
 17,games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate,undoMove,int
@@ -153,7 +152,6 @@
 7,games.strategy.triplea.delegate.remote.IEditDelegate,changeUnitBombingDamage,org.triplea.java.collections.IntegerMap,games.strategy.engine.data.Territory
 4,games.strategy.triplea.delegate.remote.IEditDelegate,changePoliticalRelationships,java.util.Collection
 8,games.strategy.triplea.delegate.remote.IEditDelegate,changeUnitHitDamage,org.triplea.java.collections.IntegerMap,games.strategy.engine.data.Territory
-5,games.strategy.triplea.delegate.remote.IEditDelegate,changeTechTokens,games.strategy.engine.data.GamePlayer,int
 3,games.strategy.triplea.delegate.remote.IEditDelegate,changePUs,games.strategy.engine.data.GamePlayer,int
 10,games.strategy.triplea.delegate.remote.IEditDelegate,removeTechAdvance,games.strategy.engine.data.GamePlayer,java.util.Collection
 1,games.strategy.triplea.delegate.remote.IEditDelegate,addTechAdvance,games.strategy.engine.data.GamePlayer,java.util.Collection
