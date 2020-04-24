@@ -6,7 +6,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
-
 import java.io.Serializable;
 import java.util.Map;
 import org.triplea.java.collections.IntegerMap;

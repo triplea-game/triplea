@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate.remote;
 
-import java.io.Serializable;
-
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegate;
@@ -9,6 +7,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.data.TechResults;
+import java.io.Serializable;
 import org.triplea.java.collections.IntegerMap;
 
 /** Logic for spending tech tokens. */

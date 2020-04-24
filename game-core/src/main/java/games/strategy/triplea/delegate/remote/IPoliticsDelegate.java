@@ -5,7 +5,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
-
 import java.io.Serializable;
 import java.util.Collection;
 

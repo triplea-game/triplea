@@ -8,7 +8,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.UndoableMove;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;

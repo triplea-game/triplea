@@ -7,7 +7,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
-
 import java.io.Serializable;
 import java.util.Collection;
 

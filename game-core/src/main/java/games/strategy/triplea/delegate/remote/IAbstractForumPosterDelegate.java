@@ -1,12 +1,11 @@
 package games.strategy.triplea.delegate.remote;
 
-import java.io.Serializable;
-
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
+import java.io.Serializable;
 
 /**
  * Logic for posting a save game to a forum. Supplements other game logic at points where it makes

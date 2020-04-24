@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate.remote;
 
-import java.io.Serializable;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -10,6 +8,7 @@ import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
+import java.io.Serializable;
 
 /** Logic for querying and fighting pending battles. */
 public interface IBattleDelegate extends IRemote, IDelegate {
