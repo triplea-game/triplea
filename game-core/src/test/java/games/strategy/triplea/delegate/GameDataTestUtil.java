@@ -133,11 +133,7 @@ public final class GameDataTestUtil {
    * @return A Territory matching the given name if present, otherwise throwing an Exception.
    */
   public static Territory territory(final String name, final GameData data) {
-    final Territory t = data.getMap().getTerritory(name);
-    if (t == null) {
-      throw new IllegalStateException("no territory:" + name);
-    }
-    return t;
+    return checkNotNull(data.getMap().getTerritory(name), "No territory:" + name);
   }
 
   /** Returns an armor UnitType object for the specified GameData object. */
