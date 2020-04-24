@@ -2,9 +2,13 @@ package games.strategy.triplea.delegate.remote;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
+
+import java.io.Serializable;
 import java.util.Collection;
 
 /** Logic for placing units within a territory. */
@@ -59,4 +63,48 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
   @RemoteActionCode(17)
   @Override
   String undoMove(int moveIndex);
+
+  @RemoteActionCode(10)
+  @Override
+  void initialize(String name, String displayName);
+
+  @RemoteActionCode(15)
+  @Override
+  void setDelegateBridgeAndPlayer(IDelegateBridge delegateBridge);
+
+  @RemoteActionCode(16)
+  @Override
+  void start();
+
+  @RemoteActionCode(1)
+  @Override
+  void end();
+
+  @RemoteActionCode(5)
+  @Override
+  String getName();
+
+  @RemoteActionCode(3)
+  @Override
+  String getDisplayName();
+
+  @RemoteActionCode(2)
+  @Override
+  IDelegateBridge getBridge();
+
+  @RemoteActionCode(14)
+  @Override
+  Serializable saveState();
+
+  @RemoteActionCode(11)
+  @Override
+  void loadState(Serializable state);
+
+  @RemoteActionCode(8)
+  @Override
+  Class<? extends IRemote> getRemoteType();
+
+  @RemoteActionCode(0)
+  @Override
+  boolean delegateCurrentlyRequiresUserInput();
 }

@@ -1,7 +1,10 @@
 package games.strategy.triplea.delegate.remote;
 
+import java.io.Serializable;
+
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.battle.IBattle;
@@ -29,4 +32,48 @@ public interface IBattleDelegate extends IRemote, IDelegate {
    */
   @RemoteActionCode(5)
   IBattle getCurrentBattle();
+
+  @RemoteActionCode(9)
+  @Override
+  void initialize(String name, String displayName);
+
+  @RemoteActionCode(12)
+  @Override
+  void setDelegateBridgeAndPlayer(IDelegateBridge delegateBridge);
+
+  @RemoteActionCode(13)
+  @Override
+  void start();
+
+  @RemoteActionCode(1)
+  @Override
+  void end();
+
+  @RemoteActionCode(7)
+  @Override
+  String getName();
+
+  @RemoteActionCode(6)
+  @Override
+  String getDisplayName();
+
+  @RemoteActionCode(4)
+  @Override
+  IDelegateBridge getBridge();
+
+  @RemoteActionCode(11)
+  @Override
+  Serializable saveState();
+
+  @RemoteActionCode(10)
+  @Override
+  void loadState(Serializable state);
+
+  @RemoteActionCode(8)
+  @Override
+  Class<? extends IRemote> getRemoteType();
+
+  @RemoteActionCode(0)
+  @Override
+  boolean delegateCurrentlyRequiresUserInput();
 }
