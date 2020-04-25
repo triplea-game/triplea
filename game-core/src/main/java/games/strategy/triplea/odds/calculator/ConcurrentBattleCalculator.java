@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.concurrent.ThreadSafe;
-import lombok.extern.java.Log;
 import org.triplea.io.IoUtils;
 
 /**
@@ -30,7 +29,6 @@ import org.triplea.io.IoUtils;
  * the run count across these workers. This is mainly to be used by AIs since they call the
  * OddsCalculator a lot.
  */
-@Log
 @ThreadSafe
 public class ConcurrentBattleCalculator implements IBattleCalculator {
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
