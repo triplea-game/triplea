@@ -121,7 +121,7 @@ public abstract class AbstractProAi extends AbstractAi {
     storedStrafingTerritories = strafingTerritories;
   }
 
-  protected abstract void prepareData(final GameData data);
+  protected abstract void prepareData(GameData data);
 
   @Override
   protected void move(
