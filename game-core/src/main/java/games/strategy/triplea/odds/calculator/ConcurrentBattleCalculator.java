@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Runnables;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import games.strategy.engine.data.GameData;
@@ -22,21 +23,29 @@ import java.util.concurrent.Future;
 import lombok.extern.java.Log;
 import org.triplea.io.IoUtils;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up
  * the run count across these workers. This is mainly to be used by AIs since they call the
  * OddsCalculator a lot.
  */
 @Log
+@ThreadSafe
 public class ConcurrentBattleCalculator implements IBattleCalculator {
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
 
   private final ExecutorService executor;
   private final Set<BattleCalculator> calculators = ConcurrentHashMap.newKeySet(MAX_THREADS);
-  // do not let calc start until it is set
-  private volatile boolean isDataSet = false;
   // shortcut everything if we are shutting down
   private volatile boolean isShutDown = false;
+
+  /**
+   * Internal lock to synchronize on in order to prevent modification during initialization of
+   * delegate single-threaded {@link BattleCalculator} instances.
+   */
+  private final Object mutex = new Object();
+
   private final Runnable dataLoadedAction;
   private byte[] bytes = new byte[0];
   private boolean keepOneAttackingLandUnit = false;
@@ -57,16 +66,17 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
             MAX_THREADS,
             new ThreadFactoryBuilder()
                 .setDaemon(true)
-                .setNameFormat(threadNamePrefix + " ConcurrentOddsCalculator Worker-%d")
+                .setNameFormat(threadNamePrefix + " ConcurrentBattleCalculator Worker-%d")
                 .build());
     this.dataLoadedAction = dataLoadedAction;
   }
 
   @Override
   public void setGameData(final GameData data) {
-    bytes = data == null ? new byte[0] : GameDataUtils.serializeGameDataWithoutHistory(data);
-    isDataSet = data != null;
-    dataLoadedAction.run();
+    synchronized (mutex) {
+      bytes = data == null ? new byte[0] : GameDataUtils.serializeGameDataWithoutHistory(data);
+      dataLoadedAction.run();
+    }
   }
 
   @Override
@@ -96,42 +106,47 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<TerritoryEffect> territoryEffects,
       final int runCount)
       throws IllegalStateException {
+    Preconditions.checkState(!isShutDown, "ConcurrentBattleCalculator is already shut down");
+    Preconditions.checkState(bytes.length != 0, "Data has not been set yet.");
     final long start = System.currentTimeMillis();
     final List<Future<AggregateResults>> results = new ArrayList<>();
-    int remainingRuns = runCount;
     final int runsPerWorker = runCount / MAX_THREADS;
-    while (remainingRuns > 0) {
-      final int individualRemaining = Math.min(remainingRuns, runsPerWorker);
-      remainingRuns -= runsPerWorker;
-      BattleCalculator calculator = new BattleCalculator();
-      calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
-      calculator.setAmphibious(amphibious);
-      calculator.setRetreatAfterRound(retreatAfterRound);
-      calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
-      calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
-      calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
-      calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
-      calculators.add(calculator);
-      results.add(
-          executor.submit(
-              () -> {
-                try {
-                  calculator.setGameData(IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
-                  return calculator.calculate(
-                      attacker,
-                      defender,
-                      location,
-                      attacking,
-                      defending,
-                      bombarding,
-                      territoryEffects,
-                      individualRemaining);
-                } catch (final IOException e) {
-                  throw new RuntimeException("Failed to deserialize", e);
-                } finally {
-                  calculators.remove(calculator);
-                }
-              }));
+    synchronized (mutex) {
+      int remainingRuns = runCount;
+      while (remainingRuns > 0) {
+        final int individualRemaining = Math.min(remainingRuns, runsPerWorker);
+        remainingRuns -= runsPerWorker;
+        BattleCalculator calculator = new BattleCalculator();
+        calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
+        calculator.setAmphibious(amphibious);
+        calculator.setRetreatAfterRound(retreatAfterRound);
+        calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
+        calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
+        calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
+        calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
+        calculators.add(calculator);
+        results.add(
+            executor.submit(
+                () -> {
+                  try {
+                    calculator.setGameData(
+                        IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
+                    return calculator.calculate(
+                        attacker,
+                        defender,
+                        location,
+                        attacking,
+                        defending,
+                        bombarding,
+                        territoryEffects,
+                        individualRemaining);
+                  } catch (final IOException e) {
+                    throw new RuntimeException("Failed to deserialize", e);
+                  } finally {
+                    calculators.remove(calculator);
+                  }
+                }));
+      }
     }
     final AggregateResults result = new AggregateResults(runsPerWorker);
     for (Future<AggregateResults> future : results) {
@@ -149,42 +164,58 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
 
   @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {
-    keepOneAttackingLandUnit = bool;
+    synchronized (mutex) {
+      keepOneAttackingLandUnit = bool;
+    }
   }
 
   @Override
   public void setAmphibious(final boolean bool) {
-    amphibious = bool;
+    synchronized (mutex) {
+      amphibious = bool;
+    }
   }
 
   @Override
   public void setRetreatAfterRound(final int value) {
-    retreatAfterRound = value;
+    synchronized (mutex) {
+      retreatAfterRound = value;
+    }
   }
 
   @Override
   public void setRetreatAfterXUnitsLeft(final int value) {
-    retreatAfterXUnitsLeft = value;
+    synchronized (mutex) {
+      retreatAfterXUnitsLeft = value;
+    }
   }
 
   @Override
   public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    retreatWhenOnlyAirLeft = value;
+    synchronized (mutex) {
+      retreatWhenOnlyAirLeft = value;
+    }
   }
 
   @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-    this.attackerOrderOfLosses = attackerOrderOfLosses;
+    synchronized (mutex) {
+      this.attackerOrderOfLosses = attackerOrderOfLosses;
+    }
   }
 
   @Override
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-    this.defenderOrderOfLosses = defenderOrderOfLosses;
+    synchronized (mutex) {
+      this.defenderOrderOfLosses = defenderOrderOfLosses;
+    }
   }
 
   // not on purpose, we need to be able to cancel at any time
   @Override
   public void cancel() {
-    calculators.forEach(BattleCalculator::cancel);
+    synchronized (mutex) {
+      calculators.forEach(BattleCalculator::cancel);
+    }
   }
 }
