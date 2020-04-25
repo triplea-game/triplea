@@ -30,6 +30,8 @@ interface LobbyApiKeyDao {
   @SqlQuery(
       "select lu.id as "
           + ApiKeyLookupRecord.USER_ID_COLUMN
+          + ", ak.id as "
+          + ApiKeyLookupRecord.API_KEY_ID_COLUMN
           + ", ak.username as "
           + ApiKeyLookupRecord.USERNAME_COLUMN
           + ", ur.name as "

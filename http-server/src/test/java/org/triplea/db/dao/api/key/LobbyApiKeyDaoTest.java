@@ -25,12 +25,14 @@ class LobbyApiKeyDaoTest extends DaoTest {
           .username("registered-user")
           .role(UserRole.MODERATOR)
           .playerChatId("chat-id0")
+          .apiKeyId(1000)
           .build();
   private static final ApiKeyLookupRecord EXPECTED_ANONYMOUS_DATA =
       ApiKeyLookupRecord.builder()
           .username("some-other-name")
           .role(UserRole.ANONYMOUS)
           .playerChatId("chat-id1")
+          .apiKeyId(1001)
           .build();
 
   private final LobbyApiKeyDao lobbyApiKeyDao = DaoTest.newDao(LobbyApiKeyDao.class);

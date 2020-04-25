@@ -25,6 +25,7 @@ import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.data.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.modules.chat.Chatters.ChatterSession;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -63,12 +64,21 @@ class ChattersTest {
   void chatterWithValidApiKeyCanConnect() {
     when(session.getId()).thenReturn(ID);
     when(apiKeyDaoWrapper.lookupByApiKey(API_KEY)).thenReturn(Optional.of(USER_WITH_ROLE_RECORD));
-    when(chatParticipantAdapter.apply(USER_WITH_ROLE_RECORD)).thenReturn(CHAT_PARTICIPANT);
+    when(chatParticipantAdapter.apply(session, USER_WITH_ROLE_RECORD))
+        .thenReturn(buildChatterSession(session));
     chatters.connectPlayer(API_KEY, session);
 
     final Collection<ChatParticipant> result = chatters.getChatters();
 
     assertThat(result, hasSize(1));
+  }
+
+  private ChatterSession buildChatterSession(final Session session) {
+    return ChatterSession.builder()
+        .session(session)
+        .chatParticipant(CHAT_PARTICIPANT)
+        .apiKeyId(123)
+        .build();
   }
 
   @Test
@@ -93,7 +103,8 @@ class ChattersTest {
     void hasPlayerPlayerReturnsTrueIfNameMatches() {
       when(session.getId()).thenReturn(ID);
       when(apiKeyDaoWrapper.lookupByApiKey(API_KEY)).thenReturn(Optional.of(USER_WITH_ROLE_RECORD));
-      when(chatParticipantAdapter.apply(USER_WITH_ROLE_RECORD)).thenReturn(CHAT_PARTICIPANT);
+      when(chatParticipantAdapter.apply(session, USER_WITH_ROLE_RECORD))
+          .thenReturn(buildChatterSession(session));
 
       chatters.connectPlayer(API_KEY, session);
 
@@ -112,7 +123,7 @@ class ChattersTest {
 
     @Test
     void fetchSession() {
-      givenChatterWithApiKey(API_KEY, CHAT_PARTICIPANT);
+      givenChatterWithApiKey(API_KEY, session, CHAT_PARTICIPANT);
       when(session.isOpen()).thenReturn(true);
       when(session.getId()).thenReturn("9");
 
@@ -122,8 +133,8 @@ class ChattersTest {
 
     @Test
     void fetchOnlyOpenSessions() {
-      givenChatterWithApiKey(API_KEY, CHAT_PARTICIPANT);
-      givenChatterWithApiKey(API_KEY_2, CHAT_PARTICIPANT_2);
+      givenChatterWithApiKey(API_KEY, session, CHAT_PARTICIPANT);
+      givenChatterWithApiKey(API_KEY_2, session2, CHAT_PARTICIPANT_2);
       when(session.isOpen()).thenReturn(true);
       when(session.getId()).thenReturn("30");
       when(session2.isOpen()).thenReturn(false);
@@ -137,8 +148,8 @@ class ChattersTest {
 
     @Test
     void fetchMultipleOpenSession() {
-      givenChatterWithApiKey(API_KEY, CHAT_PARTICIPANT);
-      givenChatterWithApiKey(API_KEY_2, CHAT_PARTICIPANT_2);
+      givenChatterWithApiKey(API_KEY, session, CHAT_PARTICIPANT);
+      givenChatterWithApiKey(API_KEY_2, session2, CHAT_PARTICIPANT_2);
       when(session.isOpen()).thenReturn(true);
       when(session.getId()).thenReturn("90");
 
@@ -153,15 +164,18 @@ class ChattersTest {
   }
 
   @SuppressWarnings("SameParameterValue")
-  private void givenChatterWithApiKey(final ApiKey apiKey, final ChatParticipant chatParticipant) {
+  private void givenChatterWithApiKey(
+      final ApiKey apiKey, final Session session, final ChatParticipant chatParticipant) {
     final var userWithRoleRecord =
         ApiKeyLookupRecord.builder()
             .userId(123)
+            .apiKeyId(333)
             .playerChatId(chatParticipant.getPlayerChatId().getValue())
             .username(chatParticipant.getUserName().getValue())
             .build();
     when(apiKeyDaoWrapper.lookupByApiKey(apiKey)).thenReturn(Optional.of(userWithRoleRecord));
-    when(chatParticipantAdapter.apply(userWithRoleRecord)).thenReturn(CHAT_PARTICIPANT);
+    when(chatParticipantAdapter.apply(session, userWithRoleRecord))
+        .thenReturn(buildChatterSession(session));
   }
 
   @Nested
@@ -175,7 +189,7 @@ class ChattersTest {
 
     @Test
     void singleSessionDisconnected() throws Exception {
-      givenChatterWithApiKey(API_KEY, CHAT_PARTICIPANT);
+      givenChatterWithApiKey(API_KEY, session, CHAT_PARTICIPANT);
       when(session.getId()).thenReturn("100");
       chatters.connectPlayer(API_KEY, session);
 
@@ -189,8 +203,8 @@ class ChattersTest {
     @Test
     @DisplayName("Players can have multiple sessions, verify they are all closed")
     void allSameNamePlayersAreDisconnected() throws Exception {
-      givenChatterWithApiKey(API_KEY, CHAT_PARTICIPANT);
-      givenChatterWithApiKey(API_KEY_2, CHAT_PARTICIPANT);
+      givenChatterWithApiKey(API_KEY, session, CHAT_PARTICIPANT);
+      givenChatterWithApiKey(API_KEY_2, session2, CHAT_PARTICIPANT);
 
       when(session.getId()).thenReturn("1");
       when(session2.getId()).thenReturn("2");
