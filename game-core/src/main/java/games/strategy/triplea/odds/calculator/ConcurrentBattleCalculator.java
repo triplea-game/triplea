@@ -244,7 +244,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   @Override
   public boolean isAlive() {
     synchronized (mutex) {
-      return !isShutDown &&calculators.stream().allMatch(IBattleCalculator::isAlive);
+      return !isShutDown && calculators.stream().allMatch(IBattleCalculator::isAlive);
     }
   }
 }

@@ -53,7 +53,8 @@ import org.triplea.util.Tuple;
 public class ProAi extends AbstractAi {
 
   // Odds calculator
-  private static final ConcurrentBattleCalculator concurrentCalc = new ConcurrentBattleCalculator("ProAi");
+  private static final ConcurrentBattleCalculator concurrentCalc =
+      new ConcurrentBattleCalculator("ProAi");
   protected ProOddsCalculator calc;
 
   @Getter private final ProData proData = new ProData();
