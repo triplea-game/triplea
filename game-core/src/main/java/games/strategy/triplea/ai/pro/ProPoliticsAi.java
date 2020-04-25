@@ -27,7 +27,7 @@ class ProPoliticsAi {
   private final ProOddsCalculator calc;
   private final ProData proData;
 
-  ProPoliticsAi(final ProAi ai) {
+  ProPoliticsAi(final AbstractProAi ai) {
     calc = ai.getCalc();
     proData = ai.getProData();
   }

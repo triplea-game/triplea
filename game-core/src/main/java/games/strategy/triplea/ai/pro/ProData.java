@@ -34,18 +34,18 @@ public final class ProData {
   private @Nullable ProPurchaseOptionMap purchaseOptions = null;
   private double minCostPerHitPoint = Double.MAX_VALUE;
 
-  private ProAi proAi;
+  private AbstractProAi proAi;
   private GameData data;
   private GamePlayer player;
 
   public ProData() {}
 
-  public void initialize(final ProAi proAi) {
+  public void initialize(final AbstractProAi proAi) {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getGamePlayer(), false);
   }
 
   public void initializeSimulation(
-      final ProAi proAi, final GameData data, final GamePlayer player) {
+      final AbstractProAi proAi, final GameData data, final GamePlayer player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
@@ -58,7 +58,10 @@ public final class ProData {
   }
 
   private void hiddenInitialize(
-      final ProAi proAi, final GameData data, final GamePlayer player, final boolean isSimulation) {
+      final AbstractProAi proAi,
+      final GameData data,
+      final GamePlayer player,
+      final boolean isSimulation) {
     this.proAi = proAi;
     this.data = data;
     this.player = player;

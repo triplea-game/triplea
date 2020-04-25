@@ -1,6 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
-import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.pro.AbstractProAi;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,7 +29,7 @@ final class ProLogSettings implements Serializable {
   static ProLogSettings loadSettings() {
     try {
       final byte[] pool =
-          Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
+          Preferences.userNodeForPackage(AbstractProAi.class).getByteArray(PROGRAM_SETTINGS, null);
       if (pool != null) {
         return IoUtils.readFromMemory(
             pool,
@@ -57,7 +57,7 @@ final class ProLogSettings implements Serializable {
                   outputStream.writeObject(settings);
                 }
               });
-      final Preferences prefs = Preferences.userNodeForPackage(ProAi.class);
+      final Preferences prefs = Preferences.userNodeForPackage(AbstractProAi.class);
       prefs.putByteArray(PROGRAM_SETTINGS, bytes);
       try {
         prefs.flush();

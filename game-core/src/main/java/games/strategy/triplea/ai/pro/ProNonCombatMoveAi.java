@@ -60,7 +60,7 @@ class ProNonCombatMoveAi {
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
 
-  ProNonCombatMoveAi(final ProAi ai) {
+  ProNonCombatMoveAi(final AbstractProAi ai) {
     calc = ai.getCalc();
     proData = ai.getProData();
   }

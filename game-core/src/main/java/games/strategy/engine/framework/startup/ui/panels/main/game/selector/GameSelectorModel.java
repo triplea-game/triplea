@@ -157,9 +157,8 @@ public class GameSelectorModel extends Observable implements GameSelector {
   /** Clears AI game over cache and loads default game in a new thread. */
   @Override
   public void onGameEnded() {
-    // clear out ai cached properties (this ended up being the best place to put it, as we have
-    // definitely left a game
-    // at this point)
+    // clear out ai cached properties (this ended up being the best place to put it,
+    // as we have definitely left a game at this point)
     ProAi.gameOverClearCache();
     new Thread(this::loadDefaultGameSameThread).start();
   }

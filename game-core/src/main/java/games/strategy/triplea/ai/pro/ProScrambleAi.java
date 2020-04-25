@@ -31,7 +31,7 @@ class ProScrambleAi {
   private final ProOddsCalculator calc;
   private final ProData proData;
 
-  ProScrambleAi(final ProAi ai) {
+  ProScrambleAi(final AbstractProAi ai) {
     calc = ai.getCalc();
     proData = ai.getProData();
   }

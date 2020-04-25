@@ -45,7 +45,7 @@ public class ProCombatMoveAi {
 
   private static final int MIN_BOMBING_SCORE = 4; // Avoid bombing low production factories with AA
 
-  private final ProAi ai;
+  private final AbstractProAi ai;
   private final ProData proData;
   private final ProOddsCalculator calc;
   private GameData data;
@@ -54,7 +54,7 @@ public class ProCombatMoveAi {
   private boolean isDefensive;
   private boolean isBombing;
 
-  ProCombatMoveAi(final ProAi ai) {
+  ProCombatMoveAi(final AbstractProAi ai) {
     this.ai = ai;
     this.proData = ai.getProData();
     calc = ai.getCalc();

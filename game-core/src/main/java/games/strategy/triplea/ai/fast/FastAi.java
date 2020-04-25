@@ -1,19 +1,18 @@
 package games.strategy.triplea.ai.fast;
 
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.triplea.ai.pro.ProAi;
-import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
+import games.strategy.triplea.ai.pro.AbstractProAi;
+import games.strategy.triplea.ai.pro.ProData;
 
 /** Fast AI. */
-public class FastAi extends ProAi {
+public class FastAi extends AbstractProAi {
 
   public FastAi(final String name) {
-    super(name);
+    this(name, new ProData());
   }
 
-  @Override
-  protected void initializeCalc() {
-    calc = new ProOddsCalculator(new FastOddsEstimator(getProData()));
+  private FastAi(final String name, final ProData proData) {
+    super(name, new FastOddsEstimator(proData), proData);
   }
 
   @Override

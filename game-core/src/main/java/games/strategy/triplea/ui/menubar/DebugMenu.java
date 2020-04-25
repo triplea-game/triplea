@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.player.Player;
-import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.awt.event.KeyEvent;
@@ -18,10 +18,10 @@ final class DebugMenu extends JMenu {
     setMnemonic(KeyEvent.VK_D);
 
     final Set<Player> players = frame.getLocalPlayers().getLocalPlayers();
-    final boolean areThereProAIs = players.stream().anyMatch(ProAi.class::isInstance);
+    final boolean areThereProAIs = players.stream().anyMatch(AbstractProAi.class::isInstance);
     if (areThereProAIs) {
-      ProAi.initialize(frame);
-      add(SwingAction.of("Show Hard AI Logs", ProAi::showSettingsWindow))
+      AbstractProAi.initialize(frame);
+      add(SwingAction.of("Show Hard AI Logs", AbstractProAi::showSettingsWindow))
           .setMnemonic(KeyEvent.VK_X);
     }
 
