@@ -141,7 +141,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
       final int runs) {
-    BattleCalculator calculator = new BattleCalculator();
+    final BattleCalculator calculator = new BattleCalculator();
     calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
     calculator.setAmphibious(amphibious);
     calculator.setRetreatAfterRound(retreatAfterRound);
@@ -174,12 +174,12 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private static AggregateResults aggregateResults(
       final List<Future<AggregateResults>> results, final int runsPerWorker) {
     final AggregateResults result = new AggregateResults(runsPerWorker);
-    for (Future<AggregateResults> future : results) {
+    for (final Future<AggregateResults> future : results) {
       try {
         result.addResults(future.get().getResults());
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
-      } catch (ExecutionException e) {
+      } catch (final ExecutionException e) {
         throw new IllegalStateException("Exception from worker", e);
       }
     }
