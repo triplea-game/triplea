@@ -11,7 +11,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.extern.java.Log;
 import org.triplea.io.IoUtils;
@@ -108,24 +109,25 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     Preconditions.checkState(!isShutDown, "ConcurrentBattleCalculator is already shut down");
     Preconditions.checkState(bytes.length != 0, "Data has not been set yet.");
     final long start = System.currentTimeMillis();
-    final List<Future<AggregateResults>> results = new ArrayList<>();
     final int runsPerWorker = runCount / MAX_THREADS;
+    final List<Future<AggregateResults>> results;
     synchronized (mutex) {
-      int remainingRuns = runCount;
-      while (remainingRuns > 0) {
-        final int individualRemaining = Math.min(remainingRuns, runsPerWorker);
-        remainingRuns -= runsPerWorker;
-        results.add(
-            createBattleCalcWorker(
-                attacker,
-                defender,
-                location,
-                attacking,
-                defending,
-                bombarding,
-                territoryEffects,
-                individualRemaining));
-      }
+      results =
+          IntStream.range(0, MAX_THREADS)
+              .map(index -> index == 0 ? runCount % MAX_THREADS : 0)
+              .map(runs -> runs + runsPerWorker)
+              .mapToObj(
+                  individualRemaining ->
+                      createBattleCalcWorker(
+                          attacker,
+                          defender,
+                          location,
+                          attacking,
+                          defending,
+                          bombarding,
+                          territoryEffects,
+                          individualRemaining))
+              .collect(Collectors.toList());
     }
     final AggregateResults result = aggregateResults(results, runsPerWorker);
     result.setTime(System.currentTimeMillis() - start);
