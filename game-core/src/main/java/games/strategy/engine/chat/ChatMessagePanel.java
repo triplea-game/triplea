@@ -97,7 +97,6 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
             SwingAction.invokeAndWait(
                 () -> {
                   if (chat != null) {
-                    chat.removeChatListener(this);
                     cleanupKeyMap();
                   }
                   this.chat = chat;

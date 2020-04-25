@@ -148,18 +148,6 @@ public class Chat implements ChatClient {
     statusUpdateListeners.add(statusUpdateListener);
   }
 
-  void removeChatListener(final ChatMessageListener listener) {
-    chatMessageListeners.remove(listener);
-  }
-
-  void removeChatListener(final ChatPlayerListener listener) {
-    chatPlayerListeners.remove(listener);
-  }
-
-  void removeStatusUpdateListener(final BiConsumer<UserName, String> statusUpdateListener) {
-    statusUpdateListeners.remove(statusUpdateListener);
-  }
-
   /** Stop receiving events from the messenger. */
   public void shutdown() {
     chatTransmitter.disconnect();
