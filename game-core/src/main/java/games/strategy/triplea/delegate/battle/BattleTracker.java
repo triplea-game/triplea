@@ -1413,9 +1413,7 @@ public class BattleTracker implements Serializable {
                 true,
                 TuvUtils.getCostsForTuv(bridge.getGamePlayer(), gameData),
                 TerritoryEffectHelper.getEffects(territory),
-                gameData,
-                false,
-                false)
+                gameData)
             .reversed());
     return sortedUnitsList;
   }

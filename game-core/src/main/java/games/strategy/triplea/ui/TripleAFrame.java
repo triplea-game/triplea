@@ -1441,8 +1441,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                         TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
                         TerritoryEffectHelper.getEffects(entry.getKey()),
                         data,
-                        true,
-                        false)
+                        true)
                     .reversed());
             possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
           }
