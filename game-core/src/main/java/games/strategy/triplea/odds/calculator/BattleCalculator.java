@@ -15,9 +15,8 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> {
+class BattleCalculator implements IBattleCalculator {
   private GameData gameData;
   private GamePlayer attacker = null;
   private GamePlayer defender = null;
@@ -33,34 +32,19 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
   private boolean retreatWhenOnlyAirLeft = false;
   private String attackerOrderOfLosses = null;
   private String defenderOrderOfLosses = null;
-  private int runCount = 0;
   private volatile boolean cancelled = false;
   private volatile boolean isDataSet = false;
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
-
-  BattleCalculator(final GameData data) {
-    this(data, false);
-  }
-
-  BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
-    gameData =
-        data == null
-            ? null
-            : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
-    if (data != null) {
-      isDataSet = true;
-    }
-  }
 
   @Override
   public void setGameData(final GameData data) {
     if (isRunning) {
       return;
     }
-    isDataSet = false;
+    isDataSet = data != null;
     isCalcSet = false;
-    gameData = (data == null ? null : GameDataUtils.cloneGameData(data, false));
+    gameData = data;
     // reset old data
     attacker = null;
     defender = null;
@@ -69,21 +53,17 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
     defendingUnits = new ArrayList<>();
     bombardingUnits = new ArrayList<>();
     territoryEffects = new ArrayList<>();
-    runCount = 0;
-    isDataSet = data != null;
   }
 
   /** Calculates odds using the stored game data. */
-  @Override
-  public void setCalculateData(
+  private void setCalculateData(
       final GamePlayer attacker,
       final GamePlayer defender,
       final Territory location,
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects,
-      final int runCount)
+      final Collection<TerritoryEffect> territoryEffects)
       throws IllegalStateException {
     if (isRunning) {
       return;
@@ -110,12 +90,11 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
     gameData.performChange(ChangeFactory.removeUnits(this.location, this.location.getUnits()));
     gameData.performChange(ChangeFactory.addUnits(this.location, attackingUnits));
     gameData.performChange(ChangeFactory.addUnits(this.location, defendingUnits));
-    this.runCount = runCount;
     isCalcSet = true;
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(
+  public AggregateResults calculate(
       final GamePlayer attacker,
       final GamePlayer defender,
       final Territory location,
@@ -125,12 +104,7 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
       final Collection<TerritoryEffect> territoryEffects,
       final int runCount) {
     setCalculateData(
-        attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
-    return calculate();
-  }
-
-  @Override
-  public AggregateResults calculate() {
+        attacker, defender, location, attacking, defending, bombarding, territoryEffects);
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }
@@ -142,12 +116,10 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
     final long start = System.currentTimeMillis();
     final AggregateResults aggregateResults = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
-    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at
-    // the same time (like if
-    // the AI and a human are both using the calc)
+    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calculated
+    // at the same time (like if the AI and a human are both using the calc)
     // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference
-    // then convert it to a
-    // per-thread, per-calc caching
+    // then convert it to a per-thread, per-calc caching
     final List<Unit> attackerOrderOfLosses =
         OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
             this.attackerOrderOfLosses, attackingUnits, gameData);
@@ -192,19 +164,8 @@ class BattleCalculator implements IBattleCalculator, Callable<AggregateResults> 
     return aggregateResults;
   }
 
-  @Override
-  public AggregateResults call() {
-    return calculate();
-  }
-
-  @Override
   public boolean getIsReady() {
     return isDataSet && isCalcSet;
-  }
-
-  @Override
-  public int getRunCount() {
-    return runCount;
   }
 
   @Override

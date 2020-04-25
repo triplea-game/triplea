@@ -28,6 +28,20 @@ public final class GameDataUtils {
     return dataCopy;
   }
 
+  public static byte[] serializeGameDataWithoutHistory(final GameData data) {
+    final History temp = data.getHistory();
+    data.resetHistory();
+    final byte[] bytes;
+    try {
+      bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, false));
+    } catch (final IOException e) {
+      throw new RuntimeException("Failed to serialize GameData", e);
+    } finally {
+      data.setHistory(temp);
+    }
+    return bytes;
+  }
+
   public static GameData cloneGameData(final GameData data) {
     return cloneGameData(data, false);
   }
