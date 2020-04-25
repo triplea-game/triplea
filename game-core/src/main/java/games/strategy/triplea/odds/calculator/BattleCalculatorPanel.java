@@ -1242,7 +1242,6 @@ class BattleCalculatorPanel extends JPanel {
                 }
                 calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
                 calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());
-                calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeftCheckBox.isSelected());
                 calculator.setKeepOneAttackingLandUnit(
                     landBattleCheckBox.isSelected()
                         && keepOneAttackingLandUnitCheckBox.isSelected());
@@ -1261,6 +1260,7 @@ class BattleCalculatorPanel extends JPanel {
                         defending,
                         bombarding,
                         territoryEffects,
+                        retreatWhenOnlyAirLeftCheckBox.isSelected(),
                         numRuns.getValue()));
               } finally {
                 SwingUtilities.invokeLater(

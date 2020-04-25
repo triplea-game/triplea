@@ -30,10 +30,7 @@ class BattleCalculator implements IBattleCalculator {
   @Setter private boolean amphibious = false;
   @Setter private int retreatAfterRound = -1;
   @Setter private int retreatAfterXUnitsLeft = -1;
-
-  @Setter(onMethod_ = {@Override})
   private boolean retreatWhenOnlyAirLeft = false;
-
   @Setter private String attackerOrderOfLosses = null;
   @Setter private String defenderOrderOfLosses = null;
   private volatile boolean cancelled = false;
@@ -66,7 +63,8 @@ class BattleCalculator implements IBattleCalculator {
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects)
+      final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft)
       throws IllegalStateException {
     if (isRunning) {
       return;
@@ -75,6 +73,7 @@ class BattleCalculator implements IBattleCalculator {
     if (!isDataSet) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
+    this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
     this.attacker =
         gameData
             .getPlayerList()
@@ -105,9 +104,17 @@ class BattleCalculator implements IBattleCalculator {
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
       final int runCount) {
     setCalculateData(
-        attacker, defender, location, attacking, defending, bombarding, territoryEffects);
+        attacker,
+        defender,
+        location,
+        attacking,
+        defending,
+        bombarding,
+        territoryEffects,
+        retreatWhenOnlyAirLeft);
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }

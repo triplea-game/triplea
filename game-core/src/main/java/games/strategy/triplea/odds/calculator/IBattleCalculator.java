@@ -19,9 +19,8 @@ public interface IBattleCalculator {
       Collection<Unit> defending,
       Collection<Unit> bombarding,
       Collection<TerritoryEffect> territoryEffects,
+      boolean retreatWhenOnlyAirLeft,
       int runCount);
-
-  void setRetreatWhenOnlyAirLeft(boolean retreatWhenOnlyAirLeft);
 
   int getThreadCount();
 }

@@ -42,6 +42,7 @@ class BattleCalculatorTest {
             defendingUnits,
             bombardingUnits,
             TerritoryEffectHelper.getEffects(germany),
+            false,
             200);
     assertTrue(results.getAttackerWinPercent() > 0.99);
     assertTrue(results.getDefenderWinPercent() < 0.1);
@@ -72,6 +73,7 @@ class BattleCalculatorTest {
             defendingUnits,
             bombardingUnits,
             TerritoryEffectHelper.getEffects(eastCanada),
+            false,
             1000);
     assertEquals(0.8, results.getAttackerWinPercent(), 0.10);
     assertEquals(0.16, results.getDefenderWinPercent(), 0.10);
@@ -94,6 +96,7 @@ class BattleCalculatorTest {
             defending,
             List.of(),
             TerritoryEffectHelper.getEffects(sz1),
+            false,
             1);
     assertEquals(0.0, results.getAttackerWinPercent());
     assertEquals(1.0, results.getDefenderWinPercent());
@@ -118,6 +121,7 @@ class BattleCalculatorTest {
             defending,
             List.of(),
             TerritoryEffectHelper.getEffects(sz1),
+            false,
             1);
     assertEquals(1.0, results.getAttackerWinPercent());
     assertEquals(0.0, results.getDefenderWinPercent());

@@ -220,9 +220,6 @@ public class ProOddsCalculator {
     final int runCount = Math.max(16, 100 - minArmySize);
     final GamePlayer attacker = attackingUnits.iterator().next().getOwner();
     final GamePlayer defender = defendingUnits.iterator().next().getOwner();
-    if (retreatWhenOnlyAirLeft) {
-      calc.setRetreatWhenOnlyAirLeft(true);
-    }
     final AggregateResults results =
         calc.calculate(
             attacker,
@@ -232,10 +229,8 @@ public class ProOddsCalculator {
             defendingUnits,
             new ArrayList<>(bombardingUnits),
             TerritoryEffectHelper.getEffects(t),
+            retreatWhenOnlyAirLeft,
             runCount);
-    if (retreatWhenOnlyAirLeft) {
-      calc.setRetreatWhenOnlyAirLeft(false);
-    }
 
     // Find battle result statistics
     final double winPercentage = results.getAttackerWinPercent() * 100;

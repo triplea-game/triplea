@@ -30,6 +30,7 @@ class FastOddsEstimator implements IBattleCalculator {
       final Collection<Unit> defendingUnits,
       final Collection<Unit> bombardingUnits,
       final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
       final int runCount) {
     final double winPercentage =
         ProBattleUtils.estimateStrengthDifference(
@@ -53,9 +54,6 @@ class FastOddsEstimator implements IBattleCalculator {
     return new AggregateEstimate(
         battleRoundsFought, winPercentage / 100, remainingAttackingUnits, remainingDefendingUnits);
   }
-
-  @Override
-  public void setRetreatWhenOnlyAirLeft(boolean retreatWhenOnlyAirLeft) {}
 
   @Override
   public int getThreadCount() {
