@@ -53,8 +53,6 @@ import org.triplea.util.Tuple;
 public abstract class AbstractProAi extends AbstractAi {
 
   private final ProOddsCalculator calc;
-  private final IBattleCalculator battleCalculator;
-
   @Getter private final ProData proData;
 
   // Phases
@@ -77,7 +75,6 @@ public abstract class AbstractProAi extends AbstractAi {
     super(name);
     this.proData = proData;
     calc = new ProOddsCalculator(battleCalculator);
-    this.battleCalculator = battleCalculator;
     combatMoveAi = new ProCombatMoveAi(this);
     nonCombatMoveAi = new ProNonCombatMoveAi(this);
     purchaseAi = new ProPurchaseAi(this);
@@ -124,6 +121,8 @@ public abstract class AbstractProAi extends AbstractAi {
     storedStrafingTerritories = strafingTerritories;
   }
 
+  protected abstract void prepareData(final GameData data);
+
   @Override
   protected void move(
       final boolean nonCombat,
@@ -133,7 +132,7 @@ public abstract class AbstractProAi extends AbstractAi {
     final long start = System.currentTimeMillis();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
-    battleCalculator.setGameData(data);
+    prepareData(data);
     if (nonCombat) {
       nonCombatMoveAi.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel);
       storedFactoryMoveMap = null;
@@ -167,7 +166,7 @@ public abstract class AbstractProAi extends AbstractAi {
       return;
     }
     if (purchaseForBid) {
-      battleCalculator.setGameData(data);
+      prepareData(data);
       storedPurchaseTerritories = purchaseAi.bid(pusToSpend, purchaseDelegate, data);
     } else {
 
@@ -198,7 +197,7 @@ public abstract class AbstractProAi extends AbstractAi {
       } finally {
         data.releaseWriteLock();
       }
-      battleCalculator.setGameData(dataCopy);
+      prepareData(dataCopy);
       final GamePlayer playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
@@ -329,7 +328,7 @@ public abstract class AbstractProAi extends AbstractAi {
         && (battleTerritory.isWater() || attackers.stream().anyMatch(Matches.unitIsLand()))) {
       return null;
     }
-    battleCalculator.setGameData(getGameData());
+    prepareData(getGameData());
     return retreatAi.retreatQuery(battleId, battleTerritory, possibleTerritories);
   }
 
@@ -462,7 +461,7 @@ public abstract class AbstractProAi extends AbstractAi {
             + defenders.size()
             + ", possibleScramblers="
             + possibleScramblers);
-    battleCalculator.setGameData(getGameData());
+    prepareData(getGameData());
     return scrambleAi.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
 
@@ -491,7 +490,7 @@ public abstract class AbstractProAi extends AbstractAi {
             + attackers
             + ", defenders="
             + defenders);
-    battleCalculator.setGameData(getGameData());
+    prepareData(getGameData());
 
     // Calculate battle results
     final ProBattleResult result =

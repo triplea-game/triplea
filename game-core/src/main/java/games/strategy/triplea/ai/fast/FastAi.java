@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.fast;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ai.pro.ProData;
@@ -19,4 +20,7 @@ public class FastAi extends AbstractProAi {
   public PlayerType getPlayerType() {
     return PlayerType.FAST_AI;
   }
+
+  @Override
+  protected void prepareData(final GameData data) {}
 }

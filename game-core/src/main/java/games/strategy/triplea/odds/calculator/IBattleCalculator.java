@@ -1,6 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -12,8 +11,6 @@ import java.util.Collection;
  * methods.
  */
 public interface IBattleCalculator {
-  void setGameData(GameData data);
-
   AggregateResults calculate(
       GamePlayer attacker,
       GamePlayer defender,

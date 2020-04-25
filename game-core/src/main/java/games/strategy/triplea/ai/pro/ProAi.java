@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
 
@@ -22,5 +23,10 @@ public class ProAi extends AbstractProAi {
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
     concurrentCalc.cancel();
+  }
+
+  @Override
+  protected void prepareData(final GameData data) {
+    concurrentCalc.setGameData(data);
   }
 }
