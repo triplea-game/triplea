@@ -21,19 +21,5 @@ public interface IBattleCalculator {
       Collection<TerritoryEffect> territoryEffects,
       int runCount);
 
-  void setKeepOneAttackingLandUnit(boolean bool);
-
-  void setAmphibious(boolean bool);
-
-  void setRetreatAfterRound(int value);
-
-  void setRetreatAfterXUnitsLeft(int value);
-
-  void setRetreatWhenOnlyAirLeft(boolean value);
-
-  void setAttackerOrderOfLosses(String attackerOrderOfLosses);
-
-  void setDefenderOrderOfLosses(String defenderOrderOfLosses);
-
   int getThreadCount();
 }

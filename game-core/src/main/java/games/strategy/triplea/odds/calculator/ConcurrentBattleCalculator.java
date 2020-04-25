@@ -69,7 +69,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     this.dataLoadedAction = dataLoadedAction;
   }
 
-  @Override
   public void setGameData(final GameData data) {
     synchronized (mutex) {
       bytes = data == null ? new byte[0] : GameDataUtils.serializeGameDataWithoutHistory(data);
@@ -185,49 +184,42 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     return result;
   }
 
-  @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {
     synchronized (mutex) {
       keepOneAttackingLandUnit = bool;
     }
   }
 
-  @Override
   public void setAmphibious(final boolean bool) {
     synchronized (mutex) {
       amphibious = bool;
     }
   }
 
-  @Override
   public void setRetreatAfterRound(final int value) {
     synchronized (mutex) {
       retreatAfterRound = value;
     }
   }
 
-  @Override
   public void setRetreatAfterXUnitsLeft(final int value) {
     synchronized (mutex) {
       retreatAfterXUnitsLeft = value;
     }
   }
 
-  @Override
   public void setRetreatWhenOnlyAirLeft(final boolean value) {
     synchronized (mutex) {
       retreatWhenOnlyAirLeft = value;
     }
   }
 
-  @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
     synchronized (mutex) {
       this.attackerOrderOfLosses = attackerOrderOfLosses;
     }
   }
 
-  @Override
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
     synchronized (mutex) {
       this.defenderOrderOfLosses = defenderOrderOfLosses;

@@ -59,27 +59,6 @@ class FastOddsEstimator implements IBattleCalculator {
   }
 
   @Override
-  public void setKeepOneAttackingLandUnit(final boolean bool) {}
-
-  @Override
-  public void setAmphibious(final boolean bool) {}
-
-  @Override
-  public void setRetreatAfterRound(final int value) {}
-
-  @Override
-  public void setRetreatAfterXUnitsLeft(final int value) {}
-
-  @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {}
-
-  @Override
-  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {}
-
-  @Override
-  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {}
-
-  @Override
   public int getThreadCount() {
     return 1;
   }

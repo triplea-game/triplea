@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import lombok.Setter;
 
 class BattleCalculator implements IBattleCalculator {
   private GameData gameData;
@@ -25,19 +26,18 @@ class BattleCalculator implements IBattleCalculator {
   private Collection<Unit> defendingUnits = new ArrayList<>();
   private Collection<Unit> bombardingUnits = new ArrayList<>();
   private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
-  private boolean keepOneAttackingLandUnit = false;
-  private boolean amphibious = false;
-  private int retreatAfterRound = -1;
-  private int retreatAfterXUnitsLeft = -1;
-  private boolean retreatWhenOnlyAirLeft = false;
-  private String attackerOrderOfLosses = null;
-  private String defenderOrderOfLosses = null;
+  @Setter private boolean keepOneAttackingLandUnit = false;
+  @Setter private boolean amphibious = false;
+  @Setter private int retreatAfterRound = -1;
+  @Setter private int retreatAfterXUnitsLeft = -1;
+  @Setter private boolean retreatWhenOnlyAirLeft = false;
+  @Setter private String attackerOrderOfLosses = null;
+  @Setter private String defenderOrderOfLosses = null;
   private volatile boolean cancelled = false;
   private volatile boolean isDataSet = false;
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
-  @Override
   public void setGameData(final GameData data) {
     if (isRunning) {
       return;
@@ -166,41 +166,6 @@ class BattleCalculator implements IBattleCalculator {
 
   public boolean getIsReady() {
     return isDataSet && isCalcSet;
-  }
-
-  @Override
-  public void setKeepOneAttackingLandUnit(final boolean bool) {
-    keepOneAttackingLandUnit = bool;
-  }
-
-  @Override
-  public void setAmphibious(final boolean bool) {
-    amphibious = bool;
-  }
-
-  @Override
-  public void setRetreatAfterRound(final int value) {
-    retreatAfterRound = value;
-  }
-
-  @Override
-  public void setRetreatAfterXUnitsLeft(final int value) {
-    retreatAfterXUnitsLeft = value;
-  }
-
-  @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    retreatWhenOnlyAirLeft = value;
-  }
-
-  @Override
-  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-    this.attackerOrderOfLosses = attackerOrderOfLosses;
-  }
-
-  @Override
-  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-    this.defenderOrderOfLosses = defenderOrderOfLosses;
   }
 
   public void cancel() {
