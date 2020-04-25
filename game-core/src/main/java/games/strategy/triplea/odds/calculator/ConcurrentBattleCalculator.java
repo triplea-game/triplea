@@ -20,10 +20,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import javax.annotation.concurrent.ThreadSafe;
 import lombok.extern.java.Log;
 import org.triplea.io.IoUtils;
-
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up
@@ -116,38 +115,64 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       while (remainingRuns > 0) {
         final int individualRemaining = Math.min(remainingRuns, runsPerWorker);
         remainingRuns -= runsPerWorker;
-        BattleCalculator calculator = new BattleCalculator();
-        calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
-        calculator.setAmphibious(amphibious);
-        calculator.setRetreatAfterRound(retreatAfterRound);
-        calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
-        calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
-        calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
-        calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
-        calculators.add(calculator);
         results.add(
-            executor.submit(
-                () -> {
-                  try {
-                    calculator.setGameData(
-                        IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
-                    return calculator.calculate(
-                        attacker,
-                        defender,
-                        location,
-                        attacking,
-                        defending,
-                        bombarding,
-                        territoryEffects,
-                        individualRemaining);
-                  } catch (final IOException e) {
-                    throw new RuntimeException("Failed to deserialize", e);
-                  } finally {
-                    calculators.remove(calculator);
-                  }
-                }));
+            createBattleCalcWorker(
+                attacker,
+                defender,
+                location,
+                attacking,
+                defending,
+                bombarding,
+                territoryEffects,
+                individualRemaining));
       }
     }
+    final AggregateResults result = aggregateResults(results, runsPerWorker);
+    result.setTime(System.currentTimeMillis() - start);
+    return result;
+  }
+
+  private Future<AggregateResults> createBattleCalcWorker(
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runs) {
+    BattleCalculator calculator = new BattleCalculator();
+    calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
+    calculator.setAmphibious(amphibious);
+    calculator.setRetreatAfterRound(retreatAfterRound);
+    calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
+    calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
+    calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
+    calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
+    calculators.add(calculator);
+    return executor.submit(
+        () -> {
+          try {
+            calculator.setGameData(IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
+            return calculator.calculate(
+                attacker,
+                defender,
+                location,
+                attacking,
+                defending,
+                bombarding,
+                territoryEffects,
+                runs);
+          } catch (final IOException e) {
+            throw new RuntimeException("Failed to deserialize", e);
+          } finally {
+            calculators.remove(calculator);
+          }
+        });
+  }
+
+  private static AggregateResults aggregateResults(
+      final List<Future<AggregateResults>> results, final int runsPerWorker) {
     final AggregateResults result = new AggregateResults(runsPerWorker);
     for (Future<AggregateResults> future : results) {
       try {
@@ -158,7 +183,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         throw new IllegalStateException("Exception from worker", e);
       }
     }
-    result.setTime(System.currentTimeMillis() - start);
     return result;
   }
 
