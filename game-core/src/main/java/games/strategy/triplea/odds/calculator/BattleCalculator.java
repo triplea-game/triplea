@@ -30,7 +30,10 @@ class BattleCalculator implements IBattleCalculator {
   @Setter private boolean amphibious = false;
   @Setter private int retreatAfterRound = -1;
   @Setter private int retreatAfterXUnitsLeft = -1;
-  @Setter private boolean retreatWhenOnlyAirLeft = false;
+
+  @Setter(onMethod_ = {@Override})
+  private boolean retreatWhenOnlyAirLeft = false;
+
   @Setter private String attackerOrderOfLosses = null;
   @Setter private String defenderOrderOfLosses = null;
   private volatile boolean cancelled = false;

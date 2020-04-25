@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.fast;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -21,9 +20,6 @@ class FastOddsEstimator implements IBattleCalculator {
   FastOddsEstimator(final ProData proData) {
     this.proData = proData;
   }
-
-  @Override
-  public void setGameData(final GameData data) {}
 
   @Override
   public AggregateResults calculate(
@@ -57,6 +53,9 @@ class FastOddsEstimator implements IBattleCalculator {
     return new AggregateEstimate(
         battleRoundsFought, winPercentage / 100, remainingAttackingUnits, remainingDefendingUnits);
   }
+
+  @Override
+  public void setRetreatWhenOnlyAirLeft(boolean retreatWhenOnlyAirLeft) {}
 
   @Override
   public int getThreadCount() {

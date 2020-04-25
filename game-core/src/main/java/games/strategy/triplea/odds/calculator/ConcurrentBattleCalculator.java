@@ -208,6 +208,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     }
   }
 
+  @Override
   public void setRetreatWhenOnlyAirLeft(final boolean value) {
     synchronized (mutex) {
       retreatWhenOnlyAirLeft = value;
