@@ -20,6 +20,7 @@ import org.triplea.domain.data.UserName;
  *
  * <p>A chat can be bound to multiple chat panels.
  */
+@SuppressWarnings("UnstableApiUsage")
 public class Chat implements ChatClient {
 
   private final ChatTransmitter chatTransmitter;
