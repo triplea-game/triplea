@@ -212,7 +212,7 @@ public class ProOddsCalculator {
       final boolean retreatWhenOnlyAirLeft) {
     final GameData data = t.getData();
 
-    if (!stopped || attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
+    if (stopped || attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
       return new ProBattleResult();
     }
 
