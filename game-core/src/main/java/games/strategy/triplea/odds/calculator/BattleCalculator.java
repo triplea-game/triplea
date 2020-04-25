@@ -211,9 +211,4 @@ class BattleCalculator implements IBattleCalculator {
   public int getThreadCount() {
     return 1;
   }
-
-  @Override
-  public boolean isAlive() {
-    return !cancelled;
-  }
 }

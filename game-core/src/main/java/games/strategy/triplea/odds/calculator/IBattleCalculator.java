@@ -39,6 +39,4 @@ public interface IBattleCalculator {
   void setDefenderOrderOfLosses(String defenderOrderOfLosses);
 
   int getThreadCount();
-
-  boolean isAlive();
 }

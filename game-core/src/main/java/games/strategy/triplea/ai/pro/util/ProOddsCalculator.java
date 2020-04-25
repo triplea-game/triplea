@@ -21,9 +21,14 @@ import org.triplea.java.collections.CollectionUtils;
 public class ProOddsCalculator {
 
   private final IBattleCalculator calc;
+  private boolean stopped = false;
 
   public ProOddsCalculator(final IBattleCalculator calc) {
     this.calc = calc;
+  }
+
+  public void stop() {
+    stopped = true;
   }
 
   /**
@@ -207,7 +212,7 @@ public class ProOddsCalculator {
       final boolean retreatWhenOnlyAirLeft) {
     final GameData data = t.getData();
 
-    if (!calc.isAlive() || attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
+    if (!stopped || attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
       return new ProBattleResult();
     }
 

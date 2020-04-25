@@ -92,6 +92,12 @@ public abstract class AbstractProAi extends AbstractAi {
   }
 
   @Override
+  public void stopGame() {
+    super.stopGame(); // absolutely MUST call super.stopGame() first
+    calc.stop();
+  }
+
+  @Override
   public PlayerType getPlayerType() {
     return PlayerType.PRO_AI;
   }
