@@ -13,7 +13,6 @@ import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -32,6 +31,8 @@ import org.triplea.java.TimeManager;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /**
  * A Chat window.
@@ -173,18 +174,11 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   private void setupKeyMap() {
-    registerKeyPressAction(nextMessage, KeyEvent.VK_ENTER, this::sendMessage);
-    registerKeyPressAction(
-        nextMessage, KeyEvent.VK_UP, () -> loadMessageFromHistory(MessageOffset.PREVIOUS));
-    registerKeyPressAction(
-        nextMessage, KeyEvent.VK_DOWN, () -> loadMessageFromHistory(MessageOffset.NEXT));
-  }
-
-  private static void registerKeyPressAction(
-      final JComponent component, final int keyCode, final Runnable action) {
-    component
-        .getInputMap()
-        .put(KeyStroke.getKeyStroke(keyCode, 0, false), SwingAction.of("", e -> action.run()));
+    SwingKeyBinding.addKeyBinding(nextMessage, KeyCode.ENTER, this::sendMessage);
+    SwingKeyBinding.addKeyBinding(
+        nextMessage, KeyCode.UP, () -> loadMessageFromHistory(MessageOffset.PREVIOUS));
+    SwingKeyBinding.addKeyBinding(
+        nextMessage, KeyCode.DOWN, () -> loadMessageFromHistory(MessageOffset.NEXT));
   }
 
   private void loadMessageFromHistory(final MessageOffset messageOffset) {
