@@ -37,7 +37,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
-import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +53,7 @@ import org.triplea.util.Tuple;
 public class ProAi extends AbstractAi {
 
   // Odds calculator
-  private static final IBattleCalculator concurrentCalc = new ConcurrentBattleCalculator("ProAi");
+  private static final ConcurrentBattleCalculator concurrentCalc = new ConcurrentBattleCalculator("ProAi");
   protected ProOddsCalculator calc;
 
   @Getter private final ProData proData = new ProData();
@@ -122,7 +121,7 @@ public class ProAi extends AbstractAi {
   @Override
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
-    calc.cancelCalcs();
+    concurrentCalc.cancel();
   }
 
   private void initializeData() {
@@ -142,7 +141,7 @@ public class ProAi extends AbstractAi {
     final long start = System.currentTimeMillis();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
-    calc.setData(data);
+    concurrentCalc.setGameData(data);
     if (nonCombat) {
       nonCombatMoveAi.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel);
       storedFactoryMoveMap = null;
@@ -176,7 +175,7 @@ public class ProAi extends AbstractAi {
       return;
     }
     if (purchaseForBid) {
-      calc.setData(data);
+      concurrentCalc.setGameData(data);
       storedPurchaseTerritories = purchaseAi.bid(pusToSpend, purchaseDelegate, data);
     } else {
 
@@ -207,7 +206,7 @@ public class ProAi extends AbstractAi {
       } finally {
         data.releaseWriteLock();
       }
-      calc.setData(dataCopy);
+      concurrentCalc.setGameData(dataCopy);
       final GamePlayer playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
@@ -338,7 +337,7 @@ public class ProAi extends AbstractAi {
         && (battleTerritory.isWater() || attackers.stream().anyMatch(Matches.unitIsLand()))) {
       return null;
     }
-    calc.setData(getGameData());
+    concurrentCalc.setGameData(getGameData());
     return retreatAi.retreatQuery(battleId, battleTerritory, possibleTerritories);
   }
 
@@ -471,7 +470,7 @@ public class ProAi extends AbstractAi {
             + defenders.size()
             + ", possibleScramblers="
             + possibleScramblers);
-    calc.setData(getGameData());
+    concurrentCalc.setGameData(getGameData());
     return scrambleAi.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
 
@@ -500,7 +499,7 @@ public class ProAi extends AbstractAi {
             + attackers
             + ", defenders="
             + defenders);
-    calc.setData(getGameData());
+    concurrentCalc.setGameData(getGameData());
 
     // Calculate battle results
     final ProBattleResult result =

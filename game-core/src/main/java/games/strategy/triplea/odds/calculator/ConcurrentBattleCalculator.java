@@ -82,7 +82,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     return MAX_THREADS;
   }
 
-  @Override
   public void shutdown() {
     isShutDown = true;
     cancel();
@@ -236,10 +235,16 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   // not on purpose, we need to be able to cancel at any time
-  @Override
   public void cancel() {
     synchronized (mutex) {
       calculators.forEach(BattleCalculator::cancel);
+    }
+  }
+
+  @Override
+  public boolean isAlive() {
+    synchronized (mutex) {
+      return !isShutDown &&calculators.stream().allMatch(IBattleCalculator::isAlive);
     }
   }
 }

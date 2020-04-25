@@ -80,13 +80,12 @@ class FastOddsEstimator implements IBattleCalculator {
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {}
 
   @Override
-  public void cancel() {}
-
-  @Override
-  public void shutdown() {}
-
-  @Override
   public int getThreadCount() {
     return 1;
+  }
+
+  @Override
+  public boolean isAlive() {
+    return true;
   }
 }

@@ -83,7 +83,7 @@ class BattleCalculatorPanel extends JPanel {
       new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final IBattleCalculator calculator;
+  private final ConcurrentBattleCalculator calculator;
   private final PlayerUnitsPanel attackingUnitsPanel;
   private final PlayerUnitsPanel defendingUnitsPanel;
   private final JComboBox<GamePlayer> attackerCombo;

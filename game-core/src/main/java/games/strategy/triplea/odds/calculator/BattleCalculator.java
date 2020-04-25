@@ -203,18 +203,17 @@ class BattleCalculator implements IBattleCalculator {
     this.defenderOrderOfLosses = defenderOrderOfLosses;
   }
 
-  @Override
   public void cancel() {
     cancelled = true;
   }
 
   @Override
-  public void shutdown() {
-    cancel();
+  public int getThreadCount() {
+    return 1;
   }
 
   @Override
-  public int getThreadCount() {
-    return 1;
+  public boolean isAlive() {
+    return !cancelled;
   }
 }
