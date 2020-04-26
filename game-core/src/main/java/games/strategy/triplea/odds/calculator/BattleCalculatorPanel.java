@@ -1200,10 +1200,7 @@ class BattleCalculatorPanel extends JPanel {
     }
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
     final WaitDialog dialog =
-        new WaitDialog(
-            this,
-            "Calculating Odds... (this may take a while)",
-            calculator::cancel);
+        new WaitDialog(this, "Calculating Odds... (this may take a while)", calculator::cancel);
     final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
     new Thread(
