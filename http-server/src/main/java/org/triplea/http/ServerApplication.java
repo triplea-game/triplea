@@ -38,14 +38,13 @@ import org.triplea.modules.access.authorization.BannedPlayerFilter;
 import org.triplea.modules.access.authorization.RoleAuthorizer;
 import org.triplea.modules.chat.ChatMessagingService;
 import org.triplea.modules.chat.Chatters;
-import org.triplea.modules.chat.upload.ChatUploadController;
 import org.triplea.modules.error.reporting.ErrorReportController;
 import org.triplea.modules.forgot.password.ForgotPasswordController;
 import org.triplea.modules.game.ConnectivityController;
 import org.triplea.modules.game.hosting.GameHostingController;
-import org.triplea.modules.game.listing.GameListing;
-import org.triplea.modules.game.listing.GameListingController;
-import org.triplea.modules.game.listing.LobbyWatcherController;
+import org.triplea.modules.game.lobby.watcher.GameListing;
+import org.triplea.modules.game.lobby.watcher.GameListingController;
+import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
 import org.triplea.modules.moderation.access.log.AccessLogController;
 import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryController;
 import org.triplea.modules.moderation.bad.words.BadWordsController;
@@ -220,13 +219,12 @@ public class ServerApplication extends Application<AppConfig> {
         AccessLogController.build(jdbi),
         BadWordsController.build(jdbi),
         ConnectivityController.build(),
-        ChatUploadController.build(jdbi, gameListing),
         CreateAccountController.build(jdbi),
         DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
         ForgotPasswordController.build(appConfig, jdbi),
         GameHostingController.build(jdbi),
         GameListingController.build(gameListing),
-        LobbyWatcherController.build(gameListing),
+        LobbyWatcherController.build(jdbi, gameListing),
         LoginController.build(jdbi, chatters),
         UsernameBanController.build(jdbi),
         UserBanController.build(jdbi, chatters, playerMessagingBus, gameMessagingBus),

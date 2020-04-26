@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.chat.upload.ChatUploadParams;
+import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 
 /**

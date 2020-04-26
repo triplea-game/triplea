@@ -1,6 +1,6 @@
 package org.triplea.lobby.common;
 
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 
 /**
  * A service that notifies nodes of lobby game state changes (e.g. when games are added to or

@@ -8,9 +8,9 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.HttpLobbyClient;
-import org.triplea.http.client.lobby.chat.upload.ChatUploadParams;
-import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
-import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
+import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.http.client.web.socket.WebsocketPaths;
@@ -82,6 +82,6 @@ public class GameToLobbyConnection {
   }
 
   public void sendChatMessageToLobby(final ChatUploadParams chatUploadParams) {
-    lobbyClient.getChatUploadClient().uploadChatMessage(lobbyClient.getApiKey(), chatUploadParams);
+    lobbyWatcherClient.uploadChatMessage(lobbyClient.getApiKey(), chatUploadParams);
   }
 }

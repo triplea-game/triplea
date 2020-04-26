@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;

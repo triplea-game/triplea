@@ -3,7 +3,7 @@ package org.triplea.db.dao.lobby.games;
 import com.google.common.base.Ascii;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.triplea.http.client.lobby.chat.upload.ChatMessageUpload;
+import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 
 /**
  * Game chat history table stores chat messages that have happened in games. This data is upload by

@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.DaoTest;
-import org.triplea.http.client.lobby.chat.upload.ChatMessageUpload;
+import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 
 class LobbyGameDaoTest extends DaoTest {
   private final LobbyGameDao lobbyGameDao = DaoTest.newDao(LobbyGameDao.class);
