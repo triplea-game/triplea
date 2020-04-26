@@ -2,6 +2,7 @@ package org.triplea.modules.chat;
 
 import com.google.common.base.Preconditions;
 import lombok.Builder;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapSentMessage;
@@ -21,11 +22,11 @@ public class ChatMessagingService {
   private final SlapListener slapListener;
   private final PlayerLeftListener playerLeftListener;
 
-  public static ChatMessagingService build(final Chatters chatters) {
+  public static ChatMessagingService build(final Chatters chatters, final Jdbi jdbi) {
     Preconditions.checkNotNull(chatters);
     return ChatMessagingService.builder()
         .playerConnectedListener(new PlayerConnectedListener(chatters))
-        .chatMessageListener(new ChatMessageListener(chatters))
+        .chatMessageListener(ChatMessageListener.build(chatters, jdbi))
         .statusUpdateListener(new StatusUpdateListener(chatters))
         .slapListener(new SlapListener(chatters))
         .playerLeftListener(new PlayerLeftListener(chatters))

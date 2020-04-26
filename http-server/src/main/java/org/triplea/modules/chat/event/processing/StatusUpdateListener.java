@@ -19,7 +19,8 @@ public class StatusUpdateListener
     chatters
         .lookupPlayerBySession(messageContext.getSenderSession())
         .ifPresent(
-            chatParticipant -> broadcastStatusUpdateMessage(messageContext, chatParticipant));
+            chatterSession ->
+                broadcastStatusUpdateMessage(messageContext, chatterSession.getChatParticipant()));
   }
 
   private static void broadcastStatusUpdateMessage(

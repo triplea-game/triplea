@@ -20,11 +20,13 @@ import org.triplea.java.Postconditions;
 @EqualsAndHashCode
 @ToString
 public class ApiKeyLookupRecord {
+  public static final String API_KEY_ID_COLUMN = "api_key_id";
   public static final String PLAYER_CHAT_ID_COLUMN = "player_chat_id";
   public static final String ROLE_COLUMN = "role";
   public static final String USERNAME_COLUMN = "username";
   public static final String USER_ID_COLUMN = "id";
 
+  private int apiKeyId;
   private @Nullable Integer userId;
   private @Nullable String username;
   private String playerChatId;
@@ -35,6 +37,7 @@ public class ApiKeyLookupRecord {
     return (rs, ctx) -> {
       final var userWithRoleRecord =
           ApiKeyLookupRecord.builder()
+              .apiKeyId(rs.getInt(API_KEY_ID_COLUMN))
               .userId(rs.getInt(USER_ID_COLUMN) == 0 ? null : rs.getInt(USER_ID_COLUMN))
               .playerChatId(Preconditions.checkNotNull(rs.getString(PLAYER_CHAT_ID_COLUMN)))
               .role(Preconditions.checkNotNull(rs.getString(ROLE_COLUMN)))

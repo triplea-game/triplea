@@ -16,7 +16,9 @@ public class SlapListener implements Consumer<WebSocketMessageContext<PlayerSlap
   public void accept(final WebSocketMessageContext<PlayerSlapSentMessage> messageContext) {
     chatters
         .lookupPlayerBySession(messageContext.getSenderSession())
-        .ifPresent(chatParticipant -> broadCastSlapMessage(messageContext, chatParticipant));
+        .ifPresent(
+            chatterSession ->
+                broadCastSlapMessage(messageContext, chatterSession.getChatParticipant()));
   }
 
   private static void broadCastSlapMessage(

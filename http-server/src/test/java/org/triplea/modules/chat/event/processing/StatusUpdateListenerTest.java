@@ -64,8 +64,14 @@ class StatusUpdateListenerTest {
   }
 
   private void givenChatterSession(final Session session, final ChatParticipant chatParticipant) {
-    when(chatters.lookupPlayerBySession(session)) //
-        .thenReturn(Optional.of(chatParticipant));
+    when(chatters.lookupPlayerBySession(session))
+        .thenReturn(
+            Optional.of(
+                Chatters.ChatterSession.builder()
+                    .session(session)
+                    .chatParticipant(chatParticipant)
+                    .apiKeyId(123)
+                    .build()));
   }
 
   private static void verifyMessageContents(

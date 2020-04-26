@@ -22,6 +22,8 @@ import org.triplea.db.data.UserRole;
 class ApiKeyLookupRecordTest {
   private static final String ROLE = UserRole.PLAYER;
   private static final int USER_ID = 55;
+  private static final int API_KEY_ID = 99;
+
   private static final String NAME = "player-name";
   private static final String CHAT_ID = "chat-id";
 
@@ -29,11 +31,12 @@ class ApiKeyLookupRecordTest {
 
   @Test
   void buildResultMapper() throws Exception {
-    givenResults(USER_ID, CHAT_ID, ROLE, NAME);
+    givenResults(USER_ID, API_KEY_ID, CHAT_ID, ROLE, NAME);
 
     final ApiKeyLookupRecord result = ApiKeyLookupRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUserId(), is(USER_ID));
+    assertThat(result.getApiKeyId(), is(API_KEY_ID));
     assertThat(result.getRole(), is(UserRole.PLAYER));
     assertThat(result.getUsername(), is(NAME));
     assertThat(result.getPlayerChatId(), is(CHAT_ID));
@@ -41,9 +44,14 @@ class ApiKeyLookupRecordTest {
 
   @SuppressWarnings("SameParameterValue")
   private void givenResults(
-      final int userId, final String chatId, final String role, final String name)
+      final int userId,
+      final int apiKeyId,
+      final String chatId,
+      final String role,
+      final String name)
       throws Exception {
     when(resultSet.getInt(ApiKeyLookupRecord.USER_ID_COLUMN)).thenReturn(userId);
+    when(resultSet.getInt(ApiKeyLookupRecord.API_KEY_ID_COLUMN)).thenReturn(apiKeyId);
     when(resultSet.getString(ApiKeyLookupRecord.PLAYER_CHAT_ID_COLUMN)).thenReturn(chatId);
     when(resultSet.getString(ApiKeyLookupRecord.ROLE_COLUMN)).thenReturn(role);
     when(resultSet.getString(ApiKeyLookupRecord.USERNAME_COLUMN)).thenReturn(name);
@@ -51,7 +59,7 @@ class ApiKeyLookupRecordTest {
 
   @Test
   void zeroUserIdIsMappedToNull() throws Exception {
-    givenResults(0, CHAT_ID, UserRole.HOST, null);
+    givenResults(0, API_KEY_ID, CHAT_ID, UserRole.HOST, null);
 
     final ApiKeyLookupRecord result = ApiKeyLookupRecord.buildResultMapper().map(resultSet, null);
 
@@ -61,7 +69,7 @@ class ApiKeyLookupRecordTest {
   @ParameterizedTest
   @ValueSource(strings = {UserRole.PLAYER, UserRole.MODERATOR, UserRole.MODERATOR})
   void assertInvalidStatesRolesThatMustHaveUserId(final String userRole) throws Exception {
-    givenResults(0, CHAT_ID, userRole, NAME);
+    givenResults(0, API_KEY_ID, CHAT_ID, userRole, NAME);
 
     assertPostconditionFailure();
   }
@@ -74,7 +82,7 @@ class ApiKeyLookupRecordTest {
   @ParameterizedTest
   @ValueSource(strings = {UserRole.ANONYMOUS, UserRole.HOST})
   void assertInvalidStatesRolesThatMustNotHaveUserId(final String userRole) throws Exception {
-    givenResults(USER_ID, CHAT_ID, userRole, NAME);
+    givenResults(USER_ID, API_KEY_ID, CHAT_ID, userRole, NAME);
 
     assertPostconditionFailure();
   }
@@ -92,14 +100,14 @@ class ApiKeyLookupRecordTest {
   @MethodSource("mustHaveUserName")
   void assertInvalidStatesRolesThatMustHaveName(final int userId, final String roleName)
       throws Exception {
-    givenResults(userId, CHAT_ID, roleName, null);
+    givenResults(userId, API_KEY_ID, CHAT_ID, roleName, null);
 
     assertPostconditionFailure();
   }
 
   @Test
   void assertInvalidStatesHostRoleMayNotHaveName() throws Exception {
-    givenResults(0, CHAT_ID, UserRole.HOST, NAME);
+    givenResults(0, API_KEY_ID, CHAT_ID, UserRole.HOST, NAME);
 
     assertPostconditionFailure();
   }
