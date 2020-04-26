@@ -1,0 +1,5 @@
+game_hosting_api_key:
+  - id: 1200
+    key: "api-key"
+    ip: "127.0.0.1"
+
