@@ -75,11 +75,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     }
   }
 
-  @Override
-  public int getThreadCount() {
-    return MAX_THREADS;
-  }
-
   public void shutdown() {
     isShutDown = true;
     cancel();

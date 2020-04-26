@@ -21,6 +21,4 @@ public interface IBattleCalculator {
       Collection<TerritoryEffect> territoryEffects,
       boolean retreatWhenOnlyAirLeft,
       int runCount);
-
-  int getThreadCount();
 }

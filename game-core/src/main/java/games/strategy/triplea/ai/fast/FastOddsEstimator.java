@@ -54,9 +54,4 @@ class FastOddsEstimator implements IBattleCalculator {
     return new AggregateEstimate(
         battleRoundsFought, winPercentage / 100, remainingAttackingUnits, remainingDefendingUnits);
   }
-
-  @Override
-  public int getThreadCount() {
-    return 1;
-  }
 }
