@@ -210,4 +210,31 @@ class GameListingTest {
       verify(playerMessagingBus).broadcastMessage(new LobbyGameRemovedMessage(GAME_ID_0));
     }
   }
+
+  @Nested
+  final class IsValidGameIdApiKeyPair {
+
+    @Test
+    void validCase() {
+      cache.put(ID_0, lobbyGame0);
+      final boolean result = gameListing.isValidApiKeyAndGameId(ID_0.getApiKey(), ID_0.getId());
+      assertThat(result, is(true));
+    }
+
+    @Test
+    void mismatchOnApiKey() {
+      cache.put(ID_0, lobbyGame0);
+      final boolean result =
+          gameListing.isValidApiKeyAndGameId(ApiKey.of("incorrect-api-key"), ID_0.getId());
+      assertThat(result, is(false));
+    }
+
+    @Test
+    void mismatchOnGameId() {
+      cache.put(ID_0, lobbyGame0);
+      final boolean result =
+          gameListing.isValidApiKeyAndGameId(ID_0.getApiKey(), "incorrect-game-id");
+      assertThat(result, is(false));
+    }
+  }
 }

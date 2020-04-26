@@ -120,6 +120,11 @@ public class GameListing {
         .collect(Collectors.toList());
   }
 
+  /** Checks if a given api-key and game-id pair are valid and match an active game. */
+  public boolean isValidApiKeyAndGameId(final ApiKey apiKey, final String gameId) {
+    return games.get(new GameId(apiKey, gameId)).isPresent();
+  }
+
   /**
    * If a game does not receive a 'keepAlive' in a timely manner, it is removed from the list.
    *

@@ -38,6 +38,7 @@ import org.triplea.modules.access.authorization.BannedPlayerFilter;
 import org.triplea.modules.access.authorization.RoleAuthorizer;
 import org.triplea.modules.chat.ChatMessagingService;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.modules.chat.upload.ChatUploadController;
 import org.triplea.modules.error.reporting.ErrorReportController;
 import org.triplea.modules.forgot.password.ForgotPasswordController;
 import org.triplea.modules.game.ConnectivityController;
@@ -219,6 +220,7 @@ public class ServerApplication extends Application<AppConfig> {
         AccessLogController.build(jdbi),
         BadWordsController.build(jdbi),
         ConnectivityController.build(),
+        ChatUploadController.build(jdbi, gameListing),
         CreateAccountController.build(jdbi),
         DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
         ForgotPasswordController.build(appConfig, jdbi),

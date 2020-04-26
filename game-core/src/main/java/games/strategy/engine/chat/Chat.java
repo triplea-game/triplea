@@ -139,7 +139,7 @@ public class Chat implements ChatClient {
     updateConnections();
   }
 
-  void addChatListener(final ChatMessageListener listener) {
+  public void addChatListener(final ChatMessageListener listener) {
     chatMessageListeners.add(listener);
   }
 
