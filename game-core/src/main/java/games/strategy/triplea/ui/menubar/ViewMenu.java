@@ -93,17 +93,18 @@ final class ViewMenu extends JMenu {
   }
 
   private void addShowCommentLog() {
-    new JMenuItemCheckBoxBuilder("Show Comment Log", 'L')
-        .bindSetting(ClientSetting.showCommentLog)
-        .actionListener(
-            value -> {
-              if (value) {
-                frame.showCommentLog();
-              } else {
-                frame.hideCommentLog();
-              }
-            })
-        .build();
+    add(
+        new JMenuItemCheckBoxBuilder("Show Comment Log", 'L')
+            .bindSetting(ClientSetting.showCommentLog)
+            .actionListener(
+                value -> {
+                  if (value) {
+                    frame.showCommentLog();
+                  } else {
+                    frame.hideCommentLog();
+                  }
+                })
+            .build());
   }
 
   private void addZoomMenu() {

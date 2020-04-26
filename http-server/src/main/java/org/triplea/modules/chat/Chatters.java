@@ -12,6 +12,7 @@ import javax.websocket.CloseReason;
 import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
@@ -30,32 +31,34 @@ public class Chatters {
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final Map<String, ChatterSession> participants = new ConcurrentHashMap<>();
 
-  @AllArgsConstructor
   @Getter
-  @VisibleForTesting
-  private static class ChatterSession {
+  @Builder
+  public static class ChatterSession {
     private final ChatParticipant chatParticipant;
     private final Session session;
+    private final int apiKeyId;
   }
 
   public static Chatters build(final Jdbi jdbi) {
     return new Chatters(ApiKeyDaoWrapper.build(jdbi), new ChatParticipantAdapter());
   }
 
-  public Optional<ChatParticipant> lookupPlayerBySession(final Session senderSession) {
-    return Optional.ofNullable(participants.get(senderSession.getId()))
-        .map(chatterSession -> chatterSession.chatParticipant);
+  public Optional<ChatterSession> lookupPlayerBySession(final Session senderSession) {
+    return Optional.ofNullable(participants.get(senderSession.getId()));
   }
 
   public Optional<ChatParticipant> connectPlayer(final ApiKey apiKey, final Session session) {
     // Make sure chatter has logged in (has a valid API key)
     // Based on the API key we'll know if the player is a moderator.
-    final Optional<ChatParticipant> chatParticipant =
-        apiKeyDaoWrapper.lookupByApiKey(apiKey).map(chatParticipantAdapter);
-    // add chatter
-    chatParticipant.ifPresent(
-        participant -> participants.put(session.getId(), new ChatterSession(participant, session)));
-    return chatParticipant;
+
+    return apiKeyDaoWrapper
+        .lookupByApiKey(apiKey)
+        .map(
+            keyLookup -> {
+              final var chatterSession = chatParticipantAdapter.apply(session, keyLookup);
+              participants.put(session.getId(), chatterSession);
+              return chatterSession.chatParticipant;
+            });
   }
 
   public Collection<ChatParticipant> getChatters() {

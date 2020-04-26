@@ -20,6 +20,7 @@ import org.triplea.domain.data.UserName;
  *
  * <p>A chat can be bound to multiple chat panels.
  */
+@SuppressWarnings("UnstableApiUsage")
 public class Chat implements ChatClient {
 
   private final ChatTransmitter chatTransmitter;
@@ -145,18 +146,6 @@ public class Chat implements ChatClient {
 
   void addStatusUpdateListener(final BiConsumer<UserName, String> statusUpdateListener) {
     statusUpdateListeners.add(statusUpdateListener);
-  }
-
-  void removeChatListener(final ChatMessageListener listener) {
-    chatMessageListeners.remove(listener);
-  }
-
-  void removeChatListener(final ChatPlayerListener listener) {
-    chatPlayerListeners.remove(listener);
-  }
-
-  void removeStatusUpdateListener(final BiConsumer<UserName, String> statusUpdateListener) {
-    statusUpdateListeners.remove(statusUpdateListener);
   }
 
   /** Stop receiving events from the messenger. */

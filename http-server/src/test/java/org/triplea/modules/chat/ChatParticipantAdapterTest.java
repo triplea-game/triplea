@@ -4,33 +4,43 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.data.UserRole;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
+import org.triplea.modules.chat.Chatters.ChatterSession;
 
+@ExtendWith(MockitoExtension.class)
 class ChatParticipantAdapterTest {
 
   private static final String USERNAME = "username-value";
   private final ChatParticipantAdapter chatParticipantAdapter = new ChatParticipantAdapter();
 
+  @Mock private Session session;
+
   @Test
-  @DisplayName("Verify player chat Id will be generated")
-  void playerChatIdIsGenerated() {
+  @DisplayName("Check data is copied from database lookup result to chatter session result object")
+  void verifyData() {
     final var userWithRoleRecord =
         ApiKeyLookupRecord.builder()
+            .apiKeyId(123)
             .username(USERNAME)
             .role(UserRole.PLAYER)
             .playerChatId(PlayerChatId.newId().getValue())
             .build();
 
-    final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
+    final ChatterSession result = chatParticipantAdapter.apply(session, userWithRoleRecord);
 
-    assertThat(result.getPlayerChatId(), notNullValue());
+    assertThat(result.getSession(), is(session));
+    assertThat(result.getApiKeyId(), is(123));
+    assertThat(result.getChatParticipant().getPlayerChatId(), notNullValue());
   }
 
   @ParameterizedTest
@@ -39,10 +49,10 @@ class ChatParticipantAdapterTest {
   void moderatorUsers(final String moderatorUserRole) {
     final var userWithRoleRecord = givenUserRecordWithRole(moderatorUserRole);
 
-    final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
+    final ChatterSession result = chatParticipantAdapter.apply(session, userWithRoleRecord);
 
-    assertThat(result.isModerator(), is(true));
-    assertThat(result.getUserName().getValue(), is(USERNAME));
+    assertThat(result.getChatParticipant().isModerator(), is(true));
+    assertThat(result.getChatParticipant().getUserName().getValue(), is(USERNAME));
   }
 
   private ApiKeyLookupRecord givenUserRecordWithRole(final String userRole) {
@@ -59,9 +69,9 @@ class ChatParticipantAdapterTest {
   void nonModeratorUsers(final String notModeratorUserRole) {
     final var userWithRoleRecord = givenUserRecordWithRole(notModeratorUserRole);
 
-    final ChatParticipant result = chatParticipantAdapter.apply(userWithRoleRecord);
+    final ChatterSession result = chatParticipantAdapter.apply(session, userWithRoleRecord);
 
-    assertThat(result.isModerator(), is(false));
-    assertThat(result.getUserName().getValue(), is(USERNAME));
+    assertThat(result.getChatParticipant().isModerator(), is(false));
+    assertThat(result.getChatParticipant().getUserName().getValue(), is(USERNAME));
   }
 }

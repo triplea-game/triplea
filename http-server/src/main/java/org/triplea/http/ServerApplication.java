@@ -136,7 +136,7 @@ public class ServerApplication extends Application<AppConfig> {
     setupWebSocket(playerConnectionWebsocket, playerConnectionMessagingBus, sessionIsBannedCheck);
 
     final var chatters = Chatters.build(jdbi);
-    ChatMessagingService.build(chatters).configure(playerConnectionMessagingBus);
+    ChatMessagingService.build(chatters, jdbi).configure(playerConnectionMessagingBus);
 
     endPointControllers(
             configuration, jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus)

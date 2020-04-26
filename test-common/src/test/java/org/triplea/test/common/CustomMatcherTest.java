@@ -13,7 +13,7 @@ class CustomMatcherTest {
    * Example output using a matcher with a failure injected.:
    *
    * <pre>
-   * MatcherAssert.assertThat(500, numberIsEqualToExampleMatcher(3));
+   * assertThat(500, numberIsEqualToExampleMatcher(3));
    *
    * java.lang.AssertionError:
    * Expected: Test value should have been equal to: 3
@@ -42,7 +42,7 @@ class CustomMatcherTest {
    * Example output using a matcher with a failure injected.:
    *
    * <pre>
-   * MatcherAssert.assertThat(
+   * assertThat(
    *     "Hashcode values are expected to match between 'abc' and 'abc'",
    *     "abc",
    *     hashCodesMatch("abc"));
