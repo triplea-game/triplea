@@ -30,7 +30,7 @@ function main() {
   #referToCollectionsByInterfaceType
   avoidLegacyApi
   removeUnusedLogAnnotations
-  #databaseNamesAreLowerSnakeCase
+  databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
   useEmptyOverSizeEqualsZero
