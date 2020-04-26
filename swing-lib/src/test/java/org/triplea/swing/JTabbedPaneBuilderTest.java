@@ -1,12 +1,13 @@
 package org.triplea.swing;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.Test;
 
 class JTabbedPaneBuilderTest {
@@ -17,14 +18,10 @@ class JTabbedPaneBuilderTest {
     final JTabbedPane pane =
         JTabbedPaneBuilder.builder().addTab("tab", label).addTab("second tab", component).build();
 
-    MatcherAssert.assertThat("we added two tabs", pane.getTabCount(), Is.is(2));
-    MatcherAssert.assertThat(
-        "first tab we added was a label",
-        pane.getTabComponentAt(0),
-        IsInstanceOf.instanceOf(JLabel.class));
-    MatcherAssert.assertThat(
-        "second tab had a component",
-        pane.getTabComponentAt(1),
-        IsInstanceOf.instanceOf(JComponent.class));
+    assertThat("we added two tabs", pane.getTabCount(), is(2));
+    assertThat(
+        "first tab we added was a label", pane.getTabComponentAt(0), instanceOf(JLabel.class));
+    assertThat(
+        "second tab had a component", pane.getTabComponentAt(1), instanceOf(JComponent.class));
   }
 }
