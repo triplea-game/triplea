@@ -2,7 +2,7 @@ package org.triplea.swing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Component;
@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JComboBox;
 import javax.swing.text.JTextComponent;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -30,12 +28,12 @@ class JComboBoxBuilderTest {
             .item("option 3")
             .build();
 
-    MatcherAssert.assertThat(box.getSelectedIndex(), Is.is(0));
-    MatcherAssert.assertThat(box.getItemCount(), Is.is(3));
-    MatcherAssert.assertThat(box.getItemAt(0), Is.is("option 1"));
-    MatcherAssert.assertThat(box.getItemAt(1), Is.is("option 2"));
-    MatcherAssert.assertThat(box.getItemAt(2), Is.is("option 3"));
-    MatcherAssert.assertThat(box.getSelectedItem(), Is.is("option 1"));
+    assertThat(box.getSelectedIndex(), is(0));
+    assertThat(box.getItemCount(), is(3));
+    assertThat(box.getItemAt(0), is("option 1"));
+    assertThat(box.getItemAt(1), is("option 2"));
+    assertThat(box.getItemAt(2), is("option 3"));
+    assertThat(box.getSelectedItem(), is("option 1"));
   }
 
   @Test
@@ -55,7 +53,7 @@ class JComboBoxBuilderTest {
                 })
             .build();
     box.setSelectedIndex(1);
-    MatcherAssert.assertThat(triggerCount.get(), Is.is(1));
+    assertThat(triggerCount.get(), is(1));
   }
 
   @Nested

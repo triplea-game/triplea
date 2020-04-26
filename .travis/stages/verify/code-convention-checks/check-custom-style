@@ -11,6 +11,7 @@ bold="\e[1m"
 blinkingRed="${bold}\e[5m\e[91m"
 
 javaFiles=$(mktemp)
+testFiles=$(mktemp)
 sqlFiles=$(mktemp)
 trap 'rm $javaFiles $sqlFiles' EXIT
 
@@ -18,6 +19,7 @@ trap 'rm $javaFiles $sqlFiles' EXIT
 ## Create a cache of java and SQL files for faster iteration over all files.
 
 find . -type f -name "*.java" > "$javaFiles"
+find . -type f -name "*Test.java" > "$testFiles"
 find lobby-db/src/main/resources -type f -name "*.sql" > "$sqlFiles"
 
 status=0
@@ -28,10 +30,11 @@ function main() {
   #referToCollectionsByInterfaceType
   avoidLegacyApi
   removeUnusedLogAnnotations
-  #databaseNamesAreLowerSnakeCase
+  databaseNamesAreLowerSnakeCase
   databaseTablesAreSingular
   noTabsInSql
   useEmptyOverSizeEqualsZero
+  useStaticImportsInTest
 }
 
 function title() {
@@ -153,6 +156,25 @@ function useEmptyOverSizeEqualsZero() {
   done <<< "$(cat "$javaFiles")"
 
   displayResult "$found"
+}
+
+
+# Checks for static imports by looking for fully qualified constructs used in test, eg:
+#   Mockito.when
+# We distinguish from imports and standard usages by looking for a trailing semicolon, eg:
+#   import static ..MatcherAssert.assertThat;
+# If we do not see that trailing semi-colon, then we have found something that is not statically
+# imported.
+function useStaticImportsInTest() {
+  title "Use static imports in test"
+  example "Mockito.when(..) -> when(..)"
+  local found=0
+  while read -r file; do
+    grep --color=auto -EHn \
+      "Mockito.when[^;]|Mockito.verify[^;]|MatcherAssert.assertThat[^;]|Is\.is[^;]|IsInstanceOf\.instanceOf[^;]" \
+      "$file" \
+     && status=1 && found=1
+  done <<< "$(cat "$testFiles")"
 }
 
 main
