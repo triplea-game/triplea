@@ -1,4 +1,4 @@
-package org.triplea.modules.game.lobby.watcher;
+package org.triplea.modules.game;
 
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;

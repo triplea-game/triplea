@@ -1,4 +1,4 @@
-package org.triplea.modules.game.lobby.watcher;
+package org.triplea.modules.game.listing;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.LobbyGame;

@@ -4,6 +4,7 @@ import com.google.common.base.Ascii;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
+import org.triplea.java.Postconditions;
 
 /**
  * Game chat history table stores chat messages that have happened in games. This data is upload by
@@ -13,10 +14,11 @@ public interface LobbyGameDao {
   int MESSAGE_COLUMN_LENGTH = 240;
 
   default void recordChat(final ChatMessageUpload chatMessageUpload) {
-    insertChatMessage(
+    int rowInsert = insertChatMessage(
         chatMessageUpload.getGameId(),
         chatMessageUpload.getFromPlayer(),
         Ascii.truncate(chatMessageUpload.getChatMessage(), MESSAGE_COLUMN_LENGTH, ""));
+    Postconditions.assertState(rowInsert == 1, "Failed to insert message: " + chatMessageUpload);
   }
 
   @SqlUpdate(
@@ -25,7 +27,7 @@ public interface LobbyGameDao {
           + " (select id from lobby_game where game_id = :gameId),"
           + ":username, "
           + ":message)")
-  void insertChatMessage(
+  int insertChatMessage(
       @Bind("gameId") String gameId,
       @Bind("username") String username,
       @Bind("message") String message);

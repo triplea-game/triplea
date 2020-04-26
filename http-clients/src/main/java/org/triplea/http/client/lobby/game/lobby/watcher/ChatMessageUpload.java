@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /** Data transfer object between client and server representing a single chat message upload. */
 @Builder
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode
+@ToString(exclude = "apiKey")
 public class ChatMessageUpload {
   private String fromPlayer;
   private String chatMessage;

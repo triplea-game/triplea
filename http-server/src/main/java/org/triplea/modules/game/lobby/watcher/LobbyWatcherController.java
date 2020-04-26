@@ -7,7 +7,6 @@ import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +17,7 @@ import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
 import org.triplea.domain.data.ApiKey;
@@ -28,6 +28,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.UpdateGameRequest;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.game.listing.GameListing;
 
 /** Controller with endpoints for posting, getting and removing games. */
 @Builder
@@ -35,9 +36,10 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
     access = AccessLevel.PACKAGE,
     onConstructor_ = {@VisibleForTesting})
 @RolesAllowed(UserRole.HOST)
+@Slf4j
 public class LobbyWatcherController extends HttpController {
   @Nonnull private final GameListing gameListing;
-  @Nonnull private final Consumer<ChatMessageUpload> chatUploadModule;
+  @Nonnull private final ChatUploadModule chatUploadModule;
 
   public static LobbyWatcherController build(final Jdbi jdbi, final GameListing gameListing) {
     return LobbyWatcherController.builder()
@@ -118,7 +120,12 @@ public class LobbyWatcherController extends HttpController {
     Preconditions.checkArgument(chatMessageUpload.getFromPlayer().length() <= UserName.MAX_LENGTH);
     Preconditions.checkArgument(chatMessageUpload.getApiKey().length() <= ApiKey.MAX_LENGTH);
 
-    chatUploadModule.accept(chatMessageUpload);
+    if (!chatUploadModule.upload(chatMessageUpload)) {
+      log.warn(
+          "Chat upload request from {} was rejected, "
+              + "gameID and API-key pair did not match any existing games.",
+          request.getRemoteHost());
+    }
 
     return Response.ok().build();
   }

@@ -1,4 +1,4 @@
-package org.triplea.modules.game.lobby.watcher;
+package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
 import es.moki.ratelimij.dropwizard.annotation.Rate;

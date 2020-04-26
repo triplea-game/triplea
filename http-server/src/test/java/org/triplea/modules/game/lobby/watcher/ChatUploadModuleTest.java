@@ -1,5 +1,7 @@
 package org.triplea.modules.game.lobby.watcher;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -34,8 +36,9 @@ class ChatUploadModuleTest {
   void validApiAndGameIdPair() {
     givenApiKeyIsValid(true);
 
-    chatUploadModule.accept(CHAT_MESSAGE_UPLOAD);
+    final boolean result = chatUploadModule.upload(CHAT_MESSAGE_UPLOAD);
 
+    assertThat(result, is(true));
     verify(lobbyGameDao).recordChat(CHAT_MESSAGE_UPLOAD);
   }
 
@@ -43,8 +46,9 @@ class ChatUploadModuleTest {
   void inValidApiAndGameIdPair() {
     givenApiKeyIsValid(false);
 
-    chatUploadModule.accept(CHAT_MESSAGE_UPLOAD);
+    final boolean result = chatUploadModule.upload(CHAT_MESSAGE_UPLOAD);
 
+    assertThat(result, is(false));
     verify(lobbyGameDao, never()).recordChat(any());
   }
 

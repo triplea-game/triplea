@@ -1,4 +1,4 @@
-package org.triplea.modules.game.lobby.watcher;
+package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
@@ -75,7 +75,7 @@ public class GameListing {
   }
 
   /** Adds a game. */
-  String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
+  public String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
     final String id = UUID.randomUUID().toString();
     games.put(new GameId(apiKey, id), lobbyGame);
     playerMessagingBus.broadcastMessage(
@@ -86,7 +86,7 @@ public class GameListing {
   }
 
   /** Adds or updates a game. Returns true if game is updated, false if game was not found. */
-  boolean updateGame(final ApiKey apiKey, final String id, final LobbyGame lobbyGame) {
+  public boolean updateGame(final ApiKey apiKey, final String id, final LobbyGame lobbyGame) {
     final var listedGameId = new GameId(apiKey, id);
     final LobbyGame existingValue = games.replace(listedGameId, lobbyGame).orElse(null);
 
@@ -100,7 +100,7 @@ public class GameListing {
     }
   }
 
-  void removeGame(final ApiKey apiKey, final String id) {
+  public void removeGame(final ApiKey apiKey, final String id) {
     log.info("Removing game: {}", id);
     final GameId key = new GameId(apiKey, id);
 
@@ -132,7 +132,7 @@ public class GameListing {
    *     their game. Otherwise true indicates the game is present and the keep-alive period has been
    *     extended.
    */
-  boolean keepAlive(final ApiKey apiKey, final String id) {
+  public boolean keepAlive(final ApiKey apiKey, final String id) {
     return games.refresh(new GameId(apiKey, id));
   }
 
