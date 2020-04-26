@@ -1,5 +1,4 @@
 game_chat_history:
-  - host_name: "hostname"
-    game_id: "gameid-100"
+  - lobby_game_id: 100
     username: "gameplayer"
     message: "example message"

@@ -19,7 +19,6 @@ import org.triplea.http.client.lobby.chat.upload.ChatMessageUpload;
 class ChatUploadModuleTest {
   private static final ChatMessageUpload CHAT_MESSAGE_UPLOAD =
       ChatMessageUpload.builder()
-          .hostName("hostname")
           .gameId("game-id")
           .apiKey("api-key")
           .chatMessage("message")

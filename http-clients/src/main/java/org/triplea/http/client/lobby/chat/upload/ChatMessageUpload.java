@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @EqualsAndHashCode
 public class ChatMessageUpload {
-  private String hostName;
   private String fromPlayer;
   private String chatMessage;
   private String gameId;

@@ -14,21 +14,18 @@ public interface LobbyGameDao {
 
   default void recordChat(final ChatMessageUpload chatMessageUpload) {
     insertChatMessage(
-        chatMessageUpload.getHostName(),
         chatMessageUpload.getGameId(),
         chatMessageUpload.getFromPlayer(),
         Ascii.truncate(chatMessageUpload.getChatMessage(), MESSAGE_COLUMN_LENGTH, ""));
   }
 
   @SqlUpdate(
-      "insert into game_chat_history (host_name, game_id, username, message) "
+      "insert into game_chat_history (lobby_game_id, username, message) "
           + "values("
-          + ":hostname, "
           + " (select id from lobby_game where game_id = :gameId),"
           + ":username, "
           + ":message)")
   void insertChatMessage(
-      @Bind("hostname") String hostname,
       @Bind("gameId") String gameId,
       @Bind("username") String username,
       @Bind("message") String message);

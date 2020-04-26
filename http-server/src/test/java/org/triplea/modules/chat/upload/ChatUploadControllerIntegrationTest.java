@@ -15,12 +15,13 @@ class ChatUploadControllerIntegrationTest extends ProtectedEndpointTest<ChatUplo
 
   @Test
   void uploadChat() {
+    // TODO: need to post a game and get a game-id.
+
     verifyEndpoint(
         client ->
             client.uploadChatMessage(
                 ApiKey.newKey(),
                 ChatUploadParams.builder()
-                    .hostName(UserName.of("host"))
                     .fromPlayer(UserName.of("player"))
                     .chatMessage("chat")
                     .gameId("game-id")

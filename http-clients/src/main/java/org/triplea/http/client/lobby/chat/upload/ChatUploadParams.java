@@ -12,14 +12,12 @@ import org.triplea.domain.data.UserName;
 @Value
 @Builder
 public class ChatUploadParams {
-  UserName hostName;
   UserName fromPlayer;
   String chatMessage;
   String gameId;
 
   ChatMessageUpload toChatMessageUpload(final ApiKey apiKey) {
     return ChatMessageUpload.builder()
-        .hostName(hostName.getValue())
         .fromPlayer(fromPlayer.getValue())
         .chatMessage(chatMessage)
         .gameId(gameId)

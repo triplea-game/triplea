@@ -27,7 +27,6 @@ class ChatUploadClientTest extends WireMockTest {
                 .gameId("game-id")
                 .chatMessage("chat-message")
                 .fromPlayer(UserName.of("player"))
-                .hostName(UserName.of("host"))
                 .build());
   }
 }

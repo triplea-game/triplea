@@ -48,11 +48,9 @@ public class ChatUploadController extends HttpController {
     Preconditions.checkArgument(chatMessageUpload != null);
     Preconditions.checkArgument(chatMessageUpload.getChatMessage() != null);
     Preconditions.checkArgument(chatMessageUpload.getFromPlayer() != null);
-    Preconditions.checkArgument(chatMessageUpload.getHostName() != null);
     Preconditions.checkArgument(chatMessageUpload.getGameId() != null);
     Preconditions.checkArgument(chatMessageUpload.getApiKey() != null);
 
-    Preconditions.checkArgument(chatMessageUpload.getHostName().length() <= UserName.MAX_LENGTH);
     Preconditions.checkArgument(chatMessageUpload.getFromPlayer().length() <= UserName.MAX_LENGTH);
     Preconditions.checkArgument(chatMessageUpload.getApiKey().length() <= ApiKey.MAX_LENGTH);
 

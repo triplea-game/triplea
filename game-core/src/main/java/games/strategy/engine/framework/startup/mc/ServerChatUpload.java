@@ -44,7 +44,6 @@ class ServerChatUpload implements ChatMessageListener {
   private ChatUploadParams buildUploadParams(
       final String gameId, final UserName fromPlayer, final String chatMessage) {
     return ChatUploadParams.builder()
-        .hostName(hostName)
         .fromPlayer(fromPlayer)
         .chatMessage(chatMessage)
         .gameId(gameId)
