@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.chat.history.GameChatHistoryDao;
+import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.chat.upload.ChatMessageUpload;
 
@@ -26,7 +26,7 @@ class ChatUploadModuleTest {
           .fromPlayer("player")
           .build();
 
-  @Mock private GameChatHistoryDao gameHostChatHistoryDao;
+  @Mock private LobbyGameDao lobbyGameDao;
   @Mock private BiPredicate<ApiKey, String> gameIdValidator;
 
   @InjectMocks private ChatUploadModule chatUploadModule;
@@ -37,7 +37,7 @@ class ChatUploadModuleTest {
 
     chatUploadModule.accept(CHAT_MESSAGE_UPLOAD);
 
-    verify(gameHostChatHistoryDao).recordChat(CHAT_MESSAGE_UPLOAD);
+    verify(lobbyGameDao).recordChat(CHAT_MESSAGE_UPLOAD);
   }
 
   @Test
@@ -46,7 +46,7 @@ class ChatUploadModuleTest {
 
     chatUploadModule.accept(CHAT_MESSAGE_UPLOAD);
 
-    verify(gameHostChatHistoryDao, never()).recordChat(any());
+    verify(lobbyGameDao, never()).recordChat(any());
   }
 
   private void givenApiKeyIsValid(final boolean isValid) {

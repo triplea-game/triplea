@@ -4,7 +4,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.chat.history.GameChatHistoryDao;
+import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.chat.upload.ChatMessageUpload;
 import org.triplea.modules.game.listing.GameListing;
@@ -22,19 +22,19 @@ import org.triplea.modules.game.listing.GameListing;
  */
 @AllArgsConstructor
 class ChatUploadModule implements Consumer<ChatMessageUpload> {
-  private final GameChatHistoryDao gameHostChatHistoryDao;
+  private final LobbyGameDao lobbyGameDao;
   private final BiPredicate<ApiKey, String> gameIdValidator;
 
   static Consumer<ChatMessageUpload> build(final Jdbi jdbi, final GameListing gameListing) {
     return new ChatUploadModule(
-        jdbi.onDemand(GameChatHistoryDao.class), gameListing::isValidApiKeyAndGameId);
+        jdbi.onDemand(LobbyGameDao.class), gameListing::isValidApiKeyAndGameId);
   }
 
   @Override
   public void accept(final ChatMessageUpload chatMessageUpload) {
     if (gameIdValidator.test(
         ApiKey.of(chatMessageUpload.getApiKey()), chatMessageUpload.getGameId())) {
-      gameHostChatHistoryDao.recordChat(chatMessageUpload);
+      lobbyGameDao.recordChat(chatMessageUpload);
     }
   }
 }
