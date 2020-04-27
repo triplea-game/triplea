@@ -11,7 +11,7 @@ comment on table lobby_game is
     $$Records games that have been posted to the lobby$$;
 comment on column lobby_game.host_name is
     $$Name of the game host, can be a bot or a player name$$;
-comment on column game_chat_history.game_id is
+comment on column lobby_game.game_id is
     $$ID of the game as assigned by the lobby. 'game_id' is a publicly known field and is sent to players.
     A single game can have multiple game-ids if it is disconnected and reconnects.$$;
 
