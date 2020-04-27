@@ -2,10 +2,10 @@ package org.triplea.http.client.lobby.game.hosting.request;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
@@ -27,6 +27,6 @@ class GameHostingClientTest extends WireMockTest {
 
     final GameHostingResponse result = newClient(wireMockServer).sendGameHostingRequest();
 
-    assertThat(result, Is.is(GAME_HOSTING_RESPONSE));
+    assertThat(result, is(GAME_HOSTING_RESPONSE));
   }
 }

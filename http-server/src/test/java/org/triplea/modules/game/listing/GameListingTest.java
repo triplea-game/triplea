@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
@@ -58,6 +59,7 @@ class GameListingTest {
       new ExpiringAfterWriteCache<>(1, TimeUnit.HOURS, (key, value) -> {});
 
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Mock private LobbyGameDao lobbyGameDao;
   @Mock private WebSocketMessagingBus playerMessagingBus;
 
   private GameListing gameListing;
@@ -72,6 +74,7 @@ class GameListingTest {
         GameListing.builder()
             .playerMessagingBus(playerMessagingBus)
             .auditHistoryDao(moderatorAuditHistoryDao)
+            .lobbyGameDao(lobbyGameDao)
             .games(cache)
             .build();
   }
@@ -156,10 +159,11 @@ class GameListingTest {
 
       assertThat(id0, not(emptyString()));
       assertThat(cache.asMap(), is(Map.of(new GameListing.GameId(API_KEY_0, id0), lobbyGame0)));
-      verify(playerMessagingBus)
-          .broadcastMessage(
-              new LobbyGameUpdatedMessage(
-                  LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build()));
+
+      final var lobbyGameListing =
+          LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build();
+      verify(playerMessagingBus).broadcastMessage(new LobbyGameUpdatedMessage(lobbyGameListing));
+      verify(lobbyGameDao).insertLobbyGame(API_KEY_0, lobbyGameListing);
     }
   }
 
