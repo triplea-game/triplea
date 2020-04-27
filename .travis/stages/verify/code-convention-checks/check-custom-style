@@ -175,6 +175,8 @@ function useStaticImportsInTest() {
       "$file" \
      && status=1 && found=1
   done <<< "$(cat "$testFiles")"
+
+  displayResult "$found"
 }
 
 main
