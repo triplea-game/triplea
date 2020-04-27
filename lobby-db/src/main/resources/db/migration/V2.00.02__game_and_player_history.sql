@@ -5,7 +5,6 @@ create table lobby_game
     game_id   character varying(36)       not null,
     game_hosting_api_key_id int not null references game_hosting_api_key(id),
     date_created      timestamp without time zone not null default now(),
-    date_removed      timestamp without time zone
 );
 
 create table game_chat_history

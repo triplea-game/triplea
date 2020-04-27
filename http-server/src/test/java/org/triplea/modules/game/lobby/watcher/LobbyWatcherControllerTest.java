@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;

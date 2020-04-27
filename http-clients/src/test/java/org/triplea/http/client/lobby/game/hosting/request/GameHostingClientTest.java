@@ -2,7 +2,6 @@ package org.triplea.http.client.lobby.game.hosting.request;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;

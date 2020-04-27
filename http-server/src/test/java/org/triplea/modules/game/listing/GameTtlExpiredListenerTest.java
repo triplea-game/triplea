@@ -9,8 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.modules.TestData;
-import org.triplea.modules.game.listing.GameListing;
-import org.triplea.modules.game.listing.GameTtlExpiredListener;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
 @ExtendWith(MockitoExtension.class)

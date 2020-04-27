@@ -17,7 +17,7 @@ class LobbyGameDaoTest extends DaoTest {
   @ExpectedDataSet("lobby_games/lobby_game_insert_after.yml")
   void insertLobbyGame() {
     lobbyGameDao.insertLobbyGame(
-        ApiKey.of("api-key"),
+        ApiKey.of("HOST"),
         LobbyGameListing.builder() //
             .gameId("game-id")
             .lobbyGame(TestData.LOBBY_GAME)

@@ -1,8 +1,6 @@
 package org.triplea.db.dao.api.key;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
-import com.google.common.hash.Hashing;
 import java.net.InetAddress;
 import java.util.Optional;
 import java.util.function.Function;
@@ -32,7 +30,6 @@ public class ApiKeyDaoWrapper {
   /** Hashing function so that we do not store plain-text API key values in database. */
   @Nonnull private final Function<ApiKey, String> keyHashingFunction;
 
-  @SuppressWarnings("UnstableApiUsage")
   public static ApiKeyDaoWrapper build(final Jdbi jdbi) {
     return ApiKeyDaoWrapper.builder()
         .lobbyApiKeyDao(jdbi.onDemand(LobbyApiKeyDao.class))
@@ -40,8 +37,7 @@ public class ApiKeyDaoWrapper {
         .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
         .userRoleDao(jdbi.onDemand(UserRoleDao.class))
         .keyMaker(ApiKey::newKey)
-        .keyHashingFunction(
-            apiKey -> Hashing.sha512().hashString(apiKey.getValue(), Charsets.UTF_8).toString())
+        .keyHashingFunction(new ApiKeyHasher())
         .build();
   }
 

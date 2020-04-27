@@ -14,6 +14,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
@@ -49,6 +50,7 @@ import org.triplea.web.socket.WebSocketMessagingBus;
 @Slf4j
 public class GameListing {
   @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
+  @NonNull private final LobbyGameDao lobbyGameDao;
   @NonNull private final TtlCache<GameId, LobbyGame> games;
   @NonNull private final WebSocketMessagingBus playerMessagingBus;
 
@@ -64,6 +66,7 @@ public class GameListing {
 
   public static GameListing build(final Jdbi jdbi, final WebSocketMessagingBus playerMessagingBus) {
     return GameListing.builder()
+        .lobbyGameDao(jdbi.onDemand(LobbyGameDao.class))
         .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
         .playerMessagingBus(playerMessagingBus)
         .games(
@@ -78,9 +81,9 @@ public class GameListing {
   public String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
     final String id = UUID.randomUUID().toString();
     games.put(new GameId(apiKey, id), lobbyGame);
-    playerMessagingBus.broadcastMessage(
-        new LobbyGameUpdatedMessage(
-            LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build()));
+    final var lobbyGameListing = LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build();
+    lobbyGameDao.insertLobbyGame(apiKey, lobbyGameListing);
+    playerMessagingBus.broadcastMessage(new LobbyGameUpdatedMessage(lobbyGameListing));
     log.info("Posted game: {}", id);
     return id;
   }

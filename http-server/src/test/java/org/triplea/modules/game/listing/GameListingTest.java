@@ -29,7 +29,6 @@ import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
-import org.triplea.modules.game.listing.GameListing;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
 /**

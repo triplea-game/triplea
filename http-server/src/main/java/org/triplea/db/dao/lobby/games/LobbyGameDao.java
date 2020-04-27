@@ -3,6 +3,7 @@ package org.triplea.db.dao.lobby.games;
 import com.google.common.base.Ascii;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.triplea.db.dao.api.key.ApiKeyHasher;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
@@ -16,11 +17,12 @@ public interface LobbyGameDao {
   int MESSAGE_COLUMN_LENGTH = 240;
 
   default void insertLobbyGame(ApiKey apiKey, LobbyGameListing lobbyGameListing) {
+    final String hashedkey = new ApiKeyHasher().apply(apiKey);
     final int insertCount =
         insertLobbyGame(
-            lobbyGameListing.getLobbyGame().getHostName(),
+            lobbyGameListing.getLobbyGame().getHostName(), //
             lobbyGameListing.getGameId(),
-            apiKey.getValue());
+            hashedkey);
     Postconditions.assertState(
         insertCount == 1, "Failed to insert lobby game: " + lobbyGameListing);
   }
