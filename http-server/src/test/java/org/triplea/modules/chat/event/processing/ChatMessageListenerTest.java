@@ -69,7 +69,7 @@ class ChatMessageListenerTest {
     verify(messageContext).broadcastMessage(messageCaptor.capture());
     final ChatReceivedMessage chatReceivedMessage = messageCaptor.getValue();
     verifyMessageContents(messageCaptor.getValue());
-    verify(lobbyChatHistoryDao, timeout(100)).recordMessage(chatReceivedMessage, 123);
+    verify(lobbyChatHistoryDao, timeout(1000)).recordMessage(chatReceivedMessage, 123);
   }
 
   private void givenChatterSession(final Session session, final ChatParticipant chatParticipant) {
