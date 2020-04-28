@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.moderator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -10,8 +10,8 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.data.ModeratorUserDaoData;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.DaoTest;
+import org.triplea.db.dao.user.role.UserRole;
 
 @DataSet(cleanBefore = true, value = "moderators/select.yml")
 class ModeratorsDaoTest extends DaoTest {

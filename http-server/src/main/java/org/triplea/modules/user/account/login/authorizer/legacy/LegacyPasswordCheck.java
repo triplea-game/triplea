@@ -4,7 +4,7 @@ import java.util.function.BiPredicate;
 import lombok.Builder;
 import lombok.NonNull;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.UserJdbiDao;
+import org.triplea.db.dao.user.UserJdbiDao;
 import org.triplea.domain.data.UserName;
 
 @Builder

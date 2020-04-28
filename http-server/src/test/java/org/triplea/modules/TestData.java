@@ -2,7 +2,7 @@ package org.triplea.modules;
 
 import java.time.Instant;
 import lombok.experimental.UtilityClass;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.modules.access.authentication.AuthenticatedUser;

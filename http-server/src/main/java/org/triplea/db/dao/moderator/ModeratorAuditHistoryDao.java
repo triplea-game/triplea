@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.moderator;
 
 import com.google.common.base.Preconditions;
 import java.util.List;
@@ -10,7 +10,6 @@ import lombok.ToString;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.triplea.db.data.ModeratorAuditHistoryDaoData;
 
 /**
  * Interface for adding new moderator audit records to database. These records keep track of which

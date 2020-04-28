@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.TempPasswordHistoryDao;
+import org.triplea.db.dao.temp.password.TempPasswordHistoryDao;
 import org.triplea.http.AppConfig;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 

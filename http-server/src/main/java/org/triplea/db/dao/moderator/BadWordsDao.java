@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.moderator;
 
 import java.util.List;
 import org.jdbi.v3.sqlobject.customizer.Bind;

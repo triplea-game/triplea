@@ -1,4 +1,4 @@
-package org.triplea.db.data;
+package org.triplea.db.dao.user.role;
 
 import lombok.experimental.UtilityClass;
 

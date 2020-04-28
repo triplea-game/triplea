@@ -2,7 +2,7 @@ package org.triplea.modules.forgot.password;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
-import org.triplea.db.dao.TempPasswordHistoryDao;
+import org.triplea.db.dao.temp.password.TempPasswordHistoryDao;
 
 /**
  * Class for accessing temp password history. The history is used for audit and rate limiting so a

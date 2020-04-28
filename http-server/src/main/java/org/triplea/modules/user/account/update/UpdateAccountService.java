@@ -4,7 +4,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.UserJdbiDao;
+import org.triplea.db.dao.user.UserJdbiDao;
 import org.triplea.modules.user.account.PasswordBCrypter;
 
 @Builder

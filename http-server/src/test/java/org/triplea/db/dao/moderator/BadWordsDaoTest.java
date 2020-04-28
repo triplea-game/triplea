@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.moderator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.triplea.db.dao.DaoTest;
 
 @DataSet(cleanBefore = true, value = "bad_words/select.yml")
 class BadWordsDaoTest extends DaoTest {

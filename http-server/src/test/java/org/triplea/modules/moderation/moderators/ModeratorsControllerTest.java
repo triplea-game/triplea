@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 import org.triplea.modules.TestData;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
