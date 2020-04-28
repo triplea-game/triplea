@@ -7,7 +7,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -92,11 +91,6 @@ public abstract class AbstractProAi extends AbstractAi {
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
     calc.stop();
-  }
-
-  @Override
-  public PlayerType getPlayerType() {
-    return PlayerType.PRO_AI;
   }
 
   public ProOddsCalculator getCalc() {
