@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;

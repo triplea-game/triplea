@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.hosting;
+package org.triplea.http.client.lobby.game.hosting.request;
 
 import java.net.URI;
 import lombok.AccessLevel;

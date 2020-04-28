@@ -17,8 +17,8 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
-import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
+import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 
 /**
  * Provides an endpoint where an independent connection can be established, provides an API key to

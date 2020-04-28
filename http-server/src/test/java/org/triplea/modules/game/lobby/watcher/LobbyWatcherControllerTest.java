@@ -1,11 +1,13 @@
-package org.triplea.modules.game.listing;
+package org.triplea.modules.game.lobby.watcher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
+import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.modules.TestData;
 import org.triplea.modules.http.AllowedUserRole;
 import org.triplea.modules.http.ProtectedEndpointTest;
@@ -40,5 +42,20 @@ class LobbyWatcherControllerTest extends ProtectedEndpointTest<LobbyWatcherClien
   void updateGame() {
     final String gameId = verifyEndpointReturningObject(client -> client.postGame(LOBBY_GAME));
     verifyEndpoint(client -> client.updateGame(gameId, LOBBY_GAME));
+  }
+
+  @Test
+  void uploadChat() {
+    final String gameId = verifyEndpointReturningObject(client -> client.postGame(LOBBY_GAME));
+
+    verifyEndpoint(
+        client ->
+            client.uploadChatMessage(
+                AllowedUserRole.HOST.getAllowedKey(),
+                ChatUploadParams.builder()
+                    .fromPlayer(UserName.of("player"))
+                    .chatMessage("chat")
+                    .gameId(gameId)
+                    .build()));
   }
 }

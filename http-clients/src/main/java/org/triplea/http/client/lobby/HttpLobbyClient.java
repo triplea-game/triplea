@@ -4,7 +4,7 @@ import java.net.URI;
 import lombok.Getter;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 import org.triplea.http.client.lobby.user.account.UserAccountClient;

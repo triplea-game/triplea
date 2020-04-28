@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.modules.TestData;
-import org.triplea.modules.game.listing.GameListing.GameId;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,7 +19,7 @@ class GameTtlExpiredListenerTest {
 
   @Test
   void verifyGameRemovedCall() {
-    final GameId gameId = new GameId(TestData.API_KEY, "id");
+    final GameListing.GameId gameId = new GameListing.GameId(TestData.API_KEY, "id");
 
     gameTtlExpiredListener.accept(gameId, TestData.LOBBY_GAME);
 

@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.hosting;
+package org.triplea.http.client.lobby.game.hosting.request;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.MatcherAssert.assertThat;

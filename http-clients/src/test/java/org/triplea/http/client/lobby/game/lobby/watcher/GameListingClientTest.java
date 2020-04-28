@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.listing;
+package org.triplea.http.client.lobby.game.lobby.watcher;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;

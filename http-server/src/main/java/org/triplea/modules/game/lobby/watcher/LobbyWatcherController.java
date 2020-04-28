@@ -1,24 +1,34 @@
-package org.triplea.modules.game.listing;
+package org.triplea.modules.game.lobby.watcher;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import es.moki.ratelimij.dropwizard.annotation.Rate;
 import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.data.UserRole;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
-import org.triplea.http.client.lobby.game.listing.UpdateGameRequest;
+import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.UpdateGameRequest;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.game.listing.GameListing;
 
 /** Controller with endpoints for posting, getting and removing games. */
 @Builder
@@ -26,13 +36,15 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
     access = AccessLevel.PACKAGE,
     onConstructor_ = {@VisibleForTesting})
 @RolesAllowed(UserRole.HOST)
+@Slf4j
 public class LobbyWatcherController extends HttpController {
+  @Nonnull private final GameListing gameListing;
+  @Nonnull private final ChatUploadModule chatUploadModule;
 
-  private final GameListing gameListing;
-
-  public static LobbyWatcherController build(final GameListing gameListing) {
-    return LobbyWatcherController.builder() //
+  public static LobbyWatcherController build(final Jdbi jdbi, final GameListing gameListing) {
+    return LobbyWatcherController.builder()
         .gameListing(gameListing)
+        .chatUploadModule(ChatUploadModule.build(jdbi, gameListing))
         .build();
   }
 
@@ -88,6 +100,33 @@ public class LobbyWatcherController extends HttpController {
         authenticatedUser.getApiKey(),
         updateGameRequest.getGameId(),
         updateGameRequest.getGameData());
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path(LobbyWatcherClient.UPLOAD_CHAT_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.SECONDS)})
+  @RolesAllowed(UserRole.HOST)
+  public Response uploadChatMessage(
+      @Context final HttpServletRequest request, final ChatMessageUpload chatMessageUpload) {
+    Preconditions.checkArgument(chatMessageUpload != null);
+    Preconditions.checkArgument(chatMessageUpload.getChatMessage() != null);
+    Preconditions.checkArgument(chatMessageUpload.getFromPlayer() != null);
+    Preconditions.checkArgument(chatMessageUpload.getGameId() != null);
+    Preconditions.checkArgument(chatMessageUpload.getApiKey() != null);
+
+    Preconditions.checkArgument(chatMessageUpload.getFromPlayer().length() <= UserName.MAX_LENGTH);
+    Preconditions.checkArgument(chatMessageUpload.getApiKey().length() <= ApiKey.MAX_LENGTH);
+
+    if (!chatUploadModule.upload(chatMessageUpload)) {
+      log.warn(
+          "Chat upload request from {} was rejected, "
+              + "gameID and API-key pair did not match any existing games.",
+          request.getRemoteHost());
+    }
+
     return Response.ok().build();
   }
 }

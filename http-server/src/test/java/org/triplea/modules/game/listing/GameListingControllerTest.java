@@ -2,8 +2,8 @@ package org.triplea.modules.game.listing;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.http.client.lobby.game.listing.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.modules.TestData;
 import org.triplea.modules.http.AllowedUserRole;
 import org.triplea.modules.http.ProtectedEndpointTest;

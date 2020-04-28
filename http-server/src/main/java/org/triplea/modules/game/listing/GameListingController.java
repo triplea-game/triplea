@@ -17,8 +17,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.triplea.db.data.UserRole;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 
 /** Controller with endpoints for posting, getting and removing games. */

@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.listing;
+package org.triplea.http.client.lobby.game.lobby.watcher;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
@@ -10,7 +10,9 @@ import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.TestData;
 import org.triplea.http.client.WireMockTest;
@@ -75,5 +77,20 @@ class LobbyWatcherClientTest extends WireMockTest {
             .willReturn(WireMock.aResponse().withStatus(200)));
 
     newClient(server).removeGame(GAME_ID);
+  }
+
+  @Test
+  void sendGameHostingRequest(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    wireMockServer.stubFor(
+        post(LobbyWatcherClient.UPLOAD_CHAT_PATH).willReturn(WireMock.aResponse().withStatus(200)));
+
+    newClient(wireMockServer)
+        .uploadChatMessage(
+            ApiKey.newKey(),
+            ChatUploadParams.builder()
+                .gameId("game-id")
+                .chatMessage("chat-message")
+                .fromPlayer(UserName.of("player"))
+                .build());
   }
 }

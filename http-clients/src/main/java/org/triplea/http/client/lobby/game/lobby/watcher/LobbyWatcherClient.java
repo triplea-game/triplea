@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.listing;
+package org.triplea.http.client.lobby.game.lobby.watcher;
 
 import java.net.URI;
 import lombok.AllArgsConstructor;
@@ -18,9 +18,10 @@ public class LobbyWatcherClient {
   public static final String POST_GAME_PATH = "/lobby/games/post-game";
   public static final String UPDATE_GAME_PATH = "/lobby/games/update-game";
   public static final String REMOVE_GAME_PATH = "/lobby/games/remove-game";
+  public static final String UPLOAD_CHAT_PATH = "/lobby/chat/upload";
 
   private final AuthenticationHeaders authenticationHeaders;
-  private final LobbyWatcherFeignClient gameListingFeignClient;
+  private final LobbyWatcherFeignClient lobbyWatcherFeignClient;
 
   public static LobbyWatcherClient newClient(final URI serverUri, final ApiKey apiKey) {
     return new LobbyWatcherClient(
@@ -29,20 +30,26 @@ public class LobbyWatcherClient {
   }
 
   public String postGame(final LobbyGame lobbyGame) {
-    return gameListingFeignClient.postGame(authenticationHeaders.createHeaders(), lobbyGame);
+    return lobbyWatcherFeignClient.postGame(authenticationHeaders.createHeaders(), lobbyGame);
   }
 
   public void updateGame(final String gameId, final LobbyGame lobbyGame) {
-    gameListingFeignClient.updateGame(
+    lobbyWatcherFeignClient.updateGame(
         authenticationHeaders.createHeaders(),
         UpdateGameRequest.builder().gameId(gameId).gameData(lobbyGame).build());
   }
 
   public boolean sendKeepAlive(final String gameId) {
-    return gameListingFeignClient.sendKeepAlive(authenticationHeaders.createHeaders(), gameId);
+    return lobbyWatcherFeignClient.sendKeepAlive(authenticationHeaders.createHeaders(), gameId);
   }
 
   public void removeGame(final String gameId) {
-    gameListingFeignClient.removeGame(authenticationHeaders.createHeaders(), gameId);
+    lobbyWatcherFeignClient.removeGame(authenticationHeaders.createHeaders(), gameId);
+  }
+
+  public void uploadChatMessage(
+      final ApiKey apiKey, final ChatUploadParams uploadChatMessageParams) {
+    lobbyWatcherFeignClient.uploadChat(
+        authenticationHeaders.createHeaders(), uploadChatMessageParams.toChatMessageUpload(apiKey));
   }
 }

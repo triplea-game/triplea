@@ -44,7 +44,7 @@ import org.triplea.modules.game.ConnectivityController;
 import org.triplea.modules.game.hosting.GameHostingController;
 import org.triplea.modules.game.listing.GameListing;
 import org.triplea.modules.game.listing.GameListingController;
-import org.triplea.modules.game.listing.LobbyWatcherController;
+import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
 import org.triplea.modules.moderation.access.log.AccessLogController;
 import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryController;
 import org.triplea.modules.moderation.bad.words.BadWordsController;
@@ -224,7 +224,7 @@ public class ServerApplication extends Application<AppConfig> {
         ForgotPasswordController.build(appConfig, jdbi),
         GameHostingController.build(jdbi),
         GameListingController.build(gameListing),
-        LobbyWatcherController.build(gameListing),
+        LobbyWatcherController.build(jdbi, gameListing),
         LoginController.build(jdbi, chatters),
         UsernameBanController.build(jdbi),
         UserBanController.build(jdbi, chatters, playerMessagingBus, gameMessagingBus),

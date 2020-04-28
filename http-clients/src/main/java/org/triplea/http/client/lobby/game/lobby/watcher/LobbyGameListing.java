@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.listing;
+package org.triplea.http.client.lobby.game.lobby.watcher;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

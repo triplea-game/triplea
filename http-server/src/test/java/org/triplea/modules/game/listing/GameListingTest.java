@@ -23,13 +23,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
-import org.triplea.modules.game.listing.GameListing.GameId;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
 /**
@@ -50,15 +50,16 @@ class GameListingTest {
   private static final ApiKey API_KEY_0 = ApiKey.of("apiKey0");
   private static final ApiKey API_KEY_1 = ApiKey.of("apiKey1");
 
-  private static final GameId ID_0 = new GameId(API_KEY_0, GAME_ID_0);
+  private static final GameListing.GameId ID_0 = new GameListing.GameId(API_KEY_0, GAME_ID_0);
 
   private static final String HOST_NAME = "host-player";
   private static final int MODERATOR_ID = 33;
 
-  private final ExpiringAfterWriteCache<GameId, LobbyGame> cache =
+  private final ExpiringAfterWriteCache<GameListing.GameId, LobbyGame> cache =
       new ExpiringAfterWriteCache<>(1, TimeUnit.HOURS, (key, value) -> {});
 
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Mock private LobbyGameDao lobbyGameDao;
   @Mock private WebSocketMessagingBus playerMessagingBus;
 
   private GameListing gameListing;
@@ -73,6 +74,7 @@ class GameListingTest {
         GameListing.builder()
             .playerMessagingBus(playerMessagingBus)
             .auditHistoryDao(moderatorAuditHistoryDao)
+            .lobbyGameDao(lobbyGameDao)
             .games(cache)
             .build();
   }
@@ -84,8 +86,8 @@ class GameListingTest {
     @Test
     void getGames() {
       cache.put(ID_0, lobbyGame0);
-      cache.put(new GameId(API_KEY_0, GAME_ID_1), lobbyGame1);
-      cache.put(new GameId(API_KEY_1, GAME_ID_2), lobbyGame2);
+      cache.put(new GameListing.GameId(API_KEY_0, GAME_ID_1), lobbyGame1);
+      cache.put(new GameListing.GameId(API_KEY_1, GAME_ID_2), lobbyGame2);
 
       final List<LobbyGameListing> result = gameListing.getGames();
 
@@ -129,7 +131,7 @@ class GameListingTest {
   final class RemoveGame {
     @Test
     void removeGame() {
-      cache.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
+      cache.put(new GameListing.GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
 
       gameListing.removeGame(API_KEY_0, GAME_ID_0);
 
@@ -139,12 +141,12 @@ class GameListingTest {
 
     @Test
     void removeGameRequiresCorrectApiKey() {
-      cache.put(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
+      cache.put(new GameListing.GameId(API_KEY_0, GAME_ID_0), lobbyGame0);
 
       gameListing.removeGame(API_KEY_1, GAME_ID_0);
 
       assertThat(cache.asMap(), is(aMapWithSize(1)));
-      assertThat(cache.asMap(), hasEntry(new GameId(API_KEY_0, GAME_ID_0), lobbyGame0));
+      assertThat(cache.asMap(), hasEntry(new GameListing.GameId(API_KEY_0, GAME_ID_0), lobbyGame0));
       verify(playerMessagingBus, never()).broadcastMessage(any());
     }
   }
@@ -156,11 +158,12 @@ class GameListingTest {
       final String id0 = gameListing.postGame(API_KEY_0, lobbyGame0);
 
       assertThat(id0, not(emptyString()));
-      assertThat(cache.asMap(), is(Map.of(new GameId(API_KEY_0, id0), lobbyGame0)));
-      verify(playerMessagingBus)
-          .broadcastMessage(
-              new LobbyGameUpdatedMessage(
-                  LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build()));
+      assertThat(cache.asMap(), is(Map.of(new GameListing.GameId(API_KEY_0, id0), lobbyGame0)));
+
+      final var lobbyGameListing =
+          LobbyGameListing.builder().gameId(id0).lobbyGame(lobbyGame0).build();
+      verify(playerMessagingBus).broadcastMessage(new LobbyGameUpdatedMessage(lobbyGameListing));
+      verify(lobbyGameDao).insertLobbyGame(API_KEY_0, lobbyGameListing);
     }
   }
 
@@ -208,6 +211,33 @@ class GameListingTest {
                   .moderatorUserId(MODERATOR_ID)
                   .build());
       verify(playerMessagingBus).broadcastMessage(new LobbyGameRemovedMessage(GAME_ID_0));
+    }
+  }
+
+  @Nested
+  final class IsValidGameIdApiKeyPair {
+
+    @Test
+    void validCase() {
+      cache.put(ID_0, lobbyGame0);
+      final boolean result = gameListing.isValidApiKeyAndGameId(ID_0.getApiKey(), ID_0.getId());
+      assertThat(result, is(true));
+    }
+
+    @Test
+    void mismatchOnApiKey() {
+      cache.put(ID_0, lobbyGame0);
+      final boolean result =
+          gameListing.isValidApiKeyAndGameId(ApiKey.of("incorrect-api-key"), ID_0.getId());
+      assertThat(result, is(false));
+    }
+
+    @Test
+    void mismatchOnGameId() {
+      cache.put(ID_0, lobbyGame0);
+      final boolean result =
+          gameListing.isValidApiKeyAndGameId(ID_0.getApiKey(), "incorrect-game-id");
+      assertThat(result, is(false));
     }
   }
 }

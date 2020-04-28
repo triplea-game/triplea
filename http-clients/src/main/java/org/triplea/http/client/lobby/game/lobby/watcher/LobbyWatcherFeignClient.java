@@ -1,4 +1,4 @@
-package org.triplea.http.client.lobby.game.listing;
+package org.triplea.http.client.lobby.game.lobby.watcher;
 
 import feign.HeaderMap;
 import feign.Headers;
@@ -20,4 +20,7 @@ interface LobbyWatcherFeignClient {
 
   @RequestLine("POST " + LobbyWatcherClient.KEEP_ALIVE_PATH)
   boolean sendKeepAlive(@HeaderMap Map<String, Object> headers, String gameId);
+
+  @RequestLine("POST " + LobbyWatcherClient.UPLOAD_CHAT_PATH)
+  String uploadChat(@HeaderMap Map<String, Object> headers, ChatMessageUpload chatMessageUpload);
 }
