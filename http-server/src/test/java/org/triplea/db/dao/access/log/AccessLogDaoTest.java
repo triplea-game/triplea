@@ -3,10 +3,10 @@ package org.triplea.db.dao.access.log;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.DaoTest;
@@ -30,7 +30,7 @@ class AccessLogDaoTest extends DaoTest {
     List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 1);
     assertThat(data, hasSize(1));
 
-    assertThat(data.get(0).getAccessTime(), is(Instant.parse("2016-01-03T23:59:20.0Z")));
+    assertThat(data.get(0).getAccessTime(), isInstant(2016, 1, 3, 23, 59, 20));
     assertThat(data.get(0).getIp(), is("127.0.0.2"));
     assertThat(data.get(0).getSystemId(), is("system-id2"));
     assertThat(data.get(0).getUsername(), is("second"));
@@ -39,7 +39,7 @@ class AccessLogDaoTest extends DaoTest {
     data = accessLogDao.fetchAccessLogRows(1, 1);
     assertThat(data, hasSize(1));
 
-    assertThat(data.get(0).getAccessTime(), is(Instant.parse("2016-01-01T23:59:20.0Z")));
+    assertThat(data.get(0).getAccessTime(), isInstant(2016, 1, 1, 23, 59, 20));
     assertThat(data.get(0).getIp(), is("127.0.0.1"));
     assertThat(data.get(0).getSystemId(), is("system-id1"));
     assertThat(data.get(0).getUsername(), is("first"));
