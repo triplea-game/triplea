@@ -116,9 +116,8 @@ public abstract class AbstractProAi extends AbstractAi {
   }
 
   /**
-   * Some implementations of {@link IBattleCalculator} do require
-   * setting a GameData instance before actually being able to run properly.
-   * This method should take care of that.
+   * Some implementations of {@link IBattleCalculator} do require setting a GameData instance before
+   * actually being able to run properly. This method should take care of that.
    */
   protected abstract void prepareData(GameData data);
 
