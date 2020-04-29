@@ -4,10 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.DaoTest;
@@ -33,7 +33,7 @@ class ModeratorsDaoTest extends DaoTest {
         hasSize(2));
 
     assertThat(moderators.get(0).getUsername(), is("moderator"));
-    assertThat(moderators.get(0).getLastLogin(), is(Instant.parse("2001-01-01T23:59:20Z")));
+    assertThat(moderators.get(0).getLastLogin(), isInstant(2001, 1, 1, 23, 59, 20));
 
     assertThat(moderators.get(1).getUsername(), is("Super! moderator"));
     assertThat(moderators.get(1).getLastLogin(), nullValue());

@@ -4,10 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import java.time.Instant;
 import java.util.List;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.junit.jupiter.api.Test;
@@ -55,17 +55,17 @@ class ModeratorAuditHistoryDaoTest extends DaoTest {
     assertThat(results, hasSize(3));
 
     assertThat(results.get(0).getUsername(), is("moderator2"));
-    assertThat(results.get(0).getDateCreated(), is(Instant.parse("2016-01-05T23:59:20Z")));
+    assertThat(results.get(0).getDateCreated(), isInstant(2016, 1, 5, 23, 59, 20));
     assertThat(results.get(0).getActionName(), is("BAN_USERNAME"));
     assertThat(results.get(0).getActionTarget(), is("ACTION_TARGET5"));
 
     assertThat(results.get(1).getUsername(), is("moderator1"));
-    assertThat(results.get(1).getDateCreated(), is(Instant.parse("2016-01-04T23:59:20Z")));
+    assertThat(results.get(1).getDateCreated(), isInstant(2016, 1, 4, 23, 59, 20));
     assertThat(results.get(1).getActionName(), is("BOOT_PLAYER"));
     assertThat(results.get(1).getActionTarget(), is("ACTION_TARGET4"));
 
     assertThat(results.get(2).getUsername(), is("moderator2"));
-    assertThat(results.get(2).getDateCreated(), is(Instant.parse("2016-01-03T23:59:20Z")));
+    assertThat(results.get(2).getDateCreated(), isInstant(2016, 1, 3, 23, 59, 20));
     assertThat(results.get(2).getActionName(), is("BAN_USERNAME"));
     assertThat(results.get(2).getActionTarget(), is("ACTION_TARGET3"));
 
@@ -73,12 +73,12 @@ class ModeratorAuditHistoryDaoTest extends DaoTest {
     results = moderatorAuditHistoryDao.lookupHistoryItems(3, 3);
     assertThat(results, hasSize(2));
     assertThat(results.get(0).getUsername(), is("moderator2"));
-    assertThat(results.get(0).getDateCreated(), is(Instant.parse("2016-01-02T23:59:20Z")));
+    assertThat(results.get(0).getDateCreated(), isInstant(2016, 1, 2, 23, 59, 20));
     assertThat(results.get(0).getActionName(), is("MUTE_USERNAME"));
     assertThat(results.get(0).getActionTarget(), is("ACTION_TARGET2"));
 
     assertThat(results.get(1).getUsername(), is("moderator1"));
-    assertThat(results.get(1).getDateCreated(), is(Instant.parse("2016-01-01T23:59:20Z")));
+    assertThat(results.get(1).getDateCreated(), isInstant(2016, 1, 1, 23, 59, 20));
     assertThat(results.get(1).getActionName(), is("BAN_USERNAME"));
     assertThat(results.get(1).getActionTarget(), is("ACTION_TARGET1"));
 
