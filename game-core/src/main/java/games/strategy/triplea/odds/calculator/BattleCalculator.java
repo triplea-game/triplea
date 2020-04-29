@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -15,10 +16,11 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nonnull;
 import lombok.Setter;
 
 class BattleCalculator implements IBattleCalculator {
-  private final GameData gameData;
+  @Nonnull private final GameData gameData;
   private GamePlayer attacker = null;
   private GamePlayer defender = null;
   private Territory location = null;
@@ -39,9 +41,8 @@ class BattleCalculator implements IBattleCalculator {
 
   BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     gameData =
-        data == null
-            ? null
-            : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+        Preconditions.checkNotNull(
+            dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
   }
 
   /** Calculates odds using the stored game data. */
@@ -59,9 +60,6 @@ class BattleCalculator implements IBattleCalculator {
       return;
     }
     isCalcSet = false;
-    if (gameData == null) {
-      throw new IllegalStateException("Called set calculation before setting game data!");
-    }
     this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
     this.attacker =
         gameData
@@ -164,7 +162,7 @@ class BattleCalculator implements IBattleCalculator {
   }
 
   boolean getIsReady() {
-    return gameData != null && isCalcSet;
+    return isCalcSet;
   }
 
   public void cancel() {
