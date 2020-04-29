@@ -38,13 +38,23 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
+  BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
+    gameData =
+        data == null
+            ? null
+            : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+    if (data != null) {
+      isDataSet = true;
+    }
+  }
+
   public void setGameData(final GameData data) {
     if (isRunning) {
       return;
     }
-    isDataSet = data != null;
+    isDataSet = false;
     isCalcSet = false;
-    gameData = data;
+    gameData = (data == null ? null : GameDataUtils.cloneGameData(data, false));
     // reset old data
     attacker = null;
     defender = null;
@@ -53,6 +63,7 @@ class BattleCalculator implements IBattleCalculator {
     defendingUnits = new ArrayList<>();
     bombardingUnits = new ArrayList<>();
     territoryEffects = new ArrayList<>();
+    isDataSet = data != null;
   }
 
   /** Calculates odds using the stored game data. */
@@ -174,7 +185,7 @@ class BattleCalculator implements IBattleCalculator {
     return aggregateResults;
   }
 
-  public boolean getIsReady() {
+  private boolean getIsReady() {
     return isDataSet && isCalcSet;
   }
 
