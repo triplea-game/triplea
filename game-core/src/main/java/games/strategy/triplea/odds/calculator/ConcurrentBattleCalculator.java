@@ -50,7 +50,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private boolean amphibious = false;
   private int retreatAfterRound = -1;
   private int retreatAfterXUnitsLeft = -1;
-  private boolean retreatWhenOnlyAirLeft = false;
   private String attackerOrderOfLosses = null;
   private String defenderOrderOfLosses = null;
 
@@ -69,7 +68,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     this.dataLoadedAction = dataLoadedAction;
   }
 
-  @Override
   public void setGameData(final GameData data) {
     synchronized (mutex) {
       bytes = data == null ? new byte[0] : GameDataUtils.serializeGameDataWithoutHistory(data);
@@ -77,12 +75,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     }
   }
 
-  @Override
-  public int getThreadCount() {
-    return MAX_THREADS;
-  }
-
-  @Override
   public void shutdown() {
     isShutDown = true;
     cancel();
@@ -102,6 +94,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
       final int runCount)
       throws IllegalStateException {
     Preconditions.checkState(!isShutDown, "ConcurrentBattleCalculator is already shut down");
@@ -124,6 +117,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
                           defending,
                           bombarding,
                           territoryEffects,
+                          retreatWhenOnlyAirLeft,
                           individualRemaining))
               .collect(Collectors.toList());
     }
@@ -140,13 +134,13 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
       final int runs) {
     final BattleCalculator calculator = new BattleCalculator();
     calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
     calculator.setAmphibious(amphibious);
     calculator.setRetreatAfterRound(retreatAfterRound);
     calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
-    calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
     calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
     calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
     calculators.add(calculator);
@@ -162,6 +156,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
                 defending,
                 bombarding,
                 territoryEffects,
+                retreatWhenOnlyAirLeft,
                 runs);
           } catch (final IOException e) {
             throw new RuntimeException("Failed to deserialize", e);
@@ -186,49 +181,36 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     return result;
   }
 
-  @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {
     synchronized (mutex) {
       keepOneAttackingLandUnit = bool;
     }
   }
 
-  @Override
   public void setAmphibious(final boolean bool) {
     synchronized (mutex) {
       amphibious = bool;
     }
   }
 
-  @Override
   public void setRetreatAfterRound(final int value) {
     synchronized (mutex) {
       retreatAfterRound = value;
     }
   }
 
-  @Override
   public void setRetreatAfterXUnitsLeft(final int value) {
     synchronized (mutex) {
       retreatAfterXUnitsLeft = value;
     }
   }
 
-  @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    synchronized (mutex) {
-      retreatWhenOnlyAirLeft = value;
-    }
-  }
-
-  @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
     synchronized (mutex) {
       this.attackerOrderOfLosses = attackerOrderOfLosses;
     }
   }
 
-  @Override
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
     synchronized (mutex) {
       this.defenderOrderOfLosses = defenderOrderOfLosses;
@@ -236,7 +218,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   // not on purpose, we need to be able to cancel at any time
-  @Override
   public void cancel() {
     synchronized (mutex) {
       calculators.forEach(BattleCalculator::cancel);

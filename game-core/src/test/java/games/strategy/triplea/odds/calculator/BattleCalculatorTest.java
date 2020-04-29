@@ -31,7 +31,7 @@ class BattleCalculatorTest {
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(100, russians);
     final List<Unit> bombardingUnits = List.of();
-    final IBattleCalculator calculator = new BattleCalculator();
+    final BattleCalculator calculator = new BattleCalculator();
     calculator.setGameData(gameData);
     final AggregateResults results =
         calculator.calculate(
@@ -42,8 +42,8 @@ class BattleCalculatorTest {
             defendingUnits,
             bombardingUnits,
             TerritoryEffectHelper.getEffects(germany),
+            false,
             200);
-    calculator.shutdown();
     assertTrue(results.getAttackerWinPercent() > 0.99);
     assertTrue(results.getDefenderWinPercent() < 0.1);
     assertTrue(results.getDrawPercent() < 0.1);
@@ -61,7 +61,7 @@ class BattleCalculatorTest {
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(1, germans, false);
     attackingUnits.addAll(GameDataTestUtil.bomber(gameData).create(1, germans, false));
     final List<Unit> bombardingUnits = List.of();
-    final IBattleCalculator calculator = new BattleCalculator();
+    final BattleCalculator calculator = new BattleCalculator();
     calculator.setGameData(gameData);
     calculator.setKeepOneAttackingLandUnit(true);
     final AggregateResults results =
@@ -73,8 +73,8 @@ class BattleCalculatorTest {
             defendingUnits,
             bombardingUnits,
             TerritoryEffectHelper.getEffects(eastCanada),
+            false,
             1000);
-    calculator.shutdown();
     assertEquals(0.8, results.getAttackerWinPercent(), 0.10);
     assertEquals(0.16, results.getDefenderWinPercent(), 0.10);
   }
@@ -84,7 +84,7 @@ class BattleCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = transport(gameData).create(2, americans(gameData));
     final List<Unit> defending = submarine(gameData).create(2, germans(gameData));
-    final IBattleCalculator calculator = new BattleCalculator();
+    final BattleCalculator calculator = new BattleCalculator();
     calculator.setGameData(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
@@ -96,8 +96,8 @@ class BattleCalculatorTest {
             defending,
             List.of(),
             TerritoryEffectHelper.getEffects(sz1),
+            false,
             1);
-    calculator.shutdown();
     assertEquals(0.0, results.getAttackerWinPercent());
     assertEquals(1.0, results.getDefenderWinPercent());
   }
@@ -109,7 +109,7 @@ class BattleCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = submarine(gameData).create(2, americans(gameData));
     final List<Unit> defending = transport(gameData).create(2, germans(gameData));
-    final IBattleCalculator calculator = new BattleCalculator();
+    final BattleCalculator calculator = new BattleCalculator();
     calculator.setGameData(gameData);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
@@ -121,8 +121,8 @@ class BattleCalculatorTest {
             defending,
             List.of(),
             TerritoryEffectHelper.getEffects(sz1),
+            false,
             1);
-    calculator.shutdown();
     assertEquals(1.0, results.getAttackerWinPercent());
     assertEquals(0.0, results.getDefenderWinPercent());
   }

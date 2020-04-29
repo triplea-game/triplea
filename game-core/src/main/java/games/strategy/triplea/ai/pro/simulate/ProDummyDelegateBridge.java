@@ -11,7 +11,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
-import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Properties;
 import org.triplea.sound.HeadlessSoundChannel;
@@ -26,12 +26,13 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final GamePlayer player;
-  private final ProAi proAi;
+  private final AbstractProAi proAi;
   private final DelegateHistoryWriter writer = DelegateHistoryWriter.NO_OP_INSTANCE;
   private final GameData gameData;
   private final CompositeChange allChanges = new CompositeChange();
 
-  public ProDummyDelegateBridge(final ProAi proAi, final GamePlayer player, final GameData data) {
+  public ProDummyDelegateBridge(
+      final AbstractProAi proAi, final GamePlayer player, final GameData data) {
     this.proAi = proAi;
     gameData = data;
     this.player = player;

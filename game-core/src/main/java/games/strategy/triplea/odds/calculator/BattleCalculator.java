@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import lombok.Setter;
 
 class BattleCalculator implements IBattleCalculator {
   private GameData gameData;
@@ -25,19 +26,18 @@ class BattleCalculator implements IBattleCalculator {
   private Collection<Unit> defendingUnits = new ArrayList<>();
   private Collection<Unit> bombardingUnits = new ArrayList<>();
   private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
-  private boolean keepOneAttackingLandUnit = false;
-  private boolean amphibious = false;
-  private int retreatAfterRound = -1;
-  private int retreatAfterXUnitsLeft = -1;
+  @Setter private boolean keepOneAttackingLandUnit = false;
+  @Setter private boolean amphibious = false;
+  @Setter private int retreatAfterRound = -1;
+  @Setter private int retreatAfterXUnitsLeft = -1;
   private boolean retreatWhenOnlyAirLeft = false;
-  private String attackerOrderOfLosses = null;
-  private String defenderOrderOfLosses = null;
+  @Setter private String attackerOrderOfLosses = null;
+  @Setter private String defenderOrderOfLosses = null;
   private volatile boolean cancelled = false;
   private volatile boolean isDataSet = false;
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
-  @Override
   public void setGameData(final GameData data) {
     if (isRunning) {
       return;
@@ -63,7 +63,8 @@ class BattleCalculator implements IBattleCalculator {
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects)
+      final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft)
       throws IllegalStateException {
     if (isRunning) {
       return;
@@ -72,6 +73,7 @@ class BattleCalculator implements IBattleCalculator {
     if (!isDataSet) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
+    this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
     this.attacker =
         gameData
             .getPlayerList()
@@ -102,9 +104,17 @@ class BattleCalculator implements IBattleCalculator {
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
       final int runCount) {
     setCalculateData(
-        attacker, defender, location, attacking, defending, bombarding, territoryEffects);
+        attacker,
+        defender,
+        location,
+        attacking,
+        defending,
+        bombarding,
+        territoryEffects,
+        retreatWhenOnlyAirLeft);
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }
@@ -168,53 +178,7 @@ class BattleCalculator implements IBattleCalculator {
     return isDataSet && isCalcSet;
   }
 
-  @Override
-  public void setKeepOneAttackingLandUnit(final boolean bool) {
-    keepOneAttackingLandUnit = bool;
-  }
-
-  @Override
-  public void setAmphibious(final boolean bool) {
-    amphibious = bool;
-  }
-
-  @Override
-  public void setRetreatAfterRound(final int value) {
-    retreatAfterRound = value;
-  }
-
-  @Override
-  public void setRetreatAfterXUnitsLeft(final int value) {
-    retreatAfterXUnitsLeft = value;
-  }
-
-  @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    retreatWhenOnlyAirLeft = value;
-  }
-
-  @Override
-  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-    this.attackerOrderOfLosses = attackerOrderOfLosses;
-  }
-
-  @Override
-  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-    this.defenderOrderOfLosses = defenderOrderOfLosses;
-  }
-
-  @Override
   public void cancel() {
     cancelled = true;
-  }
-
-  @Override
-  public void shutdown() {
-    cancel();
-  }
-
-  @Override
-  public int getThreadCount() {
-    return 1;
   }
 }

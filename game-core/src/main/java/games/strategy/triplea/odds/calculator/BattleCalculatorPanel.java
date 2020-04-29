@@ -83,7 +83,7 @@ class BattleCalculatorPanel extends JPanel {
       new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final IBattleCalculator calculator;
+  private final ConcurrentBattleCalculator calculator;
   private final PlayerUnitsPanel attackingUnitsPanel;
   private final PlayerUnitsPanel defendingUnitsPanel;
   private final JComboBox<GamePlayer> attackerCombo;
@@ -1200,10 +1200,7 @@ class BattleCalculatorPanel extends JPanel {
     }
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
     final WaitDialog dialog =
-        new WaitDialog(
-            this,
-            "Calculating Odds (" + calculator.getThreadCount() + " threads)",
-            calculator::cancel);
+        new WaitDialog(this, "Calculating Odds... (this may take a while)", calculator::cancel);
     final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
     new Thread(
@@ -1242,7 +1239,6 @@ class BattleCalculatorPanel extends JPanel {
                 }
                 calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
                 calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());
-                calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeftCheckBox.isSelected());
                 calculator.setKeepOneAttackingLandUnit(
                     landBattleCheckBox.isSelected()
                         && keepOneAttackingLandUnitCheckBox.isSelected());
@@ -1261,6 +1257,7 @@ class BattleCalculatorPanel extends JPanel {
                         defending,
                         bombarding,
                         territoryEffects,
+                        retreatWhenOnlyAirLeftCheckBox.isSelected(),
                         numRuns.getValue()));
               } finally {
                 SwingUtilities.invokeLater(

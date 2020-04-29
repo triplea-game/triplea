@@ -41,7 +41,7 @@ class ProRetreatAi {
   private final ProOddsCalculator calc;
   private final ProData proData;
 
-  ProRetreatAi(final ProAi ai) {
+  ProRetreatAi(final AbstractProAi ai) {
     calc = ai.getCalc();
     proData = ai.getProData();
   }
