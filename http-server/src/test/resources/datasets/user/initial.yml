@@ -1,3 +1,4 @@
+lobby_api_key:
 user_role:
   - id: 1
     name: PLAYER
