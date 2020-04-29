@@ -34,7 +34,6 @@ class BattleCalculator implements IBattleCalculator {
   @Setter private String attackerOrderOfLosses = null;
   @Setter private String defenderOrderOfLosses = null;
   private volatile boolean cancelled = false;
-  private volatile boolean isDataSet = false;
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
@@ -43,9 +42,6 @@ class BattleCalculator implements IBattleCalculator {
         data == null
             ? null
             : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
-    if (data != null) {
-      isDataSet = true;
-    }
   }
 
   /** Calculates odds using the stored game data. */
@@ -63,7 +59,7 @@ class BattleCalculator implements IBattleCalculator {
       return;
     }
     isCalcSet = false;
-    if (!isDataSet) {
+    if (gameData == null) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
     this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
@@ -168,7 +164,7 @@ class BattleCalculator implements IBattleCalculator {
   }
 
   boolean getIsReady() {
-    return isDataSet && isCalcSet;
+    return gameData != null && isCalcSet;
   }
 
   public void cancel() {
