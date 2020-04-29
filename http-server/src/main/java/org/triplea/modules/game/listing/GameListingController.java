@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;

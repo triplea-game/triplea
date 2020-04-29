@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.temp.password;
 
 import java.util.Optional;
 import org.jdbi.v3.sqlobject.customizer.Bind;

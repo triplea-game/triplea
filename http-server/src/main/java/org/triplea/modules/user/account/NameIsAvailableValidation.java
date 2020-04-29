@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.UserJdbiDao;
+import org.triplea.db.dao.user.UserJdbiDao;
 
 @AllArgsConstructor(access = AccessLevel.PROTECTED, onConstructor_ = @VisibleForTesting)
 public class NameIsAvailableValidation implements Function<String, Optional<String>> {

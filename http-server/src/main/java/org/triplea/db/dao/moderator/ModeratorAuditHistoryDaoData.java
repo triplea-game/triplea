@@ -1,4 +1,4 @@
-package org.triplea.db.data;
+package org.triplea.db.dao.moderator;
 
 import java.time.Instant;
 import lombok.AllArgsConstructor;

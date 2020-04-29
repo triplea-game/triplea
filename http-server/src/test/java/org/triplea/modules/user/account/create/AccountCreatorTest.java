@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.UserJdbiDao;
+import org.triplea.db.dao.user.UserJdbiDao;
 import org.triplea.http.client.lobby.login.CreateAccountRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 

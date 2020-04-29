@@ -8,7 +8,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ErrorReportingDao;
+import org.triplea.db.dao.error.reporting.ErrorReportingDao;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;

@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyLookupRecordTest {

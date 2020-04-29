@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.modules.TestData;
 

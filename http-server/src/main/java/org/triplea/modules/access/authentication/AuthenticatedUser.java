@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 
 /**

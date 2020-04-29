@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.BadWordsDao;
-import org.triplea.db.dao.UserJdbiDao;
+import org.triplea.db.dao.moderator.BadWordsDao;
+import org.triplea.db.dao.user.UserJdbiDao;
 import org.triplea.db.dao.username.ban.UsernameBanDao;
 
 @ExtendWith(MockitoExtension.class)

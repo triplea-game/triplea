@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;

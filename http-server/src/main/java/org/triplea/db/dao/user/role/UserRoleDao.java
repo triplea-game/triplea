@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.user.role;
 
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;

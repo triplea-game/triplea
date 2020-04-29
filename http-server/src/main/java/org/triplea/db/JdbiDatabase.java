@@ -12,12 +12,12 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.db.dao.access.log.AccessLogRecord;
 import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDaoData;
+import org.triplea.db.dao.moderator.ModeratorUserDaoData;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanRecord;
+import org.triplea.db.dao.user.role.UserRoleLookup;
 import org.triplea.db.dao.username.ban.UsernameBanRecord;
-import org.triplea.db.data.ModeratorAuditHistoryDaoData;
-import org.triplea.db.data.ModeratorUserDaoData;
-import org.triplea.db.data.UserRoleLookup;
 
 /** Utility to get connections to the Postgres lobby database. */
 @Log

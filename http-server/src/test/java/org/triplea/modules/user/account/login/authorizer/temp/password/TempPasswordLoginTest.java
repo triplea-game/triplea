@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.TempPasswordDao;
+import org.triplea.db.dao.temp.password.TempPasswordDao;
 import org.triplea.http.client.lobby.login.LoginRequest;
 
 @ExtendWith(MockitoExtension.class)

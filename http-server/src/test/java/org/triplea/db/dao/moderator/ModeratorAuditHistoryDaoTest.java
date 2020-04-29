@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.moderator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -11,7 +11,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.List;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.data.ModeratorAuditHistoryDaoData;
+import org.triplea.db.dao.DaoTest;
 
 class ModeratorAuditHistoryDaoTest extends DaoTest {
 

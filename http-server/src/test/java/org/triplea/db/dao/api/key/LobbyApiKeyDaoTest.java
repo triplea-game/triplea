@@ -10,7 +10,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.triplea.db.dao.DaoTest;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
 

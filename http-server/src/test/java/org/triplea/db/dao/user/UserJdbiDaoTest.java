@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.user;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
@@ -8,8 +8,9 @@ import static org.hamcrest.core.Is.is;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import org.junit.jupiter.api.Test;
-import org.triplea.db.data.UserRole;
-import org.triplea.db.data.UserRoleLookup;
+import org.triplea.db.dao.DaoTest;
+import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.db.dao.user.role.UserRoleLookup;
 
 @DataSet(cleanBefore = true, value = "user/initial.yml")
 class UserJdbiDaoTest extends DaoTest {

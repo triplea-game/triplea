@@ -13,8 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.db.data.ModeratorAuditHistoryDaoData;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDaoData;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
 
 @ExtendWith(MockitoExtension.class)

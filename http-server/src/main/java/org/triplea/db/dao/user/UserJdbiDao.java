@@ -1,11 +1,11 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.user;
 
 import java.util.Optional;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.triplea.db.data.UserRole;
-import org.triplea.db.data.UserRoleLookup;
+import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.db.dao.user.role.UserRoleLookup;
 
 /** Data access object for the users table. */
 public interface UserJdbiDao {

@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.TempPasswordDao;
+import org.triplea.db.dao.temp.password.TempPasswordDao;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.modules.user.account.PasswordBCrypter;

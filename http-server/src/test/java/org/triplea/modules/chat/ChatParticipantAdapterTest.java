@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.modules.chat.Chatters.ChatterSession;
 

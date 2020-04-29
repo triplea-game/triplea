@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.java.Postconditions;
 
 /** Maps ResultSet data when querying for a users API key. */

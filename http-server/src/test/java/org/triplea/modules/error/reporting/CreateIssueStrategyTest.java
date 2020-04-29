@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.ErrorReportingDao;
+import org.triplea.db.dao.error.reporting.ErrorReportingDao;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;

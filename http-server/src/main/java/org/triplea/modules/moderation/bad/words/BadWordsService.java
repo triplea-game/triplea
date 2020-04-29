@@ -3,8 +3,8 @@ package org.triplea.modules.moderation.bad.words;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.BadWordsDao;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.BadWordsDao;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 
 @AllArgsConstructor
 class BadWordsService {

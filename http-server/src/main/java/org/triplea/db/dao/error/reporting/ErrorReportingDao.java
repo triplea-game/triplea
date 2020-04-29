@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.error.reporting;
 
 import java.time.Instant;
 import org.jdbi.v3.sqlobject.customizer.Bind;

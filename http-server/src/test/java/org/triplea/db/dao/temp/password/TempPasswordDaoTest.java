@@ -1,4 +1,4 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.temp.password;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
@@ -7,6 +7,7 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import org.junit.jupiter.api.Test;
+import org.triplea.db.dao.DaoTest;
 
 @DataSet(cleanBefore = true, value = "temp_password/sample.yml")
 class TempPasswordDaoTest extends DaoTest {

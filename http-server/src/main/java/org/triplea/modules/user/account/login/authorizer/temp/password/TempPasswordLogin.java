@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.TempPasswordDao;
+import org.triplea.db.dao.temp.password.TempPasswordDao;
 import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.modules.user.account.login.authorizer.BCryptHashVerifier;
 

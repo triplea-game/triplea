@@ -14,7 +14,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import lombok.Builder;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
 

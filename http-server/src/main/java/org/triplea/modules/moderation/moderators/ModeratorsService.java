@@ -7,10 +7,10 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.db.dao.ModeratorsDao;
-import org.triplea.db.dao.UserJdbiDao;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.ModeratorsDao;
+import org.triplea.db.dao.user.UserJdbiDao;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 
 @Builder

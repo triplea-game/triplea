@@ -1,10 +1,11 @@
-package org.triplea.db.dao;
+package org.triplea.db.dao.error.reporting;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
+import org.triplea.db.dao.DaoTest;
 
 final class ErrorReportingDaoTest extends DaoTest {
   private final ErrorReportingDao errorReportingDao = DaoTest.newDao(ErrorReportingDao.class);

@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.username.ban.UsernameBanDao;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
 
