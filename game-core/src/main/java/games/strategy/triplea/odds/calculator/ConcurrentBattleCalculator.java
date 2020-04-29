@@ -69,7 +69,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
             MAX_THREADS,
             new ThreadFactoryBuilder()
                 .setDaemon(true)
-                .setNameFormat(threadNamePrefix + " ConcurrentOddsCalculator Worker-%d")
+                .setNameFormat(threadNamePrefix + " ConcurrentBattleCalculator Worker-%d")
                 .build());
     this.dataLoadedAction = dataLoadedAction;
   }
