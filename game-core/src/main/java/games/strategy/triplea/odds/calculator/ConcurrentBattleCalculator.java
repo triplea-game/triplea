@@ -234,7 +234,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
       final boolean retreatWhenOnlyAirLeft,
-      final int initialRunCount) throws IllegalStateException {
+      final int initialRunCount)
+      throws IllegalStateException {
     synchronized (mutexCalcIsRunning) {
       awaitLatch();
       final long start = System.currentTimeMillis();
@@ -257,16 +258,19 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         final int currentWorkedRunCount = (runCount <= 0 ? 0 : workerRunCount);
         if (currentWorkedRunCount > 0) {
           totalRunCount += currentWorkedRunCount;
-          final Future<AggregateResults> workerResult = executor.submit(() -> worker.calculate(
-              attacker,
-              defender,
-              location,
-              attacking,
-              defending,
-              bombarding,
-              territoryEffects,
-              retreatWhenOnlyAirLeft,
-              currentWorkedRunCount));
+          final Future<AggregateResults> workerResult =
+              executor.submit(
+                  () ->
+                      worker.calculate(
+                          attacker,
+                          defender,
+                          location,
+                          attacking,
+                          defending,
+                          bombarding,
+                          territoryEffects,
+                          retreatWhenOnlyAirLeft,
+                          currentWorkedRunCount));
           list.add(workerResult);
         }
         runCount -= workerRunCount;
