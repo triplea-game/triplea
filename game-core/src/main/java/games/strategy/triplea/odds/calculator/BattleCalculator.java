@@ -185,7 +185,7 @@ class BattleCalculator implements IBattleCalculator {
     return aggregateResults;
   }
 
-  private boolean getIsReady() {
+  boolean getIsReady() {
     return isDataSet && isCalcSet;
   }
 
