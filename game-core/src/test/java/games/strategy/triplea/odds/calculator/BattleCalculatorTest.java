@@ -31,8 +31,7 @@ class BattleCalculatorTest {
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(100, russians);
     final List<Unit> bombardingUnits = List.of();
-    final BattleCalculator calculator = new BattleCalculator();
-    calculator.setGameData(gameData);
+    final BattleCalculator calculator = new BattleCalculator(gameData, false);
     final AggregateResults results =
         calculator.calculate(
             russians,
@@ -61,8 +60,7 @@ class BattleCalculatorTest {
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(1, germans, false);
     attackingUnits.addAll(GameDataTestUtil.bomber(gameData).create(1, germans, false));
     final List<Unit> bombardingUnits = List.of();
-    final BattleCalculator calculator = new BattleCalculator();
-    calculator.setGameData(gameData);
+    final BattleCalculator calculator = new BattleCalculator(gameData, false);
     calculator.setKeepOneAttackingLandUnit(true);
     final AggregateResults results =
         calculator.calculate(
@@ -84,8 +82,7 @@ class BattleCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = transport(gameData).create(2, americans(gameData));
     final List<Unit> defending = submarine(gameData).create(2, germans(gameData));
-    final BattleCalculator calculator = new BattleCalculator();
-    calculator.setGameData(gameData);
+    final BattleCalculator calculator = new BattleCalculator(gameData, false);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
         calculator.calculate(
@@ -109,8 +106,7 @@ class BattleCalculatorTest {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = submarine(gameData).create(2, americans(gameData));
     final List<Unit> defending = transport(gameData).create(2, germans(gameData));
-    final BattleCalculator calculator = new BattleCalculator();
-    calculator.setGameData(gameData);
+    final BattleCalculator calculator = new BattleCalculator(gameData, false);
     calculator.setKeepOneAttackingLandUnit(false);
     final AggregateResults results =
         calculator.calculate(

@@ -1,6 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -19,7 +18,7 @@ import java.util.List;
 import lombok.Setter;
 
 class BattleCalculator implements IBattleCalculator {
-  private GameData gameData;
+  private final GameData gameData;
   private GamePlayer attacker = null;
   private GamePlayer defender = null;
   private Territory location = null;
@@ -39,9 +38,6 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
-  @VisibleForTesting
-  BattleCalculator() {}
-
   BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     gameData =
         data == null
@@ -50,24 +46,6 @@ class BattleCalculator implements IBattleCalculator {
     if (data != null) {
       isDataSet = true;
     }
-  }
-
-  public void setGameData(final GameData data) {
-    if (isRunning) {
-      return;
-    }
-    isDataSet = false;
-    isCalcSet = false;
-    gameData = (data == null ? null : GameDataUtils.cloneGameData(data, false));
-    // reset old data
-    attacker = null;
-    defender = null;
-    location = null;
-    attackingUnits = new ArrayList<>();
-    defendingUnits = new ArrayList<>();
-    bombardingUnits = new ArrayList<>();
-    territoryEffects = new ArrayList<>();
-    isDataSet = data != null;
   }
 
   /** Calculates odds using the stored game data. */
