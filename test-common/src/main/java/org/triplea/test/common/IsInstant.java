@@ -3,10 +3,10 @@ package org.triplea.test.common;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-import com.google.common.base.Preconditions;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
 
 @UtilityClass
@@ -37,23 +37,8 @@ public class IsInstant {
       final int hour,
       final int minute,
       final int second) {
-
-    Preconditions.checkArgument(month > 0 && month < 13);
-    Preconditions.checkArgument(day > 0 && day < 32);
-    Preconditions.checkArgument(hour >= 0 && hour < 24);
-    Preconditions.checkArgument(minute >= 0 && minute < 60);
-    Preconditions.checkArgument(second >= 0 && second < 60);
-
     return is(
         equalTo(
-            Instant.parse(
-                String.format(
-                    "%s-%s-%sT%s:%s:%sZ",
-                    StringUtils.leftPad(String.valueOf(year), 4, '0'),
-                    StringUtils.leftPad(String.valueOf(month), 2, '0'),
-                    StringUtils.leftPad(String.valueOf(day), 2, '0'),
-                    StringUtils.leftPad(String.valueOf(hour), 2, '0'),
-                    StringUtils.leftPad(String.valueOf(minute), 2, '0'),
-                    StringUtils.leftPad(String.valueOf(second), 2, '0')))));
+            LocalDateTime.of(year, month, day, hour, minute, second).toInstant(ZoneOffset.UTC)));
   }
 }
