@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -37,6 +38,9 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean isDataSet = false;
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
+
+  @VisibleForTesting
+  BattleCalculator() {}
 
   BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     gameData =
