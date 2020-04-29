@@ -150,7 +150,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       } finally {
         data.releaseWriteLock();
       }
-      final int currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
+      final int currentThreads =
+          getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
       try {
         // make sure all workers are using the same data
         newData.acquireReadLock();
