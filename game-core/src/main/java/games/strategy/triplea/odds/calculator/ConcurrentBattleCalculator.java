@@ -247,9 +247,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
           // causing it to abort with null data
           return new AggregateResults(0);
         }
-        if (!worker.getIsReady()) {
-          throw new IllegalStateException("Called calculate before setting calculate data!");
-        }
         final int currentWorkedRunCount = (runCount <= 0 ? 0 : workerRunCount);
         if (currentWorkedRunCount > 0) {
           totalRunCount += currentWorkedRunCount;
