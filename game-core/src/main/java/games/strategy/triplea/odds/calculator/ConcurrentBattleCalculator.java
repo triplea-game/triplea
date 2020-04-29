@@ -34,14 +34,12 @@ import org.triplea.java.concurrency.CountUpAndDownLatch;
  */
 @Log
 public class ConcurrentBattleCalculator implements IBattleCalculator {
-  private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
+  private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
 
   private final ExecutorService executor;
   private final List<BattleCalculator> workers = new CopyOnWriteArrayList<>();
   // do not let calc be set up til data is set
   private volatile boolean isDataSet = false;
-  // do not let calc start until it is set
-  private volatile boolean isCalcSet = false;
   // shortcut everything if we are shutting down
   private volatile boolean isShutDown = false;
   // shortcut setting of previous game data if we are trying to set it to a new one, or shutdown
@@ -91,7 +89,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       }
       cancel();
       isDataSet = false;
-      isCalcSet = false;
       if (data == null || isShutDown) {
         workers.clear();
         cancelCurrentOperation.incrementAndGet();
@@ -212,8 +209,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private void awaitLatch() {
     try {
       // there is a small chance calculate or setCalculateData or something could be called in
-      // between calls to
-      // setGameData
+      // between calls to setGameData
       latchSetData.await();
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -248,8 +244,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       for (final BattleCalculator worker : workers) {
         if (!getIsReady()) {
           // we could have attempted to set a new game data, while the old one was still being set,
-          // causing it to abort
-          // with null data
+          // causing it to abort with null data
           return new AggregateResults(0);
         }
         if (!worker.getIsReady()) {
@@ -324,7 +319,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   }
 
   public boolean getIsReady() {
-    return isDataSet && isCalcSet && !isShutDown;
+    return isDataSet && !isShutDown;
   }
 
   public void setKeepOneAttackingLandUnit(final boolean bool) {
