@@ -36,7 +36,6 @@ class BattleCalculator implements IBattleCalculator {
   @Setter private String attackerOrderOfLosses = null;
   @Setter private String defenderOrderOfLosses = null;
   private volatile boolean cancelled = false;
-  private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
   BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
@@ -59,7 +58,6 @@ class BattleCalculator implements IBattleCalculator {
     if (isRunning) {
       return;
     }
-    isCalcSet = false;
     this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
     this.attacker =
         gameData
@@ -79,7 +77,6 @@ class BattleCalculator implements IBattleCalculator {
     gameData.performChange(ChangeFactory.removeUnits(this.location, this.location.getUnits()));
     gameData.performChange(ChangeFactory.addUnits(this.location, attackingUnits));
     gameData.performChange(ChangeFactory.addUnits(this.location, defendingUnits));
-    isCalcSet = true;
   }
 
   @Override
@@ -102,9 +99,6 @@ class BattleCalculator implements IBattleCalculator {
         bombarding,
         territoryEffects,
         retreatWhenOnlyAirLeft);
-    if (!getIsReady()) {
-      throw new IllegalStateException("Called calculate before setting calculate data!");
-    }
     return calculate(runCount);
   }
 
@@ -159,10 +153,6 @@ class BattleCalculator implements IBattleCalculator {
     isRunning = false;
     cancelled = false;
     return aggregateResults;
-  }
-
-  boolean getIsReady() {
-    return isCalcSet;
   }
 
   public void cancel() {
