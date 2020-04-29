@@ -36,7 +36,6 @@ import org.triplea.java.concurrency.CountUpAndDownLatch;
 public class ConcurrentBattleCalculator implements IBattleCalculator {
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
 
-  private int currentThreads = MAX_THREADS;
   private final ExecutorService executor;
   private final List<BattleCalculator> workers = new CopyOnWriteArrayList<>();
   // do not let calc be set up til data is set
@@ -151,7 +150,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       } finally {
         data.releaseWriteLock();
       }
-      currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
+      final int currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
       try {
         // make sure all workers are using the same data
         newData.acquireReadLock();
