@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -15,10 +16,11 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nonnull;
 import lombok.Setter;
 
 class BattleCalculator implements IBattleCalculator {
-  private GameData gameData;
+  @Nonnull private final GameData gameData;
   private GamePlayer attacker = null;
   private GamePlayer defender = null;
   private Territory location = null;
@@ -34,25 +36,12 @@ class BattleCalculator implements IBattleCalculator {
   @Setter private String attackerOrderOfLosses = null;
   @Setter private String defenderOrderOfLosses = null;
   private volatile boolean cancelled = false;
-  private volatile boolean isDataSet = false;
-  private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
 
-  public void setGameData(final GameData data) {
-    if (isRunning) {
-      return;
-    }
-    isDataSet = data != null;
-    isCalcSet = false;
-    gameData = data;
-    // reset old data
-    attacker = null;
-    defender = null;
-    location = null;
-    attackingUnits = new ArrayList<>();
-    defendingUnits = new ArrayList<>();
-    bombardingUnits = new ArrayList<>();
-    territoryEffects = new ArrayList<>();
+  BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
+    gameData =
+        Preconditions.checkNotNull(
+            dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
   }
 
   /** Calculates odds using the stored game data. */
@@ -68,10 +57,6 @@ class BattleCalculator implements IBattleCalculator {
       throws IllegalStateException {
     if (isRunning) {
       return;
-    }
-    isCalcSet = false;
-    if (!isDataSet) {
-      throw new IllegalStateException("Called set calculation before setting game data!");
     }
     this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
     this.attacker =
@@ -92,7 +77,6 @@ class BattleCalculator implements IBattleCalculator {
     gameData.performChange(ChangeFactory.removeUnits(this.location, this.location.getUnits()));
     gameData.performChange(ChangeFactory.addUnits(this.location, attackingUnits));
     gameData.performChange(ChangeFactory.addUnits(this.location, defendingUnits));
-    isCalcSet = true;
   }
 
   @Override
@@ -115,9 +99,6 @@ class BattleCalculator implements IBattleCalculator {
         bombarding,
         territoryEffects,
         retreatWhenOnlyAirLeft);
-    if (!getIsReady()) {
-      throw new IllegalStateException("Called calculate before setting calculate data!");
-    }
     return calculate(runCount);
   }
 
@@ -172,10 +153,6 @@ class BattleCalculator implements IBattleCalculator {
     isRunning = false;
     cancelled = false;
     return aggregateResults;
-  }
-
-  public boolean getIsReady() {
-    return isDataSet && isCalcSet;
   }
 
   public void cancel() {
