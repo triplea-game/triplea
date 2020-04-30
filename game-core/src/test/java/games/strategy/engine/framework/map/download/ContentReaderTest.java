@@ -13,8 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,7 +22,6 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
   private static final String URI = "some://uri";
 
   @ExtendWith(MockitoExtension.class)
-  @ExtendWith(TempDirectory.class)
   @Nested
   final class DownloadToFileTest {
     @Mock private CloseableDownloader closeableDownloader;

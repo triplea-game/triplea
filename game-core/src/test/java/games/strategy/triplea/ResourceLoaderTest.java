@@ -17,9 +17,7 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 import org.triplea.test.common.CustomMatcher;
 
 final class ResourceLoaderTest {
@@ -114,7 +112,6 @@ final class ResourceLoaderTest {
     }
   }
 
-  @ExtendWith(TempDirectory.class)
   @Nested
   final class FindDirectoryTest {
     private static final String TARGET_DIR_NAME = "182c91fa8e";
