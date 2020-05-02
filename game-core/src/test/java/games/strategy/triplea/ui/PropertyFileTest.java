@@ -12,11 +12,8 @@ import java.nio.file.Path;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
-@ExtendWith(TempDirectory.class)
 class PropertyFileTest {
   private final ResourceLoader mock = mock(ResourceLoader.class);
   private File file;

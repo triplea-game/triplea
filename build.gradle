@@ -105,7 +105,6 @@ subprojects {
         jdbiVersion = '3.13.0'
         jlayerVersion = '1.0.1.4'
         junitJupiterVersion = '5.6.2'
-        junitPioneerVersion = '0.5.6'
         junitPlatformLauncherVersion = '1.5.2' // do not upgrade this to beyond 1.5.2 without testing IDEA test runner.
         mockitoVersion = '3.3.3'
         openFeignVersion = '10.5.1'
@@ -129,7 +128,6 @@ subprojects {
         testImplementation "com.github.npathai:hamcrest-optional:$hamcrestOptionalVersion"
         testImplementation "nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion"
         testImplementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
-        testImplementation "org.junit-pioneer:junit-pioneer:$junitPioneerVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
         testImplementation "org.mockito:mockito-core:$mockitoVersion"
