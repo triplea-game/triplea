@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.triplea.java.Interruptibles;
@@ -229,7 +228,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     synchronized (mutexCalcIsRunning) {
       awaitLatch();
       final long start = System.currentTimeMillis();
-      final AtomicBoolean overflowRunsAvailable = new AtomicBoolean(true);
+      final AtomicInteger overflowRunsAvailable = new AtomicInteger(runCount % workers.size());
       // Create worker thread pool and start all workers
       final int runsPerWorker = runCount / workers.size();
       final List<Future<AggregateResults>> list =
@@ -249,9 +248,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
                                   retreatWhenOnlyAirLeft,
                                   // Ensure that we always achieve the target run count even if
                                   // the number is not dividable by workers.size()
-                                  (overflowRunsAvailable.getAndSet(false)
-                                          ? runCount % workers.size()
-                                          : 0)
+                                  (overflowRunsAvailable.getAndDecrement() > 0 ? 1 : 0)
                                       + runsPerWorker)))
               .collect(Collectors.toList());
       if (!getIsReady()) {
