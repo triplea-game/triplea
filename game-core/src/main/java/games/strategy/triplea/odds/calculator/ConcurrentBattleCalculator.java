@@ -10,11 +10,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataUtils;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -22,8 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
 
@@ -32,7 +26,6 @@ import org.triplea.java.concurrency.CountUpAndDownLatch;
  * the run count across these workers. This is mainly to be used by AIs since they call the
  * OddsCalculator a lot.
  */
-@Log
 public class ConcurrentBattleCalculator implements IBattleCalculator {
   private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
 
@@ -250,7 +243,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         final int currentWorkedRunCount = (runCount <= 0 ? 0 : workerRunCount);
         if (currentWorkedRunCount > 0) {
           totalRunCount += currentWorkedRunCount;
-          final Future<AggregateResults> workerResult =
+          list.add(
               executor.submit(
                   () ->
                       worker.calculate(
@@ -262,52 +255,20 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
                           bombarding,
                           territoryEffects,
                           retreatWhenOnlyAirLeft,
-                          currentWorkedRunCount));
-          list.add(workerResult);
+                          currentWorkedRunCount)));
         }
         runCount -= workerRunCount;
       }
       // Wait for all worker futures to complete and combine results
       final AggregateResults results = new AggregateResults(totalRunCount);
-      final Set<InterruptedException> interruptExceptions = new HashSet<>();
-      final Map<String, Set<ExecutionException>> executionExceptions = new HashMap<>();
       for (final Future<AggregateResults> future : list) {
         try {
           final AggregateResults result = future.get();
           results.addResults(result.getResults());
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
-          interruptExceptions.add(e);
         } catch (final ExecutionException e) {
-          final String cause = e.getCause().getLocalizedMessage();
-          Set<ExecutionException> exceptions = executionExceptions.get(cause);
-          if (exceptions == null) {
-            exceptions = new HashSet<>();
-          }
-          exceptions.add(e);
-          executionExceptions.put(cause, exceptions);
-        }
-      }
-      // we don't want to scare the user with 8+ errors all for the same thing
-      if (!interruptExceptions.isEmpty()) {
-        log.log(
-            Level.SEVERE,
-            interruptExceptions.size() + " Battle results workers interrupted",
-            interruptExceptions.iterator().next());
-      }
-      if (!executionExceptions.isEmpty()) {
-        Exception e = null;
-        for (final Set<ExecutionException> entry : executionExceptions.values()) {
-          if (!entry.isEmpty()) {
-            e = entry.iterator().next();
-            log.log(
-                Level.SEVERE,
-                entry.size() + " Battle results workers aborted by exception",
-                e.getCause());
-          }
-        }
-        if (e != null) {
-          throw new IllegalStateException(e.getCause());
+          throw new IllegalStateException("Battle results workers aborted by exception", e);
         }
       }
       results.setTime(System.currentTimeMillis() - start);
