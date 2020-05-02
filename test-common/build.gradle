@@ -4,4 +4,3 @@ dependencies {
     implementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
     implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
 }
-
