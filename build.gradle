@@ -74,7 +74,6 @@ subprojects {
     version = getProductVersion()
 
     ext {
-        apacheCommonsLangVersion = '3.10'
         awaitilityVersion = '4.0.2'
         bcryptVersion = '0.9.0'
         caffeineVersion = '2.8.1'

@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
@@ -19,7 +18,7 @@ import lombok.NoArgsConstructor;
  *       .build();
  * </pre></code>
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class JTableBuilder {
 
   private List<List<String>> rowData;

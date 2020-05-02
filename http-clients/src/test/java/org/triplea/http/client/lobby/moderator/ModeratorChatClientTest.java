@@ -45,4 +45,15 @@ class ModeratorChatClientTest extends WireMockTest {
 
     newClient(server).disconnectPlayer(PLAYER_CHAT_ID);
   }
+
+  @Test
+  void fetchPlayerInfo(@WiremockResolver.Wiremock final WireMockServer server) {
+    server.stubFor(
+        WireMock.post(ModeratorChatClient.FETCH_PLAYER_INFORMATION)
+            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
+            .withRequestBody(equalTo(PLAYER_CHAT_ID.getValue()))
+            .willReturn(WireMock.aResponse().withStatus(200)));
+
+    newClient(server).fetchPlayerInformation(PLAYER_CHAT_ID);
+  }
 }

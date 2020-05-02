@@ -10,6 +10,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.BanPlayerModeratorAction;
 import games.strategy.engine.lobby.client.ui.action.DisconnectPlayerModeratorAction;
+import games.strategy.engine.lobby.client.ui.action.player.info.ShowPlayerInformationAction;
 import games.strategy.triplea.ui.QuitHandler;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
@@ -105,6 +106,12 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     final var moderatorLobbyClient = lobbyClient.getPlayerToLobbyConnection();
 
     return List.of(
+        ShowPlayerInformationAction.builder()
+            .parent(this)
+            .playerChatId(clickedOn.getPlayerChatId())
+            .playerToLobbyConnection(moderatorLobbyClient)
+            .build()
+            .toSwingAction(),
         DisconnectPlayerModeratorAction.builder()
             .parent(this)
             .playerToLobbyConnection(moderatorLobbyClient)
