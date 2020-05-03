@@ -36,7 +36,7 @@
 - mapName: Tutorial
   mapCategory: BEST
   url: https://github.com/triplea-maps/tutorial/archive/master.zip
-  version: 1
+  version: 2
   description: |
     <br>This is a tutorial for players new to TripleA and its game engine.
 - mapName: Big World
