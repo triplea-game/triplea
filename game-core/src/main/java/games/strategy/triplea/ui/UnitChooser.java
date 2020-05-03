@@ -384,6 +384,10 @@ public final class UnitChooser extends JPanel {
     entries.forEach(entry -> entry.addChangeListener(listener));
   }
 
+  void disableMax() {
+    total = -1;
+  }
+
   private static final class ChooserEntry {
     private static final Insets nullInsets = new Insets(0, 0, 0, 0);
 

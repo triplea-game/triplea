@@ -11,6 +11,7 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
@@ -74,15 +75,36 @@ public class CasualtySelector {
       return new CasualtyDetails();
     }
     final GameData data = bridge.getData();
+
     final Player tripleaPlayer =
         player.isNull() ? new WeakAi(player.getName()) : bridge.getRemotePlayer(player);
     final Map<Unit, Collection<Unit>> dependents =
         headLess ? Map.of() : CasualtyUtil.getDependents(targetsToPickFrom);
+
+    final int hitsRemaining =
+        Properties.getTransportCasualtiesRestricted(data) ? extraHits : dice.getHits();
+
+    if (BaseEditDelegate.getEditMode(data)) {
+      return tripleaPlayer.selectCasualties(
+          targetsToPickFrom,
+          dependents,
+          hitsRemaining,
+          text,
+          dice,
+          player,
+          friendlyUnits,
+          enemyUnits,
+          amphibious,
+          amphibiousLandAttackers,
+          new CasualtyDetails(),
+          battleId,
+          battlesite,
+          allowMultipleHitsPerUnit);
+    }
+
     if (dice.getHits() == 0) {
       return new CasualtyDetails(List.of(), List.of(), true);
     }
-    final int hitsRemaining =
-        Properties.getTransportCasualtiesRestricted(data) ? extraHits : dice.getHits();
 
     if (allTargetsOneTypeOneHitPoint(targetsToPickFrom, dependents)) {
       final List<Unit> killed =
@@ -156,6 +178,7 @@ public class CasualtySelector {
         damaged.removeIf(unit::equals);
       }
     }
+
     // check right number
     if (numhits + damaged.size() != Math.min(hitsRemaining, totalHitpoints)) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
