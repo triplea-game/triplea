@@ -36,11 +36,6 @@ public class DoesNothingAi extends AbstractAi {
       final IPurchaseDelegate purchaseDelegate,
       final GameData data,
       final GamePlayer player) {
-    // spend whatever we have
-    if (!player.getResources().isEmpty()) {
-      new WeakAi(this.getName())
-          .purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
-    }
     pause();
   }
 
@@ -65,10 +60,6 @@ public class DoesNothingAi extends AbstractAi {
       final IAbstractPlaceDelegate placeDelegate,
       final GameData data,
       final GamePlayer player) {
-    // place whatever we have
-    if (!player.getUnitCollection().isEmpty()) {
-      new WeakAi(this.getName()).place(placeForBid, placeDelegate, data, player);
-    }
     pause();
   }
 
