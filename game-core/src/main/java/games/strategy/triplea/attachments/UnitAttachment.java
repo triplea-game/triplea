@@ -1920,8 +1920,8 @@ public class UnitAttachment extends DefaultAttachment {
           "createsUnitsList: No unit called:" + unitTypeToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
-    if (n < 1) {
-      throw new GameParseException("createsUnitsList must have positive values" + thisErrorMsg());
+    if (n < 0) {
+      throw new GameParseException("createsUnitsList cannot have negative values" + thisErrorMsg());
     }
     createsUnitsList.put(ut, n);
   }
