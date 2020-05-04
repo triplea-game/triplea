@@ -1118,7 +1118,13 @@ public class MovePanel extends AbstractMovePanel {
 
     final MovableUnitsFilter unitsFilter =
         new MovableUnitsFilter(
-            getData(), getUnitOwner(units), route, nonCombat, moveType, getUndoableMoves(), dependentUnits);
+            getData(),
+            getUnitOwner(units),
+            route,
+            nonCombat,
+            moveType,
+            getUndoableMoves(),
+            dependentUnits);
     final var result = unitsFilter.filterUnitsThatCanMove(units);
     switch (result.getStatus()) {
       case NO_UNITS_CAN_MOVE:
