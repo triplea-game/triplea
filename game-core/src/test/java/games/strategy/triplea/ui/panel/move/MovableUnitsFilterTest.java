@@ -1,4 +1,4 @@
-package games.strategy.triplea.util;
+package games.strategy.triplea.ui.panel.move;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
@@ -27,7 +27,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.util.MovableUnitsFilter.FilterOperationResult;
+import games.strategy.triplea.ui.panel.move.MovableUnitsFilter;
+import games.strategy.triplea.ui.panel.move.MovableUnitsFilter.FilterOperationResult;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
