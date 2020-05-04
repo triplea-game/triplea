@@ -19,17 +19,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
-import lombok.Value;
+import lombok.Data;
+import lombok.Setter;
 
 /**
  * An attachment for instances of {@link UnitType} that defines properties for unit types that
  * support other units.
  */
+@Setter
 public class UnitSupportAttachment extends DefaultAttachment {
+  public static final String ATTACHMENT_NAME = "UnitSupportAttachment";
+
   private static final long serialVersionUID = -3015679930172496082L;
 
   /** Type to represent name and count */
-  @Value
+  @Data
   public static class BonusType implements Serializable {
     private static final long serialVersionUID = -7445551357956238314L;
 
@@ -109,7 +113,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private void setUnitType(final Set<UnitType> value) {
+  public void setUnitType(final Set<UnitType> value) {
     unitType = value;
   }
 
@@ -213,7 +217,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     this.bonus = getInt(bonus);
   }
 
-  private void setBonus(final int bonus) {
+  public void setBonus(final int bonus) {
     this.bonus = bonus;
   }
 
@@ -246,7 +250,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private void setBonusType(final BonusType type) {
+  public void setBonusType(final BonusType type) {
     bonusType = type;
   }
 

@@ -151,12 +151,12 @@ public class CasualtySelector {
             allowMultipleHitsPerUnit);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
     final List<Unit> sortedTargetsToPickFrom = defaultCasualtiesAndSortedTargets.getSecond();
-    if (sortedTargetsToPickFrom.size() != targetsToPickFrom.size()
-        || !targetsToPickFrom.containsAll(sortedTargetsToPickFrom)
-        || !sortedTargetsToPickFrom.containsAll(targetsToPickFrom)) {
-      throw new IllegalStateException(
-          "sortedTargetsToPickFrom must contain the same units as targetsToPickFrom list");
-    }
+//    if (sortedTargetsToPickFrom.size() != targetsToPickFrom.size()
+//        || !targetsToPickFrom.containsAll(sortedTargetsToPickFrom)
+//        || !sortedTargetsToPickFrom.containsAll(targetsToPickFrom)) {
+//      throw new IllegalStateException(
+//          "sortedTargetsToPickFrom must contain the same units as targetsToPickFrom list");
+//    }
     final int totalHitpoints =
         (allowMultipleHitsPerUnit
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
@@ -324,6 +324,7 @@ public class CasualtySelector {
     sorted =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
             CasualtyOrderOfLosses.Parameters.builder()
+                .hits(hits)
                 .targetsToPickFrom(targetsToPickFrom)
                 .player(player)
                 .enemyUnits(enemyUnits)

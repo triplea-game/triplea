@@ -9,11 +9,16 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.Postconditions;
 
 /** A collection of useful methods for working with instances of {@link Collection}. */
 @ThreadSafe
@@ -112,5 +117,37 @@ public class CollectionUtils {
 
     return Iterables.elementsEqual(c1, c2)
         || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
+  }
+
+  public static <T> Collection<T> findMin(
+      final Collection<T> collection, final Function<T, Integer> scoringFunction) {
+    if (collection.isEmpty()) {
+      return Set.of();
+    }
+
+    final Collection<T> results = new HashSet<>();
+    final Iterator<T> iter = collection.iterator();
+
+    final T first = iter.next();
+    results.add(first);
+    int min = scoringFunction.apply(first);
+
+    while (iter.hasNext()) {
+      final T next = iter.next();
+      final int score = scoringFunction.apply(next);
+      if (score <= min) {
+        if (score < min) {
+          results.clear();
+          min = score;
+        }
+        results.add(next);
+      }
+    }
+    Postconditions.assertState(!results.isEmpty());
+    // TODO: enable a debug flag to disable or just move this to a test.
+    for (final T t : collection) {
+      Postconditions.assertState(min <= scoringFunction.apply(t));
+    }
+    return results;
   }
 }

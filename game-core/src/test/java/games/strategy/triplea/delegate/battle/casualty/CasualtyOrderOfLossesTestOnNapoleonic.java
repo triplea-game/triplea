@@ -90,15 +90,15 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
   private CasualtyOrderOfLosses.Parameters attackingWith(final Collection<Unit> units) {
     return CasualtyOrderOfLosses.Parameters.builder()
         .targetsToPickFrom(units)
+        .player(BRITISH)
+        .enemyUnits(List.of()) // << TODO: remove this parameter should not matter
+        .amphibiousLandAttackers(List.of())
         .combatModifiers(
             CombatModifiers.builder()
                 .defending(false)
                 .amphibious(false)
                 .territoryEffects(List.of())
                 .build())
-        .player(BRITISH)
-        .enemyUnits(List.of())
-        .amphibiousLandAttackers(List.of())
         .battlesite(NORMANDY)
         .costs(COST_MAP)
         .data(data)
@@ -116,8 +116,8 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
 
     assertThat(result, hasSize(4));
     assertThat(result.get(0).getType(), is(HOWITZER));
-    assertThat(result.get(1).getType(), is(HOWITZER));
-    assertThat(result.get(2).getType(), is(FUSILIER));
+    assertThat(result.get(1).getType(), is(FUSILIER));
+    assertThat(result.get(2).getType(), is(HOWITZER));
     assertThat(result.get(3).getType(), is(FUSILIER));
   }
 
@@ -138,8 +138,8 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
     assertThat(result.get(2).getType(), is(FUSILIER));
     assertThat(result.get(3).getType(), is(FUSILIER));
     assertThat(result.get(4).getType(), is(ARTILLERY));
-    assertThat(result.get(5).getType(), is(ARTILLERY));
-    assertThat(result.get(6).getType(), is(GRENADIERS));
+    assertThat(result.get(5).getType(), is(GRENADIERS));
+    assertThat(result.get(6).getType(), is(ARTILLERY));
     assertThat(result.get(7).getType(), is(GRENADIERS));
   }
 }

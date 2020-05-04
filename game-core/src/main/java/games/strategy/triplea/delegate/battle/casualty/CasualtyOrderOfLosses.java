@@ -24,9 +24,10 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.performance.PerfTimer;
 
 @UtilityClass
-class CasualtyOrderOfLosses {
+public class CasualtyOrderOfLosses {
   private final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
   void clearOolCache() {
@@ -35,7 +36,7 @@ class CasualtyOrderOfLosses {
 
   @Builder
   @Value
-  static class Parameters {
+  public static class Parameters {
     @Nonnull Collection<Unit> targetsToPickFrom;
     @Nonnull GamePlayer player;
     @Nonnull Collection<Unit> enemyUnits;
@@ -44,6 +45,7 @@ class CasualtyOrderOfLosses {
     @Nonnull IntegerMap<UnitType> costs;
     @Nonnull CombatModifiers combatModifiers;
     @Nonnull GameData data;
+    int hits;
   }
 
   /**
@@ -58,6 +60,15 @@ class CasualtyOrderOfLosses {
    * provided. (Veqryn)
    */
   List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
+    PerfTimer.time("OLD", () -> oldsortUnitsForCasualtiesWithSupport(parameters));
+
+    return PerfTimer.time("NEW", () -> OrderOfLossesCalculatorByUnitGroup.builder()
+        .parameters(parameters)
+        .build()
+        .sortUnitsForCasualtiesWithSupport());
+  }
+
+  List<Unit> oldsortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {

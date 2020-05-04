@@ -1,5 +1,9 @@
 package games.strategy.engine.data;
 
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Image;
@@ -160,5 +164,46 @@ public class UnitType extends NamedAttachable {
       data.releaseReadLock();
     }
     return unitTypes;
+  }
+
+  public int getDiceRolls(final GamePlayer owner, final CombatModifiers powerModifiers) {
+    final UnitAttachment ua = UnitAttachment.get(this);
+    return powerModifiers.isDefending() ? ua.getDefenseRolls(owner) : ua.getAttackRolls(owner);
+  }
+
+  // TODO: this is lifted from UnitBattleComparator, should only be the raw strength without
+  // rolls.
+  public int getStrength(final GamePlayer owner, final CombatModifiers powerModifiers) {
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(getData());
+    final UnitAttachment ua = UnitAttachment.get(this);
+    final int rolls =
+        powerModifiers.isDefending() ? ua.getDefenseRolls(owner) : ua.getAttackRolls(owner);
+    int strengthWithoutSupport = 0;
+    // Find the strength the unit has without support
+    // lhtr heavy bombers take best of n dice for both attack and defense
+    if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
+      strengthWithoutSupport =
+          powerModifiers.isDefending() ? ua.getDefense(owner) : ua.getAttack(owner);
+      strengthWithoutSupport +=
+          TerritoryEffectHelper.getTerritoryCombatBonus(
+              this, powerModifiers.getTerritoryEffects(), powerModifiers.isDefending());
+      // just add one like LL if we are LHTR bombers
+      strengthWithoutSupport =
+          Math.min(Math.max(strengthWithoutSupport + 1, 0), getData().getDiceSides());
+    } else {
+      for (int i = 0; i < rolls; i++) {
+        final int tempStrength =
+            powerModifiers.isDefending() ? ua.getDefense(owner) : ua.getAttack(owner);
+        strengthWithoutSupport +=
+            TerritoryEffectHelper.getTerritoryCombatBonus(
+                this, powerModifiers.getTerritoryEffects(), powerModifiers.isDefending());
+        strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), getData().getDiceSides());
+      }
+    }
+
+    if (powerModifiers.isAmphibious()) {
+      strengthWithoutSupport += ua.getIsMarine();
+    }
+    return strengthWithoutSupport;
   }
 }
