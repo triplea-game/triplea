@@ -11,12 +11,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.extern.java.Log;
-import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
 
 /**
@@ -149,25 +148,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         } else {
           // multi-thread our copying, cus why the heck not
           // (it increases the speed of copying by about double)
-          final CountDownLatch workerLatch = new CountDownLatch(currentThreads - 1);
-          while (i < (currentThreads - 1)) {
-            ++i;
-            CompletableFuture.runAsync(
-                    () -> {
-                      if (cancelCurrentOperation.get() >= 0) {
-                        workers.add(new BattleCalculator(newData, false));
-                      }
-                      workerLatch.countDown();
-                    })
-                .exceptionally(
-                    throwable -> {
-                      log.log(Level.SEVERE, "Exception when trying to add workers", throwable);
-                      return null;
-                    });
-          }
+          workers.addAll(
+              IntStream.range(1, currentThreads)
+                  .parallel()
+                  .filter(j -> cancelCurrentOperation.get() >= 0)
+                  .mapToObj(j -> new BattleCalculator(newData, false))
+                  .collect(Collectors.toList()));
           // the last one will use our already copied data from above, without copying it again
           workers.add(new BattleCalculator(newData, true));
-          Interruptibles.await(workerLatch);
         }
       } finally {
         newData.releaseReadLock();
