@@ -30,7 +30,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.internal.matchers.Or;
 import org.triplea.java.collections.IntegerMap;
 
 @SuppressWarnings("SameParameterValue")
@@ -229,8 +228,6 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-
-
     assertThat(result, hasSize(6));
     assertThat(result.get(0).getType(), is(ARTILLERY));
     assertThat(result.get(1).getType(), is(MARINE));
@@ -250,11 +247,11 @@ class CasualtyOrderOfLossesTestOnGlobal {
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
     assertThat(result, hasSize(5));
-    assertThat("First artillery is not providing support, power of 2",
-        result.get(0).getType(), is(ARTILLERY));
     assertThat(
-        "Marine must be the last to be chosen",
-        result.get(4).getType(), is(MARINE));
+        "First artillery is not providing support, power of 2",
+        result.get(0).getType(),
+        is(ARTILLERY));
+    assertThat("Marine must be the last to be chosen", result.get(4).getType(), is(MARINE));
   }
 
   @Test

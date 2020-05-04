@@ -62,10 +62,13 @@ public class CasualtyOrderOfLosses {
   List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     PerfTimer.time("OLD", () -> oldsortUnitsForCasualtiesWithSupport(parameters));
 
-    return PerfTimer.time("NEW", () -> OrderOfLossesCalculatorByUnitGroup.builder()
-        .parameters(parameters)
-        .build()
-        .sortUnitsForCasualtiesWithSupport());
+    return PerfTimer.time(
+        "NEW",
+        () ->
+            OrderOfLossesCalculatorByUnitGroup.builder()
+                .parameters(parameters)
+                .build()
+                .sortUnitsForCasualtiesWithSupport());
   }
 
   List<Unit> oldsortUnitsForCasualtiesWithSupport(final Parameters parameters) {

@@ -28,7 +28,7 @@ class OrderOfLossesCalculatorByUnitGroup {
       final Unit unitToRemove = findUnitOfType(unitToPick, remainingUnits);
       casualtyOrder.add(unitToRemove);
       remainingUnits.remove(unitToRemove);
-      if(casualtyOrder.size() == parameters.getHits()) {
+      if (casualtyOrder.size() == parameters.getHits()) {
         break;
       }
     }
@@ -53,9 +53,6 @@ class OrderOfLossesCalculatorByUnitGroup {
   private UnitTypeByPlayer breakTie(final Collection<UnitTypeByPlayer> unitTypeByPlayer) {
     Preconditions.checkArgument(!unitTypeByPlayer.isEmpty());
 
-    return OolTieBreaker.builder()
-        .parameters(parameters)
-        .build()
-        .apply(unitTypeByPlayer);
+    return OolTieBreaker.builder().parameters(parameters).build().apply(unitTypeByPlayer);
   }
 }

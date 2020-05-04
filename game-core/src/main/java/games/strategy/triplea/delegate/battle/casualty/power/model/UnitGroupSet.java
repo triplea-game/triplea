@@ -51,23 +51,24 @@ public class UnitGroupSet {
       unitGroups.get(unitTypeByPlayer).incrementCount();
     }
 
-    friendlySupportBuffs = parameters.getData().getUnitTypeList().getSupportRules().stream()
-        // do we have any units providing this support?
-        .filter(
-            s ->
-                s.getOffence() == !parameters.getCombatModifiers().isDefending()
-                    || s.getDefence() == parameters.getCombatModifiers().isDefending())
-        // do we have any units that can receive support?
-        .filter(
-            s ->
-                s.getUnitType().stream()
-                    .anyMatch(
-                        supportable ->
-                            unitGroups.keySet().stream()
-                                .map(g -> g.getUnitType())
-                                .anyMatch(t -> supportable.equals(t))))
-        .map(SupportBuff::new)
-        .collect(Collectors.toMap(b -> b.getSupportingUnitType(), Function.identity()));
+    friendlySupportBuffs =
+        parameters.getData().getUnitTypeList().getSupportRules().stream()
+            // do we have any units providing this support?
+            .filter(
+                s ->
+                    s.getOffence() == !parameters.getCombatModifiers().isDefending()
+                        || s.getDefence() == parameters.getCombatModifiers().isDefending())
+            // do we have any units that can receive support?
+            .filter(
+                s ->
+                    s.getUnitType().stream()
+                        .anyMatch(
+                            supportable ->
+                                unitGroups.keySet().stream()
+                                    .map(g -> g.getUnitType())
+                                    .anyMatch(t -> supportable.equals(t))))
+            .map(SupportBuff::new)
+            .collect(Collectors.toMap(b -> b.getSupportingUnitType(), Function.identity()));
   }
 
   public void removeUnit(final UnitTypeByPlayer unitTypeByPlayer) {
