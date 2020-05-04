@@ -228,9 +228,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     synchronized (mutexCalcIsRunning) {
       awaitLatch();
       final long start = System.currentTimeMillis();
-      final AtomicInteger overflowRunsAvailable = new AtomicInteger(runCount % workers.size());
-      // Create worker thread pool and start all workers
-      final int runsPerWorker = runCount / workers.size();
+      final var runCountDistributor = new RunCountDistributor(runCount, workers.size());
       final List<Future<AggregateResults>> list =
           workers.stream()
               .map(
@@ -246,10 +244,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
                                   bombarding,
                                   territoryEffects,
                                   retreatWhenOnlyAirLeft,
-                                  // Ensure that we always achieve the target run count even if
-                                  // the number is not dividable by workers.size()
-                                  (overflowRunsAvailable.getAndDecrement() > 0 ? 1 : 0)
-                                      + runsPerWorker)))
+                                  runCountDistributor.nextRunCount())))
               .collect(Collectors.toList());
       if (!getIsReady()) {
         // we could have attempted to set a new game data, while the old one was still being set,
