@@ -120,26 +120,27 @@ public class UnitImageFactory {
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
+
     if (images.containsKey(fullName)) {
       return Optional.of(images.get(fullName));
     }
-    final Optional<Image> image = getTransformedImage(baseName, player, type);
-    if (image.isEmpty()) {
-      return Optional.empty();
-    }
-    final Image baseImage = image.get();
-
-    // We want to scale units according to the given scale factor.
-    // We use smooth scaling since the images are cached to allow to take our time in doing the
-    // scaling.
-    // Image observer is null, since the image should have been guaranteed to be loaded.
-    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
-    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
-    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-    // Ensure the scaling is completed.
-    Util.ensureImageLoaded(scaledImage);
-    images.put(fullName, scaledImage);
-    return Optional.of(scaledImage);
+    getTransformedImage(baseName, player, type)
+        .map(
+            baseImage -> {
+              // We want to scale units according to the given scale factor.
+              // We use smooth scaling since the images are cached to allow to take our time in
+              // doing the
+              // scaling.
+              // Image observer is null, since the image should have been guaranteed to be loaded.
+              final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+              final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+              final Image scaledImage =
+                  baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+              // Ensure the scaling is completed.
+              Util.ensureImageLoaded(scaledImage);
+              images.put(fullName, scaledImage);
+              return scaledImage;
+            });
   }
 
   public Optional<URL> getBaseImageUrl(final String baseImageName, final GamePlayer gamePlayer) {
