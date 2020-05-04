@@ -21,7 +21,7 @@ public final class ProLogUi {
 
   public static void clearCachedInstances() {
     if (settingsWindow != null) {
-      settingsWindow.clear();
+      settingsWindow.dispose();
     }
     settingsWindow = null;
   }
