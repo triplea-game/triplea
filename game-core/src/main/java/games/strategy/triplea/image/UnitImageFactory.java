@@ -55,30 +55,22 @@ public class UnitImageFactory {
   private ResourceLoader resourceLoader;
   private MapData mapData;
 
-  public void setResourceLoader(
-      final ResourceLoader loader,
-      final double scaleFactor,
-      final int initialUnitWidth,
-      final int initialUnitHeight,
-      final int initialUnitCounterOffsetWidth,
-      final int initialUnitCounterOffsetHeight,
-      final MapData mapData) {
-    unitIconWidth = initialUnitWidth;
-    unitIconHeight = initialUnitHeight;
-    unitCounterOffsetWidth = initialUnitCounterOffsetWidth;
-    unitCounterOffsetHeight = initialUnitCounterOffsetHeight;
-    this.scaleFactor = scaleFactor;
-    resourceLoader = loader;
+  public UnitImageFactory(
+      final ResourceLoader resourceLoader, final double unitScale, final MapData mapData) {
+    unitIconWidth = mapData.getDefaultUnitWidth();
+    unitIconHeight = mapData.getDefaultUnitHeight();
+    unitCounterOffsetWidth = mapData.getDefaultUnitCounterOffsetWidth();
+    unitCounterOffsetHeight = mapData.getDefaultUnitCounterOffsetHeight();
+    this.scaleFactor = unitScale;
+    this.resourceLoader = resourceLoader;
     this.mapData = mapData;
-    clearImageCache();
   }
 
   /** Set the unitScaling factor. */
-  public void setScaleFactor(final double scaleFactor) {
-    if (this.scaleFactor != scaleFactor) {
-      this.scaleFactor = scaleFactor;
-      clearImageCache();
-    }
+  public UnitImageFactory withScaleFactor(final double scaleFactor) {
+    return this.scaleFactor == scaleFactor
+        ? this
+        : new UnitImageFactory(resourceLoader, scaleFactor, mapData);
   }
 
   /** Return the unit scaling factor. */
@@ -102,12 +94,6 @@ public class UnitImageFactory {
 
   public int getUnitCounterOffsetHeight() {
     return (int) (scaleFactor * unitCounterOffsetHeight);
-  }
-
-  // Clear the image and icon cache
-  private void clearImageCache() {
-    images.clear();
-    icons.clear();
   }
 
   public Image getImage(final UnitCategory unit) {

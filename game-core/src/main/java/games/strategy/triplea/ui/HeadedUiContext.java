@@ -35,7 +35,7 @@ import org.triplea.sound.ClipPlayer;
 public class HeadedUiContext extends AbstractUiContext {
   protected MapData mapData;
   private final TileImageFactory tileImageFactory = new TileImageFactory();
-  private final UnitImageFactory unitImageFactory = new UnitImageFactory();
+  private UnitImageFactory unitImageFactory;
   private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
   private final TerritoryEffectImageFactory territoryEffectImageFactory =
       new TerritoryEffectImageFactory();
@@ -66,14 +66,7 @@ public class HeadedUiContext extends AbstractUiContext {
     final double unitScale =
         getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
     scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
-    unitImageFactory.setResourceLoader(
-        resourceLoader,
-        unitScale,
-        mapData.getDefaultUnitWidth(),
-        mapData.getDefaultUnitHeight(),
-        mapData.getDefaultUnitCounterOffsetWidth(),
-        mapData.getDefaultUnitCounterOffsetHeight(),
-        mapData);
+    unitImageFactory = new UnitImageFactory(resourceLoader, unitScale, mapData);
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
@@ -201,7 +194,7 @@ public class HeadedUiContext extends AbstractUiContext {
 
   @Override
   public void setUnitScaleFactor(final double scaleFactor) {
-    unitImageFactory.setScaleFactor(scaleFactor);
+    unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
     final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
     prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
     try {
