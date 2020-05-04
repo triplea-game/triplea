@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -1001,7 +1000,6 @@ class BattleCalculatorPanel extends JPanel {
           if (parent != null) {
             parent.setVisible(false);
           }
-          shutdown();
           if (parent != null) {
             parent.dispatchEvent(new WindowEvent(parent, WindowEvent.WINDOW_CLOSING));
           }
@@ -1126,7 +1124,6 @@ class BattleCalculatorPanel extends JPanel {
     }
     calculator =
         new ConcurrentBattleCalculator(
-            "BtlCalc Panel",
             () ->
                 SwingUtilities.invokeLater(
                     () -> {
@@ -1145,16 +1142,6 @@ class BattleCalculatorPanel extends JPanel {
       return player;
     }
     return GamePlayer.asOptional(data.getSequence().getStep().getPlayerId());
-  }
-
-  void shutdown() {
-    try {
-      // use this if not using a static calc, so that we gc the calc and shutdown all threads.
-      // must be shutdown, as it has a thread pool per each instance.
-      calculator.shutdown();
-    } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to shut down odds calculator", e);
-    }
   }
 
   GamePlayer getAttacker() {
