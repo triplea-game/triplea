@@ -1,6 +1,5 @@
 package org.triplea.modules.error.reporting;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.function.BiFunction;
@@ -11,17 +10,13 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.error.reporting.ErrorReportingDao;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
+import org.triplea.http.client.github.issues.CreateIssueResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;
-import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 /** Performs the steps for uploading an error report from the point of view of the server. */
 @Builder
 public class CreateIssueStrategy
     implements BiFunction<String, ErrorReportRequest, ErrorReportResponse> {
-
-  @VisibleForTesting
-  static final String STUBBED_RETURN_VALUE =
-      "API-token==test--returned-a-stubbed-github-issue-link";
 
   @Nonnull private final Function<CreateIssueResponse, ErrorReportResponse> responseAdapter;
   @Nonnull private final GithubIssueClient githubIssueClient;
@@ -48,9 +43,6 @@ public class CreateIssueStrategy
   }
 
   private ErrorReportResponse sendRequest(final ErrorReportRequest errorReportRequest) {
-    if (githubIssueClient.isTest()) {
-      return ErrorReportResponse.builder().githubIssueLink(STUBBED_RETURN_VALUE).build();
-    }
     final CreateIssueResponse response = githubIssueClient.newIssue(errorReportRequest);
     return responseAdapter.apply(response);
   }
