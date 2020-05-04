@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.triplea.ui.TripleAFrame;
-import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /** Class to manage log window display. */
