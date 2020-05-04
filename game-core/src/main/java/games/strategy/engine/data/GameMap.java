@@ -247,7 +247,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
         player == null
             ? neighborFilter
             : neighborFilter.and(
-                t -> MoveValidator.canAnyUnitsPassCanal(territory, t, units, player)));
+                t ->
+                    new MoveValidator(getData())
+                        .canAnyUnitsPassCanal(territory, t, units, player)));
   }
 
   /**

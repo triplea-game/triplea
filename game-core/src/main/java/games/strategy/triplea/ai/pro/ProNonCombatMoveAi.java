@@ -2543,7 +2543,8 @@ class ProNonCombatMoveAi {
                       u,
                       player);
           final MoveValidationResult mvr =
-              MoveValidator.validateMove(new MoveDescription(List.of(u), r), player, true, null);
+              new MoveValidator(data)
+                  .validateMove(new MoveDescription(List.of(u), r), player, true, null);
           if (!mvr.isMoveValid()) {
             continue;
           }

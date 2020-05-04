@@ -104,7 +104,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // player.
     final GamePlayer player = getUnitsOwner(units);
     // here we have our own new validation method....
-    final MoveValidationResult result = validateMove(units, route, player);
+    final MoveValidationResult result = validateMove(getData(), units, route, player);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
@@ -173,15 +173,19 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   static MoveValidationResult validateMove(
-      final Collection<Unit> units, final Route route, final GamePlayer player) {
+      final GameData gameData,
+      final Collection<Unit> units,
+      final Route route,
+      final GamePlayer player) {
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
     }
-    if (MoveValidator.validateFirst(units, route, player, result).getError() != null) {
+    if (new MoveValidator(gameData).validateFirst(units, route, player, result).getError()
+        != null) {
       return result;
     }
-    if (MoveValidator.validateFuel(units, route, player, result).getError() != null) {
+    if (new MoveValidator(gameData).validateFuel(units, route, player, result).getError() != null) {
       return result;
     }
     final boolean isEditMode = getEditMode(player.getData());
