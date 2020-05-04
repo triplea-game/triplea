@@ -6,6 +6,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
@@ -167,7 +168,31 @@ public class Fire implements IExecutable {
     final int countTransports =
         CollectionUtils.countMatches(
             attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
-    if (countTransports > 0 && Properties.getTransportCasualtiesRestricted(bridge.getData())) {
+
+    if (BaseEditDelegate.getEditMode(bridge.getData())) {
+      final CasualtyDetails message =
+          CasualtySelector.selectCasualties(
+              hitPlayer,
+              attackableUnits,
+              allEnemyUnitsNotIncludingWaitingToDie,
+              allFriendlyUnitsNotIncludingWaitingToDie,
+              isAmphibious,
+              amphibiousLandAttackers,
+              battleSite,
+              territoryEffects,
+              bridge,
+              text,
+              dice,
+              !defending,
+              battleId,
+              headless,
+              0,
+              true);
+      killed = message.getKilled();
+      damaged = message.getDamaged();
+      confirmOwnCasualties = true;
+    } else if (countTransports > 0
+        && Properties.getTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
       final Collection<Unit> nonTransports =
           CollectionUtils.getMatches(

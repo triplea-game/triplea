@@ -9,6 +9,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
@@ -51,7 +52,7 @@ public class AaCasualtySelector {
         !defendingAa.isEmpty()
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (Properties.getChooseAaCasualties(data)) {
+    if (BaseEditDelegate.getEditMode(data) || Properties.getChooseAaCasualties(data)) {
       final String text =
           "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return CasualtySelector.selectCasualties(
