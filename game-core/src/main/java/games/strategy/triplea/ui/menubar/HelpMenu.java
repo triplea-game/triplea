@@ -123,8 +123,6 @@ final class HelpMenu extends JMenu {
                       + "<br><b> Other Things</b><br>"
                       + "Press 'f' to highlight all units you own that have movement left "
                       + "(move phases only).<br>"
-                      + "Press 'i' or 'v' to popup info on whatever territory and unit your mouse "
-                      + "is currently over.<br>"
                       + "Press 'u' while mousing over a unit to undo all moves that unit has made "
                       + "(beta).<br>"
                       + "To list specific units from a territory in the Territory panel, drag and "
