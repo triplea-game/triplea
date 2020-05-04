@@ -369,7 +369,7 @@ class ProLogWindow extends JDialog {
     dialog.setVisible(true);
   }
 
-  void addMessage(final Level level, final String message) {
+  void addMessage(final String message) {
     try {
       if (currentLogTextArea == null) {
         currentLogTextArea = aiOutputLogArea;
@@ -377,10 +377,7 @@ class ProLogWindow extends JDialog {
       currentLogTextArea.append(message + "\r\n");
     } catch (
         final Exception ex) { // This is bad, but we don't want TripleA crashing because of this...
-      log.log(
-          Level.SEVERE,
-          "Error adding Pro log message! Level: " + level.getName() + " Message: " + message,
-          ex);
+      log.log(Level.SEVERE, "Error adding Pro log message! Message: " + message, ex);
     }
   }
 

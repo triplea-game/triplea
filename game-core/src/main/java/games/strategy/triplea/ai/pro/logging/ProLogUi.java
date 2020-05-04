@@ -33,11 +33,11 @@ public final class ProLogUi {
     settingsWindow.setVisible(true);
   }
 
-  static void notifyAiLogMessage(final Level level, final String message) {
+  static void notifyAiLogMessage(final String message) {
     if (settingsWindow == null) {
       return;
     }
-    settingsWindow.addMessage(level, message);
+    settingsWindow.addMessage(message);
   }
 
   public static void notifyStartOfRound(final int round, final String name) {
