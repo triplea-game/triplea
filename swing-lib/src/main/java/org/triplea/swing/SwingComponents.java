@@ -406,11 +406,16 @@ public final class SwingComponents {
 
     // parentComponent == null to avoid pop-up from appearing behind other windows
     final Component parentComponent = null;
-    JOptionPane.showMessageDialog(
-        parentComponent,
-        messageToShow,
-        params.title,
-        Optional.ofNullable(params.dialogType).orElse(DialogWithLinksTypes.INFO).optionPaneFlag);
+    SwingUtilities.invokeLater(
+        () -> {
+          JOptionPane.showMessageDialog(
+              parentComponent,
+              messageToShow,
+              params.title,
+              Optional.ofNullable(params.dialogType)
+                  .orElse(DialogWithLinksTypes.INFO)
+                  .optionPaneFlag);
+        });
   }
 
   @Builder
