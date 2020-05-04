@@ -1,36 +1,34 @@
 package org.triplea.http.client.error.report;
 
 import feign.FeignException;
-import feign.HeaderMap;
-import feign.Headers;
-import feign.RequestLine;
 import java.net.URI;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpConstants;
+import org.triplea.http.client.SystemIdHeader;
 
 /** Http client to upload error reports to the http lobby server. */
-@SuppressWarnings("InterfaceNeverImplemented")
-@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-// TODO: Project#12 Hide the raw feign client, make consistent with other http clients that
-//  have a wrapper to hide the headers.
-public interface ErrorReportClient {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class ErrorReportClient {
+  public static final String ERROR_REPORT_PATH = "/error-report";
+  public static final int MAX_REPORTS_PER_DAY = 5;
 
-  String ERROR_REPORT_PATH = "/error-report";
+  private final Map<String, Object> headers;
+  private final ErrorReportFeignClient errorReportFeignClient;
 
-  int MAX_REPORTS_PER_DAY = 5;
+  /** Creates an error report uploader clients, sends error reports and gets a response back. */
+  public static ErrorReportClient newClient(final URI uri) {
+    return new ErrorReportClient(
+        SystemIdHeader.headers(), new HttpClient<>(ErrorReportFeignClient.class, uri).get());
+  }
 
   /**
    * API to upload an exception error report from a TripleA client to TripleA server.
    *
    * @throws FeignException Thrown on non-2xx responses.
    */
-  @RequestLine("POST " + ERROR_REPORT_PATH)
-  ErrorReportResponse uploadErrorReport(
-      @HeaderMap Map<String, Object> headers, ErrorReportRequest request);
-
-  /** Creates an error report uploader clients, sends error reports and gets a response back. */
-  static ErrorReportClient newClient(final URI uri) {
-    return new HttpClient<>(ErrorReportClient.class, uri).get();
+  public ErrorReportResponse uploadErrorReport(final ErrorReportRequest request) {
+    return errorReportFeignClient.uploadErrorReport(headers, request);
   }
 }
