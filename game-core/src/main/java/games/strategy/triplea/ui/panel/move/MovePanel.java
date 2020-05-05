@@ -33,7 +33,6 @@ import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.MouseOverUnitListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.ui.unit.scroller.UnitScroller;
-import games.strategy.triplea.util.MovableUnitsFilter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
@@ -1120,7 +1119,13 @@ public class MovePanel extends AbstractMovePanel {
 
     final MovableUnitsFilter unitsFilter =
         new MovableUnitsFilter(
-            getUnitOwner(units), route, nonCombat, moveType, getUndoableMoves(), dependentUnits);
+            getData(),
+            getUnitOwner(units),
+            route,
+            nonCombat,
+            moveType,
+            getUndoableMoves(),
+            dependentUnits);
     final var result = unitsFilter.filterUnitsThatCanMove(units);
     switch (result.getStatus()) {
       case NO_UNITS_CAN_MOVE:

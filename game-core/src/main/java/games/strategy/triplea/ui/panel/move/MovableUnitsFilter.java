@@ -1,4 +1,4 @@
-package games.strategy.triplea.util;
+package games.strategy.triplea.ui.panel.move;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
+import games.strategy.triplea.util.TransportUtils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import org.triplea.java.collections.CollectionUtils;
 /**
  * Utility class for filtering a unit list to the subset of those units that can move on a route.
  */
-public final class MovableUnitsFilter {
+final class MovableUnitsFilter {
   /** The result of the filter operation. */
   @Getter
   public static class FilterOperationResult {
@@ -49,7 +50,7 @@ public final class MovableUnitsFilter {
     // A warning or error message, if status is not ALL_UNITS_CAN_MOVE.
     private Optional<String> warningOrErrorMessage;
 
-    public FilterOperationResult(
+    FilterOperationResult(
         final MoveValidationResult allUnitsResult,
         final MoveValidationResultWithDependents lastResult) {
       this.unitsWithDependents = lastResult.getUnitsWithDependents();
@@ -88,7 +89,8 @@ public final class MovableUnitsFilter {
   private final List<UndoableMove> undoableMoves;
   private final Map<Unit, Collection<Unit>> dependentUnits;
 
-  public MovableUnitsFilter(
+  MovableUnitsFilter(
+      final GameData data,
       final GamePlayer player,
       final Route route,
       final boolean nonCombat,
@@ -96,7 +98,7 @@ public final class MovableUnitsFilter {
       final List<UndoableMove> undoableMoves,
       final Map<Unit, Collection<Unit>> dependentUnits) {
     this.player = Preconditions.checkNotNull(player);
-    this.data = player.getData();
+    this.data = data;
     this.route = Preconditions.checkNotNull(route);
     this.nonCombat = nonCombat;
     this.moveType = moveType;
