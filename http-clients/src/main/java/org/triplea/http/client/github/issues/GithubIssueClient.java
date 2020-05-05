@@ -14,6 +14,16 @@ import org.triplea.http.client.error.report.ErrorReportRequest;
  * to accept user upload data.
  */
 public class GithubIssueClient {
+  /**
+   * Arbitrary length to prevent titles from being too large and cluttering up the issue display.
+   */
+  public static final int TITLE_MAX_LENGTH = 125;
+  /**
+   * Arbitrarily chosen large value to give us hopefully full details of just about any error report
+   * without getting to be too extremely long.
+   */
+  public static final int REPORT_BODY_MAX_LENGTH = 20000;
+
   /** If this client is set to 'test' mode, we will return a stubbed response. */
   @VisibleForTesting
   static final String STUBBED_RETURN_VALUE =

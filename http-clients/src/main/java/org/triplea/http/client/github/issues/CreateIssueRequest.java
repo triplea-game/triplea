@@ -19,10 +19,12 @@ public class CreateIssueRequest {
   private String[] labels;
 
   public String getTitle() {
-    return title == null ? null : Ascii.truncate(title, 125, "...");
+    return title == null ? null : Ascii.truncate(title, GithubIssueClient.TITLE_MAX_LENGTH, "...");
   }
 
   public String getBody() {
-    return body == null ? null : Ascii.truncate(body, 20000, "...");
+    return body == null
+        ? null
+        : Ascii.truncate(body, GithubIssueClient.REPORT_BODY_MAX_LENGTH, "...");
   }
 }
