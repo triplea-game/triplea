@@ -42,7 +42,7 @@ public interface StackTraceReportView {
                     .successConfirmation(ConfirmationDialogController::showSuccessConfirmation)
                     .failureConfirmation(ConfirmationDialogController::showFailureConfirmation)
                     .build())
-            .preview(new ReportPreviewSwingView())
+            .preview(new ReportPreviewSwingView(parentWindow))
             .build();
 
     window.bindActions(viewModel);
