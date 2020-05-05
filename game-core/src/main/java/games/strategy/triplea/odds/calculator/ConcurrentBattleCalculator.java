@@ -28,6 +28,8 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
 
   private final List<BattleCalculator> workers = new CopyOnWriteArrayList<>();
+  // do not let calc be set up til data is set
+  private volatile boolean isDataSet = false;
   // shortcut setting of previous game data if we are trying to set it to a new one, or shutdown
   private final AtomicInteger cancelCurrentOperation = new AtomicInteger(0);
   // do not let calcing happen while we are setting game data
@@ -67,6 +69,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         Thread.currentThread().interrupt();
       }
       cancel();
+      isDataSet = false;
       if (data == null) {
         workers.clear();
         cancelCurrentOperation.incrementAndGet();
@@ -164,9 +167,11 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     if (cancelCurrentOperation.get() < 0 || data == null) {
       // we could have cancelled while setting data, so clear the workers again if so
       workers.clear();
+      isDataSet = false;
     } else {
       // should make sure that all workers have their game data set before
       // we can call calculate and other things
+      isDataSet = true;
       dataLoadedAction.run();
     }
     // allow setting new data to take place if it is waiting on us
@@ -204,6 +209,11 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     synchronized (mutexCalcIsRunning) {
       awaitLatch();
       final long start = System.currentTimeMillis();
+      if (!isDataSet) {
+        // we could have attempted to set a new game data, while the old one was still being set,
+        // causing it to abort with null data
+        return new AggregateResults(0);
+      }
       final var runCountDistributor = new RunCountDistributor(runCount, workers.size());
       final AggregateResults results =
           new AggregateResults(
