@@ -22,63 +22,50 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.swing.ImageIcon;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 
-/** A factory for creating unit images. */
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@NoArgsConstructor
+/** A factory with an image cache for creating unit images. */
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
+  private static final String FILE_NAME_BASE = "units/";
+
   /**
    * Width of all icons. You probably want getUnitImageWidth(), which takes scale factor into
    * account.
    */
-  private static int unitIconWidth = DEFAULT_UNIT_ICON_SIZE;
+  private final int unitIconWidth;
   /**
    * Height of all icons. You probably want getUnitImageHeight(), which takes scale factor into
    * account.
    */
-  private static int unitIconHeight = DEFAULT_UNIT_ICON_SIZE;
+  private final int unitIconHeight;
 
-  private static int unitCounterOffsetWidth = DEFAULT_UNIT_ICON_SIZE / 4;
-  private static int unitCounterOffsetHeight = unitIconHeight;
-  private static final String FILE_NAME_BASE = "units/";
+  private final int unitCounterOffsetWidth;
+  private final int unitCounterOffsetHeight;
   // maps Point -> image
   private final Map<String, Image> images = new HashMap<>();
   // maps Point -> Icon
   private final Map<String, ImageIcon> icons = new HashMap<>();
   // Scaling factor for unit images
-  private double scaleFactor;
-  private ResourceLoader resourceLoader;
-  private MapData mapData;
+  private final double scaleFactor;
+  private final ResourceLoader resourceLoader;
+  private final MapData mapData;
 
-  public void setResourceLoader(
-      final ResourceLoader loader,
-      final double scaleFactor,
-      final int initialUnitWidth,
-      final int initialUnitHeight,
-      final int initialUnitCounterOffsetWidth,
-      final int initialUnitCounterOffsetHeight,
-      final MapData mapData) {
-    unitIconWidth = initialUnitWidth;
-    unitIconHeight = initialUnitHeight;
-    unitCounterOffsetWidth = initialUnitCounterOffsetWidth;
-    unitCounterOffsetHeight = initialUnitCounterOffsetHeight;
-    this.scaleFactor = scaleFactor;
-    resourceLoader = loader;
+  public UnitImageFactory(
+      final ResourceLoader resourceLoader, final double unitScale, final MapData mapData) {
+    unitIconWidth = mapData.getDefaultUnitWidth();
+    unitIconHeight = mapData.getDefaultUnitHeight();
+    unitCounterOffsetWidth = mapData.getDefaultUnitCounterOffsetWidth();
+    unitCounterOffsetHeight = mapData.getDefaultUnitCounterOffsetHeight();
+    this.scaleFactor = unitScale;
+    this.resourceLoader = resourceLoader;
     this.mapData = mapData;
-    clearImageCache();
   }
 
   /** Set the unitScaling factor. */
-  public void setScaleFactor(final double scaleFactor) {
-    if (this.scaleFactor != scaleFactor) {
-      this.scaleFactor = scaleFactor;
-      clearImageCache();
-    }
+  public UnitImageFactory withScaleFactor(final double scaleFactor) {
+    return this.scaleFactor == scaleFactor
+        ? this
+        : new UnitImageFactory(resourceLoader, scaleFactor, mapData);
   }
 
   /** Return the unit scaling factor. */
@@ -104,12 +91,6 @@ public class UnitImageFactory {
     return (int) (scaleFactor * unitCounterOffsetHeight);
   }
 
-  // Clear the image and icon cache
-  private void clearImageCache() {
-    images.clear();
-    icons.clear();
-  }
-
   public Image getImage(final UnitCategory unit) {
     return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
         .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
@@ -120,26 +101,29 @@ public class UnitImageFactory {
       final UnitType type, final GamePlayer player, final boolean damaged, final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
-    if (images.containsKey(fullName)) {
-      return Optional.of(images.get(fullName));
-    }
-    final Optional<Image> image = getTransformedImage(baseName, player, type);
-    if (image.isEmpty()) {
-      return Optional.empty();
-    }
-    final Image baseImage = image.get();
 
-    // We want to scale units according to the given scale factor.
-    // We use smooth scaling since the images are cached to allow to take our time in doing the
-    // scaling.
-    // Image observer is null, since the image should have been guaranteed to be loaded.
-    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
-    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
-    final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-    // Ensure the scaling is completed.
-    Util.ensureImageLoaded(scaledImage);
-    images.put(fullName, scaledImage);
-    return Optional.of(scaledImage);
+    return Optional.ofNullable(images.get(fullName))
+        .or(
+            () ->
+                getTransformedImage(baseName, player, type)
+                    .map(
+                        baseImage -> {
+                          // We want to scale units according to the given scale factor.
+                          // We use smooth scaling since the images are cached to allow to take our
+                          // time in
+                          // doing the
+                          // scaling.
+                          // Image observer is null, since the image should have been guaranteed to
+                          // be loaded.
+                          final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+                          final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+                          final Image scaledImage =
+                              baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                          // Ensure the scaling is completed.
+                          Util.ensureImageLoaded(scaledImage);
+                          images.put(fullName, scaledImage);
+                          return scaledImage;
+                        }));
   }
 
   public Optional<URL> getBaseImageUrl(final String baseImageName, final GamePlayer gamePlayer) {
