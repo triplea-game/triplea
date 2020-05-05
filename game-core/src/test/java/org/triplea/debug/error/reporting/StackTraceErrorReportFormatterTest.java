@@ -11,7 +11,6 @@ import games.strategy.engine.framework.system.SystemProperties;
 import java.util.Arrays;
 import java.util.logging.LogRecord;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,51 +37,34 @@ class StackTraceErrorReportFormatterTest {
 
   @Nested
   final class VerifyTitle {
-    private void givenDefaultClass() {
-      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
-    }
-
     @Test
     void logMessageOnly() {
-      givenDefaultClass();
+      when(logRecord.getSourceClassName()).thenReturn("org.ClassName");
+      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
-      when(logRecord.getThrown()).thenReturn(null);
-
-      final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter(() -> "3.0.5")
-              .apply(SAMPLE_USER_DESCRIPTION, logRecord);
-
-      assertThat(
-          errorReportResult.getTitle(),
-          is("3.0.5: " + CLASS_SHORT_NAME + "." + METHOD_NAME + ": " + LOG_MESSAGE));
-    }
-
-    @Test
-    void preferExceptionMessageOverLogMessage() {
-      givenDefaultClass();
-      when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
-      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
-          errorReportResult.getTitle(),
-          is(
-              "4.1: "
-                  + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName()
-                  + " - "
-                  + CLASS_SHORT_NAME
-                  + "."
-                  + METHOD_NAME
-                  + ": "
-                  + EXCEPTION_WITH_MESSAGE.getMessage()));
+          errorReportResult.getTitle(), is("4.1: ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
+    }
+
+    @Test
+    void logMessageOnlyWithTripleaPackage() {
+      when(logRecord.getSourceClassName()).thenReturn("org.triplea.ClassName");
+      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
+      when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
+
+      final ErrorReportRequest errorReportResult =
+          new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
+
+      assertThat(
+          errorReportResult.getTitle(), is("4.1: ClassName#" + METHOD_NAME + " - " + LOG_MESSAGE));
     }
 
     @Test
     void handleNullLogMessageAndNullExceptionMessage() {
-      givenDefaultClass();
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
@@ -92,11 +74,11 @@ class StackTraceErrorReportFormatterTest {
           errorReportResult.getTitle(),
           is(
               "5.6: "
-                  + EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName()
+                  + StackTraceErrorReportFormatterTest.class.getSimpleName()
+                  + "#<clinit>:"
+                  + EXCEPTION_WITH_NO_MESSAGE.getStackTrace()[0].getLineNumber()
                   + " - "
-                  + CLASS_SHORT_NAME
-                  + "."
-                  + METHOD_NAME));
+                  + EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName()));
     }
 
     @Test
@@ -109,18 +91,33 @@ class StackTraceErrorReportFormatterTest {
 
       assertDoesNotThrow(errorReportResult::getTitle);
     }
+
+    @Test
+    void handleExceptionWithCause() {
+      when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_CAUSE);
+
+      final ErrorReportRequest errorReportResult =
+          new StackTraceErrorReportFormatter(() -> "5.6").apply(SAMPLE_USER_DESCRIPTION, logRecord);
+
+      assertThat(
+          errorReportResult.getTitle(),
+          is(
+              "5.6: "
+                  + StackTraceErrorReportFormatterTest.class.getSimpleName()
+                  + "#<clinit>:"
+                  + EXCEPTION_WITH_CAUSE.getCause().getStackTrace()[0].getLineNumber()
+                  + " - "
+                  + EXCEPTION_WITH_CAUSE.getCause().getClass().getSimpleName()));
+    }
   }
 
   @Nested
   final class VerifyBodyContains {
-    @BeforeEach
-    void setup() {
-      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
-    }
-
     @Test
     void containsUseSuppliedData() {
+      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
+      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
+
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
@@ -129,6 +126,9 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsSystemData() {
+      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
+      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
+
       final ErrorReportRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
@@ -178,12 +178,6 @@ class StackTraceErrorReportFormatterTest {
 
   @Nested
   final class BodyNullMessageHandling {
-    @BeforeEach
-    void setup() {
-      when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
-      when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
-    }
-
     @Test
     void nullLogMessage() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
