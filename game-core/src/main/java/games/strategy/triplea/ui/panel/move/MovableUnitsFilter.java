@@ -50,7 +50,7 @@ final class MovableUnitsFilter {
     // A warning or error message, if status is not ALL_UNITS_CAN_MOVE.
     private Optional<String> warningOrErrorMessage;
 
-    public FilterOperationResult(
+    FilterOperationResult(
         final MoveValidationResult allUnitsResult,
         final MoveValidationResultWithDependents lastResult) {
       this.unitsWithDependents = lastResult.getUnitsWithDependents();
@@ -89,7 +89,7 @@ final class MovableUnitsFilter {
   private final List<UndoableMove> undoableMoves;
   private final Map<Unit, Collection<Unit>> dependentUnits;
 
-  public MovableUnitsFilter(
+  MovableUnitsFilter(
       final GameData data,
       final GamePlayer player,
       final Route route,
