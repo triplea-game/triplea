@@ -10,8 +10,8 @@ import org.triplea.db.dao.chat.history.LobbyChatHistoryDao;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
+import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
-import org.triplea.modules.chat.Chatters.ChatterSession;
 import org.triplea.web.socket.WebSocketMessageContext;
 
 @Builder

@@ -1,11 +1,11 @@
-package org.triplea.modules.chat;
+package org.triplea.modules.chat.event.processing;
 
 import java.util.function.BiFunction;
 import javax.websocket.Session;
 import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ChatParticipant;
-import org.triplea.modules.chat.Chatters.ChatterSession;
+import org.triplea.modules.chat.ChatterSession;
 
 class ChatParticipantAdapter implements BiFunction<Session, ApiKeyLookupRecord, ChatterSession> {
 
