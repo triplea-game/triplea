@@ -2,7 +2,7 @@
 name: "\U0001F41E  Problem Report"
 about: Report a problem for the release version (downloaded from triplea-game.org)
 title: ''
-labels: 'Problem in Release'
+labels: 'Release Problem'
 assignees: ''
 ---
 
