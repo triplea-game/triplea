@@ -11,11 +11,6 @@ import org.triplea.awt.OpenFileUtility;
  */
 public class JEditorPaneWithClickableLinks extends JEditorPane {
 
-  /** Creates an HTML anchor tag (a link) with given title and link location. */
-  public static String toLink(final String title, final String link) {
-    return String.format("<a href=\"%s\">%s</a>", link, title);
-  }
-
   public JEditorPaneWithClickableLinks() {
     this("");
   }
@@ -31,5 +26,10 @@ public class JEditorPaneWithClickableLinks extends JEditorPane {
             OpenFileUtility.openUrl(e.getURL().toString());
           }
         });
+  }
+
+  /** Creates an HTML anchor tag (a link) with given title and link location. */
+  public static String toLink(final String title, final String link) {
+    return String.format("<a href=\"%s\">%s</a>", link, title);
   }
 }
