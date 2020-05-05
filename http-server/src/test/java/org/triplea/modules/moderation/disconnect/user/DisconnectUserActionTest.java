@@ -79,7 +79,7 @@ class DisconnectUserActionTest {
     private void givenApiKeyLookupButPlayerNotInChat() {
       when(apiKeyDaoWrapper.lookupPlayerByChatId(PLAYER_CHAT_ID))
           .thenReturn(Optional.of(PLAYER_ID_LOOKUP));
-      when(chatters.hasPlayer(PLAYER_ID_LOOKUP.getUserName())).thenReturn(false);
+      when(chatters.isPlayerConnected(PLAYER_ID_LOOKUP.getUserName())).thenReturn(false);
     }
 
     @Test
@@ -89,7 +89,7 @@ class DisconnectUserActionTest {
     void playerDisconnect() {
       when(apiKeyDaoWrapper.lookupPlayerByChatId(PLAYER_CHAT_ID))
           .thenReturn(Optional.of(PLAYER_ID_LOOKUP));
-      when(chatters.hasPlayer(PLAYER_ID_LOOKUP.getUserName())).thenReturn(true);
+      when(chatters.isPlayerConnected(PLAYER_ID_LOOKUP.getUserName())).thenReturn(true);
       when(chatters.disconnectPlayerSessions(eq(PLAYER_ID_LOOKUP.getUserName()), any()))
           .thenReturn(true);
 

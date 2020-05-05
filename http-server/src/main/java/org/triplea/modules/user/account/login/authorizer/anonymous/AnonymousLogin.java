@@ -27,7 +27,7 @@ public class AnonymousLogin implements Function<UserName, Optional<String>> {
   @Override
   public Optional<String> apply(final UserName userName) {
     Preconditions.checkNotNull(userName);
-    return (!chatters.hasPlayer(userName)
+    return (!chatters.isPlayerConnected(userName)
             && nameIsAvailableValidation.apply(userName.getValue()).isEmpty())
         ? Optional.empty()
         : Optional.of("Name is already in use, please choose another");
