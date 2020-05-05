@@ -2066,7 +2066,7 @@
 - mapName: Twelve-Clans
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/twelve-clans/archive/master.zip
-  version: 1.0
+  version: 1
   img: https://raw.githubusercontent.com/triplea-maps/twelve-clans/master/description/MapDesc.png
   description: |
     <br>by Michael Hoover
