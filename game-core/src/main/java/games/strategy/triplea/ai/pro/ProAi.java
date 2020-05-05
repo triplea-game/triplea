@@ -7,8 +7,7 @@ import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
 
 public class ProAi extends AbstractProAi {
   // Odds calculator
-  private static final ConcurrentBattleCalculator concurrentCalc =
-      new ConcurrentBattleCalculator("ProAi");
+  private static final ConcurrentBattleCalculator concurrentCalc = new ConcurrentBattleCalculator();
 
   public ProAi(final String name) {
     super(name, concurrentCalc, new ProData());

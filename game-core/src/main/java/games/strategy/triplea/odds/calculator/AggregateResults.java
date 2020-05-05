@@ -25,6 +25,10 @@ public class AggregateResults {
     results = new ArrayList<>(expectedCount);
   }
 
+  AggregateResults(final List<BattleResults> results) {
+    this.results = new ArrayList<>(results);
+  }
+
   public void addResult(final BattleResults result) {
     results.add(result);
   }

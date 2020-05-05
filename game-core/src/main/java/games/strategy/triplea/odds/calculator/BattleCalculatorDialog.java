@@ -121,7 +121,6 @@ public class BattleCalculatorDialog extends JDialog {
   public void dispose() {
     instances.remove(this);
     lastPosition = new Point(getLocation());
-    panel.shutdown();
     super.dispose();
   }
 
