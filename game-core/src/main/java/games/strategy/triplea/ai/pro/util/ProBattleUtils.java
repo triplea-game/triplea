@@ -6,6 +6,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.IProDataUnitValue;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
@@ -92,7 +93,7 @@ public final class ProBattleUtils {
    *     indicates equal attacker and defender strength.
    */
   public static double estimateStrengthDifference(
-      final ProData proData,
+      final IProDataUnitValue proData,
       final Territory t,
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits) {
@@ -118,7 +119,7 @@ public final class ProBattleUtils {
    * @return The larger the result, the stronger {@code myUnits} are relative to {@code enemyUnits}.
    */
   public static double estimateStrength(
-      final ProData proData,
+      final IProDataUnitValue proData,
       final Territory t,
       final Collection<Unit> myUnits,
       final Collection<Unit> enemyUnits,
@@ -139,7 +140,7 @@ public final class ProBattleUtils {
   }
 
   private static double estimatePower(
-      final ProData proData,
+      final IProDataUnitValue proData,
       final Territory t,
       final Collection<Unit> myUnits,
       final Collection<Unit> enemyUnits,

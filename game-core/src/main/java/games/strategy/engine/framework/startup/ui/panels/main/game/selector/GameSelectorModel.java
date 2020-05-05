@@ -11,6 +11,7 @@ import games.strategy.engine.framework.startup.mc.GameSelector;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.tree.BattleTreeCompAi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,7 +86,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
     final GameData newData;
     // if the file name is xml, load it as a new game
     if (file.getName().toLowerCase().endsWith("xml")) {
-      try (InputStream inputStream = new FileInputStream(file)) {
+      try (final InputStream inputStream = new FileInputStream(file)) {
         newData = GameParser.parse(file.getAbsolutePath(), inputStream);
       }
     } else {
@@ -160,6 +161,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
     // clear out ai cached properties (this ended up being the best place to put it,
     // as we have definitely left a game at this point)
     ProAi.gameOverClearCache();
+    BattleTreeCompAi.gameOverClearCache();
     new Thread(this::loadDefaultGameSameThread).start();
   }
 

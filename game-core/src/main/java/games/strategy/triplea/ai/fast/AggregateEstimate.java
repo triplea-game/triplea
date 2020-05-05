@@ -10,13 +10,13 @@ import java.util.Collection;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
-class AggregateEstimate extends AggregateResults {
+public class AggregateEstimate extends AggregateResults {
   private final int battleRoundsFought;
   private final double winPercentage;
   private final Collection<Unit> remainingAttackingUnits;
   private final Collection<Unit> remainingDefendingUnits;
 
-  AggregateEstimate(
+  public AggregateEstimate(
       final int battleRoundsFought,
       final double winPercentage,
       final Collection<Unit> remainingAttackingUnits,

@@ -1423,7 +1423,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * units since each type of suicide on hit units need to roll separately to know which ones get
    * hits.
    */
-  static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
+  public static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
 
     // Sort suicide on hit units by type
     final Map<UnitType, Collection<Unit>> map = new HashMap<>();
@@ -1477,7 +1477,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * @return a collection containing all the combatants in units non-combatants include such things
    *     as factories, aa guns, land units in a water battle.
    */
-  private List<Unit> removeNonCombatants(
+  public List<Unit> removeNonCombatants(
       final Collection<Unit> units, final boolean attacking, final boolean removeForNextRound) {
     final List<Unit> unitList = new ArrayList<>(units);
     if (battleSite.isWater()) {

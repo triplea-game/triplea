@@ -26,7 +26,7 @@ import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
-class CasualtyOrderOfLosses {
+public class CasualtyOrderOfLosses {
   private final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
   void clearOolCache() {
@@ -35,7 +35,7 @@ class CasualtyOrderOfLosses {
 
   @Builder
   @Value
-  static class Parameters {
+  public static class Parameters {
     @Nonnull Collection<Unit> targetsToPickFrom;
     @Nonnull GamePlayer player;
     @Nonnull Collection<Unit> enemyUnits;
@@ -57,7 +57,7 @@ class CasualtyOrderOfLosses {
    * all artillery, or the other way around, you will be missing out on some important support
    * provided. (Veqryn)
    */
-  List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
+  public List<Unit> sortUnitsForCasualtiesWithSupport(final Parameters parameters) {
     // Convert unit lists to unit type lists
     final List<UnitType> targetTypes = new ArrayList<>();
     for (final Unit u : parameters.targetsToPickFrom) {

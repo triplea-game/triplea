@@ -4,8 +4,11 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.tree.BattleTreeAi;
+import games.strategy.triplea.ai.tree.BattleTreeCompAi;
 import games.strategy.triplea.ai.weak.DoesNothingAi;
 import games.strategy.triplea.ai.weak.WeakAi;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,6 +36,20 @@ public enum PlayerType {
     @Override
     public Player newPlayerWithName(final String name) {
       return new WeakAi(name);
+    }
+  },
+
+  BATTLE_TREE_AI("BattleTree (AI)", ClientSetting.showBetaFeatures.getValue().orElse(false)) {
+    @Override
+    public Player newPlayerWithName(final String name) {
+      return new BattleTreeAi(name);
+    }
+  },
+
+  BATTLE_TREE_COMP_AI("BattleTree Compare (AI)", ClientSetting.showBetaFeatures.getValue().orElse(false)) {
+    @Override
+    public Player newPlayerWithName(final String name) {
+      return new BattleTreeCompAi(name);
     }
   },
 

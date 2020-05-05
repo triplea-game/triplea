@@ -41,6 +41,7 @@ import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.tree.BattleTreeCompAi;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -772,6 +773,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       historySyncher = null;
     }
     ProAi.gameOverClearCache();
+    BattleTreeCompAi.gameOverClearCache();
   }
 
   /**
@@ -2143,7 +2145,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   try {
                     final File f = SaveGameFileChooser.getSaveGameLocation(TripleAFrame.this, data);
                     if (f != null) {
-                      try (FileOutputStream fileOutputStream = new FileOutputStream(f)) {
+                      try (final FileOutputStream fileOutputStream = new FileOutputStream(f)) {
                         final GameData datacopy = GameDataUtils.cloneGameData(data, true);
                         datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
                         datacopy

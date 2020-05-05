@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import lombok.Setter;
 
-class BattleCalculator implements IBattleCalculator {
+public class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
   @Setter private boolean keepOneAttackingLandUnit = false;
   @Setter private boolean amphibious = false;
@@ -31,7 +31,7 @@ class BattleCalculator implements IBattleCalculator {
   private volatile boolean cancelled = false;
   private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-  BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
+  public BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     gameData =
         Preconditions.checkNotNull(
             dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));

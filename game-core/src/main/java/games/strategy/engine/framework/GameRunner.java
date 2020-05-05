@@ -19,6 +19,7 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.tree.BattleTreeCompAi;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.File;
@@ -80,6 +81,7 @@ public final class GameRunner {
   public static void showMainFrame() {
     MainFrame.show();
     ProAi.gameOverClearCache();
+    BattleTreeCompAi.gameOverClearCache();
     loadGameIfSpecified();
     openMapDownloadWindowIfDownloadScheduled();
 

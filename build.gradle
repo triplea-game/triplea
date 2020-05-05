@@ -234,6 +234,7 @@ subprojects {
     }
 
     test {
+        jvmArgs '-XX:+HeapDumpOnOutOfMemoryError'
         useJUnitPlatform {
             excludeTags 'integration'
         }
