@@ -37,8 +37,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.HyperlinkEvent;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import lombok.AllArgsConstructor;
@@ -391,16 +389,7 @@ public final class SwingComponents {
 
   /** Displays a pop-up dialog with clickable HTML links. */
   public static void showDialogWithLinks(final DialogWithLinksParams params) {
-    final JEditorPane editorPane = new JEditorPane("text/html", params.dialogText);
-    editorPane.setEditable(false);
-    editorPane.setOpaque(false);
-    editorPane.setBorder(new EmptyBorder(10, 0, 20, 0));
-    editorPane.addHyperlinkListener(
-        e -> {
-          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-            OpenFileUtility.openUrl(e.getURL().toString());
-          }
-        });
+    final JEditorPane editorPane = new JEditorPaneWithClickableLinks(params.dialogText);
 
     final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
 
