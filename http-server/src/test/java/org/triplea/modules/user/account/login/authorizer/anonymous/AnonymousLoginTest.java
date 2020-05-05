@@ -35,7 +35,7 @@ class AnonymousLoginTest {
 
   @Test
   void nameIsInUse() {
-    when(chatters.hasPlayer(PLAYER_NAME)).thenReturn(true);
+    when(chatters.isPlayerConnected(PLAYER_NAME)).thenReturn(true);
 
     final Optional<String> result = anonymousLogin.apply(PLAYER_NAME);
 
@@ -53,7 +53,7 @@ class AnonymousLoginTest {
 
   @Test
   void allowLogin() {
-    when(chatters.hasPlayer(PLAYER_NAME)).thenReturn(false);
+    when(chatters.isPlayerConnected(PLAYER_NAME)).thenReturn(false);
     when(nameIsAvailableValidator.apply(PLAYER_NAME.getValue())).thenReturn(Optional.empty());
 
     final Optional<String> result = anonymousLogin.apply(PLAYER_NAME);

@@ -24,6 +24,7 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
+import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessageContext;
 
@@ -76,7 +77,7 @@ class ChatMessageListenerTest {
     when(chatters.lookupPlayerBySession(session))
         .thenReturn(
             Optional.of(
-                Chatters.ChatterSession.builder()
+                ChatterSession.builder()
                     .session(session)
                     .chatParticipant(chatParticipant)
                     .apiKeyId(123)

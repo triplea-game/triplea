@@ -50,11 +50,12 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getThrown()).thenReturn(null);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter(() -> "3.0.5")
+              .apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
           errorReportResult.getTitle(),
-          is(CLASS_SHORT_NAME + "." + METHOD_NAME + ": " + LOG_MESSAGE));
+          is("3.0.5: " + CLASS_SHORT_NAME + "." + METHOD_NAME + ": " + LOG_MESSAGE));
     }
 
     @Test
@@ -64,12 +65,13 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter(() -> "4.1").apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
           errorReportResult.getTitle(),
           is(
-              EXCEPTION_WITH_MESSAGE.getClass().getSimpleName()
+              "4.1: "
+                  + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName()
                   + " - "
                   + CLASS_SHORT_NAME
                   + "."
@@ -84,12 +86,13 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
       final ErrorReportRequest errorReportResult =
-          new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
+          new StackTraceErrorReportFormatter(() -> "5.6").apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
           errorReportResult.getTitle(),
           is(
-              EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName()
+              "5.6: "
+                  + EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName()
                   + " - "
                   + CLASS_SHORT_NAME
                   + "."

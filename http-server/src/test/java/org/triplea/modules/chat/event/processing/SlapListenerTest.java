@@ -21,6 +21,7 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapSentMessage;
+import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessageContext;
 
@@ -68,7 +69,7 @@ class SlapListenerTest {
     when(chatters.lookupPlayerBySession(session))
         .thenReturn(
             Optional.of(
-                Chatters.ChatterSession.builder()
+                ChatterSession.builder()
                     .session(session)
                     .chatParticipant(chatParticipant)
                     .apiKeyId(123)

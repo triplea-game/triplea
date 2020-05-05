@@ -12,12 +12,8 @@ import javax.websocket.CloseReason;
 import javax.websocket.Session;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
 
@@ -25,54 +21,34 @@ import org.triplea.domain.data.UserName;
 @Slf4j
 @AllArgsConstructor
 public class Chatters {
-  private final ApiKeyDaoWrapper apiKeyDaoWrapper;
-  private final ChatParticipantAdapter chatParticipantAdapter;
-
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final Map<String, ChatterSession> participants = new ConcurrentHashMap<>();
 
-  @Getter
-  @Builder
-  public static class ChatterSession {
-    private final ChatParticipant chatParticipant;
-    private final Session session;
-    private final int apiKeyId;
-  }
-
-  public static Chatters build(final Jdbi jdbi) {
-    return new Chatters(ApiKeyDaoWrapper.build(jdbi), new ChatParticipantAdapter());
+  public static Chatters build() {
+    return new Chatters();
   }
 
   public Optional<ChatterSession> lookupPlayerBySession(final Session senderSession) {
     return Optional.ofNullable(participants.get(senderSession.getId()));
   }
 
-  public Optional<ChatParticipant> connectPlayer(final ApiKey apiKey, final Session session) {
-    // Make sure chatter has logged in (has a valid API key)
-    // Based on the API key we'll know if the player is a moderator.
-
-    return apiKeyDaoWrapper
-        .lookupByApiKey(apiKey)
-        .map(
-            keyLookup -> {
-              final var chatterSession = chatParticipantAdapter.apply(session, keyLookup);
-              participants.put(session.getId(), chatterSession);
-              return chatterSession.chatParticipant;
-            });
+  public void connectPlayer(final ChatterSession chatterSession) {
+    participants.put(chatterSession.getSession().getId(), chatterSession);
   }
 
   public Collection<ChatParticipant> getChatters() {
     return participants.values().stream()
-        .map(session -> session.chatParticipant)
+        .map(ChatterSession::getChatParticipant)
         .collect(Collectors.toList());
   }
 
   public Optional<UserName> playerLeft(final Session session) {
     return Optional.ofNullable(participants.remove(session.getId()))
-        .map(chatterSession -> chatterSession.chatParticipant.getUserName());
+        .map(ChatterSession::getChatParticipant)
+        .map(ChatParticipant::getUserName);
   }
 
-  public boolean hasPlayer(final UserName userName) {
+  public boolean isPlayerConnected(final UserName userName) {
     return participants.values().stream()
         .map(ChatterSession::getChatParticipant)
         .map(ChatParticipant::getUserName)

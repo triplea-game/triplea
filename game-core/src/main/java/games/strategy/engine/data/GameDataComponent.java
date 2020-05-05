@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import javax.annotation.Nullable;
 
 /**
  * Superclass for all game data components (i.e. any domain object contained in an instance of
@@ -18,6 +19,7 @@ public class GameDataComponent implements Serializable {
     this.gameData = gameData;
   }
 
+  @Nullable
   public GameData getData() {
     return gameData;
   }

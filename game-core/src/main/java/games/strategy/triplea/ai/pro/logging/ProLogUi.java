@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.triplea.ui.TripleAFrame;
-import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /** Class to manage log window display. */
@@ -21,7 +20,7 @@ public final class ProLogUi {
 
   public static void clearCachedInstances() {
     if (settingsWindow != null) {
-      settingsWindow.clear();
+      settingsWindow.dispose();
     }
     settingsWindow = null;
   }
@@ -33,11 +32,11 @@ public final class ProLogUi {
     settingsWindow.setVisible(true);
   }
 
-  static void notifyAiLogMessage(final Level level, final String message) {
+  static void notifyAiLogMessage(final String message) {
     if (settingsWindow == null) {
       return;
     }
-    settingsWindow.addMessage(level, message);
+    settingsWindow.addMessage(message);
   }
 
   public static void notifyStartOfRound(final int round, final String name) {

@@ -36,27 +36,18 @@ import org.triplea.swing.SwingAction;
 class ProLogWindow extends JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
-  private JTextArea currentLogTextArea = null;
-  private JTextArea aiOutputLogArea;
-  private JCheckBox enableAiLogging;
-  private JCheckBox limitLogHistoryCheckBox;
-  private JSpinner limitLogHistoryToSpinner;
-  private JComboBox<String> logDepth;
-  private JTabbedPane logHolderTabbedPane;
-  private JTabbedPane tabPaneMain;
+  private JTextArea currentLogTextArea;
+  private final JTextArea aiOutputLogArea = new JTextArea();
+  private final JCheckBox enableAiLogging = new JCheckBox();
+  private final JCheckBox limitLogHistoryCheckBox = new JCheckBox();
+  private final JSpinner limitLogHistoryToSpinner = new JSpinner();
+  private final JComboBox<String> logDepth = new JComboBox<>();
+  private final JTabbedPane logHolderTabbedPane = new JTabbedPane();
+  private final JTabbedPane tabPaneMain = new JTabbedPane();
 
   ProLogWindow(final TripleAFrame frame) {
     super(frame);
-    initComponents();
-  }
 
-  void clear() {
-    this.dispose();
-    tabPaneMain = null;
-    logHolderTabbedPane = null;
-  }
-
-  private void initComponents() {
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     final JPanel panel7 = new JPanel();
     final JButton restoreDefaultsButton = new JButton();
@@ -65,17 +56,10 @@ class ProLogWindow extends JDialog {
     final JPanel panel13 = new JPanel();
     final JButton cancelButton = new JButton();
     final JButton okButton = new JButton();
-    tabPaneMain = new JTabbedPane();
     final JPanel panel8 = new JPanel();
-    logHolderTabbedPane = new JTabbedPane();
     final JPanel panel9 = new JPanel();
     final JScrollPane aiOutputLogAreaScrollPane = new JScrollPane();
-    aiOutputLogArea = new JTextArea();
-    enableAiLogging = new JCheckBox();
     final JLabel label15 = new JLabel();
-    logDepth = new JComboBox<>();
-    limitLogHistoryToSpinner = new JSpinner();
-    limitLogHistoryCheckBox = new JCheckBox();
     final JLabel label46 = new JLabel();
     final JPanel pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
@@ -385,7 +369,7 @@ class ProLogWindow extends JDialog {
     dialog.setVisible(true);
   }
 
-  void addMessage(final Level level, final String message) {
+  void addMessage(final String message) {
     try {
       if (currentLogTextArea == null) {
         currentLogTextArea = aiOutputLogArea;
@@ -393,10 +377,7 @@ class ProLogWindow extends JDialog {
       currentLogTextArea.append(message + "\r\n");
     } catch (
         final Exception ex) { // This is bad, but we don't want TripleA crashing because of this...
-      log.log(
-          Level.SEVERE,
-          "Error adding Pro log message! Level: " + level.getName() + " Message: " + message,
-          ex);
+      log.log(Level.SEVERE, "Error adding Pro log message! Message: " + message, ex);
     }
   }
 
