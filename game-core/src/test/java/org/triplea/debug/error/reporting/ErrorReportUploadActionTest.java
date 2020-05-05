@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.SystemIdHeader;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 import org.triplea.http.client.error.report.ErrorReportResponse;
@@ -52,8 +51,7 @@ class ErrorReportUploadActionTest {
 
   @Test
   void failureResponse() {
-    when(errorReportClient.uploadErrorReport(SystemIdHeader.headers(), ERROR_REPORT))
-        .thenThrow(feignException);
+    when(errorReportClient.uploadErrorReport(ERROR_REPORT)).thenThrow(feignException);
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
 
@@ -65,8 +63,7 @@ class ErrorReportUploadActionTest {
 
   @Test
   void successCase() {
-    when(errorReportClient.uploadErrorReport(SystemIdHeader.headers(), ERROR_REPORT))
-        .thenReturn(SUCCESS_RESPONSE);
+    when(errorReportClient.uploadErrorReport(ERROR_REPORT)).thenReturn(SUCCESS_RESPONSE);
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
 
