@@ -278,6 +278,7 @@ public class MovePanel extends AbstractMovePanel {
             }
           }
           if (!selectedUnits.isEmpty()) {
+            map.notifyUnitsAreSelected();
             mouseLastUpdatePoint = mouseDetails.getMapPoint();
             final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
             // Load Bombers with paratroops

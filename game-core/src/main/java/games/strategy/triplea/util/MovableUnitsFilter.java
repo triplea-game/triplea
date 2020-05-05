@@ -227,7 +227,8 @@ public final class MovableUnitsFilter {
               : TransportUtils.mapTransports(route, units, transportsToLoad);
       final MoveDescription move =
           new MoveDescription(unitsWithDependents, route, unitsToTransports, dependentUnits);
-      result = AbstractMoveDelegate.validateMove(moveType, move, player, nonCombat, undoableMoves);
+      result =
+          AbstractMoveDelegate.validateMove(data, moveType, move, player, nonCombat, undoableMoves);
     } finally {
       data.releaseReadLock();
     }

@@ -1,5 +1,6 @@
 package org.triplea.debug.error.reporting;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.SystemProperties;
@@ -8,20 +9,30 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 import javax.annotation.Nullable;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.triplea.http.client.error.report.ErrorReportRequest;
 
 /**
  * Combines user description input with data from a {@code LogRecord} to create an {@code
  * ErrorReport} object that we can send to the HTTP server.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE, onConstructor_ = @VisibleForTesting)
 class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, ErrorReportRequest> {
+
+  private final Supplier<String> versionSupplier;
+
+  StackTraceErrorReportFormatter() {
+    this(() -> ClientContext.engineVersion().toString());
+  }
 
   @Override
   public ErrorReportRequest apply(final String userDescription, final LogRecord logRecord) {
     return ErrorReportRequest.builder()
-        .title(createTitle(logRecord))
+        .title(versionSupplier.get() + ": " + createTitle(logRecord))
         .body(buildBody(userDescription, logRecord))
         .build();
   }

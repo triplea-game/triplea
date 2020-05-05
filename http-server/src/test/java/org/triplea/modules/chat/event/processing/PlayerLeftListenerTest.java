@@ -42,13 +42,25 @@ class PlayerLeftListenerTest {
   }
 
   @Test
-  @DisplayName("If a player is in the chatter session, then we do relay their message")
-  void ifPlayerSessionDoesExistThenRelayTheirMessage() {
+  void playerDisconnect() {
     when(chatters.playerLeft(session)).thenReturn(Optional.of(UserName.of("user-name")));
 
     playerLeftListener.accept(webSocketMessagingBus, session);
 
     verify(webSocketMessagingBus).broadcastMessage(messageCaptor.capture());
     assertThat(messageCaptor.getValue().getUserName(), is(UserName.of("user-name")));
+  }
+
+  @Test
+  @DisplayName(
+      "If a registered player connects multiple times, only broadcast a 'player"
+          + "has left message' only when their last session has left.")
+  void playerDisconnectAndHasMultipleSessions() {
+    when(chatters.playerLeft(session)).thenReturn(Optional.of(UserName.of("user-name")));
+    when(chatters.isPlayerConnected(UserName.of("user-name"))).thenReturn(true);
+
+    playerLeftListener.accept(webSocketMessagingBus, session);
+
+    verify(webSocketMessagingBus, never()).broadcastMessage(any());
   }
 }

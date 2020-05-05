@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataUtils;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
 
@@ -223,44 +223,36 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
       final boolean retreatWhenOnlyAirLeft,
-      final int initialRunCount)
+      final int runCount)
       throws IllegalStateException {
     synchronized (mutexCalcIsRunning) {
       awaitLatch();
       final long start = System.currentTimeMillis();
-      // Create worker thread pool and start all workers
-      int totalRunCount = 0;
-      int runCount = initialRunCount;
-      final int workerNum = workers.size();
-      final int workerRunCount = Math.max(1, (runCount / Math.max(1, workerNum)));
-      final List<Future<AggregateResults>> list = new ArrayList<>();
-      for (final BattleCalculator worker : workers) {
-        if (!getIsReady()) {
-          // we could have attempted to set a new game data, while the old one was still being set,
-          // causing it to abort with null data
-          return new AggregateResults(0);
-        }
-        final int currentWorkedRunCount = (runCount <= 0 ? 0 : workerRunCount);
-        if (currentWorkedRunCount > 0) {
-          totalRunCount += currentWorkedRunCount;
-          list.add(
-              executor.submit(
-                  () ->
-                      worker.calculate(
-                          attacker,
-                          defender,
-                          location,
-                          attacking,
-                          defending,
-                          bombarding,
-                          territoryEffects,
-                          retreatWhenOnlyAirLeft,
-                          currentWorkedRunCount)));
-        }
-        runCount -= workerRunCount;
+      final var runCountDistributor = new RunCountDistributor(runCount, workers.size());
+      final List<Future<AggregateResults>> list =
+          workers.stream()
+              .map(
+                  worker ->
+                      executor.submit(
+                          () ->
+                              worker.calculate(
+                                  attacker,
+                                  defender,
+                                  location,
+                                  attacking,
+                                  defending,
+                                  bombarding,
+                                  territoryEffects,
+                                  retreatWhenOnlyAirLeft,
+                                  runCountDistributor.nextRunCount())))
+              .collect(Collectors.toList());
+      if (!getIsReady()) {
+        // we could have attempted to set a new game data, while the old one was still being set,
+        // causing it to abort with null data
+        return new AggregateResults(0);
       }
       // Wait for all worker futures to complete and combine results
-      final AggregateResults results = new AggregateResults(totalRunCount);
+      final AggregateResults results = new AggregateResults(runCount);
       for (final Future<AggregateResults> future : list) {
         try {
           final AggregateResults result = future.get();

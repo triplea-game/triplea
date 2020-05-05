@@ -25,7 +25,7 @@ public class ChatMessagingService {
   public static ChatMessagingService build(final Chatters chatters, final Jdbi jdbi) {
     Preconditions.checkNotNull(chatters);
     return ChatMessagingService.builder()
-        .playerConnectedListener(new PlayerConnectedListener(chatters))
+        .playerConnectedListener(PlayerConnectedListener.build(chatters, jdbi))
         .chatMessageListener(ChatMessageListener.build(chatters, jdbi))
         .statusUpdateListener(new StatusUpdateListener(chatters))
         .slapListener(new SlapListener(chatters))

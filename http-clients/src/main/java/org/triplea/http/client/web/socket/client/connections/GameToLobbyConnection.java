@@ -2,8 +2,11 @@ package org.triplea.http.client.web.socket.client.connections;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.http.client.IpAddressParser;
@@ -22,6 +25,7 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
  * a game update so that the lobby updates the game listing. A hosted game will receive messages
  * from lobby for example like a player banned notification.
  */
+@Log
 public class GameToLobbyConnection {
 
   private final HttpLobbyClient lobbyClient;
@@ -64,7 +68,12 @@ public class GameToLobbyConnection {
   }
 
   public void disconnect(final String gameId) {
-    lobbyWatcherClient.removeGame(gameId);
+    CompletableFuture.runAsync(() -> lobbyWatcherClient.removeGame(gameId))
+        .exceptionally(
+            e -> {
+              log.log(Level.INFO, "Could not complete lobby game remove call", e);
+              return null;
+            });
   }
 
   public boolean checkConnectivity(final int localPort) {

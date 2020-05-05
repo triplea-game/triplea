@@ -36,7 +36,7 @@ public class DisconnectUserAction {
   boolean disconnectPlayer(final int moderatorId, final PlayerChatId playerChatId) {
     final GamePlayerLookup gamePlayerLookup =
         apiKeyDaoWrapper.lookupPlayerByChatId(playerChatId).orElse(null);
-    if (gamePlayerLookup == null || !chatters.hasPlayer(gamePlayerLookup.getUserName())) {
+    if (gamePlayerLookup == null || !chatters.isPlayerConnected(gamePlayerLookup.getUserName())) {
       return false;
     }
 

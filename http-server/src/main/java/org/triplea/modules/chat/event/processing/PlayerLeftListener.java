@@ -17,7 +17,10 @@ public class PlayerLeftListener implements BiConsumer<WebSocketMessagingBus, Ses
     chatters
         .playerLeft(session)
         .ifPresent(
-            playerName ->
-                webSocketMessagingBus.broadcastMessage(new PlayerLeftMessage(playerName)));
+            playerName -> {
+              if (!chatters.isPlayerConnected(playerName)) {
+                webSocketMessagingBus.broadcastMessage(new PlayerLeftMessage(playerName));
+              }
+            });
   }
 }

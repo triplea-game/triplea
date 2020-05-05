@@ -1211,7 +1211,8 @@ public class ProTerritoryManager {
                         ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
             for (final Territory possibleNeighborTerritory : possibleNeighborTerritories) {
               final Route route = new Route(currentTerritory, possibleNeighborTerritory);
-              if (MoveValidator.validateCanal(route, List.of(myTransportUnit), player) == null) {
+              if (new MoveValidator(data).validateCanal(route, List.of(myTransportUnit), player)
+                  == null) {
                 nextTerritories.add(possibleNeighborTerritory);
               }
             }
