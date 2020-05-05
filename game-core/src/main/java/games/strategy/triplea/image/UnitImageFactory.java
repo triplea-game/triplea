@@ -22,38 +22,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.swing.ImageIcon;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 
-/** A factory for creating unit images. */
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@NoArgsConstructor
+/** A factory with an image cache for creating unit images. */
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
+  private static final String FILE_NAME_BASE = "units/";
+
   /**
    * Width of all icons. You probably want getUnitImageWidth(), which takes scale factor into
    * account.
    */
-  private static int unitIconWidth = DEFAULT_UNIT_ICON_SIZE;
+  private final int unitIconWidth;
   /**
    * Height of all icons. You probably want getUnitImageHeight(), which takes scale factor into
    * account.
    */
-  private static int unitIconHeight = DEFAULT_UNIT_ICON_SIZE;
+  private final int unitIconHeight;
 
-  private static int unitCounterOffsetWidth = DEFAULT_UNIT_ICON_SIZE / 4;
-  private static int unitCounterOffsetHeight = unitIconHeight;
-  private static final String FILE_NAME_BASE = "units/";
+  private final int unitCounterOffsetWidth;
+  private final int unitCounterOffsetHeight;
   // maps Point -> image
   private final Map<String, Image> images = new HashMap<>();
   // maps Point -> Icon
   private final Map<String, ImageIcon> icons = new HashMap<>();
   // Scaling factor for unit images
-  private double scaleFactor;
-  private ResourceLoader resourceLoader;
-  private MapData mapData;
+  private final double scaleFactor;
+  private final ResourceLoader resourceLoader;
+  private final MapData mapData;
 
   public UnitImageFactory(
       final ResourceLoader resourceLoader, final double unitScale, final MapData mapData) {
