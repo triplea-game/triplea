@@ -66,8 +66,8 @@ public class PerfTimer implements Closeable {
             perfTimer.title, //
             millis,
             milliFraction,
-            stopNanos,
             totalMillis,
+            stopNanos,
             totalNano));
   }
 
