@@ -2262,7 +2262,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               historySyncher.deactivate();
               historySyncher = null;
             }
-            historyPanel.goToEnd();
             historyPanel = null;
             mapPanel.getData().removeDataChangeListener(dataChangeListener);
             statsPanel.setGameData(data);
