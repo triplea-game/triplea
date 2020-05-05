@@ -6,21 +6,17 @@ import feign.HeaderMap;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
-import java.net.URI;
 import java.util.Map;
-import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpConstants;
-import org.triplea.http.client.error.report.ErrorReportRequest;
-import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 @SuppressWarnings("InterfaceNeverImplemented")
 @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-interface GithubClient {
+interface GithubIssueFeignClient {
 
   @VisibleForTesting String CREATE_ISSUE_PATH = "/repos/{org}/{repo}/issues";
 
   /**
-   * API for creating a new issue on github.com.
+   * Creates a new issue on github.com.
    *
    * @throws FeignException Thrown on non-2xx responses.
    */
@@ -29,10 +25,5 @@ interface GithubClient {
       @HeaderMap Map<String, Object> headerMap,
       @Param("org") String org,
       @Param("repo") String repo,
-      ErrorReportRequest errorReport);
-
-  /** Creates an http client that can post a new github issue. */
-  static GithubClient newClient(final URI githubApiHostUri) {
-    return new HttpClient<>(GithubClient.class, githubApiHostUri).get();
-  }
+      CreateIssueRequest createIssueRequest);
 }

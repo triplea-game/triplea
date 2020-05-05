@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.WireMockTest;
 import org.triplea.http.client.error.report.ErrorReportRequest;
-import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
 class GithubIssueClientTest extends WireMockTest {

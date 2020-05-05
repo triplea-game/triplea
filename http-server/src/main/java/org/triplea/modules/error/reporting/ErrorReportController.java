@@ -27,15 +27,18 @@ public class ErrorReportController extends HttpController {
   private final BiFunction<String, ErrorReportRequest, ErrorReportResponse> errorReportIngestion;
 
   public static ErrorReportController build(final AppConfig configuration, final Jdbi jdbi) {
+    final boolean isTest = configuration.getGithubApiToken().equals("test");
+
     final GithubIssueClient githubIssueClient =
         GithubIssueClient.builder()
             .uri(AppConfig.GITHUB_WEB_SERVICE_API_URL)
             .authToken(configuration.getGithubApiToken())
             .githubOrg(AppConfig.GITHUB_ORG)
             .githubRepo(configuration.getGithubRepo())
+            .isTest(isTest)
             .build();
 
-    if (githubIssueClient.isTest()) {
+    if (isTest) {
       Preconditions.checkState(!configuration.isProd());
     }
 
