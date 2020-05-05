@@ -121,15 +121,16 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   public abstract String performMove(MoveDescription move);
 
   public static MoveValidationResult validateMove(
+      final GameData gameData,
       final MoveType moveType,
       final MoveDescription move,
       final GamePlayer player,
       final boolean isNonCombat,
       final List<UndoableMove> undoableMoves) {
     if (moveType == MoveType.SPECIAL) {
-      return SpecialMoveDelegate.validateMove(move.getUnits(), move.getRoute(), player);
+      return SpecialMoveDelegate.validateMove(gameData, move.getUnits(), move.getRoute(), player);
     }
-    return MoveValidator.validateMove(move, player, isNonCombat, undoableMoves);
+    return new MoveValidator(gameData).validateMove(move, player, isNonCombat, undoableMoves);
   }
 
   @Override
