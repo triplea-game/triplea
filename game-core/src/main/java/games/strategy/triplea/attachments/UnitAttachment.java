@@ -3366,16 +3366,20 @@ public class UnitAttachment extends DefaultAttachment {
     if (getCanBeMovedThroughByEnemies()) {
       tuples.add(Tuple.of("Can Be Moved Through By Enemies", ""));
     }
-    if (!getCanNotTarget().isEmpty()) {
-      if (getCanNotTarget().size() <= 4) {
-        tuples.add(Tuple.of("Can't Target: ", getCanNotTarget().toString()));
+    final Collection<UnitType> cannotTarget = getCanNotTarget();
+    if (!cannotTarget.isEmpty()) {
+      if (cannotTarget.size() <= 4) {
+        tuples.add(Tuple.of("Can't Target", MyFormatter.defaultNamedToTextList(cannotTarget)));
       } else {
         tuples.add(Tuple.of("Can't Target Some Units", ""));
       }
     }
-    if (!getCanNotBeTargetedBy().isEmpty()) {
-      if (getCanNotBeTargetedBy().size() <= 4) {
-        tuples.add(Tuple.of("Can't Be Targeted By: ", getCanNotBeTargetedBy().toString()));
+    final Collection<UnitType> cannotBeTargettedBy = getCanNotBeTargetedBy();
+    if (!cannotBeTargettedBy.isEmpty()) {
+      if (cannotBeTargettedBy.size() <= 4) {
+        tuples.add(
+            Tuple.of(
+                "Can't Be Targeted By", MyFormatter.defaultNamedToTextList(cannotBeTargettedBy)));
       } else {
         tuples.add(Tuple.of("Can't Be Targeted By Some Units", ""));
       }
