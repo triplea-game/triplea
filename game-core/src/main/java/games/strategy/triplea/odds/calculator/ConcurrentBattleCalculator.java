@@ -9,13 +9,13 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataUtils;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.java.Log;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.java.concurrency.CountUpAndDownLatch;
 
 /**
@@ -80,12 +80,10 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
         // increment our token, so that we can set the data in a different thread and return from
         // this one
         latchWorkerThreadsCreation.increment();
-        CompletableFuture.runAsync(() -> createWorkers(data))
+        AsyncRunner.runAsync(() -> createWorkers(data))
             .exceptionally(
-                throwable -> {
-                  log.log(Level.SEVERE, "Error when trying to create Workers", throwable);
-                  return null;
-                });
+                throwable ->
+                    log.log(Level.SEVERE, "Error when trying to create Workers", throwable));
       }
     }
   }
