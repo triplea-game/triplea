@@ -13,12 +13,22 @@ import javax.swing.table.DefaultTableModel;
 import lombok.NoArgsConstructor;
 
 /**
- * Example usage:. <code><pre>
+ * Example usage: <code><pre>
  *   final JTable panel = JTableBuilder.builder()
  *       .columnNames(columns)
  *       .tableData(rows)
  *       .build();
+ * </pre></code> Example usage with row mapper: <code><pre>
+ *   final JTable panel = new JTableBuilder&lt;Person&gt;()
+ *       .columnNames(columns)
+ *       .rowData(personsList)
+ *       .rowMapper(person -> List.of(person.getFirstName(), person.getLastName())
+ *       .build();
  * </pre></code>
+ *
+ * @param <T> The value type that can be mapped to each row. If not specified will implicitly be a
+ *     list of strings. Otherwise you can specify a list 'rowData' objects and how to map each one
+ *     to a row with 'rowMapper'.
  */
 @NoArgsConstructor
 public class JTableBuilder<T> {
