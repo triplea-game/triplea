@@ -37,7 +37,7 @@ public final class JTextAreaBuilder {
   private boolean selectAllOnFocus;
   @Nullable private String toolTip;
 
-  private JTextAreaBuilder() {}
+  public JTextAreaBuilder() {}
 
   public static JTextAreaBuilder builder() {
     return new JTextAreaBuilder();

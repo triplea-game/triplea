@@ -3,6 +3,7 @@ package org.triplea.java;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -18,8 +19,9 @@ class DateTimeFormatterUtilTest {
 
   @Test
   void verifyFormatting() {
-    final String result = //
-        DateTimeFormatterUtil.formatEpochMilli(DEC_FIRST_EPOCH_MILLIS, Locale.ENGLISH, ZONE_ID);
+    final String result =
+        DateTimeFormatterUtil.formatEpochMilli(
+            Instant.ofEpochMilli(DEC_FIRST_EPOCH_MILLIS), Locale.ENGLISH, ZONE_ID);
     assertThat(result, is("2000-12-1 23:59 (GMT+8)"));
   }
 }
