@@ -3366,24 +3366,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (getCanBeMovedThroughByEnemies()) {
       tuples.add(Tuple.of("Can Be Moved Through By Enemies", ""));
     }
-    final Collection<UnitType> cannotTarget = getCanNotTarget();
-    if (!cannotTarget.isEmpty()) {
-      if (cannotTarget.size() <= 4) {
-        tuples.add(Tuple.of("Can't Target", MyFormatter.defaultNamedToTextList(cannotTarget)));
-      } else {
-        tuples.add(Tuple.of("Can't Target Some Units", ""));
-      }
-    }
-    final Collection<UnitType> cannotBeTargettedBy = getCanNotBeTargetedBy();
-    if (!cannotBeTargettedBy.isEmpty()) {
-      if (cannotBeTargettedBy.size() <= 4) {
-        tuples.add(
-            Tuple.of(
-                "Can't Be Targeted By", MyFormatter.defaultNamedToTextList(cannotBeTargettedBy)));
-      } else {
-        tuples.add(Tuple.of("Can't Be Targeted By Some Units", ""));
-      }
-    }
+    addLabeledUnitTypes("Can't Target", getCanNotTarget(), tuples);
+    addLabeledUnitTypes("Can't Be Targeted By", getCanNotBeTargetedBy(), tuples);
     if (getIsDestroyer()) {
       tuples.add(Tuple.of("Is Anti-Stealth", ""));
     }
@@ -3605,6 +3589,19 @@ public class UnitAttachment extends DefaultAttachment {
       result.append("<br />");
     }
     return result.toString();
+  }
+
+  private void addLabeledUnitTypes(
+      String label,
+      final Collection<UnitType> unitTypes,
+      final List<Tuple<String, String>> tuples) {
+    if (!unitTypes.isEmpty()) {
+      if (unitTypes.size() <= 4) {
+        tuples.add(Tuple.of(label, MyFormatter.defaultNamedToTextList(unitTypes)));
+      } else {
+        tuples.add(Tuple.of(label + " Some Units", ""));
+      }
+    }
   }
 
   private static <T extends DefaultNamed> void addIntegerMapDescription(
