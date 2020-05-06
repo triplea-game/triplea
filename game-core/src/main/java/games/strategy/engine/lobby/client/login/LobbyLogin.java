@@ -230,7 +230,12 @@ public class LobbyLogin {
         .lobbyUri(serverProperties.getUri())
         .apiKey(ApiKey.of(loginResponse.getApiKey()))
         .errorHandler(
-            error -> SwingComponents.showError(null, "Error communicating with lobby", error))
+            error ->
+                SwingComponents.showError(
+                    parentWindow,
+                    "Error communicating with lobby",
+                    "Please reconnect. Error: "
+                        + (error.isBlank() ? "No error details given by server" : error)))
         .build();
   }
 
