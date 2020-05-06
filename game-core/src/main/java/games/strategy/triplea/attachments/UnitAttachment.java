@@ -3592,7 +3592,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void addLabeledUnitTypes(
-      String label,
+      final String label,
       final Collection<UnitType> unitTypes,
       final List<Tuple<String, String>> tuples) {
     if (!unitTypes.isEmpty()) {
