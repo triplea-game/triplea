@@ -36,6 +36,23 @@ class ModeratorChatClientTest extends WireMockTest {
   }
 
   @Test
+  void muteUser(@WiremockResolver.Wiremock final WireMockServer server) {
+    server.stubFor(
+        WireMock.post(ModeratorChatClient.MUTE_USER)
+            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
+            .withRequestBody(
+                equalToJson(
+                    toJson(
+                        MuteUserRequest.builder()
+                            .minutes(100)
+                            .playerChatId("player-chat-id")
+                            .build())))
+            .willReturn(WireMock.aResponse().withStatus(200)));
+
+    newClient(server).muteUser(PlayerChatId.of("player-chat-id"), 100);
+  }
+
+  @Test
   void disconnectPlayer(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.post(ModeratorChatClient.DISCONNECT_PLAYER_PATH)

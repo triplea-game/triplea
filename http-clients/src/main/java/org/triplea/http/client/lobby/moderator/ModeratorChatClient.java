@@ -13,6 +13,7 @@ import org.triplea.http.client.HttpClient;
 public class ModeratorChatClient {
   public static final String DISCONNECT_PLAYER_PATH = "/lobby/moderator/disconnect-player";
   public static final String BAN_PLAYER_PATH = "/lobby/moderator/ban-player";
+  public static final String MUTE_USER = "/lobby/moderator/mute-player";
   public static final String FETCH_PLAYER_INFORMATION = "/lobby/moderator/fetch-player-info";
 
   private AuthenticationHeaders authenticationHeaders;
@@ -36,5 +37,14 @@ public class ModeratorChatClient {
   public PlayerSummaryForModerator fetchPlayerInformation(final PlayerChatId playerChatId) {
     return moderatorLobbyFeignClient.fetchPlayerInformation(
         authenticationHeaders.createHeaders(), playerChatId.getValue());
+  }
+
+  public void muteUser(final PlayerChatId playerChatId, final long minutes) {
+    moderatorLobbyFeignClient.mutePlayer(
+        authenticationHeaders.createHeaders(),
+        MuteUserRequest.builder() //
+            .playerChatId(playerChatId.getValue())
+            .minutes(minutes)
+            .build());
   }
 }

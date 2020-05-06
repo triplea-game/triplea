@@ -126,4 +126,8 @@ public class PlayerToLobbyConnection {
   public PlayerSummaryForModerator fetchPlayerInformation(final PlayerChatId playerChatId) {
     return httpLobbyClient.getModeratorLobbyClient().fetchPlayerInformation(playerChatId);
   }
+
+  public void mutePlayer(final PlayerChatId playerChatId, final long minutes) {
+    httpLobbyClient.getModeratorLobbyClient().muteUser(playerChatId, minutes);
+  }
 }
