@@ -737,7 +737,7 @@ public class DiceRoll implements Externalizable {
         supportRulesFriendly,
         supportLeftFriendly,
         supportUnitsLeftFriendly,
-        data,
+        data.getUnitTypeList().getSupportRules(),
         defending,
         true);
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<>();
@@ -748,7 +748,7 @@ public class DiceRoll implements Externalizable {
         supportRulesEnemy,
         supportLeftEnemy,
         supportUnitsLeftEnemy,
-        data,
+        data.getUnitTypeList().getSupportRules(),
         !defending,
         false);
 
@@ -1005,23 +1005,14 @@ public class DiceRoll implements Externalizable {
             .parallelStream()
             .filter(usa -> (usa.getAaRoll() || usa.getAaStrength()))
             .collect(Collectors.toSet());
-    getSupport(
+    getSortedSupport(
         unitsGivingTheSupport,
-        rules,
         supportsAvailable,
         supportLeft,
         supportUnitsLeft,
+        rules,
         defence,
         allies);
-
-    final SupportRuleSort supportRuleSort =
-        SupportRuleSort.builder()
-            .defense(defence)
-            .friendly(allies)
-            .roll(UnitSupportAttachment::getAaRoll)
-            .strength(UnitSupportAttachment::getAaStrength)
-            .build();
-    supportsAvailable.forEach(unitSupportAttachment -> unitSupportAttachment.sort(supportRuleSort));
   }
 
   /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
@@ -1030,12 +1021,12 @@ public class DiceRoll implements Externalizable {
       final Set<List<UnitSupportAttachment>> supportsAvailable,
       final IntegerMap<UnitSupportAttachment> supportLeft,
       final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
-      final GameData data,
+      final Set<UnitSupportAttachment> rules,
       final boolean defence,
       final boolean allies) {
     getSupport(
         unitsGivingTheSupport,
-        data.getUnitTypeList().getSupportRules(),
+        rules,
         supportsAvailable,
         supportLeft,
         supportUnitsLeft,
