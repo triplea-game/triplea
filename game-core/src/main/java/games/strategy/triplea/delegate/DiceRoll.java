@@ -108,7 +108,7 @@ public class DiceRoll implements Externalizable {
       final Collection<Unit> aaUnits,
       final GameData data,
       final boolean defending,
-      final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap) {
+      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap) {
     int highestAttack = 0;
     final int diceSize = data.getDiceSides();
     int chosenDiceSize = diceSize;
@@ -121,7 +121,7 @@ public class DiceRoll implements Externalizable {
       }
       int attack = defending ? ua.getAttackAa(u.getOwner()) : ua.getOffensiveAttackAa(u.getOwner());
       if (unitPowerAndRollsMap.containsKey(u)) {
-        attack = unitPowerAndRollsMap.get(u).getFirst();
+        attack = unitPowerAndRollsMap.get(u).getTotalPower();
       }
       if (attack > uaDiceSides) {
         attack = uaDiceSides;
@@ -141,25 +141,25 @@ public class DiceRoll implements Externalizable {
    * account infinite roll and overstack AA.
    */
   public static int getTotalAaAttacks(
-      final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
+      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap,
       final Collection<Unit> validTargets) {
     if (unitPowerAndRollsMap.isEmpty() || validTargets.isEmpty()) {
       return 0;
     }
     int totalAAattacksNormal = 0;
     int totalAAattacksSurplus = 0;
-    for (final Entry<Unit, Tuple<Integer, Integer>> entry : unitPowerAndRollsMap.entrySet()) {
-      if (entry.getValue().getFirst() == 0 || entry.getValue().getSecond() == 0) {
+    for (final Entry<Unit, TotalPowerAndTotalRolls> entry : unitPowerAndRollsMap.entrySet()) {
+      if (entry.getValue().getTotalPower() == 0 || entry.getValue().getTotalRolls() == 0) {
         continue;
       }
       final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
-      if (entry.getValue().getSecond() == -1) {
+      if (entry.getValue().getTotalRolls() == -1) {
         totalAAattacksNormal = validTargets.size();
       } else {
         if (ua.getMayOverStackAa()) {
-          totalAAattacksSurplus += entry.getValue().getSecond();
+          totalAAattacksSurplus += entry.getValue().getTotalRolls();
         } else {
-          totalAAattacksNormal += entry.getValue().getSecond();
+          totalAAattacksNormal += entry.getValue().getTotalRolls();
         }
       }
     }
@@ -200,7 +200,7 @@ public class DiceRoll implements Externalizable {
       final boolean defending) {
 
     final GameData data = bridge.getData();
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         getAaUnitPowerAndRollsForNormalBattles(
             aaUnits,
             allEnemyUnitsAliveOrWaitingToDie,
@@ -290,7 +290,7 @@ public class DiceRoll implements Externalizable {
           final int[] dice,
           final List<Die> sortedDice,
           final boolean defending,
-          final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
+          final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap,
           final Collection<Unit> validTargets,
           final GameData data,
           final boolean fillInSortedDiceAndRecordHits) {
@@ -318,18 +318,18 @@ public class DiceRoll implements Externalizable {
     final int totalAAattacksTotal = getTotalAaAttacks(unitPowerAndRollsMap, validTargets);
 
     // Determine individual totals
-    final Map<Unit, Tuple<Integer, Integer>> normalNonInfiniteAaMap =
+    final Map<Unit, TotalPowerAndTotalRolls> normalNonInfiniteAaMap =
         new HashMap<>(unitPowerAndRollsMap);
     normalNonInfiniteAaMap.keySet().retainAll(normalNonInfiniteAa);
     final int normalNonInfiniteAAtotalAAattacks =
         getTotalAaAttacks(normalNonInfiniteAaMap, validTargets);
-    final Map<Unit, Tuple<Integer, Integer>> infiniteAaMap = new HashMap<>(unitPowerAndRollsMap);
+    final Map<Unit, TotalPowerAndTotalRolls> infiniteAaMap = new HashMap<>(unitPowerAndRollsMap);
     infiniteAaMap.keySet().retainAll(infiniteAa);
     final int infiniteAAtotalAAattacks =
         Math.min(
             (validTargets.size() - normalNonInfiniteAAtotalAAattacks),
             getTotalAaAttacks(infiniteAaMap, validTargets));
-    final Map<Unit, Tuple<Integer, Integer>> overstackAaMap = new HashMap<>(unitPowerAndRollsMap);
+    final Map<Unit, TotalPowerAndTotalRolls> overstackAaMap = new HashMap<>(unitPowerAndRollsMap);
     overstackAaMap.keySet().retainAll(overstackAa);
     final int overstackAAtotalAAattacks = getTotalAaAttacks(overstackAaMap, validTargets);
     if (totalAAattacksTotal
@@ -362,8 +362,8 @@ public class DiceRoll implements Externalizable {
     final Iterator<Unit> normalAAiter = normalNonInfiniteAa.iterator();
     while (i < runningMaximum && normalAAiter.hasNext()) {
       final Unit aaGun = normalAAiter.next();
-      int numAttacks = unitPowerAndRollsMap.get(aaGun).getSecond();
-      final int hitAt = unitPowerAndRollsMap.get(aaGun).getFirst();
+      int numAttacks = unitPowerAndRollsMap.get(aaGun).getTotalRolls();
+      final int hitAt = unitPowerAndRollsMap.get(aaGun).getTotalPower();
       if (hitAt < hitAtForInfinite) {
         continue;
       }
@@ -406,8 +406,8 @@ public class DiceRoll implements Externalizable {
     final Iterator<Unit> overstackAAiter = overstackAa.iterator();
     while (i < runningMaximum && overstackAAiter.hasNext()) {
       final Unit aaGun = overstackAAiter.next();
-      int numAttacks = unitPowerAndRollsMap.get(aaGun).getSecond();
-      final int hitAt = unitPowerAndRollsMap.get(aaGun).getFirst();
+      int numAttacks = unitPowerAndRollsMap.get(aaGun).getTotalRolls();
+      final int hitAt = unitPowerAndRollsMap.get(aaGun).getTotalPower();
       while (i < runningMaximum && numAttacks > 0) {
         if (recordSortedDice) {
           // Dice are zero based
@@ -437,7 +437,7 @@ public class DiceRoll implements Externalizable {
       final List<Unit> units,
       final GameData data,
       final boolean defending,
-      final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap) {
+      final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap) {
     units.sort(
         Comparator.comparing(
             unit -> getMaxAaAttackAndDiceSides(Set.of(unit), data, defending, unitPowerAndRollsMap),
@@ -453,14 +453,14 @@ public class DiceRoll implements Externalizable {
    * @param aaUnits should be sorted from weakest to strongest, before the method is called, for the
    *     actual battle.
    */
-  public static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
+  public static Map<Unit, TotalPowerAndTotalRolls> getAaUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> aaUnits,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final boolean defending,
       final GameData data) {
 
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRolls = new HashMap<>();
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRolls = new HashMap<>();
     if (aaUnits == null || aaUnits.isEmpty()) {
       return unitPowerAndRolls;
     }
@@ -561,7 +561,12 @@ public class DiceRoll implements Externalizable {
         }
       }
 
-      unitPowerAndRolls.put(unit, Tuple.of(strength, rolls));
+      unitPowerAndRolls.put(
+          unit, //
+          TotalPowerAndTotalRolls.builder() //
+              .totalPower(strength)
+              .totalRolls(rolls)
+              .build());
     }
 
     return unitPowerAndRolls;
