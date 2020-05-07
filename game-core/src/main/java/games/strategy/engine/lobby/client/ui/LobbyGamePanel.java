@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.client.ui;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.ui.action.FetchChatHistory;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.net.URI;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -24,6 +26,7 @@ import org.triplea.swing.SwingAction;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
+  private final JFrame parent;
   private JButton joinGame;
   private LobbyGameTableModel gameTableModel;
   private final LobbyClient lobbyClient;
@@ -31,9 +34,11 @@ class LobbyGamePanel extends JPanel {
   private final URI lobbyUri;
 
   LobbyGamePanel(
+      final JFrame parent,
       final LobbyClient lobbyClient,
       final URI lobbyUri,
       final LobbyGameTableModel lobbyGameTableModel) {
+    this.parent = parent;
     this.lobbyClient = lobbyClient;
     this.gameTableModel = lobbyGameTableModel;
     this.lobbyUri = lobbyUri;
@@ -166,7 +171,9 @@ class LobbyGamePanel extends JPanel {
 
   private Collection<Action> getGeneralAdminGamesListContextActions() {
     return List.of(
-        SwingAction.of("Boot Game", e -> bootGame()), SwingAction.of("Shutdown", e -> shutdown()));
+        SwingAction.of("Show Chat History", e -> showChatHistory()),
+        SwingAction.of("Boot Game", e -> bootGame()),
+        SwingAction.of("Shutdown", e -> shutdown()));
   }
 
   private void joinGame() {
@@ -196,6 +203,21 @@ class LobbyGamePanel extends JPanel {
         options.getComments(),
         options.getPassword(),
         lobbyUri);
+  }
+
+  private void showChatHistory() {
+    final int selectedIndex = gameTable.getSelectedRow();
+    if (selectedIndex == -1) {
+      return;
+    }
+
+    FetchChatHistory.builder()
+        .parentWindow(parent)
+        .gameId(gameTableModel.getGameIdForRow(selectedIndex))
+        .gameHostName(gameTableModel.get(selectedIndex).getHostedBy().getName())
+        .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
+        .build()
+        .fetchAndShowChatHistory();
   }
 
   private void bootGame() {

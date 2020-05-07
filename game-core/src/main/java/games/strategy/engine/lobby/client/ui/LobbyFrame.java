@@ -55,7 +55,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         new LobbyGameTableModel(
             lobbyClient.isModerator(), lobbyClient.getPlayerToLobbyConnection());
     final LobbyGamePanel gamePanel =
-        new LobbyGamePanel(lobbyClient, serverProperties.getUri(), tableModel);
+        new LobbyGamePanel(this, lobbyClient, serverProperties.getUri(), tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
