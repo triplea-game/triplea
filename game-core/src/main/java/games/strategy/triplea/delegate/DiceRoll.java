@@ -1086,7 +1086,7 @@ public class DiceRoll implements Externalizable {
       supportLeft.put(rule, numSupport * rule.getNumber());
       final IntegerMap<Unit> unitsForRule = new IntegerMap<>();
       supporters.forEach(unit -> unitsForRule.put(unit, rule.getNumber()));
-      impArtTechUnits.forEach(unit -> unitsForRule.put(unit, rule.getNumber()));
+      impArtTechUnits.forEach(unit -> unitsForRule.add(unit, rule.getNumber()));
       supportUnitsLeft.put(rule, unitsForRule);
       final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
       List<UnitSupportAttachment> ruleType = null;
