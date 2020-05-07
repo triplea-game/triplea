@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client.ui.action.player.info;
 
 import java.awt.Component;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -26,21 +26,19 @@ class PlayerAliasesTab {
 
   Component getTabContents() {
     return SwingComponents.newJScrollPane(
-        new JTableBuilder()
+        new JTableBuilder<Alias>()
             .columnNames("Name", "Last Date Used", "IP", "System ID")
-            .tableData(toTableData(playerSummaryForModerator.getAliases()))
+            .rowData(
+                playerSummaryForModerator.getAliases().stream()
+                    .sorted(Comparator.comparing(Alias::getEpochMilliDate))
+                    .collect(Collectors.toList()))
+            .rowMapper(
+                alias ->
+                    List.of(
+                        alias.getName(),
+                        DateTimeFormatterUtil.formatEpochMilli(alias.getEpochMilliDate()),
+                        alias.getIp(),
+                        alias.getSystemId()))
             .build());
-  }
-
-  private List<List<String>> toTableData(final Collection<Alias> aliases) {
-    return aliases.stream()
-        .map(
-            alias ->
-                List.of(
-                    alias.getName(),
-                    DateTimeFormatterUtil.formatEpochMilli(alias.getEpochMilliDate()),
-                    alias.getIp(),
-                    alias.getSystemId()))
-        .collect(Collectors.toList());
   }
 }

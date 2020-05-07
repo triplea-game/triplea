@@ -5,41 +5,63 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import lombok.NoArgsConstructor;
 
 /**
- * Example usage:. <code><pre>
+ * Example usage: <code><pre>
  *   final JTable panel = JTableBuilder.builder()
  *       .columnNames(columns)
  *       .tableData(rows)
  *       .build();
+ * </pre></code> Example usage with row mapper: <code><pre>
+ *   final JTable panel = new JTableBuilder&lt;Person&gt;()
+ *       .columnNames(columns)
+ *       .rowData(personsList)
+ *       .rowMapper(person -> List.of(person.getFirstName(), person.getLastName())
+ *       .build();
  * </pre></code>
+ *
+ * @param <T> The value type that can be mapped to each row. If not specified will implicitly be a
+ *     list of strings. Otherwise you can specify a list 'rowData' objects and how to map each one
+ *     to a row with 'rowMapper'.
  */
 @NoArgsConstructor
-public class JTableBuilder {
+public class JTableBuilder<T> {
 
-  private List<List<String>> rowData;
+  private Function<T, List<String>> rowMapper;
+  private List<T> rowData;
+  private List<List<String>> tableData;
   private List<String> columnNames;
 
-  public static JTableBuilder builder() {
-    return new JTableBuilder();
+  public static <X> JTableBuilder<X> builder() {
+    return new JTableBuilder<>();
   }
 
   /** Constructs the JTable swing component. */
   public JTable build() {
     Preconditions.checkNotNull(columnNames);
-    Optional.ofNullable(rowData)
+    Preconditions.checkState(
+        rowData == null ^ tableData == null,
+        "Must either user tableData + rowMapper or specify rowData");
+    Preconditions.checkState(
+        rowData != null || rowMapper != null,
+        "If specifying row data, must specify a mapper for the row data");
+    Optional.ofNullable(tableData)
         .ifPresent(data -> verifyRowLengthsMatchHeader(data, columnNames.size()));
+
+    final List<List<String>> data =
+        Optional.ofNullable(tableData)
+            .orElseGet(() -> rowData.stream().map(rowMapper).collect(Collectors.toList()));
 
     final DefaultTableModel model = new DefaultTableModel();
     columnNames.forEach(model::addColumn);
 
-    Optional.ofNullable(rowData)
-        .ifPresent(
-            data -> data.stream().map(row -> row.toArray(new String[0])).forEach(model::addRow));
+    data.stream().map(row -> row.toArray(new String[0])).forEach(model::addRow);
     return new JTable(model);
   }
 
@@ -77,18 +99,28 @@ public class JTableBuilder {
     addRows(table, rows);
   }
 
-  public JTableBuilder columnNames(final String... columnNames) {
+  public JTableBuilder<T> columnNames(final String... columnNames) {
     return columnNames(List.of(columnNames));
   }
 
-  public JTableBuilder columnNames(final List<String> columnNames) {
+  public JTableBuilder<T> columnNames(final List<String> columnNames) {
     checkArgument(!columnNames.isEmpty());
     this.columnNames = columnNames;
     return this;
   }
 
-  public JTableBuilder tableData(final List<List<String>> rowData) {
+  public JTableBuilder<T> tableData(final List<List<String>> tableData) {
+    this.tableData = tableData;
+    return this;
+  }
+
+  public JTableBuilder<T> rowData(final List<T> rowData) {
     this.rowData = rowData;
+    return this;
+  }
+
+  public JTableBuilder<T> rowMapper(final Function<T, List<String>> rowMapper) {
+    this.rowMapper = rowMapper;
     return this;
   }
 }
