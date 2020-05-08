@@ -75,6 +75,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.Play
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Version;
@@ -549,7 +550,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             messenger -> {
               final IClientChannel channel =
                   (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
-              channel.playerListingChanged(getPlayerListingInternal());
+              AsyncRunner.runAsync(() -> channel.playerListingChanged(getPlayerListingInternal()))
+                  .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
             });
   }
 
