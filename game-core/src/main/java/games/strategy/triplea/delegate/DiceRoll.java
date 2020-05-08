@@ -19,6 +19,7 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.power.calculator.SupportBonusCalculator;
 import games.strategy.triplea.delegate.power.calculator.SupportRuleSort;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
@@ -514,7 +515,7 @@ public class DiceRoll implements Externalizable {
       int strength =
           defending ? ua.getAttackAa(unit.getOwner()) : ua.getOffensiveAttackAa(unit.getOwner());
       strength +=
-          getSupport(
+          SupportBonusCalculator.getSupport(
               unit,
               supportRulesFriendly,
               supportLeftFriendly,
@@ -522,7 +523,7 @@ public class DiceRoll implements Externalizable {
               new HashMap<>(),
               UnitSupportAttachment::getAaStrength);
       strength +=
-          getSupport(
+          SupportBonusCalculator.getSupport(
               unit,
               supportRulesEnemy,
               supportLeftEnemy,
@@ -539,7 +540,7 @@ public class DiceRoll implements Externalizable {
         rolls = ua.getMaxAaAttacks();
         if (rolls > -1) {
           rolls +=
-              getSupport(
+              SupportBonusCalculator.getSupport(
                   unit,
                   supportRulesFriendly,
                   supportLeftFriendlyRolls,
@@ -547,7 +548,7 @@ public class DiceRoll implements Externalizable {
                   new HashMap<>(),
                   UnitSupportAttachment::getAaRoll);
           rolls +=
-              getSupport(
+              SupportBonusCalculator.getSupport(
                   unit,
                   supportRulesEnemy,
                   supportLeftEnemyRolls,
@@ -783,7 +784,7 @@ public class DiceRoll implements Externalizable {
           strength = Math.min(1, strength);
         } else {
           strength +=
-              getSupport(
+              SupportBonusCalculator.getSupport(
                   unit,
                   supportRulesFriendly,
                   supportLeftFriendly,
@@ -792,7 +793,7 @@ public class DiceRoll implements Externalizable {
                   UnitSupportAttachment::getStrength);
         }
         strength +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesEnemy,
                 supportLeftEnemy,
@@ -812,7 +813,7 @@ public class DiceRoll implements Externalizable {
           strength = ua.getBombard();
         }
         strength +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesFriendly,
                 supportLeftFriendly,
@@ -820,7 +821,7 @@ public class DiceRoll implements Externalizable {
                 unitSupportPowerMap,
                 UnitSupportAttachment::getStrength);
         strength +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesEnemy,
                 supportLeftEnemy,
@@ -844,7 +845,7 @@ public class DiceRoll implements Externalizable {
           rolls = ua.getAttackRolls(unit.getOwner());
         }
         rolls +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesFriendly,
                 supportLeftFriendlyRolls,
@@ -852,7 +853,7 @@ public class DiceRoll implements Externalizable {
                 unitSupportRollsMap,
                 UnitSupportAttachment::getRoll);
         rolls +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesEnemy,
                 supportLeftEnemyRolls,
@@ -1118,52 +1119,6 @@ public class DiceRoll implements Externalizable {
       }
       ruleType.add(rule);
     }
-  }
-
-  /**
-   * Returns the support for this unit type, and decrements the supportLeft counters.
-   *
-   * @return the bonus given to the unit
-   */
-  private static int getSupport(
-      final Unit unit,
-      final Set<List<UnitSupportAttachment>> supportsAvailable,
-      final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
-      final Map<Unit, IntegerMap<Unit>> unitSupportMap,
-      final Predicate<UnitSupportAttachment> ruleFilter) {
-    int givenSupport = 0;
-    for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
-      int maxPerBonusType = bonusType.get(0).getBonusType().getCount();
-      for (final UnitSupportAttachment rule : bonusType) {
-        if (!ruleFilter.test(rule)) {
-          continue;
-        }
-        final Set<UnitType> types = rule.getUnitType();
-        if (types != null && types.contains(unit.getType()) && supportLeft.getInt(rule) > 0) {
-          final int numSupportToApply =
-              Math.min(
-                  maxPerBonusType,
-                  Math.min(supportLeft.getInt(rule), supportUnitsLeft.get(rule).size()));
-          for (int i = 0; i < numSupportToApply; i++) {
-            givenSupport += rule.getBonus();
-            supportLeft.add(rule, -1);
-            final Set<Unit> supporters = supportUnitsLeft.get(rule).keySet();
-            final Unit u = supporters.iterator().next();
-            supportUnitsLeft.get(rule).add(u, -1);
-            if (supportUnitsLeft.get(rule).getInt(u) <= 0) {
-              supportUnitsLeft.get(rule).removeKey(u);
-            }
-            unitSupportMap.computeIfAbsent(u, j -> new IntegerMap<>()).add(unit, rule.getBonus());
-          }
-          maxPerBonusType -= numSupportToApply;
-          if (maxPerBonusType <= 0) {
-            break;
-          }
-        }
-      }
-    }
-    return givenSupport;
   }
 
   /**
