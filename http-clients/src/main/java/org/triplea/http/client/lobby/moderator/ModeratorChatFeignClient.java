@@ -3,6 +3,7 @@ package org.triplea.http.client.lobby.moderator;
 import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
+import java.util.List;
 import java.util.Map;
 import org.triplea.http.client.HttpConstants;
 
