@@ -24,7 +24,7 @@ class AsyncRunnerTest {
       ArgumentCaptor.forClass(Throwable.class);
 
   @Test
-  void runASync() {
+  void runAsync() {
     AsyncRunner.runAsync(runnable) //
         .exceptionally(exceptionHandler);
 
