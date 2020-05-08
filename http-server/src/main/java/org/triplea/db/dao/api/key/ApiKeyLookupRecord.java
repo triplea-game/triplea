@@ -1,6 +1,8 @@
 package org.triplea.db.dao.api.key;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,50 +15,48 @@ import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.java.Postconditions;
 
 /** Maps ResultSet data when querying for a users API key. */
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
 public class ApiKeyLookupRecord {
-  public static final String API_KEY_ID_COLUMN = "api_key_id";
-  public static final String PLAYER_CHAT_ID_COLUMN = "player_chat_id";
-  public static final String ROLE_COLUMN = "role";
-  public static final String USERNAME_COLUMN = "username";
-  public static final String USER_ID_COLUMN = "id";
-
-  private int apiKeyId;
-  private @Nullable Integer userId;
-  private @Nullable String username;
-  private String playerChatId;
-  private String role;
+  @Nonnull private Integer apiKeyId;
+  @Nullable private Integer userId;
+  @Nonnull private String username;
+  @Nonnull private String playerChatId;
+  @Nonnull private String role;
 
   /** Returns a JDBI row mapper used to convert a ResultSet into an instance of this bean object. */
   public static RowMapper<ApiKeyLookupRecord> buildResultMapper() {
     return (rs, ctx) -> {
-      final var userWithRoleRecord =
+      final var apiKeyLookupRecord =
           ApiKeyLookupRecord.builder()
-              .apiKeyId(rs.getInt(API_KEY_ID_COLUMN))
-              .userId(rs.getInt(USER_ID_COLUMN) == 0 ? null : rs.getInt(USER_ID_COLUMN))
-              .playerChatId(Preconditions.checkNotNull(rs.getString(PLAYER_CHAT_ID_COLUMN)))
-              .role(Preconditions.checkNotNull(rs.getString(ROLE_COLUMN)))
-              .username(rs.getString(USERNAME_COLUMN))
+              .apiKeyId(rs.getInt("api_key_id"))
+              .userId(rs.getInt("user_id"))
+              .playerChatId(Preconditions.checkNotNull(rs.getString("player_chat_id")))
+              .role(Preconditions.checkNotNull(rs.getString("user_role")))
+              .username(rs.getString("username"))
               .build();
 
-      Postconditions.assertState(userWithRoleRecord.role != null);
-
-      if (userWithRoleRecord.role.equals(UserRole.HOST)) {
-        Postconditions.assertState(userWithRoleRecord.username == null);
-        Postconditions.assertState(userWithRoleRecord.userId == null);
-      } else if (userWithRoleRecord.role.equals(UserRole.ANONYMOUS)) {
-        Postconditions.assertState(userWithRoleRecord.userId == null);
-        Postconditions.assertState(userWithRoleRecord.username != null);
-      } else {
-        Postconditions.assertState(userWithRoleRecord.userId != null);
-        Postconditions.assertState(userWithRoleRecord.username != null);
-      }
-      return userWithRoleRecord;
+      verifyState(apiKeyLookupRecord);
+      return apiKeyLookupRecord;
     };
+  }
+
+  public Integer getUserId() {
+    return (userId == null || userId == 0) ? null : userId;
+  }
+
+  @VisibleForTesting
+  static void verifyState(final ApiKeyLookupRecord apiKeyLookupRecord) {
+    Postconditions.assertState(!apiKeyLookupRecord.role.equals(UserRole.HOST));
+
+    if (apiKeyLookupRecord.role.equals(UserRole.ANONYMOUS)) {
+      Postconditions.assertState(apiKeyLookupRecord.userId == null);
+    } else {
+      Postconditions.assertState(apiKeyLookupRecord.userId != null);
+    }
   }
 }

@@ -28,16 +28,12 @@ interface LobbyApiKeyDao {
       @Bind("ip") String ipAddress);
 
   @SqlQuery(
-      "select lu.id as "
-          + ApiKeyLookupRecord.USER_ID_COLUMN
-          + ", ak.id as "
-          + ApiKeyLookupRecord.API_KEY_ID_COLUMN
-          + ", ak.username as "
-          + ApiKeyLookupRecord.USERNAME_COLUMN
-          + ", ur.name as "
-          + ApiKeyLookupRecord.ROLE_COLUMN
-          + ", ak.player_chat_id  as "
-          + ApiKeyLookupRecord.PLAYER_CHAT_ID_COLUMN
+      "select "
+          + "    lu.id as user_id,"
+          + "    ak.id as api_key_id,"
+          + "    ak.username as username,"
+          + "    ur.name as user_role,"
+          + "    ak.player_chat_id  as player_chat_id"
           + " from lobby_api_key ak "
           + " join user_role ur on ur.id = ak.user_role_id "
           + " left join lobby_user lu on lu.id = ak.lobby_user_id "
