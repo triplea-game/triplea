@@ -19,39 +19,39 @@ class LobbyApiKeyDaoTest extends DaoTest {
 
   private static final int USER_ID = 50;
 
-  private static final ApiKeyLookupRecord EXPECTED_MODERATOR_DATA =
-      ApiKeyLookupRecord.builder()
+  private static final PlayerApiKeyLookupRecord EXPECTED_MODERATOR_DATA =
+      PlayerApiKeyLookupRecord.builder()
           .userId(USER_ID)
           .username("registered-user")
           .role(UserRole.MODERATOR)
           .playerChatId("chat-id0")
           .apiKeyId(1000)
           .build();
-  private static final ApiKeyLookupRecord EXPECTED_ANONYMOUS_DATA =
-      ApiKeyLookupRecord.builder()
+  private static final PlayerApiKeyLookupRecord EXPECTED_ANONYMOUS_DATA =
+      PlayerApiKeyLookupRecord.builder()
           .username("some-other-name")
           .role(UserRole.ANONYMOUS)
           .playerChatId("chat-id1")
           .apiKeyId(1001)
           .build();
 
-  private final LobbyApiKeyDao lobbyApiKeyDao = DaoTest.newDao(LobbyApiKeyDao.class);
+  private final PlayerApiKeyDao playerApiKeyDao = DaoTest.newDao(PlayerApiKeyDao.class);
 
   @Test
   void keyNotFound() {
-    assertThat(lobbyApiKeyDao.lookupByApiKey("key-does-not-exist"), isEmpty());
+    assertThat(playerApiKeyDao.lookupByApiKey("key-does-not-exist"), isEmpty());
   }
 
   @Test
   void registeredUser() {
-    final Optional<ApiKeyLookupRecord> result = lobbyApiKeyDao.lookupByApiKey("zapi-key1");
+    final Optional<PlayerApiKeyLookupRecord> result = playerApiKeyDao.lookupByApiKey("zapi-key1");
 
     assertThat(result, isPresentAndIs(EXPECTED_MODERATOR_DATA));
   }
 
   @Test
   void anonymousUser() {
-    final Optional<ApiKeyLookupRecord> result = lobbyApiKeyDao.lookupByApiKey("zapi-key2");
+    final Optional<PlayerApiKeyLookupRecord> result = playerApiKeyDao.lookupByApiKey("zapi-key2");
 
     assertThat(result, isPresentAndIs(EXPECTED_ANONYMOUS_DATA));
   }
@@ -67,7 +67,7 @@ class LobbyApiKeyDaoTest extends DaoTest {
     // lobby_user table, but we would expect it to match as we find user role id and user id by
     // lookup from lobby_user table by username.
     assertThat(
-        lobbyApiKeyDao.storeKey(
+        playerApiKeyDao.storeKey(
             "registered-user-name",
             50,
             1,
@@ -82,18 +82,18 @@ class LobbyApiKeyDaoTest extends DaoTest {
   @DataSet(cleanBefore = true, value = "lobby_api_key/delete_old_keys_before.yml")
   @ExpectedDataSet(value = "lobby_api_key/delete_old_keys_after.yml", orderBy = "key")
   void deleteOldKeys() {
-    lobbyApiKeyDao.deleteOldKeys();
+    playerApiKeyDao.deleteOldKeys();
   }
 
   @Test
   void lookupByPlayerChatId() {
-    final Optional<GamePlayerLookup> playerIdLookup =
-        lobbyApiKeyDao.lookupByPlayerChatId("chat-id0");
+    final Optional<PlayerIdentifiersByApiKeyLookup> playerIdLookup =
+        playerApiKeyDao.lookupByPlayerChatId("chat-id0");
 
     assertThat(
         playerIdLookup,
         isPresentAndIs(
-            GamePlayerLookup.builder()
+            PlayerIdentifiersByApiKeyLookup.builder()
                 .userName(UserName.of("registered-user"))
                 .systemId(SystemId.of("system-id0"))
                 .ip("127.0.0.1")

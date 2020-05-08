@@ -29,7 +29,7 @@ import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
 
 @ExtendWith(MockitoExtension.class)
-class ApiKeyDaoWrapperTest {
+class PlayerApiKeyDaoWrapperTest {
 
   private static final ApiKey API_KEY = ApiKey.of("api-key");
   private static final String HASHED_KEY = "Dead, rainy shores proud swashbuckler";
@@ -37,8 +37,12 @@ class ApiKeyDaoWrapperTest {
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
   private static final SystemId SYSTEM_ID = SystemId.of("system-id");
   private static final int ANONYMOUS_ROLE_ID = 123;
-  private static final GamePlayerLookup PLAYER_ID_LOOKUP =
-      GamePlayerLookup.builder().userName(PLAYER_NAME).systemId(SYSTEM_ID).ip("ip").build();
+  private static final PlayerIdentifiersByApiKeyLookup PLAYER_ID_LOOKUP =
+      PlayerIdentifiersByApiKeyLookup.builder()
+          .userName(PLAYER_NAME)
+          .systemId(SYSTEM_ID)
+          .ip("ip")
+          .build();
 
   private static final UserRoleLookup USER_ROLE_LOOKUP =
       UserRoleLookup.builder().userId(10).userRoleId(20).build();
@@ -53,19 +57,15 @@ class ApiKeyDaoWrapperTest {
     }
   }
 
-  @SuppressWarnings("unused")
-  @Mock
-  private GameHostingApiKeyDao gameHostApiKeyDao;
-
-  @Mock private LobbyApiKeyDao lobbyApiKeyDao;
+  @Mock private PlayerApiKeyDao lobbyApiKeyDao;
   @Mock private UserJdbiDao userJdbiDao;
   @Mock private UserRoleDao userRoleDao;
   @Mock private Supplier<ApiKey> keyMaker;
   @Mock private Function<ApiKey, String> keyHashingFunction;
 
-  @InjectMocks private ApiKeyDaoWrapper wrapper;
+  @InjectMocks private PlayerApiKeyDaoWrapper wrapper;
 
-  @Mock private ApiKeyLookupRecord apiKeyUserData;
+  @Mock private PlayerApiKeyLookupRecord apiKeyUserData;
 
   @Nested
   class LookupByApiKey {
@@ -74,14 +74,14 @@ class ApiKeyDaoWrapperTest {
     void foundCase() {
       givenKeyLookupResult(Optional.of(apiKeyUserData));
 
-      final Optional<ApiKeyLookupRecord> result = wrapper.lookupByApiKey(API_KEY);
+      final Optional<PlayerApiKeyLookupRecord> result = wrapper.lookupByApiKey(API_KEY);
 
       assertThat(result, isPresent());
       assertThat(result.get(), sameInstance(apiKeyUserData));
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private void givenKeyLookupResult(final Optional<ApiKeyLookupRecord> dataResult) {
+    private void givenKeyLookupResult(final Optional<PlayerApiKeyLookupRecord> dataResult) {
       when(keyHashingFunction.apply(API_KEY)).thenReturn(HASHED_KEY);
       when(lobbyApiKeyDao.lookupByApiKey(HASHED_KEY)).thenReturn(dataResult);
     }
@@ -90,7 +90,7 @@ class ApiKeyDaoWrapperTest {
     void notFoundCase() {
       givenKeyLookupResult(Optional.empty());
 
-      final Optional<ApiKeyLookupRecord> result = wrapper.lookupByApiKey(API_KEY);
+      final Optional<PlayerApiKeyLookupRecord> result = wrapper.lookupByApiKey(API_KEY);
 
       assertThat(result, isEmpty());
     }
@@ -147,7 +147,8 @@ class ApiKeyDaoWrapperTest {
     when(lobbyApiKeyDao.lookupByPlayerChatId(PLAYER_CHAT_ID.getValue()))
         .thenReturn(Optional.of(PLAYER_ID_LOOKUP));
 
-    final Optional<GamePlayerLookup> result = wrapper.lookupPlayerByChatId(PLAYER_CHAT_ID);
+    final Optional<PlayerIdentifiersByApiKeyLookup> result =
+        wrapper.lookupPlayerByChatId(PLAYER_CHAT_ID);
 
     assertThat(result, isPresentAndIs(PLAYER_ID_LOOKUP));
   }

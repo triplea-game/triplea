@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.db.dao.user.ban.UserBanRecord;
@@ -73,7 +73,7 @@ class UserBanServiceTest {
 
   @SuppressWarnings("unused") // injected into UserBanService
   @Mock
-  private ApiKeyDaoWrapper apiKeyDaoWrapper;
+  private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
 
   @Mock private WebSocketMessagingBus chatMessagingBus;
   @Mock private WebSocketMessagingBus gameMessagingBus;

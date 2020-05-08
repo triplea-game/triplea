@@ -10,9 +10,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.triplea.db.dao.user.role.UserRole;
 
-class ApiKeyLookupRecordTest {
-  private static final ApiKeyLookupRecord API_KEY_LOOKUP_RECORD =
-      ApiKeyLookupRecord.builder()
+class PlayerApiKeyLookupRecordTest {
+  private static final PlayerApiKeyLookupRecord API_KEY_LOOKUP_RECORD =
+      PlayerApiKeyLookupRecord.builder()
           .userId(1)
           .apiKeyId(1)
           .playerChatId("chat-id")
@@ -22,18 +22,20 @@ class ApiKeyLookupRecordTest {
 
   @Test
   void zeroUserIdIsMappedToNull() {
-    final ApiKeyLookupRecord result = API_KEY_LOOKUP_RECORD.toBuilder().apiKeyId(0).build();
+    final PlayerApiKeyLookupRecord result = API_KEY_LOOKUP_RECORD.toBuilder().userId(0).build();
 
     assertThat(result.getUserId(), nullValue());
   }
 
   @ParameterizedTest
   @MethodSource
-  void invalidStates(final ApiKeyLookupRecord apiKeyLookupRecord) {
-    assertThrows(AssertionError.class, () -> ApiKeyLookupRecord.verifyState(apiKeyLookupRecord));
+  void invalidStates(final PlayerApiKeyLookupRecord apiKeyLookupRecord) {
+    assertThrows(
+        AssertionError.class, () -> PlayerApiKeyLookupRecord.verifyState(apiKeyLookupRecord));
   }
 
-  static List<ApiKeyLookupRecord> invalidStates() {
+  @SuppressWarnings("unused")
+  static List<PlayerApiKeyLookupRecord> invalidStates() {
     return List.of(
         // Non-Anonymous roles must have a user-id
         API_KEY_LOOKUP_RECORD.toBuilder().userId(0).role(UserRole.PLAYER).build(),

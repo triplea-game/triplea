@@ -11,14 +11,14 @@ import org.triplea.domain.data.UserName;
 @Getter
 @Builder
 @EqualsAndHashCode
-public class GamePlayerLookup {
+public class PlayerIdentifiersByApiKeyLookup {
   @Nonnull private final UserName userName;
   @Nonnull private final SystemId systemId;
   @Nonnull private final String ip;
 
-  public static RowMapper<GamePlayerLookup> buildResultMapper() {
+  public static RowMapper<PlayerIdentifiersByApiKeyLookup> buildResultMapper() {
     return (rs, ctx) ->
-        GamePlayerLookup.builder()
+        PlayerIdentifiersByApiKeyLookup.builder()
             .userName(UserName.of(rs.getString("username")))
             .systemId(SystemId.of(rs.getString("system_id")))
             .ip(rs.getString("ip"))

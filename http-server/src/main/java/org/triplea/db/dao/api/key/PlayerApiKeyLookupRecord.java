@@ -21,7 +21,7 @@ import org.triplea.java.Postconditions;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class ApiKeyLookupRecord {
+public class PlayerApiKeyLookupRecord {
   @Nonnull private Integer apiKeyId;
   @Nullable private Integer userId;
   @Nonnull private String username;
@@ -29,10 +29,10 @@ public class ApiKeyLookupRecord {
   @Nonnull private String role;
 
   /** Returns a JDBI row mapper used to convert a ResultSet into an instance of this bean object. */
-  public static RowMapper<ApiKeyLookupRecord> buildResultMapper() {
+  public static RowMapper<PlayerApiKeyLookupRecord> buildResultMapper() {
     return (rs, ctx) -> {
       final var apiKeyLookupRecord =
-          ApiKeyLookupRecord.builder()
+          PlayerApiKeyLookupRecord.builder()
               .apiKeyId(rs.getInt("api_key_id"))
               .userId(rs.getInt("user_id"))
               .playerChatId(Preconditions.checkNotNull(rs.getString("player_chat_id")))
@@ -50,13 +50,15 @@ public class ApiKeyLookupRecord {
   }
 
   @VisibleForTesting
-  static void verifyState(final ApiKeyLookupRecord apiKeyLookupRecord) {
+  static void verifyState(final PlayerApiKeyLookupRecord apiKeyLookupRecord) {
     Postconditions.assertState(!apiKeyLookupRecord.role.equals(UserRole.HOST));
 
     if (apiKeyLookupRecord.role.equals(UserRole.ANONYMOUS)) {
-      Postconditions.assertState(apiKeyLookupRecord.userId == null);
+      Postconditions.assertState(
+          apiKeyLookupRecord.userId == null || apiKeyLookupRecord.userId == 0);
     } else {
-      Postconditions.assertState(apiKeyLookupRecord.userId != null);
+      Postconditions.assertState(
+          apiKeyLookupRecord.userId != null && apiKeyLookupRecord.userId > 0);
     }
   }
 }
