@@ -19,6 +19,8 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.power.calculator.SupportBonusCalculator;
+import games.strategy.triplea.delegate.power.calculator.SupportCalculationResult;
 import games.strategy.triplea.delegate.power.calculator.SupportRuleSort;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Externalizable;
@@ -465,29 +467,31 @@ public class DiceRoll implements Externalizable {
       return unitPowerAndRolls;
     }
 
-    // Get all supports, friendly and enemy
-    final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<>();
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly = new HashMap<>();
-    getSortedAaSupport(
-        allFriendlyUnitsAliveOrWaitingToDie,
-        supportRulesFriendly,
-        supportLeftFriendly,
-        supportUnitsLeftFriendly,
-        data,
-        defending,
-        true);
-    final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<>();
-    final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<>();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy = new HashMap<>();
-    getSortedAaSupport(
-        allEnemyUnitsAliveOrWaitingToDie,
-        supportRulesEnemy,
-        supportLeftEnemy,
-        supportUnitsLeftEnemy,
-        data,
-        !defending,
-        false);
+    // Get all friendly supports
+    final SupportCalculationResult friendlySupports =
+        getSortedAaSupport(
+            allFriendlyUnitsAliveOrWaitingToDie, //
+            data,
+            defending,
+            true);
+    final Set<List<UnitSupportAttachment>> supportRulesFriendly =
+        friendlySupports.getSupportRules();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = friendlySupports.getSupportLeft();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
+        friendlySupports.getSupportUnits();
+
+    // Get all enemy supports
+    final SupportCalculationResult enemySupports =
+        getSortedAaSupport(
+            allEnemyUnitsAliveOrWaitingToDie, //
+            data,
+            !defending,
+            false);
+
+    final Set<List<UnitSupportAttachment>> supportRulesEnemy = enemySupports.getSupportRules();
+    final IntegerMap<UnitSupportAttachment> supportLeftEnemy = enemySupports.getSupportLeft();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy =
+        enemySupports.getSupportUnits();
 
     // Copy for rolls
     final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls =
@@ -514,7 +518,7 @@ public class DiceRoll implements Externalizable {
       int strength =
           defending ? ua.getAttackAa(unit.getOwner()) : ua.getOffensiveAttackAa(unit.getOwner());
       strength +=
-          getSupport(
+          SupportBonusCalculator.getSupport(
               unit,
               supportRulesFriendly,
               supportLeftFriendly,
@@ -522,7 +526,7 @@ public class DiceRoll implements Externalizable {
               new HashMap<>(),
               UnitSupportAttachment::getAaStrength);
       strength +=
-          getSupport(
+          SupportBonusCalculator.getSupport(
               unit,
               supportRulesEnemy,
               supportLeftEnemy,
@@ -539,7 +543,7 @@ public class DiceRoll implements Externalizable {
         rolls = ua.getMaxAaAttacks();
         if (rolls > -1) {
           rolls +=
-              getSupport(
+              SupportBonusCalculator.getSupport(
                   unit,
                   supportRulesFriendly,
                   supportLeftFriendlyRolls,
@@ -547,7 +551,7 @@ public class DiceRoll implements Externalizable {
                   new HashMap<>(),
                   UnitSupportAttachment::getAaRoll);
           rolls +=
-              getSupport(
+              SupportBonusCalculator.getSupport(
                   unit,
                   supportRulesEnemy,
                   supportLeftEnemyRolls,
@@ -733,29 +737,29 @@ public class DiceRoll implements Externalizable {
       return unitPowerAndRolls;
     }
 
-    // Get all supports, friendly and enemy
-    final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<>();
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly = new HashMap<>();
-    getSortedSupport(
-        allFriendlyUnitsAliveOrWaitingToDie,
-        supportRulesFriendly,
-        supportLeftFriendly,
-        supportUnitsLeftFriendly,
-        data.getUnitTypeList().getSupportRules(),
-        defending,
-        true);
-    final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<>();
-    final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<>();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy = new HashMap<>();
-    getSortedSupport(
-        allEnemyUnitsAliveOrWaitingToDie,
-        supportRulesEnemy,
-        supportLeftEnemy,
-        supportUnitsLeftEnemy,
-        data.getUnitTypeList().getSupportRules(),
-        !defending,
-        false);
+    // Get all friendly supports
+    final SupportCalculationResult friendlySupport =
+        getSortedSupport(
+            allFriendlyUnitsAliveOrWaitingToDie,
+            data.getUnitTypeList().getSupportRules(),
+            defending,
+            true);
+    final Set<List<UnitSupportAttachment>> supportRulesFriendly = friendlySupport.getSupportRules();
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendly = friendlySupport.getSupportLeft();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
+        friendlySupport.getSupportUnits();
+
+    // Get all enemy supports
+    final SupportCalculationResult enemySupport =
+        getSortedSupport(
+            allEnemyUnitsAliveOrWaitingToDie,
+            data.getUnitTypeList().getSupportRules(),
+            !defending,
+            false);
+    final Set<List<UnitSupportAttachment>> supportRulesEnemy = enemySupport.getSupportRules();
+    final IntegerMap<UnitSupportAttachment> supportLeftEnemy = enemySupport.getSupportLeft();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy =
+        enemySupport.getSupportUnits();
 
     // Copy for rolls
     final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls =
@@ -783,7 +787,7 @@ public class DiceRoll implements Externalizable {
           strength = Math.min(1, strength);
         } else {
           strength +=
-              getSupport(
+              SupportBonusCalculator.getSupport(
                   unit,
                   supportRulesFriendly,
                   supportLeftFriendly,
@@ -792,7 +796,7 @@ public class DiceRoll implements Externalizable {
                   UnitSupportAttachment::getStrength);
         }
         strength +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesEnemy,
                 supportLeftEnemy,
@@ -812,7 +816,7 @@ public class DiceRoll implements Externalizable {
           strength = ua.getBombard();
         }
         strength +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesFriendly,
                 supportLeftFriendly,
@@ -820,7 +824,7 @@ public class DiceRoll implements Externalizable {
                 unitSupportPowerMap,
                 UnitSupportAttachment::getStrength);
         strength +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesEnemy,
                 supportLeftEnemy,
@@ -844,7 +848,7 @@ public class DiceRoll implements Externalizable {
           rolls = ua.getAttackRolls(unit.getOwner());
         }
         rolls +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesFriendly,
                 supportLeftFriendlyRolls,
@@ -852,7 +856,7 @@ public class DiceRoll implements Externalizable {
                 unitSupportRollsMap,
                 UnitSupportAttachment::getRoll);
         rolls +=
-            getSupport(
+            SupportBonusCalculator.getSupport(
                 unit,
                 supportRulesEnemy,
                 supportLeftEnemyRolls,
@@ -997,11 +1001,8 @@ public class DiceRoll implements Externalizable {
     return diceRoll;
   }
 
-  private static void getSortedAaSupport(
+  private static SupportCalculationResult getSortedAaSupport(
       final Collection<Unit> unitsGivingTheSupport,
-      final Set<List<UnitSupportAttachment>> supportsAvailable,
-      final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
       final GameData data,
       final boolean defence,
       final boolean allies) {
@@ -1010,33 +1011,17 @@ public class DiceRoll implements Externalizable {
             .parallelStream()
             .filter(usa -> (usa.getAaRoll() || usa.getAaStrength()))
             .collect(Collectors.toSet());
-    getSortedSupport(
-        unitsGivingTheSupport,
-        supportsAvailable,
-        supportLeft,
-        supportUnitsLeft,
-        rules,
-        defence,
-        allies);
+    return getSortedSupport(unitsGivingTheSupport, rules, defence, allies);
   }
 
   /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
-  public static void getSortedSupport(
+  public static SupportCalculationResult getSortedSupport(
       final Collection<Unit> unitsGivingTheSupport,
-      final Set<List<UnitSupportAttachment>> supportsAvailable,
-      final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
       final Set<UnitSupportAttachment> rules,
       final boolean defence,
       final boolean allies) {
-    getSupport(
-        unitsGivingTheSupport,
-        rules,
-        supportsAvailable,
-        supportLeft,
-        supportUnitsLeft,
-        defence,
-        allies);
+    final SupportCalculationResult supportCalculationResult =
+        getSupport(unitsGivingTheSupport, rules, defence, allies);
 
     final SupportRuleSort supportRuleSort =
         SupportRuleSort.builder()
@@ -1045,32 +1030,30 @@ public class DiceRoll implements Externalizable {
             .roll(UnitSupportAttachment::getRoll)
             .strength(UnitSupportAttachment::getStrength)
             .build();
-    supportsAvailable.forEach(unitSupportAttachment -> unitSupportAttachment.sort(supportRuleSort));
+    supportCalculationResult
+        .getSupportRules()
+        .forEach(unitSupportAttachment -> unitSupportAttachment.sort(supportRuleSort));
+    return supportCalculationResult;
   }
 
   /**
-   * Fills a set and map with the support possibly given by these units.
+   * Returns a calculation with support possibly given by these units.
    *
-   * @param supportsAvailable an empty set that will be filled with all support rules grouped into
-   *     lists of non-stacking rules
-   * @param supportLeft an empty map that will be filled with all the support that can be given in
-   *     the form of counters
-   * @param supportUnitsLeft an empty map that will be filled with all the support that can be given
-   *     in the form of counters
    * @param defence are the receiving units defending?
    * @param allies are the receiving units allied to the giving units?
    */
-  private static void getSupport(
+  private static SupportCalculationResult getSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Set<UnitSupportAttachment> rules,
-      final Set<List<UnitSupportAttachment>> supportsAvailable,
-      final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
       final boolean defence,
       final boolean allies) {
     if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty()) {
-      return;
+      return SupportCalculationResult.EMPTY_RESULT;
     }
+    final Set<List<UnitSupportAttachment>> supportsAvailable = new HashSet<>();
+    final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<>();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft = new HashMap<>();
+
     for (final UnitSupportAttachment rule : rules) {
       if (rule.getPlayers().isEmpty()) {
         continue;
@@ -1118,52 +1101,12 @@ public class DiceRoll implements Externalizable {
       }
       ruleType.add(rule);
     }
-  }
 
-  /**
-   * Returns the support for this unit type, and decrements the supportLeft counters.
-   *
-   * @return the bonus given to the unit
-   */
-  private static int getSupport(
-      final Unit unit,
-      final Set<List<UnitSupportAttachment>> supportsAvailable,
-      final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
-      final Map<Unit, IntegerMap<Unit>> unitSupportMap,
-      final Predicate<UnitSupportAttachment> ruleFilter) {
-    int givenSupport = 0;
-    for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
-      int maxPerBonusType = bonusType.get(0).getBonusType().getCount();
-      for (final UnitSupportAttachment rule : bonusType) {
-        if (!ruleFilter.test(rule)) {
-          continue;
-        }
-        final Set<UnitType> types = rule.getUnitType();
-        if (types != null && types.contains(unit.getType()) && supportLeft.getInt(rule) > 0) {
-          final int numSupportToApply =
-              Math.min(
-                  maxPerBonusType,
-                  Math.min(supportLeft.getInt(rule), supportUnitsLeft.get(rule).size()));
-          for (int i = 0; i < numSupportToApply; i++) {
-            givenSupport += rule.getBonus();
-            supportLeft.add(rule, -1);
-            final Set<Unit> supporters = supportUnitsLeft.get(rule).keySet();
-            final Unit u = supporters.iterator().next();
-            supportUnitsLeft.get(rule).add(u, -1);
-            if (supportUnitsLeft.get(rule).getInt(u) <= 0) {
-              supportUnitsLeft.get(rule).removeKey(u);
-            }
-            unitSupportMap.computeIfAbsent(u, j -> new IntegerMap<>()).add(unit, rule.getBonus());
-          }
-          maxPerBonusType -= numSupportToApply;
-          if (maxPerBonusType <= 0) {
-            break;
-          }
-        }
-      }
-    }
-    return givenSupport;
+    return SupportCalculationResult.builder()
+        .supportLeft(supportLeft)
+        .supportRules(supportsAvailable)
+        .supportUnits(supportUnitsLeft)
+        .build();
   }
 
   /**
