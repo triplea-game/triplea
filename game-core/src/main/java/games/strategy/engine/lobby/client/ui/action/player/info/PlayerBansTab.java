@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client.ui.action.player.info;
 
 import java.awt.Component;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -21,22 +21,20 @@ class PlayerBansTab {
 
   Component getTabContents() {
     return SwingComponents.newJScrollPane(
-        new JTableBuilder()
+        new JTableBuilder<BanInformation>()
             .columnNames("Name", "Date Banned", "Ban Expiry", "IP", "System ID")
-            .tableData(toTableData(playerSummaryForModerator.getBans()))
+            .rowData(
+                playerSummaryForModerator.getBans().stream()
+                    .sorted(Comparator.comparing(BanInformation::getEpochMilliStartDate))
+                    .collect(Collectors.toList()))
+            .rowMapper(
+                ban ->
+                    List.of(
+                        ban.getName(),
+                        DateTimeFormatterUtil.formatEpochMilli(ban.getEpochMilliStartDate()),
+                        DateTimeFormatterUtil.formatEpochMilli(ban.getEpochMillEndDate()),
+                        ban.getIp(),
+                        ban.getSystemId()))
             .build());
-  }
-
-  private List<List<String>> toTableData(final Collection<BanInformation> bans) {
-    return bans.stream()
-        .map(
-            ban ->
-                List.of(
-                    ban.getName(),
-                    DateTimeFormatterUtil.formatEpochMilli(ban.getEpochMilliStartDate()),
-                    DateTimeFormatterUtil.formatEpochMilli(ban.getEpochMillEndDate()),
-                    ban.getIp(),
-                    ban.getSystemId()))
-        .collect(Collectors.toList());
   }
 }

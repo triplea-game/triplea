@@ -50,6 +50,7 @@ import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryControl
 import org.triplea.modules.moderation.bad.words.BadWordsController;
 import org.triplea.modules.moderation.ban.name.UsernameBanController;
 import org.triplea.modules.moderation.ban.user.UserBanController;
+import org.triplea.modules.moderation.chat.history.GameChatHistoryController;
 import org.triplea.modules.moderation.disconnect.user.DisconnectUserController;
 import org.triplea.modules.moderation.moderators.ModeratorsController;
 import org.triplea.modules.moderation.mute.user.MuteUserController;
@@ -224,6 +225,7 @@ public class ServerApplication extends Application<AppConfig> {
         CreateAccountController.build(jdbi),
         DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
         ForgotPasswordController.build(appConfig, jdbi),
+        GameChatHistoryController.build(jdbi),
         GameHostingController.build(jdbi),
         GameListingController.build(gameListing),
         LobbyWatcherController.build(jdbi, gameListing),

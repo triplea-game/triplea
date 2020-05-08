@@ -12,18 +12,27 @@ import lombok.experimental.UtilityClass;
 public class DateTimeFormatterUtil {
 
   /**
+   * Converts an instant into a Date formatted string that contains the date and timezone offset.
+   * EG: "2000-12-1 23:59 (GMT-5)"
+   */
+  public static String formatInstant(final Instant instant) {
+    return formatEpochMilli(instant, Locale.getDefault(), ZoneId.systemDefault());
+  }
+
+  /**
    * Converts an epoch milli timestamp into a Date formatted string that contains the date and
    * timezone offset. EG: "2000-12-1 23:59 (GMT-5)"
    */
   public static String formatEpochMilli(final long epochMilli) {
-    return formatEpochMilli(epochMilli, Locale.getDefault(), ZoneId.systemDefault());
+    return formatEpochMilli(
+        Instant.ofEpochMilli(epochMilli), Locale.getDefault(), ZoneId.systemDefault());
   }
 
   @VisibleForTesting
-  static String formatEpochMilli(final long epochMilli, final Locale locale, final ZoneId zoneId) {
+  static String formatEpochMilli(final Instant instant, final Locale locale, final ZoneId zoneId) {
     return DateTimeFormatter.ofPattern("y-M-d H:m (O)")
         .withLocale(locale)
         .withZone(zoneId)
-        .format(Instant.ofEpochMilli(epochMilli));
+        .format(instant);
   }
 }

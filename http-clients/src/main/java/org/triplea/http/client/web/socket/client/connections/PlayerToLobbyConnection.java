@@ -12,6 +12,7 @@ import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
+import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
 import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
@@ -129,5 +130,9 @@ public class PlayerToLobbyConnection {
 
   public void mutePlayer(final PlayerChatId playerChatId, final long minutes) {
     httpLobbyClient.getModeratorLobbyClient().muteUser(playerChatId, minutes);
+  }
+
+  public List<ChatHistoryMessage> fetchChatHistoryForGame(final String gameId) {
+    return httpLobbyClient.getModeratorLobbyClient().fetchChatHistoryForGame(gameId);
   }
 }
