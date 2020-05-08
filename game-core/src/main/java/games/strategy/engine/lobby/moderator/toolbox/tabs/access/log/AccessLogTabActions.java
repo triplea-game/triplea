@@ -1,7 +1,8 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.access.log;
 
-import games.strategy.engine.lobby.client.ui.action.BanDuration;
-import games.strategy.engine.lobby.client.ui.action.BanDurationDialog;
+import games.strategy.engine.lobby.client.ui.action.ActionDuration;
+import games.strategy.engine.lobby.client.ui.action.ActionDurationDialog;
+import games.strategy.engine.lobby.client.ui.action.ActionDurationDialog.ActionName;
 import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
 import games.strategy.engine.lobby.moderator.toolbox.tabs.Pager;
 import java.util.List;
@@ -62,17 +63,20 @@ class AccessLogTabActions {
 
   BiConsumer<Integer, DefaultTableModel> banUser() {
     return (rowNumber, tableModel) ->
-        BanDurationDialog.prompt(
-            parentFrame,
-            duration -> {
-              confirmBan(
-                  duration,
-                  BanData.builder()
-                      .username(String.valueOf(tableModel.getValueAt(rowNumber, 1)))
-                      .ip(String.valueOf(tableModel.getValueAt(rowNumber, 2)))
-                      .hashedMac(String.valueOf(tableModel.getValueAt(rowNumber, 3)))
-                      .build());
-            });
+        ActionDurationDialog.builder()
+            .parent(parentFrame)
+            .actionName(ActionName.BAN)
+            .build()
+            .prompt()
+            .map(
+                duration ->
+                    BanData.builder()
+                        .actionDuration(duration)
+                        .username(String.valueOf(tableModel.getValueAt(rowNumber, 1)))
+                        .ip(String.valueOf(tableModel.getValueAt(rowNumber, 2)))
+                        .hashedMac(String.valueOf(tableModel.getValueAt(rowNumber, 3)))
+                        .build())
+            .ifPresent(this::confirmAndExecuteBan);
   }
 
   @Builder
@@ -80,22 +84,24 @@ class AccessLogTabActions {
     @Nonnull private final String username;
     @Nonnull private final String ip;
     @Nonnull private final String hashedMac;
+    @Nonnull private final ActionDuration actionDuration;
   }
 
-  private void confirmBan(final BanDuration banDuration, final BanData banData) {
+  private void confirmAndExecuteBan(final BanData banData) {
     SwingComponents.promptUser(
         "Confirm Ban",
-        "Are you sure you want to ban: " + banData.username + " for " + banDuration,
+        "Are you sure you want to ban: " + banData.username + " for " + banData.actionDuration,
         () -> {
           accessLogTabModel.banUser(
               UserBanParams.builder()
                   .username(banData.username)
                   .ip(banData.ip)
                   .systemId(banData.hashedMac)
-                  .minutesToBan(banDuration.toMinutes())
+                  .minutesToBan(banData.actionDuration.toMinutes())
                   .build());
 
-          MessagePopup.showMessage(parentFrame, banData.username + " banned for " + banDuration);
+          MessagePopup.showMessage(
+              parentFrame, banData.username + " banned for " + banData.actionDuration);
         });
   }
 }
