@@ -1,6 +1,5 @@
 package org.triplea.modules.chat.event.processing;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -10,6 +9,7 @@ import org.triplea.db.dao.chat.history.LobbyChatHistoryDao;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessageContext;
@@ -50,12 +50,8 @@ public class ChatMessageListener implements Consumer<WebSocketMessageContext<Cha
 
   private void recordInHistory(
       final ChatReceivedMessage chatReceivedMessage, final ChatterSession session) {
-    CompletableFuture.runAsync(
+    AsyncRunner.runAsync(
             () -> lobbyChatHistoryDao.recordMessage(chatReceivedMessage, session.getApiKeyId()))
-        .exceptionally(
-            e -> {
-              log.error("Error recording chat message in database history table", e);
-              return null;
-            });
+        .exceptionally(e -> log.error("Error recording chat message in database history table", e));
   }
 }
