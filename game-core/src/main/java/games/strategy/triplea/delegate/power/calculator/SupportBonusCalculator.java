@@ -57,5 +57,4 @@ public class SupportBonusCalculator {
     }
     return givenSupport;
   }
-
 }

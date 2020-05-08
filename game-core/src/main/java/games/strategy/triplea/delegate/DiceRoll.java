@@ -469,16 +469,24 @@ public class DiceRoll implements Externalizable {
 
     // Get all friendly supports
     final SupportCalculationResult friendlySupports =
-        getSortedAaSupport(allFriendlyUnitsAliveOrWaitingToDie, data, defending, true);
+        getSortedAaSupport(
+            allFriendlyUnitsAliveOrWaitingToDie, //
+            data,
+            defending,
+            true);
     final Set<List<UnitSupportAttachment>> supportRulesFriendly =
         friendlySupports.getSupportRules();
     final IntegerMap<UnitSupportAttachment> supportLeftFriendly = friendlySupports.getSupportLeft();
     final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
         friendlySupports.getSupportUnits();
 
-    // Get all enemey supports
+    // Get all enemy supports
     final SupportCalculationResult enemySupports =
-        getSortedAaSupport(allEnemyUnitsAliveOrWaitingToDie, data, !defending, false);
+        getSortedAaSupport(
+            allEnemyUnitsAliveOrWaitingToDie, //
+            data,
+            !defending,
+            false);
 
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = enemySupports.getSupportRules();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = enemySupports.getSupportLeft();
