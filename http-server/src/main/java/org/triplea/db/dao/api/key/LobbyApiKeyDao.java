@@ -45,13 +45,10 @@ interface LobbyApiKeyDao {
 
   @SqlQuery(
       "select "
-          + GamePlayerLookup.PLAYER_NAME_COLUMN
-          + ", "
-          + GamePlayerLookup.SYSTEM_ID_COLUMN
-          + ", "
-          + GamePlayerLookup.IP_COLUMN
-          + " "
-          + "from lobby_api_key "
-          + "where player_chat_id = :playerChatId")
+          + "    username,"
+          + "    system_id,"
+          + "    ip"
+          + " from lobby_api_key "
+          + " where player_chat_id = :playerChatId")
   Optional<GamePlayerLookup> lookupByPlayerChatId(@Bind("playerChatId") String playerChatId);
 }

@@ -12,10 +12,6 @@ import org.triplea.domain.data.UserName;
 @Builder
 @EqualsAndHashCode
 public class GamePlayerLookup {
-  static final String PLAYER_NAME_COLUMN = "username";
-  static final String SYSTEM_ID_COLUMN = "system_id";
-  static final String IP_COLUMN = "ip";
-
   @Nonnull private final UserName userName;
   @Nonnull private final SystemId systemId;
   @Nonnull private final String ip;
@@ -23,9 +19,9 @@ public class GamePlayerLookup {
   public static RowMapper<GamePlayerLookup> buildResultMapper() {
     return (rs, ctx) ->
         GamePlayerLookup.builder()
-            .userName(UserName.of(rs.getString(PLAYER_NAME_COLUMN)))
-            .systemId(SystemId.of(rs.getString(SYSTEM_ID_COLUMN)))
-            .ip(rs.getString(IP_COLUMN))
+            .userName(UserName.of(rs.getString("username")))
+            .systemId(SystemId.of(rs.getString("system_id")))
+            .ip(rs.getString("ip"))
             .build();
   }
 }
