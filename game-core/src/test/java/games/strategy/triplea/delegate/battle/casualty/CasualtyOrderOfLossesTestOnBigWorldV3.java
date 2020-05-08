@@ -39,8 +39,8 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
     assertThat(result, hasSize(4));
-    assertThat(result.get(0).getType(), is(testData.artillery));
-    assertThat(result.get(1).getType(), is(testData.tank));
+    assertThat(result.get(0).getType(), is(testData.tank));
+    assertThat(result.get(1).getType(), is(testData.artillery));
     assertThat(result.get(2).getType(), is(testData.marine));
     assertThat(result.get(3).getType(), is(testData.marine));
   }
