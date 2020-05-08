@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.ui.action.player.info;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
@@ -11,6 +10,7 @@ import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.SwingAction;
 
 /**
@@ -29,7 +29,7 @@ public class ShowPlayerInformationAction {
     return SwingAction.of(
         "Show Player Information",
         () ->
-            CompletableFuture.runAsync(this::fetchPlayerInfoAndShowDisplay)
+            AsyncRunner.runAsync(this::fetchPlayerInfoAndShowDisplay)
                 .exceptionally(this::logFetchError));
   }
 
@@ -39,8 +39,7 @@ public class ShowPlayerInformationAction {
     PlayerInformationPopup.showPopup(parent, playerSummaryForModerator);
   }
 
-  private Void logFetchError(final Throwable throwable) {
+  private void logFetchError(final Throwable throwable) {
     log.log(Level.SEVERE, "Error fetching player information", throwable);
-    return null;
   }
 }

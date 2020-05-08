@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.chat.ChatMessageListener;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -9,6 +8,7 @@ import lombok.extern.java.Log;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
+import org.triplea.java.concurrency.AsyncRunner;
 
 /**
  * This module listens for chat messages and uploads them to lobby. The upload is done non-blocking
@@ -28,17 +28,15 @@ class ServerChatUpload implements ChatMessageListener {
       // null gameId can mean we are in process of reconnecting to lobby.
       return;
     }
-    CompletableFuture.runAsync(
+    AsyncRunner.runAsync(
             () ->
                 gameToLobbyConnection.sendChatMessageToLobby(
                     buildUploadParams(gameId, fromPlayer, chatMessage)))
         .exceptionally(
-            e -> {
-              // Handle this as an info level so we do not disturb the user with an error pop-up,
-              // we want this to be a silent failure.
-              log.info("Error sending chat message to lobby: " + e.getMessage());
-              return null;
-            });
+            e ->
+                // Handle this as an info level so we do not disturb the user with an error pop-up,
+                // we want this to be a silent failure.
+                log.info("Error sending chat message to lobby: " + e.getMessage()));
   }
 
   private ChatUploadParams buildUploadParams(
