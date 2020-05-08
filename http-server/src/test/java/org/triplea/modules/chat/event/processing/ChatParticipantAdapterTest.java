@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
 import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.modules.chat.ChatterSession;
 
@@ -60,6 +61,7 @@ class ChatParticipantAdapterTest {
         .username(USERNAME)
         .role(userRole)
         .playerChatId(PlayerChatId.newId().getValue())
+        .apiKeyId(123)
         .build();
   }
 
