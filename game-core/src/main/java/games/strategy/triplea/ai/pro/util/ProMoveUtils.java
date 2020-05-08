@@ -142,14 +142,15 @@ public final class ProMoveUtils {
               data.getSequence().getRound()
                   + "-"
                   + data.getSequence().getStep().getName()
-                  + ": route is null "
+                  + ": route is null (could not calculate route)"
                   + startTerritory
                   + " to "
                   + t
                   + ", units="
                   + unitList);
+        } else {
+          moves.add(new MoveDescription(unitList, route));
         }
-        moves.add(new MoveDescription(unitList, route));
       }
     }
     return moves;
