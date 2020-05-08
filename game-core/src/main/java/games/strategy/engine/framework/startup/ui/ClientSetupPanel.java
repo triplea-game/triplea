@@ -24,6 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
 import org.triplea.domain.data.UserName;
 import org.triplea.swing.SwingAction;
 
@@ -143,11 +144,27 @@ public class ClientSetupPanel extends SetupPanel {
       players.add(row.getPlayer());
       layout.setConstraints(row.getPlayerComponent(), playConstraints);
       players.add(row.getPlayerComponent());
-      layout.setConstraints(row.getAlliance(), allianceConstraints);
-      players.add(row.getAlliance());
+      layout.setConstraints(row.getAllianceComponent(), allianceConstraints);
+      players.add(row.getAllianceComponent());
+      row.getAlliance().addActionListener(e -> fireAllianceButtonClicked(row));
     }
     add(players, BorderLayout.CENTER);
     validate();
+  }
+
+  private void fireAllianceButtonClicked(final PlayerRow playerRow) {
+    final boolean playAlliance = !playerRow.isSelectedByLocalPlayer();
+
+    playerRows.stream()
+        .filter(row -> row.getAlliance().getText().equals(playerRow.getAlliance().getText()))
+        .forEach(
+            row -> {
+              if (playAlliance) {
+                row.executeTakePlayerActionIfEnabled();
+              } else {
+                row.executeReleasePlayerActionIfEnabled();
+              }
+            });
   }
 
   @Override
@@ -162,13 +179,15 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   class PlayerRow {
+    private static final String PLAY_TEXT = "Play";
     private final JCheckBox enabledCheckBox = new JCheckBox();
     private final JLabel playerNameLabel = new JLabel();
     private final JLabel playerLabel = new JLabel();
-    private JComponent playerComponent = new JLabel();
-    private final JLabel alliance;
+    private final JButton alliance;
+    @Getter private JComponent playerComponent = new JLabel();
+    @Getter private JComponent allianceComponent = new JLabel();
     private final Action takeAction =
-        SwingAction.of("Play", e -> clientModel.takePlayer(playerNameLabel.getText()));
+        SwingAction.of(PLAY_TEXT, e -> clientModel.takePlayer(playerNameLabel.getText()));
     private final Action dontTakeAction =
         SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
     private final ActionListener disablePlayerActionListener =
@@ -186,7 +205,9 @@ public class ClientSetupPanel extends SetupPanel {
       playerNameLabel.setText(playerName);
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       enabledCheckBox.setSelected(enabled);
-      alliance = new JLabel(playerAlliances.contains(playerName) ? "" : playerAlliances.toString());
+      final boolean hasAlliance = !playerAlliances.contains(playerName);
+      alliance = new JButton(hasAlliance ? playerAlliances.toString() : "");
+      alliance.setVisible(hasAlliance);
     }
 
     public JLabel getName() {
@@ -197,12 +218,34 @@ public class ClientSetupPanel extends SetupPanel {
       return playerLabel;
     }
 
-    public JLabel getAlliance() {
+    public JButton getAlliance() {
       return alliance;
     }
 
     public JCheckBox getEnabledPlayer() {
       return enabledCheckBox;
+    }
+
+    public void executeTakePlayerActionIfEnabled() {
+      if (playerComponent.isVisible()
+          && playerComponent instanceof JButton
+          && ((JButton) playerComponent).getText().equals(PLAY_TEXT)) {
+        takeAction.actionPerformed(null);
+      }
+    }
+
+    public void executeReleasePlayerActionIfEnabled() {
+      if (playerComponent.isVisible()
+          && playerComponent instanceof JButton
+          && !((JButton) playerComponent).getText().equals(PLAY_TEXT)) {
+        dontTakeAction.actionPerformed(null);
+      }
+    }
+
+    public boolean isSelectedByLocalPlayer() {
+      return playerLabel
+          .getText()
+          .equals(clientModel.getClientMessenger().getLocalNode().getName());
     }
 
     public void update(final UserName userName, final boolean disableable) {
@@ -211,14 +254,19 @@ public class ClientSetupPanel extends SetupPanel {
         final JButton button = new JButton(takeAction);
         button.setMargin(buttonInsets);
         playerComponent = button;
+        alliance.setToolTipText("Click to play " + alliance.getText());
+        allianceComponent = alliance;
       } else {
         playerLabel.setText(userName.getValue());
         if (userName.equals(clientModel.getClientMessenger().getLocalNode().getPlayerName())) {
           final JButton button = new JButton(dontTakeAction);
           button.setMargin(buttonInsets);
           playerComponent = button;
+          alliance.setToolTipText("Click to release " + alliance.getText());
+          allianceComponent = alliance;
         } else {
           playerComponent = new JLabel("");
+          allianceComponent = new JLabel("");
         }
       }
       setWidgetActivation(disableable);
@@ -230,10 +278,6 @@ public class ClientSetupPanel extends SetupPanel {
       playerComponent.setEnabled(enabledCheckBox.isSelected());
       alliance.setEnabled(enabledCheckBox.isSelected());
       enabledCheckBox.setEnabled(disableable);
-    }
-
-    public JComponent getPlayerComponent() {
-      return playerComponent;
     }
   }
 

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -256,6 +257,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       players.add(row.getType());
       layout.setConstraints(row.getAlliance(), allianceConstraints);
       players.add(row.getAlliance());
+      row.getAlliance().addActionListener(e -> allianceRowButtonFired(row));
     }
     removeAll();
     add(info, BorderLayout.NORTH);
@@ -270,6 +272,21 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     add(networkPanel, BorderLayout.SOUTH);
     invalidate();
     validate();
+  }
+
+  private void allianceRowButtonFired(final PlayerRow playerRow) {
+    final boolean playAlliance = !playerRow.isSelectedByHostPlayer();
+
+    playerRows.stream()
+        .filter(row -> row.getAlliance().getText().equals(playerRow.getAlliance().getText()))
+        .forEach(
+            row -> {
+              if (playAlliance) {
+                row.takePlayerAction();
+              } else {
+                row.releasePlayerAction();
+              }
+            });
   }
 
   @Override
@@ -344,7 +361,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final JCheckBox localCheckBox;
     private final JCheckBox enabledCheckBox;
     private final JComboBox<String> type;
-    private final JLabel alliance;
+    private final JButton alliance;
     private final ActionListener localPlayerActionListener =
         new ActionListener() {
           @Override
@@ -401,14 +418,28 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         model.setLocalPlayerType(nameLabel.getText(), PlayerType.PRO_AI);
       }
       if (playerAlliances.contains(playerName)) {
-        alliance = new JLabel();
+        alliance = new JButton();
+        alliance.setVisible(false);
       } else {
-        alliance = new JLabel(playerAlliances.toString());
+        alliance = new JButton(playerAlliances.toString());
+        alliance.setToolTipText("Click to play " + playerAlliances.toString());
       }
       type.addActionListener(
           e ->
               model.setLocalPlayerType(
                   nameLabel.getText(), PlayerType.fromLabel((String) type.getSelectedItem())));
+    }
+
+    public void takePlayerAction() {
+      model.takePlayer(nameLabel.getText());
+      alliance.setToolTipText("Click to release " + alliance.getText());
+      setWidgetActivation();
+    }
+
+    public void releasePlayerAction() {
+      model.releasePlayer(nameLabel.getText());
+      alliance.setToolTipText("Click to play " + alliance.getText());
+      setWidgetActivation();
     }
 
     public JComboBox<String> getType() {
@@ -419,7 +450,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       return nameLabel;
     }
 
-    public JLabel getAlliance() {
+    public JButton getAlliance() {
       return alliance;
     }
 
@@ -433,6 +464,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
     JCheckBox getEnabledPlayer() {
       return enabledCheckBox;
+    }
+
+    public boolean isSelectedByHostPlayer() {
+      return playerLabel.getText().equals(model.getMessenger().getLocalNode().getName());
     }
 
     public void update(
