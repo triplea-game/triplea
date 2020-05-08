@@ -89,17 +89,15 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     if (!playerAlliances.contains(playerName)) {
       final String alliancesLabelText = playerAlliances.toString();
       alliances = new JButton(alliancesLabelText);
-      alliances.setToolTipText(
-          "Set all " + alliancesLabelText + " to " + playerTypes.getSelectedItem().toString());
+      alliances.setToolTipText("Click to play " + alliancesLabelText);
       alliances.addActionListener(
-          e -> {
-            final String currentType = playerTypes.getSelectedItem().toString();
-            playerRows.stream()
-                .filter(
-                    row ->
-                        row.alliances != null && row.alliances.getText().equals(alliancesLabelText))
-                .forEach(row -> row.setPlayerType(currentType));
-          });
+          e ->
+              playerRows.stream()
+                  .filter(
+                      row ->
+                          row.alliances != null
+                              && row.alliances.getText().equals(alliancesLabelText))
+                  .forEach(row -> row.setPlayerType(PlayerType.HUMAN_PLAYER.getLabel())));
     }
 
     incomePercentage =
