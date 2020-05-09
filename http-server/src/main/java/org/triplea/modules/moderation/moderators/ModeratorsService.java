@@ -35,7 +35,7 @@ class ModeratorsService {
             userInfo ->
                 ModeratorInfo.builder()
                     .name(userInfo.getUsername())
-                    .lastLogin(userInfo.getLastLogin())
+                    .lastLoginEpochMillis(userInfo.getLastLogin().toEpochMilli())
                     .build())
         .collect(Collectors.toList());
   }

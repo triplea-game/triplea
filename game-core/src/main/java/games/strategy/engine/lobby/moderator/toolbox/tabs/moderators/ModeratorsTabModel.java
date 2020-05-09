@@ -1,12 +1,13 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.moderators;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 class ModeratorsTabModel {
   @VisibleForTesting static final List<String> HEADERS = List.of("Name", "Last Login");
@@ -17,6 +18,11 @@ class ModeratorsTabModel {
 
   @VisibleForTesting static final String REMOVE_MOD_BUTTON_TEXT = "Remove Mod";
   @VisibleForTesting static final String ADD_SUPER_MOD_BUTTON = "Add Super-Mod";
+
+  private static final Function<Long, String> dateTimeFormatter =
+      epochMillis ->
+          DateTimeFormatterUtil.formatEpochMilli(
+              epochMillis, DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE);
 
   private final ToolboxModeratorManagementClient toolboxModeratorManagementClient;
 
@@ -38,15 +44,15 @@ class ModeratorsTabModel {
                 isSuperMod
                     ? List.of(
                         modInfo.getName(),
-                        Optional.ofNullable(modInfo.getLastLogin())
-                            .map(Instant::toString)
+                        Optional.ofNullable(modInfo.getLastLoginEpochMillis())
+                            .map(dateTimeFormatter)
                             .orElse(""),
                         REMOVE_MOD_BUTTON_TEXT,
                         ADD_SUPER_MOD_BUTTON)
                     : List.of(
                         modInfo.getName(),
-                        Optional.ofNullable(modInfo.getLastLogin())
-                            .map(Instant::toString)
+                        Optional.ofNullable(modInfo.getLastLoginEpochMillis())
+                            .map(dateTimeFormatter)
                             .orElse("")))
         .collect(Collectors.toList());
   }
