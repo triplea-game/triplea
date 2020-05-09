@@ -30,12 +30,10 @@ public interface UserJdbiDao {
 
   @SqlQuery(
       "select "
-          + "   id as "
-          + UserRoleLookup.USER_ID_COLUMN
-          + ",   user_role_id as "
-          + UserRoleLookup.USER_ROLE_ID_COLUMN
-          + " from lobby_user "
-          + " where username = :username")
+          + "    id,"
+          + "    user_role_id"
+          + "  from lobby_user"
+          + "  where username = :username")
   Optional<UserRoleLookup> lookupUserIdAndRoleIdByUserName(@Bind("username") String username);
 
   @SqlQuery(
