@@ -57,6 +57,7 @@ public class DicePanel extends JPanel {
     final GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.weightx = .1;
+    constraints.gridx = 0;
     add(component, constraints);
   }
 
@@ -64,6 +65,7 @@ public class DicePanel extends JPanel {
     final GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.BOTH;
     constraints.weighty = 1;
+    constraints.gridx = 0;
     label.setVerticalAlignment(SwingConstants.BOTTOM);
     add(label, constraints);
   }
