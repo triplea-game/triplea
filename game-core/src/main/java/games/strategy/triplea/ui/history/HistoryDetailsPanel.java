@@ -13,6 +13,7 @@ import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,6 +23,8 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import org.triplea.swing.ScrollableJPanel;
 
 /**
  * A UI component that displays details about the currently-selected history node.
@@ -35,32 +38,39 @@ import javax.swing.JTextArea;
  * </ul>
  */
 public class HistoryDetailsPanel extends JPanel {
-  private static final long serialVersionUID = 5092004144144006960L;
+  private static final long serialVersionUID = 1L;
   private final GameData data;
-  private final JTextArea title = new JTextArea();
-  private final JScrollPane scroll = new JScrollPane(title);
   private final MapPanel mapPanel;
+  private final JTextArea title = new JTextArea();
+  private final JPanel content = new ScrollableJPanel();
 
   public HistoryDetailsPanel(final GameData data, final MapPanel mapPanel) {
     this.data = data;
-    setLayout(new GridBagLayout());
+    this.mapPanel = mapPanel;
+
+    content.setLayout(new GridBagLayout());
+    final JScrollPane scroll = new JScrollPane(content);
+    scroll.setBorder(null);
+    scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+    setLayout(new BorderLayout());
+    add(scroll, BorderLayout.CENTER);
+
     title.setWrapStyleWord(true);
     title.setBackground(this.getBackground());
     title.setLineWrap(true);
     title.setBorder(null);
     title.setEditable(false);
-    scroll.setBorder(null);
-    this.mapPanel = mapPanel;
   }
 
   @SuppressWarnings("unchecked")
   void render(final HistoryNode node) {
-    removeAll();
     mapPanel.setRoute(null);
+    content.removeAll();
     final Insets insets = new Insets(5, 0, 0, 0);
     title.setText(node.getTitle());
-    add(
-        scroll,
+    content.add(
+        title,
         new GridBagConstraints(
             0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
     final GridBagConstraints mainConstraints =
@@ -71,20 +81,16 @@ public class HistoryDetailsPanel extends JPanel {
       if (details instanceof DiceRoll) {
         final DicePanel dicePanel = new DicePanel(mapPanel.getUiContext(), data);
         dicePanel.setDiceRoll((DiceRoll) details);
-        add(dicePanel, mainConstraints);
+        content.add(dicePanel, mainConstraints);
       } else if (details instanceof MoveDescription) {
         final MoveDescription moveMessage = (MoveDescription) details;
         renderUnits(mainConstraints, moveMessage.getUnits());
         mapPanel.setRoute(moveMessage.getRoute());
-        if (!mapPanel.isShowing(moveMessage.getRoute().getEnd())) {
-          mapPanel.centerOn(moveMessage.getRoute().getEnd());
-        }
+        showTerritory(moveMessage.getRoute().getEnd());
       } else if (details instanceof PlacementDescription) {
         final PlacementDescription placeMessage = (PlacementDescription) details;
         renderUnits(mainConstraints, placeMessage.getUnits());
-        if (!mapPanel.isShowing(placeMessage.getTerritory())) {
-          mapPanel.centerOn(placeMessage.getTerritory());
-        }
+        showTerritory(placeMessage.getTerritory());
       } else if (details instanceof Collection) {
         final Collection<Object> objects = (Collection<Object>) details;
         final Iterator<Object> objIter = objects.iterator();
@@ -96,21 +102,24 @@ public class HistoryDetailsPanel extends JPanel {
           }
         }
       } else if (details instanceof Territory) {
-        final Territory t = (Territory) details;
-        if (!mapPanel.isShowing(t)) {
-          mapPanel.centerOn(t);
-        }
+        showTerritory((Territory) details);
       }
     }
-    add(Box.createGlue());
+    content.add(Box.createGlue());
     validate();
     repaint();
+  }
+
+  private void showTerritory(final Territory territory) {
+    if (!mapPanel.isShowing(territory)) {
+      mapPanel.centerOn(territory);
+    }
   }
 
   private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units) {
     final Collection<UnitCategory> unitsCategories = UnitSeparator.categorize(units);
     final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(mapPanel.getUiContext());
     unitsPanel.setUnitsFromCategories(unitsCategories);
-    add(unitsPanel, mainConstraints);
+    content.add(unitsPanel, mainConstraints);
   }
 }

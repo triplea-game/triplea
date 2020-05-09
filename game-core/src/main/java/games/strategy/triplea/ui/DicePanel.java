@@ -3,17 +3,16 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.image.DiceImageFactory;
-import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.List;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.WrapLayout;
 
 /**
  * A UI component used to display a dice roll. One image is displayed per die in a horizontal
@@ -27,15 +26,14 @@ public class DicePanel extends JPanel {
   public DicePanel(final UiContext uiContext, final GameData data) {
     this.uiContext = uiContext;
     this.data = data;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    setLayout(new GridBagLayout());
+    setBorder(BorderFactory.createEmptyBorder(0, 16, 0, 0));
   }
 
   void setDiceRollForBombing(final List<Die> dice, final int cost) {
     removeAll();
     add(create(dice));
-    add(Box.createVerticalGlue());
-    add(new JLabel("Cost:" + cost));
-    invalidate();
+    addBottomLabel(new JLabel("Cost:" + cost));
   }
 
   /** Sets the dice roll to display. */
@@ -51,35 +49,33 @@ public class DicePanel extends JPanel {
             add(new JLabel("Rolled at " + i + ":"));
             add(create(diceRoll.getRolls(i)));
           }
-          add(Box.createVerticalGlue());
-          add(new JLabel("Total hits:" + diceRoll.getHits()));
-          validate();
-          invalidate();
-          repaint();
+          addBottomLabel(new JLabel("Total hits:" + diceRoll.getHits(), SwingConstants.LEFT));
         });
+  }
+
+  private void add(final JComponent component) {
+    final GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    constraints.weightx = .1;
+    add(component, constraints);
+  }
+
+  private void addBottomLabel(final JLabel label) {
+    final GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.BOTH;
+    constraints.weighty = 1;
+    label.setVerticalAlignment(SwingConstants.BOTTOM);
+    add(label, constraints);
   }
 
   private JComponent create(final List<Die> dice) {
     final JPanel dicePanel = new JPanel();
-    dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
-    dicePanel.add(Box.createHorizontalStrut(20));
+    dicePanel.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+    dicePanel.setLayout(new WrapLayout(WrapLayout.LEFT, 2, 2));
     for (final Die die : dice) {
       final int roll = die.getValue() + 1;
       dicePanel.add(new JLabel(uiContext.getDiceImageFactory().getDieIcon(roll, die.getType())));
-      dicePanel.add(Box.createHorizontalStrut(2));
     }
-    final JScrollPane scroll = new JScrollPane(dicePanel);
-    scroll.setBorder(null);
-    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-    // we're adding to a box layout, so to prevent the component from grabbing extra space, set the
-    // max height.
-    // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(
-        new Dimension(scroll.getMinimumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
-    scroll.setMaximumSize(
-        new Dimension(scroll.getMaximumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
-    scroll.setPreferredSize(
-        new Dimension(scroll.getPreferredSize().width, DiceImageFactory.DIE_HEIGHT + 17));
-    return scroll;
+    return dicePanel;
   }
 }

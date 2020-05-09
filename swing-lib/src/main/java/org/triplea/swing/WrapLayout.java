@@ -18,7 +18,9 @@ import javax.swing.SwingUtilities;
  * <p>Originally from: https://tips4java.wordpress.com/2008/11/06/wrap-layout/.
  */
 public class WrapLayout extends FlowLayout {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
+
+  private boolean revalidateScheduled;
 
   /**
    * Constructs a new <code>WrapLayout</code> with a left alignment and a default 5-unit horizontal
@@ -91,18 +93,14 @@ public class WrapLayout extends FlowLayout {
     synchronized (target.getTreeLock()) {
       // Each row must fit with the width allocated to the containter.
       // When the container width = 0, the preferred width of the container
-      // has not yet been calculated so lets ask for the maximum.
-      int targetWidth = target.getSize().width;
-      Container container = target;
+      // has not yet been calculated, so use the FlowLayout implementation which
+      // lays everything out in a line. Also schedule a revalidation so that
+      // the actual size is realized.
 
-      while (container.getSize().width == 0 && container.getParent() != null) {
-        container = container.getParent();
-      }
-
-      targetWidth = container.getSize().width;
-
+      final int targetWidth = target.getWidth();
       if (targetWidth == 0) {
-        targetWidth = Integer.MAX_VALUE;
+        scheduleRevalidate(target);
+        return preferred ? super.preferredLayoutSize(target) : super.minimumLayoutSize(target);
       }
 
       final int hgap = getHgap();
@@ -155,6 +153,17 @@ public class WrapLayout extends FlowLayout {
       }
 
       return dim;
+    }
+  }
+
+  private void scheduleRevalidate(final Container target) {
+    if (!revalidateScheduled) {
+      revalidateScheduled = true;
+      SwingUtilities.invokeLater(
+          () -> {
+            target.revalidate();
+            revalidateScheduled = false;
+          });
     }
   }
 
