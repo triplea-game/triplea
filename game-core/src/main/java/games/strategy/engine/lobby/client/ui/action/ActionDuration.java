@@ -4,9 +4,9 @@ import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public final class BanDuration {
+public final class ActionDuration {
   private final Integer duration;
-  private final BanTimeUnit timeUnit;
+  private final ActionTimeUnit timeUnit;
 
   public long toMinutes() {
     Preconditions.checkNotNull(duration);

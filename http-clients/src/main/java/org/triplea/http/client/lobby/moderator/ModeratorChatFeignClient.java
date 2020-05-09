@@ -20,6 +20,9 @@ public interface ModeratorChatFeignClient {
   PlayerSummaryForModerator fetchPlayerInformation(
       @HeaderMap Map<String, Object> headers, String value);
 
+  @RequestLine("POST " + ModeratorChatClient.MUTE_USER)
+  void mutePlayer(@HeaderMap Map<String, Object> headers, MuteUserRequest muteUserRequest);
+
   @RequestLine("POST " + ModeratorChatClient.FETCH_GAME_CHAT_HISTORY)
   List<ChatHistoryMessage> fetchChatHistoryForGame(
       @HeaderMap Map<String, Object> headers, String gameId);
