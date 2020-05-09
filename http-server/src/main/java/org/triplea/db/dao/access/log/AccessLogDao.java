@@ -12,25 +12,25 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 public interface AccessLogDao {
 
   @SqlQuery(
-      "select\n"
-          + AccessLogRecord.ACCESS_TIME_COLUMN
-          + ", "
-          + AccessLogRecord.USERNAME_COLUMN
-          + ", "
-          + AccessLogRecord.IP_COLUMN
-          + ", "
-          + AccessLogRecord.SYSTEM_ID_COLUMN
-          + ", "
-          + AccessLogRecord.REGISTERED_COLUMN
-          + "\n"
-          + "from access_log\n"
-          + "order by "
-          + AccessLogRecord.ACCESS_TIME_COLUMN
-          + " desc\n"
-          + "offset :rowOffset rows\n"
-          + "fetch next :rowCount rows only")
+      "select"
+          + "    access_time,"
+          + "    username,"
+          + "    ip,"
+          + "    system_id,"
+          + "    registered"
+          + "  from access_log"
+          + "  where username like :username"
+          + "     and host(ip) like :ip"
+          + "     and system_id like :systemId"
+          + "  order by access_time desc"
+          + "  offset :rowOffset rows"
+          + "  fetch next :rowCount rows only")
   List<AccessLogRecord> fetchAccessLogRows(
-      @Bind("rowOffset") int rowOffset, @Bind("rowCount") int rowCount);
+      @Bind("rowOffset") int rowOffset,
+      @Bind("rowCount") int rowCount,
+      @Bind("username") String username,
+      @Bind("ip") String ip,
+      @Bind("systemId") String systemId);
 
   @SqlUpdate(
       "insert into access_log(username, ip, system_id, registered)\n"

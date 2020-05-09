@@ -7,6 +7,8 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogSearchRequest;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
 
 @RequiredArgsConstructor
@@ -21,16 +23,25 @@ class AccessLogTabModel {
 
   List<List<String>> fetchTableData(final PagingParams pagingParams) {
     return toolboxAccessLogClient.getAccessLog(pagingParams).stream()
-        .map(
-            accessLogData ->
-                List.of(
-                    accessLogData.getAccessDate().toString(),
-                    accessLogData.getUsername(),
-                    accessLogData.getIp(),
-                    accessLogData.getSystemId(),
-                    accessLogData.isRegistered() ? "Y" : "",
-                    "Ban Name",
-                    "Ban User"))
+        .map(AccessLogTabModel::mapAccessLogDataToTable)
+        .collect(Collectors.toList());
+  }
+
+  private static List<String> mapAccessLogDataToTable(final AccessLogData accessLogData) {
+    return List.of(
+        accessLogData.getAccessDate().toString(),
+        accessLogData.getUsername(),
+        accessLogData.getIp(),
+        accessLogData.getSystemId(),
+        accessLogData.isRegistered() ? "Y" : "",
+        "Ban Name",
+        "Ban User");
+  }
+
+  List<List<String>> fetchSearchData(
+      final AccessLogSearchRequest accessLogSearchParams, final PagingParams pagingParams) {
+    return toolboxAccessLogClient.getAccessLog(accessLogSearchParams, pagingParams).stream()
+        .map(AccessLogTabModel::mapAccessLogDataToTable)
         .collect(Collectors.toList());
   }
 

@@ -18,7 +18,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ToolboxAccessLogClient {
-  public static final String FETCH_ACCESS_LOG_PATH = "/moderator-toolbox/get-access-log";
+  public static final String FETCH_ACCESS_LOG_PATH = "/moderator-toolbox/access-log";
 
   private final AuthenticationHeaders authenticationHeaders;
   private final ToolboxAccessLogFeignClient client;
@@ -30,8 +30,18 @@ public class ToolboxAccessLogClient {
   }
 
   public List<AccessLogData> getAccessLog(final PagingParams pagingParams) {
+    return getAccessLog(AccessLogSearchRequest.EMPTY_SEARCH, pagingParams);
+  }
+
+  public List<AccessLogData> getAccessLog(
+      final AccessLogSearchRequest searchRequest, final PagingParams pagingParams) {
     checkArgument(pagingParams.getRowNumber() >= 0);
     checkArgument(pagingParams.getPageSize() > 0);
-    return client.getAccessLog(authenticationHeaders.createHeaders(), pagingParams);
+    return client.getAccessLog(
+        authenticationHeaders.createHeaders(),
+        AccessLogRequest.builder()
+            .accessLogSearchRequest(searchRequest)
+            .pagingParams(pagingParams)
+            .build());
   }
 }
