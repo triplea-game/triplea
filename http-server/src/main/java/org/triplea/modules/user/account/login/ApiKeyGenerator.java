@@ -6,17 +6,17 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.domain.data.ApiKey;
 
 @Builder
 class ApiKeyGenerator implements Function<LoginRecord, ApiKey> {
 
-  @Nonnull private final ApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Nonnull private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
 
   public static ApiKeyGenerator build(final Jdbi jdbi) {
     return ApiKeyGenerator.builder() //
-        .apiKeyDaoWrapper(ApiKeyDaoWrapper.build(jdbi))
+        .apiKeyDaoWrapper(PlayerApiKeyDaoWrapper.build(jdbi))
         .build();
   }
 

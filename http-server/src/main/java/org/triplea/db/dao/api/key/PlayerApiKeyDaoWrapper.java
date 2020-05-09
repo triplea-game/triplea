@@ -20,20 +20,18 @@ import org.triplea.java.Postconditions;
 
 /** Wrapper to abstract away DB details of how API key is stored and to provide convenience APIs. */
 @Builder
-public class ApiKeyDaoWrapper {
+public class PlayerApiKeyDaoWrapper {
 
-  @Nonnull private final LobbyApiKeyDao lobbyApiKeyDao;
-  @Nonnull private final GameHostingApiKeyDao gameHostApiKeyDao;
+  @Nonnull private final PlayerApiKeyDao lobbyApiKeyDao;
   @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final UserRoleDao userRoleDao;
   @Nonnull private final Supplier<ApiKey> keyMaker;
   /** Hashing function so that we do not store plain-text API key values in database. */
   @Nonnull private final Function<ApiKey, String> keyHashingFunction;
 
-  public static ApiKeyDaoWrapper build(final Jdbi jdbi) {
-    return ApiKeyDaoWrapper.builder()
-        .lobbyApiKeyDao(jdbi.onDemand(LobbyApiKeyDao.class))
-        .gameHostApiKeyDao(jdbi.onDemand(GameHostingApiKeyDao.class))
+  public static PlayerApiKeyDaoWrapper build(final Jdbi jdbi) {
+    return PlayerApiKeyDaoWrapper.builder()
+        .lobbyApiKeyDao(jdbi.onDemand(PlayerApiKeyDao.class))
         .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
         .userRoleDao(jdbi.onDemand(UserRoleDao.class))
         .keyMaker(ApiKey::newKey)
@@ -41,25 +39,8 @@ public class ApiKeyDaoWrapper {
         .build();
   }
 
-  // TODO: update tests
-  public Optional<ApiKeyLookupRecord> lookupByApiKey(final ApiKey apiKey) {
-    return lobbyApiKeyDao
-        .lookupByApiKey(keyHashingFunction.apply(apiKey))
-        .or(
-            () ->
-                gameHostApiKeyDao.keyExists(keyHashingFunction.apply(apiKey))
-                    ? Optional.of(ApiKeyLookupRecord.builder().role(UserRole.HOST).build())
-                    : Optional.empty());
-  }
-
-  /** Creates (and stores in DB) a new API key for 'host' connections (AKA: LobbyWatcher). */
-  public ApiKey newGameHostKey(final InetAddress ip) {
-    Preconditions.checkArgument(ip != null);
-    final ApiKey key = keyMaker.get();
-    final int insertCount =
-        gameHostApiKeyDao.insertKey(keyHashingFunction.apply(key), ip.getHostAddress());
-    Postconditions.assertState(insertCount == 1);
-    return key;
+  public Optional<PlayerApiKeyLookupRecord> lookupByApiKey(final ApiKey apiKey) {
+    return lobbyApiKeyDao.lookupByApiKey(keyHashingFunction.apply(apiKey));
   }
 
   /** Creates (and stores in DB) a new API key for registered or anonymous users. */
@@ -118,7 +99,8 @@ public class ApiKeyDaoWrapper {
     Postconditions.assertState(rowsInserted == 1);
   }
 
-  public Optional<GamePlayerLookup> lookupPlayerByChatId(final PlayerChatId playerChatId) {
+  public Optional<PlayerIdentifiersByApiKeyLookup> lookupPlayerByChatId(
+      final PlayerChatId playerChatId) {
     return lobbyApiKeyDao.lookupByPlayerChatId(playerChatId.getValue());
   }
 }

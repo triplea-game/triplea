@@ -11,21 +11,17 @@ import org.triplea.domain.data.UserName;
 @Getter
 @Builder
 @EqualsAndHashCode
-public class GamePlayerLookup {
-  static final String PLAYER_NAME_COLUMN = "username";
-  static final String SYSTEM_ID_COLUMN = "system_id";
-  static final String IP_COLUMN = "ip";
-
+public class PlayerIdentifiersByApiKeyLookup {
   @Nonnull private final UserName userName;
   @Nonnull private final SystemId systemId;
   @Nonnull private final String ip;
 
-  public static RowMapper<GamePlayerLookup> buildResultMapper() {
+  public static RowMapper<PlayerIdentifiersByApiKeyLookup> buildResultMapper() {
     return (rs, ctx) ->
-        GamePlayerLookup.builder()
-            .userName(UserName.of(rs.getString(PLAYER_NAME_COLUMN)))
-            .systemId(SystemId.of(rs.getString(SYSTEM_ID_COLUMN)))
-            .ip(rs.getString(IP_COLUMN))
+        PlayerIdentifiersByApiKeyLookup.builder()
+            .userName(UserName.of(rs.getString("username")))
+            .systemId(SystemId.of(rs.getString("system_id")))
+            .ip(rs.getString("ip"))
             .build();
   }
 }

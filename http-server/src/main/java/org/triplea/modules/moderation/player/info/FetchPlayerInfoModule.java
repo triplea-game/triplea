@@ -5,8 +5,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
@@ -18,17 +18,17 @@ import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.BanInfo
 
 @AllArgsConstructor
 class FetchPlayerInfoModule implements Function<PlayerChatId, PlayerSummaryForModerator> {
-  private final ApiKeyDaoWrapper apiKeyDaoWrapper;
+  private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
 
   static FetchPlayerInfoModule build(final Jdbi jdbi) {
     return new FetchPlayerInfoModule(
-        ApiKeyDaoWrapper.build(jdbi), jdbi.onDemand(PlayerInfoForModeratorDao.class));
+        PlayerApiKeyDaoWrapper.build(jdbi), jdbi.onDemand(PlayerInfoForModeratorDao.class));
   }
 
   @Override
   public PlayerSummaryForModerator apply(final PlayerChatId playerChatId) {
-    final GamePlayerLookup gamePlayerLookup =
+    final PlayerIdentifiersByApiKeyLookup gamePlayerLookup =
         apiKeyDaoWrapper
             .lookupPlayerByChatId(playerChatId)
             .orElseThrow(

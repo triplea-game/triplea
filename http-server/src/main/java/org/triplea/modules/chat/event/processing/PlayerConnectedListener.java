@@ -3,7 +3,7 @@ package org.triplea.modules.chat.event.processing;
 import java.util.function.Consumer;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
@@ -15,13 +15,13 @@ import org.triplea.web.socket.WebSocketMessageContext;
 public class PlayerConnectedListener
     implements Consumer<WebSocketMessageContext<ConnectToChatMessage>> {
 
-  private final ApiKeyDaoWrapper apiKeyDaoWrapper;
+  private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final ChatParticipantAdapter chatParticipantAdapter;
   private final Chatters chatters;
 
   public static PlayerConnectedListener build(final Chatters chatters, final Jdbi jdbi) {
     return PlayerConnectedListener.builder()
-        .apiKeyDaoWrapper(ApiKeyDaoWrapper.build(jdbi))
+        .apiKeyDaoWrapper(PlayerApiKeyDaoWrapper.build(jdbi))
         .chatParticipantAdapter(new ChatParticipantAdapter())
         .chatters(chatters)
         .build();

@@ -10,8 +10,8 @@ import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.db.dao.access.log.AccessLogRecord;
-import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
-import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
+import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDaoData;
 import org.triplea.db.dao.moderator.ModeratorUserDaoData;
 import org.triplea.db.dao.moderator.chat.history.ChatHistoryRecord;
@@ -55,8 +55,10 @@ public final class JdbiDatabase {
     jdbi.registerRowMapper(AccessLogRecord.class, AccessLogRecord.buildResultMapper());
     jdbi.registerRowMapper(BanLookupRecord.class, BanLookupRecord.buildResultMapper());
     jdbi.registerRowMapper(ChatHistoryRecord.class, ChatHistoryRecord.buildResultMapper());
-    jdbi.registerRowMapper(GamePlayerLookup.class, GamePlayerLookup.buildResultMapper());
-    jdbi.registerRowMapper(ApiKeyLookupRecord.class, ApiKeyLookupRecord.buildResultMapper());
+    jdbi.registerRowMapper(
+        PlayerIdentifiersByApiKeyLookup.class, PlayerIdentifiersByApiKeyLookup.buildResultMapper());
+    jdbi.registerRowMapper(
+        PlayerApiKeyLookupRecord.class, PlayerApiKeyLookupRecord.buildResultMapper());
     jdbi.registerRowMapper(PlayerAliasRecord.class, PlayerAliasRecord.buildResultMapper());
     jdbi.registerRowMapper(PlayerBanRecord.class, PlayerBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UserBanRecord.class, UserBanRecord.buildResultMapper());
