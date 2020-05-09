@@ -37,12 +37,12 @@ public class DateTimeFormatterUtil {
    * Converts an epoch milli timestamp into a Date formatted string that contains the date, time,
    * and timezone offset. EG: "2000-12-1 23:59 (GMT-5)"
    */
-  public static String formatEpochMilli(final long epochMilli) {
+  public static String formatEpochMilli(final Long epochMilli) {
     return formatEpochMilli(epochMilli, FormatOption.WITH_TIMEZONE);
   }
 
-  public static String formatEpochMilli(final long epochMilli, final FormatOption formatOption) {
-    return formatInstant(Instant.ofEpochMilli(epochMilli), formatOption);
+  public static String formatEpochMilli(final Long epochMilli, final FormatOption formatOption) {
+    return epochMilli == null ? "" : formatInstant(Instant.ofEpochMilli(epochMilli), formatOption);
   }
 
   /**
