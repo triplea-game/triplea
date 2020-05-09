@@ -26,11 +26,7 @@ public class LobbyWatcherThread {
 
   public void createLobbyWatcher(final GameToLobbyConnection gameToLobbyConnection) {
     InGameLobbyWatcher.newInGameLobbyWatcher(
-            serverMessenger,
-            gameToLobbyConnection,
-            watcherThreadMessaging::connectionLostReporter,
-            watcherThreadMessaging::connectionReEstablishedReporter,
-            lobbyWatcher.getInGameLobbyWatcher())
+            serverMessenger, gameToLobbyConnection, lobbyWatcher.getInGameLobbyWatcher())
         .ifPresent(
             watcher -> {
               watcher.setGameSelectorModel(gameSelectorModel);
