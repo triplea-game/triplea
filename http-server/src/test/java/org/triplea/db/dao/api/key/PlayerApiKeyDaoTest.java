@@ -15,7 +15,7 @@ import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
 
 @DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
-class LobbyApiKeyDaoTest extends DaoTest {
+class PlayerApiKeyDaoTest extends DaoTest {
 
   private static final int USER_ID = 50;
 
