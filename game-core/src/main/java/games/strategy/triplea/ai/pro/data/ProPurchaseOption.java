@@ -14,8 +14,8 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.power.calculator.SupportCalculationResult;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -282,16 +282,13 @@ public class ProPurchaseOption {
     final List<Unit> units = new ArrayList<>(ownedLocalUnits);
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));
-    final Set<List<UnitSupportAttachment>> supportsAvailable = new HashSet<>();
-    final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<>();
-    DiceRoll.getSortedSupport(
-        units,
-        supportsAvailable,
-        supportLeft,
-        new HashMap<>(),
-        data.getUnitTypeList().getSupportRules(),
-        defense,
-        true);
+    final SupportCalculationResult supportCalculationResult =
+        DiceRoll.getSortedSupport(units, data.getUnitTypeList().getSupportRules(), defense, true);
+
+    final Set<List<UnitSupportAttachment>> supportsAvailable =
+        supportCalculationResult.getSupportRules();
+    final IntegerMap<UnitSupportAttachment> supportLeft = supportCalculationResult.getSupportLeft();
+
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
       for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {

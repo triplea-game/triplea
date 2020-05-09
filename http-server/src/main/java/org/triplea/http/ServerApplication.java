@@ -52,6 +52,7 @@ import org.triplea.modules.moderation.ban.user.UserBanController;
 import org.triplea.modules.moderation.chat.history.GameChatHistoryController;
 import org.triplea.modules.moderation.disconnect.user.DisconnectUserController;
 import org.triplea.modules.moderation.moderators.ModeratorsController;
+import org.triplea.modules.moderation.mute.user.MuteUserController;
 import org.triplea.modules.moderation.player.info.PlayerInfoController;
 import org.triplea.modules.moderation.remote.actions.RemoteActionsController;
 import org.triplea.modules.user.account.create.CreateAccountController;
@@ -233,6 +234,7 @@ public class ServerApplication extends Application<AppConfig> {
         ErrorReportController.build(appConfig, jdbi),
         ModeratorAuditHistoryController.build(jdbi),
         ModeratorsController.build(jdbi),
+        MuteUserController.build(),
         PlayerInfoController.build(jdbi),
         RemoteActionsController.build(jdbi, gameMessagingBus),
         UpdateAccountController.build(jdbi));

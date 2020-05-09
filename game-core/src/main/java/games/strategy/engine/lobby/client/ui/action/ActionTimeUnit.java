@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 /** The possible time units and corresponding mappings. */
 @AllArgsConstructor
 @SuppressWarnings("ImmutableEnumChecker")
-enum BanTimeUnit {
+enum ActionTimeUnit {
   MINUTES("Minutes", minutes -> (long) minutes),
 
   HOURS("Hours", TimeUnit.HOURS::toMinutes),
@@ -16,9 +16,7 @@ enum BanTimeUnit {
 
   WEEKS("Weeks", durationUnit -> TimeUnit.DAYS.toMinutes(durationUnit * 7L)),
 
-  MONTHS("Months", durationUnit -> TimeUnit.DAYS.toMinutes(durationUnit * 30L)),
-
-  FOREVER("Forever", value -> (long) BanDurationDialog.MAX_DURATION);
+  MONTHS("Months", durationUnit -> TimeUnit.DAYS.toMinutes(durationUnit * 30L));
 
   private final String displayName;
 

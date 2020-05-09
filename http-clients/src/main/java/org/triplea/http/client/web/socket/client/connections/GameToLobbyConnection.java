@@ -2,7 +2,6 @@ package org.triplea.http.client.web.socket.client.connections;
 
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import lombok.Getter;
@@ -19,6 +18,7 @@ import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
+import org.triplea.java.concurrency.AsyncRunner;
 
 /**
  * Represents a connection from a hosted game to lobby. A hosted game can perform actions like send
@@ -68,12 +68,8 @@ public class GameToLobbyConnection {
   }
 
   public void disconnect(final String gameId) {
-    CompletableFuture.runAsync(() -> lobbyWatcherClient.removeGame(gameId))
-        .exceptionally(
-            e -> {
-              log.log(Level.INFO, "Could not complete lobby game remove call", e);
-              return null;
-            });
+    AsyncRunner.runAsync(() -> lobbyWatcherClient.removeGame(gameId))
+        .exceptionally(e -> log.log(Level.INFO, "Could not complete lobby game remove call", e));
   }
 
   public boolean checkConnectivity(final int localPort) {
