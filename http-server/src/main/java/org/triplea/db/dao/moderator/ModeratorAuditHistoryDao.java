@@ -65,24 +65,16 @@ public interface ModeratorAuditHistoryDao {
       @Bind("actionTarget") String actionTarget);
 
   @SqlQuery(
-      "select\n"
-          + "  h.date_created "
-          + ModeratorAuditHistoryRecord.DATE_CREATED_COLUMN
-          + ",\n"
-          + "  u.username "
-          + ModeratorAuditHistoryRecord.USER_NAME_COLUMN
-          + ",\n"
-          + "  h.action_name "
-          + ModeratorAuditHistoryRecord.ACTION_NAME_COLUMN
-          + ",\n"
-          + "  h.action_target "
-          + ModeratorAuditHistoryRecord.ACTION_TARGET_COLUMN
-          + "\n"
-          + "from moderator_action_history h \n"
-          + "join lobby_user u on u.id = h.lobby_user_id\n"
-          + "order by h.date_created desc\n"
-          + "offset :rowOffset rows\n"
-          + "fetch next :rowCount rows only")
+      "select"
+          + "    h.date_created,"
+          + "    u.username,"
+          + "    h.action_name,"
+          + "    h.action_target"
+          + "  from moderator_action_history h"
+          + "  join lobby_user u on u.id = h.lobby_user_id"
+          + "  order by h.date_created desc"
+          + "  offset :rowOffset rows"
+          + "  fetch next :rowCount rows only")
   List<ModeratorAuditHistoryRecord> lookupHistoryItems(
       @Bind("rowOffset") int rowOffset, @Bind("rowCount") int rowCount);
 }

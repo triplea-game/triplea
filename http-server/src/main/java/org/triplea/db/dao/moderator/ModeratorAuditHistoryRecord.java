@@ -14,11 +14,6 @@ import org.triplea.db.TimestampMapper;
 @NoArgsConstructor
 @Getter
 public class ModeratorAuditHistoryRecord {
-  public static final String USER_NAME_COLUMN = "username";
-  public static final String DATE_CREATED_COLUMN = "date_created";
-  public static final String ACTION_NAME_COLUMN = "action_name";
-  public static final String ACTION_TARGET_COLUMN = "action_target";
-
   private Instant dateCreated;
   private String username;
   private String actionName;
@@ -28,10 +23,10 @@ public class ModeratorAuditHistoryRecord {
   public static RowMapper<ModeratorAuditHistoryRecord> buildResultMapper() {
     return (rs, ctx) ->
         ModeratorAuditHistoryRecord.builder()
-            .dateCreated(TimestampMapper.map(rs, DATE_CREATED_COLUMN))
-            .username(rs.getString(USER_NAME_COLUMN))
-            .actionName(rs.getString(ACTION_NAME_COLUMN))
-            .actionTarget(rs.getString(ACTION_TARGET_COLUMN))
+            .dateCreated(TimestampMapper.map(rs, "date_created"))
+            .username(rs.getString("username"))
+            .actionName(rs.getString("action_name"))
+            .actionTarget(rs.getString("action_target"))
             .build();
   }
 }
