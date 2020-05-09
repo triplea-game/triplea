@@ -27,8 +27,8 @@ public class BanLookupRecord {
   public static RowMapper<BanLookupRecord> buildResultMapper() {
     return (rs, ctx) ->
         BanLookupRecord.builder()
-            .publicBanId(rs.getString(BanTableColumns.PUBLIC_ID_COLUMN))
-            .banExpiry(TimestampMapper.map(rs, BanTableColumns.BAN_EXPIRY_COLUMN))
+            .publicBanId(rs.getString("public_id"))
+            .banExpiry(TimestampMapper.map(rs, "ban_expiry"))
             .build();
   }
 }
