@@ -6,7 +6,6 @@ import static org.hamcrest.core.Is.is;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
 /**
  * Utility class for verifying toolbox tab data. Notably most tabs have table-like views and this
@@ -14,10 +13,6 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ToolboxTabModelTestUtil {
-
-  protected static final PagingParams PAGING_PARAMS =
-      PagingParams.builder().rowNumber(0).pageSize(10).build();
-
   /**
    * Given a set of table data, verifies that the values at a given row match a set of expected
    * values.
