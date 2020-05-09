@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
-import org.triplea.db.dao.moderator.ModeratorAuditHistoryDaoData;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryRecord;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,16 +23,16 @@ class ModeratorAuditHistoryServiceTest {
   private static final int ROW_OFFSET = 30;
   private static final int ROW_COUNT = 70;
 
-  private static final ModeratorAuditHistoryDaoData ITEM_1 =
-      ModeratorAuditHistoryDaoData.builder()
+  private static final ModeratorAuditHistoryRecord ITEM_1 =
+      ModeratorAuditHistoryRecord.builder()
           .actionName("Jolly courages lead to love.")
           .actionTarget("All peglegs hoist evil, small rums.")
           .dateCreated(Instant.now())
           .username("Ahoy, yer not lootting me without a yellow fever!")
           .build();
 
-  private static final ModeratorAuditHistoryDaoData ITEM_2 =
-      ModeratorAuditHistoryDaoData.builder()
+  private static final ModeratorAuditHistoryRecord ITEM_2 =
+      ModeratorAuditHistoryRecord.builder()
           .actionName("Ahoy, endure me kraken, ye old wind!")
           .actionTarget("All gulls love salty, swashbuckling pins.")
           .dateCreated(Instant.now().minusSeconds(5000))

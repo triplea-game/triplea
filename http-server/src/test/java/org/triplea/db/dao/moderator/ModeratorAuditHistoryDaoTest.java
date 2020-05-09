@@ -50,7 +50,7 @@ class ModeratorAuditHistoryDaoTest extends DaoTest {
   @Test
   @DataSet(cleanBefore = true, value = "moderator_audit/history_select.yml")
   void selectHistory() {
-    List<ModeratorAuditHistoryDaoData> results = moderatorAuditHistoryDao.lookupHistoryItems(0, 3);
+    List<ModeratorAuditHistoryRecord> results = moderatorAuditHistoryDao.lookupHistoryItems(0, 3);
 
     assertThat(results, hasSize(3));
 

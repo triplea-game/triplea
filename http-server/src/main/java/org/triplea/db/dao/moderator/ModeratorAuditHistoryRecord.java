@@ -13,7 +13,7 @@ import org.triplea.db.TimestampMapper;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ModeratorAuditHistoryDaoData {
+public class ModeratorAuditHistoryRecord {
   public static final String USER_NAME_COLUMN = "username";
   public static final String DATE_CREATED_COLUMN = "date_created";
   public static final String ACTION_NAME_COLUMN = "action_name";
@@ -25,9 +25,9 @@ public class ModeratorAuditHistoryDaoData {
   private String actionTarget;
 
   /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
-  public static RowMapper<ModeratorAuditHistoryDaoData> buildResultMapper() {
+  public static RowMapper<ModeratorAuditHistoryRecord> buildResultMapper() {
     return (rs, ctx) ->
-        ModeratorAuditHistoryDaoData.builder()
+        ModeratorAuditHistoryRecord.builder()
             .dateCreated(TimestampMapper.map(rs, DATE_CREATED_COLUMN))
             .username(rs.getString(USER_NAME_COLUMN))
             .actionName(rs.getString(ACTION_NAME_COLUMN))

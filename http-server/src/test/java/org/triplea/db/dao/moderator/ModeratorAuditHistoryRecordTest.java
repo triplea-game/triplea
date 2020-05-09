@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ModeratorAuditHistoryDaoDataTest {
+class ModeratorAuditHistoryRecordTest {
 
   private static final Instant NOW = Instant.now();
   private static final Timestamp timestamp = Timestamp.from(NOW);
@@ -30,16 +30,16 @@ class ModeratorAuditHistoryDaoDataTest {
 
   @Test
   void verifyMapping() throws Exception {
-    when(resultSet.getTimestamp(eq(ModeratorAuditHistoryDaoData.DATE_CREATED_COLUMN), any()))
+    when(resultSet.getTimestamp(eq(ModeratorAuditHistoryRecord.DATE_CREATED_COLUMN), any()))
         .thenReturn(timestamp);
-    when(resultSet.getString(ModeratorAuditHistoryDaoData.USER_NAME_COLUMN)).thenReturn(USER_NAME);
-    when(resultSet.getString(ModeratorAuditHistoryDaoData.ACTION_NAME_COLUMN))
+    when(resultSet.getString(ModeratorAuditHistoryRecord.USER_NAME_COLUMN)).thenReturn(USER_NAME);
+    when(resultSet.getString(ModeratorAuditHistoryRecord.ACTION_NAME_COLUMN))
         .thenReturn(ACTION_NAME);
-    when(resultSet.getString(ModeratorAuditHistoryDaoData.ACTION_TARGET_COLUMN))
+    when(resultSet.getString(ModeratorAuditHistoryRecord.ACTION_TARGET_COLUMN))
         .thenReturn(ACTION_TARGET);
 
-    final ModeratorAuditHistoryDaoData result =
-        ModeratorAuditHistoryDaoData.buildResultMapper().map(resultSet, null);
+    final ModeratorAuditHistoryRecord result =
+        ModeratorAuditHistoryRecord.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUsername(), is(USER_NAME));
     assertThat(result.getDateCreated(), is(NOW));

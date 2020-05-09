@@ -12,7 +12,7 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.db.dao.access.log.AccessLogRecord;
 import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
 import org.triplea.db.dao.api.key.GamePlayerLookup;
-import org.triplea.db.dao.moderator.ModeratorAuditHistoryDaoData;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryRecord;
 import org.triplea.db.dao.moderator.ModeratorUserDaoData;
 import org.triplea.db.dao.moderator.chat.history.ChatHistoryRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
@@ -63,7 +63,7 @@ public final class JdbiDatabase {
     jdbi.registerRowMapper(UsernameBanRecord.class, UsernameBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UserRoleLookup.class, UserRoleLookup.buildResultMapper());
     jdbi.registerRowMapper(
-        ModeratorAuditHistoryDaoData.class, ModeratorAuditHistoryDaoData.buildResultMapper());
+        ModeratorAuditHistoryRecord.class, ModeratorAuditHistoryRecord.buildResultMapper());
     jdbi.registerRowMapper(ModeratorUserDaoData.class, ModeratorUserDaoData.buildResultMapper());
   }
 
