@@ -17,7 +17,7 @@ class AccessLogDaoTest extends DaoTest {
   @Test
   @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
   void emptyDataCase() {
-    assertThat(accessLogDao.fetchAccessLogRows(0, 1), hasSize(0));
+    assertThat(accessLogDao.fetchAccessLogRows(0, 1, "%", "%", "%"), hasSize(0));
   }
 
   /**
@@ -27,30 +27,76 @@ class AccessLogDaoTest extends DaoTest {
   @Test
   @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
   void fetchTwoRows() {
-    List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 1);
+    List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 1, "%", "%", "%");
     assertThat(data, hasSize(1));
 
-    assertThat(data.get(0).getAccessTime(), isInstant(2016, 1, 3, 23, 59, 20));
-    assertThat(data.get(0).getIp(), is("127.0.0.2"));
-    assertThat(data.get(0).getSystemId(), is("system-id2"));
-    assertThat(data.get(0).getUsername(), is("second"));
-    assertThat(data.get(0).isRegistered(), is(false));
+    verifyIsRowWithSecondUsername(data.get(0));
 
-    data = accessLogDao.fetchAccessLogRows(1, 1);
+    data = accessLogDao.fetchAccessLogRows(1, 1, "%", "%", "%");
     assertThat(data, hasSize(1));
 
-    assertThat(data.get(0).getAccessTime(), isInstant(2016, 1, 1, 23, 59, 20));
-    assertThat(data.get(0).getIp(), is("127.0.0.1"));
-    assertThat(data.get(0).getSystemId(), is("system-id1"));
-    assertThat(data.get(0).getUsername(), is("first"));
-    assertThat(data.get(0).isRegistered(), is(true));
+    verifyIsRowWithFirstUsername(data.get(0));
+  }
+
+  private void verifyIsRowWithSecondUsername(final AccessLogRecord accessLogRecord) {
+    assertThat(accessLogRecord.getAccessTime(), isInstant(2016, 1, 3, 23, 59, 20));
+    assertThat(accessLogRecord.getIp(), is("127.0.0.2"));
+    assertThat(accessLogRecord.getSystemId(), is("system-id2"));
+    assertThat(accessLogRecord.getUsername(), is("second"));
+    assertThat(accessLogRecord.isRegistered(), is(false));
+  }
+
+  private void verifyIsRowWithFirstUsername(final AccessLogRecord accessLogRecord) {
+    assertThat(accessLogRecord.getAccessTime(), isInstant(2016, 1, 1, 23, 59, 20));
+    assertThat(accessLogRecord.getIp(), is("127.0.0.1"));
+    assertThat(accessLogRecord.getSystemId(), is("system-id1"));
+    assertThat(accessLogRecord.getUsername(), is("first"));
+    assertThat(accessLogRecord.isRegistered(), is(true));
+  }
+
+  @Test
+  @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
+  void searchForAllIdentifiesWithExactMatch() {
+    final List<AccessLogRecord> data =
+        accessLogDao.fetchAccessLogRows(0, 2, "first", "127.0.0.1", "system-id1");
+
+    assertThat(data, hasSize(1));
+    verifyIsRowWithFirstUsername(data.get(0));
+  }
+
+  @Test
+  @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
+  void searchForSystemId() {
+    final List<AccessLogRecord> data =
+        accessLogDao.fetchAccessLogRows(0, 2, "%", "%", "system-id1");
+
+    assertThat(data, hasSize(1));
+    verifyIsRowWithFirstUsername(data.get(0));
+  }
+
+  @Test
+  @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
+  void searchForUserName() {
+    final List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 2, "first", "%", "%");
+
+    assertThat(data, hasSize(1));
+    verifyIsRowWithFirstUsername(data.get(0));
+  }
+
+  @Test
+  @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
+  void searchForIp() {
+    final List<AccessLogRecord> data = accessLogDao.fetchAccessLogRows(0, 2, "%", "127.0.0.1", "%");
+
+    assertThat(data, hasSize(1));
+    verifyIsRowWithFirstUsername(data.get(0));
   }
 
   /** There are only 2 rows, requesting a row offset of '2' should yield no data. */
   @Test
   @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
   void requestingRowsOffDataSetReturnsNothing() {
-    assertThat(accessLogDao.fetchAccessLogRows(2, 1), hasSize(0));
+    assertThat(accessLogDao.fetchAccessLogRows(2, 1, "%", "%", "%"), hasSize(0));
   }
 
   @Test
