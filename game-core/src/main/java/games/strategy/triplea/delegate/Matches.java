@@ -1520,7 +1520,7 @@ public final class Matches {
     return type -> UnitAttachment.get(type).getIsFirstStrike();
   }
 
-  static Predicate<Unit> unitOwnerHasImprovedArtillerySupportTech() {
+  public static Predicate<Unit> unitOwnerHasImprovedArtillerySupportTech() {
     return u -> TechTracker.hasImprovedArtillerySupport(u.getOwner());
   }
 
