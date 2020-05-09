@@ -51,7 +51,7 @@ public class GameListingController extends HttpController {
   /** Moderator action to remove a game. */
   @RateLimited(
       keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
+      rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(GameListingClient.BOOT_GAME_PATH)
   @RolesAllowed(UserRole.MODERATOR)
