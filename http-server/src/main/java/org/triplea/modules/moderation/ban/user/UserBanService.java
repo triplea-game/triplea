@@ -63,8 +63,8 @@ public class UserBanService {
                     .username(daoData.getUsername())
                     .hashedMac(daoData.getSystemId())
                     .ip(daoData.getIp())
-                    .banDate(daoData.getDateCreated())
-                    .banExpiry(daoData.getBanExpiry())
+                    .banDate(daoData.getDateCreated().toEpochMilli())
+                    .banExpiry(daoData.getBanExpiry().toEpochMilli())
                     .build())
         .collect(Collectors.toList());
   }

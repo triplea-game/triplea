@@ -44,7 +44,8 @@ class AccessLogServiceTest {
 
     assertThat(results, hasSize(1));
 
-    assertThat(results.get(0).getAccessDate(), is(ACCESS_LOG_DAO_DATA.getAccessTime()));
+    assertThat(
+        results.get(0).getAccessDate(), is(ACCESS_LOG_DAO_DATA.getAccessTime().toEpochMilli()));
     assertThat(results.get(0).getSystemId(), is(ACCESS_LOG_DAO_DATA.getSystemId()));
     assertThat(results.get(0).getIp(), is(ACCESS_LOG_DAO_DATA.getIp()));
     assertThat(results.get(0).getUsername(), is(ACCESS_LOG_DAO_DATA.getUsername()));

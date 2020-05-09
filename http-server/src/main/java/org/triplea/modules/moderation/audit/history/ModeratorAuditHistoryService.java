@@ -20,7 +20,7 @@ class ModeratorAuditHistoryService {
         .map(
             item ->
                 ModeratorEvent.builder()
-                    .date(item.getDateCreated())
+                    .date(item.getDateCreated().toEpochMilli())
                     .moderatorName(item.getUsername())
                     .moderatorAction(item.getActionName())
                     .actionTarget(item.getActionTarget())

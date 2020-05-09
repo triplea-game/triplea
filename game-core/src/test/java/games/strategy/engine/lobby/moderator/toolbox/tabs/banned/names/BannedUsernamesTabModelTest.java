@@ -4,8 +4,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
+import org.triplea.java.DateTimeFormatterUtil;
 
 @ExtendWith(MockitoExtension.class)
 class BannedUsernamesTabModelTest {
@@ -20,13 +23,21 @@ class BannedUsernamesTabModelTest {
   private static final String USERNAME = "Belay, yer not desiring me without a pestilence!";
   private static final UsernameBanData BANNED_USERNAME_DATA =
       UsernameBanData.builder()
-          .banDate(Instant.now())
+          .banDate(
+              LocalDateTime.of(2010, 1, 1, 23, 59) //
+                  .toInstant(ZoneOffset.UTC)
+                  .toEpochMilli())
           .bannedName("Fear the pacific ocean until it falls.")
           .build();
 
   @Mock private ToolboxUsernameBanClient toolboxUsernameBanClient;
 
   @InjectMocks private BannedUsernamesTabModel bannedUsernamesTabModel;
+
+  @BeforeAll
+  static void setDateTimeFormattingToUtc() {
+    DateTimeFormatterUtil.setDefaultToUtc();
+  }
 
   @Test
   void fetchTableData() {
@@ -40,7 +51,7 @@ class BannedUsernamesTabModelTest {
         tableData,
         0,
         BANNED_USERNAME_DATA.getBannedName(),
-        BANNED_USERNAME_DATA.getBanDate().toString(),
+        "2010-1-1 23:59",
         BannedUsernamesTabModel.REMOVE_BUTTON_TEXT);
   }
 

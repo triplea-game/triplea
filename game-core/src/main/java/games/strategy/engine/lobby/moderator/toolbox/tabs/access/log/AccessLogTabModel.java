@@ -8,6 +8,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUserna
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 @RequiredArgsConstructor
 class AccessLogTabModel {
@@ -24,7 +25,9 @@ class AccessLogTabModel {
         .map(
             accessLogData ->
                 List.of(
-                    accessLogData.getAccessDate().toString(),
+                    DateTimeFormatterUtil.formatEpochMilli(
+                        accessLogData.getAccessDate(),
+                        DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE),
                     accessLogData.getUsername(),
                     accessLogData.getIp(),
                     accessLogData.getSystemId(),

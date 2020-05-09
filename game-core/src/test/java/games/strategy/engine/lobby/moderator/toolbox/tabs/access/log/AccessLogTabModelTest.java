@@ -6,8 +6,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +21,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBa
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 @ExtendWith(MockitoExtension.class)
 class AccessLogTabModelTest {
@@ -40,7 +43,10 @@ class AccessLogTabModelTest {
           .systemId("The mainland commands with punishment")
           .ip("Avast, yer not viewing me without a life!")
           .username("Biscuit eaters travel with grace at the dark rummage island!")
-          .accessDate(Instant.now())
+          .accessDate(
+              LocalDateTime.of(2005, 1, 1, 23, 59) //
+                  .toInstant(ZoneOffset.UTC)
+                  .toEpochMilli())
           .build();
 
   private static final AccessLogData ACCESS_LOG_DATA_2 =
@@ -49,7 +55,10 @@ class AccessLogTabModelTest {
           .systemId("Command me woodchuck, ye clear wave!")
           .ip("Hoist me rum, ye mighty cockroach!")
           .username("Arg, wow.")
-          .accessDate(Instant.now().plusSeconds(100))
+          .accessDate(
+              LocalDateTime.of(2007, 1, 1, 23, 59) //
+                  .toInstant(ZoneOffset.UTC)
+                  .toEpochMilli())
           .build();
 
   @Mock private ToolboxAccessLogClient toolboxAccessLogClient;
@@ -57,6 +66,11 @@ class AccessLogTabModelTest {
   @Mock private ToolboxUsernameBanClient toolboxUsernameBanClient;
 
   @InjectMocks private AccessLogTabModel accessLogTabModel;
+
+  @BeforeAll
+  static void setTimeFormattingToUtc() {
+    DateTimeFormatterUtil.setDefaultToUtc();
+  }
 
   @Test
   void fetchData() {
@@ -72,7 +86,7 @@ class AccessLogTabModelTest {
     ToolboxTabModelTestUtil.verifyTableDataAtRow(
         tableData,
         0,
-        ACCESS_LOG_DATA_1.getAccessDate().toString(),
+        "2005-1-1 23:59",
         ACCESS_LOG_DATA_1.getUsername(),
         ACCESS_LOG_DATA_1.getIp(),
         ACCESS_LOG_DATA_1.getSystemId(),
@@ -81,7 +95,7 @@ class AccessLogTabModelTest {
     ToolboxTabModelTestUtil.verifyTableDataAtRow(
         tableData,
         1,
-        ACCESS_LOG_DATA_2.getAccessDate().toString(),
+        "2007-1-1 23:59",
         ACCESS_LOG_DATA_2.getUsername(),
         ACCESS_LOG_DATA_2.getIp(),
         ACCESS_LOG_DATA_2.getSystemId(),

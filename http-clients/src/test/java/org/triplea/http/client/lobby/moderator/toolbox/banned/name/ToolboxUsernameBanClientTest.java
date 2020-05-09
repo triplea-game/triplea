@@ -21,7 +21,7 @@ class ToolboxUsernameBanClientTest extends WireMockTest {
 
   private static final UsernameBanData BANNED_USERNAME_DATA =
       UsernameBanData.builder()
-          .banDate(Instant.now())
+          .banDate(Instant.now().toEpochMilli())
           .bannedName("Cannons grow with halitosis!")
           .build();
 

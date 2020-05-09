@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 /** Model object interacts with backend, does not hold state and is not aware of UI components. */
 @Builder
@@ -21,7 +22,13 @@ class BannedUsernamesTabModel {
 
   List<List<String>> fetchTableData() {
     return toolboxUsernameBanClient.getUsernameBans().stream()
-        .map(banData -> List.of(banData.getBannedName(), banData.getBanDate().toString(), "Remove"))
+        .map(
+            banData ->
+                List.of(
+                    banData.getBannedName(),
+                    DateTimeFormatterUtil.formatEpochMilli(
+                        banData.getBanDate(), DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE),
+                    "Remove"))
         .collect(Collectors.toList());
   }
 

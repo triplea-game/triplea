@@ -101,15 +101,15 @@ class UserBanServiceTest {
 
     assertThat(result, IsCollectionWithSize.hasSize(2));
 
-    assertThat(result.get(0).getBanDate(), is(USER_BAN_RECORD_1.getDateCreated()));
-    assertThat(result.get(0).getBanExpiry(), is(USER_BAN_RECORD_1.getBanExpiry()));
+    assertThat(result.get(0).getBanDate(), is(USER_BAN_RECORD_1.getDateCreated().toEpochMilli()));
+    assertThat(result.get(0).getBanExpiry(), is(USER_BAN_RECORD_1.getBanExpiry().toEpochMilli()));
     assertThat(result.get(0).getBanId(), is(USER_BAN_RECORD_1.getPublicBanId()));
     assertThat(result.get(0).getHashedMac(), is(USER_BAN_RECORD_1.getSystemId()));
     assertThat(result.get(0).getIp(), is(USER_BAN_RECORD_1.getIp()));
     assertThat(result.get(0).getUsername(), is(USER_BAN_RECORD_1.getUsername()));
 
-    assertThat(result.get(1).getBanDate(), is(USER_BAN_RECORD_2.getDateCreated()));
-    assertThat(result.get(1).getBanExpiry(), is(USER_BAN_RECORD_2.getBanExpiry()));
+    assertThat(result.get(1).getBanDate(), is(USER_BAN_RECORD_2.getDateCreated().toEpochMilli()));
+    assertThat(result.get(1).getBanExpiry(), is(USER_BAN_RECORD_2.getBanExpiry().toEpochMilli()));
     assertThat(result.get(1).getBanId(), is(USER_BAN_RECORD_2.getPublicBanId()));
     assertThat(result.get(1).getHashedMac(), is(USER_BAN_RECORD_2.getSystemId()));
     assertThat(result.get(1).getIp(), is(USER_BAN_RECORD_2.getIp()));

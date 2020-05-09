@@ -25,7 +25,7 @@ class AccessLogService {
         .map(
             daoData ->
                 AccessLogData.builder()
-                    .accessDate(daoData.getAccessTime())
+                    .accessDate(daoData.getAccessTime().toEpochMilli())
                     .username(daoData.getUsername())
                     .ip(daoData.getIp())
                     .systemId(daoData.getSystemId())
