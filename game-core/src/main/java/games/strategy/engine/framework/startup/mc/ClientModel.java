@@ -63,6 +63,7 @@ import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -164,7 +165,8 @@ public class ClientModel implements IMessengerErrorListener {
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
     this.listener = Preconditions.checkNotNull(listener);
-    internalPlayerListingChanged(getServerStartup().getPlayerListing());
+    AsyncRunner.runAsync(() -> internalPlayerListingChanged(getServerStartup().getPlayerListing()))
+        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
   }
 
   private static ClientProps getProps(final Component ui) {
@@ -378,19 +380,24 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public void takePlayer(final String playerName) {
-    getServerStartup().takePlayer(messenger.getLocalNode(), playerName);
+    AsyncRunner.runAsync(() -> getServerStartup().takePlayer(messenger.getLocalNode(), playerName))
+        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
   }
 
   public void releasePlayer(final String playerName) {
-    getServerStartup().releasePlayer(messenger.getLocalNode(), playerName);
+    AsyncRunner.runAsync(
+            () -> getServerStartup().releasePlayer(messenger.getLocalNode(), playerName))
+        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
   }
 
   public void disablePlayer(final String playerName) {
-    getServerStartup().disablePlayer(playerName);
+    AsyncRunner.runAsync(() -> getServerStartup().disablePlayer(playerName))
+        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
   }
 
   public void enablePlayer(final String playerName) {
-    getServerStartup().enablePlayer(playerName);
+    AsyncRunner.runAsync(() -> getServerStartup().enablePlayer(playerName))
+        .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
   }
 
   private void internalPlayerListingChanged(final PlayerListing listing) {
