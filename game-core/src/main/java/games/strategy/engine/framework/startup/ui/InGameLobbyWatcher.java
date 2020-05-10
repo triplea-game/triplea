@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.Observer;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -50,14 +49,10 @@ public class InGameLobbyWatcher {
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
-      final Consumer<String> errorReporter,
-      final Consumer<String> reconnectionReporter,
       @Nullable final InGameLobbyWatcher oldWatcher) {
     this(
         serverMessenger,
         gameToLobbyConnection,
-        errorReporter,
-        reconnectionReporter,
         Optional.ofNullable(oldWatcher).map(old -> old.gameDescription).orElse(null),
         Optional.ofNullable(oldWatcher).map(old -> old.game).orElse(null));
   }
@@ -65,8 +60,6 @@ public class InGameLobbyWatcher {
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
-      final Consumer<String> errorReporter,
-      final Consumer<String> reconnectionReporter,
       @Nullable final GameDescription oldGameDescription,
       @Nullable final IGame oldGame) {
     this.serverMessenger = serverMessenger;
@@ -124,8 +117,6 @@ public class InGameLobbyWatcher {
                 LobbyWatcherKeepAliveTask.builder()
                     .gameId(gameId)
                     .gameIdSetter(id -> gameId = id)
-                    .connectionLostReporter(errorReporter)
-                    .connectionReEstablishedReporter(reconnectionReporter)
                     .keepAliveSender(gameToLobbyConnection::sendKeepAlive)
                     .gamePoster(() -> gameToLobbyConnection.postGame(gameDescription.toLobbyGame()))
                     .build())
@@ -160,17 +151,10 @@ public class InGameLobbyWatcher {
   public static Optional<InGameLobbyWatcher> newInGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
-      final Consumer<String> errorReporter,
-      final Consumer<String> reconnectionReporter,
       final InGameLobbyWatcher oldWatcher) {
     try {
       return Optional.of(
-          new InGameLobbyWatcher(
-              serverMessenger,
-              gameToLobbyConnection,
-              errorReporter,
-              reconnectionReporter,
-              oldWatcher));
+          new InGameLobbyWatcher(serverMessenger, gameToLobbyConnection, oldWatcher));
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return Optional.empty();

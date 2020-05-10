@@ -14,12 +14,6 @@ import org.triplea.db.TimestampMapper;
 @NoArgsConstructor
 @Getter
 public class AccessLogRecord {
-  public static final String ACCESS_TIME_COLUMN = "access_time";
-  public static final String USERNAME_COLUMN = "username";
-  public static final String IP_COLUMN = "ip";
-  public static final String SYSTEM_ID_COLUMN = "system_id";
-  public static final String REGISTERED_COLUMN = "registered";
-
   private Instant accessTime;
   private String username;
   private String ip;
@@ -30,11 +24,11 @@ public class AccessLogRecord {
   public static RowMapper<AccessLogRecord> buildResultMapper() {
     return (rs, ctx) ->
         AccessLogRecord.builder()
-            .accessTime(TimestampMapper.map(rs, ACCESS_TIME_COLUMN))
-            .username(rs.getString(USERNAME_COLUMN))
-            .ip(rs.getString(IP_COLUMN))
-            .systemId(rs.getString(SYSTEM_ID_COLUMN))
-            .registered(rs.getBoolean(REGISTERED_COLUMN))
+            .accessTime(TimestampMapper.map(rs, "access_time"))
+            .username(rs.getString("username"))
+            .ip(rs.getString("ip"))
+            .systemId(rs.getString("system_id"))
+            .registered(rs.getBoolean("registered"))
             .build();
   }
 }

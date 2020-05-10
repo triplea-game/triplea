@@ -16,6 +16,8 @@ import org.triplea.db.dao.access.log.AccessLogDao;
 import org.triplea.db.dao.access.log.AccessLogRecord;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogRequest;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogSearchRequest;
 
 @ExtendWith(MockitoExtension.class)
 class AccessLogServiceTest {
@@ -37,10 +39,25 @@ class AccessLogServiceTest {
 
   @Test
   void fetchAccessLog() {
-    when(accessLogDao.fetchAccessLogRows(PAGING_PARAMS.getRowNumber(), PAGING_PARAMS.getPageSize()))
+    when(accessLogDao.fetchAccessLogRows(
+            PAGING_PARAMS.getRowNumber(),
+            PAGING_PARAMS.getPageSize(),
+            "username",
+            "1.2.3.4",
+            "system-id"))
         .thenReturn(List.of(ACCESS_LOG_DAO_DATA));
 
-    final List<AccessLogData> results = accessLogService.fetchAccessLog(PAGING_PARAMS);
+    final List<AccessLogData> results =
+        accessLogService.fetchAccessLog(
+            AccessLogRequest.builder()
+                .accessLogSearchRequest(
+                    AccessLogSearchRequest.builder()
+                        .username("username")
+                        .systemId("system-id")
+                        .ip("1.2.3.4")
+                        .build())
+                .pagingParams(PAGING_PARAMS)
+                .build());
 
     assertThat(results, hasSize(1));
 

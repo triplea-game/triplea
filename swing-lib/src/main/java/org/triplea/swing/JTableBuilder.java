@@ -46,17 +46,21 @@ public class JTableBuilder<T> {
   public JTable build() {
     Preconditions.checkNotNull(columnNames);
     Preconditions.checkState(
-        rowData == null ^ tableData == null,
-        "Must either user tableData + rowMapper or specify rowData");
+        (rowData == null && tableData == null) || (rowData == null ^ tableData == null),
+        "May only specify one of rowData+rowMapper, tableData, or specify no table data.");
     Preconditions.checkState(
-        rowData != null || rowMapper != null,
+        rowData == null || rowMapper != null,
         "If specifying row data, must specify a mapper for the row data");
     Optional.ofNullable(tableData)
         .ifPresent(data -> verifyRowLengthsMatchHeader(data, columnNames.size()));
 
     final List<List<String>> data =
         Optional.ofNullable(tableData)
-            .orElseGet(() -> rowData.stream().map(rowMapper).collect(Collectors.toList()));
+            .orElseGet(
+                () ->
+                    Optional.ofNullable(rowData)
+                        .map(d -> d.stream().map(rowMapper).collect(Collectors.toList()))
+                        .orElse(List.of()));
 
     final DefaultTableModel model = new DefaultTableModel();
     columnNames.forEach(model::addColumn);

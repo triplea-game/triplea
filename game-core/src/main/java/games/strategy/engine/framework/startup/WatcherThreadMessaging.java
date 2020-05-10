@@ -8,29 +8,14 @@ import javax.swing.SwingUtilities;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.awt.OpenFileUtility;
-import org.triplea.swing.DialogBuilder;
 
 /** Interface to communicate lobby watcher events to user. */
 public interface WatcherThreadMessaging {
-  void connectionLostReporter(String message);
-
-  void connectionReEstablishedReporter(String message);
-
   void serverNotAvailableHandler(String message);
 
   /** Simply logs notifications */
   @Log
   class HeadlessWatcherThreadMessaging implements WatcherThreadMessaging {
-    @Override
-    public void connectionLostReporter(final String message) {
-      log.warning(message);
-    }
-
-    @Override
-    public void connectionReEstablishedReporter(final String message) {
-      log.info(message);
-    }
-
     @Override
     public void serverNotAvailableHandler(final String message) {
       log.severe(message);
@@ -41,24 +26,6 @@ public interface WatcherThreadMessaging {
   @AllArgsConstructor
   class HeadedWatcherThreadMessaging implements WatcherThreadMessaging {
     private final Component parent;
-
-    @Override
-    public void connectionLostReporter(final String message) {
-      DialogBuilder.builder()
-          .parent(parent)
-          .title("Connection to Lobby Lost")
-          .errorMessage(message)
-          .showDialog();
-    }
-
-    @Override
-    public void connectionReEstablishedReporter(final String message) {
-      DialogBuilder.builder()
-          .parent(parent)
-          .title("Re-Connected to Lobby")
-          .infoMessage(message)
-          .showDialog();
-    }
 
     @Override
     public void serverNotAvailableHandler(final String message) {
