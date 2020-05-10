@@ -30,9 +30,8 @@ class AccessLogTabModel {
 
   private static List<String> mapAccessLogDataToTable(final AccessLogData accessLogData) {
     return List.of(
-       DateTimeFormatterUtil.formatEpochMilli(
-	   accessLogData.getAccessDate(),
-	   DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE),
+        DateTimeFormatterUtil.formatEpochMilli(
+            accessLogData.getAccessDate(), DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE),
         accessLogData.getUsername(),
         accessLogData.getIp(),
         accessLogData.getSystemId(),
