@@ -29,7 +29,6 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.JdbiDatabase;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.modules.access.authentication.ApiKeyAuthenticator;
@@ -187,7 +186,7 @@ public class ServerApplication extends Application<AppConfig> {
       final MetricRegistry metrics, final Jdbi jdbi) {
     return new CachingAuthenticator<>(
         metrics,
-        new ApiKeyAuthenticator(ApiKeyDaoWrapper.build(jdbi)),
+        ApiKeyAuthenticator.build(jdbi),
         CacheBuilder.newBuilder().expireAfterAccess(Duration.ofMinutes(10)).maximumSize(10000));
   }
 

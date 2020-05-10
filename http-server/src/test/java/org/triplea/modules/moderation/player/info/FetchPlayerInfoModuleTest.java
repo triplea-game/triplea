@@ -16,8 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
@@ -30,8 +30,8 @@ import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.BanInfo
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {
 
-  private static final GamePlayerLookup GAME_PLAYER_LOOKUP =
-      GamePlayerLookup.builder()
+  private static final PlayerIdentifiersByApiKeyLookup GAME_PLAYER_LOOKUP =
+      PlayerIdentifiersByApiKeyLookup.builder()
           .ip("1.1.1.1")
           .systemId(SystemId.of("system-id"))
           .userName(UserName.of("user-name"))
@@ -54,7 +54,7 @@ class FetchPlayerInfoModuleTest {
           .banEnd(LocalDateTime.of(2100, 1, 1, 1, 1, 1).toInstant(ZoneOffset.UTC))
           .build();
 
-  @Mock private ApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Mock private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private PlayerInfoForModeratorDao playerInfoForModeratorDao;
 
   @InjectMocks private FetchPlayerInfoModule fetchPlayerInfoModule;

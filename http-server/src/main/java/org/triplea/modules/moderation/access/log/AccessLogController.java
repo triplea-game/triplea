@@ -1,5 +1,6 @@
 package org.triplea.modules.moderation.access.log;
 
+import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
@@ -9,7 +10,7 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogRequest;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
 
 /** Controller to query the access log table, for us by moderators. */
@@ -26,7 +27,10 @@ public class AccessLogController extends HttpController {
 
   @POST
   @Path(ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)
-  public Response fetchAccessLog(final PagingParams pagingParams) {
-    return Response.ok().entity(accessLogService.fetchAccessLog(pagingParams)).build();
+  public Response fetchAccessLog(final AccessLogRequest accessLogRequest) {
+    Preconditions.checkNotNull(accessLogRequest);
+    Preconditions.checkNotNull(accessLogRequest.getAccessLogSearchRequest());
+    Preconditions.checkNotNull(accessLogRequest.getPagingParams());
+    return Response.ok().entity(accessLogService.fetchAccessLog(accessLogRequest)).build();
   }
 }

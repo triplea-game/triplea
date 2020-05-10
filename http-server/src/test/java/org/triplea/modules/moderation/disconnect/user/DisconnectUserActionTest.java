@@ -18,8 +18,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
@@ -34,14 +34,14 @@ class DisconnectUserActionTest {
 
   private static final int MODERATOR_ID = 100;
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
-  private static final GamePlayerLookup PLAYER_ID_LOOKUP =
-      GamePlayerLookup.builder()
+  private static final PlayerIdentifiersByApiKeyLookup PLAYER_ID_LOOKUP =
+      PlayerIdentifiersByApiKeyLookup.builder()
           .ip("99.99.99.99")
           .userName(UserName.of("player-name"))
           .systemId(SystemId.of("system-id"))
           .build();
 
-  @Mock private ApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Mock private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private Chatters chatters;
   @Mock private WebSocketMessagingBus playerConnections;
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;

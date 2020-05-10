@@ -19,8 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
@@ -42,7 +42,7 @@ class PlayerConnectedListenerTest {
           .playerChatId("123")
           .build();
 
-  @Mock private ApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Mock private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private Chatters chatters;
 
   private PlayerConnectedListener playerConnectedListener;
@@ -50,7 +50,7 @@ class PlayerConnectedListenerTest {
   @Mock private Session session;
   @Mock private WebSocketMessageContext<ConnectToChatMessage> context;
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
-  private ApiKeyLookupRecord apiKeyLookupRecord;
+  private PlayerApiKeyLookupRecord apiKeyLookupRecord;
 
   private ArgumentCaptor<ChatterListingMessage> responseCaptor =
       ArgumentCaptor.forClass(ChatterListingMessage.class);
@@ -62,7 +62,7 @@ class PlayerConnectedListenerTest {
   @BeforeEach
   void setupTestData() {
     apiKeyLookupRecord =
-        ApiKeyLookupRecord.builder()
+        PlayerApiKeyLookupRecord.builder()
             .role("role")
             .username(CHAT_PARTICIPANT.getUserName().getValue())
             .playerChatId("player-chat-id")
@@ -104,7 +104,8 @@ class PlayerConnectedListenerTest {
     verify(webSocketMessagingBus, never()).sendResponse(any(), any());
   }
 
-  private void givenApiKeyLookupResult(@Nullable final ApiKeyLookupRecord apiKeyLookupRecord) {
+  private void givenApiKeyLookupResult(
+      @Nullable final PlayerApiKeyLookupRecord apiKeyLookupRecord) {
     when(apiKeyDaoWrapper.lookupByApiKey(context.getMessage().getApiKey()))
         .thenReturn(Optional.ofNullable(apiKeyLookupRecord));
   }

@@ -11,9 +11,9 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.power.calculator.AvailableSupportCalculator;
 import games.strategy.triplea.delegate.power.calculator.SupportCalculationResult;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -283,7 +283,8 @@ public class ProPurchaseOption {
     units.addAll(unitsToPlace);
     units.addAll(unitType.create(1, player, true));
     final SupportCalculationResult supportCalculationResult =
-        DiceRoll.getSortedSupport(units, data.getUnitTypeList().getSupportRules(), defense, true);
+        AvailableSupportCalculator.getSortedSupport(
+            units, data.getUnitTypeList().getSupportRules(), defense, true);
 
     final Set<List<UnitSupportAttachment>> supportsAvailable =
         supportCalculationResult.getSupportRules();

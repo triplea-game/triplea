@@ -2,7 +2,7 @@
 name: "\U0001F41B  Pre-Release Problem"
 about: Report a problem with the latest pre-release (downloaded from github.com)
 title: ''
-labels: 'Problem in Pre-Release'
+labels: 'Pre-Releas Problem'
 assignees: ''
 ---
 

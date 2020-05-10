@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
+import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.modules.chat.ChatterSession;
@@ -29,7 +29,7 @@ class ChatParticipantAdapterTest {
   @DisplayName("Check data is copied from database lookup result to chatter session result object")
   void verifyData() {
     final var userWithRoleRecord =
-        ApiKeyLookupRecord.builder()
+        PlayerApiKeyLookupRecord.builder()
             .apiKeyId(123)
             .username(USERNAME)
             .role(UserRole.PLAYER)
@@ -55,11 +55,12 @@ class ChatParticipantAdapterTest {
     assertThat(result.getChatParticipant().getUserName().getValue(), is(USERNAME));
   }
 
-  private ApiKeyLookupRecord givenUserRecordWithRole(final String userRole) {
-    return ApiKeyLookupRecord.builder()
+  private PlayerApiKeyLookupRecord givenUserRecordWithRole(final String userRole) {
+    return PlayerApiKeyLookupRecord.builder()
         .username(USERNAME)
         .role(userRole)
         .playerChatId(PlayerChatId.newId().getValue())
+        .apiKeyId(123)
         .build();
   }
 

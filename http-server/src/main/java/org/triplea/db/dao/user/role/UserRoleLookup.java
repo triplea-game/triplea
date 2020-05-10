@@ -14,9 +14,6 @@ import org.triplea.java.Postconditions;
 @Getter
 @EqualsAndHashCode
 public class UserRoleLookup {
-  public static final String USER_ID_COLUMN = "id";
-  public static final String USER_ROLE_ID_COLUMN = "role_id";
-
   private int userId;
   private int userRoleId;
 
@@ -25,8 +22,8 @@ public class UserRoleLookup {
     return (rs, ctx) -> {
       final UserRoleLookup roleLookup =
           UserRoleLookup.builder()
-              .userId(rs.getInt(USER_ID_COLUMN))
-              .userRoleId(rs.getInt(USER_ROLE_ID_COLUMN))
+              .userId(rs.getInt("id"))
+              .userRoleId(rs.getInt("user_role_id"))
               .build();
       Postconditions.assertState(roleLookup.userId != 0);
       Postconditions.assertState(roleLookup.userRoleId != 0);
