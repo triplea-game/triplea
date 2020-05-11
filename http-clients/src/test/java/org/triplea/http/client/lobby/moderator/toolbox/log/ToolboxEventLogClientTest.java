@@ -22,7 +22,7 @@ class ToolboxEventLogClientTest extends WireMockTest {
   private static final ModeratorEvent MODERATOR_EVENT =
       ModeratorEvent.builder()
           .actionTarget("Death is a scrawny shark.")
-          .date(Instant.now())
+          .date(Instant.now().toEpochMilli())
           .moderatorAction("Peglegs are the ales of the rainy love.")
           .moderatorName("Ah, weird death!")
           .build();

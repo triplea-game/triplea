@@ -1,7 +1,9 @@
 package org.triplea.modules.moderation.moderators;
 
 import com.google.common.base.Preconditions;
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -35,7 +37,10 @@ class ModeratorsService {
             userInfo ->
                 ModeratorInfo.builder()
                     .name(userInfo.getUsername())
-                    .lastLogin(userInfo.getLastLogin())
+                    .lastLoginEpochMillis(
+                        Optional.ofNullable(userInfo.getLastLogin())
+                            .map(Instant::toEpochMilli)
+                            .orElse(null))
                     .build())
         .collect(Collectors.toList());
   }

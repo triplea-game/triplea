@@ -10,6 +10,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogSearchRequest;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 @RequiredArgsConstructor
 class AccessLogTabModel {
@@ -29,7 +30,8 @@ class AccessLogTabModel {
 
   private static List<String> mapAccessLogDataToTable(final AccessLogData accessLogData) {
     return List.of(
-        accessLogData.getAccessDate().toString(),
+        DateTimeFormatterUtil.formatEpochMilli(
+            accessLogData.getAccessDate(), DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE),
         accessLogData.getUsername(),
         accessLogData.getIp(),
         accessLogData.getSystemId(),

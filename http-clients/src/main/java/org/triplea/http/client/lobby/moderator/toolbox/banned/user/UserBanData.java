@@ -1,6 +1,5 @@
 package org.triplea.http.client.lobby.moderator.toolbox.banned.user;
 
-import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -16,8 +15,8 @@ import lombok.ToString;
 public class UserBanData {
   private final String banId;
   private final String username;
-  private final Instant banDate;
+  private final Long banDate;
   private final String ip;
   private final String hashedMac;
-  private final Instant banExpiry;
+  private final Long banExpiry;
 }

@@ -20,7 +20,7 @@ import ru.lanwen.wiremock.ext.WiremockResolver;
 class ToolboxAccessLogClientTest extends WireMockTest {
   private static final AccessLogData ACCESS_LOG_DATA =
       AccessLogData.builder()
-          .accessDate(Instant.now())
+          .accessDate(Instant.now().toEpochMilli())
           .systemId("Dubloon of an old life, fight the yellow fever!")
           .ip("Haul me pants, ye jolly woodchuck!")
           .registered(true)

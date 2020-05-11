@@ -1,6 +1,5 @@
 package org.triplea.http.client.lobby.moderator.toolbox.banned.name;
 
-import java.time.Instant;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +15,5 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class UsernameBanData {
   @Nonnull final String bannedName;
-  @Nonnull final Instant banDate;
+  @Nonnull final Long banDate;
 }

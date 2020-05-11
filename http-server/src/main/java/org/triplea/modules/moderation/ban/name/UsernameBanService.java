@@ -55,7 +55,7 @@ class UsernameBanService {
             data ->
                 UsernameBanData.builder()
                     .bannedName(data.getUsername())
-                    .banDate(data.getDateCreated())
+                    .banDate(data.getDateCreated().toEpochMilli())
                     .build())
         .collect(Collectors.toList());
   }

@@ -98,7 +98,8 @@ class UsernameBanServiceTest {
 
     final List<UsernameBanData> results = usernameBanService.getBannedUserNames();
     assertThat(results, hasSize(1));
-    assertThat(results.get(0).getBanDate(), is(USERNAME_BAN_RECORD.getDateCreated()));
+    assertThat(
+        results.get(0).getBanDate(), is(USERNAME_BAN_RECORD.getDateCreated().toEpochMilli()));
     assertThat(results.get(0).getBannedName(), is(USERNAME_BAN_RECORD.getUsername()));
   }
 }

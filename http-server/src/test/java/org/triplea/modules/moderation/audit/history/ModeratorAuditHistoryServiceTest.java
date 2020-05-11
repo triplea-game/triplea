@@ -52,12 +52,12 @@ class ModeratorAuditHistoryServiceTest {
         moderatorAuditHistoryService.lookupHistory(ROW_OFFSET, ROW_COUNT);
 
     assertThat(results, hasSize(2));
-    assertThat(results.get(0).getDate(), is(ITEM_1.getDateCreated()));
+    assertThat(results.get(0).getDate(), is(ITEM_1.getDateCreated().toEpochMilli()));
     assertThat(results.get(0).getActionTarget(), is(ITEM_1.getActionTarget()));
     assertThat(results.get(0).getModeratorAction(), is(ITEM_1.getActionName()));
     assertThat(results.get(0).getModeratorName(), is(ITEM_1.getUsername()));
 
-    assertThat(results.get(1).getDate(), is(ITEM_2.getDateCreated()));
+    assertThat(results.get(1).getDate(), is(ITEM_2.getDateCreated().toEpochMilli()));
     assertThat(results.get(1).getActionTarget(), is(ITEM_2.getActionTarget()));
     assertThat(results.get(1).getModeratorAction(), is(ITEM_2.getActionName()));
     assertThat(results.get(1).getModeratorName(), is(ITEM_2.getUsername()));

@@ -5,8 +5,10 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,12 +17,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 @ExtendWith(MockitoExtension.class)
 class EventLogTabModelTest {
   private static final ModeratorEvent EVENT_1 =
       ModeratorEvent.builder()
-          .date(Instant.now())
+          .date(
+              LocalDateTime.of(2006, 1, 2, 2, 59) //
+                  .toInstant(ZoneOffset.UTC)
+                  .toEpochMilli())
           .actionTarget("Malaria is a cloudy pin.")
           .moderatorAction("Jolly roger, real pin. go to puerto rico.")
           .moderatorName("All parrots loot rainy, stormy fish.")
@@ -28,7 +34,10 @@ class EventLogTabModelTest {
 
   private static final ModeratorEvent EVENT_2 =
       ModeratorEvent.builder()
-          .date(Instant.now().minusSeconds(1000L))
+          .date(
+              LocalDateTime.of(2006, 1, 2, 3, 59) //
+                  .toInstant(ZoneOffset.UTC)
+                  .toEpochMilli())
           .actionTarget("Strength is a gutless tuna.")
           .moderatorAction("Doubloons travel with booty at the stormy madagascar!")
           .moderatorName("The son crushes with life, love the lighthouse.")
@@ -40,6 +49,11 @@ class EventLogTabModelTest {
   @Mock private ToolboxEventLogClient toolboxEventLogClient;
 
   @InjectMocks private EventLogTabModel eventLogTabModel;
+
+  @BeforeAll
+  static void setDateTimeFormattingToUtc() {
+    DateTimeFormatterUtil.setDefaultToUtc();
+  }
 
   /**
    * Simple test that fetches log table data and verifies the values. Here we mostly convert the

@@ -24,8 +24,8 @@ public class ModeratorUserDaoData {
   public static RowMapper<ModeratorUserDaoData> buildResultMapper() {
     return (rs, ctx) ->
         ModeratorUserDaoData.builder()
-            .username(rs.getString(USERNAME_COLUMN))
-            .lastLogin(TimestampMapper.map(rs, LAST_LOGIN_COLUMN))
+            .username(rs.getString("username"))
+            .lastLogin(TimestampMapper.map(rs, "last_login"))
             .build();
   }
 }
