@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A response to a must move query. Returns a mapping of unit -> collection of units. Units that
@@ -29,6 +30,6 @@ public class MustMoveWithDetails implements Serializable {
   }
 
   public Collection<Unit> getMustMoveWithForUnit(final Unit unit) {
-    return mapping.getOrDefault(unit, List.of());
+    return Optional.ofNullable(mapping.get(unit)).orElse(List.of());
   }
 }
