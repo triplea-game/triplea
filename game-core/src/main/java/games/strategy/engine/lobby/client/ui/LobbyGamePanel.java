@@ -213,7 +213,7 @@ class LobbyGamePanel extends JPanel {
 
     FetchChatHistory.builder()
         .parentWindow(parent)
-        .gameId(gameTableModel.getGameIdForRow(selectedIndex))
+        .gameId(gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex)))
         .gameHostName(gameTableModel.get(selectedIndex).getHostedBy().getName())
         .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
         .build()
@@ -235,7 +235,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
 
-    gameTableModel.bootGame(selectedIndex);
+    gameTableModel.bootGame(gameTable.convertRowIndexToModel(selectedIndex));
     JOptionPane.showMessageDialog(
         null, "The game you selected has been disconnected from the lobby.");
   }
@@ -255,7 +255,8 @@ class LobbyGamePanel extends JPanel {
       return;
     }
 
-    final String gameId = gameTableModel.getGameIdForRow(selectedIndex);
+    final String gameId =
+        gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
     lobbyClient.getPlayerToLobbyConnection().sendShutdownRequest(gameId);
     JOptionPane.showMessageDialog(null, "The game you selected was sent a shutdown signal");
   }
