@@ -37,7 +37,6 @@ public class LocalServerAvailabilityCheck {
                         + " to your local ip address.\n"
                         + "See 'How To Host...' in the help menu, at the top of the lobby "
                         + "screen.");
-                ExitStatus.FAILURE.exit();
               }
             })
         .start();
