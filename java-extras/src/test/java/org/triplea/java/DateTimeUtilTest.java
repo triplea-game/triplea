@@ -45,13 +45,6 @@ class DateTimeUtilTest {
   }
 
   @Test
-  void toDateString() {
-    assertThat(
-        DateTimeUtil.toDateString(LocalDateTime.ofInstant(NOW, ZoneOffset.UTC)),
-        is("Wed. Jan. 01 14:30:00 Z 2020"));
-  }
-
-  @Test
   void utcInstantOf() {
     assertThat(
         DateTimeUtil.utcInstantOf(2020, 11, 1, 23, 59),

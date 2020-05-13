@@ -6,14 +6,13 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Locale.Category;
 import lombok.experimental.UtilityClass;
 
-/** Provides methods for formatting time in various formats. */
+/** Provides methods for getting time and date instances. */
 @UtilityClass
 public final class DateTimeUtil {
   @VisibleForTesting static ZoneId defaultZoneId = ZoneId.systemDefault();
@@ -31,19 +30,6 @@ public final class DateTimeUtil {
         .appendLocalized(null, FormatStyle.MEDIUM)
         .toFormatter(defaultLocale)
         .format(LocalDateTime.ofInstant(clock.instant(), defaultZoneId));
-  }
-
-  /**
-   * Replacement for {@code Date.toString}.
-   *
-   * @param dateTime The DateTime which should be formatted
-   * @return a Formatted String of the given DateTime
-   */
-  // TODO: move this to DateTimeFormatterUtil
-  public static String toDateString(final LocalDateTime dateTime) {
-    return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy")
-        .withZone(defaultZoneId)
-        .format(dateTime);
   }
 
   /** Returns an {@code Instant} in UTC with a specified year, month, day, hour and minute. */
