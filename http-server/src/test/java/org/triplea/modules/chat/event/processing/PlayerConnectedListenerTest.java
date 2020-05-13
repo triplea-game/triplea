@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.websocket.Session;
@@ -23,11 +24,13 @@ import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.web.socket.InetExtractor;
 import org.triplea.web.socket.WebSocketMessageContext;
 import org.triplea.web.socket.WebSocketMessagingBus;
 
@@ -80,6 +83,7 @@ class PlayerConnectedListenerTest {
             .apiKeyId(apiKeyLookupRecord.getApiKeyId())
             .chatParticipant(CHAT_PARTICIPANT)
             .session(session)
+            .ip(IpAddressParser.fromString("5.5.5.5"))
             .build();
 
     playerConnectedListener =
@@ -115,6 +119,8 @@ class PlayerConnectedListenerTest {
   void playerConnectsForFirstTime() {
     givenApiKeyLookupResult(apiKeyLookupRecord);
 
+    when(session.getUserProperties())
+        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, chatterSession.getIp()));
     when(chatters.isPlayerConnected(chatterSession.getChatParticipant().getUserName()))
         .thenReturn(false);
 
@@ -134,6 +140,8 @@ class PlayerConnectedListenerTest {
   void playerConnectsForSecondTime() {
     givenApiKeyLookupResult(apiKeyLookupRecord);
 
+    when(session.getUserProperties())
+        .thenReturn(Map.of(InetExtractor.IP_ADDRESS_KEY, chatterSession.getIp()));
     when(chatters.isPlayerConnected(chatterSession.getChatParticipant().getUserName()))
         .thenReturn(true);
 

@@ -1,5 +1,6 @@
 package org.triplea.modules.chat.event.processing;
 
+import java.net.InetAddress;
 import java.time.Instant;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -14,6 +15,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessag
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.web.socket.InetExtractor;
 import org.triplea.web.socket.WebSocketMessageContext;
 
 @Builder
@@ -32,12 +34,15 @@ public class ChatMessageListener implements Consumer<WebSocketMessageContext<Cha
 
   @Override
   public void accept(final WebSocketMessageContext<ChatSentMessage> messageContext) {
+    final InetAddress chatterIp =
+        InetExtractor.extract(messageContext.getSenderSession().getUserProperties());
+
     chatters
         .lookupPlayerBySession(messageContext.getSenderSession())
         .ifPresent(
             session ->
                 chatters
-                    .isPlayerMuted(session.getChatParticipant().getPlayerChatId())
+                    .getPlayerMuteExpiration(chatterIp)
                     .ifPresentOrElse(
                         expiry -> sendResponseToMutedPlayer(expiry, messageContext),
                         () -> recordAndBroadcastMessageToAllPlayers(session, messageContext)));

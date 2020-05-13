@@ -24,7 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ChatParticipant;
-import org.triplea.domain.data.PlayerChatId;
+import org.triplea.http.client.IpAddressParser;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -113,6 +113,7 @@ class ChattersTest {
         .session(session)
         .chatParticipant(CHAT_PARTICIPANT)
         .apiKeyId(123)
+        .ip(IpAddressParser.fromString("1.1.1.1"))
         .build();
   }
 
@@ -162,7 +163,8 @@ class ChattersTest {
     @Test
     @DisplayName("With no players connected, checking if a player is muted is trivially false")
     void playerIsNotConnected() {
-      assertThat(chatters.isPlayerMuted(PlayerChatId.of("any")), isEmpty());
+      assertThat(
+          chatters.getPlayerMuteExpiration(IpAddressParser.fromString("1.1.1.1")), isEmpty());
     }
 
     @Test
@@ -173,7 +175,7 @@ class ChattersTest {
       chatters.connectPlayer(chatterSession);
 
       assertThat(
-          chatters.isPlayerMuted(chatterSession.getChatParticipant().getPlayerChatId()), isEmpty());
+          chatters.getPlayerMuteExpiration(IpAddressParser.fromString("55.55.55.55")), isEmpty());
     }
 
     @Test
@@ -186,9 +188,8 @@ class ChattersTest {
       chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), muteExpiry);
 
       final Optional<Instant> result =
-          chatters.isPlayerMuted(
-              chatterSession.getChatParticipant().getPlayerChatId(),
-              Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC));
+          chatters.getPlayerMuteExpiration(
+              chatterSession.getIp(), Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC));
 
       assertThat("Current time is *after* mute expiry => not muted", result, isEmpty());
     }
@@ -202,9 +203,8 @@ class ChattersTest {
       chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), muteExpiry);
 
       final Optional<Instant> result =
-          chatters.isPlayerMuted(
-              chatterSession.getChatParticipant().getPlayerChatId(),
-              Clock.fixed(muteExpiry.minusSeconds(10), ZoneOffset.UTC));
+          chatters.getPlayerMuteExpiration(
+              chatterSession.getIp(), Clock.fixed(muteExpiry.minusSeconds(10), ZoneOffset.UTC));
 
       assertThat(
           "Current time is *before* mute expiry => muted", result, isPresentAndIs(muteExpiry));
@@ -220,16 +220,14 @@ class ChattersTest {
       chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), muteExpiry);
 
       // current time is after the mute expiry, we expect the mute to be expunged
-      chatters.isPlayerMuted(
-          chatterSession.getChatParticipant().getPlayerChatId(),
-          Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC));
+      chatters.getPlayerMuteExpiration(
+          chatterSession.getIp(), Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC));
 
       assertThat(
           "Querying for the mute again, this time with current time before the mute."
               + "Given the mute is expunged, we would expect an empty result.",
-          chatters.isPlayerMuted(
-              chatterSession.getChatParticipant().getPlayerChatId(),
-              Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC)),
+          chatters.getPlayerMuteExpiration(
+              chatterSession.getIp(), Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC)),
           isEmpty());
     }
   }

@@ -2,6 +2,7 @@ package org.triplea.modules.chat;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collection;
@@ -28,7 +29,7 @@ public class Chatters {
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final Map<String, ChatterSession> participants = new ConcurrentHashMap<>();
 
-  private final Map<PlayerChatId, Instant> playerMutes = new HashMap<>();
+  private final Map<InetAddress, Instant> playerMutes = new HashMap<>();
 
   public static Chatters build() {
     return new Chatters();
@@ -108,25 +109,36 @@ public class Chatters {
    * Checks if a given chatter is muted, if so returns the {@code Instant} when the mute expires
    * otherwise returns an empty optional
    */
-  public Optional<Instant> isPlayerMuted(final PlayerChatId playerChatId) {
-    return isPlayerMuted(playerChatId, Clock.systemUTC());
+  public Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress) {
+    return getPlayerMuteExpiration(inetAddress, Clock.systemUTC());
   }
 
   @VisibleForTesting
-  Optional<Instant> isPlayerMuted(final PlayerChatId playerChatId, final Clock clock) {
-    return Optional.ofNullable(playerMutes.get(playerChatId))
+  Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress, final Clock clock) {
+    return Optional.ofNullable(playerMutes.get(inetAddress))
         .map(
             muteInstant -> {
               if (muteInstant.isAfter(clock.instant())) {
                 return muteInstant;
               } else {
-                playerMutes.remove(playerChatId);
+                playerMutes.remove(inetAddress);
                 return null;
               }
             });
   }
 
   public void mutePlayer(final PlayerChatId playerChatId, final Instant muteUntil) {
-    playerMutes.put(playerChatId, muteUntil);
+    findChatterSessionByPlayerChatId(playerChatId)
+        .map(ChatterSession::getIp)
+        .ifPresent(ip -> playerMutes.put(ip, muteUntil));
+  }
+
+  private Optional<ChatterSession> findChatterSessionByPlayerChatId(
+      final PlayerChatId playerChatId) {
+    return participants.values().stream()
+        .filter(
+            chatterSession ->
+                chatterSession.getChatParticipant().getPlayerChatId().equals(playerChatId))
+        .findAny();
   }
 }
