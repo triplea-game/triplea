@@ -10,14 +10,17 @@ import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.db.dao.access.log.AccessLogRecord;
-import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
-import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
+import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryRecord;
+import org.triplea.db.dao.moderator.ModeratorUserDaoData;
+import org.triplea.db.dao.moderator.chat.history.ChatHistoryRecord;
+import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
+import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanRecord;
+import org.triplea.db.dao.user.role.UserRoleLookup;
 import org.triplea.db.dao.username.ban.UsernameBanRecord;
-import org.triplea.db.data.ModeratorAuditHistoryDaoData;
-import org.triplea.db.data.ModeratorUserDaoData;
-import org.triplea.db.data.UserRoleLookup;
 
 /** Utility to get connections to the Postgres lobby database. */
 @Log
@@ -51,13 +54,18 @@ public final class JdbiDatabase {
   public static void registerRowMappers(final Jdbi jdbi) {
     jdbi.registerRowMapper(AccessLogRecord.class, AccessLogRecord.buildResultMapper());
     jdbi.registerRowMapper(BanLookupRecord.class, BanLookupRecord.buildResultMapper());
-    jdbi.registerRowMapper(GamePlayerLookup.class, GamePlayerLookup.buildResultMapper());
-    jdbi.registerRowMapper(ApiKeyLookupRecord.class, ApiKeyLookupRecord.buildResultMapper());
+    jdbi.registerRowMapper(ChatHistoryRecord.class, ChatHistoryRecord.buildResultMapper());
+    jdbi.registerRowMapper(
+        PlayerIdentifiersByApiKeyLookup.class, PlayerIdentifiersByApiKeyLookup.buildResultMapper());
+    jdbi.registerRowMapper(
+        PlayerApiKeyLookupRecord.class, PlayerApiKeyLookupRecord.buildResultMapper());
+    jdbi.registerRowMapper(PlayerAliasRecord.class, PlayerAliasRecord.buildResultMapper());
+    jdbi.registerRowMapper(PlayerBanRecord.class, PlayerBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UserBanRecord.class, UserBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UsernameBanRecord.class, UsernameBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UserRoleLookup.class, UserRoleLookup.buildResultMapper());
     jdbi.registerRowMapper(
-        ModeratorAuditHistoryDaoData.class, ModeratorAuditHistoryDaoData.buildResultMapper());
+        ModeratorAuditHistoryRecord.class, ModeratorAuditHistoryRecord.buildResultMapper());
     jdbi.registerRowMapper(ModeratorUserDaoData.class, ModeratorUserDaoData.buildResultMapper());
   }
 

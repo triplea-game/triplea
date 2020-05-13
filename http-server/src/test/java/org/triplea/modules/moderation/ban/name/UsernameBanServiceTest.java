@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.username.ban.UsernameBanDao;
 import org.triplea.db.dao.username.ban.UsernameBanRecord;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
@@ -98,7 +98,8 @@ class UsernameBanServiceTest {
 
     final List<UsernameBanData> results = usernameBanService.getBannedUserNames();
     assertThat(results, hasSize(1));
-    assertThat(results.get(0).getBanDate(), is(USERNAME_BAN_RECORD.getDateCreated()));
+    assertThat(
+        results.get(0).getBanDate(), is(USERNAME_BAN_RECORD.getDateCreated().toEpochMilli()));
     assertThat(results.get(0).getBannedName(), is(USERNAME_BAN_RECORD.getUsername()));
   }
 }

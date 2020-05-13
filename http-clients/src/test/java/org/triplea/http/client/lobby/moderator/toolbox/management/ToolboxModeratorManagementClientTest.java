@@ -22,7 +22,10 @@ class ToolboxModeratorManagementClientTest extends WireMockTest {
 
   private static final String MODERATOR_NAME = "Ooh! Pieces o' urchin are forever coal-black.";
   private static final ModeratorInfo MODERATOR_INFO =
-      ModeratorInfo.builder().name("Oh, power!").lastLogin(Instant.now()).build();
+      ModeratorInfo.builder()
+          .name("Oh, power!")
+          .lastLoginEpochMillis(Instant.now().toEpochMilli())
+          .build();
 
   private static ToolboxModeratorManagementClient newClient(final WireMockServer wireMockServer) {
     return newClient(wireMockServer, ToolboxModeratorManagementClient::newClient);

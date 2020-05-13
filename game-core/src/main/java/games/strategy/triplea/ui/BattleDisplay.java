@@ -8,6 +8,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.Die;
@@ -525,7 +526,7 @@ public class BattleDisplay extends JPanel {
     final CountDownLatch continueLatch = new CountDownLatch(1);
     SwingUtilities.invokeLater(
         () -> {
-          final boolean isEditMode = (dice == null);
+          final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
           if (!isEditMode) {
             actionLayout.show(actionPanel, DICE_KEY);
             dicePanel.setDiceRoll(dice);
@@ -554,7 +555,7 @@ public class BattleDisplay extends JPanel {
                             mapPanel.getUiContext());
                     chooser.setTitle(messageText);
                     if (isEditMode) {
-                      chooser.setMax(selectFrom.size());
+                      chooser.disableMax();
                     } else {
                       chooser.setMax(count);
                     }

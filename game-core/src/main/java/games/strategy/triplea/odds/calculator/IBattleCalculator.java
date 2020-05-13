@@ -1,6 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -12,8 +11,6 @@ import java.util.Collection;
  * methods.
  */
 public interface IBattleCalculator {
-  void setGameData(GameData data);
-
   AggregateResults calculate(
       GamePlayer attacker,
       GamePlayer defender,
@@ -22,25 +19,6 @@ public interface IBattleCalculator {
       Collection<Unit> defending,
       Collection<Unit> bombarding,
       Collection<TerritoryEffect> territoryEffects,
+      boolean retreatWhenOnlyAirLeft,
       int runCount);
-
-  void setKeepOneAttackingLandUnit(boolean bool);
-
-  void setAmphibious(boolean bool);
-
-  void setRetreatAfterRound(int value);
-
-  void setRetreatAfterXUnitsLeft(int value);
-
-  void setRetreatWhenOnlyAirLeft(boolean value);
-
-  void setAttackerOrderOfLosses(String attackerOrderOfLosses);
-
-  void setDefenderOrderOfLosses(String defenderOrderOfLosses);
-
-  void cancel();
-
-  void shutdown();
-
-  int getThreadCount();
 }

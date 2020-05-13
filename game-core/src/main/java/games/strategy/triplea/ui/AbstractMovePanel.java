@@ -284,7 +284,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
           }
           listening = true;
           if (getRootPane() != null) {
-            SwingKeyBinding.addKeyBinding(this, KeyCode.ESCAPE, this::cancelMove);
+            SwingKeyBinding.addKeyBinding(getRootPane(), KeyCode.ESCAPE, this::cancelMove);
           }
         });
   }

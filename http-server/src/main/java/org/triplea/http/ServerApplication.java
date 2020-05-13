@@ -29,7 +29,6 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.JdbiDatabase;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.modules.access.authentication.ApiKeyAuthenticator;
@@ -44,14 +43,17 @@ import org.triplea.modules.game.ConnectivityController;
 import org.triplea.modules.game.hosting.GameHostingController;
 import org.triplea.modules.game.listing.GameListing;
 import org.triplea.modules.game.listing.GameListingController;
-import org.triplea.modules.game.listing.LobbyWatcherController;
+import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
 import org.triplea.modules.moderation.access.log.AccessLogController;
 import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryController;
 import org.triplea.modules.moderation.bad.words.BadWordsController;
 import org.triplea.modules.moderation.ban.name.UsernameBanController;
 import org.triplea.modules.moderation.ban.user.UserBanController;
+import org.triplea.modules.moderation.chat.history.GameChatHistoryController;
 import org.triplea.modules.moderation.disconnect.user.DisconnectUserController;
 import org.triplea.modules.moderation.moderators.ModeratorsController;
+import org.triplea.modules.moderation.mute.user.MuteUserController;
+import org.triplea.modules.moderation.player.info.PlayerInfoController;
 import org.triplea.modules.moderation.remote.actions.RemoteActionsController;
 import org.triplea.modules.user.account.create.CreateAccountController;
 import org.triplea.modules.user.account.login.LoginController;
@@ -135,8 +137,8 @@ public class ServerApplication extends Application<AppConfig> {
     final var playerConnectionMessagingBus = new WebSocketMessagingBus();
     setupWebSocket(playerConnectionWebsocket, playerConnectionMessagingBus, sessionIsBannedCheck);
 
-    final var chatters = Chatters.build(jdbi);
-    ChatMessagingService.build(chatters).configure(playerConnectionMessagingBus);
+    final var chatters = Chatters.build();
+    ChatMessagingService.build(chatters, jdbi).configure(playerConnectionMessagingBus);
 
     endPointControllers(
             configuration, jdbi, chatters, playerConnectionMessagingBus, gameConnectionMessagingBus)
@@ -184,7 +186,7 @@ public class ServerApplication extends Application<AppConfig> {
       final MetricRegistry metrics, final Jdbi jdbi) {
     return new CachingAuthenticator<>(
         metrics,
-        new ApiKeyAuthenticator(ApiKeyDaoWrapper.build(jdbi)),
+        ApiKeyAuthenticator.build(jdbi),
         CacheBuilder.newBuilder().expireAfterAccess(Duration.ofMinutes(10)).maximumSize(10000));
   }
 
@@ -222,15 +224,18 @@ public class ServerApplication extends Application<AppConfig> {
         CreateAccountController.build(jdbi),
         DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
         ForgotPasswordController.build(appConfig, jdbi),
+        GameChatHistoryController.build(jdbi),
         GameHostingController.build(jdbi),
         GameListingController.build(gameListing),
-        LobbyWatcherController.build(gameListing),
+        LobbyWatcherController.build(jdbi, gameListing),
         LoginController.build(jdbi, chatters),
         UsernameBanController.build(jdbi),
         UserBanController.build(jdbi, chatters, playerMessagingBus, gameMessagingBus),
         ErrorReportController.build(appConfig, jdbi),
         ModeratorAuditHistoryController.build(jdbi),
         ModeratorsController.build(jdbi),
+        MuteUserController.build(),
+        PlayerInfoController.build(jdbi),
         RemoteActionsController.build(jdbi, gameMessagingBus),
         UpdateAccountController.build(jdbi));
   }

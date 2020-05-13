@@ -68,10 +68,6 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
 
   /** Sets the chat whose players will be displayed in this panel. */
   public void setChat(final Chat chat) {
-    if (this.chat != null) {
-      this.chat.removeChatListener(this);
-      this.chat.removeStatusUpdateListener(statusUpdateListener);
-    }
     this.chat = chat;
     if (chat != null) {
       chat.addChatListener(this);

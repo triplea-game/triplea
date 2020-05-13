@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.concurrency.AsyncRunner;
 
 /** A messenger general enough that both Channel and Remote messenger can be based on it. */
 @Log
@@ -311,7 +311,7 @@ public class UnifiedMessenger {
     final long methodRunNumber = local.takeANumber();
     // we don't want to block the message thread, only one thread is
     // reading messages per connection, so run with out thread pool
-    CompletableFuture.runAsync(
+    AsyncRunner.runAsync(
             () -> {
               final List<RemoteMethodCallResults> results =
                   local.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
@@ -344,7 +344,6 @@ public class UnifiedMessenger {
                   log.log(Level.SEVERE, "Exception while sending exception to client", throwable);
                 }
               }
-              return null;
             });
   }
 

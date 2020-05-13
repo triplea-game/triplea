@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,8 +22,6 @@ class LobbyWatcherKeepAliveTaskTest {
   private static final String ID_2 = "id2";
 
   @Mock private Consumer<String> gameIdSetter;
-  @Mock private Consumer<String> connectionLostReporter;
-  @Mock private Consumer<String> connectionReEstablishedReporter;
   @Mock private Predicate<String> keepAliveSender;
   @Mock private Supplier<String> gamePoster;
 
@@ -38,8 +35,6 @@ class LobbyWatcherKeepAliveTaskTest {
         LobbyWatcherKeepAliveTask.builder()
             .gameId(ID_0)
             .gameIdSetter(gameIdSetter)
-            .connectionLostReporter(connectionLostReporter)
-            .connectionReEstablishedReporter(connectionReEstablishedReporter)
             .keepAliveSender(keepAliveSender)
             .gamePoster(gamePoster)
             .build();
@@ -54,8 +49,6 @@ class LobbyWatcherKeepAliveTaskTest {
 
     verify(gamePoster, never()).get();
     verify(gameIdSetter, never()).accept(any());
-    verify(connectionLostReporter, never()).accept(any());
-    verify(connectionReEstablishedReporter, never()).accept(any());
   }
 
   /**
@@ -71,8 +64,6 @@ class LobbyWatcherKeepAliveTaskTest {
     lobbyWatcherKeepAliveTask.run();
 
     verify(gameIdSetter).accept(ID_1);
-    verify(connectionReEstablishedReporter).accept(any());
-    verify(connectionLostReporter, never()).accept(any());
   }
 
   /**
@@ -88,8 +79,6 @@ class LobbyWatcherKeepAliveTaskTest {
     lobbyWatcherKeepAliveTask.run();
 
     verify(gameIdSetter, never()).accept(any());
-    verify(connectionLostReporter, never()).accept(any());
-    verify(connectionReEstablishedReporter, never()).accept(any());
   }
 
   /**
@@ -111,9 +100,7 @@ class LobbyWatcherKeepAliveTaskTest {
     lobbyWatcherKeepAliveTask.run();
 
     verify(gameIdSetter, never()).accept(ID_1);
-    verify(connectionLostReporter, never()).accept(any());
     verify(gameIdSetter).accept(ID_2);
-    verify(connectionReEstablishedReporter).accept(any());
   }
 
   /**
@@ -126,9 +113,6 @@ class LobbyWatcherKeepAliveTaskTest {
     when(keepAliveSender.test(ID_0)).thenThrow(feignException);
 
     lobbyWatcherKeepAliveTask.run();
-
-    verify(connectionLostReporter).accept(any());
-    verify(connectionReEstablishedReporter, never()).accept(any());
   }
 
   /**
@@ -144,9 +128,6 @@ class LobbyWatcherKeepAliveTaskTest {
 
     lobbyWatcherKeepAliveTask.run();
     lobbyWatcherKeepAliveTask.run();
-
-    verify(connectionLostReporter).accept(any());
-    verify(connectionReEstablishedReporter, never()).accept(any());
   }
 
   /**
@@ -166,32 +147,6 @@ class LobbyWatcherKeepAliveTaskTest {
     lobbyWatcherKeepAliveTask.run();
 
     verify(gameIdSetter).accept(ID_1);
-    verify(connectionLostReporter).accept(any());
-    verify(connectionReEstablishedReporter).accept(any());
-  }
-
-  /**
-   * We'll lose connection (keep alive = false), get a new ID. We'll regain connection with a new
-   * ID, and then the next keep alive will fail. We expect to be notified twice of connection lost.
-   * <br>
-   * Run #1: id0 fails<br>
-   * -> connection lost reported<br>
-   * Run #2: id0 does not keep alive, we re-post for new ID_1, ID_1 keeps alive<br>
-   * -> connection re-established Run #3: id1 fails<br>
-   * -> connection lost reported a second time.
-   */
-  @Test
-  void connectionLostIsReportedAgainAfterSuccesfulReConnectionAndLostAgain() {
-    when(keepAliveSender.test(ID_0)).thenThrow(feignException).thenReturn(false);
-    when(gamePoster.get()).thenReturn(ID_1);
-    when(keepAliveSender.test(ID_1)).thenReturn(true).thenThrow(feignException);
-
-    lobbyWatcherKeepAliveTask.run();
-    lobbyWatcherKeepAliveTask.run();
-    lobbyWatcherKeepAliveTask.run();
-
-    verify(connectionLostReporter, times(2)).accept(any());
-    verify(connectionReEstablishedReporter).accept(any());
   }
 
   /**
@@ -213,8 +168,6 @@ class LobbyWatcherKeepAliveTaskTest {
 
     verify(gameIdSetter, never()).accept(any());
     verify(gamePoster, never()).get();
-    verify(connectionLostReporter).accept(any());
-    verify(connectionReEstablishedReporter).accept(any());
   }
 
   /**
@@ -234,7 +187,5 @@ class LobbyWatcherKeepAliveTaskTest {
     lobbyWatcherKeepAliveTask.run();
 
     verify(gameIdSetter, never()).accept(any());
-    verify(connectionLostReporter).accept(any());
-    verify(connectionReEstablishedReporter, never()).accept(any());
   }
 }

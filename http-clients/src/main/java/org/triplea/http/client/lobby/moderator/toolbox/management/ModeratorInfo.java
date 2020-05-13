@@ -1,6 +1,5 @@
 package org.triplea.http.client.lobby.moderator.toolbox.management;
 
-import java.time.Instant;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +18,5 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class ModeratorInfo {
   private final String name;
-  @Nullable private final Instant lastLogin;
+  @Nullable private final Long lastLoginEpochMillis;
 }

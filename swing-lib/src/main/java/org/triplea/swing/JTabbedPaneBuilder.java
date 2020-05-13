@@ -36,7 +36,7 @@ public class JTabbedPaneBuilder {
   private final List<Tab> components = new ArrayList<>();
   private int tabIndex = 0;
 
-  private JTabbedPaneBuilder() {}
+  public JTabbedPaneBuilder() {}
 
   /** Builds the swing component. */
   public JTabbedPane build() {

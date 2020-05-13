@@ -13,8 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.BadWordsDao;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.BadWordsDao;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 
 @ExtendWith(MockitoExtension.class)
 class BadWordsServiceTest {

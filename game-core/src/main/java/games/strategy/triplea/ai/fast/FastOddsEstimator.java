@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.fast;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -23,9 +22,6 @@ class FastOddsEstimator implements IBattleCalculator {
   }
 
   @Override
-  public void setGameData(final GameData data) {}
-
-  @Override
   public AggregateResults calculate(
       final GamePlayer attacker,
       final GamePlayer defender,
@@ -34,6 +30,7 @@ class FastOddsEstimator implements IBattleCalculator {
       final Collection<Unit> defendingUnits,
       final Collection<Unit> bombardingUnits,
       final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
       final int runCount) {
     final double winPercentage =
         ProBattleUtils.estimateStrengthDifference(
@@ -56,37 +53,5 @@ class FastOddsEstimator implements IBattleCalculator {
     final int battleRoundsFought = 3;
     return new AggregateEstimate(
         battleRoundsFought, winPercentage / 100, remainingAttackingUnits, remainingDefendingUnits);
-  }
-
-  @Override
-  public void setKeepOneAttackingLandUnit(final boolean bool) {}
-
-  @Override
-  public void setAmphibious(final boolean bool) {}
-
-  @Override
-  public void setRetreatAfterRound(final int value) {}
-
-  @Override
-  public void setRetreatAfterXUnitsLeft(final int value) {}
-
-  @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {}
-
-  @Override
-  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {}
-
-  @Override
-  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {}
-
-  @Override
-  public void cancel() {}
-
-  @Override
-  public void shutdown() {}
-
-  @Override
-  public int getThreadCount() {
-    return 1;
   }
 }

@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;

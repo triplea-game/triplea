@@ -1520,14 +1520,13 @@ public final class Matches {
     return type -> UnitAttachment.get(type).getIsFirstStrike();
   }
 
-  static Predicate<Unit> unitOwnerHasImprovedArtillerySupportTech() {
+  public static Predicate<Unit> unitOwnerHasImprovedArtillerySupportTech() {
     return u -> TechTracker.hasImprovedArtillerySupport(u.getOwner());
   }
 
-  // TODO: Eventually remove as only used by AI and doesn't handle canals very well
   public static Predicate<Territory> territoryHasNonAllowedCanal(
-      final GamePlayer player, final Collection<Unit> unitsMoving) {
-    return t -> MoveValidator.validateCanal(new Route(t), unitsMoving, player) != null;
+      final GamePlayer player, final GameData gameData) {
+    return t -> new MoveValidator(gameData).validateCanal(new Route(t), null, player) != null;
   }
 
   public static Predicate<Territory> territoryIsBlockedSea(

@@ -68,13 +68,14 @@ import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
-import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
-import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
+import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
 import org.triplea.io.IoUtils;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Version;
@@ -458,6 +459,17 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         chatModel = chatPanel;
       }
 
+      if (gameToLobbyConnection != null && lobbyWatcherThread != null) {
+        chatModel
+            .getChat()
+            .addChatListener(
+                ServerChatUpload.builder()
+                    .gameToLobbyConnection(gameToLobbyConnection)
+                    .hostName(messengers.getLocalNode().getPlayerName())
+                    .gameIdSupplier(() -> lobbyWatcherThread.getGameId().orElse(null))
+                    .build());
+      }
+
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
       serverSetupModel.onServerMessengerCreated(this, gameHostingResponse);
@@ -538,7 +550,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             messenger -> {
               final IClientChannel channel =
                   (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
-              channel.playerListingChanged(getPlayerListingInternal());
+              AsyncRunner.runAsync(() -> channel.playerListingChanged(getPlayerListingInternal()))
+                  .exceptionally(e -> log.log(Level.WARNING, "Network communication error", e));
             });
   }
 

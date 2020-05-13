@@ -19,6 +19,8 @@ public enum KeyCode {
   COMMA(KeyEvent.VK_COMMA),
   EQUALS(KeyEvent.VK_EQUALS),
   MINUS(KeyEvent.VK_MINUS),
+  UP(KeyEvent.VK_UP),
+  DOWN(KeyEvent.VK_DOWN),
   A(KeyEvent.VK_A),
   B(KeyEvent.VK_B),
   C(KeyEvent.VK_C),

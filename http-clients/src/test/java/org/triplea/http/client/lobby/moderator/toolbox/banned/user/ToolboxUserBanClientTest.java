@@ -23,8 +23,8 @@ class ToolboxUserBanClientTest extends WireMockTest {
 
   private static final UserBanData BANNED_USER_DATA =
       UserBanData.builder()
-          .banDate(Instant.now())
-          .banExpiry(Instant.now().plusSeconds(100))
+          .banDate(Instant.now().toEpochMilli())
+          .banExpiry(Instant.now().plusSeconds(100).toEpochMilli())
           .banId("Yarr, sunny freebooter. you won't haul the bikini atoll.")
           .hashedMac("Crush me shark, ye undead dubloon!")
           .ip("Seashells whine with horror!")

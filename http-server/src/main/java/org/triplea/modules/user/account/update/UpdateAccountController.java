@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.user.account.FetchEmailResponse;
 import org.triplea.http.client.lobby.user.account.UserAccountClient;

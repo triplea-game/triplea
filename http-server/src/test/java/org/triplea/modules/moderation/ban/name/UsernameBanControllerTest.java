@@ -22,7 +22,10 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 class UsernameBanControllerTest {
   private static final AuthenticatedUser AUTHENTICATED_USER = TestData.AUTHENTICATED_USER;
   private static final UsernameBanData USERNAME_BAN_DATA =
-      UsernameBanData.builder().banDate(Instant.now()).bannedName("banned name").build();
+      UsernameBanData.builder()
+          .banDate(Instant.now().toEpochMilli())
+          .bannedName("banned name")
+          .build();
   private static final String USERNAME = "Ho-ho-ho! halitosis of treasure.";
 
   @Mock private UsernameBanService bannedNamesService;

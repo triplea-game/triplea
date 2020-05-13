@@ -15,10 +15,10 @@ import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 
 /** Controller with endpoints for posting, getting and removing games. */
@@ -51,7 +51,7 @@ public class GameListingController extends HttpController {
   /** Moderator action to remove a game. */
   @RateLimited(
       keys = {KeyPart.IP},
-      rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
+      rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(GameListingClient.BOOT_GAME_PATH)
   @RolesAllowed(UserRole.MODERATOR)

@@ -14,6 +14,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
+import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator.CombatModifiers;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -221,7 +222,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
   }
 
   @Test
-  void amphibAssaultingMarinesWithEqualNumberOfArtillery() {
+  void marinesAndArtillery() {
     final Collection<Unit> attackingUnits = new ArrayList<>();
     attackingUnits.addAll(DataFactory.britishMarine(3));
     attackingUnits.addAll(DataFactory.britishArtillery(3));
@@ -236,6 +237,23 @@ class CasualtyOrderOfLossesTestOnGlobal {
     assertThat(result.get(3).getType(), is(MARINE));
     assertThat(result.get(4).getType(), is(MARINE));
     assertThat(result.get(5).getType(), is(MARINE));
+  }
+
+  @Test
+  void threeMarinesAndTwoArtillery() {
+    final Collection<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(DataFactory.britishMarine(3));
+    attackingUnits.addAll(DataFactory.britishArtillery(2));
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
+
+    assertThat(result, hasSize(5));
+    assertThat(
+        "First artillery is not providing support, power of 2",
+        result.get(0).getType(),
+        is(ARTILLERY));
+    assertThat("Marine must be the last to be chosen", result.get(4).getType(), is(MARINE));
   }
 
   @Test
@@ -330,5 +348,25 @@ class CasualtyOrderOfLossesTestOnGlobal {
     assertThat(result, hasSize(2));
     assertThat(result.get(0).getType(), is(BOMBER));
     assertThat(result.get(1).getType(), is(BATTLESHIP));
+  }
+
+  @Test
+  void improvedArtillery() {
+    addTech(new ImprovedArtillerySupportAdvance(data));
+
+    final Collection<Unit> attackingUnits = new ArrayList<>();
+    attackingUnits.addAll(DataFactory.britishTank(1));
+    attackingUnits.addAll(DataFactory.britishArtillery(1));
+    attackingUnits.addAll(DataFactory.britishMarine(1));
+    attackingUnits.addAll(DataFactory.britishMarine(1));
+
+    final List<Unit> result =
+        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
+
+    assertThat(result, hasSize(4));
+    assertThat(result.get(0).getType(), is(ARTILLERY));
+    assertThat(result.get(1).getType(), is(MARINE));
+    assertThat(result.get(2).getType(), is(MARINE));
+    assertThat(result.get(3).getType(), is(TANK)); // attack at 3
   }
 }

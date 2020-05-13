@@ -6,8 +6,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,12 +17,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorsTabModelTest {
   private static final String USERNAME = "Gar, yer not fearing me without a treasure!";
   private static final ModeratorInfo MODERATOR_INFO =
-      ModeratorInfo.builder().name("Ahoy, heavy-hearted faith!").lastLogin(Instant.now()).build();
+      ModeratorInfo.builder()
+          .name("Ahoy, heavy-hearted faith!")
+          .lastLoginEpochMillis(
+              LocalDateTime.of(2020, 5, 8, 10, 54).toInstant(ZoneOffset.UTC).toEpochMilli())
+          .build();
 
   private static final ModeratorInfo MODERATOR_INFO_WITH_NULL =
       ModeratorInfo.builder().name("Ahoy, heavy-hearted faith!").build();
@@ -28,6 +35,11 @@ class ModeratorsTabModelTest {
   @Mock private ToolboxModeratorManagementClient toolboxModeratorManagementClient;
 
   private ModeratorsTabModel moderatorsTabModel;
+
+  @BeforeAll
+  static void setDateTimeFormattingToUtc() {
+    DateTimeFormatterUtil.setDefaultToUtc();
+  }
 
   @Nested
   final class FetchTableHeadersTest {
@@ -68,7 +80,7 @@ class ModeratorsTabModelTest {
           tableData,
           0,
           MODERATOR_INFO.getName(),
-          MODERATOR_INFO.getLastLogin().toString(),
+          "2020-5-8 10:54",
           ModeratorsTabModel.REMOVE_MOD_BUTTON_TEXT,
           ModeratorsTabModel.ADD_SUPER_MOD_BUTTON);
       ToolboxTabModelTestUtil.verifyTableDataAtRow(
@@ -92,7 +104,7 @@ class ModeratorsTabModelTest {
 
       ToolboxTabModelTestUtil.verifyTableDimensions(tableData, ModeratorsTabModel.HEADERS);
       ToolboxTabModelTestUtil.verifyTableDataAtRow(
-          tableData, 0, MODERATOR_INFO.getName(), MODERATOR_INFO.getLastLogin().toString());
+          tableData, 0, MODERATOR_INFO.getName(), "2020-5-8 10:54");
       ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 1, MODERATOR_INFO.getName(), "");
     }
   }

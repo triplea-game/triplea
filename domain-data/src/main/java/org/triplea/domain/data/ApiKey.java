@@ -16,6 +16,8 @@ import lombok.Getter;
 @EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiKey {
+  public static final int MAX_LENGTH = 36;
+
   private final String value;
 
   public static ApiKey newKey() {
@@ -26,6 +28,7 @@ public class ApiKey {
     Preconditions.checkArgument(value != null);
     Preconditions.checkArgument(!value.isEmpty());
     Preconditions.checkArgument(!value.contains("\n"));
+    Preconditions.checkArgument(value.length() <= MAX_LENGTH);
 
     return new ApiKey(value);
   }

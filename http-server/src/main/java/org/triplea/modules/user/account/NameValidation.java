@@ -5,8 +5,8 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.BadWordsDao;
-import org.triplea.db.dao.UserJdbiDao;
+import org.triplea.db.dao.moderator.BadWordsDao;
+import org.triplea.db.dao.user.UserJdbiDao;
 import org.triplea.db.dao.username.ban.UsernameBanDao;
 import org.triplea.domain.data.UserName;
 

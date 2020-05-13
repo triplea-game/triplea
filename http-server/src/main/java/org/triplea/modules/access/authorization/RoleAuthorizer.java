@@ -1,7 +1,7 @@
 package org.triplea.modules.access.authorization;
 
 import io.dropwizard.auth.Authorizer;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 
 /**

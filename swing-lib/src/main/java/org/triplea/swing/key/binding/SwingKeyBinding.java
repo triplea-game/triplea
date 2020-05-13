@@ -77,8 +77,9 @@ public class SwingKeyBinding {
 
     final AtomicBoolean enabled = new AtomicBoolean(true);
 
-    if (keyCombination.getButtonDownMask() == ButtonDownMask.NONE
-        || keyCombination.getButtonDownMask() == ButtonDownMask.SHIFT) {
+    if (keyCombination.getKeyCode() != KeyCode.ENTER
+        && (keyCombination.getButtonDownMask() == ButtonDownMask.NONE
+            || keyCombination.getButtonDownMask() == ButtonDownMask.SHIFT)) {
       // Disable single-key keybindings or 'shift+key" keybindings if focus is on a text component.
       // We do not want to fire keybindings while user is typing (chatting).
 

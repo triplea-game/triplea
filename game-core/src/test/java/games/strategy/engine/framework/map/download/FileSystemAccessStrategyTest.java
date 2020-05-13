@@ -10,9 +10,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 import org.triplea.util.Version;
 
 /**
@@ -20,7 +18,6 @@ import org.triplea.util.Version;
  * that we download. Reading XMLs in Zips is can be fast, so one day we should just read the
  * versions directly from the map zip files.
  */
-@ExtendWith(TempDirectory.class)
 class FileSystemAccessStrategyTest {
   private FileSystemAccessStrategy testObj;
   private File mapFile;

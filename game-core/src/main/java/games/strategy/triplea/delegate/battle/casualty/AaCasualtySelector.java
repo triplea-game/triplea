@@ -9,7 +9,9 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.DiceRoll.TotalPowerAndTotalRolls;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.Matches;
@@ -51,7 +53,7 @@ public class AaCasualtySelector {
         !defendingAa.isEmpty()
             && defendingAa.stream()
                 .allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (Properties.getChooseAaCasualties(data)) {
+    if (BaseEditDelegate.getEditMode(data) || Properties.getChooseAaCasualties(data)) {
       final String text =
           "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return CasualtySelector.selectCasualties(
@@ -128,7 +130,7 @@ public class AaCasualtySelector {
     }
 
     final GameData data = bridge.getData();
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getAaUnitPowerAndRollsForNormalBattles(
             defendingAa, allEnemyUnits, allFriendlyUnits, !defending, data);
 
@@ -324,7 +326,7 @@ public class AaCasualtySelector {
     // means planes.size()
     final int planeHitPoints =
         (allowMultipleHitsPerUnit ? CasualtyUtil.getTotalHitpointsLeft(planes) : planes.size());
-    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
+    final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap =
         DiceRoll.getAaUnitPowerAndRollsForNormalBattles(
             defendingAa, allEnemyUnits, allFriendlyUnits, defending, bridge.getData());
     if (DiceRoll.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {

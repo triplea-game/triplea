@@ -2,8 +2,10 @@ package org.triplea.modules.chat.event.processing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,11 +18,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.db.dao.chat.history.LobbyChatHistoryDao;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
+import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.web.socket.WebSocketMessageContext;
 
@@ -28,6 +32,7 @@ import org.triplea.web.socket.WebSocketMessageContext;
 class ChatMessageListenerTest {
 
   @Mock private Chatters chatters;
+  @Mock private LobbyChatHistoryDao lobbyChatHistoryDao;
   @InjectMocks private ChatMessageListener chatMessageListener;
 
   @Mock private Session session;
@@ -45,6 +50,7 @@ class ChatMessageListenerTest {
     chatMessageListener.accept(messageContext);
 
     verify(messageContext, never()).broadcastMessage(any());
+    verify(lobbyChatHistoryDao, never()).recordMessage(any(), anyInt());
   }
 
   @Test
@@ -62,12 +68,20 @@ class ChatMessageListenerTest {
     chatMessageListener.accept(messageContext);
 
     verify(messageContext).broadcastMessage(messageCaptor.capture());
+    final ChatReceivedMessage chatReceivedMessage = messageCaptor.getValue();
     verifyMessageContents(messageCaptor.getValue());
+    verify(lobbyChatHistoryDao, timeout(1000)).recordMessage(chatReceivedMessage, 123);
   }
 
   private void givenChatterSession(final Session session, final ChatParticipant chatParticipant) {
-    when(chatters.lookupPlayerBySession(session)) //
-        .thenReturn(Optional.of(chatParticipant));
+    when(chatters.lookupPlayerBySession(session))
+        .thenReturn(
+            Optional.of(
+                ChatterSession.builder()
+                    .session(session)
+                    .chatParticipant(chatParticipant)
+                    .apiKeyId(123)
+                    .build()));
   }
 
   private static void verifyMessageContents(final ChatReceivedMessage chatReceivedMessage) {

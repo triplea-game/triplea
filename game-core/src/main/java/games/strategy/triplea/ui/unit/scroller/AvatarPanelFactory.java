@@ -63,8 +63,7 @@ class AvatarPanelFactory {
   private final UnitImageFactory unitImageFactory;
 
   AvatarPanelFactory(final MapPanel mapPanel) {
-    unitImageFactory =
-        mapPanel.getUiContext().getUnitImageFactory().toBuilder().scaleFactor(1.0).build();
+    unitImageFactory = mapPanel.getUiContext().getUnitImageFactory().withScaleFactor(1.0);
   }
 
   /**

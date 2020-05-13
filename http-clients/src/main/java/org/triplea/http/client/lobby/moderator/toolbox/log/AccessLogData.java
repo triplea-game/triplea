@@ -1,6 +1,5 @@
 package org.triplea.http.client.lobby.moderator.toolbox.log;
 
-import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -17,7 +16,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class AccessLogData {
-  private final Instant accessDate;
+  private final Long accessDate;
   private final String username;
   private final String ip;
   private final String systemId;

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
 
 @AllArgsConstructor
@@ -20,7 +20,7 @@ class ModeratorAuditHistoryService {
         .map(
             item ->
                 ModeratorEvent.builder()
-                    .date(item.getDateCreated())
+                    .date(item.getDateCreated().toEpochMilli())
                     .moderatorName(item.getUsername())
                     .moderatorAction(item.getActionName())
                     .actionTarget(item.getActionTarget())

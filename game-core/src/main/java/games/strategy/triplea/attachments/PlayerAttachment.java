@@ -244,7 +244,7 @@ public class PlayerAttachment extends DefaultAttachment {
       final int max = currentLimit.getFirst();
       final String type = currentLimit.getSecond();
       final Set<UnitType> unitsToTest = currentLimit.getThird();
-      final Collection<Unit> currentInTerritory = toMoveInto.getUnits();
+      final Collection<Unit> currentInTerritory = new ArrayList<>(toMoveInto.getUnits());
       // first remove units that do not apply to our current type
       if (type.equals("owned")) {
         currentInTerritory.removeAll(

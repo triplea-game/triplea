@@ -60,7 +60,7 @@ class ProNonCombatMoveAi {
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
 
-  ProNonCombatMoveAi(final ProAi ai) {
+  ProNonCombatMoveAi(final AbstractProAi ai) {
     calc = ai.getCalc();
     proData = ai.getProData();
   }
@@ -2543,7 +2543,8 @@ class ProNonCombatMoveAi {
                       u,
                       player);
           final MoveValidationResult mvr =
-              MoveValidator.validateMove(new MoveDescription(List.of(u), r), player, true, null);
+              new MoveValidator(data)
+                  .validateMove(new MoveDescription(List.of(u), r), player, true, null);
           if (!mvr.isMoveValid()) {
             continue;
           }

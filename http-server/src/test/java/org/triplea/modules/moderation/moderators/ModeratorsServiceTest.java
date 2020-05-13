@@ -13,10 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.db.dao.ModeratorsDao;
-import org.triplea.db.dao.UserJdbiDao;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.ModeratorsDao;
+import org.triplea.db.dao.user.UserJdbiDao;
+import org.triplea.db.dao.user.role.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorsServiceTest {

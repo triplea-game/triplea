@@ -1,16 +1,18 @@
 package org.triplea.modules.moderation.moderators;
 
 import com.google.common.base.Preconditions;
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.db.dao.ModeratorsDao;
-import org.triplea.db.dao.UserJdbiDao;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.moderator.ModeratorsDao;
+import org.triplea.db.dao.user.UserJdbiDao;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 
 @Builder
@@ -35,7 +37,10 @@ class ModeratorsService {
             userInfo ->
                 ModeratorInfo.builder()
                     .name(userInfo.getUsername())
-                    .lastLogin(userInfo.getLastLogin())
+                    .lastLoginEpochMillis(
+                        Optional.ofNullable(userInfo.getLastLogin())
+                            .map(Instant::toEpochMilli)
+                            .orElse(null))
                     .build())
         .collect(Collectors.toList());
   }

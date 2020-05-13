@@ -1,92 +1,191 @@
 package games.strategy.triplea.odds.calculator;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Runnables;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.annotation.concurrent.ThreadSafe;
-import org.triplea.io.IoUtils;
+import lombok.extern.java.Log;
+import org.triplea.java.concurrency.AsyncRunner;
+import org.triplea.java.concurrency.CountUpAndDownLatch;
 
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up
  * the run count across these workers. This is mainly to be used by AIs since they call the
  * OddsCalculator a lot.
  */
-@ThreadSafe
+@Log
 public class ConcurrentBattleCalculator implements IBattleCalculator {
-  private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
+  private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
 
-  private final ExecutorService executor;
-  private final Set<BattleCalculator> calculators = ConcurrentHashMap.newKeySet(MAX_THREADS);
-  // shortcut everything if we are shutting down
-  private volatile boolean isShutDown = false;
+  private final List<BattleCalculator> workers = new CopyOnWriteArrayList<>();
+  // do not let calc be set up til data is set
+  private volatile boolean isDataSet = false;
+  // shortcut setting of previous game data if we are trying to set it to a new one, or shutdown
+  private final AtomicInteger cancelCurrentOperation = new AtomicInteger(0);
+  // do not let calcing happen while we are setting game data
+  private final CountUpAndDownLatch latchSetData = new CountUpAndDownLatch();
+  // do not let setting of game data happen multiple times while we offload creating workers and
+  // copying data to a
+  // different thread
+  private final CountUpAndDownLatch latchWorkerThreadsCreation = new CountUpAndDownLatch();
 
-  /**
-   * Internal lock to synchronize on in order to prevent modification during initialization of
-   * delegate single-threaded {@link BattleCalculator} instances.
-   */
-  private final Object mutex = new Object();
-
+  // do not let setting of game data happen at same time
+  private final Object mutexSetGameData = new Object();
+  // do not let multiple calculations or setting calc data happen at same time
+  private final Object mutexCalcIsRunning = new Object();
   private final Runnable dataLoadedAction;
-  private byte[] bytes = new byte[0];
-  private boolean keepOneAttackingLandUnit = false;
-  private boolean amphibious = false;
-  private int retreatAfterRound = -1;
-  private int retreatAfterXUnitsLeft = -1;
-  private boolean retreatWhenOnlyAirLeft = false;
-  private String attackerOrderOfLosses = null;
-  private String defenderOrderOfLosses = null;
 
-  public ConcurrentBattleCalculator(final String threadNamePrefix) {
-    this(threadNamePrefix, Runnables.doNothing());
+  public ConcurrentBattleCalculator() {
+    this(Runnables.doNothing());
   }
 
-  ConcurrentBattleCalculator(final String threadNamePrefix, final Runnable dataLoadedAction) {
-    executor =
-        Executors.newFixedThreadPool(
-            MAX_THREADS,
-            new ThreadFactoryBuilder()
-                .setDaemon(true)
-                .setNameFormat(threadNamePrefix + " ConcurrentBattleCalculator Worker-%d")
-                .build());
+  ConcurrentBattleCalculator(final Runnable dataLoadedAction) {
     this.dataLoadedAction = dataLoadedAction;
   }
 
-  @Override
   public void setGameData(final GameData data) {
-    synchronized (mutex) {
-      bytes = data == null ? new byte[0] : GameDataUtils.serializeGameDataWithoutHistory(data);
-      dataLoadedAction.run();
+    // increment so that a new calc doesn't take place (since they all wait on this latch)
+    latchSetData.increment();
+    // cancel any current setting of data
+    cancelCurrentOperation.decrementAndGet();
+    // cancel any existing calcing (it won't stop immediately, just quicker)
+    cancel();
+    synchronized (mutexSetGameData) {
+      try {
+        // since setting data takes place on a different thread, this is our token. wait on it since
+        latchWorkerThreadsCreation.await();
+        // we could have exited the synchronized block already.
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+      cancel();
+      isDataSet = false;
+      if (data == null) {
+        workers.clear();
+        cancelCurrentOperation.incrementAndGet();
+        // allow calcing and other stuff to go ahead
+        latchSetData.countDown();
+      } else {
+        cancelCurrentOperation.incrementAndGet();
+        // increment our token, so that we can set the data in a different thread and return from
+        // this one
+        latchWorkerThreadsCreation.increment();
+        AsyncRunner.runAsync(() -> createWorkers(data))
+            .exceptionally(
+                throwable ->
+                    log.log(Level.SEVERE, "Error when trying to create Workers", throwable));
+      }
     }
   }
 
-  @Override
-  public int getThreadCount() {
-    return MAX_THREADS;
+  // use both time and memory left to determine how many copies to make
+  private static int getThreadsToUse(
+      final long timeToCopyInMillis, final long memoryUsedBeforeCopy) {
+    if (timeToCopyInMillis > 20000 || MAX_THREADS == 1) {
+      // just use 1 thread if we took more than 20 seconds to copy
+      return 1;
+    }
+    final Runtime runtime = Runtime.getRuntime();
+    final long usedMemoryAfterCopy = runtime.totalMemory() - runtime.freeMemory();
+    // we cannot predict how the gc works
+    final long memoryLeftBeforeMax =
+        runtime.maxMemory() - Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy);
+    // make sure it is a decent size
+    final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy));
+    // regardless of how stupid the gc is we leave some memory left over just in case
+    final int numberOfTimesWeCanCopyMax =
+        Math.max(1, (int) Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)));
+
+    if (timeToCopyInMillis > 3000) {
+      // use half the number of threads available if we took more than 3 seconds to copy
+      return Math.min(numberOfTimesWeCanCopyMax, Math.max(1, (MAX_THREADS / 2)));
+    }
+    // use all threads
+    return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS);
   }
 
-  @Override
-  public void shutdown() {
-    isShutDown = true;
-    cancel();
-    executor.shutdown();
+  private void createWorkers(final GameData data) {
+    workers.clear();
+    if (data != null && cancelCurrentOperation.get() >= 0) {
+      // see how long 1 copy takes (some games can get REALLY big)
+      final long startTime = System.currentTimeMillis();
+      final long startMemory =
+          Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+      final GameData newData;
+      try {
+        // make first copy, then release lock on it so game can continue (ie: we don't want to lock
+        // on it while we copy
+        // it 16 times, when once is enough) don't let the data change while we make the first copy
+        data.acquireWriteLock();
+        newData = GameDataUtils.cloneGameDataWithoutHistory(data, false);
+      } finally {
+        data.releaseWriteLock();
+      }
+      final int currentThreads =
+          getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
+      try {
+        // make sure all workers are using the same data
+        newData.acquireReadLock();
+        int i = 0;
+        // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
+        if (currentThreads <= 2 || MAX_THREADS <= 2) {
+          // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once
+          // above, so at most
+          // only 1 more copy to make)
+          while (cancelCurrentOperation.get() >= 0 && i < currentThreads) {
+            // the last one will use our already copied data from above, without copying it again
+            workers.add(new BattleCalculator(newData, (currentThreads == ++i)));
+          }
+        } else {
+          // multi-thread our copying, cus why the heck not
+          // (it increases the speed of copying by about double)
+          workers.addAll(
+              IntStream.range(1, currentThreads)
+                  .parallel()
+                  .filter(j -> cancelCurrentOperation.get() >= 0)
+                  .mapToObj(j -> new BattleCalculator(newData, false))
+                  .collect(Collectors.toList()));
+          // the last one will use our already copied data from above, without copying it again
+          workers.add(new BattleCalculator(newData, true));
+        }
+      } finally {
+        newData.releaseReadLock();
+      }
+    }
+    if (cancelCurrentOperation.get() < 0 || data == null) {
+      // we could have cancelled while setting data, so clear the workers again if so
+      workers.clear();
+      isDataSet = false;
+    } else {
+      // should make sure that all workers have their game data set before
+      // we can call calculate and other things
+      isDataSet = true;
+      dataLoadedAction.run();
+    }
+    // allow setting new data to take place if it is waiting on us
+    latchWorkerThreadsCreation.countDown();
+    // allow calcing and other stuff to go ahead
+    latchSetData.countDown();
+  }
+
+  private void awaitLatch() {
+    try {
+      // there is a small chance calculate or setCalculateData or something could be called in
+      // between calls to setGameData
+      latchSetData.await();
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   /**
@@ -102,144 +201,100 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
       final int runCount)
       throws IllegalStateException {
-    Preconditions.checkState(!isShutDown, "ConcurrentBattleCalculator is already shut down");
-    Preconditions.checkState(bytes.length != 0, "Data has not been set yet.");
-    final long start = System.currentTimeMillis();
-    final int runsPerWorker = runCount / MAX_THREADS;
-    final List<Future<AggregateResults>> results;
-    synchronized (mutex) {
-      results =
-          IntStream.range(0, MAX_THREADS)
-              .map(index -> index == 0 ? runCount % MAX_THREADS : 0)
-              .map(runs -> runs + runsPerWorker)
-              .mapToObj(
-                  individualRemaining ->
-                      createBattleCalcWorker(
-                          attacker,
-                          defender,
-                          location,
-                          attacking,
-                          defending,
-                          bombarding,
-                          territoryEffects,
-                          individualRemaining))
-              .collect(Collectors.toList());
+    synchronized (mutexCalcIsRunning) {
+      awaitLatch();
+      final long start = System.currentTimeMillis();
+      if (!isDataSet) {
+        // we could have attempted to set a new game data, while the old one was still being set,
+        // causing it to abort with null data
+        return new AggregateResults(0);
+      }
+      final var runCountDistributor = new RunCountDistributor(runCount, workers.size());
+      final AggregateResults results =
+          new AggregateResults(
+              workers
+                  .parallelStream()
+                  .map(
+                      worker ->
+                          worker.calculate(
+                              attacker,
+                              defender,
+                              location,
+                              attacking,
+                              defending,
+                              bombarding,
+                              territoryEffects,
+                              retreatWhenOnlyAirLeft,
+                              runCountDistributor.nextRunCount()))
+                  .map(AggregateResults::getResults)
+                  .flatMap(Collection::parallelStream)
+                  .collect(Collectors.toList()));
+      results.setTime(System.currentTimeMillis() - start);
+      return results;
     }
-    final AggregateResults result = aggregateResults(results, runsPerWorker);
-    result.setTime(System.currentTimeMillis() - start);
-    return result;
   }
 
-  private Future<AggregateResults> createBattleCalcWorker(
-      final GamePlayer attacker,
-      final GamePlayer defender,
-      final Territory location,
-      final Collection<Unit> attacking,
-      final Collection<Unit> defending,
-      final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects,
-      final int runs) {
-    final BattleCalculator calculator = new BattleCalculator();
-    calculator.setKeepOneAttackingLandUnit(keepOneAttackingLandUnit);
-    calculator.setAmphibious(amphibious);
-    calculator.setRetreatAfterRound(retreatAfterRound);
-    calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft);
-    calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft);
-    calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
-    calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
-    calculators.add(calculator);
-    return executor.submit(
-        () -> {
-          try {
-            calculator.setGameData(IoUtils.readFromMemory(bytes, GameDataManager::loadGame));
-            return calculator.calculate(
-                attacker,
-                defender,
-                location,
-                attacking,
-                defending,
-                bombarding,
-                territoryEffects,
-                runs);
-          } catch (final IOException e) {
-            throw new RuntimeException("Failed to deserialize", e);
-          } finally {
-            calculators.remove(calculator);
-          }
-        });
-  }
-
-  private static AggregateResults aggregateResults(
-      final List<Future<AggregateResults>> results, final int runsPerWorker) {
-    final AggregateResults result = new AggregateResults(runsPerWorker);
-    for (final Future<AggregateResults> future : results) {
-      try {
-        result.addResults(future.get().getResults());
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      } catch (final ExecutionException e) {
-        throw new IllegalStateException("Exception from worker", e);
+  public void setKeepOneAttackingLandUnit(final boolean bool) {
+    synchronized (mutexCalcIsRunning) {
+      awaitLatch();
+      for (final BattleCalculator worker : workers) {
+        worker.setKeepOneAttackingLandUnit(bool);
       }
     }
-    return result;
   }
 
-  @Override
-  public void setKeepOneAttackingLandUnit(final boolean bool) {
-    synchronized (mutex) {
-      keepOneAttackingLandUnit = bool;
-    }
-  }
-
-  @Override
   public void setAmphibious(final boolean bool) {
-    synchronized (mutex) {
-      amphibious = bool;
+    synchronized (mutexCalcIsRunning) {
+      awaitLatch();
+      for (final BattleCalculator worker : workers) {
+        worker.setAmphibious(bool);
+      }
     }
   }
 
-  @Override
   public void setRetreatAfterRound(final int value) {
-    synchronized (mutex) {
-      retreatAfterRound = value;
+    synchronized (mutexCalcIsRunning) {
+      awaitLatch();
+      for (final BattleCalculator worker : workers) {
+        worker.setRetreatAfterRound(value);
+      }
     }
   }
 
-  @Override
   public void setRetreatAfterXUnitsLeft(final int value) {
-    synchronized (mutex) {
-      retreatAfterXUnitsLeft = value;
+    synchronized (mutexCalcIsRunning) {
+      awaitLatch();
+      for (final BattleCalculator worker : workers) {
+        worker.setRetreatAfterXUnitsLeft(value);
+      }
     }
   }
 
-  @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    synchronized (mutex) {
-      retreatWhenOnlyAirLeft = value;
-    }
-  }
-
-  @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-    synchronized (mutex) {
-      this.attackerOrderOfLosses = attackerOrderOfLosses;
+    synchronized (mutexCalcIsRunning) {
+      awaitLatch();
+      for (final BattleCalculator worker : workers) {
+        worker.setAttackerOrderOfLosses(attackerOrderOfLosses);
+      }
     }
   }
 
-  @Override
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-    synchronized (mutex) {
-      this.defenderOrderOfLosses = defenderOrderOfLosses;
+    synchronized (mutexCalcIsRunning) {
+      awaitLatch();
+      for (final BattleCalculator worker : workers) {
+        worker.setDefenderOrderOfLosses(defenderOrderOfLosses);
+      }
     }
   }
 
   // not on purpose, we need to be able to cancel at any time
-  @Override
   public void cancel() {
-    synchronized (mutex) {
-      calculators.forEach(BattleCalculator::cancel);
+    for (final BattleCalculator worker : workers) {
+      worker.cancel();
     }
   }
 }

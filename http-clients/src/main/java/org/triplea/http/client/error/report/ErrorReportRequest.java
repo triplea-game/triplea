@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.triplea.http.client.github.issues.GithubIssueClient;
 
 /** Represents data that would be uploaded to a server. */
 @ToString
@@ -18,10 +19,12 @@ public class ErrorReportRequest {
   private String body;
 
   public String getTitle() {
-    return title == null ? null : Ascii.truncate(title, 125, "...");
+    return title == null ? null : Ascii.truncate(title, GithubIssueClient.TITLE_MAX_LENGTH, "...");
   }
 
   public String getBody() {
-    return body == null ? null : Ascii.truncate(body, 20000, "...");
+    return body == null
+        ? null
+        : Ascii.truncate(body, GithubIssueClient.REPORT_BODY_MAX_LENGTH, "...");
   }
 }

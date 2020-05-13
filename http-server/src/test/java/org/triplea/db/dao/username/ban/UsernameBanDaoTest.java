@@ -3,10 +3,10 @@ package org.triplea.db.dao.username.ban;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.triplea.test.common.IsInstant.isInstant;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,10 @@ class UsernameBanDaoTest extends DaoTest {
     assertThat(result, hasSize(2));
 
     assertThat(result.get(0).getUsername(), is("username1"));
-    assertThat(result.get(0).getDateCreated(), is(Instant.parse("2001-01-01T23:59:59.0Z")));
+    assertThat(result.get(0).getDateCreated(), isInstant(2001, 1, 1, 23, 59, 59));
 
     assertThat(result.get(1).getUsername(), is("username2"));
-    assertThat(result.get(1).getDateCreated(), is(Instant.parse("2000-01-01T23:59:59.0Z")));
+    assertThat(result.get(1).getDateCreated(), isInstant(2000, 1, 1, 23, 59, 59));
   }
 
   @Test

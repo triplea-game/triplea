@@ -36,7 +36,7 @@
 - mapName: Tutorial
   mapCategory: BEST
   url: https://github.com/triplea-maps/tutorial/archive/master.zip
-  version: 1
+  version: 2
   description: |
     <br>This is a tutorial for players new to TripleA and its game engine.
 - mapName: Big World
@@ -2062,4 +2062,32 @@
   description:
     <br>
     <br> This is the Charles de Gaulle 1939 Mod for the "Global 40" game.
+    <br>
+- mapName: Twelve-Clans
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/twelve-clans/archive/master.zip
+  version: 2
+  img: https://raw.githubusercontent.com/triplea-maps/twelve-clans/master/description/MapDesc.png
+  description: |
+    <br>by Michael Hoover
+    <br>Version 1.1 for TripleA 1.9.0.0.13066
+    <br>
+    <p style="font-size:14px;color:FFFFFF">
+        In Twelve Clans (a Shogun type variant heavily inspired by the Samurai Warriors series of games) fight to expand your clan and become the dominant power in Japan.
+        As you conquer rival clans, they will become your vassals (allied to you), but your vassals' true loyalties belong only to their own clan's interests.
+        A clan will become vassal to another for self-preservation. If another clan conquers one of your vassals, their allegiance will change to the conquering clan.
+        However, if you are conquered, your vassals will join you in switching sides.
+    </p><br>
+    <h3 style="font-size:16px;color:F0D06B">Victory Conditions:</h3>
+    <p style="font-size:14px;color:FFFFFF">
+        This means that no player is ever out of the game. Once you are defeated, you simply switch sides. If one of your allies wins then you win a minor victory.
+        But there can only be one shogun. If a player conquers 7 rival clans that player achieves Total Victory, becoming the shogun. Any players who are not the first 7 to join the shogun have lost.
+    </p><br>
+    <h3 style="font-size:16px;color:F0D06B">Other Game Modes:</h3>
+    <p style="font-size:14px;color:FFFFFF">
+        In the 2 (Sekigahara), 3 (Coalitions), 4 (Triads) and 6 (Bloodpact) player alliance variants included the Vassal system is removed and the traditional alliance
+        system is in place. You can choose to play this like any other game where multiple players can be a part of any particular alliance or one player can control
+        the entire alliance. Once a clan is taken out in these variants, they are out for good. Victory in these variants is based on alliance control of 10, 9, 8, or 8
+        clan strongholds respectively (or all 12 if you are feeling frisky).
+    </p><br>
     <br>

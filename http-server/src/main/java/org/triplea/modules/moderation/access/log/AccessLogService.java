@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.access.log.AccessLogDao;
-import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogRequest;
 
 @Builder
 class AccessLogService {
@@ -19,13 +19,19 @@ class AccessLogService {
         .build();
   }
 
-  List<AccessLogData> fetchAccessLog(final PagingParams pagingParams) {
-    return accessLogDao.fetchAccessLogRows(pagingParams.getRowNumber(), pagingParams.getPageSize())
+  List<AccessLogData> fetchAccessLog(final AccessLogRequest accessLogRequest) {
+    return accessLogDao
+        .fetchAccessLogRows(
+            accessLogRequest.getPagingParams().getRowNumber(),
+            accessLogRequest.getPagingParams().getPageSize(),
+            accessLogRequest.getAccessLogSearchRequest().getUsername(),
+            accessLogRequest.getAccessLogSearchRequest().getIp(),
+            accessLogRequest.getAccessLogSearchRequest().getSystemId())
         .stream()
         .map(
             daoData ->
                 AccessLogData.builder()
-                    .accessDate(daoData.getAccessTime())
+                    .accessDate(daoData.getAccessTime().toEpochMilli())
                     .username(daoData.getUsername())
                     .ip(daoData.getIp())
                     .systemId(daoData.getSystemId())

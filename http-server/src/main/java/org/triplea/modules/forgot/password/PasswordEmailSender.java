@@ -11,7 +11,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
-import org.triplea.db.dao.TempPasswordDao;
+import org.triplea.db.dao.temp.password.TempPasswordDao;
 import org.triplea.http.AppConfig;
 
 /** Sends a temporary password to a target user. */

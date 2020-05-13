@@ -14,11 +14,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.GameHostingApiKeyDaoWrapper;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.lobby.game.hosting.GameHostingClient;
-import org.triplea.http.client.lobby.game.hosting.GameHostingResponse;
+import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
+import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 
 /**
  * Provides an endpoint where an independent connection can be established, provides an API key to
@@ -31,9 +31,9 @@ public class GameHostingController extends HttpController {
   @Nonnull private final Function<InetAddress, ApiKey> apiKeySupplier;
 
   public static GameHostingController build(final Jdbi jdbi) {
-    final ApiKeyDaoWrapper apiKeyDaoWrapper = ApiKeyDaoWrapper.build(jdbi);
+    final var gameHostingApiKeyDaoWrapper = GameHostingApiKeyDaoWrapper.build(jdbi);
     return GameHostingController.builder() //
-        .apiKeySupplier(apiKeyDaoWrapper::newGameHostKey)
+        .apiKeySupplier(gameHostingApiKeyDaoWrapper::newGameHostKey)
         .build();
   }
 

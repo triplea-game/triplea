@@ -14,11 +14,12 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.db.dao.lobby.games.LobbyGameDao;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
-import org.triplea.http.client.lobby.game.listing.GameListingClient;
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.java.cache.ExpiringAfterWriteCache;
@@ -50,6 +51,7 @@ import org.triplea.web.socket.WebSocketMessagingBus;
 @Slf4j
 public class GameListing {
   @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
+  @NonNull private final LobbyGameDao lobbyGameDao;
   @NonNull private final TtlCache<GameId, LobbyGame> games;
   @NonNull private final WebSocketMessagingBus playerMessagingBus;
 
@@ -65,6 +67,7 @@ public class GameListing {
 
   public static GameListing build(final Jdbi jdbi, final WebSocketMessagingBus playerMessagingBus) {
     return GameListing.builder()
+        .lobbyGameDao(jdbi.onDemand(LobbyGameDao.class))
         .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
         .playerMessagingBus(playerMessagingBus)
         .games(
@@ -76,18 +79,18 @@ public class GameListing {
   }
 
   /** Adds a game. */
-  String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
+  public String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
     final String id = UUID.randomUUID().toString();
     games.put(new GameId(apiKey, id), lobbyGame);
-    playerMessagingBus.broadcastMessage(
-        new LobbyGameUpdatedMessage(
-            LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build()));
+    final var lobbyGameListing = LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build();
+    lobbyGameDao.insertLobbyGame(apiKey, lobbyGameListing);
+    playerMessagingBus.broadcastMessage(new LobbyGameUpdatedMessage(lobbyGameListing));
     log.info("Posted game: {}", id);
     return id;
   }
 
   /** Adds or updates a game. Returns true if game is updated, false if game was not found. */
-  boolean updateGame(final ApiKey apiKey, final String id, final LobbyGame lobbyGame) {
+  public boolean updateGame(final ApiKey apiKey, final String id, final LobbyGame lobbyGame) {
     final var listedGameId = new GameId(apiKey, id);
     final LobbyGame existingValue = games.replace(listedGameId, lobbyGame).orElse(null);
 
@@ -101,7 +104,7 @@ public class GameListing {
     }
   }
 
-  void removeGame(final ApiKey apiKey, final String id) {
+  public void removeGame(final ApiKey apiKey, final String id) {
     log.info("Removing game: {}", id);
     final GameId key = new GameId(apiKey, id);
 
@@ -121,6 +124,11 @@ public class GameListing {
         .collect(Collectors.toList());
   }
 
+  /** Checks if a given api-key and game-id pair are valid and match an active game. */
+  public boolean isValidApiKeyAndGameId(final ApiKey apiKey, final String gameId) {
+    return games.get(new GameId(apiKey, gameId)).isPresent();
+  }
+
   /**
    * If a game does not receive a 'keepAlive' in a timely manner, it is removed from the list.
    *
@@ -128,7 +136,7 @@ public class GameListing {
    *     their game. Otherwise true indicates the game is present and the keep-alive period has been
    *     extended.
    */
-  boolean keepAlive(final ApiKey apiKey, final String id) {
+  public boolean keepAlive(final ApiKey apiKey, final String id) {
     return games.refresh(new GameId(apiKey, id));
   }
 

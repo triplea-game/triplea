@@ -24,12 +24,12 @@ import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import org.triplea.java.collections.CollectionUtils;
@@ -74,62 +74,43 @@ public class CasualtySelector {
     if (targetsToPickFrom.isEmpty()) {
       return new CasualtyDetails();
     }
-    if (!friendlyUnits.containsAll(targetsToPickFrom)) {
-      throw new IllegalStateException(
-          "friendlyUnits should but does not contain all units from targetsToPickFrom"
-              + ", battlesite: "
-              + battlesite
-              + ", friendlyUnits: "
-              + friendlyUnits
-              + ", targetsToPickFrom: "
-              + targetsToPickFrom);
-    }
     final GameData data = bridge.getData();
-    final boolean isEditMode = BaseEditDelegate.getEditMode(data);
+
     final Player tripleaPlayer =
         player.isNull() ? new WeakAi(player.getName()) : bridge.getRemotePlayer(player);
     final Map<Unit, Collection<Unit>> dependents =
         headLess ? Map.of() : CasualtyUtil.getDependents(targetsToPickFrom);
-    if (isEditMode && !headLess) {
-      final CasualtyDetails editSelection =
-          tripleaPlayer.selectCasualties(
-              targetsToPickFrom,
-              dependents,
-              0,
-              text,
-              dice,
-              player,
-              friendlyUnits,
-              enemyUnits,
-              amphibious,
-              amphibiousLandAttackers,
-              new CasualtyList(),
-              battleId,
-              battlesite,
-              allowMultipleHitsPerUnit);
-      final List<Unit> killed = editSelection.getKilled();
-      // if partial retreat is possible, kill amphibious units first
-      if (Properties.getPartialAmphibiousRetreat(data)) {
-        killAmphibiousFirst(killed, targetsToPickFrom);
-      }
-      return editSelection;
+
+    final int hitsRemaining =
+        Properties.getTransportCasualtiesRestricted(data) ? extraHits : dice.getHits();
+
+    if (BaseEditDelegate.getEditMode(data)) {
+      return tripleaPlayer.selectCasualties(
+          targetsToPickFrom,
+          dependents,
+          hitsRemaining,
+          text,
+          dice,
+          player,
+          friendlyUnits,
+          enemyUnits,
+          amphibious,
+          amphibiousLandAttackers,
+          new CasualtyDetails(),
+          battleId,
+          battlesite,
+          allowMultipleHitsPerUnit);
     }
+
     if (dice.getHits() == 0) {
       return new CasualtyDetails(List.of(), List.of(), true);
     }
-    int hitsRemaining = dice.getHits();
-    if (Properties.getTransportCasualtiesRestricted(data)) {
-      hitsRemaining = extraHits;
-    }
-    if (!isEditMode && allTargetsOneTypeOneHitPoint(targetsToPickFrom, dependents)) {
-      final List<Unit> killed = new ArrayList<>();
-      final Iterator<Unit> iter = targetsToPickFrom.iterator();
-      for (int i = 0; i < hitsRemaining; i++) {
-        if (i >= targetsToPickFrom.size()) {
-          break;
-        }
-        killed.add(iter.next());
-      }
+
+    if (allTargetsOneTypeOneHitPoint(targetsToPickFrom, dependents)) {
+      final List<Unit> killed =
+          targetsToPickFrom.stream()
+              .limit(Math.min(hitsRemaining, targetsToPickFrom.size()))
+              .collect(Collectors.toList());
       return new CasualtyDetails(killed, List.of(), true);
     }
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do
@@ -151,37 +132,33 @@ public class CasualtySelector {
             allowMultipleHitsPerUnit);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
     final List<Unit> sortedTargetsToPickFrom = defaultCasualtiesAndSortedTargets.getSecond();
-    if (sortedTargetsToPickFrom.size() != targetsToPickFrom.size()
-        || !targetsToPickFrom.containsAll(sortedTargetsToPickFrom)
-        || !sortedTargetsToPickFrom.containsAll(targetsToPickFrom)) {
+    if (sortedTargetsToPickFrom.size() != targetsToPickFrom.size()) {
       throw new IllegalStateException(
-          "sortedTargetsToPickFrom must contain the same units as targetsToPickFrom list");
+          "sortedTargetsToPickFrom must have the same size as targetsToPickFrom list");
     }
     final int totalHitpoints =
         (allowMultipleHitsPerUnit
             ? CasualtyUtil.getTotalHitpointsLeft(sortedTargetsToPickFrom)
             : sortedTargetsToPickFrom.size());
-    final CasualtyDetails casualtySelection;
-    if (hitsRemaining >= totalHitpoints) {
-      casualtySelection = new CasualtyDetails(defaultCasualties, true);
-    } else {
-      casualtySelection =
-          tripleaPlayer.selectCasualties(
-              sortedTargetsToPickFrom,
-              dependents,
-              hitsRemaining,
-              text,
-              dice,
-              player,
-              friendlyUnits,
-              enemyUnits,
-              amphibious,
-              amphibiousLandAttackers,
-              defaultCasualties,
-              battleId,
-              battlesite,
-              allowMultipleHitsPerUnit);
-    }
+
+    final CasualtyDetails casualtySelection =
+        hitsRemaining >= totalHitpoints
+            ? new CasualtyDetails(defaultCasualties, true)
+            : tripleaPlayer.selectCasualties(
+                sortedTargetsToPickFrom,
+                dependents,
+                hitsRemaining,
+                text,
+                dice,
+                player,
+                friendlyUnits,
+                enemyUnits,
+                amphibious,
+                amphibiousLandAttackers,
+                defaultCasualties,
+                battleId,
+                battlesite,
+                allowMultipleHitsPerUnit);
     final List<Unit> killed = casualtySelection.getKilled();
     // if partial retreat is possible, kill amphibious units first
     if (Properties.getPartialAmphibiousRetreat(data)) {
@@ -201,8 +178,9 @@ public class CasualtySelector {
         damaged.removeIf(unit::equals);
       }
     }
+
     // check right number
-    if (!isEditMode && numhits + damaged.size() != Math.min(hitsRemaining, totalHitpoints)) {
+    if (numhits + damaged.size() != Math.min(hitsRemaining, totalHitpoints)) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
       if (headLess) {
         log.severe(

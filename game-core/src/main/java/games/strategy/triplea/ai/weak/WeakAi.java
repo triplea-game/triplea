@@ -66,6 +66,9 @@ public class WeakAi extends AbstractAi {
     }
     final Territory ourCapitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+    if (ourCapitol == null) {
+      return null;
+    }
     final Predicate<Territory> endMatch =
         o -> {
           final boolean impassable =
@@ -317,7 +320,7 @@ public class WeakAi extends AbstractAi {
     final Predicate<Territory> routeCond =
         Matches.territoryIsWater()
             .and(Matches.territoryHasEnemyUnits(player, data).negate())
-            .and(Matches.territoryHasNonAllowedCanal(player, null).negate());
+            .and(Matches.territoryHasNonAllowedCanal(player, data).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
     if (r == null || r.hasNoSteps() || !routeCond.test(destination)) {
       return null;
@@ -1040,8 +1043,10 @@ public class WeakAi extends AbstractAi {
     }
     final @Nullable Territory capitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    // place in capitol first
-    placeAllWeCanOn(data, capitol, placeDelegate, player);
+    if (capitol != null) {
+      // place in capitol first
+      placeAllWeCanOn(data, capitol, placeDelegate, player);
+    }
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     for (final Territory t : randomTerritories) {

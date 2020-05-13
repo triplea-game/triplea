@@ -11,9 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.ApiKeyLookupRecord;
-import org.triplea.db.data.UserRole;
+import org.triplea.db.dao.api.key.GameHostingApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerApiKeyLookupRecord;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.modules.TestData;
 
@@ -21,26 +22,24 @@ import org.triplea.modules.TestData;
 class ApiKeyAuthenticatorTest {
   private static final ApiKey API_KEY = TestData.API_KEY;
 
-  private static final ApiKeyLookupRecord PLAYER_DATA =
-      ApiKeyLookupRecord.builder()
+  private static final PlayerApiKeyLookupRecord PLAYER_DATA =
+      PlayerApiKeyLookupRecord.builder()
           .username("player-name")
           .role(UserRole.PLAYER)
           .userId(100)
+          .apiKeyId(123)
+          .playerChatId("chat-id")
           .build();
 
-  private static final ApiKeyLookupRecord HOST_RECORD =
-      ApiKeyLookupRecord.builder().role(UserRole.HOST).build();
-
-  private static final ApiKeyLookupRecord ANONYMOUS_USER_RECORD =
-      ApiKeyLookupRecord.builder().username("anonymous-user-name").role(UserRole.ANONYMOUS).build();
-
-  @Mock private ApiKeyDaoWrapper apiKeyDao;
+  @Mock private PlayerApiKeyDaoWrapper apiKeyDao;
+  @Mock private GameHostingApiKeyDaoWrapper gameHostingApiKeyDaoWrapper;
 
   @InjectMocks private ApiKeyAuthenticator authenticator;
 
   @Test
   void keyNotFound() {
     when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.empty());
+    when(gameHostingApiKeyDaoWrapper.isKeyValid(API_KEY)).thenReturn(false);
 
     final Optional<AuthenticatedUser> result = authenticator.authenticate(API_KEY.getValue());
 
@@ -53,38 +52,27 @@ class ApiKeyAuthenticatorTest {
 
     final Optional<AuthenticatedUser> result = authenticator.authenticate(API_KEY.getValue());
 
-    verify(result, PLAYER_DATA);
-  }
-
-  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  private static void verify(
-      final Optional<AuthenticatedUser> result, final ApiKeyLookupRecord apiKeyLookupRecord) {
     assertThat(
         result,
         isPresentAndIs(
             AuthenticatedUser.builder()
                 .apiKey(API_KEY)
-                .userId(apiKeyLookupRecord.getUserId())
-                .name(apiKeyLookupRecord.getUsername())
-                .userRole(apiKeyLookupRecord.getRole())
+                .userId(PLAYER_DATA.getUserId())
+                .name(PLAYER_DATA.getUsername())
+                .userRole(PLAYER_DATA.getRole())
                 .build()));
   }
 
   @Test
   void hostKeyFound() {
-    when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.of(HOST_RECORD));
+    when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.empty());
+    when(gameHostingApiKeyDaoWrapper.isKeyValid(API_KEY)).thenReturn(true);
 
     final Optional<AuthenticatedUser> result = authenticator.authenticate(API_KEY.getValue());
 
-    verify(result, HOST_RECORD);
-  }
-
-  @Test
-  void anonymousUserKeyFound() {
-    when(apiKeyDao.lookupByApiKey(API_KEY)).thenReturn(Optional.of(ANONYMOUS_USER_RECORD));
-
-    final Optional<AuthenticatedUser> result = authenticator.authenticate(API_KEY.getValue());
-
-    verify(result, ANONYMOUS_USER_RECORD);
+    assertThat(
+        result,
+        isPresentAndIs(
+            AuthenticatedUser.builder().apiKey(API_KEY).userRole(UserRole.HOST).build()));
   }
 }

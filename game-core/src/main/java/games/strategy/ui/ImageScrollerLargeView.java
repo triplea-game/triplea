@@ -41,6 +41,23 @@ public class ImageScrollerLargeView extends JComponent {
   protected double scale = 1;
   private int dragScrollingLastX;
   private int dragScrollingLastY;
+  /**
+   * 'wasLastActionDragging' tracks if the last user action was right click dragging the map. It is
+   * used so if we have units selected and drag the map that we will not deselect the units. This
+   * relies on the map dragged event happening before the mouse released event where units are
+   * deselected.
+   *
+   * <p>In more detail, on right click map drag we set this flag to true. Then the release event
+   * will fire and if we have any units selected we will check this flag and unset it. If we drag
+   * the map again, we'll again set the flag and the release event will check and unset. This way we
+   * keep our unit selection and wait for a right click that is not followed by a map drag.
+   *
+   * <p>But, if the map is dragged without any units being selected, this puts us in a bad state
+   * where the next right click will no-op. We get into this state because the unit deselect logic
+   * is never invoked and does not clear the flag. Hence the next right click instead of
+   * de-selecting will no-op. To overcome this, whenever units are selected, we'll set this flag
+   * back to false.
+   */
   private boolean wasLastActionDragging = false;
 
   private final ActionListener timerAction =
@@ -222,6 +239,14 @@ public class ImageScrollerLargeView extends JComponent {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Notifies map mouse listener state to know that the last action was units were selected. This
+   * will clear an override that blocks right click dragging from deselecting units.
+   */
+  public void notifyUnitsAreSelected() {
+    wasLastActionDragging = false;
   }
 
   /** For subclasses needing to set the location of the image. */

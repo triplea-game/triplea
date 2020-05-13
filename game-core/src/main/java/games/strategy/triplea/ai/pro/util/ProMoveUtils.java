@@ -142,14 +142,15 @@ public final class ProMoveUtils {
               data.getSequence().getRound()
                   + "-"
                   + data.getSequence().getStep().getName()
-                  + ": route is null "
+                  + ": route is null (could not calculate route)"
                   + startTerritory
                   + " to "
                   + t
                   + ", units="
                   + unitList);
+        } else {
+          moves.add(new MoveDescription(unitList, route));
         }
-        moves.add(new MoveDescription(unitList, route));
       }
     }
     return moves;
@@ -234,7 +235,8 @@ public final class ProMoveUtils {
                 Integer.MIN_VALUE; // Used to move to farthest away loading territory first
             for (final Territory neighbor : neighbors) {
               final Route route = new Route(transportTerritory, neighbor);
-              if (MoveValidator.validateCanal(route, List.of(transport), player) != null) {
+              if (new MoveValidator(data).validateCanal(route, List.of(transport), player)
+                  != null) {
                 continue;
               }
               int distanceFromUnloadTerritory = 0;

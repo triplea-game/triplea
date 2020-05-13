@@ -9,9 +9,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
@@ -35,7 +35,7 @@ public class UserBanService {
   private final UserBanDao userBanDao;
   private final Supplier<String> publicIdSupplier;
   private final Chatters chatters;
-  private final ApiKeyDaoWrapper apiKeyDaoWrapper;
+  private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final WebSocketMessagingBus chatMessagingBus;
   private final WebSocketMessagingBus gameMessagingBus;
 
@@ -49,7 +49,7 @@ public class UserBanService {
     userBanDao = jdbi.onDemand(UserBanDao.class);
     publicIdSupplier = () -> UUID.randomUUID().toString();
     this.chatters = chatters;
-    this.apiKeyDaoWrapper = ApiKeyDaoWrapper.build(jdbi);
+    this.apiKeyDaoWrapper = PlayerApiKeyDaoWrapper.build(jdbi);
     this.chatMessagingBus = chatMessagingBus;
     this.gameMessagingBus = gameMessagingBus;
   }
@@ -63,8 +63,8 @@ public class UserBanService {
                     .username(daoData.getUsername())
                     .hashedMac(daoData.getSystemId())
                     .ip(daoData.getIp())
-                    .banDate(daoData.getDateCreated())
-                    .banExpiry(daoData.getBanExpiry())
+                    .banDate(daoData.getDateCreated().toEpochMilli())
+                    .banExpiry(daoData.getBanExpiry().toEpochMilli())
                     .build())
         .collect(Collectors.toList());
   }
@@ -113,7 +113,7 @@ public class UserBanService {
   }
 
   private static UserBanParams toUserBanParams(
-      final GamePlayerLookup gamePlayerLookup, final long banMinutes) {
+      final PlayerIdentifiersByApiKeyLookup gamePlayerLookup, final long banMinutes) {
     return UserBanParams.builder()
         .systemId(gamePlayerLookup.getSystemId().getValue())
         .username(gamePlayerLookup.getUserName().getValue())

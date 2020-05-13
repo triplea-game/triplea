@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.java.DateTimeFormatterUtil;
 
 @AllArgsConstructor
 class BannedUsersTabModel {
@@ -23,10 +24,13 @@ class BannedUsersTabModel {
                 List.of(
                     userBan.getBanId(),
                     userBan.getUsername(),
-                    String.valueOf(userBan.getBanDate()),
+                    DateTimeFormatterUtil.formatEpochMilli(
+                        userBan.getBanDate(), DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE),
                     userBan.getIp(),
                     userBan.getHashedMac(),
-                    userBan.getBanExpiry().toString(),
+                    DateTimeFormatterUtil.formatEpochMilli(
+                        userBan.getBanExpiry(),
+                        DateTimeFormatterUtil.FormatOption.WITHOUT_TIMEZONE),
                     REMOVE_BUTTON_TEXT))
         .collect(Collectors.toList());
   }

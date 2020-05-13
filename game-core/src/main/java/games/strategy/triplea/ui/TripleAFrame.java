@@ -86,8 +86,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
@@ -137,11 +135,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
-import javax.swing.JToolTip;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -1976,41 +1971,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         } else if (keyCode == KeyEvent.VK_UP) {
           getMapPanel().setTopLeft(x, y - diffPixel);
         }
-        // I for info
-        if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V) {
-          final String unitInfo = getUnitInfo();
-          String terrInfo = "";
-          if (territoryLastEntered != null) {
-            final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
-            if (ta != null) {
-              terrInfo = "<b>Territory:</b><br>" + ta.toStringForInfo(true, true) + "<br>";
-            } else {
-              terrInfo =
-                  "<b>Territory:</b><br>" + territoryLastEntered.getName() + "<br>Water Territory";
-            }
-          }
-          String tipText = unitInfo;
-          if (unitInfo.length() > 0 && terrInfo.length() > 0) {
-            tipText = tipText + "<br><br><br><br><br>";
-          }
-          tipText = tipText + terrInfo;
-          if (tipText.length() > 0) {
-            final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
-            final PopupFactory popupFactory = PopupFactory.getSharedInstance();
-            final JToolTip info = new JToolTip();
-            info.setTipText("<html>" + tipText + "</html>");
-            final Popup popup =
-                popupFactory.getPopup(mapPanel, info, currentPoint.x, currentPoint.y);
-            popup.show();
-            new Thread(
-                    () -> {
-                      Interruptibles.sleep(5000);
-                      popup.hide();
-                    },
-                    "popup waiter")
-                .start();
-          }
-        }
       }
 
       @Override
@@ -2262,7 +2222,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               historySyncher.deactivate();
               historySyncher = null;
             }
-            historyPanel.goToEnd();
             historyPanel = null;
             mapPanel.getData().removeDataChangeListener(dataChangeListener);
             statsPanel.setGameData(data);

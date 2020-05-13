@@ -3,9 +3,9 @@ package org.triplea.modules.moderation.disconnect.user;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.db.dao.api.key.ApiKeyDaoWrapper;
-import org.triplea.db.dao.api.key.GamePlayerLookup;
+import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
+import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
+import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
 import org.triplea.modules.chat.Chatters;
@@ -14,7 +14,7 @@ import org.triplea.web.socket.WebSocketMessagingBus;
 @Builder
 public class DisconnectUserAction {
 
-  @Nonnull private final ApiKeyDaoWrapper apiKeyDaoWrapper;
+  @Nonnull private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   @Nonnull private final Chatters chatters;
   @Nonnull private final WebSocketMessagingBus playerConnections;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
@@ -22,7 +22,7 @@ public class DisconnectUserAction {
   static DisconnectUserAction build(
       final Jdbi jdbi, final Chatters chatters, final WebSocketMessagingBus playerConnections) {
     return DisconnectUserAction.builder()
-        .apiKeyDaoWrapper(ApiKeyDaoWrapper.build(jdbi))
+        .apiKeyDaoWrapper(PlayerApiKeyDaoWrapper.build(jdbi))
         .chatters(chatters)
         .playerConnections(playerConnections)
         .moderatorAuditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
@@ -34,9 +34,9 @@ public class DisconnectUserAction {
    * chatters of the disconnect.
    */
   boolean disconnectPlayer(final int moderatorId, final PlayerChatId playerChatId) {
-    final GamePlayerLookup gamePlayerLookup =
+    final PlayerIdentifiersByApiKeyLookup gamePlayerLookup =
         apiKeyDaoWrapper.lookupPlayerByChatId(playerChatId).orElse(null);
-    if (gamePlayerLookup == null || !chatters.hasPlayer(gamePlayerLookup.getUserName())) {
+    if (gamePlayerLookup == null || !chatters.isPlayerConnected(gamePlayerLookup.getUserName())) {
       return false;
     }
 

@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;

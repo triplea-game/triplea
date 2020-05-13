@@ -60,7 +60,7 @@ class ProPurchaseAi {
   private ProTerritoryManager territoryManager;
   private boolean isBid = false;
 
-  ProPurchaseAi(final ProAi ai) {
+  ProPurchaseAi(final AbstractProAi ai) {
     this.calc = ai.getCalc();
     this.proData = ai.getProData();
   }

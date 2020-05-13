@@ -22,7 +22,7 @@ class ModeratorAuditHistoryControllerTest {
 
   private static final ModeratorEvent EVENT_1 =
       ModeratorEvent.builder()
-          .date(Instant.now())
+          .date(Instant.now().toEpochMilli())
           .actionTarget("Desolation is a salty corsair.")
           .moderatorAction("Jolly, small grace!")
           .moderatorName("Yardarms are the pants of the golden greed.")
