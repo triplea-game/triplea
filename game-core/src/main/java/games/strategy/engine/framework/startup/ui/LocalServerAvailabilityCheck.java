@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
-import org.triplea.util.ExitStatus;
 
 /**
  * Verifies that the current local server is available from public internet. This is done by

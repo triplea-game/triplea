@@ -471,7 +471,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       }
 
       serverMessenger.setAcceptNewConnections(true);
-      if(lobbyWatcherThread != null) {
+      if (lobbyWatcherThread != null) {
         lobbyWatcherThread.getLobbyWatcher().executeConnectivityCheck();
       }
       gameDataChanged();
