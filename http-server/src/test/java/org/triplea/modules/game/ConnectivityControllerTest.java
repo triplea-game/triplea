@@ -2,56 +2,56 @@ package org.triplea.modules.game;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
-import org.triplea.modules.http.AllowedUserRole;
-import org.triplea.modules.http.ProtectedEndpointTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.modules.access.authentication.AuthenticatedUser;
 
-class ConnectivityControllerTest extends ProtectedEndpointTest<ConnectivityCheckClient> {
-  private static final int PORT = 20000;
-  private static final String GAME_ID = "Some game id";
+@ExtendWith(MockitoExtension.class)
+class ConnectivityControllerTest {
+  private static final AuthenticatedUser AUTHENTICATED_USER =
+      AuthenticatedUser.builder().userRole("user-role").apiKey(ApiKey.of("api-key")).build();
 
-  ConnectivityControllerTest() {
-    super(AllowedUserRole.HOST, ConnectivityCheckClient::newClient);
-  }
+  @Mock private ConnectivityCheck connectivityCheck;
 
-  /** Negative case, check connectivity for a port that is not listening. */
+  @InjectMocks private ConnectivityController connectivityController;
+
   @Test
-  void checkConnectivityNegativeCase() {
-    final boolean result =
-        verifyEndpointReturningObject(client -> client.checkConnectivity(GAME_ID));
-    assertThat(result, is(false));
+  void gameNotFoundReturns400() {
+    when(connectivityCheck.gameExists(AUTHENTICATED_USER.getApiKey(), "game-id")).thenReturn(false);
+
+    final Response result = connectivityController.checkConnectivity(AUTHENTICATED_USER, "game-id");
+
+    assertThat(result.getStatus(), is(400));
   }
 
-  /**
-   * Positive case, open a local listening port and verify we can connect to it. This test is to
-   * ensure we do not have just a negative case that is trivially true.
-   */
   @Test
-  void checkConnectivityPositiveCase() throws IOException {
-    openSocket();
-    // TODO Setup GameEntry so that the server correctly checks the connectivity.
-    final boolean result =
-        verifyEndpointReturningObject(client -> client.checkConnectivity(GAME_ID));
-    assertThat(result, is(true));
+  void cannotConnectReturnsFalse() {
+    when(connectivityCheck.gameExists(AUTHENTICATED_USER.getApiKey(), "game-id")).thenReturn(true);
+    when(connectivityCheck.canDoReverseConnect(AUTHENTICATED_USER.getApiKey(), "game-id"))
+        .thenReturn(false);
+
+    final Response result = connectivityController.checkConnectivity(AUTHENTICATED_USER, "game-id");
+
+    assertThat(result.getStatus(), is(200));
+    assertThat(result.getEntity(), is(false));
   }
 
-  private void openSocket() throws IOException {
-    final ServerSocket serverSocket = new ServerSocket(PORT);
-    new Thread(
-            () -> {
-              try {
-                final Socket connectedSocket = serverSocket.accept();
-                connectedSocket.close();
-                serverSocket.close();
-              } catch (final IOException e) {
-                throw new RuntimeException(e);
-              }
-            })
-        .start();
+  @Test
+  void canConnectReturnsTrue() {
+    when(connectivityCheck.gameExists(AUTHENTICATED_USER.getApiKey(), "game-id")).thenReturn(true);
+    when(connectivityCheck.canDoReverseConnect(AUTHENTICATED_USER.getApiKey(), "game-id"))
+        .thenReturn(true);
+
+    final Response result = connectivityController.checkConnectivity(AUTHENTICATED_USER, "game-id");
+
+    assertThat(result.getStatus(), is(200));
+    assertThat(result.getEntity(), is(true));
   }
 }

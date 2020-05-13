@@ -4,13 +4,12 @@ import es.moki.ratelimij.dropwizard.annotation.Rate;
 import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
-import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
@@ -24,13 +23,11 @@ import org.triplea.modules.game.listing.GameListing;
  */
 @Builder
 public class ConnectivityController extends HttpController {
-  @Nonnull private final Predicate<InetSocketAddress> connectivityCheck;
-  @Nonnull private final GameListing gameListing;
+  @Nonnull private final ConnectivityCheck connectivityCheck;
 
   public static ConnectivityController build(final GameListing gameListing) {
     return ConnectivityController.builder() //
-        .connectivityCheck(new ConnectivityCheck())
-        .gameListing(gameListing)
+        .connectivityCheck(new ConnectivityCheck(gameListing))
         .build();
   }
 
@@ -40,9 +37,15 @@ public class ConnectivityController extends HttpController {
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @RolesAllowed(UserRole.HOST)
-  public boolean checkConnectivity(
+  public Response checkConnectivity(
       @Auth final AuthenticatedUser authenticatedUser, final String gameId) {
-    return connectivityCheck.test(
-        gameListing.getHostForGame(authenticatedUser.getApiKey(), gameId));
+
+    if (!connectivityCheck.gameExists(authenticatedUser.getApiKey(), gameId)) {
+      return Response.status(400).build();
+    }
+
+    return Response.ok()
+        .entity(connectivityCheck.canDoReverseConnect(authenticatedUser.getApiKey(), gameId))
+        .build();
   }
 }

@@ -1,5 +1,7 @@
 package org.triplea.modules.game.listing;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
@@ -13,8 +15,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -238,6 +242,51 @@ class GameListingTest {
       final boolean result =
           gameListing.isValidApiKeyAndGameId(ID_0.getApiKey(), "incorrect-game-id");
       assertThat(result, is(false));
+    }
+  }
+
+  @Nested
+  class GetHostForGame {
+    @Test
+    void doesNotExistCase() {
+      final Optional<InetSocketAddress> result =
+          gameListing.getHostForGame(ID_0.getApiKey(), "incorrect-game-id");
+
+      assertThat(result, isEmpty());
+    }
+
+    @Test
+    void badApiKeyCase() {
+      cache.put(ID_0, lobbyGame0);
+
+      final Optional<InetSocketAddress> result =
+          gameListing.getHostForGame(ApiKey.of("incorrect"), ID_0.getId());
+
+      assertThat(result, isEmpty());
+    }
+
+    @Test
+    void badGameId() {
+      cache.put(ID_0, lobbyGame0);
+
+      final Optional<InetSocketAddress> result =
+          gameListing.getHostForGame(ID_0.getApiKey(), "bad-game-id");
+
+      assertThat(result, isEmpty());
+    }
+
+    @Test
+    void happyCaseFindByApiKeyAndGameId() {
+      when(lobbyGame0.getHostName()).thenReturn("host-name");
+      cache.put(ID_0, lobbyGame0);
+
+      final Optional<InetSocketAddress> result =
+          gameListing.getHostForGame(ID_0.getApiKey(), ID_0.getId());
+
+      assertThat(
+          result,
+          isPresentAndIs(
+              new InetSocketAddress(lobbyGame0.getHostName(), lobbyGame0.getHostPort())));
     }
   }
 }
