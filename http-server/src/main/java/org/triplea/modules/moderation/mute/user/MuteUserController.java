@@ -1,8 +1,6 @@
 package org.triplea.modules.moderation.mute.user;
 
 import com.google.common.base.Preconditions;
-import java.time.Clock;
-import java.time.temporal.ChronoUnit;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,10 +18,9 @@ import org.triplea.modules.chat.Chatters;
 public class MuteUserController extends HttpController {
 
   private final Chatters chatters;
-  private final Clock clock;
 
   public static MuteUserController build(final Chatters chatters) {
-    return new MuteUserController(chatters, Clock.systemUTC());
+    return new MuteUserController(chatters);
   }
 
   @POST
@@ -34,8 +31,7 @@ public class MuteUserController extends HttpController {
     Preconditions.checkArgument(muteUserRequest.getMinutes() > 0);
 
     chatters.mutePlayer(
-        PlayerChatId.of(muteUserRequest.getPlayerChatId()),
-        clock.instant().plus(muteUserRequest.getMinutes(), ChronoUnit.MINUTES));
+        PlayerChatId.of(muteUserRequest.getPlayerChatId()), muteUserRequest.getMinutes());
     return Response.ok().build();
   }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,11 +22,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
+import org.triplea.web.socket.MessageBroadcaster;
 
 /** Keeps the current list of ChatParticipants and maps them to their websocket session. */
 @Slf4j
 @AllArgsConstructor
 public class Chatters {
+  @VisibleForTesting static Clock clock = Clock.systemUTC();
+  @VisibleForTesting static MessageBroadcaster messageBroadcaster = MessageBroadcaster.build();
+
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final Map<String, ChatterSession> participants = new ConcurrentHashMap<>();
 
@@ -110,11 +116,6 @@ public class Chatters {
    * otherwise returns an empty optional
    */
   public Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress) {
-    return getPlayerMuteExpiration(inetAddress, Clock.systemUTC());
-  }
-
-  @VisibleForTesting
-  Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress, final Clock clock) {
     return Optional.ofNullable(playerMutes.get(inetAddress))
         .map(
             muteInstant -> {
@@ -127,10 +128,14 @@ public class Chatters {
             });
   }
 
-  public void mutePlayer(final PlayerChatId playerChatId, final Instant muteUntil) {
+  public void mutePlayer(final PlayerChatId playerChatId, final long muteMinutes) {
     findChatterSessionByPlayerChatId(playerChatId)
-        .map(ChatterSession::getIp)
-        .ifPresent(ip -> playerMutes.put(ip, muteUntil));
+        .ifPresent(
+            chatterSession -> {
+              muteIpAddress(chatterSession.getIp(), muteMinutes);
+              broadCastPlayerMutedMessageToAllPlayer(
+                  chatterSession.getChatParticipant().getUserName(), muteMinutes);
+            });
   }
 
   private Optional<ChatterSession> findChatterSessionByPlayerChatId(
@@ -140,5 +145,20 @@ public class Chatters {
             chatterSession ->
                 chatterSession.getChatParticipant().getPlayerChatId().equals(playerChatId))
         .findAny();
+  }
+
+  private void muteIpAddress(final InetAddress ip, final long muteMinutes) {
+    final Instant muteUntil = clock.instant().plus(muteMinutes, ChronoUnit.MINUTES);
+    playerMutes.put(ip, muteUntil);
+  }
+
+  private void broadCastPlayerMutedMessageToAllPlayer(
+      final UserName userName, final long muteMinutes) {
+    messageBroadcaster.accept(
+        fetchOpenSessions(),
+        new ChatEventReceivedMessage(
+                String.format(
+                    "%s was muted by moderator for %s minutes", userName.getValue(), muteMinutes))
+            .toEnvelope());
   }
 }
