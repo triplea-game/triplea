@@ -46,6 +46,7 @@ public class InGameLobbyWatcher {
   private final IServerMessenger serverMessenger;
 
   private final ScheduledTimer keepAliveTimer;
+  private final WatcherThreadMessaging watcherThreadMessaging;
 
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
@@ -68,6 +69,7 @@ public class InGameLobbyWatcher {
       @Nullable final IGame oldGame) {
     this.serverMessenger = serverMessenger;
     this.gameToLobbyConnection = gameToLobbyConnection;
+    this.watcherThreadMessaging = watcherThreadMessaging;
     humanPlayer = !HeadlessGameServer.headless();
 
     final boolean passworded = SystemPropertyReader.serverIsPassworded();
@@ -111,13 +113,6 @@ public class InGameLobbyWatcher {
             .build();
 
     gameId = gameToLobbyConnection.postGame(gameDescription.toLobbyGame());
-
-    LocalServerAvailabilityCheck.builder()
-        .gameToLobbyConnection(gameToLobbyConnection)
-        .gameId(gameId)
-        .errorHandler(watcherThreadMessaging::serverNotAvailableHandler)
-        .build()
-        .run();
 
     // Period time is chosen to less than half the keep-alive cut-off time. In case a keep-alive
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
@@ -265,5 +260,14 @@ public class InGameLobbyWatcher {
 
   void setPassworded(final boolean passworded) {
     postUpdate(gameDescription.withPassworded(passworded));
+  }
+
+  void executeConnectivityCheck() {
+    LocalServerAvailabilityCheck.builder()
+        .gameToLobbyConnection(gameToLobbyConnection)
+        .gameId(gameId)
+        .errorHandler(watcherThreadMessaging::serverNotAvailableHandler)
+        .build()
+        .run();
   }
 }
