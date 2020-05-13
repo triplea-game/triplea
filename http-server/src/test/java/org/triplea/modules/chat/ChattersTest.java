@@ -14,6 +14,7 @@ import static org.triplea.java.DateTimeUtil.utcInstantOf;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
@@ -161,7 +162,7 @@ class ChattersTest {
 
   @Nested
   class Muting {
-    private final Instant muteExpiry = utcInstantOf(2000, 1, 1, 12, 20);
+    private final Instant now = utcInstantOf(2000, 1, 1, 12, 20);
 
     @Test
     @DisplayName("With no players connected, checking if a player is muted is trivially false")
@@ -186,62 +187,81 @@ class ChattersTest {
     @Test
     @DisplayName("A player is connected, was muted, but mute has expired")
     void playerMuteIsExpired() {
-      Chatters.clock = Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC);
       when(session.getId()).thenReturn("session-id");
       final var chatterSession = buildChatterSession(session);
       chatters.connectPlayer(chatterSession);
-      chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), 20);
+      chatters.mutePlayer(
+          chatterSession.getChatParticipant().getPlayerChatId(),
+          20,
+          Clock.fixed(now, ZoneOffset.UTC),
+          messageBroadcaster);
 
-      final Optional<Instant> result = chatters.getPlayerMuteExpiration(chatterSession.getIp());
+      final Optional<Instant> result =
+          chatters.getPlayerMuteExpiration(
+              chatterSession.getIp(),
+              Clock.fixed(now.plus(21, ChronoUnit.MINUTES), ZoneOffset.UTC));
 
       assertThat("Current time is *after* mute expiry => not muted", result, isEmpty());
     }
 
     @Test
     void playerIsMuted() {
-      Chatters.clock = Clock.fixed(muteExpiry.minusSeconds(10), ZoneOffset.UTC);
       when(session.getId()).thenReturn("session-id");
       final var chatterSession = buildChatterSession(session);
       chatters.connectPlayer(chatterSession);
-      chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), 1);
+      chatters.mutePlayer(
+          chatterSession.getChatParticipant().getPlayerChatId(),
+          1,
+          Clock.fixed(now, ZoneOffset.UTC),
+          messageBroadcaster);
 
-      final Optional<Instant> result = chatters.getPlayerMuteExpiration(chatterSession.getIp());
+      final Optional<Instant> result =
+          chatters.getPlayerMuteExpiration(
+              chatterSession.getIp(), Clock.fixed(now, ZoneOffset.UTC));
 
       assertThat(
-          "Current time is *before* mute expiry => muted", result, isPresentAndIs(muteExpiry));
+          "Current time is *before* mute expiry => muted",
+          result,
+          isPresentAndIs(now.plus(1, ChronoUnit.MINUTES)));
     }
 
     @Test
     @DisplayName("Check that an expired mute is removed")
     void expiredPlayerMutesAreExpunged() {
-      Chatters.clock = Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC);
       when(session.getId()).thenReturn("session-id");
       final var chatterSession = buildChatterSession(session);
       chatters.connectPlayer(chatterSession);
-      chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), 20);
+      chatters.mutePlayer(
+          chatterSession.getChatParticipant().getPlayerChatId(),
+          20,
+          Clock.fixed(now, ZoneOffset.UTC),
+          messageBroadcaster);
 
       // current time is after the mute expiry, we expect the mute to be expunged
-      chatters.getPlayerMuteExpiration(chatterSession.getIp());
+      chatters.getPlayerMuteExpiration(
+          chatterSession.getIp(), Clock.fixed(now.plus(21, ChronoUnit.MINUTES), ZoneOffset.UTC));
 
-      Chatters.clock = Clock.fixed(muteExpiry.minusSeconds(10), ZoneOffset.UTC);
       assertThat(
           "Querying for the mute again, this time with current time before the mute."
               + "Normally this would be a condition for a mute, but we expunged the mute."
               + "Given the mute is expunged, we expect an empty result.",
-          chatters.getPlayerMuteExpiration(chatterSession.getIp()),
+          chatters.getPlayerMuteExpiration(
+              chatterSession.getIp(), Clock.fixed(now, ZoneOffset.UTC)),
           isEmpty());
     }
 
     @Test
     @DisplayName("Verify that we broadcast a 'player-was-muted' message to all players when muting")
     void playerMuteActionIsBroadcasted() {
-      Chatters.messageBroadcaster = messageBroadcaster;
-      Chatters.clock = Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC);
       when(session.getId()).thenReturn("session-id");
       final var chatterSession = buildChatterSession(session);
       chatters.connectPlayer(chatterSession);
 
-      chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), 20);
+      chatters.mutePlayer(
+          chatterSession.getChatParticipant().getPlayerChatId(),
+          20,
+          Clock.systemUTC(),
+          messageBroadcaster);
 
       verify(messageBroadcaster).accept(any(), any(MessageEnvelope.class));
     }
