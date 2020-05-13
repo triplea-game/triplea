@@ -234,7 +234,7 @@ public class ServerApplication extends Application<AppConfig> {
         ErrorReportController.build(appConfig, jdbi),
         ModeratorAuditHistoryController.build(jdbi),
         ModeratorsController.build(jdbi),
-        MuteUserController.build(),
+        MuteUserController.build(chatters),
         PlayerInfoController.build(jdbi),
         RemoteActionsController.build(jdbi, gameMessagingBus),
         UpdateAccountController.build(jdbi));
