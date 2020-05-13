@@ -2,7 +2,7 @@ package org.triplea.modules.chat.event.processing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.java.TimeManager.utcInstantOf;
+import static org.triplea.java.DateTimeUtil.utcInstantOf;
 
 import java.time.Clock;
 import java.time.Instant;

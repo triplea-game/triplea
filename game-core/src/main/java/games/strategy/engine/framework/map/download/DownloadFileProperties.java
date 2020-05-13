@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.util.Properties;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
-import org.triplea.java.TimeManager;
+import org.triplea.java.DateTimeUtil;
 import org.triplea.util.Version;
 
 /** Properties file used to know which map versions have been installed. */
@@ -69,7 +69,7 @@ class DownloadFileProperties {
     setVersion(selected.getVersion());
     props.setProperty("map.url", selected.getUrl());
     props.setProperty(
-        "download.time", TimeManager.toDateString(LocalDateTime.now(ZoneId.systemDefault())));
+        "download.time", DateTimeUtil.toDateString(LocalDateTime.now(ZoneId.systemDefault())));
     props.setProperty("engine.version", ClientContext.engineVersion().toString());
   }
 }

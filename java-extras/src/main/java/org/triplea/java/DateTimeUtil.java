@@ -11,15 +11,14 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Locale.Category;
+import lombok.experimental.UtilityClass;
 
 /** Provides methods for formatting time in various formats. */
-// TODO: rename this to DateTimeUtil
-public final class TimeManager {
+@UtilityClass
+public final class DateTimeUtil {
   @VisibleForTesting static ZoneId defaultZoneId = ZoneId.systemDefault();
   @VisibleForTesting static Clock clock = Clock.system(defaultZoneId);
   @VisibleForTesting static Locale defaultLocale = Locale.getDefault(Category.FORMAT);
-
-  private TimeManager() {}
 
   /**
    * Returns a String representing the current {@link LocalDateTime}. Based on where you live this

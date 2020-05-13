@@ -9,7 +9,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.triplea.java.TimeManager.utcInstantOf;
+import static org.triplea.java.DateTimeUtil.utcInstantOf;
 
 import java.time.Clock;
 import java.time.Instant;
