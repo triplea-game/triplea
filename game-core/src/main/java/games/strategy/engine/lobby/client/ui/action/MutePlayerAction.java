@@ -41,10 +41,6 @@ public class MutePlayerAction {
     SwingComponents.promptUser(
         "Confirm Mute",
         "Are you sure you want to mute " + playerName + " for " + actionDuration,
-        () -> {
-          playerToLobbyConnection.mutePlayer(playerChatId, actionDuration.toMinutes());
-          SwingComponents.showDialog(
-              playerName + " muted", playerName + " was muted for " + actionDuration);
-        });
+        () -> playerToLobbyConnection.mutePlayer(playerChatId, actionDuration.toMinutes()));
   }
 }
