@@ -1,5 +1,6 @@
 package org.triplea.modules.chat.event.processing;
 
+import java.time.Instant;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.chat.history.LobbyChatHistoryDao;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -32,10 +34,22 @@ public class ChatMessageListener implements Consumer<WebSocketMessageContext<Cha
   public void accept(final WebSocketMessageContext<ChatSentMessage> messageContext) {
     chatters
         .lookupPlayerBySession(messageContext.getSenderSession())
-        .ifPresent(session -> recordAndSendMessage(session, messageContext));
+        .ifPresent(
+            session ->
+                chatters
+                    .isPlayerMuted(session.getChatParticipant().getPlayerChatId())
+                    .ifPresentOrElse(
+                        expiry -> sendResponseToMutedPlayer(expiry, messageContext),
+                        () -> recordAndBroadcastMessageToAllPlayers(session, messageContext)));
   }
 
-  private void recordAndSendMessage(
+  private void sendResponseToMutedPlayer(
+      final Instant muteExpiry, final WebSocketMessageContext<ChatSentMessage> messageContext) {
+    messageContext.sendResponse(
+        new ChatEventReceivedMessage(PlayerIsMutedMessage.build(muteExpiry)));
+  }
+
+  private void recordAndBroadcastMessageToAllPlayers(
       final ChatterSession session, final WebSocketMessageContext<ChatSentMessage> messageContext) {
     final var chatReceivedMessage =
         convertMessage(session.getChatParticipant(), messageContext.getMessage().getChatMessage());

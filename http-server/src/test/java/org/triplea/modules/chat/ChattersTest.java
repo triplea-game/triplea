@@ -1,5 +1,7 @@
 package org.triplea.modules.chat;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -7,7 +9,12 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.triplea.java.TimeManager.utcInstantOf;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Optional;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @ExtendWith(MockitoExtension.class)
@@ -144,6 +152,85 @@ class ChattersTest {
 
       verify(session).close(any(CloseReason.class));
       verify(session2).close(any(CloseReason.class));
+    }
+  }
+
+  @Nested
+  class Muting {
+    private final Instant muteExpiry = utcInstantOf(2000, 1, 1, 12, 20);
+
+    @Test
+    @DisplayName("With no players connected, checking if a player is muted is trivially false")
+    void playerIsNotConnected() {
+      assertThat(chatters.isPlayerMuted(PlayerChatId.of("any")), isEmpty());
+    }
+
+    @Test
+    @DisplayName("A player is connected, but not muted")
+    void playerIsNotMuted() {
+      when(session.getId()).thenReturn("session-id");
+      final var chatterSession = buildChatterSession(session);
+      chatters.connectPlayer(chatterSession);
+
+      assertThat(
+          chatters.isPlayerMuted(chatterSession.getChatParticipant().getPlayerChatId()), isEmpty());
+    }
+
+    @Test
+    @DisplayName("A player is connected, was muted, but mute has expired")
+    void playerMuteIsExpired() {
+      when(session.getId()).thenReturn("session-id");
+      final var chatterSession = buildChatterSession(session);
+      chatters.connectPlayer(chatterSession);
+
+      chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), muteExpiry);
+
+      final Optional<Instant> result =
+          chatters.isPlayerMuted(
+              chatterSession.getChatParticipant().getPlayerChatId(),
+              Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC));
+
+      assertThat("Current time is *after* mute expiry => not muted", result, isEmpty());
+    }
+
+    @Test
+    void playerIsMuted() {
+      when(session.getId()).thenReturn("session-id");
+      final var chatterSession = buildChatterSession(session);
+      chatters.connectPlayer(chatterSession);
+
+      chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), muteExpiry);
+
+      final Optional<Instant> result =
+          chatters.isPlayerMuted(
+              chatterSession.getChatParticipant().getPlayerChatId(),
+              Clock.fixed(muteExpiry.minusSeconds(10), ZoneOffset.UTC));
+
+      assertThat(
+          "Current time is *before* mute expiry => muted", result, isPresentAndIs(muteExpiry));
+    }
+
+    @Test
+    @DisplayName("Check that an expired mute is removed")
+    void expiredPlayerMutesAreExpunged() {
+      when(session.getId()).thenReturn("session-id");
+      final var chatterSession = buildChatterSession(session);
+      chatters.connectPlayer(chatterSession);
+
+      chatters.mutePlayer(chatterSession.getChatParticipant().getPlayerChatId(), muteExpiry);
+
+      // current time is after the mute expiry, we expect the mute to be expunged
+      chatters.isPlayerMuted(
+          chatterSession.getChatParticipant().getPlayerChatId(),
+          Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC));
+
+      assertThat(
+          "Querying for the mute again, this time with current time before the mute."
+              + "Given the mute is expunged, we would expect an empty result.",
+          chatters.isPlayerMuted(
+              chatterSession.getChatParticipant().getPlayerChatId(),
+              Clock.fixed(muteExpiry.plusSeconds(10), ZoneOffset.UTC)),
+          isEmpty());
     }
   }
 }

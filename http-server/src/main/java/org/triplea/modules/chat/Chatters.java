@@ -2,7 +2,10 @@ package org.triplea.modules.chat;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -15,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 
 /** Keeps the current list of ChatParticipants and maps them to their websocket session. */
@@ -23,6 +27,8 @@ import org.triplea.domain.data.UserName;
 public class Chatters {
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final Map<String, ChatterSession> participants = new ConcurrentHashMap<>();
+
+  private final Map<PlayerChatId, Instant> playerMutes = new HashMap<>();
 
   public static Chatters build() {
     return new Chatters();
@@ -96,5 +102,31 @@ public class Chatters {
           }
         });
     return !sessions.isEmpty();
+  }
+
+  /**
+   * Checks if a given chatter is muted, if so returns the {@code Instant} when the mute expires
+   * otherwise returns an empty optional
+   */
+  public Optional<Instant> isPlayerMuted(final PlayerChatId playerChatId) {
+    return isPlayerMuted(playerChatId, Clock.systemUTC());
+  }
+
+  @VisibleForTesting
+  Optional<Instant> isPlayerMuted(final PlayerChatId playerChatId, final Clock clock) {
+    return Optional.ofNullable(playerMutes.get(playerChatId))
+        .map(
+            muteInstant -> {
+              if (muteInstant.isAfter(clock.instant())) {
+                return muteInstant;
+              } else {
+                playerMutes.remove(playerChatId);
+                return null;
+              }
+            });
+  }
+
+  public void mutePlayer(final PlayerChatId playerChatId, final Instant muteUntil) {
+    playerMutes.put(playerChatId, muteUntil);
   }
 }
