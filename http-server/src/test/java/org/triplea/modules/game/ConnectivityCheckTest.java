@@ -46,6 +46,7 @@ class ConnectivityCheckTest {
   void connectionSuccess() throws IOException {
     when(gameListing.getHostForGame(ApiKey.of("api-key"), "game-id"))
         .thenReturn(Optional.of(new InetSocketAddress(3300)));
+    when(socket.isConnected()).thenReturn(true);
 
     final boolean result = connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
 

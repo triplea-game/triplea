@@ -37,7 +37,7 @@ class ConnectivityCheck {
   private boolean testConnectivityToAddress(final InetSocketAddress address) {
     try (Socket s = socketSupplier.get()) {
       s.connect(address, (int) TimeUnit.SECONDS.toMillis(10));
-      return true;
+      return s.isConnected();
     } catch (final IOException e) {
       return false;
     }
