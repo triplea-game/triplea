@@ -44,6 +44,6 @@ class DateTimeFormatterUtilTest {
     assertThat(
         DateTimeFormatterUtil.toDateString(
             LocalDateTime.ofInstant(JAN_FIRST_INSTANT, ZoneOffset.UTC)),
-        is("Wed Jan. 01 14:30:00 UTC 2020"));
+        is("Wed Jan 01 14:30:00 UTC 2020"));
   }
 }
