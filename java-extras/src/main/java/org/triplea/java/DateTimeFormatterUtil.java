@@ -69,6 +69,7 @@ public class DateTimeFormatterUtil {
    */
   public static String toDateString(final LocalDateTime dateTime) {
     return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy")
+        .withLocale(defaultLocale)
         .withZone(defaultZone)
         .format(dateTime);
   }
