@@ -163,6 +163,8 @@ public class GameListing {
   public Optional<InetSocketAddress> getHostForGame(final ApiKey apiKey, final String id) {
     return games
         .get(new GameId(apiKey, id))
-        .map(lobbyGame -> new InetSocketAddress(lobbyGame.getHostAddress(), lobbyGame.getHostPort()));
+        .map(
+            lobbyGame ->
+                new InetSocketAddress(lobbyGame.getHostAddress(), lobbyGame.getHostPort()));
   }
 }
