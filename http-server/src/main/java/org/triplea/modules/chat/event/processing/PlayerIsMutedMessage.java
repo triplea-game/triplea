@@ -26,6 +26,7 @@ class PlayerIsMutedMessage {
   static class MuteDurationRemainingCalculator implements Function<Instant, String> {
     @Builder.Default private Clock clock = Clock.systemUTC();
 
+    @Override
     public String apply(final Instant muteExpiry) {
       final long minutes = Duration.between(clock.instant(), muteExpiry).toMinutes();
       return minutes > 0
