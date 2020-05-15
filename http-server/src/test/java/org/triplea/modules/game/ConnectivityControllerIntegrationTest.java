@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
@@ -25,6 +26,6 @@ class ConnectivityControllerIntegrationTest extends ProtectedEndpointTest<Connec
     assertThat(
         "Expect bad request to be served, the given game-id is not found",
         httpInteractionException.status(),
-        is(400));
+        is(HttpStatus.Code.UNPROCESSABLE_ENTITY.getCode()));
   }
 }

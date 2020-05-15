@@ -11,6 +11,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.eclipse.jetty.http.HttpStatus;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
@@ -41,7 +42,7 @@ public class ConnectivityController extends HttpController {
       @Auth final AuthenticatedUser authenticatedUser, final String gameId) {
 
     if (!connectivityCheck.gameExists(authenticatedUser.getApiKey(), gameId)) {
-      return Response.status(400).build();
+      return Response.status(HttpStatus.Code.UNPROCESSABLE_ENTITY.getCode()).build();
     }
 
     return Response.ok()
