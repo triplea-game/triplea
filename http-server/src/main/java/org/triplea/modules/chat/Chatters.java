@@ -109,8 +109,8 @@ public class Chatters {
   }
 
   /**
-   * Checks if a given chatter is currently muted, if so returns the {@code Instant} when the
-   * mute expires otherwise returns an empty optional
+   * Checks if a given chatter is currently muted, if so returns the {@code Instant} when the mute
+   * expires otherwise returns an empty optional
    */
   public Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress) {
     return getPlayerMuteExpiration(inetAddress, Clock.systemUTC());
@@ -119,10 +119,10 @@ public class Chatters {
   @VisibleForTesting
   Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress, final Clock clock) {
     // if we have a mute
-    return Optional.ofNullable(playerMutes.computeIfPresent(inetAddress,
-        (address, existingBan) -> existingBan.isAfter(clock.instant())
-            ? existingBan
-            : null);
+    return Optional.ofNullable(
+        playerMutes.computeIfPresent(
+            inetAddress,
+            (address, existingBan) -> existingBan.isAfter(clock.instant()) ? existingBan : null));
   }
 
   public void mutePlayer(final PlayerChatId playerChatId, final long muteMinutes) {
