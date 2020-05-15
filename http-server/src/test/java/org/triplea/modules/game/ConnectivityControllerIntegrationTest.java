@@ -26,6 +26,6 @@ class ConnectivityControllerIntegrationTest extends ProtectedEndpointTest<Connec
     assertThat(
         "Expect bad request to be served, the given game-id is not found",
         httpInteractionException.status(),
-        is(HttpStatus.Code.UNPROCESSABLE_ENTITY.getCode()));
+        is(HttpStatus.UNPROCESSABLE_ENTITY_422));
   }
 }

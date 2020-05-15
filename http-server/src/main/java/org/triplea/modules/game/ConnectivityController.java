@@ -41,12 +41,18 @@ public class ConnectivityController extends HttpController {
   public Response checkConnectivity(
       @Auth final AuthenticatedUser authenticatedUser, final String gameId) {
 
-    if (!connectivityCheck.gameExists(authenticatedUser.getApiKey(), gameId)) {
-      return Response.status(HttpStatus.Code.UNPROCESSABLE_ENTITY.getCode()).build();
-    }
+    final ConnectivityCheck.ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(authenticatedUser.getApiKey(), gameId);
 
-    return Response.ok()
-        .entity(connectivityCheck.canDoReverseConnect(authenticatedUser.getApiKey(), gameId))
-        .build();
+    switch (result) {
+      case SUCCESS:
+        return Response.ok().entity(true).build();
+      case FAILED:
+        return Response.ok().entity(false).build();
+      case GAME_ID_NOT_FOUND:
+        return Response.status(HttpStatus.UNPROCESSABLE_ENTITY_422).build();
+      default:
+        throw new IllegalStateException("Switch case not handled: " + result);
+    }
   }
 }

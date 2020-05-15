@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.modules.game.ConnectivityCheck.ReverseConnectionResult;
 import org.triplea.modules.game.listing.GameListing;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,9 +38,10 @@ class ConnectivityCheckTest {
   void gameIdNotFound() {
     when(gameListing.getHostForGame(ApiKey.of("api-key"), "game-id")).thenReturn(Optional.empty());
 
-    final boolean result = connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
+    final ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
 
-    assertThat(result, is(false));
+    assertThat(result, is(ReverseConnectionResult.GAME_ID_NOT_FOUND));
   }
 
   @Test
@@ -48,9 +50,10 @@ class ConnectivityCheckTest {
         .thenReturn(Optional.of(new InetSocketAddress(3300)));
     when(socket.isConnected()).thenReturn(true);
 
-    final boolean result = connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
+    final ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
 
-    assertThat(result, is(true));
+    assertThat(result, is(ReverseConnectionResult.SUCCESS));
     verify(socket).close();
   }
 
@@ -63,9 +66,10 @@ class ConnectivityCheckTest {
         .when(socket)
         .connect(eq(new InetSocketAddress(3300)), anyInt());
 
-    final boolean result = connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
+    final ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
 
-    assertThat(result, is(false));
+    assertThat(result, is(ReverseConnectionResult.FAILED));
     verify(socket).close();
   }
 }

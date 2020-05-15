@@ -30,6 +30,7 @@ import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
@@ -277,7 +278,7 @@ class GameListingTest {
 
     @Test
     void happyCaseFindByApiKeyAndGameId() {
-      when(lobbyGame0.getHostName()).thenReturn("host-name");
+      when(lobbyGame0.getHostAddress()).thenReturn("1.1.1.1");
       cache.put(ID_0, lobbyGame0);
 
       final Optional<InetSocketAddress> result =
@@ -286,7 +287,8 @@ class GameListingTest {
       assertThat(
           result,
           isPresentAndIs(
-              new InetSocketAddress(lobbyGame0.getHostName(), lobbyGame0.getHostPort())));
+              new InetSocketAddress(
+                  IpAddressParser.fromString("1.1.1.1"), lobbyGame0.getHostPort())));
     }
   }
 }

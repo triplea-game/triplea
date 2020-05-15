@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.game.ConnectivityCheck.ReverseConnectionResult;
 
 @ExtendWith(MockitoExtension.class)
 class ConnectivityControllerTest {
@@ -23,35 +25,34 @@ class ConnectivityControllerTest {
   @InjectMocks private ConnectivityController connectivityController;
 
   @Test
-  void gameNotFoundReturns400() {
-    when(connectivityCheck.gameExists(AUTHENTICATED_USER.getApiKey(), "game-id")).thenReturn(false);
+  void gameNotFoundReturns422() {
+    when(connectivityCheck.canDoReverseConnect(AUTHENTICATED_USER.getApiKey(), "game-id"))
+        .thenReturn(ReverseConnectionResult.GAME_ID_NOT_FOUND);
 
     final Response result = connectivityController.checkConnectivity(AUTHENTICATED_USER, "game-id");
 
-    assertThat(result.getStatus(), is(400));
+    assertThat(result.getStatus(), is(HttpStatus.UNPROCESSABLE_ENTITY_422));
   }
 
   @Test
   void cannotConnectReturnsFalse() {
-    when(connectivityCheck.gameExists(AUTHENTICATED_USER.getApiKey(), "game-id")).thenReturn(true);
     when(connectivityCheck.canDoReverseConnect(AUTHENTICATED_USER.getApiKey(), "game-id"))
-        .thenReturn(false);
+        .thenReturn(ReverseConnectionResult.FAILED);
 
     final Response result = connectivityController.checkConnectivity(AUTHENTICATED_USER, "game-id");
 
-    assertThat(result.getStatus(), is(200));
+    assertThat(result.getStatus(), is(HttpStatus.OK_200));
     assertThat(result.getEntity(), is(false));
   }
 
   @Test
   void canConnectReturnsTrue() {
-    when(connectivityCheck.gameExists(AUTHENTICATED_USER.getApiKey(), "game-id")).thenReturn(true);
     when(connectivityCheck.canDoReverseConnect(AUTHENTICATED_USER.getApiKey(), "game-id"))
-        .thenReturn(true);
+        .thenReturn(ReverseConnectionResult.SUCCESS);
 
     final Response result = connectivityController.checkConnectivity(AUTHENTICATED_USER, "game-id");
 
-    assertThat(result.getStatus(), is(200));
+    assertThat(result.getStatus(), is(HttpStatus.OK_200));
     assertThat(result.getEntity(), is(true));
   }
 }

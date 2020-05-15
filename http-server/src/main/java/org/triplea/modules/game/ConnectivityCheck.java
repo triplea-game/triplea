@@ -17,21 +17,23 @@ class ConnectivityCheck {
   private final Supplier<Socket> socketSupplier;
   private final GameListing gameListing;
 
+  public enum ReverseConnectionResult {
+    SUCCESS,
+    FAILED,
+    GAME_ID_NOT_FOUND
+  }
+
   ConnectivityCheck(final GameListing gameListing) {
     this(Socket::new, gameListing);
   }
 
-  /** Verifies if a game exists with a given API key and gameId. */
-  boolean gameExists(final ApiKey apiKey, final String gameId) {
-    return gameListing.getHostForGame(apiKey, gameId).isPresent();
-  }
-
   /** Checks if the lobby can create a connection to a given game. */
-  boolean canDoReverseConnect(final ApiKey apiKey, final String gameId) {
+  ReverseConnectionResult canDoReverseConnect(final ApiKey apiKey, final String gameId) {
     return gameListing
         .getHostForGame(apiKey, gameId)
         .map(this::testConnectivityToAddress)
-        .orElse(false);
+        .map(result -> result ? ReverseConnectionResult.SUCCESS : ReverseConnectionResult.FAILED)
+        .orElse(ReverseConnectionResult.GAME_ID_NOT_FOUND);
   }
 
   private boolean testConnectivityToAddress(final InetSocketAddress address) {
