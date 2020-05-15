@@ -61,4 +61,8 @@ public class InGameLobbyWatcherWrapper {
       lobbyWatcher.setPassworded(passworded);
     }
   }
+
+  public void executeConnectivityCheck() {
+    lobbyWatcher.executeConnectivityCheck();
+  }
 }

@@ -4,7 +4,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.net.IServerMessenger;
 import java.util.Optional;
@@ -26,19 +25,14 @@ public class LobbyWatcherThread {
 
   public void createLobbyWatcher(final GameToLobbyConnection gameToLobbyConnection) {
     InGameLobbyWatcher.newInGameLobbyWatcher(
-            serverMessenger, gameToLobbyConnection, lobbyWatcher.getInGameLobbyWatcher())
+            serverMessenger,
+            gameToLobbyConnection,
+            watcherThreadMessaging,
+            lobbyWatcher.getInGameLobbyWatcher())
         .ifPresent(
             watcher -> {
               watcher.setGameSelectorModel(gameSelectorModel);
               lobbyWatcher.setInGameLobbyWatcher(watcher);
-
-              LocalServerAvailabilityCheck.builder()
-                  .gameToLobbyConnection(gameToLobbyConnection)
-                  .localPort(serverMessenger.getLocalNode().getPort())
-                  .errorHandler(watcherThreadMessaging::serverNotAvailableHandler)
-                  .build()
-                  .run();
-
               System.clearProperty(TRIPLEA_NAME);
             });
   }

@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.SystemPropertyReader;
+import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
@@ -45,14 +46,17 @@ public class InGameLobbyWatcher {
   private final IServerMessenger serverMessenger;
 
   private final ScheduledTimer keepAliveTimer;
+  private final WatcherThreadMessaging watcherThreadMessaging;
 
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
+      final WatcherThreadMessaging watcherThreadMessaging,
       @Nullable final InGameLobbyWatcher oldWatcher) {
     this(
         serverMessenger,
         gameToLobbyConnection,
+        watcherThreadMessaging,
         Optional.ofNullable(oldWatcher).map(old -> old.gameDescription).orElse(null),
         Optional.ofNullable(oldWatcher).map(old -> old.game).orElse(null));
   }
@@ -60,10 +64,12 @@ public class InGameLobbyWatcher {
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
+      final WatcherThreadMessaging watcherThreadMessaging,
       @Nullable final GameDescription oldGameDescription,
       @Nullable final IGame oldGame) {
     this.serverMessenger = serverMessenger;
     this.gameToLobbyConnection = gameToLobbyConnection;
+    this.watcherThreadMessaging = watcherThreadMessaging;
     humanPlayer = !HeadlessGameServer.headless();
 
     final boolean passworded = SystemPropertyReader.serverIsPassworded();
@@ -151,10 +157,12 @@ public class InGameLobbyWatcher {
   public static Optional<InGameLobbyWatcher> newInGameLobbyWatcher(
       final IServerMessenger serverMessenger,
       final GameToLobbyConnection gameToLobbyConnection,
+      final WatcherThreadMessaging watcherThreadMessaging,
       final InGameLobbyWatcher oldWatcher) {
     try {
       return Optional.of(
-          new InGameLobbyWatcher(serverMessenger, gameToLobbyConnection, oldWatcher));
+          new InGameLobbyWatcher(
+              serverMessenger, gameToLobbyConnection, watcherThreadMessaging, oldWatcher));
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return Optional.empty();
@@ -252,5 +260,14 @@ public class InGameLobbyWatcher {
 
   void setPassworded(final boolean passworded) {
     postUpdate(gameDescription.withPassworded(passworded));
+  }
+
+  void executeConnectivityCheck() {
+    LocalServerAvailabilityCheck.builder()
+        .gameToLobbyConnection(gameToLobbyConnection)
+        .gameId(gameId)
+        .errorHandler(watcherThreadMessaging::serverNotAvailableHandler)
+        .build()
+        .run();
   }
 }

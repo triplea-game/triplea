@@ -1,9 +1,9 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
-import org.triplea.util.ExitStatus;
 
 /**
  * Verifies that the current local server is available from public internet. This is done by
@@ -12,7 +12,7 @@ import org.triplea.util.ExitStatus;
 @Builder
 public class LocalServerAvailabilityCheck {
   private final GameToLobbyConnection gameToLobbyConnection;
-  private final int localPort;
+  @Nonnull private final String gameId;
   private final Consumer<String> errorHandler;
 
   /**
@@ -24,7 +24,7 @@ public class LocalServerAvailabilityCheck {
     // if we lose our connection, then shutdown
     new Thread(
             () -> {
-              if (!gameToLobbyConnection.checkConnectivity(localPort)) {
+              if (!gameToLobbyConnection.checkConnectivity(gameId)) {
                 // if the server cannot connect to us, then quit
                 errorHandler.accept(
                     "Your computer is not reachable from the internet.\n"
@@ -32,12 +32,10 @@ public class LocalServerAvailabilityCheck {
                         + "for TripleA.\n"
                         + "(The firewall exception must be updated every time a new version of "
                         + "TripleA comes out.)\n"
-                        + "And that your Router is configured to send TCP traffic on port "
-                        + localPort
+                        + "And that your Router is configured to send TCP traffic the correct port "
                         + " to your local ip address.\n"
                         + "See 'How To Host...' in the help menu, at the top of the lobby "
                         + "screen.");
-                ExitStatus.FAILURE.exit();
               }
             })
         .start();

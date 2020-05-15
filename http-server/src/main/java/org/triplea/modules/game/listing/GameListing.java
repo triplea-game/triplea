@@ -1,7 +1,9 @@
 package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -156,5 +158,13 @@ public class GameListing {
                       .actionTarget(hostName)
                       .build());
             });
+  }
+
+  public Optional<InetSocketAddress> getHostForGame(final ApiKey apiKey, final String id) {
+    return games
+        .get(new GameId(apiKey, id))
+        .map(
+            lobbyGame ->
+                new InetSocketAddress(lobbyGame.getHostAddress(), lobbyGame.getHostPort()));
   }
 }

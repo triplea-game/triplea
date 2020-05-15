@@ -3,49 +3,73 @@ package org.triplea.modules.game;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.modules.game.ConnectivityCheck.ReverseConnectionResult;
+import org.triplea.modules.game.listing.GameListing;
 
 @ExtendWith(MockitoExtension.class)
 class ConnectivityCheckTest {
-  @Mock private InetSocketAddress inetSocketAddress;
-
   @Mock private Socket socket;
+
+  @Mock private GameListing gameListing;
 
   private ConnectivityCheck connectivityCheck;
 
   @BeforeEach
   void setup() {
-    connectivityCheck = new ConnectivityCheck(() -> socket);
+    connectivityCheck = new ConnectivityCheck(() -> socket, gameListing);
+  }
+
+  @Test
+  void gameIdNotFound() {
+    when(gameListing.getHostForGame(ApiKey.of("api-key"), "game-id")).thenReturn(Optional.empty());
+
+    final ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
+
+    assertThat(result, is(ReverseConnectionResult.GAME_ID_NOT_FOUND));
   }
 
   @Test
   void connectionSuccess() throws IOException {
-    final boolean result = connectivityCheck.test(inetSocketAddress);
+    when(gameListing.getHostForGame(ApiKey.of("api-key"), "game-id"))
+        .thenReturn(Optional.of(new InetSocketAddress(3300)));
+    when(socket.isConnected()).thenReturn(true);
 
-    assertThat(result, is(true));
+    final ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
+
+    assertThat(result, is(ReverseConnectionResult.SUCCESS));
     verify(socket).close();
   }
 
   @Test
   void connectionFailure() throws IOException {
+    when(gameListing.getHostForGame(ApiKey.of("api-key"), "game-id"))
+        .thenReturn(Optional.of(new InetSocketAddress(3300)));
+
     doThrow(new IOException("simulated exception"))
         .when(socket)
-        .connect(eq(inetSocketAddress), anyInt());
+        .connect(eq(new InetSocketAddress(3300)), anyInt());
 
-    final boolean result = connectivityCheck.test(inetSocketAddress);
+    final ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(ApiKey.of("api-key"), "game-id");
 
-    assertThat(result, is(false));
+    assertThat(result, is(ReverseConnectionResult.FAILED));
     verify(socket).close();
   }
 }

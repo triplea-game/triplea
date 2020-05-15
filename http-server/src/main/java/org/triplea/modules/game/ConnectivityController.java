@@ -1,22 +1,22 @@
 package org.triplea.modules.game;
 
-import com.google.common.base.Preconditions;
 import es.moki.ratelimij.dropwizard.annotation.Rate;
 import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
-import java.net.InetSocketAddress;
+import io.dropwizard.auth.Auth;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import lombok.Builder;
+import org.eclipse.jetty.http.HttpStatus;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
+import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.game.listing.GameListing;
 
 /**
  * Provides an endpoint that will attempt a 'reverse' connection back to a potential game host. This
@@ -24,11 +24,11 @@ import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
  */
 @Builder
 public class ConnectivityController extends HttpController {
-  @Nonnull private final Predicate<InetSocketAddress> connectivityCheck;
+  @Nonnull private final ConnectivityCheck connectivityCheck;
 
-  public static ConnectivityController build() {
+  public static ConnectivityController build(final GameListing gameListing) {
     return ConnectivityController.builder() //
-        .connectivityCheck(new ConnectivityCheck())
+        .connectivityCheck(new ConnectivityCheck(gameListing))
         .build();
   }
 
@@ -38,11 +38,21 @@ public class ConnectivityController extends HttpController {
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 10, duration = 1, timeUnit = TimeUnit.MINUTES)})
   @RolesAllowed(UserRole.HOST)
-  public boolean checkConnectivity(@Context final HttpServletRequest request, final Integer port) {
-    Preconditions.checkArgument(port > 0, "Port must be a positive number, was: " + port);
-    Preconditions.checkArgument(
-        port < Math.pow(2, 16), "Port must be less than max value (2^16), was: " + port);
+  public Response checkConnectivity(
+      @Auth final AuthenticatedUser authenticatedUser, final String gameId) {
 
-    return connectivityCheck.test(new InetSocketAddress(request.getRemoteAddr(), port));
+    final ConnectivityCheck.ReverseConnectionResult result =
+        connectivityCheck.canDoReverseConnect(authenticatedUser.getApiKey(), gameId);
+
+    switch (result) {
+      case SUCCESS:
+        return Response.ok().entity(true).build();
+      case FAILED:
+        return Response.ok().entity(false).build();
+      case GAME_ID_NOT_FOUND:
+        return Response.status(HttpStatus.UNPROCESSABLE_ENTITY_422).build();
+      default:
+        throw new IllegalStateException("Switch case not handled: " + result);
+    }
   }
 }

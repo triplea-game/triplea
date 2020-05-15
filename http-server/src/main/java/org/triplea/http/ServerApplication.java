@@ -220,7 +220,7 @@ public class ServerApplication extends Application<AppConfig> {
     return ImmutableList.of(
         AccessLogController.build(jdbi),
         BadWordsController.build(jdbi),
-        ConnectivityController.build(),
+        ConnectivityController.build(gameListing),
         CreateAccountController.build(jdbi),
         DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
         ForgotPasswordController.build(appConfig, jdbi),

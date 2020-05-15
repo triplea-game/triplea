@@ -14,7 +14,7 @@ import org.triplea.http.client.WireMockTest;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 
 class ConnectivityCheckClientTest extends WireMockTest {
-  private static final int PORT = 5000;
+  private static final String GAME_ID = "Some game id";
 
   private static ConnectivityCheckClient newClient(final WireMockServer wireMockServer) {
     return newClient(wireMockServer, ConnectivityCheckClient::newClient);
@@ -25,10 +25,10 @@ class ConnectivityCheckClientTest extends WireMockTest {
     server.stubFor(
         post(ConnectivityCheckClient.CONNECTIVITY_CHECK_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalTo(String.valueOf(PORT)))
+            .withRequestBody(equalTo(GAME_ID))
             .willReturn(WireMock.aResponse().withStatus(200).withBody("true")));
 
-    final boolean result = newClient(server).checkConnectivity(PORT);
+    final boolean result = newClient(server).checkConnectivity(GAME_ID);
 
     assertThat(result, is(true));
   }

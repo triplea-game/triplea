@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.util.ExitStatus;
 
 /** Interface to communicate lobby watcher events to user. */
 public interface WatcherThreadMessaging {
@@ -19,6 +20,7 @@ public interface WatcherThreadMessaging {
     @Override
     public void serverNotAvailableHandler(final String message) {
       log.severe(message);
+      ExitStatus.FAILURE.exit();
     }
   }
 
@@ -42,6 +44,7 @@ public interface WatcherThreadMessaging {
                 == JOptionPane.YES_OPTION) {
               OpenFileUtility.openUrl(UrlConstants.USER_GUIDE);
             }
+            ExitStatus.FAILURE.exit();
           });
     }
   }

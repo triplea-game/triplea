@@ -72,8 +72,8 @@ public class GameToLobbyConnection {
         .exceptionally(e -> log.log(Level.INFO, "Could not complete lobby game remove call", e));
   }
 
-  public boolean checkConnectivity(final int localPort) {
-    return lobbyClient.getConnectivityCheckClient().checkConnectivity(localPort);
+  public boolean checkConnectivity(final String gameId) {
+    return lobbyClient.getConnectivityCheckClient().checkConnectivity(gameId);
   }
 
   public boolean isPlayerBanned(final String ip) {
