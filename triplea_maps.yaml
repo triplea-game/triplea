@@ -2066,11 +2066,11 @@
 - mapName: Twelve-Clans
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/twelve-clans/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/twelve-clans/master/description/MapDesc.png
   description: |
     <br>by Michael Hoover
-    <br>Version 1.1 for TripleA 1.9.0.0.13066
+    <br>Version 1.2 for TripleA 1.9.0.0.13066
     <br>
     <p style="font-size:14px;color:FFFFFF">
         In Twelve Clans (a Shogun type variant heavily inspired by the Samurai Warriors series of games) fight to expand your clan and become the dominant power in Japan.
@@ -2080,8 +2080,9 @@
     </p><br>
     <h3 style="font-size:16px;color:F0D06B">Victory Conditions:</h3>
     <p style="font-size:14px;color:FFFFFF">
-        This means that no player is ever out of the game. Once you are defeated, you simply switch sides. If one of your allies wins then you win a minor victory.
-        But there can only be one shogun. If a player conquers 7 rival clans that player achieves Total Victory, becoming the shogun. Any players who are not the first 7 to join the shogun have lost.
+        Once you are defeated, you simply switch sides. If one of your allies wins then you win a minor victory.
+        Beware! No one trusts a traitor, and if you or another clan switch sides to many times, you will likely be shown no mercy should your capital fall again...
+        There can only be one shogun. If a player conquers 7 rival clans that player achieves Total Victory, becoming the shogun. Any players who are not the first 7 to join the shogun have lost.
     </p><br>
     <h3 style="font-size:16px;color:F0D06B">Other Game Modes:</h3>
     <p style="font-size:14px;color:FFFFFF">
