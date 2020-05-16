@@ -10,8 +10,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
-import org.triplea.swing.SwingAction;
 import org.triplea.swing.WrapLayout;
 
 /**
@@ -27,30 +27,42 @@ public class DicePanel extends JPanel {
     this.uiContext = uiContext;
     this.data = data;
     setLayout(new GridBagLayout());
-    setBorder(BorderFactory.createEmptyBorder(0, 16, 0, 0));
+    setBorder(BorderFactory.createEmptyBorder(8, 16, 0, 0));
   }
 
   void setDiceRollForBombing(final List<Die> dice, final int cost) {
     removeAll();
+    add(new JLabel("Cost: " + cost, SwingConstants.LEFT));
     add(create(dice));
-    addBottomLabel(new JLabel("Cost:" + cost));
+    addBottomLabel(new JLabel());
   }
 
   /** Sets the dice roll to display. */
   public void setDiceRoll(final DiceRoll diceRoll) {
-    SwingAction.invokeNowOrLater(
-        () -> {
-          removeAll();
-          for (int i = 1; i <= data.getDiceSides(); i++) {
-            final List<Die> dice = diceRoll.getRolls(i);
-            if (dice.isEmpty()) {
-              continue;
-            }
-            add(new JLabel("Rolled at " + i + ":"));
-            add(create(diceRoll.getRolls(i)));
-          }
-          addBottomLabel(new JLabel("Total hits:" + diceRoll.getHits(), SwingConstants.LEFT));
-        });
+    removeAll();
+    add(new JLabel("Total hits: " + diceRoll.getHits(), SwingConstants.LEFT));
+    add(new JSeparator());
+
+    for (int i = 1; i <= data.getDiceSides(); i++) {
+      final List<Die> dice = diceRoll.getRolls(i);
+      if (dice.isEmpty()) {
+        continue;
+      }
+      add(makeDiceRolledLabel(dice, i));
+      add(create(dice));
+      addBottomLabel(new JLabel());
+    }
+  }
+
+  private JLabel makeDiceRolledLabel(final List<Die> dice, final int value) {
+    int hits = 0;
+    for (final Die die : dice) {
+      if (die.getType() == Die.DieType.HIT) {
+        hits++;
+      }
+    }
+    final String count = dice.size() == 1 ? "1 die" : dice.size() + " dice";
+    return new JLabel("Rolled " + count + " at " + value + " (" + hits + " hits):");
   }
 
   private void add(final JComponent component) {

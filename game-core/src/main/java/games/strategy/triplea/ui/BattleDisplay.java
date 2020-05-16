@@ -107,7 +107,6 @@ public class BattleDisplay extends JPanel {
   private BattleStepsPanel steps;
   private DicePanel dicePanel;
   private final CasualtyNotificationPanel casualties;
-  private final JPanel actionPanel = new ScrollableJPanel();
   private final JPanel messagePanel = new JPanel();
   private final JPanel casualtiesInstantPanelDefender = new JPanel();
   private final JPanel casualtiesInstantPanelAttacker = new JPanel();
@@ -201,7 +200,7 @@ public class BattleDisplay extends JPanel {
 
   void bombingResults(final List<Die> dice, final int cost) {
     dicePanel.setDiceRollForBombing(dice, cost);
-    showView(dicePanel);
+    casualties.setVisible(false);
   }
 
   /**
@@ -260,14 +259,18 @@ public class BattleDisplay extends JPanel {
       final Collection<Unit> damaged,
       final Map<Unit, Collection<Unit>> dependents) {
     setStep(step);
-    casualties.setNotification(dice, killed, damaged, dependents);
+    final boolean isEditMode = (dice == null);
+    if (!isEditMode) {
+      dicePanel.setDiceRoll(dice);
+    }
+    casualties.setNotification(killed, damaged, dependents);
     killed.addAll(updateKilledUnits(killed, player));
     if (player.equals(defender)) {
       defenderModel.removeCasualties(killed);
     } else {
       attackerModel.removeCasualties(killed);
     }
-    showView(casualties);
+    casualties.setVisible(true);
   }
 
   void deadUnitNotification(
@@ -281,7 +284,7 @@ public class BattleDisplay extends JPanel {
     } else {
       attackerModel.removeCasualties(killed);
     }
-    showView(casualties);
+    casualties.setVisible(true);
   }
 
   void changedUnitsNotification(
@@ -528,7 +531,7 @@ public class BattleDisplay extends JPanel {
           final boolean isEditMode = (dice == null);
           if (!isEditMode) {
             dicePanel.setDiceRoll(dice);
-            showView(dicePanel);
+            casualties.setVisible(false);
           }
           final boolean plural = isEditMode || (count > 1);
           final String countStr = isEditMode ? "" : "" + count;
@@ -648,18 +651,22 @@ public class BattleDisplay extends JPanel {
     steps.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
     dicePanel = new DicePanel(uiContext, gameData);
-    actionPanel.setLayout(new BorderLayout());
-    actionPanel.add(dicePanel, BorderLayout.CENTER);
+    final JScrollPane diceScroll = new JScrollPane(dicePanel);
+    diceScroll.setBorder(null);
+    diceScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    diceScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-    final JScrollPane actionScroll = new JScrollPane(actionPanel);
-    actionScroll.setBorder(null);
-    actionScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    actionScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+    final JPanel actionPanel = new ScrollableJPanel();
+    actionPanel.setLayout(new BorderLayout());
+    actionPanel.add(diceScroll, BorderLayout.CENTER);
+    casualties.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+    casualties.setVisible(false);
+    actionPanel.add(casualties, BorderLayout.SOUTH);
 
     final JPanel diceAndSteps = new JPanel();
     diceAndSteps.setLayout(new BorderLayout());
     diceAndSteps.add(steps, BorderLayout.WEST);
-    diceAndSteps.add(actionScroll, BorderLayout.CENTER);
+    diceAndSteps.add(actionPanel, BorderLayout.CENTER);
 
     casualtiesInstantPanelAttacker.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
     casualtiesInstantPanelAttacker.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -752,21 +759,13 @@ public class BattleDisplay extends JPanel {
   void battleInfo(final DiceRoll message, final String step) {
     setStep(step);
     dicePanel.setDiceRoll(message);
-    showView(dicePanel);
+    casualties.setVisible(false);
   }
 
   void battleInfo(final String message, final String step) {
     messageLabel.setText(message);
     setStep(step);
-    showView(dicePanel);
-  }
-
-  private void showView(final JComponent view) {
-    actionPanel.removeAll();
-    actionPanel.add(view, BorderLayout.CENTER);
-    actionPanel.invalidate();
-    actionPanel.validate();
-    actionPanel.repaint();
+    casualties.setVisible(false);
   }
 
   void listBattle(final List<String> steps) {
@@ -1026,29 +1025,21 @@ public class BattleDisplay extends JPanel {
 
   private static final class CasualtyNotificationPanel extends JPanel {
     private static final long serialVersionUID = -8254027929090027450L;
-    private final DicePanel dice;
     private final JPanel killed = new JPanel();
     private final JPanel damaged = new JPanel();
     private final UiContext uiContext;
 
     CasualtyNotificationPanel(final GameData data, final UiContext uiContext) {
       this.uiContext = uiContext;
-      dice = new DicePanel(uiContext, data);
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-      add(dice);
       add(killed);
       add(damaged);
     }
 
     void setNotification(
-        final DiceRoll dice,
         final Collection<Unit> killed,
         final Collection<Unit> damaged,
         final Map<Unit, Collection<Unit>> dependents) {
-      final boolean isEditMode = (dice == null);
-      if (!isEditMode) {
-        this.dice.setDiceRoll(dice);
-      }
       this.killed.removeAll();
       this.damaged.removeAll();
       if (!killed.isEmpty()) {
