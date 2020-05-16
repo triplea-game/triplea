@@ -61,8 +61,9 @@ public class DicePanel extends JPanel {
         hits++;
       }
     }
-    final String count = dice.size() == 1 ? "1 die" : dice.size() + " dice";
-    return new JLabel("Rolled " + count + " at " + value + " (" + hits + " hits):");
+    final String countString = dice.size() == 1 ? "1 die" : dice.size() + " dice";
+    final String hitsString = hits == 1 ? "1 hit" : hits + " hits";
+    return new JLabel("Rolled " + countString + " at " + value + " (" + hitsString + "):");
   }
 
   private void add(final JComponent component) {
