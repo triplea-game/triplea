@@ -2,7 +2,12 @@ package org.triplea.modules.chat;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -15,7 +20,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
+import org.triplea.web.socket.MessageBroadcaster;
 
 /** Keeps the current list of ChatParticipants and maps them to their websocket session. */
 @Slf4j
@@ -23,6 +31,8 @@ import org.triplea.domain.data.UserName;
 public class Chatters {
   @Getter(value = AccessLevel.PACKAGE, onMethod_ = @VisibleForTesting)
   private final Map<String, ChatterSession> participants = new ConcurrentHashMap<>();
+
+  private final Map<InetAddress, Instant> playerMutes = new HashMap<>();
 
   public static Chatters build() {
     return new Chatters();
@@ -96,5 +106,69 @@ public class Chatters {
           }
         });
     return !sessions.isEmpty();
+  }
+
+  /**
+   * Checks if a given chatter is currently muted, if so returns the {@code Instant} when the mute
+   * expires otherwise returns an empty optional
+   */
+  public Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress) {
+    return getPlayerMuteExpiration(inetAddress, Clock.systemUTC());
+  }
+
+  @VisibleForTesting
+  Optional<Instant> getPlayerMuteExpiration(final InetAddress inetAddress, final Clock clock) {
+    // if we have a mute
+    return Optional.ofNullable(
+        playerMutes.computeIfPresent(
+            inetAddress,
+            (address, existingBan) -> existingBan.isAfter(clock.instant()) ? existingBan : null));
+  }
+
+  public void mutePlayer(final PlayerChatId playerChatId, final long muteMinutes) {
+    mutePlayer(playerChatId, muteMinutes, Clock.systemUTC(), MessageBroadcaster.build());
+  }
+
+  @VisibleForTesting
+  void mutePlayer(
+      final PlayerChatId playerChatId,
+      final long muteMinutes,
+      final Clock clock,
+      final MessageBroadcaster messageBroadcaster) {
+    findChatterSessionByPlayerChatId(playerChatId)
+        .ifPresent(
+            chatterSession -> {
+              muteIpAddress(chatterSession.getIp(), muteMinutes, clock);
+              broadCastPlayerMutedMessageToAllPlayer(
+                  chatterSession.getChatParticipant().getUserName(),
+                  muteMinutes,
+                  messageBroadcaster);
+            });
+  }
+
+  private Optional<ChatterSession> findChatterSessionByPlayerChatId(
+      final PlayerChatId playerChatId) {
+    return participants.values().stream()
+        .filter(
+            chatterSession ->
+                chatterSession.getChatParticipant().getPlayerChatId().equals(playerChatId))
+        .findAny();
+  }
+
+  private void muteIpAddress(final InetAddress ip, final long muteMinutes, final Clock clock) {
+    final Instant muteUntil = clock.instant().plus(muteMinutes, ChronoUnit.MINUTES);
+    playerMutes.put(ip, muteUntil);
+  }
+
+  private void broadCastPlayerMutedMessageToAllPlayer(
+      final UserName userName,
+      final long muteMinutes,
+      final MessageBroadcaster messageBroadcaster) {
+    messageBroadcaster.accept(
+        fetchOpenSessions(),
+        new ChatEventReceivedMessage(
+                String.format(
+                    "%s was muted by moderator for %s minutes", userName.getValue(), muteMinutes))
+            .toEnvelope());
   }
 }

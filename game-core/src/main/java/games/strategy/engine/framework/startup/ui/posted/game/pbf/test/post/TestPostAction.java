@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
-import org.triplea.java.TimeManager;
+import org.triplea.java.DateTimeUtil;
 
 @Log
 @AllArgsConstructor
@@ -51,7 +51,7 @@ public class TestPostAction implements BiConsumer<String, Integer> {
                       "Test summary from TripleA, engine version: "
                           + ClientContext.engineVersion()
                           + ", time: "
-                          + TimeManager.getLocalizedTime(),
+                          + DateTimeUtil.getLocalizedTime(),
                       "Testing Forum poster",
                       f != null ? f.toPath() : null);
               testPostProgressDisplay.close();

@@ -15,11 +15,16 @@ public class InetExtractor {
 
   @SuppressWarnings("UnstableApiUsage")
   public static InetAddress extract(final Map<String, Object> userSession) {
-    // expected format '/127.0.0.1:42840'
-    final String ipString = String.valueOf(userSession.get(IP_ADDRESS_KEY)).substring(1);
+    // expected format '/127.0.0.1:42840' or (for test-cases) '127.0.0.1'
+    final String rawIpString = String.valueOf(userSession.get(IP_ADDRESS_KEY));
+
+    final String ipString =
+        rawIpString.startsWith("/") //
+            ? rawIpString.substring(1)
+            : rawIpString;
+
     try {
       final String ip = Splitter.on(':').splitToList(ipString).get(0);
-
       return InetAddress.getByName(ip);
     } catch (final UnknownHostException e) {
       // not expected

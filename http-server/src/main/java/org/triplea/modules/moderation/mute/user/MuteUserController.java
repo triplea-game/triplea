@@ -7,16 +7,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.MuteUserRequest;
+import org.triplea.modules.chat.Chatters;
 
 @Builder
 @RolesAllowed(UserRole.MODERATOR)
 public class MuteUserController extends HttpController {
 
-  public static MuteUserController build() {
-    return new MuteUserController();
+  private final Chatters chatters;
+
+  public static MuteUserController build(final Chatters chatters) {
+    return new MuteUserController(chatters);
   }
 
   @POST
@@ -26,7 +30,8 @@ public class MuteUserController extends HttpController {
     Preconditions.checkArgument(muteUserRequest.getPlayerChatId() != null);
     Preconditions.checkArgument(muteUserRequest.getMinutes() > 0);
 
-    // WIP: implement
+    chatters.mutePlayer(
+        PlayerChatId.of(muteUserRequest.getPlayerChatId()), muteUserRequest.getMinutes());
     return Response.ok().build();
   }
 }

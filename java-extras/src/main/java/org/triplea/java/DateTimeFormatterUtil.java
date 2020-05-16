@@ -2,6 +2,7 @@ package org.triplea.java;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -58,5 +59,18 @@ public class DateTimeFormatterUtil {
         .withLocale(defaultLocale)
         .withZone(defaultZone)
         .format(instant);
+  }
+
+  /**
+   * Replacement for {@code Date.toString}.
+   *
+   * @param dateTime The DateTime which should be formatted
+   * @return a Formatted String of the given DateTime
+   */
+  public static String toDateString(final LocalDateTime dateTime) {
+    return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy")
+        .withLocale(defaultLocale)
+        .withZone(defaultZone)
+        .format(dateTime);
   }
 }

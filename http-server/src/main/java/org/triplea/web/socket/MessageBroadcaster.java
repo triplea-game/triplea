@@ -12,7 +12,7 @@ import org.triplea.http.client.web.socket.MessageEnvelope;
  */
 @Slf4j
 @AllArgsConstructor
-class MessageBroadcaster implements BiConsumer<Collection<Session>, MessageEnvelope> {
+public class MessageBroadcaster implements BiConsumer<Collection<Session>, MessageEnvelope> {
 
   private final BiConsumer<Session, MessageEnvelope> messageSender;
 

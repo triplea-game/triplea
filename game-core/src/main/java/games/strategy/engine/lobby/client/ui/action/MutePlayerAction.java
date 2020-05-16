@@ -11,6 +11,10 @@ import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnec
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
+/**
+ * Right click menu available to moderators to mute a player. The menu opens a time duration prompt,
+ * after moderator selects a number of minutes to mute a player then the player is muted.
+ */
 @Builder
 public class MutePlayerAction {
   @Nonnull private final JFrame parent;
@@ -19,7 +23,7 @@ public class MutePlayerAction {
   @Nonnull private final String playerName;
 
   public Action toSwingAction() {
-    return SwingAction.of("Mute Player (WIP)", this::runMuteAction);
+    return SwingAction.of("Mute Player", this::runMuteAction);
   }
 
   private void runMuteAction() {
@@ -37,10 +41,6 @@ public class MutePlayerAction {
     SwingComponents.promptUser(
         "Confirm Mute",
         "Are you sure you want to mute " + playerName + " for " + actionDuration,
-        () -> {
-          playerToLobbyConnection.mutePlayer(playerChatId, actionDuration.toMinutes());
-          SwingComponents.showDialog(
-              playerName + " muted", playerName + " was muted for " + actionDuration);
-        });
+        () -> playerToLobbyConnection.mutePlayer(playerChatId, actionDuration.toMinutes()));
   }
 }
