@@ -84,7 +84,7 @@ public class ResourceLoader implements Closeable {
               + "\nOnce the download completes, you may reconnect to this game.",
           () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
 
-      throw new MapNotFoundException();
+      throw new MapNotFoundException(mapName, getCandidatePaths(mapName));
     }
 
     findDirectory(ClientFileSystemHelper.getRootFolder(), RESOURCE_FOLDER)
@@ -174,9 +174,7 @@ public class ResourceLoader implements Closeable {
       return new ArrayList<>();
     }
 
-    final List<File> candidates = new ArrayList<>();
-    candidates.addAll(getMapDirectoryCandidates(mapName));
-    candidates.addAll(getMapZipFileCandidates(mapName));
+    final List<File> candidates = getCandidatePaths(mapName);
 
     final Optional<File> match = candidates.stream().filter(File::exists).findFirst();
     if (match.isEmpty()) {
@@ -208,6 +206,13 @@ public class ResourceLoader implements Closeable {
       throw new IllegalStateException(e);
     }
     return paths;
+  }
+
+  private static List<File> getCandidatePaths(final String mapName) {
+    final List<File> candidates = new ArrayList<>();
+    candidates.addAll(getMapDirectoryCandidates(mapName));
+    candidates.addAll(getMapZipFileCandidates(mapName));
+    return candidates;
   }
 
   @Override
