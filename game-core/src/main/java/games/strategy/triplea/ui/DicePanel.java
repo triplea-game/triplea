@@ -50,8 +50,8 @@ public class DicePanel extends JPanel {
       }
       add(makeDiceRolledLabel(dice, i));
       add(create(dice));
-      addBottomLabel(new JLabel());
     }
+    addBottomLabel(new JLabel());
     invalidate();
     validate();
     repaint();
