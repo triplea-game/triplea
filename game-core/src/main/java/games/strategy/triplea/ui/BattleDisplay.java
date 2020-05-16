@@ -164,7 +164,7 @@ public class BattleDisplay extends JPanel {
     attackerModel.setEnemyBattleModel(defenderModel);
     defenderModel.refresh();
     attackerModel.refresh();
-    casualties = new CasualtyNotificationPanel(data, uiContext);
+    casualties = new CasualtyNotificationPanel(uiContext);
     if (!killedUnits.isEmpty()
         || !attackingWaitingToDie.isEmpty()
         || !defendingWaitingToDie.isEmpty()) {
@@ -1029,7 +1029,7 @@ public class BattleDisplay extends JPanel {
     private final JPanel damaged = new JPanel();
     private final UiContext uiContext;
 
-    CasualtyNotificationPanel(final GameData data, final UiContext uiContext) {
+    CasualtyNotificationPanel(final UiContext uiContext) {
       this.uiContext = uiContext;
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
       add(killed);
