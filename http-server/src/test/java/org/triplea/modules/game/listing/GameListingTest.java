@@ -3,6 +3,8 @@ package org.triplea.modules.game.listing;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
 import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
@@ -16,11 +18,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +34,7 @@ import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
@@ -56,6 +61,7 @@ class GameListingTest {
   private static final ApiKey API_KEY_1 = ApiKey.of("apiKey1");
 
   private static final GameListing.GameId ID_0 = new GameListing.GameId(API_KEY_0, GAME_ID_0);
+  private static final GameListing.GameId ID_1 = new GameListing.GameId(API_KEY_1, GAME_ID_1);
 
   private static final String HOST_NAME = "host-player";
   private static final int MODERATOR_ID = 33;
@@ -289,6 +295,73 @@ class GameListingTest {
           isPresentAndIs(
               new InetSocketAddress(
                   IpAddressParser.fromString("1.1.1.1"), lobbyGame0.getHostPort())));
+    }
+  }
+
+  @Nested
+  class PlayerIsInGameTracking {
+    @Test
+    void playerIsNotInAnyGamesEmptyCase() {
+      final UserName user = UserName.of("user");
+
+      final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
+
+      assertThat(results, is(empty()));
+    }
+
+    @Test
+    void addPlayerToSingleGame() {
+      final UserName user = UserName.of("user");
+      cache.put(ID_0, lobbyGame0);
+      gameListing.addPlayerToGame(user, ID_0);
+
+      final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
+
+      assertThat(results, hasSize(1));
+    }
+
+    @Test
+    void addPlayerToMultipleGame() {
+      final UserName user = UserName.of("user");
+      cache.put(ID_0, lobbyGame0);
+      cache.put(ID_1, lobbyGame1);
+      gameListing.addPlayerToGame(user, ID_0);
+      gameListing.addPlayerToGame(user, ID_1);
+
+      final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
+
+      assertThat(results, hasSize(2));
+      assertThat(results, hasItem(lobbyGame0.getHostName()));
+      assertThat(results, hasItem(lobbyGame1.getHostName()));
+    }
+
+    @Test
+    @DisplayName(
+        "Games can expire, our tracking of player to games should take "
+            + "into account expired games")
+    void getPlayerInGamesOnlyReturnsCurrentGames() {
+      final UserName user = UserName.of("user");
+      cache.put(ID_0, lobbyGame0);
+      gameListing.addPlayerToGame(user, ID_0);
+      gameListing.addPlayerToGame(user, ID_1);
+
+      final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
+
+      assertThat("Player was added to two games, but only one game is alive", results, hasSize(1));
+      assertThat(results, hasItem(lobbyGame0.getHostName()));
+    }
+
+    @Test
+    void removingGamesWillExplicityRemoveParticipants() {
+      final UserName user = UserName.of("user");
+      cache.put(ID_0, lobbyGame0);
+      gameListing.addPlayerToGame(user, ID_0);
+      gameListing.removeGame(ID_0.getApiKey(), ID_0.getId());
+
+      final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
+
+      assertThat(
+          "Player was in one game, but it was removed, should be empty", results, is(empty()));
     }
   }
 }

@@ -1,6 +1,8 @@
 package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.List;
@@ -58,6 +60,9 @@ public class GameListing {
   @NonNull private final TtlCache<GameId, LobbyGame> games;
   @NonNull private final WebSocketMessagingBus playerMessagingBus;
 
+  /** Map of player names to the games they are in, both observing and playing. */
+  @NonNull private final Multimap<UserName, GameId> playerIsInGames = HashMultimap.create();
+
   @AllArgsConstructor
   @EqualsAndHashCode
   @Getter
@@ -107,9 +112,19 @@ public class GameListing {
     }
   }
 
+  /**
+   * Removes a game from the active listing, any players marked as in the game are updated to no
+   * longer be listed as participating in that game.
+   */
   public void removeGame(final ApiKey apiKey, final String id) {
     log.info("Removing game: {}", id);
     final GameId key = new GameId(apiKey, id);
+
+    final var gameEntries =
+        playerIsInGames.entries().stream()
+            .filter(entry -> entry.getValue().equals(key))
+            .collect(Collectors.toList());
+    gameEntries.forEach(entry -> playerIsInGames.remove(entry.getKey(), entry.getValue()));
 
     games
         .invalidate(key)
@@ -170,7 +185,23 @@ public class GameListing {
                 new InetSocketAddress(lobbyGame.getHostAddress(), lobbyGame.getHostPort()));
   }
 
+  public void addPlayerToGame(final UserName userName, final GameId gameId) {
+    playerIsInGames.put(userName, gameId);
+  }
+
+  /**
+   * Gets the collection of active games (identified by hostname) that a player is playing in or has
+   * joined as an observer.
+   */
   public Collection<String> getGameNamesPlayerHasJoined(final UserName userName) {
-    return List.of();
+    final Collection<GameId> expiredGames =
+        playerIsInGames.get(userName).stream()
+            .filter(gameId -> games.get(gameId).isEmpty())
+            .collect(Collectors.toList());
+    expiredGames.forEach(gameId -> playerIsInGames.remove(userName, gameId));
+
+    return playerIsInGames.get(userName).stream()
+        .map(gameId -> games.get(gameId).map(LobbyGame::getHostName).orElse(null))
+        .collect(Collectors.toList());
   }
 }
