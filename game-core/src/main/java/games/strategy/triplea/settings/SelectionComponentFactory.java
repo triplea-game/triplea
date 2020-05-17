@@ -802,6 +802,10 @@ final class SelectionComponentFactory {
 
                   context.setValue(usernameSetting, usernameField.getText().toCharArray());
                   // TODO error reporting
+                } else {
+                  context.setValue(usernameSetting, null);
+                  context.setValue(uidSetting, null);
+                  context.setValue(tokenSetting, null);
                 }
 
                 oldUserId.ifPresent(
@@ -812,6 +816,7 @@ final class SelectionComponentFactory {
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
         }
+
         /*final String username = usernameField.getText();
         context.setValue(uidSetting, username.isEmpty() ? null : username.toCharArray());
         withSensitiveArray(
