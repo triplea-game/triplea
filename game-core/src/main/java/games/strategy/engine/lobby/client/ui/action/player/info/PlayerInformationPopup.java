@@ -8,7 +8,10 @@ import lombok.experimental.UtilityClass;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.swing.JTabbedPaneBuilder;
+import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.swing.key.binding.SwingKeyBinding;
 
 @UtilityClass
 class PlayerInformationPopup {
@@ -23,6 +26,7 @@ class PlayerInformationPopup {
               .add(PlayerInformationPopup.buildContentPanel(playerName, playerSummary));
           dialog.pack();
           dialog.setLocationRelativeTo(parent);
+          SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, dialog::dispose);
           dialog.setVisible(true);
         });
   }
