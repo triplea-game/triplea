@@ -54,7 +54,7 @@ class ChattersTest {
   class PlayerLookup {
     @Test
     void lookupPlayerBySessionEmptyCase() {
-      final ChatterSession chatterSession = buildChatterSession(session);
+      when(session2.getId()).thenReturn("session2-id");
       chatters.getParticipants().put("session-id", buildChatterSession(session));
 
       assertThat(
@@ -65,6 +65,7 @@ class ChattersTest {
 
     @Test
     void lookupPlayerBySession() {
+      when(session.getId()).thenReturn("session-id");
       final ChatterSession chatterSession = buildChatterSession(session);
       chatters.getParticipants().put("session-id", buildChatterSession(session));
 
@@ -73,12 +74,11 @@ class ChattersTest {
 
     @Test
     void lookupPlayerByChatIdEmptyCase() {
-      final ChatterSession chatterSession = buildChatterSession(session);
       chatters.getParticipants().put("session-id", buildChatterSession(session));
 
       assertThat(
           chatters.lookupPlayerByChatId(PlayerChatId.of("DNE")), //
-          isPresentAndIs(chatterSession));
+          isEmpty());
     }
 
     @Test
