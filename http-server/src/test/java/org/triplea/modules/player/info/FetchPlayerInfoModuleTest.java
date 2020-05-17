@@ -1,4 +1,4 @@
-package org.triplea.modules.moderation.player.info;
+package org.triplea.modules.player.info;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -42,6 +42,7 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
+import org.triplea.modules.player.info.FetchPlayerInfoModule;
 
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {

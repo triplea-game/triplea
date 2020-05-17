@@ -1,4 +1,4 @@
-package org.triplea.modules.moderation.player.info;
+package org.triplea.modules.player.info;
 
 import com.google.common.base.Preconditions;
 import es.moki.ratelimij.dropwizard.annotation.Rate;

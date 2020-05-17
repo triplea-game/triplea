@@ -1,4 +1,4 @@
-package org.triplea.modules.moderation.player.info;
+package org.triplea.modules.player.info;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

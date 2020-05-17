@@ -1,4 +1,4 @@
-package org.triplea.modules.moderation.player.info;
+package org.triplea.modules.player.info;
 
 import java.util.Collection;
 import java.util.function.BiFunction;
