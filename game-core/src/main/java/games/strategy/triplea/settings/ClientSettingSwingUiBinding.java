@@ -10,11 +10,10 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.triplea.UrlConstants;
 import java.util.Collection;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
-
-import games.strategy.triplea.UrlConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -324,8 +323,11 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Configure the login credentials of the TripleA Forum") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.forumPosterSettings(UrlConstants.TRIPLEA_FORUM, ClientSetting.tripleaForumUserId,
-          ClientSetting.tripleaForumUsername, ClientSetting.tripleaForumToken);
+      return SelectionComponentFactory.forumPosterSettings(
+          UrlConstants.TRIPLEA_FORUM,
+          ClientSetting.tripleaForumUserId,
+          ClientSetting.tripleaForumUsername,
+          ClientSetting.tripleaForumToken);
     }
   },
 
@@ -335,8 +337,11 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Configure the login credentials of the Axis & Allies Forum") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.forumPosterSettings(UrlConstants.AXIS_AND_ALLIES_FORUM, ClientSetting.aaForumUserId,
-          ClientSetting.aaForumUsername, ClientSetting.aaForumToken);
+      return SelectionComponentFactory.forumPosterSettings(
+          UrlConstants.AXIS_AND_ALLIES_FORUM,
+          ClientSetting.aaForumUserId,
+          ClientSetting.aaForumUsername,
+          ClientSetting.aaForumToken);
     }
   },
 

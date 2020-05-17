@@ -14,7 +14,6 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.posted.game.pbf.IForumPoster;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -38,7 +37,6 @@ import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
-import org.triplea.util.ExitStatus;
 
 /**
  * A panel for setting up Play by Email/Forum. This panel listens to the GameSelectionModel so it

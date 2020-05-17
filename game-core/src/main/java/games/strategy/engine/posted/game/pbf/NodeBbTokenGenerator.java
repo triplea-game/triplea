@@ -6,14 +6,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -38,7 +35,8 @@ public class NodeBbTokenGenerator {
     private final int userId;
   }
 
-  public TokenInfo generateToken(final String username, final String password, @Nullable final String otp) {
+  public TokenInfo generateToken(
+      final String username, final String password, @Nullable final String otp) {
     Preconditions.checkNotNull(username);
     Preconditions.checkNotNull(password);
 
@@ -67,7 +65,8 @@ public class NodeBbTokenGenerator {
     client.execute(httpDelete).close(); // ignore errors, execute and then close
   }
 
-  private int getUserId(final CloseableHttpClient client, final String username) throws IOException {
+  private int getUserId(final CloseableHttpClient client, final String username)
+      throws IOException {
     final Map<?, ?> jsonObject = queryUserInfo(client, username);
     checkUser(jsonObject, username);
     return (Integer) jsonObject.get("uid");
@@ -85,7 +84,8 @@ public class NodeBbTokenGenerator {
     }
   }
 
-  private Map<?, ?> queryUserInfo(final CloseableHttpClient client, final String username) throws IOException {
+  private Map<?, ?> queryUserInfo(final CloseableHttpClient client, final String username)
+      throws IOException {
     final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + username);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {

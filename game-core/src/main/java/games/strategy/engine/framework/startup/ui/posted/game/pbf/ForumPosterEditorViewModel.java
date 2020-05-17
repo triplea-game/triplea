@@ -140,7 +140,10 @@ class ForumPosterEditorViewModel {
   }
 
   synchronized boolean areFieldsValid() {
-    return isTopicIdValid() && ((isForumUsernameValid() && isForumPasswordValid()) || ClientSetting.aaForumToken.isSet() || ClientSetting.tripleaForumToken.isSet());
+    return isTopicIdValid()
+        && ((isForumUsernameValid() && isForumPasswordValid())
+            || ClientSetting.aaForumToken.isSet()
+            || ClientSetting.tripleaForumToken.isSet());
   }
 
   String getForumProviderHelpText() {

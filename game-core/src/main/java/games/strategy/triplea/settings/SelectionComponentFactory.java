@@ -10,7 +10,6 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
 import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator.TokenInfo;
-
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -39,7 +38,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-
 import org.triplea.java.OptionalUtils;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
@@ -746,14 +744,18 @@ final class SelectionComponentFactory {
    * @param tokenSetting The setting that stores the actual token.
    * @return A SelectionComponent that allows users to easily store their token.
    */
-  static SelectionComponent<JComponent> forumPosterSettings(final String forumUrl,
-      final ClientSetting<Integer> uidSetting, final ClientSetting<char[]> usernameSetting, final ClientSetting<char[]> tokenSetting) {
+  static SelectionComponent<JComponent> forumPosterSettings(
+      final String forumUrl,
+      final ClientSetting<Integer> uidSetting,
+      final ClientSetting<char[]> usernameSetting,
+      final ClientSetting<char[]> tokenSetting) {
     return new SelectionComponent<>() {
 
-      private final JTextField usernameField = new JTextFieldBuilder()
-          .columns(20)
-          .text(usernameSetting.getValue().map(String::new).orElse(""))
-          .build();
+      private final JTextField usernameField =
+          new JTextFieldBuilder()
+              .columns(20)
+              .text(usernameSetting.getValue().map(String::new).orElse(""))
+              .build();
       private final JPasswordField passwordField = new JPasswordField(20);
       private final JTextField otpField = new JTextField(20);
 
@@ -776,26 +778,37 @@ final class SelectionComponentFactory {
       @Override
       public void save(final SaveContext context) {
         // Only save when value changed
-        if (usernameField.getText().equals(usernameSetting.getValue().map(String::new).orElse(""))) {
+        if (usernameField
+            .getText()
+            .equals(usernameSetting.getValue().map(String::new).orElse(""))) {
           return;
         }
         try {
-          BackgroundTaskRunner.runInBackground("Fetching Login Token...", () -> {
-            final NodeBbTokenGenerator tokenGenerator = new NodeBbTokenGenerator(forumUrl);
-            final Optional<Integer> oldUserId = uidSetting.getValue();
-            final Optional<char[]> oldToken = tokenSetting.getValue();
-            if (!usernameField.getText().isEmpty()) {
-              final TokenInfo tokenInfo = tokenGenerator.generateToken(usernameField.getText(), new String(passwordField.getPassword()), Strings.emptyToNull(otpField.getText()));
-              context.setValue(uidSetting, tokenInfo.getUserId());
+          BackgroundTaskRunner.runInBackground(
+              "Fetching Login Token...",
+              () -> {
+                final NodeBbTokenGenerator tokenGenerator = new NodeBbTokenGenerator(forumUrl);
+                final Optional<Integer> oldUserId = uidSetting.getValue();
+                final Optional<char[]> oldToken = tokenSetting.getValue();
+                if (!usernameField.getText().isEmpty()) {
+                  final TokenInfo tokenInfo =
+                      tokenGenerator.generateToken(
+                          usernameField.getText(),
+                          new String(passwordField.getPassword()),
+                          Strings.emptyToNull(otpField.getText()));
+                  context.setValue(uidSetting, tokenInfo.getUserId());
 
-              context.setValue(tokenSetting, tokenInfo.getToken().toCharArray());
+                  context.setValue(tokenSetting, tokenInfo.getToken().toCharArray());
 
-              context.setValue(usernameSetting, usernameField.getText().toCharArray());
-              // TODO error reporting
-            }
+                  context.setValue(usernameSetting, usernameField.getText().toCharArray());
+                  // TODO error reporting
+                }
 
-            oldUserId.ifPresent(userId -> oldToken.ifPresent(token -> tokenGenerator.revokeToken(new String(token), userId)));
-          });
+                oldUserId.ifPresent(
+                    userId ->
+                        oldToken.ifPresent(
+                            token -> tokenGenerator.revokeToken(new String(token), userId)));
+              });
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
         }
