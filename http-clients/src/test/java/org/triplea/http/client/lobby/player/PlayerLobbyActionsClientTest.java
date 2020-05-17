@@ -33,8 +33,7 @@ class PlayerLobbyActionsClientTest extends WireMockTest {
                       .build()))
           .build();
 
-  private static final PlayerSummary PLAYER_SUMMARY_FOR_PLAYER =
-      PlayerSummary.builder().build();
+  private static final PlayerSummary PLAYER_SUMMARY_FOR_PLAYER = PlayerSummary.builder().build();
 
   private static PlayerLobbyActionsClient newClient(final WireMockServer wireMockServer) {
     return newClient(wireMockServer, PlayerLobbyActionsClient::new);

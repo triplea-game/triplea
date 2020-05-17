@@ -96,4 +96,37 @@ class LobbyWatcherClientTest extends WireMockTest {
                 .fromPlayer(UserName.of("player"))
                 .build());
   }
+
+  @Test
+  void sendPlayerJoinedNotification(
+      @WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    wireMockServer.stubFor(
+        post(LobbyWatcherClient.PLAYER_JOINED_PATH)
+            .withRequestBody(
+                equalToJson(
+                    toJson(
+                        PlayerJoinedNotification.builder()
+                            .gameId("game-id")
+                            .playerName("player-joined")
+                            .build())))
+            .willReturn(WireMock.aResponse().withStatus(200)));
+
+    newClient(wireMockServer).playerJoined("game-id", UserName.of("player-joined"));
+  }
+
+  @Test
+  void sendPlayerLeftNotification(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    wireMockServer.stubFor(
+        post(LobbyWatcherClient.PLAYER_LEFT_PATH)
+            .withRequestBody(
+                equalToJson(
+                    toJson(
+                        PlayerLeftNotification.builder()
+                            .gameId("game-id")
+                            .playerName("player-left")
+                            .build())))
+            .willReturn(WireMock.aResponse().withStatus(200)));
+
+    newClient(wireMockServer).playerLeft("game-id", UserName.of("player-left"));
+  }
 }

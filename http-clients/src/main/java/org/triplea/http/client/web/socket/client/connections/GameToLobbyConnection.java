@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
@@ -89,5 +90,15 @@ public class GameToLobbyConnection {
 
   public void sendChatMessageToLobby(final ChatUploadParams chatUploadParams) {
     lobbyWatcherClient.uploadChatMessage(lobbyClient.getApiKey(), chatUploadParams);
+  }
+
+  public void playerJoined(final String gameId, final UserName playerName) {
+    AsyncRunner.runAsync(() -> lobbyWatcherClient.playerJoined(gameId, playerName))
+        .exceptionally(e -> log.log(Level.INFO, "Failed to notify lobby a player connected", e));
+  }
+
+  public void playerLeft(final String gameId, final UserName playerName) {
+    AsyncRunner.runAsync(() -> lobbyWatcherClient.playerLeft(gameId, playerName))
+        .exceptionally(e -> log.log(Level.INFO, "Failed to notify lobby a player left", e));
   }
 }

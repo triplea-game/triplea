@@ -22,4 +22,12 @@ interface LobbyWatcherFeignClient {
 
   @RequestLine("POST " + LobbyWatcherClient.UPLOAD_CHAT_PATH)
   String uploadChat(@HeaderMap Map<String, Object> headers, ChatMessageUpload chatMessageUpload);
+
+  @RequestLine("POST " + LobbyWatcherClient.PLAYER_JOINED_PATH)
+  String playerJoined(
+      @HeaderMap Map<String, Object> headers, PlayerJoinedNotification playerJoinedNotification);
+
+  @RequestLine("POST " + LobbyWatcherClient.PLAYER_LEFT_PATH)
+  String playerLeft(
+      @HeaderMap Map<String, Object> headers, PlayerLeftNotification playerLeftNotification);
 }
