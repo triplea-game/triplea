@@ -19,7 +19,6 @@ class PlayerLobbyActionsClientTest extends WireMockTest {
 
   private static final PlayerSummary PLAYER_SUMMARY_FOR_MODERATOR =
       PlayerSummary.builder()
-          .name("name")
           .systemId("system-id")
           .ip("5.5.3.3")
           .aliases(List.of())
@@ -35,7 +34,7 @@ class PlayerLobbyActionsClientTest extends WireMockTest {
           .build();
 
   private static final PlayerSummary PLAYER_SUMMARY_FOR_PLAYER =
-      PlayerSummary.builder().name("name").build();
+      PlayerSummary.builder().build();
 
   private static PlayerLobbyActionsClient newClient(final WireMockServer wireMockServer) {
     return newClient(wireMockServer, PlayerLobbyActionsClient::new);

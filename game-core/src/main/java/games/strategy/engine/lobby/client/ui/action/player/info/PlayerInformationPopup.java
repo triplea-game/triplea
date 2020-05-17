@@ -18,14 +18,14 @@ class PlayerInformationPopup {
     SwingUtilities.invokeLater(
         () -> {
           final JDialog dialog = new JDialog(parent, "Player Info: " + playerName.getValue());
-          dialog.getContentPane().add(PlayerInformationPopup.buildContentPanel(playerSummary));
+          dialog.getContentPane().add(PlayerInformationPopup.buildContentPanel(playerName, playerSummary));
           dialog.pack();
           dialog.setLocationRelativeTo(parent);
           dialog.setVisible(true);
         });
   }
 
-  private JPanel buildContentPanel(final PlayerSummary playerSummary) {
+  private JPanel buildContentPanel(final UserName playerName, final PlayerSummary playerSummary) {
     final JTabbedPaneBuilder tabbedPaneBuilder = new JTabbedPaneBuilder();
 
     final var playerGamesTab = new PlayerGamesTab(playerSummary);
@@ -48,7 +48,7 @@ class PlayerInformationPopup {
             // moderators will get IP and system-id information
             playerSummary.getIp() == null
                 ? new JPanel()
-                : PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerSummary))
+                : PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerName, playerSummary))
         .addCenter(tabbedPaneBuilder.build())
         .build();
   }
