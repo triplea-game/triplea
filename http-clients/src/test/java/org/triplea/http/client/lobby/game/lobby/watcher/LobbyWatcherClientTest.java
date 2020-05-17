@@ -9,6 +9,7 @@ import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
@@ -22,7 +23,7 @@ class LobbyWatcherClientTest extends WireMockTest {
   private static final String GAME_ID = "gameId";
 
   private static final GamePostingRequest GAME_POSTING_REQUEST =
-      GamePostingRequest.builder().lobbyGame(TestData.LOBBY_GAME).build();
+      GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
 
   private static LobbyWatcherClient newClient(final WireMockServer wireMockServer) {
     return newClient(wireMockServer, LobbyWatcherClient::newClient);

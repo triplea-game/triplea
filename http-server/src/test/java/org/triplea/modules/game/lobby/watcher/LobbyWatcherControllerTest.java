@@ -3,6 +3,7 @@ package org.triplea.modules.game.lobby.watcher;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
@@ -14,7 +15,7 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 
 class LobbyWatcherControllerTest extends ProtectedEndpointTest<LobbyWatcherClient> {
   private static final GamePostingRequest GAME_POSTING_REQUEST =
-      GamePostingRequest.builder().lobbyGame(TestData.LOBBY_GAME).build();
+      GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
 
   LobbyWatcherControllerTest() {
     super(AllowedUserRole.HOST, LobbyWatcherClient::newClient);

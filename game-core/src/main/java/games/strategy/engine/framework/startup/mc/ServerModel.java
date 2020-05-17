@@ -602,9 +602,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   }
 
   /**
-   * If there is a connection to lobby, and we have established a lobby watcher, then a provided
-   * parameter is executed with the lobby connection and the game ID (if present) from the lobby
-   * watcher.
+   * If there is a connection to lobby, and we have established a lobby watcher, and that lobby
+   * watcher has a game-id, then the provided parameter is executed passing to it as arguments the
+   * lobby connection and game-id.
    */
   private void notifyLobby(
       final BiConsumer<GameToLobbyConnection, String> connectionAndGameIdAction) {

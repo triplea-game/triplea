@@ -3,6 +3,7 @@ package org.triplea.modules.game;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,7 @@ import org.triplea.modules.http.DropwizardTest;
 @ExtendWith(MockitoExtension.class)
 class GameListingWebsocketIntegrationTest extends DropwizardTest {
   private static final GamePostingRequest GAME_POSTING_REQUEST =
-      GamePostingRequest.builder().lobbyGame(TestData.LOBBY_GAME).build();
+      GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
 
   @Mock private Consumer<LobbyGameListing> gameUpdatedListener;
   @Mock private Consumer<String> gameRemovedListener;

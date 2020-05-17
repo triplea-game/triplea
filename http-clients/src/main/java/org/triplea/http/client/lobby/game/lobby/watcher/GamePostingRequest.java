@@ -1,7 +1,6 @@
 package org.triplea.http.client.lobby.game.lobby.watcher;
 
 import java.util.Collection;
-import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,5 +17,5 @@ import org.triplea.domain.data.LobbyGame;
 @Getter
 public class GamePostingRequest {
   private LobbyGame lobbyGame;
-  @Nullable private Collection<String> playerNames;
+  private Collection<String> playerNames;
 }

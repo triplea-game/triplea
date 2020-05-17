@@ -1,5 +1,6 @@
 package org.triplea.modules.game.listing;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
@@ -11,7 +12,7 @@ import org.triplea.modules.http.ProtectedEndpointTest;
 class GameListingControllerTest extends ProtectedEndpointTest<GameListingClient> {
 
   private static final GamePostingRequest GAME_POSTING_REQUEST =
-      GamePostingRequest.builder().lobbyGame(TestData.LOBBY_GAME).build();
+      GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
 
   private final LobbyWatcherClient lobbyWatcherClient;
 
