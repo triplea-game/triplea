@@ -26,21 +26,30 @@ class PlayerInformationPopup {
   }
 
   private JPanel buildContentPanel(final PlayerSummary playerSummary) {
+    final JTabbedPaneBuilder tabbedPaneBuilder = new JTabbedPaneBuilder();
+
+    final var playerGamesTab = new PlayerGamesTab(playerSummary);
+    tabbedPaneBuilder.addTab(playerGamesTab.getTabTitle(), playerGamesTab.getTabContents());
+
+    // Only moderators receive aliases and ban information back from the server.
+    // If we get that information, build the tabs for it, otherwise skip.
     if (playerSummary.getAliases() != null && playerSummary.getBans() != null) {
       final var playerAliasesTab = new PlayerAliasesTab(playerSummary);
       final var playerBansTab = new PlayerBansTab(playerSummary);
 
-      return new JPanelBuilder()
-          .borderLayout()
-          .addNorth(PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerSummary))
-          .addCenter(
-              new JTabbedPaneBuilder()
-                  .addTab(playerAliasesTab.getTabTitle(), playerAliasesTab.getTabContents())
-                  .addTab(playerBansTab.getTabTitle(), playerBansTab.getTabContents())
-                  .build())
-          .build();
+      tabbedPaneBuilder
+          .addTab(playerAliasesTab.getTabTitle(), playerAliasesTab.getTabContents())
+          .addTab(playerBansTab.getTabTitle(), playerBansTab.getTabContents());
     }
 
-    return new JPanel();
+    return new JPanelBuilder()
+        .borderLayout()
+        .addNorth(
+            // moderators will get IP and system-id information
+            playerSummary.getIp() == null
+                ? new JPanel()
+                : PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerSummary))
+        .addCenter(tabbedPaneBuilder.build())
+        .build();
   }
 }

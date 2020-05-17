@@ -20,6 +20,7 @@ import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.modules.game.listing.GameListing;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @RolesAllowed(UserRole.ANONYMOUS)
@@ -27,8 +28,9 @@ public class PlayerInfoController extends HttpController {
 
   private final BiFunction<AuthenticatedUser, PlayerChatId, PlayerSummary> fetchPlayerInfoAction;
 
-  public static PlayerInfoController build(final Jdbi jdbi, final Chatters chatters) {
-    return new PlayerInfoController(FetchPlayerInfoModule.build(jdbi, chatters));
+  public static PlayerInfoController build(
+      final Jdbi jdbi, final Chatters chatters, final GameListing gameListing) {
+    return new PlayerInfoController(FetchPlayerInfoModule.build(jdbi, chatters, gameListing));
   }
 
   @POST

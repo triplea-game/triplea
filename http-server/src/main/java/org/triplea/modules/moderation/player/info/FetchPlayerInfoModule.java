@@ -18,18 +18,22 @@ import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.modules.game.listing.GameListing;
 
 @AllArgsConstructor
 class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatId, PlayerSummary> {
   private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
   private final Chatters chatters;
+  private final GameListing gameListing;
 
-  static FetchPlayerInfoModule build(final Jdbi jdbi, final Chatters chatters) {
+  static FetchPlayerInfoModule build(
+      final Jdbi jdbi, final Chatters chatters, final GameListing gameListing) {
     return new FetchPlayerInfoModule(
         PlayerApiKeyDaoWrapper.build(jdbi),
         jdbi.onDemand(PlayerInfoForModeratorDao.class),
-        chatters);
+        chatters,
+        gameListing);
   }
 
   @Override
@@ -39,7 +43,11 @@ class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatI
     final var chatterSession =
         chatters.lookupPlayerByChatId(playerChatId).orElseThrow(this::playerLeftChatException);
 
-    var playerSummaryBuilder = PlayerSummary.builder();
+    var playerSummaryBuilder =
+        PlayerSummary.builder()
+            .currentGames(
+                gameListing.getGameNamesPlayerHasJoined(
+                    chatterSession.getChatParticipant().getUserName()));
 
     // if a moderator is requesting player data, then attach ban and aliases information
     if (UserRole.isModerator(authenticatedUser.getUserRole())) {

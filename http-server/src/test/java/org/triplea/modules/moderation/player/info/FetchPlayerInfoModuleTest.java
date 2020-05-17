@@ -3,6 +3,7 @@ package org.triplea.modules.moderation.player.info;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import javax.websocket.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +41,7 @@ import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
+import org.triplea.modules.game.listing.GameListing;
 
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {
@@ -85,6 +88,7 @@ class FetchPlayerInfoModuleTest {
   @Mock private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private PlayerInfoForModeratorDao playerInfoForModeratorDao;
   @Mock private Chatters chatters;
+  @Mock private GameListing gameListing;
 
   @InjectMocks private FetchPlayerInfoModule fetchPlayerInfoModule;
 
@@ -133,8 +137,13 @@ class FetchPlayerInfoModuleTest {
     when(chatters.lookupPlayerByChatId(PlayerChatId.of("id")))
         .thenReturn(Optional.of(chatterSession));
 
-    final var playerSummaryForModerator =
+    when(gameListing.getGameNamesPlayerHasJoined(chatterSession.getChatParticipant().getUserName()))
+        .thenReturn(Set.of("Host1", "Host2"));
+
+    final var playerSummaryForPlayer =
         fetchPlayerInfoModule.apply(authenticatedPlayer, PlayerChatId.of("id"));
+
+    assertThat(playerSummaryForPlayer.getCurrentGames(), hasItems("Host1", "Host2"));
 
     // lookup of more information is reserved to moderator players.
     verify(apiKeyDaoWrapper, never()).lookupPlayerByChatId(any());

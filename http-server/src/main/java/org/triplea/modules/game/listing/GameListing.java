@@ -2,6 +2,7 @@ package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
@@ -166,5 +168,9 @@ public class GameListing {
         .map(
             lobbyGame ->
                 new InetSocketAddress(lobbyGame.getHostAddress(), lobbyGame.getHostPort()));
+  }
+
+  public Collection<String> getGameNamesPlayerHasJoined(final UserName userName) {
+    return List.of();
   }
 }

@@ -21,6 +21,7 @@ public class PlayerSummary {
   @Nullable private String systemId;
   @Nullable private Collection<Alias> aliases;
   @Nullable private Collection<BanInformation> bans;
+  private Collection<String> currentGames;
 
   @Builder
   @Getter
