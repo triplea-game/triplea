@@ -1,5 +1,6 @@
 package org.triplea.http.client;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,6 +21,7 @@ public abstract class WireMockTest {
 
   static {
     objectMapper = new ObjectMapper();
+    objectMapper.setSerializationInclusion(Include.NON_NULL);
     objectMapper.registerModule(new JavaTimeModule());
   }
 
