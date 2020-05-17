@@ -13,7 +13,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 final class FileUtilsTest {
+
+  @Nested
+  final class NewFile {
+    @Test
+    void createNewFile() {
+      assertThat(FileUtils.newFile("file", "path"), is(new File("file" + File.separator + "path")));
+    }
+
+    @Test
+    void createNewFileFromSingleton() {
+      assertThat(FileUtils.newFile("file"), is(new File("file")));
+    }
+  }
+
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class ListFilesTest {

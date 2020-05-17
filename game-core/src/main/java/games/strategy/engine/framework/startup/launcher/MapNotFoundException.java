@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class MapNotFoundException extends IllegalStateException {
   private static final long serialVersionUID = -1027460394367073991L;
 
-  public MapNotFoundException(final String mapName, final List<File> candidatePaths) {
+  public MapNotFoundException(final String mapName, final Collection<File> candidatePaths) {
     super(
         "Could not find map: "
             + mapName

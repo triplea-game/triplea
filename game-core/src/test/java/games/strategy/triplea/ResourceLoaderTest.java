@@ -2,9 +2,10 @@ package games.strategy.triplea;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.triplea.io.FileUtils.newFile;
 
 import com.google.common.collect.Maps;
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,87 +13,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.triplea.test.common.CustomMatcher;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 final class ResourceLoaderTest {
+  private static final File userMapsFolder = newFile("user", "maps");
+
   @Nested
-  final class GetMapDirectoryCandidatesTest extends AbstractClientSettingTestCase {
+  final class GetMapDirectoryCandidatesTest {
     @Test
-    void shouldIncludeNameThenMap() {
-      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-      assertThat(candidates, containsDirectoryEndingWith("MapName" + File.separator + "map"));
-    }
+    void getMapDirectoryCandidates() {
+      final List<File> candidates =
+          ResourceLoader.getMapDirectoryCandidates("MapName", userMapsFolder);
 
-    @Test
-    void shouldIncludeName() {
-      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-      assertThat(candidates, containsDirectoryEndingWith("MapName"));
-    }
-
-    @Test
-    void shouldIncludeGithubNameThenMap() {
-      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-      assertThat(
-          candidates, containsDirectoryEndingWith("map_name-master" + File.separator + "map"));
-    }
-
-    @Test
-    void shouldIncludeGithubName() {
-      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-      assertThat(candidates, containsDirectoryEndingWith("map_name-master"));
+      assertThat(candidates, hasSize(4));
+      assertThat(candidates.get(0), is(newFile("user", "maps", "MapName", "map")));
+      assertThat(candidates.get(1), is(newFile("user", "maps", "MapName")));
+      assertThat(candidates.get(2), is(newFile("user", "maps", "map_name-master", "map")));
+      assertThat(candidates.get(3), is(newFile("user", "maps", "map_name-master")));
     }
   }
 
   @Nested
-  final class GetMapZipFileCandidatesTest extends AbstractClientSettingTestCase {
+  final class GetMapZipFileCandidatesTest {
     @Test
-    void shouldIncludeDefaultZipFile() {
-      final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
+    void getMapZipFileCandidatesTest() {
 
-      assertThat(candidates, containsFileWithName("MapName.zip"));
+      final List<File> candidates =
+          ResourceLoader.getMapZipFileCandidates("MapName", userMapsFolder);
+
+      assertThat(candidates, hasSize(3));
+
+      assertThat(candidates.get(0), is(newFile("user", "maps", "MapName.zip")));
+      assertThat(candidates.get(1), is(newFile("user", "maps", "map_name-master.zip")));
+      assertThat(candidates.get(2), is(newFile("user", "maps", "map_name.zip")));
     }
-
-    @Test
-    void shouldIncludeNormalizedZipFile() {
-      final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
-
-      assertThat(candidates, containsFileWithName("map_name.zip"));
-    }
-
-    @Test
-    void shouldIncludeGitHubZipFile() {
-      final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
-
-      assertThat(candidates, containsFileWithName("map_name-master.zip"));
-    }
-  }
-
-  private static Matcher<Iterable<File>> containsDirectoryEndingWith(final String name) {
-    return CustomMatcher.<Iterable<File>>builder()
-        .description("iterable with directory ending with: " + name)
-        .checkCondition(
-            files ->
-                StreamSupport.stream(files.spliterator(), false)
-                    .map(File::getPath)
-                    .anyMatch(p -> p.endsWith(name)))
-        .build();
-  }
-
-  private static Matcher<Iterable<File>> containsFileWithName(final String name) {
-    return CustomMatcher.<Iterable<File>>builder()
-        .description("iterable containing file with name " + name)
-        .checkCondition(
-            files ->
-                StreamSupport.stream(files.spliterator(), false)
-                    .map(File::getName)
-                    .anyMatch(name::equals))
-        .build();
   }
 
   @Nested

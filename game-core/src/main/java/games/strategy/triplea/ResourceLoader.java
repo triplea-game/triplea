@@ -117,10 +117,9 @@ public class ResourceLoader implements Closeable {
    * @return A list of candidate directories; never {@code null}.
    */
   @VisibleForTesting
-  static List<File> getMapDirectoryCandidates(final String mapName) {
+  static List<File> getMapDirectoryCandidates(final String mapName, final File userMapsFolder) {
     checkNotNull(mapName);
 
-    final File userMapsFolder = ClientFileSystemHelper.getUserMapsFolder();
     final String dirName = File.separator + mapName;
     final String normalizedMapName = File.separator + normalizeMapName(mapName) + "-master";
     return List.of(
@@ -140,10 +139,10 @@ public class ResourceLoader implements Closeable {
    * @param mapName The map name; must not be {@code null}.
    * @return A list of candidate zip files; never {@code null}.
    */
-  public static List<File> getMapZipFileCandidates(final String mapName) {
+  public static List<File> getMapZipFileCandidates(
+      final String mapName, final File userMapsFolder) {
     checkNotNull(mapName);
 
-    final File userMapsFolder = ClientFileSystemHelper.getUserMapsFolder();
     final String normalizedMapName = normalizeMapName(mapName);
     return List.of(
         new File(userMapsFolder, mapName + ".zip"),
@@ -210,8 +209,9 @@ public class ResourceLoader implements Closeable {
 
   private static List<File> getCandidatePaths(final String mapName) {
     final List<File> candidates = new ArrayList<>();
-    candidates.addAll(getMapDirectoryCandidates(mapName));
-    candidates.addAll(getMapZipFileCandidates(mapName));
+    candidates.addAll(
+        getMapDirectoryCandidates(mapName, ClientFileSystemHelper.getUserMapsFolder()));
+    candidates.addAll(getMapZipFileCandidates(mapName, ClientFileSystemHelper.getUserMapsFolder()));
     return candidates;
   }
 
