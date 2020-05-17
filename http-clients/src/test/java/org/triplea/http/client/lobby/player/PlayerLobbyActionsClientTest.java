@@ -2,7 +2,9 @@ package org.triplea.http.client.lobby.player;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -65,5 +67,21 @@ class PlayerLobbyActionsClientTest extends WireMockTest {
 
     final var result = newClient(server).fetchPlayerInformation(PlayerChatId.of("player-chat-id"));
     assertThat(result, is(PLAYER_SUMMARY_FOR_PLAYER));
+  }
+
+  @Test
+  void fetchPlayersInGame(@WiremockResolver.Wiremock final WireMockServer server) {
+    server.stubFor(
+        WireMock.post(PlayerLobbyActionsClient.FETCH_PLAYERS_IN_GAME)
+            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
+            .withRequestBody(equalTo("game-id"))
+            .willReturn(
+                WireMock.aResponse()
+                    .withStatus(200)
+                    .withBody(toJson(List.of("player1", "player2")))));
+
+    final var result = newClient(server).fetchPlayersInGame("game-id");
+    assertThat(result, hasSize(2));
+    assertThat(result, hasItems("player1", "player2"));
   }
 }

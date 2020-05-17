@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.swing.JTabbedPaneBuilder;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;

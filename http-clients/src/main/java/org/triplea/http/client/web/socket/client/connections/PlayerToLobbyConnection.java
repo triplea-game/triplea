@@ -1,6 +1,7 @@
 package org.triplea.http.client.web.socket.client.connections;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -134,5 +135,9 @@ public class PlayerToLobbyConnection {
 
   public List<ChatHistoryMessage> fetchChatHistoryForGame(final String gameId) {
     return httpLobbyClient.getModeratorLobbyClient().fetchChatHistoryForGame(gameId);
+  }
+
+  public Collection<String> fetchPlayersInGame(final String gameId) {
+    return httpLobbyClient.getPlayerLobbyActionsClient().fetchPlayersInGame(gameId);
   }
 }
