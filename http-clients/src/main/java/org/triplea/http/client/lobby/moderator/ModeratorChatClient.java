@@ -36,7 +36,7 @@ public class ModeratorChatClient {
         authenticationHeaders.createHeaders(), playerChatId.getValue());
   }
 
-  public PlayerSummaryForModerator fetchPlayerInformation(final PlayerChatId playerChatId) {
+  public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
     return moderatorLobbyFeignClient.fetchPlayerInformation(
         authenticationHeaders.createHeaders(), playerChatId.getValue());
   }

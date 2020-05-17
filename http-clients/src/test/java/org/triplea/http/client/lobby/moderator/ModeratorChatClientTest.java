@@ -23,15 +23,15 @@ class ModeratorChatClientTest extends WireMockTest {
           .build();
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
 
-  private static final PlayerSummaryForModerator PLAYER_SUMMARY_FOR_MODERATOR =
-      PlayerSummaryForModerator.builder()
+  private static final PlayerSummary PLAYER_SUMMARY_FOR_MODERATOR =
+      PlayerSummary.builder()
           .name("name")
           .systemId("system-id")
           .ip("5.5.3.3")
           .aliases(List.of())
           .bans(
               List.of(
-                  PlayerSummaryForModerator.BanInformation.builder()
+                  PlayerSummary.BanInformation.builder()
                       .epochMillEndDate(1000)
                       .epochMilliStartDate(2000)
                       .name("name-banned")

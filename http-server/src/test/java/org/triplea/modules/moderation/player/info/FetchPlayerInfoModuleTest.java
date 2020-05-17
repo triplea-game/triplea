@@ -24,8 +24,8 @@ import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.Alias;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.BanInformation;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
 
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {

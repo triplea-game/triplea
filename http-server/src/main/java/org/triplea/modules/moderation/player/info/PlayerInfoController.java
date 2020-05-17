@@ -17,14 +17,14 @@ import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @RolesAllowed(UserRole.MODERATOR)
 public class PlayerInfoController extends HttpController {
 
-  private final Function<PlayerChatId, PlayerSummaryForModerator> fetchPlayerInfoAction;
+  private final Function<PlayerChatId, PlayerSummary> fetchPlayerInfoAction;
 
   public static PlayerInfoController build(final Jdbi jdbi) {
     return new PlayerInfoController(FetchPlayerInfoModule.build(jdbi));
@@ -35,7 +35,7 @@ public class PlayerInfoController extends HttpController {
   @RateLimited(
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})
-  public PlayerSummaryForModerator fetchPlayerInfo(
+  public PlayerSummary fetchPlayerInfo(
       @Auth final AuthenticatedUser authenticatedUser, final String playerId) {
     Preconditions.checkNotNull(playerId);
     return fetchPlayerInfoAction.apply(PlayerChatId.of(playerId));

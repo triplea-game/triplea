@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import lombok.Builder;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.SwingAction;
@@ -23,20 +23,20 @@ public class ShowPlayerInformationAction {
   @Nonnull private final JFrame parent;
   @Nonnull private final PlayerToLobbyConnection playerToLobbyConnection;
   @Nonnull private final PlayerChatId playerChatId;
-  private Function<PlayerSummaryForModerator, String> dataFormatter;
+  private Function<PlayerSummary, String> dataFormatter;
 
   public Action toSwingAction() {
     return SwingAction.of(
-        "Show Player Information",
+        "Show Player Info",
         () ->
             AsyncRunner.runAsync(this::fetchPlayerInfoAndShowDisplay)
                 .exceptionally(this::logFetchError));
   }
 
   private void fetchPlayerInfoAndShowDisplay() {
-    final var playerSummaryForModerator =
+    final var playerSummary =
         playerToLobbyConnection.fetchPlayerInformation(playerChatId);
-    PlayerInformationPopup.showPopup(parent, playerSummaryForModerator);
+    PlayerInformationPopup.showPopup(parent, playerSummary);
   }
 
   private void logFetchError(final Throwable throwable) {

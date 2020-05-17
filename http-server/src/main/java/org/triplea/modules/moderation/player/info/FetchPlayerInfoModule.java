@@ -12,12 +12,12 @@ import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.Alias;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.BanInformation;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
 
 @AllArgsConstructor
-class FetchPlayerInfoModule implements Function<PlayerChatId, PlayerSummaryForModerator> {
+class FetchPlayerInfoModule implements Function<PlayerChatId, PlayerSummary> {
   private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
 
@@ -27,7 +27,7 @@ class FetchPlayerInfoModule implements Function<PlayerChatId, PlayerSummaryForMo
   }
 
   @Override
-  public PlayerSummaryForModerator apply(final PlayerChatId playerChatId) {
+  public PlayerSummary apply(final PlayerChatId playerChatId) {
     final PlayerIdentifiersByApiKeyLookup gamePlayerLookup =
         apiKeyDaoWrapper
             .lookupPlayerByChatId(playerChatId)
@@ -36,7 +36,7 @@ class FetchPlayerInfoModule implements Function<PlayerChatId, PlayerSummaryForMo
                     new IllegalArgumentException(
                         "Player could not be found, have they left chat?"));
 
-    return PlayerSummaryForModerator.builder()
+    return PlayerSummary.builder()
         .name(gamePlayerLookup.getUserName().getValue())
         .systemId(gamePlayerLookup.getSystemId().getValue())
         .ip(gamePlayerLookup.getIp())

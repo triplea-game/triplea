@@ -5,18 +5,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.BanInformation;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
 import org.triplea.java.DateTimeFormatterUtil;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
 
 @AllArgsConstructor
 class PlayerBansTab {
-  private final PlayerSummaryForModerator playerSummaryForModerator;
+  private final PlayerSummary playerSummary;
 
   String getTabTitle() {
-    return "Bans (" + playerSummaryForModerator.getBans().size() + ")";
+    return "Bans (" + playerSummary.getBans().size() + ")";
   }
 
   Component getTabContents() {
@@ -24,7 +24,7 @@ class PlayerBansTab {
         new JTableBuilder<BanInformation>()
             .columnNames("Name", "Date Banned", "Ban Expiry", "IP", "System ID")
             .rowData(
-                playerSummaryForModerator.getBans().stream()
+                playerSummary.getBans().stream()
                     .sorted(Comparator.comparing(BanInformation::getEpochMilliStartDate))
                     .collect(Collectors.toList()))
             .rowMapper(

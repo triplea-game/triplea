@@ -5,34 +5,34 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.swing.JTabbedPaneBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 @UtilityClass
 class PlayerInformationPopup {
 
-  void showPopup(final JFrame parent, final PlayerSummaryForModerator playerSummaryForModerator) {
+  void showPopup(final JFrame parent, final PlayerSummary playerSummary) {
     SwingUtilities.invokeLater(
         () -> {
           final JDialog dialog =
-              new JDialog(parent, "Player Info: " + playerSummaryForModerator.getName());
+              new JDialog(parent, "Player Info: " + playerSummary.getName());
           dialog
               .getContentPane()
-              .add(PlayerInformationPopup.buildContentPanel(playerSummaryForModerator));
+              .add(PlayerInformationPopup.buildContentPanel(playerSummary));
           dialog.pack();
           dialog.setLocationRelativeTo(parent);
           dialog.setVisible(true);
         });
   }
 
-  private JPanel buildContentPanel(final PlayerSummaryForModerator playerSummaryForModerator) {
-    final var playerAliasesTab = new PlayerAliasesTab(playerSummaryForModerator);
-    final var playerBansTab = new PlayerBansTab(playerSummaryForModerator);
+  private JPanel buildContentPanel(final PlayerSummary playerSummary) {
+    final var playerAliasesTab = new PlayerAliasesTab(playerSummary);
+    final var playerBansTab = new PlayerBansTab(playerSummary);
 
     return new JPanelBuilder()
         .borderLayout()
-        .addNorth(PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerSummaryForModerator))
+        .addNorth(PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerSummary))
         .addCenter(
             new JTabbedPaneBuilder()
                 .addTab(playerAliasesTab.getTabTitle(), playerAliasesTab.getTabContents())

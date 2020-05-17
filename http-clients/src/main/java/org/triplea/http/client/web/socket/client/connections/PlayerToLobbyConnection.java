@@ -13,7 +13,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebSocket;
@@ -124,7 +124,7 @@ public class PlayerToLobbyConnection {
     return httpLobbyClient.getHttpModeratorToolboxClient();
   }
 
-  public PlayerSummaryForModerator fetchPlayerInformation(final PlayerChatId playerChatId) {
+  public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
     return httpLobbyClient.getModeratorLobbyClient().fetchPlayerInformation(playerChatId);
   }
 

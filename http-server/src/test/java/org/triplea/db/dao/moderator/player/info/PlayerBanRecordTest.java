@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.BanInformation;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
 
 class PlayerBanRecordTest {
   private static final Instant START_DATE =

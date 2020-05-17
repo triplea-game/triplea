@@ -15,7 +15,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class PlayerSummaryForModerator {
+public class PlayerSummary {
   private String name;
   private String ip;
   private String systemId;
