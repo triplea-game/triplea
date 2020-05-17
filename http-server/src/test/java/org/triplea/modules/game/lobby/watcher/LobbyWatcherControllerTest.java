@@ -62,4 +62,14 @@ class LobbyWatcherControllerTest extends ProtectedEndpointTest<LobbyWatcherClien
                     .gameId(gameId)
                     .build()));
   }
+
+  @Test
+  void notifyPlayerJoined() {
+    verifyEndpoint(client -> client.playerJoined("game-id", UserName.of("player-0")));
+  }
+
+  @Test
+  void notifyPlayerLeft() {
+    verifyEndpoint(client -> client.playerJoined("game-id", UserName.of("player-1")));
+  }
 }

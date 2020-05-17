@@ -26,6 +26,8 @@ import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.PlayerJoinedNotification;
+import org.triplea.http.client.lobby.game.lobby.watcher.PlayerLeftNotification;
 import org.triplea.http.client.lobby.game.lobby.watcher.UpdateGameRequest;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.game.listing.GameListing;
@@ -62,7 +64,6 @@ public class LobbyWatcherController extends HttpController {
       final GamePostingRequest gamePostingRequest) {
     Preconditions.checkArgument(gamePostingRequest != null);
     Preconditions.checkArgument(gamePostingRequest.getLobbyGame() != null);
-    Preconditions.checkArgument(gamePostingRequest.getPlayerNames() != null);
     return gameListing.postGame(authenticatedUser.getApiKey(), gamePostingRequest);
   }
 
@@ -130,6 +131,41 @@ public class LobbyWatcherController extends HttpController {
               + "gameID and API-key pair did not match any existing games.",
           request.getRemoteHost());
     }
+
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path(LobbyWatcherClient.PLAYER_JOINED_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
+  @RolesAllowed(UserRole.HOST)
+  public Response playerJoinedGame(
+      @Auth final AuthenticatedUser authenticatedUser,
+      final PlayerJoinedNotification playerJoinedNotification) {
+    gameListing.addPlayerToGame(
+        UserName.of(playerJoinedNotification.getPlayerName()),
+        authenticatedUser.getApiKey(),
+        playerJoinedNotification.getGameId());
+
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path(LobbyWatcherClient.PLAYER_LEFT_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
+  @RolesAllowed(UserRole.HOST)
+  public Response playerLeftGame(
+      @Auth final AuthenticatedUser authenticatedUser,
+      final PlayerLeftNotification playerLeftNotification) {
+
+    gameListing.removePlayerFromGame(
+        UserName.of(playerLeftNotification.getPlayerName()),
+        authenticatedUser.getApiKey(),
+        playerLeftNotification.getGameId());
 
     return Response.ok().build();
   }

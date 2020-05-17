@@ -318,7 +318,7 @@ class GameListingTest {
     void addPlayerToSingleGame() {
       final UserName user = UserName.of("user");
       cache.put(ID_0, lobbyGame0);
-      gameListing.addPlayerToGame(user, ID_0);
+      gameListing.addPlayerToGame(user, ID_0.getApiKey(), ID_0.getId());
 
       final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
 
@@ -326,12 +326,27 @@ class GameListingTest {
     }
 
     @Test
+    void addPlayerToSingleGameAndThenRemove() {
+      final UserName user = UserName.of("user");
+      cache.put(ID_0, lobbyGame0);
+      gameListing.addPlayerToGame(user, ID_0.getApiKey(), ID_0.getId());
+      gameListing.removePlayerFromGame(user, ID_0.getApiKey(), ID_0.getId());
+
+      final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
+
+      assertThat(
+          "player was added and then remove from a game, expect to no longer be in a game",
+          results,
+          is(empty()));
+    }
+
+    @Test
     void addPlayerToMultipleGame() {
       final UserName user = UserName.of("user");
       cache.put(ID_0, lobbyGame0);
       cache.put(ID_1, lobbyGame1);
-      gameListing.addPlayerToGame(user, ID_0);
-      gameListing.addPlayerToGame(user, ID_1);
+      gameListing.addPlayerToGame(user, ID_0.getApiKey(), ID_0.getId());
+      gameListing.addPlayerToGame(user, ID_1.getApiKey(), ID_1.getId());
 
       final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
 
@@ -341,14 +356,32 @@ class GameListingTest {
     }
 
     @Test
+    void addPlayerToMultipleGameAndRemoveFromOneGame() {
+      final UserName user = UserName.of("user");
+      cache.put(ID_0, lobbyGame0);
+      cache.put(ID_1, lobbyGame1);
+      gameListing.addPlayerToGame(user, ID_0.getApiKey(), ID_0.getId());
+      gameListing.addPlayerToGame(user, ID_1.getApiKey(), ID_1.getId());
+      gameListing.removePlayerFromGame(user, ID_0.getApiKey(), ID_0.getId());
+
+      final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
+
+      assertThat(results, hasSize(1));
+      assertThat(
+          "Player was removed from game0, should still be in game1",
+          results,
+          hasItem(lobbyGame1.getHostName()));
+    }
+
+    @Test
     @DisplayName(
         "Games can expire, our tracking of player to games should take "
             + "into account expired games")
     void getPlayerInGamesOnlyReturnsCurrentGames() {
       final UserName user = UserName.of("user");
       cache.put(ID_0, lobbyGame0);
-      gameListing.addPlayerToGame(user, ID_0);
-      gameListing.addPlayerToGame(user, ID_1);
+      gameListing.addPlayerToGame(user, ID_0.getApiKey(), ID_0.getId());
+      gameListing.addPlayerToGame(user, ID_1.getApiKey(), ID_1.getId());
 
       final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);
 
@@ -360,7 +393,7 @@ class GameListingTest {
     void removingGamesWillExplicityRemoveParticipants() {
       final UserName user = UserName.of("user");
       cache.put(ID_0, lobbyGame0);
-      gameListing.addPlayerToGame(user, ID_0);
+      gameListing.addPlayerToGame(user, ID_0.getApiKey(), ID_0.getId());
       gameListing.removeGame(ID_0.getApiKey(), ID_0.getId());
 
       final Collection<String> results = gameListing.getGameNamesPlayerHasJoined(user);

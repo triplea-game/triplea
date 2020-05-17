@@ -92,9 +92,11 @@ public class GameListing {
     final String id = UUID.randomUUID().toString();
     final GameId gameId = new GameId(apiKey, id);
     games.put(gameId, gamePostingRequest.getLobbyGame());
-    gamePostingRequest
-        .getPlayerNames()
-        .forEach(playerName -> playerIsInGames.put(UserName.of(playerName), gameId));
+
+    Optional.ofNullable(gamePostingRequest.getPlayerNames())
+        .ifPresent(
+            names ->
+                names.forEach(playerName -> playerIsInGames.put(UserName.of(playerName), gameId)));
     final var lobbyGameListing =
         LobbyGameListing.builder().gameId(id).lobbyGame(gamePostingRequest.getLobbyGame()).build();
     lobbyGameDao.insertLobbyGame(apiKey, lobbyGameListing);
@@ -191,8 +193,13 @@ public class GameListing {
                 new InetSocketAddress(lobbyGame.getHostAddress(), lobbyGame.getHostPort()));
   }
 
-  public void addPlayerToGame(final UserName userName, final GameId gameId) {
-    playerIsInGames.put(userName, gameId);
+  public void addPlayerToGame(final UserName userName, final ApiKey apiKey, final String gameId) {
+    playerIsInGames.put(userName, new GameId(apiKey, gameId));
+  }
+
+  public void removePlayerFromGame(
+      final UserName userName, final ApiKey apiKey, final String gameId) {
+    playerIsInGames.remove(userName, new GameId(apiKey, gameId));
   }
 
   /**
