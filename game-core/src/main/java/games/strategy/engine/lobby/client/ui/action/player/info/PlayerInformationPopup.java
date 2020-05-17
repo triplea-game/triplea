@@ -15,11 +15,8 @@ class PlayerInformationPopup {
   void showPopup(final JFrame parent, final PlayerSummary playerSummary) {
     SwingUtilities.invokeLater(
         () -> {
-          final JDialog dialog =
-              new JDialog(parent, "Player Info: " + playerSummary.getName());
-          dialog
-              .getContentPane()
-              .add(PlayerInformationPopup.buildContentPanel(playerSummary));
+          final JDialog dialog = new JDialog(parent, "Player Info: " + playerSummary.getName());
+          dialog.getContentPane().add(PlayerInformationPopup.buildContentPanel(playerSummary));
           dialog.pack();
           dialog.setLocationRelativeTo(parent);
           dialog.setVisible(true);
@@ -27,17 +24,21 @@ class PlayerInformationPopup {
   }
 
   private JPanel buildContentPanel(final PlayerSummary playerSummary) {
-    final var playerAliasesTab = new PlayerAliasesTab(playerSummary);
-    final var playerBansTab = new PlayerBansTab(playerSummary);
+    if (playerSummary.getAliases() != null && playerSummary.getBans() != null) {
+      final var playerAliasesTab = new PlayerAliasesTab(playerSummary);
+      final var playerBansTab = new PlayerBansTab(playerSummary);
 
-    return new JPanelBuilder()
-        .borderLayout()
-        .addNorth(PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerSummary))
-        .addCenter(
-            new JTabbedPaneBuilder()
-                .addTab(playerAliasesTab.getTabTitle(), playerAliasesTab.getTabContents())
-                .addTab(playerBansTab.getTabTitle(), playerBansTab.getTabContents())
-                .build())
-        .build();
+      return new JPanelBuilder()
+          .borderLayout()
+          .addNorth(PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerSummary))
+          .addCenter(
+              new JTabbedPaneBuilder()
+                  .addTab(playerAliasesTab.getTabTitle(), playerAliasesTab.getTabContents())
+                  .addTab(playerBansTab.getTabTitle(), playerBansTab.getTabContents())
+                  .build())
+          .build();
+    }
+
+    return new JPanel();
   }
 }

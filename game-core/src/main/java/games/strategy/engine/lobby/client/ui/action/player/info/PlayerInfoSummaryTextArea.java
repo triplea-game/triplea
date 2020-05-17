@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.ui.action.player.info;
 
+import com.google.common.annotations.VisibleForTesting;
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 import lombok.experimental.UtilityClass;
@@ -11,12 +12,16 @@ class PlayerInfoSummaryTextArea {
   JComponent buildPlayerInfoSummary(final PlayerSummary playerSummary) {
     final JTextPane textPane = new JTextPane();
     textPane.setEditable(false);
-    textPane.setText(
-        String.format(
-            "%s\nIP: %s\nSystem ID: %s",
-            playerSummary.getName(),
-            playerSummary.getIp(),
-            playerSummary.getSystemId()));
+    textPane.setText(buildPlayerInfoText(playerSummary));
     return textPane;
+  }
+
+  @VisibleForTesting
+  static String buildPlayerInfoText(final PlayerSummary playerSummary) {
+    return playerSummary.getName()
+        + (playerSummary.getIp() == null ? "" : "\nIP: " + playerSummary.getIp())
+        + (playerSummary.getSystemId() == null
+            ? ""
+            : "\nSystem ID: " + playerSummary.getSystemId());
   }
 }
