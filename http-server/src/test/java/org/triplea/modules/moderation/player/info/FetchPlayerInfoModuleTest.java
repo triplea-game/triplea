@@ -135,9 +135,6 @@ class FetchPlayerInfoModuleTest {
 
     final var playerSummaryForModerator =
         fetchPlayerInfoModule.apply(authenticatedPlayer, PlayerChatId.of("id"));
-    assertThat(
-        playerSummaryForModerator.getName(),
-        is(chatterSession.getChatParticipant().getUserName().getValue()));
 
     // lookup of more information is reserved to moderator players.
     verify(apiKeyDaoWrapper, never()).lookupPlayerByChatId(any());
@@ -159,9 +156,6 @@ class FetchPlayerInfoModuleTest {
 
     final var playerSummaryForModerator =
         fetchPlayerInfoModule.apply(authenticatedModerator, PlayerChatId.of("id"));
-    assertThat(
-        playerSummaryForModerator.getName(),
-        is(chatterSession.getChatParticipant().getUserName().getValue()));
     assertThat(playerSummaryForModerator.getIp(), is(chatterSession.getIp().toString()));
     assertThat(
         playerSummaryForModerator.getSystemId(), is(GAME_PLAYER_LOOKUP.getSystemId().getValue()));

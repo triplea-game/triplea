@@ -106,6 +106,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         ShowPlayerInformationAction.builder()
             .parent(this)
             .playerChatId(clickedOn.getPlayerChatId())
+            .playerName(clickedOn.getUserName())
             .playerToLobbyConnection(playerToLobbyConnection)
             .build()
             .toSwingAction();

@@ -17,7 +17,6 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class PlayerSummary {
-  private String name;
   @Nullable private String ip;
   @Nullable private String systemId;
   @Nullable private Collection<Alias> aliases;

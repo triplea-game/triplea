@@ -39,9 +39,7 @@ class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatI
     final var chatterSession =
         chatters.lookupPlayerByChatId(playerChatId).orElseThrow(this::playerLeftChatException);
 
-    var playerSummaryBuilder =
-        PlayerSummary.builder() //
-            .name(chatterSession.getChatParticipant().getUserName().getValue());
+    var playerSummaryBuilder = PlayerSummary.builder();
 
     // if a moderator is requesting player data, then attach ban and aliases information
     if (UserRole.isModerator(authenticatedUser.getUserRole())) {

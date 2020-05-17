@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.swing.JTabbedPaneBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -12,10 +13,11 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 @UtilityClass
 class PlayerInformationPopup {
 
-  void showPopup(final JFrame parent, final PlayerSummary playerSummary) {
+  void showPopup(
+      final JFrame parent, final UserName playerName, final PlayerSummary playerSummary) {
     SwingUtilities.invokeLater(
         () -> {
-          final JDialog dialog = new JDialog(parent, "Player Info: " + playerSummary.getName());
+          final JDialog dialog = new JDialog(parent, "Player Info: " + playerName.getValue());
           dialog.getContentPane().add(PlayerInformationPopup.buildContentPanel(playerSummary));
           dialog.pack();
           dialog.setLocationRelativeTo(parent);
