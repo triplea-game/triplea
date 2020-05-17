@@ -6,9 +6,11 @@ import com.google.common.collect.Multimap;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -216,5 +218,17 @@ public class GameListing {
     return playerIsInGames.get(userName).stream()
         .map(gameId -> games.get(gameId).map(LobbyGame::getHostName).orElse(null))
         .collect(Collectors.toList());
+  }
+
+  public Collection<String> getPlayersInGame(final String gameId) {
+    return playerIsInGames.asMap().entrySet().stream()
+        .filter(playerIsInGame(gameId))
+        .map(Map.Entry::getKey)
+        .map(UserName::getValue)
+        .collect(Collectors.toList());
+  }
+
+  private Predicate<Map.Entry<UserName, Collection<GameId>>> playerIsInGame(final String gameId) {
+    return entry -> entry.getValue().stream().anyMatch(id -> id.getId().equals(gameId));
   }
 }

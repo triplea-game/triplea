@@ -10,6 +10,7 @@ import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
 import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.text.IsEmptyString.emptyString;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -414,13 +414,39 @@ class GameListingTest {
       Collection<String> results = gameListing.getGameNamesPlayerHasJoined(UserName.of("player1"));
 
       assertThat(results, hasSize(1));
-      assertThat(results, IsCollectionContaining.hasItem(lobbyGame0.getHostName()));
+      assertThat(results, hasItem(lobbyGame0.getHostName()));
 
       // verify player2 was added
       results = gameListing.getGameNamesPlayerHasJoined(UserName.of("player2"));
 
       assertThat(results, hasSize(1));
-      assertThat(results, IsCollectionContaining.hasItem(lobbyGame0.getHostName()));
+      assertThat(results, hasItem(lobbyGame0.getHostName()));
+    }
+  }
+
+  @Nested
+  class PlayersInGame {
+    @Test
+    void emptyCase() {
+      assertThat(gameListing.getPlayersInGame("game-id"), is(empty()));
+    }
+
+    @Test
+    void wrongGameCase() {
+      cache.put(ID_0, lobbyGame0);
+
+      assertThat(gameListing.getPlayersInGame("DNE"), is(empty()));
+    }
+
+    @Test
+    void hasPlayers() {
+      cache.put(ID_0, lobbyGame0);
+
+      gameListing.addPlayerToGame(UserName.of("player1"), ID_0.getApiKey(), ID_0.getId());
+      gameListing.addPlayerToGame(UserName.of("player2"), ID_0.getApiKey(), ID_0.getId());
+
+      assertThat(gameListing.getPlayersInGame(ID_0.getId()), hasSize(2));
+      assertThat(gameListing.getPlayersInGame(ID_0.getId()), hasItems("player1", "player2"));
     }
   }
 }

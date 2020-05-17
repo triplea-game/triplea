@@ -44,6 +44,7 @@ import org.triplea.modules.game.hosting.GameHostingController;
 import org.triplea.modules.game.listing.GameListing;
 import org.triplea.modules.game.listing.GameListingController;
 import org.triplea.modules.game.lobby.watcher.LobbyWatcherController;
+import org.triplea.modules.game.participants.PlayersInGameController;
 import org.triplea.modules.moderation.access.log.AccessLogController;
 import org.triplea.modules.moderation.audit.history.ModeratorAuditHistoryController;
 import org.triplea.modules.moderation.bad.words.BadWordsController;
@@ -236,6 +237,7 @@ public class ServerApplication extends Application<AppConfig> {
         ModeratorsController.build(jdbi),
         MuteUserController.build(chatters),
         PlayerInfoController.build(jdbi, chatters, gameListing),
+        PlayersInGameController.build(gameListing),
         RemoteActionsController.build(jdbi, gameMessagingBus),
         UpdateAccountController.build(jdbi));
   }
