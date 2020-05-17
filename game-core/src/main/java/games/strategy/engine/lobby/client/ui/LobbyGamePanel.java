@@ -156,9 +156,10 @@ class LobbyGamePanel extends JPanel {
             SwingAction.of("Join Game", this::joinGame),
             SwingAction.of("Host Game", () -> hostGame(lobbyUri)),
             ShowPlayersAction.builder()
+                .parentWindow(parent)
                 .gameIdSelection(
                     () ->
-                        gameTableModel.getGameIdForRow(
+                        gameTableModel.getGameListingForRow(
                             gameTable.convertRowIndexToModel(gameTable.getSelectedRow())))
                 .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
                 .build()

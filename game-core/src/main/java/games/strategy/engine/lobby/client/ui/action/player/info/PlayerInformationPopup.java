@@ -7,10 +7,10 @@ import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JDialogBuilder;
 import org.triplea.swing.JTabbedPaneBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
-import org.triplea.swing.key.binding.KeyCode;
-import org.triplea.swing.key.binding.SwingKeyBinding;
 
 @UtilityClass
 class PlayerInformationPopup {
@@ -19,22 +19,23 @@ class PlayerInformationPopup {
       final JFrame parent, final UserName playerName, final PlayerSummary playerSummary) {
     SwingUtilities.invokeLater(
         () -> {
-          final JDialog dialog = new JDialog(parent, "Player Info: " + playerName.getValue());
-          dialog
-              .getContentPane()
-              .add(PlayerInformationPopup.buildContentPanel(playerName, playerSummary));
-          dialog.pack();
-          dialog.setLocationRelativeTo(parent);
-          SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, dialog::dispose);
-          dialog.setVisible(true);
+          new JDialogBuilder()
+              .parent(parent)
+              .title("Player Info: " + playerName.getValue())
+              .add(
+                  dialog ->
+                      PlayerInformationPopup.buildContentPanel(dialog, playerName, playerSummary))
+              .escapeKeyCloses()
+              .buildAndShow();
         });
   }
 
-  private JPanel buildContentPanel(final UserName playerName, final PlayerSummary playerSummary) {
+  private JPanel buildContentPanel(
+      final JDialog dialog, final UserName playerName, final PlayerSummary playerSummary) {
     final JTabbedPaneBuilder tabbedPaneBuilder = new JTabbedPaneBuilder();
 
     final var playerGamesTab = new PlayerGamesTab(playerSummary);
-    tabbedPaneBuilder.addTab(playerGamesTab.getTabTitle(), playerGamesTab.getTabContents());
+    tabbedPaneBuilder.addTab(playerGamesTab.getTabTitle(), playerGamesTab.getTabContents(dialog));
 
     // Only moderators receive aliases and ban information back from the server.
     // If we get that information, build the tabs for it, otherwise skip.
@@ -53,8 +54,10 @@ class PlayerInformationPopup {
             // moderators will get IP and system-id information
             playerSummary.getIp() == null
                 ? new JPanel()
-                : PlayerInfoSummaryTextArea.buildPlayerInfoSummary(playerName, playerSummary))
+                : PlayerInfoSummaryTextArea.buildPlayerInfoSummary(
+                    dialog, playerName, playerSummary))
         .addCenter(tabbedPaneBuilder.build())
+        .addSouth(new JButtonBuilder("Close").actionListener(dialog::dispose).build())
         .build();
   }
 }

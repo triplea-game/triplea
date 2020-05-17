@@ -9,6 +9,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -428,5 +431,21 @@ public final class SwingComponents {
    */
   public static boolean canDisplayCharacter(final char character) {
     return new JLabel().getFont().canDisplay(character);
+  }
+
+  /**
+   * Creates a KeyListener that fires when the escape key is pressed.
+   *
+   * @param action The action to execute when escape key is pressed.
+   */
+  public static KeyListener escapeKeyListener(final Runnable action) {
+    return new KeyAdapter() {
+      @Override
+      public void keyPressed(final KeyEvent keyEvent) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          action.run();
+        }
+      }
+    };
   }
 }
