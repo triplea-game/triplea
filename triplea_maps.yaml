@@ -2092,3 +2092,16 @@
         clan strongholds respectively (or all 12 if you are feeling frisky).
     </p><br>
     <br>
+    - mapName: Warcraft War Heroes
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/warcraft_war_heroes/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/warcraft_war_heroes/master/description/MapThumbnail.png
+  description: |
+    <br><b><em>by Frostion</em></b>
+    <br>
+    <br>This map features 4 Alliance and 4 Horde players.
+    <br>
+    <br>Map is in BETA, so expect errors while playing!
+    <br>
+    <br>
