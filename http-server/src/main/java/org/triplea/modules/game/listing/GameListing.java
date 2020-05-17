@@ -24,6 +24,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
@@ -87,10 +88,15 @@ public class GameListing {
   }
 
   /** Adds a game. */
-  public String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
+  public String postGame(final ApiKey apiKey, final GamePostingRequest gamePostingRequest) {
     final String id = UUID.randomUUID().toString();
-    games.put(new GameId(apiKey, id), lobbyGame);
-    final var lobbyGameListing = LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build();
+    final GameId gameId = new GameId(apiKey, id);
+    games.put(gameId, gamePostingRequest.getLobbyGame());
+    gamePostingRequest
+        .getPlayerNames()
+        .forEach(playerName -> playerIsInGames.put(UserName.of(playerName), gameId));
+    final var lobbyGameListing =
+        LobbyGameListing.builder().gameId(id).lobbyGame(gamePostingRequest.getLobbyGame()).build();
     lobbyGameDao.insertLobbyGame(apiKey, lobbyGameListing);
     playerMessagingBus.broadcastMessage(new LobbyGameUpdatedMessage(lobbyGameListing));
     log.info("Posted game: {}", id);

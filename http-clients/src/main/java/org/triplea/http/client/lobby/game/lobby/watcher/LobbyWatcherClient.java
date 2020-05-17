@@ -29,8 +29,9 @@ public class LobbyWatcherClient {
         new HttpClient<>(LobbyWatcherFeignClient.class, serverUri).get());
   }
 
-  public String postGame(final LobbyGame lobbyGame) {
-    return lobbyWatcherFeignClient.postGame(authenticationHeaders.createHeaders(), lobbyGame);
+  public String postGame(final GamePostingRequest gamePostingRequest) {
+    return lobbyWatcherFeignClient.postGame(
+        authenticationHeaders.createHeaders(), gamePostingRequest);
   }
 
   public void updateGame(final String gameId, final LobbyGame lobbyGame) {

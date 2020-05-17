@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.UpdateGameRequest;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
@@ -58,8 +58,12 @@ public class LobbyWatcherController extends HttpController {
   @POST
   @Path(LobbyWatcherClient.POST_GAME_PATH)
   public String postGame(
-      @Auth final AuthenticatedUser authenticatedUser, final LobbyGame lobbyGame) {
-    return gameListing.postGame(authenticatedUser.getApiKey(), lobbyGame);
+      @Auth final AuthenticatedUser authenticatedUser,
+      final GamePostingRequest gamePostingRequest) {
+    Preconditions.checkArgument(gamePostingRequest != null);
+    Preconditions.checkArgument(gamePostingRequest.getLobbyGame() != null);
+    Preconditions.checkArgument(gamePostingRequest.getPlayerNames() != null);
+    return gameListing.postGame(authenticatedUser.getApiKey(), gamePostingRequest);
   }
 
   /** Explicit remove of a game from the lobby. */

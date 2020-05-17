@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,6 +37,7 @@ import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.IpAddressParser;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
@@ -166,7 +168,10 @@ class GameListingTest {
   final class PostGame {
     @Test
     void postGame() {
-      final String id0 = gameListing.postGame(API_KEY_0, lobbyGame0);
+      final String id0 =
+          gameListing.postGame(
+              API_KEY_0,
+              GamePostingRequest.builder().lobbyGame(lobbyGame0).playerNames(List.of()).build());
 
       assertThat(id0, not(emptyString()));
       assertThat(cache.asMap(), is(Map.of(new GameListing.GameId(API_KEY_0, id0), lobbyGame0)));
@@ -362,6 +367,27 @@ class GameListingTest {
 
       assertThat(
           "Player was in one game, but it was removed, should be empty", results, is(empty()));
+    }
+
+    @Test
+    void postingGameAddsPlayersFromThatGame() {
+      gameListing.postGame(
+          API_KEY_0,
+          GamePostingRequest.builder()
+              .lobbyGame(lobbyGame0)
+              .playerNames(List.of("player1", "player2"))
+              .build());
+
+      Collection<String> results = gameListing.getGameNamesPlayerHasJoined(UserName.of("player1"));
+
+      assertThat(results, hasSize(1));
+      assertThat(results, IsCollectionContaining.hasItem(lobbyGame0.getHostName()));
+
+      // verify player2 was added
+      results = gameListing.getGameNamesPlayerHasJoined(UserName.of("player2"));
+
+      assertThat(results, hasSize(1));
+      assertThat(results, IsCollectionContaining.hasItem(lobbyGame0.getHostName()));
     }
   }
 }

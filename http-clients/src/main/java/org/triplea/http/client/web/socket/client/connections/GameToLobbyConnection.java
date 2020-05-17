@@ -12,6 +12,7 @@ import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatUploadParams;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebSocket;
@@ -55,8 +56,8 @@ public class GameToLobbyConnection {
     webSocket.addListener(messageType, messageHandler);
   }
 
-  public String postGame(final LobbyGame lobbyGame) {
-    return lobbyWatcherClient.postGame(lobbyGame);
+  public String postGame(final GamePostingRequest gamePostingRequest) {
+    return lobbyWatcherClient.postGame(gamePostingRequest);
   }
 
   public boolean sendKeepAlive(final String gameId) {

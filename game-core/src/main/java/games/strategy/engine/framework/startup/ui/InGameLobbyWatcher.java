@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
@@ -112,7 +113,12 @@ public class InGameLobbyWatcher {
             .gameVersion("0")
             .build();
 
-    gameId = gameToLobbyConnection.postGame(gameDescription.toLobbyGame());
+    gameId =
+        gameToLobbyConnection.postGame(
+            GamePostingRequest.builder()
+                .playerNames(serverMessenger.getPlayerNames())
+                .lobbyGame(gameDescription.toLobbyGame())
+                .build());
 
     // Period time is chosen to less than half the keep-alive cut-off time. In case a keep-alive
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
@@ -124,7 +130,13 @@ public class InGameLobbyWatcher {
                     .gameId(gameId)
                     .gameIdSetter(id -> gameId = id)
                     .keepAliveSender(gameToLobbyConnection::sendKeepAlive)
-                    .gamePoster(() -> gameToLobbyConnection.postGame(gameDescription.toLobbyGame()))
+                    .gamePoster(
+                        () ->
+                            gameToLobbyConnection.postGame(
+                                GamePostingRequest.builder()
+                                    .playerNames(serverMessenger.getPlayerNames())
+                                    .lobbyGame(gameDescription.toLobbyGame())
+                                    .build()))
                     .build())
             .start();
 

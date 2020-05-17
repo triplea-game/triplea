@@ -1,7 +1,6 @@
 package games.strategy.net.nio;
 
 import games.strategy.net.ILoginValidator;
-import games.strategy.net.INode;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
@@ -13,7 +12,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.triplea.domain.data.UserName;
 
@@ -106,8 +104,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           synchronized (serverMessenger.newNodeLock) {
             // aggregate all player names by mac address (there can be multiple names per mac
             // address)
-            final Collection<String> names =
-                serverMessenger.getNodes().stream().map(INode::getName).collect(Collectors.toSet());
+            final Collection<String> names = serverMessenger.getPlayerNames();
             remoteName = UserNameAssigner.assignName(remoteName, remoteMac, names);
           }
 

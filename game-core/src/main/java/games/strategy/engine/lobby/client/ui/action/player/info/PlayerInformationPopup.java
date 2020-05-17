@@ -18,7 +18,9 @@ class PlayerInformationPopup {
     SwingUtilities.invokeLater(
         () -> {
           final JDialog dialog = new JDialog(parent, "Player Info: " + playerName.getValue());
-          dialog.getContentPane().add(PlayerInformationPopup.buildContentPanel(playerName, playerSummary));
+          dialog
+              .getContentPane()
+              .add(PlayerInformationPopup.buildContentPanel(playerName, playerSummary));
           dialog.pack();
           dialog.setLocationRelativeTo(parent);
           dialog.setVisible(true);
