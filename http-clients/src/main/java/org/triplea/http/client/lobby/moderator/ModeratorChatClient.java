@@ -15,7 +15,6 @@ public class ModeratorChatClient {
   public static final String DISCONNECT_PLAYER_PATH = "/lobby/moderator/disconnect-player";
   public static final String BAN_PLAYER_PATH = "/lobby/moderator/ban-player";
   public static final String MUTE_USER = "/lobby/moderator/mute-player";
-  public static final String FETCH_PLAYER_INFORMATION = "/lobby/moderator/fetch-player-info";
   public static final String FETCH_GAME_CHAT_HISTORY = "/lobby/moderator/fetch-game-chat-history";
 
   private AuthenticationHeaders authenticationHeaders;
@@ -33,11 +32,6 @@ public class ModeratorChatClient {
 
   public void disconnectPlayer(final PlayerChatId playerChatId) {
     moderatorLobbyFeignClient.disconnectPlayer(
-        authenticationHeaders.createHeaders(), playerChatId.getValue());
-  }
-
-  public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
-    return moderatorLobbyFeignClient.fetchPlayerInformation(
         authenticationHeaders.createHeaders(), playerChatId.getValue());
   }
 

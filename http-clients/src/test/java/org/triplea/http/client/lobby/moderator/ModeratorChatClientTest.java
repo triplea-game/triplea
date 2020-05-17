@@ -23,23 +23,6 @@ class ModeratorChatClientTest extends WireMockTest {
           .build();
   private static final PlayerChatId PLAYER_CHAT_ID = PlayerChatId.of("player-chat-id");
 
-  private static final PlayerSummary PLAYER_SUMMARY_FOR_MODERATOR =
-      PlayerSummary.builder()
-          .name("name")
-          .systemId("system-id")
-          .ip("5.5.3.3")
-          .aliases(List.of())
-          .bans(
-              List.of(
-                  PlayerSummary.BanInformation.builder()
-                      .epochMillEndDate(1000)
-                      .epochMilliStartDate(2000)
-                      .name("name-banned")
-                      .systemId("id")
-                      .ip("ip")
-                      .build()))
-          .build();
-
   private static final ChatHistoryMessage CHAT_HISTORY_MESSAGE =
       ChatHistoryMessage.builder()
           .username("chatter")
@@ -88,21 +71,6 @@ class ModeratorChatClientTest extends WireMockTest {
             .willReturn(WireMock.aResponse().withStatus(200)));
 
     newClient(server).disconnectPlayer(PLAYER_CHAT_ID);
-  }
-
-  @Test
-  void fetchPlayerInfo(@WiremockResolver.Wiremock final WireMockServer server) {
-    server.stubFor(
-        WireMock.post(ModeratorChatClient.FETCH_PLAYER_INFORMATION)
-            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalTo(PLAYER_CHAT_ID.getValue()))
-            .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withBody(toJson(PLAYER_SUMMARY_FOR_MODERATOR))));
-
-    final var result = newClient(server).fetchPlayerInformation(PLAYER_CHAT_ID);
-    assertThat(result, is(PLAYER_SUMMARY_FOR_MODERATOR));
   }
 
   @Test

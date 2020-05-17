@@ -18,6 +18,7 @@ import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
+import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -31,7 +32,7 @@ public class PlayerInfoController extends HttpController {
   }
 
   @POST
-  @Path(ModeratorChatClient.FETCH_PLAYER_INFORMATION)
+  @Path(PlayerLobbyActionsClient.FETCH_PLAYER_INFORMATION)
   @RateLimited(
       keys = {KeyPart.IP},
       rates = {@Rate(limit = 15, duration = 1, timeUnit = TimeUnit.MINUTES)})

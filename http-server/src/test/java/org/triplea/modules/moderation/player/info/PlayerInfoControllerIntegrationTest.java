@@ -7,14 +7,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.HttpInteractionException;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
+import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.modules.http.AllowedUserRole;
 import org.triplea.modules.http.ProtectedEndpointTest;
 
-class PlayerInfoControllerIntegrationTest extends ProtectedEndpointTest<ModeratorChatClient> {
+class PlayerInfoControllerIntegrationTest extends ProtectedEndpointTest<PlayerLobbyActionsClient> {
 
   PlayerInfoControllerIntegrationTest() {
-    super(AllowedUserRole.MODERATOR, ModeratorChatClient::newClient);
+    super(AllowedUserRole.MODERATOR, PlayerLobbyActionsClient::new);
   }
 
   @Test

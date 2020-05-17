@@ -16,10 +16,6 @@ public interface ModeratorChatFeignClient {
   @RequestLine("POST " + ModeratorChatClient.DISCONNECT_PLAYER_PATH)
   void disconnectPlayer(@HeaderMap Map<String, Object> headers, String value);
 
-  @RequestLine("POST " + ModeratorChatClient.FETCH_PLAYER_INFORMATION)
-  PlayerSummary fetchPlayerInformation(
-      @HeaderMap Map<String, Object> headers, String value);
-
   @RequestLine("POST " + ModeratorChatClient.MUTE_USER)
   void mutePlayer(@HeaderMap Map<String, Object> headers, MuteUserRequest muteUserRequest);
 

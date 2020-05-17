@@ -34,8 +34,7 @@ public class ShowPlayerInformationAction {
   }
 
   private void fetchPlayerInfoAndShowDisplay() {
-    final var playerSummary =
-        playerToLobbyConnection.fetchPlayerInformation(playerChatId);
+    final var playerSummary = playerToLobbyConnection.fetchPlayerInformation(playerChatId);
     PlayerInformationPopup.showPopup(parent, playerSummary);
   }
 
