@@ -235,7 +235,7 @@ public class ServerApplication extends Application<AppConfig> {
         ModeratorAuditHistoryController.build(jdbi),
         ModeratorsController.build(jdbi),
         MuteUserController.build(chatters),
-        PlayerInfoController.build(jdbi),
+        PlayerInfoController.build(jdbi, chatters),
         RemoteActionsController.build(jdbi, gameMessagingBus),
         UpdateAccountController.build(jdbi));
   }

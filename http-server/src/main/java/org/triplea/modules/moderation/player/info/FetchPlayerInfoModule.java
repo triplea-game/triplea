@@ -1,7 +1,7 @@
 package org.triplea.modules.moderation.player.info;
 
 import java.util.Collection;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
@@ -10,39 +10,60 @@ import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
+import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
+import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.chat.Chatters;
 
 @AllArgsConstructor
-class FetchPlayerInfoModule implements Function<PlayerChatId, PlayerSummary> {
+class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatId, PlayerSummary> {
   private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
+  private final Chatters chatters;
 
-  static FetchPlayerInfoModule build(final Jdbi jdbi) {
+  static FetchPlayerInfoModule build(final Jdbi jdbi, final Chatters chatters) {
     return new FetchPlayerInfoModule(
-        PlayerApiKeyDaoWrapper.build(jdbi), jdbi.onDemand(PlayerInfoForModeratorDao.class));
+        PlayerApiKeyDaoWrapper.build(jdbi),
+        jdbi.onDemand(PlayerInfoForModeratorDao.class),
+        chatters);
   }
 
   @Override
-  public PlayerSummary apply(final PlayerChatId playerChatId) {
-    final PlayerIdentifiersByApiKeyLookup gamePlayerLookup =
-        apiKeyDaoWrapper
-            .lookupPlayerByChatId(playerChatId)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Player could not be found, have they left chat?"));
+  public PlayerSummary apply(
+      final AuthenticatedUser authenticatedUser, final PlayerChatId playerChatId) {
 
-    return PlayerSummary.builder()
-        .name(gamePlayerLookup.getUserName().getValue())
-        .systemId(gamePlayerLookup.getSystemId().getValue())
-        .ip(gamePlayerLookup.getIp())
-        .aliases(lookupPlayerAliases(gamePlayerLookup.getSystemId(), gamePlayerLookup.getIp()))
-        .bans(lookupPlayerBans(gamePlayerLookup.getSystemId(), gamePlayerLookup.getIp()))
-        .build();
+    final var chatterSession =
+        chatters.lookupPlayerByChatId(playerChatId).orElseThrow(this::playerLeftChatException);
+
+    var playerSummaryBuilder =
+        PlayerSummary.builder() //
+            .name(chatterSession.getChatParticipant().getUserName().getValue());
+
+    // if a moderator is requesting player data, then attach ban and aliases information
+    if (UserRole.isModerator(authenticatedUser.getUserRole())) {
+      final PlayerIdentifiersByApiKeyLookup gamePlayerLookup =
+          apiKeyDaoWrapper
+              .lookupPlayerByChatId(playerChatId)
+              .orElseThrow(this::playerLeftChatException);
+
+      playerSummaryBuilder =
+          playerSummaryBuilder
+              .systemId(gamePlayerLookup.getSystemId().getValue())
+              .ip(chatterSession.getIp().toString())
+              .aliases(
+                  lookupPlayerAliases(gamePlayerLookup.getSystemId(), gamePlayerLookup.getIp()))
+              .bans(lookupPlayerBans(gamePlayerLookup.getSystemId(), gamePlayerLookup.getIp()));
+    }
+
+    return playerSummaryBuilder.build();
+  }
+
+  private IllegalArgumentException playerLeftChatException() {
+    return new IllegalArgumentException("Player could not be found, have they left chat?");
   }
 
   private Collection<Alias> lookupPlayerAliases(final SystemId systemId, final String ip) {

@@ -4,12 +4,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import javax.websocket.Session;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +27,18 @@ import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
+import org.triplea.db.dao.user.role.UserRole;
+import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
+import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.chat.ChatterSession;
+import org.triplea.modules.chat.Chatters;
 
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {
@@ -45,6 +58,21 @@ class FetchPlayerInfoModuleTest {
           .date(LocalDateTime.of(2000, 1, 1, 1, 1, 1).toInstant(ZoneOffset.UTC))
           .build();
 
+  private static final AuthenticatedUser authenticatedPlayer =
+      AuthenticatedUser.builder()
+          .name("name")
+          .apiKey(ApiKey.of("player-api-key"))
+          .userRole(UserRole.ANONYMOUS)
+          .build();
+
+  private static final AuthenticatedUser authenticatedModerator =
+      AuthenticatedUser.builder()
+          .name("name")
+          .userId(123)
+          .userRole(UserRole.MODERATOR)
+          .apiKey(ApiKey.of("moderator-api-key"))
+          .build();
+
   private static final PlayerBanRecord PLAYER_BAN_RECORD =
       PlayerBanRecord.builder()
           .username("banned-name")
@@ -56,19 +84,70 @@ class FetchPlayerInfoModuleTest {
 
   @Mock private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private PlayerInfoForModeratorDao playerInfoForModeratorDao;
+  @Mock private Chatters chatters;
 
   @InjectMocks private FetchPlayerInfoModule fetchPlayerInfoModule;
 
+  private ChatterSession chatterSession;
+
+  @BeforeEach
+  void setupChatterSessionData() {
+    chatterSession =
+        ChatterSession.builder()
+            .ip(IpAddressParser.fromString("1.2.3.4"))
+            .apiKeyId(-1)
+            .chatParticipant(
+                ChatParticipant.builder()
+                    .userName("user-name")
+                    .isModerator(false)
+                    .status("AFK")
+                    .playerChatId("player-chat-id")
+                    .build())
+            .session(mock(Session.class))
+            .build();
+  }
+
   @Test
-  void unableToFindPlayerChatIdThrows() {
-    when(apiKeyDaoWrapper.lookupPlayerByChatId(PlayerChatId.of("id"))).thenReturn(Optional.empty());
+  void unableToFindPlayerChatIdInChattersThrows() {
+    when(chatters.lookupPlayerByChatId(PlayerChatId.of("id"))).thenReturn(Optional.empty());
+
     assertThrows(
-        IllegalArgumentException.class, () -> fetchPlayerInfoModule.apply(PlayerChatId.of("id")));
+        IllegalArgumentException.class,
+        () -> fetchPlayerInfoModule.apply(authenticatedPlayer, PlayerChatId.of("id")));
+  }
+
+  @Test
+  void unableToFindPlayerChatIdInApiKeyTableThrows() {
+    when(chatters.lookupPlayerByChatId(PlayerChatId.of("id")))
+        .thenReturn(Optional.of(chatterSession));
+    when(apiKeyDaoWrapper.lookupPlayerByChatId(PlayerChatId.of("id"))) //
+        .thenReturn(Optional.empty());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> fetchPlayerInfoModule.apply(authenticatedModerator, PlayerChatId.of("id")));
+  }
+
+  @Test
+  @DisplayName("Verify data transformation retrieving info available to any player")
+  void playerLookupByPlayer() {
+    when(chatters.lookupPlayerByChatId(PlayerChatId.of("id")))
+        .thenReturn(Optional.of(chatterSession));
+
+    final var playerSummaryForModerator =
+        fetchPlayerInfoModule.apply(authenticatedPlayer, PlayerChatId.of("id"));
+    assertThat(
+        playerSummaryForModerator.getName(),
+        is(chatterSession.getChatParticipant().getUserName().getValue()));
+
+    // lookup of more information is reserved to moderator players.
+    verify(apiKeyDaoWrapper, never()).lookupPlayerByChatId(any());
   }
 
   @Test
   @DisplayName("Verify data transformation into a player summary object")
-  void playerLookup() {
+  void playerLookupByModerator() {
+    when(chatters.lookupPlayerByChatId(PlayerChatId.of("id")))
+        .thenReturn(Optional.of(chatterSession));
     when(apiKeyDaoWrapper.lookupPlayerByChatId(PlayerChatId.of("id")))
         .thenReturn(Optional.of(GAME_PLAYER_LOOKUP));
     when(playerInfoForModeratorDao.lookupPlayerAliasRecords(
@@ -78,10 +157,12 @@ class FetchPlayerInfoModuleTest {
             GAME_PLAYER_LOOKUP.getSystemId().getValue(), GAME_PLAYER_LOOKUP.getIp()))
         .thenReturn(List.of(PLAYER_BAN_RECORD));
 
-    final var playerSummaryForModerator = fetchPlayerInfoModule.apply(PlayerChatId.of("id"));
+    final var playerSummaryForModerator =
+        fetchPlayerInfoModule.apply(authenticatedModerator, PlayerChatId.of("id"));
     assertThat(
-        playerSummaryForModerator.getName(), is(GAME_PLAYER_LOOKUP.getUserName().getValue()));
-    assertThat(playerSummaryForModerator.getIp(), is(GAME_PLAYER_LOOKUP.getIp()));
+        playerSummaryForModerator.getName(),
+        is(chatterSession.getChatParticipant().getUserName().getValue()));
+    assertThat(playerSummaryForModerator.getIp(), is(chatterSession.getIp().toString()));
     assertThat(
         playerSummaryForModerator.getSystemId(), is(GAME_PLAYER_LOOKUP.getSystemId().getValue()));
 

@@ -6,7 +6,7 @@ import es.moki.ratelimij.dropwizard.annotation.RateLimited;
 import es.moki.ratelimij.dropwizard.filter.KeyPart;
 import io.dropwizard.auth.Auth;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,19 +16,19 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.HttpController;
-import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
+import org.triplea.modules.chat.Chatters;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@RolesAllowed(UserRole.MODERATOR)
+@RolesAllowed(UserRole.ANONYMOUS)
 public class PlayerInfoController extends HttpController {
 
-  private final Function<PlayerChatId, PlayerSummary> fetchPlayerInfoAction;
+  private final BiFunction<AuthenticatedUser, PlayerChatId, PlayerSummary> fetchPlayerInfoAction;
 
-  public static PlayerInfoController build(final Jdbi jdbi) {
-    return new PlayerInfoController(FetchPlayerInfoModule.build(jdbi));
+  public static PlayerInfoController build(final Jdbi jdbi, final Chatters chatters) {
+    return new PlayerInfoController(FetchPlayerInfoModule.build(jdbi, chatters));
   }
 
   @POST
@@ -39,6 +39,6 @@ public class PlayerInfoController extends HttpController {
   public PlayerSummary fetchPlayerInfo(
       @Auth final AuthenticatedUser authenticatedUser, final String playerId) {
     Preconditions.checkNotNull(playerId);
-    return fetchPlayerInfoAction.apply(PlayerChatId.of(playerId));
+    return fetchPlayerInfoAction.apply(authenticatedUser, PlayerChatId.of(playerId));
   }
 }

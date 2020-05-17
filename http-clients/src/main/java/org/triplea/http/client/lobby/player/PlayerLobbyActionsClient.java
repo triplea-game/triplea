@@ -16,7 +16,8 @@ public class PlayerLobbyActionsClient {
 
   public PlayerLobbyActionsClient(final URI lobbyUri, final ApiKey apiKey) {
     authenticationHeaders = new AuthenticationHeaders(apiKey);
-    playerLobbyActionsFeignClient = new HttpClient<>(PlayerLobbyActionsFeignClient.class, lobbyUri).get();
+    playerLobbyActionsFeignClient =
+        new HttpClient<>(PlayerLobbyActionsFeignClient.class, lobbyUri).get();
   }
 
   public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {

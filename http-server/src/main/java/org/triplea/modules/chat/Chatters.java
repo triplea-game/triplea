@@ -42,6 +42,14 @@ public class Chatters {
     return Optional.ofNullable(participants.get(senderSession.getId()));
   }
 
+  public Optional<ChatterSession> lookupPlayerByChatId(final PlayerChatId playerChatId) {
+    return participants.values().stream()
+        .filter(
+            chatterSession ->
+                chatterSession.getChatParticipant().getPlayerChatId().equals(playerChatId))
+        .findAny();
+  }
+
   public void connectPlayer(final ChatterSession chatterSession) {
     participants.put(chatterSession.getSession().getId(), chatterSession);
   }
@@ -135,7 +143,7 @@ public class Chatters {
       final long muteMinutes,
       final Clock clock,
       final MessageBroadcaster messageBroadcaster) {
-    findChatterSessionByPlayerChatId(playerChatId)
+    lookupPlayerByChatId(playerChatId)
         .ifPresent(
             chatterSession -> {
               muteIpAddress(chatterSession.getIp(), muteMinutes, clock);
@@ -144,15 +152,6 @@ public class Chatters {
                   muteMinutes,
                   messageBroadcaster);
             });
-  }
-
-  private Optional<ChatterSession> findChatterSessionByPlayerChatId(
-      final PlayerChatId playerChatId) {
-    return participants.values().stream()
-        .filter(
-            chatterSession ->
-                chatterSession.getChatParticipant().getPlayerChatId().equals(playerChatId))
-        .findAny();
   }
 
   private void muteIpAddress(final InetAddress ip, final long muteMinutes, final Clock clock) {
