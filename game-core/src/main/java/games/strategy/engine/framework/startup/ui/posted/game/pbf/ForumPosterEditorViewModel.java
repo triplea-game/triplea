@@ -60,13 +60,12 @@ class ForumPosterEditorViewModel {
     if (isDummyPassword(password)) {
       return;
     }
-
-    final ClientSetting<char[]> passwordSetting =
+    /* final ClientSetting<char[]> passwordSetting =
         forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumPassword
             : ClientSetting.aaForumPassword;
 
-    passwordSetting.setValueAndFlush(password);
+    passwordSetting.setValueAndFlush(password);*/
     forumPasswordIsSet = password.length > 0;
     readyCallback.run();
   }
@@ -83,12 +82,12 @@ class ForumPosterEditorViewModel {
   }
 
   void setForumUsername(final String username) {
-    final ClientSetting<char[]> usernameSetting =
+    /*final ClientSetting<char[]> usernameSetting =
         forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername
             : ClientSetting.aaForumUsername;
 
-    usernameSetting.setValueAndFlush(username.toCharArray());
+    usernameSetting.setValueAndFlush(username.toCharArray());*/
     forumUsername = username;
     readyCallback.run();
   }
@@ -108,14 +107,8 @@ class ForumPosterEditorViewModel {
         this.forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
             ? ClientSetting.tripleaForumUsername.getValue().map(String::valueOf).orElse("")
             : ClientSetting.aaForumUsername.getValue().map(String::valueOf).orElse("");
-    forumPasswordIsSet = getPasswordLength() > 0;
+    forumPasswordIsSet = false;
     readyCallback.run();
-  }
-
-  private int getPasswordLength() {
-    return forumSelection.equals(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME)
-        ? ClientSetting.tripleaForumPassword.getValue().orElse(new char[0]).length
-        : ClientSetting.aaForumPassword.getValue().orElse(new char[0]).length;
   }
 
   /**
@@ -123,7 +116,7 @@ class ForumPosterEditorViewModel {
    * be used to set the UI text value and never used as the actual users password.
    */
   String getForumPassword() {
-    return forumPasswordIsSet ? Strings.repeat("*", getPasswordLength()) : "";
+    return forumPasswordIsSet ? Strings.repeat("*", 4) : "";
   }
 
   public String getForumSelection() {
@@ -147,7 +140,7 @@ class ForumPosterEditorViewModel {
   }
 
   synchronized boolean areFieldsValid() {
-    return isTopicIdValid() && isForumUsernameValid() && isForumPasswordValid();
+    return isTopicIdValid() && ((isForumUsernameValid() && isForumPasswordValid()) || ClientSetting.aaForumToken.isSet() || ClientSetting.tripleaForumToken.isSet());
   }
 
   String getForumProviderHelpText() {

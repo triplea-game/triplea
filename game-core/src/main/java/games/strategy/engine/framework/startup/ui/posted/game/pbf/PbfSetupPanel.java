@@ -246,14 +246,14 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             + "this error indicates a programming bug that allowed for the start game button to be "
             + "enabled without first valid game data being loaded. ");
 
-    if (forumPosterEditor.isForgetPasswordOnShutdown()) {
+    /*if (forumPosterEditor.isForgetPasswordOnShutdown()) {
       ExitStatus.addExitAction(
           () -> {
             ClientSetting.aaForumPassword.resetValue();
             ClientSetting.tripleaForumPassword.resetValue();
             ClientSetting.flush();
           });
-    }
+    }*/
 
     final PbemDiceRoller randomSource = new PbemDiceRoller(diceServerEditor.newDiceServer());
     final Map<String, PlayerType> playerTypes = new HashMap<>();

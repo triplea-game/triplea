@@ -1,6 +1,5 @@
 package games.strategy.engine.posted.game.pbf;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.UrlConstants;
@@ -15,11 +14,8 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
@@ -31,7 +27,6 @@ import org.apache.http.util.EntityUtils;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.triplea.awt.OpenFileUtility;
-import org.triplea.util.Arrays;
 
 /**
  * Posts turn summaries to a NodeBB based forum of your choice.
@@ -45,15 +40,13 @@ public class NodeBbForumPoster {
 
   private final Load load = new Load(LoadSettings.builder().build());
   private final int topicId;
-  private final String username;
-  private final String password;
+  private final String token;
   private final String forumUrl;
 
   @Builder
   public static class ForumPostingParameters {
     @Nonnull private final Integer topicId;
-    @Nonnull private final char[] username;
-    @Nonnull private final char[] password;
+    @Nonnull private final char[] token;
     @Nonnull private final String forumUrl;
   }
 
@@ -66,10 +59,7 @@ public class NodeBbForumPoster {
   private NodeBbForumPoster(final ForumPostingParameters forumPostingParameters) {
     this.topicId = forumPostingParameters.topicId;
     this.forumUrl = forumPostingParameters.forumUrl;
-    this.username =
-        Arrays.withSensitiveArrayAndReturn(() -> forumPostingParameters.username, String::new);
-    this.password =
-        Arrays.withSensitiveArrayAndReturn(() -> forumPostingParameters.password, String::new);
+    this.token = new String(forumPostingParameters.token);
   }
 
   /**
@@ -82,16 +72,14 @@ public class NodeBbForumPoster {
         return new NodeBbForumPoster(
             ForumPostingParameters.builder()
                 .topicId(topicId)
-                .username(ClientSetting.tripleaForumUsername.getValueOrThrow())
-                .password(ClientSetting.tripleaForumPassword.getValueOrThrow())
+                .token(ClientSetting.tripleaForumToken.getValueOrThrow())
                 .forumUrl(UrlConstants.TRIPLEA_FORUM)
                 .build());
       case NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME:
         return new NodeBbForumPoster(
             ForumPostingParameters.builder()
                 .topicId(topicId)
-                .username(ClientSetting.aaForumUsername.getValueOrThrow())
-                .password(ClientSetting.aaForumPassword.getValueOrThrow())
+                .token(ClientSetting.aaForumToken.getValueOrThrow())
                 .forumUrl(UrlConstants.AXIS_AND_ALLIES_FORUM)
                 .build());
       default:
@@ -115,14 +103,8 @@ public class NodeBbForumPoster {
   public CompletableFuture<String> postTurnSummary(
       final String summary, final String title, @Nullable final SaveGameParameter saveGame) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      final int userId = getUserId(client);
-      final String token = getToken(client, userId);
-      try {
-        post(client, token, "### " + title + "\n" + summary, saveGame);
-        return CompletableFuture.completedFuture("Successfully posted!");
-      } finally {
-        deleteToken(client, userId, token);
-      }
+      post(client, token, "### " + title + "\n" + summary, saveGame);
+      return CompletableFuture.completedFuture("Successfully posted!");
     } catch (final IOException | IllegalStateException e) {
       final CompletableFuture<String> result = new CompletableFuture<>();
       result.completeExceptionally(e);
@@ -186,70 +168,6 @@ public class NodeBbForumPoster {
               + status
               + "\nMessage:\n"
               + EntityUtils.toString(response.getEntity()));
-    }
-  }
-
-  private void deleteToken(final CloseableHttpClient client, final int userId, final String token)
-      throws IOException {
-    final HttpDelete httpDelete =
-        new HttpDelete(forumUrl + "/api/v2/users/" + userId + "/tokens/" + token);
-    HttpProxy.addProxy(httpDelete);
-    addTokenHeader(httpDelete, token);
-    client.execute(httpDelete).close(); // ignore errors, execute and then close
-  }
-
-  private int getUserId(final CloseableHttpClient client) throws IOException {
-    final Map<?, ?> jsonObject = queryUserInfo(client);
-    checkUser(jsonObject);
-    return (Integer) jsonObject.get("uid");
-  }
-
-  private void checkUser(final Map<?, ?> jsonObject) {
-    if (!jsonObject.containsKey("uid")) {
-      throw new IllegalStateException(String.format("User %s doesn't exist.", username));
-    }
-    if (1 == (Integer) jsonObject.get("banned")) {
-      throw new IllegalStateException("Your account is banned from the forum.");
-    }
-    if (1 != (Integer) jsonObject.get("email:confirmed")) {
-      throw new IllegalStateException("Your email isn't confirmed yet!");
-    }
-  }
-
-  private Map<?, ?> queryUserInfo(final CloseableHttpClient client) throws IOException {
-    final HttpGet post = new HttpGet(forumUrl + "/api/user/username/" + username);
-    HttpProxy.addProxy(post);
-    try (CloseableHttpResponse response = client.execute(post)) {
-      return (Map<?, ?>) load.loadFromString(EntityUtils.toString(response.getEntity()));
-    }
-  }
-
-  private NameValuePair newPasswordParameter() {
-    return new BasicNameValuePair("password", password);
-  }
-
-  private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
-    final HttpPost post = new HttpPost(forumUrl + "/api/v2/users/" + userId + "/tokens");
-    post.setEntity(
-        new UrlEncodedFormEntity(List.of(newPasswordParameter()), StandardCharsets.UTF_8));
-    HttpProxy.addProxy(post);
-    try (CloseableHttpResponse response = client.execute(post)) {
-      final String rawJson = EntityUtils.toString(response.getEntity());
-      final Map<?, ?> jsonObject = (Map<?, ?>) load.loadFromString(rawJson);
-      if (jsonObject.containsKey("code")) {
-        final String code = (String) Preconditions.checkNotNull(jsonObject.get("code"));
-        if (code.equalsIgnoreCase("ok")) {
-          return (String)
-              Preconditions.checkNotNull((Map<?, ?>) jsonObject.get("payload")).get("token");
-        }
-        throw new IllegalStateException(
-            "Incorrect password or server error.\nReturn Code: "
-                + code
-                + "\nMessage from server: "
-                + jsonObject.get("message"));
-      }
-      throw new IllegalStateException(
-          "Error, bad server response: " + response.getStatusLine() + "; JSON: " + rawJson);
     }
   }
 

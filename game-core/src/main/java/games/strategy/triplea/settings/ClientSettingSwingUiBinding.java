@@ -13,6 +13,8 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import java.util.Collection;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
+
+import games.strategy.triplea.UrlConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -322,8 +324,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Configure the login credentials of the TripleA Forum") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.tripleaForumUsername, ClientSetting.tripleaForumPassword);
+      return SelectionComponentFactory.forumPosterSettings(UrlConstants.TRIPLEA_FORUM, ClientSetting.tripleaForumUserId,
+          ClientSetting.tripleaForumUsername, ClientSetting.tripleaForumToken);
     }
   },
 
@@ -333,8 +335,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Configure the login credentials of the Axis & Allies Forum") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.aaForumUsername, ClientSetting.aaForumPassword);
+      return SelectionComponentFactory.forumPosterSettings(UrlConstants.AXIS_AND_ALLIES_FORUM, ClientSetting.aaForumUserId,
+          ClientSetting.aaForumUsername, ClientSetting.aaForumToken);
     }
   },
 
