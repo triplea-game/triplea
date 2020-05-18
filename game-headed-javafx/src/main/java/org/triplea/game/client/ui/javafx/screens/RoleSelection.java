@@ -142,14 +142,13 @@ public class RoleSelection implements ControlledScreen<ScreenController<FxmlMana
     final var faction = new Button(playerAlliances.toString());
     faction.setOnAction(
         e -> {
-          final int targetIndex = controllingPlayer.getSelectionModel().getSelectedIndex();
+          controllingPlayer.getSelectionModel().select(PlayerType.HUMAN_PLAYER.getLabel());
           playerAlliances.stream()
               .map(gameData.getAllianceTracker()::getPlayersInAlliance)
               .flatMap(Collection::stream)
               .map(roleForPlayers::get)
-              .filter(stringComboBox -> stringComboBox.getItems().size() > targetIndex)
               .map(ComboBox::getSelectionModel)
-              .forEach(selectionModel -> selectionModel.select(targetIndex));
+              .forEach(selectionModel -> selectionModel.select(PlayerType.HUMAN_PLAYER.getLabel()));
         });
     return faction;
   }
