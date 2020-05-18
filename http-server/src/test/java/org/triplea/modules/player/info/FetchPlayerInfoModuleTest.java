@@ -42,7 +42,6 @@ import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.chat.ChatterSession;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.game.listing.GameListing;
-import org.triplea.modules.player.info.FetchPlayerInfoModule;
 
 @ExtendWith(MockitoExtension.class)
 class FetchPlayerInfoModuleTest {
