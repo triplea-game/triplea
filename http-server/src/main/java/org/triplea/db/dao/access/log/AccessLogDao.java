@@ -17,8 +17,8 @@ public interface AccessLogDao {
           + "    username,"
           + "    ip,"
           + "    system_id,"
-          + "    registered"
-          + "  from access_log"
+          + "    (lobby_user_id is not null) as registered"
+          + "  from access_log al"
           + "  where username like :username"
           + "     and host(ip) like :ip"
           + "     and system_id like :systemId"
@@ -33,14 +33,12 @@ public interface AccessLogDao {
       @Bind("systemId") String systemId);
 
   @SqlUpdate(
-      "insert into access_log(username, ip, system_id, registered)\n"
-          + "values(:username, :ip::inet, :systemId, true)")
-  int insertRegisteredUserRecord(
-      @Bind("username") String username, @Bind("ip") String ip, @Bind("systemId") String systemId);
-
-  @SqlUpdate(
-      "insert into access_log(username, ip, system_id, registered)\n"
-          + "values(:username, :ip::inet, :systemId, false)")
-  int insertAnonymousUserRecord(
+      "insert into access_log(username, ip, system_id, lobby_user_id)\n"
+          + "values ("
+          + "  :username,"
+          + "  :ip::inet,"
+          + "  :systemId,"
+          + "  (select id from lobby_user where username = :username))")
+  int insertUserAccessRecord(
       @Bind("username") String username, @Bind("ip") String ip, @Bind("systemId") String systemId);
 }

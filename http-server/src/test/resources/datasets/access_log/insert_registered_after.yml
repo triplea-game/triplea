@@ -2,4 +2,4 @@ access_log:
   - username: registered
     ip: 127.0.0.20
     system_id: registered-system-id
-    registered: true
+    lobby_user_id: 5230
