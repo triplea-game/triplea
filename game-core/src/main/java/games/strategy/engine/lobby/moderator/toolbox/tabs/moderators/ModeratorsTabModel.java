@@ -13,8 +13,7 @@ class ModeratorsTabModel {
   @VisibleForTesting static final List<String> HEADERS = List.of("Name", "Last Login");
 
   @VisibleForTesting
-  static final List<String> SUPER_MOD_HEADERS =
-      List.of("Name", "Last Login", "Remove Mod", "Add Super-Mod");
+  static final List<String> SUPER_MOD_HEADERS = List.of("Name", "Last Login", "", "");
 
   @VisibleForTesting static final String REMOVE_MOD_BUTTON_TEXT = "Remove Mod";
   @VisibleForTesting static final String ADD_SUPER_MOD_BUTTON = "Add Super-Mod";
