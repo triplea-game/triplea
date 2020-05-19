@@ -229,6 +229,6 @@ public class GameListing {
   }
 
   private Predicate<Map.Entry<UserName, Collection<GameId>>> playerIsInGame(final String gameId) {
-    return entry -> entry.getValue().stream().anyMatch(id -> id.getId().equals(gameId));
+    return entry -> entry.getValue().stream().map(GameId::getId).anyMatch(gameId::equals);
   }
 }
