@@ -608,10 +608,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
    */
   private void notifyLobby(
       final BiConsumer<GameToLobbyConnection, String> connectionAndGameIdAction) {
-    Optional.ofNullable(gameToLobbyConnection)
-        .flatMap(lobbyConnection -> Optional.ofNullable(lobbyWatcherThread))
-        .flatMap(LobbyWatcherThread::getGameId)
-        .ifPresent(gameId -> connectionAndGameIdAction.accept(gameToLobbyConnection, gameId));
+    if (gameToLobbyConnection != null && lobbyWatcherThread != null) {
+      lobbyWatcherThread
+          .getGameId()
+          .ifPresent(gameId -> connectionAndGameIdAction.accept(gameToLobbyConnection, gameId));
+    }
   }
 
   @Override
