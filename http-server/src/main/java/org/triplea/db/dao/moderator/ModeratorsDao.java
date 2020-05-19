@@ -14,11 +14,13 @@ public interface ModeratorsDao {
   @SqlQuery(
       "select "
           + "    lu.username,"
-          + "    lu.last_login"
+          + "    max(al.access_time) access_time"
           + "  from lobby_user lu"
+          + "  left join access_log al on al.lobby_user_id = lu.id"
           + "  join user_role ur on ur.id = lu.user_role_id"
           + "  where ur.name in (<roles>)"
-          + "  order by username")
+          + "  group by lu.username"
+          + "  order by lu.username")
   List<ModeratorUserDaoData> getUserByRole(@BindList("roles") Collection<String> roles);
 
   default List<ModeratorUserDaoData> getModerators() {

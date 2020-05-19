@@ -14,9 +14,6 @@ import org.triplea.db.TimestampMapper;
 @NoArgsConstructor
 @Getter
 public class ModeratorUserDaoData {
-  public static final String USERNAME_COLUMN = "username";
-  public static final String LAST_LOGIN_COLUMN = "last_login";
-
   private String username;
   private Instant lastLogin;
 
@@ -25,7 +22,7 @@ public class ModeratorUserDaoData {
     return (rs, ctx) ->
         ModeratorUserDaoData.builder()
             .username(rs.getString("username"))
-            .lastLogin(TimestampMapper.map(rs, "last_login"))
+            .lastLogin(TimestampMapper.map(rs, "access_time"))
             .build();
   }
 }

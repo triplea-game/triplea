@@ -24,12 +24,12 @@ values (1000, 'test', 'email@email.com', (select id from user_role where name = 
        (1001, 'user1', 'email@email.com', (select id from user_role where name = 'PLAYER'),
         '$2a$10$C4rHfjK/seKexc6KlyknP.oFVBZ7Wi.kp91qUQFgmkKajwgczXzcS');
 
-insert into access_log(access_time, username, ip, system_id, registered)
-values (now() - interval '1 days', 'user1', '1.1.1.1', 'system-id1', false),
-       (now() - interval '2 days', 'user2', '1.1.1.2', 'system-id2', false),
-       (now() - interval '3 days', 'user3', '1.1.1.3', 'system-id3', true),
-       (now() - interval '4 days', 'user1', '1.1.1.2', 'system-id4', false),
-       (now() - interval '5 days', 'user2', '1.1.1.4', 'system-id5', false);
+insert into access_log(access_time, username, ip, system_id, lobby_user_id)
+values (now() - interval '1 days', 'user1', '1.1.1.1', 'system-id1', null),
+       (now() - interval '2 days', 'user2', '1.1.1.2', 'system-id2', null),
+       (now() - interval '3 days', 'user3', '1.1.1.3', 'system-id3', null),
+       (now() - interval '4 days', 'user1', '1.1.1.2', 'system-id4', null),
+       (now() - interval '5 days', 'user2', '1.1.1.4', 'system-id5', null);
 
 insert into moderator_action_history(lobby_user_id, action_name, action_target)
 values (1000, 'ACTION_1', 'TARGET_1'),
