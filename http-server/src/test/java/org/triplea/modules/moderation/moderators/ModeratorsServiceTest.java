@@ -105,22 +105,21 @@ class ModeratorsServiceTest {
   }
 
   @Nested
-  final class AddSuperModTest {
+  final class AddAdminTest {
     @Test
     void throwsIfUserNotFound() {
       when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
       assertThrows(
-          IllegalArgumentException.class,
-          () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
+          IllegalArgumentException.class, () -> moderatorsService.addAdmin(MODERATOR_ID, USERNAME));
     }
 
     @Test
-    void throwsIfSuperModNotAdded() {
+    void throwsIfAdminNotAdded() {
       when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.setRole(USER_ID, UserRole.ADMIN)).thenReturn(0);
 
       assertThrows(
-          IllegalStateException.class, () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
+          IllegalStateException.class, () -> moderatorsService.addAdmin(MODERATOR_ID, USERNAME));
     }
 
     @Test
@@ -128,7 +127,7 @@ class ModeratorsServiceTest {
       when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.setRole(USER_ID, UserRole.ADMIN)).thenReturn(1);
 
-      moderatorsService.addSuperMod(MODERATOR_ID, USERNAME);
+      moderatorsService.addAdmin(MODERATOR_ID, USERNAME);
 
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(

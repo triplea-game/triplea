@@ -49,7 +49,7 @@ public final class ModeratorsTab implements Supplier<Component> {
             .addCenter(SwingComponents.newJScrollPane(dataTable))
             .build();
 
-    if (moderatorsTabModel.isSuperMod()) {
+    if (moderatorsTabModel.isAdmin()) {
       panel.add(buildAddModeratorPanel(), BorderLayout.SOUTH);
     }
     return panel;
@@ -61,10 +61,9 @@ public final class ModeratorsTab implements Supplier<Component> {
             .columnNames(moderatorsTabModel.fetchTableHeaders())
             .tableData(moderatorsTabModel.fetchTableData())
             .build();
-    if (moderatorsTabModel.isSuperMod()) {
+    if (moderatorsTabModel.isAdmin()) {
       ButtonColumn.attachButtonColumn(table, 2, moderatorsTabActions.removeModAction(parentFrame));
-      ButtonColumn.attachButtonColumn(
-          table, 3, moderatorsTabActions.addSuperModAction(parentFrame));
+      ButtonColumn.attachButtonColumn(table, 3, moderatorsTabActions.addAdminAction(parentFrame));
     }
     return table;
   }

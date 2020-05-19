@@ -42,7 +42,7 @@ final class ModeratorsTabActions {
     return (String) tableModel.getValueAt(rowNum, 0);
   }
 
-  BiConsumer<Integer, DefaultTableModel> addSuperModAction(final JFrame parentFrame) {
+  BiConsumer<Integer, DefaultTableModel> addAdminAction(final JFrame parentFrame) {
     return (rowNum, tableModel) -> {
       final String user = extractUserName(rowNum, tableModel);
 
@@ -50,7 +50,7 @@ final class ModeratorsTabActions {
           "Add Super-Moderator Status?",
           "Are you sure you want to add super-moderator to: " + user + "?",
           () -> {
-            moderatorsTabModel.addSuperMod(user);
+            moderatorsTabModel.addAdmin(user);
             MessagePopup.showMessage(parentFrame, user + " is now a super-moderator.");
           });
     };

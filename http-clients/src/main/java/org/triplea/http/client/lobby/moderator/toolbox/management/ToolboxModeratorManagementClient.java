@@ -17,11 +17,11 @@ import org.triplea.http.client.HttpClient;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ToolboxModeratorManagementClient {
   public static final String FETCH_MODERATORS_PATH = "/moderator-toolbox/fetch-moderators";
-  public static final String IS_SUPER_MOD_PATH = "/moderator-toolbox/is-super-mod";
-  public static final String REMOVE_MOD_PATH = "/moderator-toolbox/super-mod/remove-mod";
-  public static final String ADD_SUPER_MOD_PATH = "/moderator-toolbox/super-mod/add-super-mod";
+  public static final String IS_ADMIN_PATH = "/moderator-toolbox/is-admin";
   public static final String CHECK_USER_EXISTS_PATH = "/moderator-toolbox/does-user-exist";
-  public static final String ADD_MODERATOR_PATH = "/moderator-toolbox/super-mod/add-moderator";
+  public static final String REMOVE_MOD_PATH = "/moderator-toolbox/admin/remove-mod";
+  public static final String ADD_ADMIN_PATH = "/moderator-toolbox/admin/add-super-mod";
+  public static final String ADD_MODERATOR_PATH = "/moderator-toolbox/admin/add-moderator";
 
   private final AuthenticationHeaders httpHeaders;
   private final ToolboxModeratorManagementFeignClient client;
@@ -37,8 +37,8 @@ public class ToolboxModeratorManagementClient {
     return client.fetchModerators(httpHeaders.createHeaders());
   }
 
-  public boolean isCurrentUserSuperMod() {
-    return client.isSuperMod(httpHeaders.createHeaders());
+  public boolean isCurrentUserAdmin() {
+    return client.isAdmin(httpHeaders.createHeaders());
   }
 
   public void removeMod(final String moderatorName) {
@@ -46,9 +46,9 @@ public class ToolboxModeratorManagementClient {
     client.removeMod(httpHeaders.createHeaders(), moderatorName);
   }
 
-  public void addSuperMod(final String moderatorName) {
+  public void addAdmin(final String moderatorName) {
     checkArgument(moderatorName != null);
-    client.addSuperMod(httpHeaders.createHeaders(), moderatorName);
+    client.addAdmin(httpHeaders.createHeaders(), moderatorName);
   }
 
   public boolean checkUserExists(final String usernameRequested) {

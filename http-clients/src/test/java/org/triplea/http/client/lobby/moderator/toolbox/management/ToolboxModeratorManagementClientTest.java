@@ -46,26 +46,26 @@ class ToolboxModeratorManagementClientTest extends WireMockTest {
   }
 
   @Nested
-  final class IsCurrentUserSuperMod {
+  final class IsCurrentUserAdmin {
     @Test
     void positiveCase(@WiremockResolver.Wiremock final WireMockServer server) {
-      expectIsSuperModAndReturn(server, true);
+      expectIsAdminAndReturn(server, true);
 
-      assertThat(newClient(server).isCurrentUserSuperMod(), is(true));
+      assertThat(newClient(server).isCurrentUserAdmin(), is(true));
     }
 
-    void expectIsSuperModAndReturn(final WireMockServer server, final boolean value) {
+    void expectIsAdminAndReturn(final WireMockServer server, final boolean value) {
       server.stubFor(
-          WireMock.get(ToolboxModeratorManagementClient.IS_SUPER_MOD_PATH)
+          WireMock.get(ToolboxModeratorManagementClient.IS_ADMIN_PATH)
               .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
               .willReturn(WireMock.aResponse().withStatus(200).withBody(String.valueOf(value))));
     }
 
     @Test
     void negativeCase(@WiremockResolver.Wiremock final WireMockServer server) {
-      expectIsSuperModAndReturn(server, false);
+      expectIsAdminAndReturn(server, false);
 
-      assertThat(newClient(server).isCurrentUserSuperMod(), is(false));
+      assertThat(newClient(server).isCurrentUserAdmin(), is(false));
     }
   }
 
@@ -78,19 +78,19 @@ class ToolboxModeratorManagementClientTest extends WireMockTest {
   }
 
   @Test
-  void addSuperMod(@WiremockResolver.Wiremock final WireMockServer server) {
+  void addAdmin(@WiremockResolver.Wiremock final WireMockServer server) {
     serve200ForToolboxPostWithBody(
-        server, ToolboxModeratorManagementClient.ADD_SUPER_MOD_PATH, MODERATOR_NAME);
+        server, ToolboxModeratorManagementClient.ADD_ADMIN_PATH, MODERATOR_NAME);
 
-    newClient(server).addSuperMod(MODERATOR_NAME);
+    newClient(server).addAdmin(MODERATOR_NAME);
   }
 
   @Test
   void checkUserExists(@WiremockResolver.Wiremock final WireMockServer server) {
     serve200ForToolboxPostWithBody(
-        server, ToolboxModeratorManagementClient.ADD_SUPER_MOD_PATH, MODERATOR_NAME);
+        server, ToolboxModeratorManagementClient.ADD_ADMIN_PATH, MODERATOR_NAME);
 
-    newClient(server).addSuperMod(MODERATOR_NAME);
+    newClient(server).addAdmin(MODERATOR_NAME);
   }
 
   @Test

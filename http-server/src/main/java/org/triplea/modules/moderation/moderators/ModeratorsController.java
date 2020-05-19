@@ -45,9 +45,9 @@ public class ModeratorsController extends HttpController {
   }
 
   @GET
-  @Path(ToolboxModeratorManagementClient.IS_SUPER_MOD_PATH)
+  @Path(ToolboxModeratorManagementClient.IS_ADMIN_PATH)
   @RolesAllowed(UserRole.MODERATOR)
-  public Response isSuperMod(@Auth final AuthenticatedUser authenticatedUser) {
+  public Response isAdmin(@Auth final AuthenticatedUser authenticatedUser) {
     return Response.ok().entity(authenticatedUser.getUserRole().equals(UserRole.ADMIN)).build();
   }
 
@@ -61,11 +61,11 @@ public class ModeratorsController extends HttpController {
   }
 
   @POST
-  @Path(ToolboxModeratorManagementClient.ADD_SUPER_MOD_PATH)
+  @Path(ToolboxModeratorManagementClient.ADD_ADMIN_PATH)
   @RolesAllowed(UserRole.ADMIN)
-  public Response setSuperMod(
+  public Response setAdmin(
       @Auth final AuthenticatedUser authenticatedUser, final String moderatorName) {
-    moderatorsService.addSuperMod(authenticatedUser.getUserIdOrThrow(), moderatorName);
+    moderatorsService.addAdmin(authenticatedUser.getUserIdOrThrow(), moderatorName);
     return Response.ok().build();
   }
 
