@@ -18,7 +18,7 @@ public interface AccessLogDao {
           + "    ip,"
           + "    system_id,"
           + "    (lobby_user_id is not null) as registered"
-          + "  from access_log al"
+          + "  from access_log"
           + "  where username like :username"
           + "     and host(ip) like :ip"
           + "     and system_id like :systemId"
