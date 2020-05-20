@@ -763,9 +763,39 @@ class BattleStepGlobal1940Test {
     );
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
+    expected.winProbability = 1.0;
+    expected.loseProbability = 0.0;
+    expected.tieProbability = 0.0;
+    expected.badProbability = 0.0;
+    final CalculateResult actual = new CalculateResult();
+    actual.winProbability = root.getWinProbability();
+    actual.loseProbability = root.getLoseProbability();
+    actual.tieProbability = root.getTieProbability();
+    actual.badProbability = root.getBadProbability();
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void attackSubmarineVsFighterDestroy() {
+    final List<Unit> attackingOrderOfLoss = new ArrayList<>();
+    attackingOrderOfLoss.addAll(SUBMARINE.create(1, BRITISH));
+    final List<Unit> defendingOrderOfLoss = new ArrayList<>();
+    defendingOrderOfLoss.addAll(FIGHTER.create(1, GERMAN));
+    defendingOrderOfLoss.addAll(DESTROYER.create(1, GERMAN));
+
+    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+
+    final BattleStep root = new BattleStep(
+        attackingUnits,
+        BRITISH,
+        0,
+        createSeaParameters()
+    );
+    root.calculateBattle(attackingUnits, GERMAN);
+    final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.0;
-    expected.loseProbability = 0.0;
-    expected.tieProbability = 1.0;
+    expected.loseProbability = 0.999;
+    expected.tieProbability = 0.0;
     expected.badProbability = 0.0;
     final CalculateResult actual = new CalculateResult();
     actual.winProbability = root.getWinProbability();
@@ -776,12 +806,12 @@ class BattleStepGlobal1940Test {
   }
 
   @Test
-  void attackFighterDestroyerVsSubmarine() {
+  void attackSubmarineVsFighterCruiser() {
     final List<Unit> attackingOrderOfLoss = new ArrayList<>();
-    attackingOrderOfLoss.addAll(FIGHTER.create(1, BRITISH));
-    attackingOrderOfLoss.addAll(DESTROYER.create(1, BRITISH));
+    attackingOrderOfLoss.addAll(SUBMARINE.create(1, BRITISH));
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
-    defendingOrderOfLoss.addAll(SUBMARINE.create(1, GERMAN));
+    defendingOrderOfLoss.addAll(CRUISER.create(1, GERMAN));
+    defendingOrderOfLoss.addAll(FIGHTER.create(1, GERMAN));
 
     final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
@@ -793,71 +823,9 @@ class BattleStepGlobal1940Test {
     );
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
-    expected.winProbability = 0.571;
+    expected.winProbability = 0.999;
     expected.loseProbability = 0.0;
-    expected.tieProbability = 0.428;
-    expected.badProbability = 0.0;
-    final CalculateResult actual = new CalculateResult();
-    actual.winProbability = root.getWinProbability();
-    actual.loseProbability = root.getLoseProbability();
-    actual.tieProbability = root.getTieProbability();
-    actual.badProbability = root.getBadProbability();
-    assertEquals(expected, actual);
-  }
-
-  @Test
-  void attackFighterCruiserVsSubmarine() {
-    final List<Unit> attackingOrderOfLoss = new ArrayList<>();
-    attackingOrderOfLoss.addAll(FIGHTER.create(1, BRITISH));
-    attackingOrderOfLoss.addAll(CRUISER.create(1, BRITISH));
-    final List<Unit> defendingOrderOfLoss = new ArrayList<>();
-    defendingOrderOfLoss.addAll(SUBMARINE.create(1, GERMAN));
-
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
-
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
-    root.calculateBattle(attackingUnits, GERMAN);
-    final CalculateResult expected = new CalculateResult();
-    expected.winProbability = 0.499;
-    expected.loseProbability = 0.0;
-    expected.tieProbability = 0.499;
-    expected.badProbability = 0.0;
-    final CalculateResult actual = new CalculateResult();
-    actual.winProbability = root.getWinProbability();
-    actual.loseProbability = root.getLoseProbability();
-    actual.tieProbability = root.getTieProbability();
-    actual.badProbability = root.getBadProbability();
-    assertEquals(expected, actual);
-  }
-
-  @Test
-  void testTest() {
-    final List<Unit> attackingOrderOfLoss = new ArrayList<>();
-    attackingOrderOfLoss.addAll(SUBMARINE.create(1, GERMAN));
-    attackingOrderOfLoss.addAll(BOMBER.create(1, GERMAN));
-    final List<Unit> defendingOrderOfLoss = new ArrayList<>();
-    defendingOrderOfLoss.addAll(TRANSPORT.create(1, BRITISH));
-    defendingOrderOfLoss.addAll(DESTROYER.create(1, BRITISH));
-    defendingOrderOfLoss.addAll(FIGHTER.create(1, BRITISH));
-
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
-
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
-    root.calculateBattle(attackingUnits, GERMAN);
-    final CalculateResult expected = new CalculateResult();
-    expected.winProbability = 0.499;
-    expected.loseProbability = 0.0;
-    expected.tieProbability = 0.499;
+    expected.tieProbability = 0.0;
     expected.badProbability = 0.0;
     final CalculateResult actual = new CalculateResult();
     actual.winProbability = root.getWinProbability();
