@@ -74,7 +74,7 @@ subprojects {
     version = getProductVersion()
 
     ext {
-        awaitilityVersion = '4.0.2'
+        awaitilityVersion = '4.0.3'
         bcryptVersion = '0.9.0'
         caffeineVersion = '2.8.1'
         commonsCliVersion = '1.4'
