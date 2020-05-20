@@ -133,6 +133,16 @@ class BattleCalculatorComparisonTests {
     //if (true) return;
 
     if (true) {
+      final Collection<Unit> attackingUnits = new ArrayList<>();
+      attackingUnits.addAll(INFANTRY.create(1, BRITISH));
+      attackingUnits.addAll(ARTILLERY.create(1, BRITISH));
+      final Collection<Unit> defendingUnits = new ArrayList<>();
+      defendingUnits.addAll(INFANTRY.create(2, GERMAN));
+      compareCalculators(attackingUnits, defendingUnits, FRANCE);
+      return;
+    }
+
+    if (true) {
       for (int quantity = 5; quantity <= 15; quantity += 5) {
         System.out.println(
             quantity + " of infantry, artillery, armour, fighter, tactical_bomber, bomber vs same");
@@ -292,7 +302,7 @@ class BattleCalculatorComparisonTests {
         bombardingUnits,
         territoryEffects,
         false,
-        1024
+        2000
     );
 
     printResult("Hard AI 2000 runs", hardAi2Results, attackingUnits, defendingUnits, territory, data);

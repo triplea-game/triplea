@@ -69,10 +69,10 @@ public class BattleStepTWWTest {
     );
     root.calculateBattle(attackingUnits, GERMANS);
     final BattleStepGlobal1940Test.CalculateResult expected = new BattleStepGlobal1940Test.CalculateResult();
-    expected.winProbability = 0.551;
-    expected.loseProbability = 0.402;
-    expected.tieProbability = 0.044;
-    expected.badProbability = 0.001;
+    expected.winProbability = 0.431;
+    expected.loseProbability = 0.524;
+    expected.tieProbability = 0.042;
+    expected.badProbability = 0.002;
     final BattleStepGlobal1940Test.CalculateResult actual = new BattleStepGlobal1940Test.CalculateResult();
     actual.winProbability = root.getWinProbability();
     actual.loseProbability = root.getLoseProbability();

@@ -159,8 +159,22 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
     hit(friendly, friendlyUnits.indexOf(friendly), friendlyWaitingToDieBits, friendlyHitPoints);
   }
 
+  void killFriendly(final Unit friendly) {
+    hit(friendly, friendlyUnits.indexOf(friendly), friendlyWaitingToDieBits, friendlyHitPoints);
+    if (!friendlyHitPoints.containsKey(friendly)) {
+      hit(friendly, friendlyUnits.indexOf(friendly), friendlyBits, new HashMap<>());
+    }
+  }
+
   void hitEnemy(final Unit enemy) {
     hit(enemy, enemyUnits.indexOf(enemy), enemyWaitingToDieBits, enemyHitPoints);
+  }
+
+  void killEnemy(final Unit enemy) {
+    hit(enemy, enemyUnits.indexOf(enemy), enemyWaitingToDieBits, enemyHitPoints);
+    if (!enemyHitPoints.containsKey(enemy)) {
+      hit(enemy, enemyUnits.indexOf(enemy), enemyBits, new HashMap<>());
+    }
   }
 
   private void hit(final Unit unit, final int unitIndex, final BitSet waitingToDie, final Map<Unit, Integer> hitPointsMap) {
@@ -181,13 +195,13 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
     });
   }
 
-  void retreatFriendly(Unit friendly) {
+  void retreatFriendly(final Unit friendly) {
     hit(friendly, friendlyUnits.indexOf(friendly), friendlyWaitingToDieBits, new HashMap<>());
     hit(friendly, friendlyUnits.indexOf(friendly), friendlyBits, new HashMap<>());
     retreatedFriendly.add(friendly);
   }
 
-  void retreatEnemy(Unit enemy) {
+  void retreatEnemy(final Unit enemy) {
     hit(enemy, enemyUnits.indexOf(enemy), enemyWaitingToDieBits, new HashMap<>());
     hit(enemy, enemyUnits.indexOf(enemy), enemyBits, new HashMap<>());
     retreatedEnemy.add(enemy);
@@ -238,11 +252,11 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
   }
 
   boolean noMoreFriendlies() {
-    return countOfFriendlyDamagedOrDead() == friendlyUnits.size();
+    return countOfFriendlyDamagedOrDead() == friendlyUnits.size() && retreatedFriendly.size() == 0;
   }
 
   boolean noMoreEnemies() {
-    return countOfEnemyDamagedOrDead() == enemyUnits.size();
+    return countOfEnemyDamagedOrDead() == enemyUnits.size() && retreatedEnemy.size() == 0;
   }
 
   int countOfFriendliesNotDamagedOrDead() {

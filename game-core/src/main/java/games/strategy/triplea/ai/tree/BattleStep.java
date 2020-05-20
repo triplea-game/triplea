@@ -1,21 +1,16 @@
 package games.strategy.triplea.ai.tree;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.stats.UnitsStat;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.TargetGroup;
@@ -43,6 +38,8 @@ import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
 
 public class BattleStep {
+
+  static private boolean DEBUG = false;
 
   static int MAX_ROUNDS = 16;
   private static final double IGNORE_BRANCH_PROBABILITY = 0.005;
@@ -191,35 +188,32 @@ public class BattleStep {
   //   - only first round and causalities can't fire back unless true == Properties.getNavalBombardCasualtiesReturnFire(gameData)
   //  handle subs first strike
   //  - handle destroyer being present or not to negate first strike
-  //  Remove undefended transports
   void calculateBattle(final StepUnits units, final GamePlayer otherPlayer) {
-    final int nextRound;
+    // AA attacks are the beginning of the round
+    final int nextRound = Type.ATTACKER == units.getType() ? round + 1 : round;
     final StepUnits aliveOrInjuredUnits;
     if (units.getType() == Type.AA_ATTACKER) {
-      // AA attacks are the beginning of the round
-      nextRound = round + 1;
       // remove the units that were injured in the previous fight
       aliveOrInjuredUnits = units.removeWaitingToDie();
       if (checkEndOfBranch(aliveOrInjuredUnits)) {
         return;
       }
-    } else {
-      nextRound = round;
+    } else if (units.getType() == Type.SUB_ATTACKER) {
+      // remove the units that were injured in the AA rounds
+      aliveOrInjuredUnits = units.removeWaitingToDie();
+      submergeSubsVsOnlyAir(aliveOrInjuredUnits);
+    } else if (units.getType() == Type.SUB_DEFENDER) {
+      aliveOrInjuredUnits = units;
+    } else if (units.getType() == Type.ATTACKER) {
+      aliveOrInjuredUnits = units;
 
-      if (units.getType() == Type.ATTACKER) {
-        // remove the units that were injured in the AA rounds and sub rounds
-        aliveOrInjuredUnits = units.removeWaitingToDie();
-        if (Properties.getTransportCasualtiesRestricted(parameters.getData())) {
-          checkUndefendedTransports(units.getEnemy(), aliveOrInjuredUnits);
-          checkForUnitsThatCanRollLeft(true, aliveOrInjuredUnits);
-          checkForUnitsThatCanRollLeft(false, aliveOrInjuredUnits);
-        }
-      } else if (units.getType() == Type.SUB_ATTACKER) {
-        aliveOrInjuredUnits = units;
-        submergeSubsVsOnlyAir(aliveOrInjuredUnits);
-      } else {
-        aliveOrInjuredUnits = units;
+      if (Properties.getTransportCasualtiesRestricted(parameters.getData())) {
+        checkUndefendedTransports(units.getEnemy(), aliveOrInjuredUnits);
+        checkForUnitsThatCanRollLeft(true, aliveOrInjuredUnits);
+        checkForUnitsThatCanRollLeft(false, aliveOrInjuredUnits);
       }
+    } else {
+      aliveOrInjuredUnits = units;
     }
 
     final List<StepUnits> children = getFightOutcomes(new StepUnits(aliveOrInjuredUnits));
@@ -239,7 +233,9 @@ public class BattleStep {
         // skip these children completely
         child.badProbability = 1.0;
         child.hasResult = true;
-        //addChild(child);
+        if (DEBUG) {
+          addChild(child);
+        }
       } else {
         addChild(child);
         child.calculateBattle(childUnits, player);
@@ -254,22 +250,31 @@ public class BattleStep {
 
     hasResult = true;
     // the children are no longer needed so clear them out to reduce memory usage
-    this.children.clear();
+    if (!DEBUG) {
+      this.children.clear();
+    }
   }
 
   private List<StepUnits> getFightOutcomes(final StepUnits aliveOrInjuredUnits) {
     if (aliveOrInjuredUnits.getType() == Type.AA_ATTACKER
         || aliveOrInjuredUnits.getType() == Type.AA_DEFENDER) {
       return getAaFightOutcomes(aliveOrInjuredUnits);
-    } else if (aliveOrInjuredUnits.getType() == Type.SUB_ATTACKER
-        || aliveOrInjuredUnits.getType() == Type.SUB_DEFENDER) {
-      return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike());
+    } else if (aliveOrInjuredUnits.getType() == Type.SUB_ATTACKER) {
+      final MustFightBattle.ReturnFire returnFire = returnFireAgainstAttackingSubs(units.getAliveOrWaitingToDieFriendly(), units.getAliveOrWaitingToDieEnemy());
+      return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike(), returnFire);
+    } else if (aliveOrInjuredUnits.getType() == Type.SUB_DEFENDER) {
+      final MustFightBattle.ReturnFire returnFire = returnFireAgainstAttackingSubs(units.getAliveOrWaitingToDieEnemy(), units.getAliveOrWaitingToDieFriendly());
+      return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike(), returnFire);
     } else {
-      return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike().negate());
+      return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike().negate(), MustFightBattle.ReturnFire.ALL);
     }
   }
 
-  private List<StepUnits> getRegularFightOutcomes(final StepUnits aliveOrInjuredUnits, final Predicate<Unit> firingUnitPredicate) {
+  private List<StepUnits> getRegularFightOutcomes(
+      final StepUnits aliveOrInjuredUnits,
+      final Predicate<Unit> firingUnitPredicate,
+      MustFightBattle.ReturnFire returnFire
+  ) {
     final Collection<Unit> allFiringUnits = CollectionUtils.getMatches(
         aliveOrInjuredUnits.getAliveOrWaitingToDieFriendly(),
         firingUnitPredicate
@@ -306,6 +311,7 @@ public class BattleStep {
           groupsAndTargets.size() - 1,
           aliveOrInjuredUnits.swapSides(),
           aliveOrInjuredUnits.getType(),
+          returnFire,
           true,
           1.0);
     } else {
@@ -314,7 +320,7 @@ public class BattleStep {
 
     final List<StepUnits> units = new ArrayList<>(outcomes.values());
 
-    units.sort(Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead).thenComparingInt(StepUnits::countOfFriendlyHitPoints).reversed());
+    units.sort(Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead).reversed().thenComparingInt(StepUnits::countOfFriendlyHitPoints));
     return units;
   }
 
@@ -369,6 +375,7 @@ public class BattleStep {
           aaGroupsAndTargets.size() - 1,
           aliveOrInjuredUnits.swapSides(),
           aliveOrInjuredUnits.getType(),
+          MustFightBattle.ReturnFire.ALL,
           allowMultipleHitsPerUnit,
           1.0);
     } else {
@@ -387,6 +394,7 @@ public class BattleStep {
       final int groupsAndTargetsIndex,
       final StepUnits currentUnits,
       final Type type,
+      final MustFightBattle.ReturnFire returnFire,
       final boolean allowMultipleHitsPerUnit,
       final double probability
   ) {
@@ -438,6 +446,7 @@ public class BattleStep {
             groupsAndTargetsIndex - 1,
             new StepUnits(currentUnits),
             type,
+            returnFire,
             allowMultipleHitsPerUnit,
             hitProbability * probability
         );
@@ -456,7 +465,11 @@ public class BattleStep {
       }
 
       totalHits += 1;
-      currentUnits.hitFriendly(targetUnit);
+      if (MustFightBattle.ReturnFire.ALL == returnFire) {
+        currentUnits.hitFriendly(targetUnit);
+      } else {
+        currentUnits.killFriendly(targetUnit);
+      }
       if (isSuicideOnHit) {
         currentUnits.hitEnemy(firingGroup.get(totalHits - 1));
       }
@@ -469,6 +482,7 @@ public class BattleStep {
           groupsAndTargetsIndex - 1,
           new StepUnits(currentUnits),
           type,
+          returnFire,
           allowMultipleHitsPerUnit,
           (1.0 - totalProbability) * probability);
     } else {
@@ -1046,6 +1060,49 @@ public class BattleStep {
     }
   }
 
+  // Taken from MustFightBattle::returnFireAgainstAttackingSubs
+  private MustFightBattle.ReturnFire returnFireAgainstAttackingSubs(final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits) {
+    final boolean attackingSubsSneakAttack =
+        defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits);
+    final MustFightBattle.ReturnFire returnFireAgainstAttackingSubs;
+    if (!attackingSubsSneakAttack) {
+      returnFireAgainstAttackingSubs = MustFightBattle.ReturnFire.ALL;
+    } else if (defendingSubsSneakAttack || Properties.getWW2V2(parameters.getData())) {
+      returnFireAgainstAttackingSubs = MustFightBattle.ReturnFire.SUBS;
+    } else {
+      returnFireAgainstAttackingSubs = MustFightBattle.ReturnFire.NONE;
+    }
+    return returnFireAgainstAttackingSubs;
+  }
+
+  // Taken from MustFightBattle::returnFireAgainstDefendingSubs
+  private MustFightBattle.ReturnFire returnFireAgainstDefendingSubs(final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits) {
+    final boolean attackingSubsSneakAttack =
+        defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits);
+    final MustFightBattle.ReturnFire returnFireAgainstDefendingSubs;
+    if (!defendingSubsSneakAttack) {
+      returnFireAgainstDefendingSubs = MustFightBattle.ReturnFire.ALL;
+    } else if (attackingSubsSneakAttack || Properties.getWW2V2(parameters.getData())) {
+      returnFireAgainstDefendingSubs = MustFightBattle.ReturnFire.SUBS;
+    } else {
+      returnFireAgainstDefendingSubs = MustFightBattle.ReturnFire.NONE;
+    }
+    return returnFireAgainstDefendingSubs;
+  }
+
+  // Taken from MustFightBattle::defendingSubsSneakAttackAndNoAttackingDestroyers
+  private boolean defendingSubsSneakAttackAndNoAttackingDestroyers(final Collection<Unit> attackingUnits) {
+    return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
+        && defendingSubsSneakAttack();
+  }
+
+  // Taken from MustFightBattle::defendingSubsSneakAttack
+  private boolean defendingSubsSneakAttack() {
+    return Properties.getWW2V2(parameters.getData()) || Properties.getDefendingSubsSneakAttack(parameters.getData());
+  }
+
   @Override
   public String toString() {
     final String type;
@@ -1077,11 +1134,11 @@ public class BattleStep {
         + " ("
         + type
         + ") "
-        + units.countOfFriendliesNotDamagedOrDead()
-        + "(" + units.countOfFriendliesNotDead() + ")"
+        + units.getAliveOrWaitingToDieFriendly()
+        + "(" + units.getAliveFriendly() + ")"
         + " vs "
-        + units.countOfEnemiesNotDamagedOrDead()
-        + "(" + units.countOfEnemiesNotDead() + ")"
+        + units.getAliveOrWaitingToDieEnemy()
+        + "(" + units.getAliveEnemy() + ")"
         + " has "
         + String.format("%.4f", probability)
         + "% chance"
@@ -1090,9 +1147,6 @@ public class BattleStep {
         + " t:" + String.format("%.3f", tieProbability)
         + " b:" + String.format("%.3f", badProbability)
         + " [r:" + round + "]";
-    if (parent != null) {
-      out += ", " + parent;
-    }
 
     return out;
   }
