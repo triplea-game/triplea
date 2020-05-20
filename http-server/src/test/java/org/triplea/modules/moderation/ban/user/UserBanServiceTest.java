@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -26,7 +25,7 @@ import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.db.dao.user.ban.UserBanRecord;
-import org.triplea.domain.data.UserName;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.modules.chat.Chatters;
@@ -170,8 +169,7 @@ class UserBanServiceTest {
   @Test
   void banUserSuccessCase() {
     givenBanDaoUpdateCount(1);
-    when(chatters.disconnectPlayerSessions(
-            eq(UserName.of(USER_BAN_PARAMS.getUsername())), anyString()))
+    when(chatters.disconnectIp(eq(IpAddressParser.fromString(USER_BAN_PARAMS.getIp())), any()))
         .thenReturn(true);
 
     bannedUsersService.banUser(MODERATOR_ID, USER_BAN_PARAMS);
@@ -183,8 +181,6 @@ class UserBanServiceTest {
                 .moderatorUserId(MODERATOR_ID)
                 .build());
 
-    verify(chatters)
-        .disconnectPlayerSessions(eq(UserName.of(USER_BAN_PARAMS.getUsername())), any());
     verify(chatMessagingBus).broadcastMessage(any());
     verify(gameMessagingBus).broadcastMessage(any());
   }

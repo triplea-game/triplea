@@ -81,7 +81,7 @@ public class Chatters {
    * @return True if any sessions were disconnected, false if none (indicating player was no longer
    *     in chat).
    */
-  public boolean disconnectPlayerSessions(final UserName userName, final String disconnectMessage) {
+  public boolean disconnectPlayerByName(final UserName userName, final String disconnectMessage) {
     final Set<Session> sessions =
         participants.values().stream()
             .filter(
@@ -90,8 +90,13 @@ public class Chatters {
             .map(ChatterSession::getSession)
             .collect(Collectors.toSet());
 
-    // Do the session disconnects as a second step after gathering sessions to be disconnected.
-    // This is to avoid concurrent modification of sessions.
+    disconnectSession(sessions, disconnectMessage);
+    return !sessions.isEmpty();
+  }
+
+  private void disconnectSession(
+      final Collection<Session> sessions, final String disconnectMessage) {
+    // Do session disconnects as its own step to avoid concurrent modification.
     sessions.forEach(
         session -> {
           try {
@@ -105,6 +110,25 @@ public class Chatters {
                 e);
           }
         });
+  }
+
+  /**
+   * Disconnects all sessions belonging to a given player identified by IP. A disconnected session
+   * is closed, the closure will trigger a notification on the client of the disconnected player.
+   *
+   * @param ip The IP address of the player whose sessions will be disconnected.
+   * @param disconnectMessage Message that will be displayed to the disconnected player.
+   * @return True if any sessions were disconnected, false if none (indicating player was no longer
+   *     in chat).
+   */
+  public boolean disconnectIp(final InetAddress ip, final String disconnectMessage) {
+    final Set<Session> sessions =
+        participants.values().stream()
+            .filter(chatterSession -> chatterSession.getIp().equals(ip))
+            .map(ChatterSession::getSession)
+            .collect(Collectors.toSet());
+
+    disconnectSession(sessions, disconnectMessage);
     return !sessions.isEmpty();
   }
 
