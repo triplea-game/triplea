@@ -21,15 +21,10 @@ class AccessLogUpdater implements Consumer<LoginRecord> {
   @Override
   public void accept(final LoginRecord loginRecord) {
     final int updateCount =
-        loginRecord.isRegistered()
-            ? accessLogDao.insertRegisteredUserRecord(
-                loginRecord.getUserName().getValue(),
-                loginRecord.getIp(),
-                loginRecord.getSystemId().getValue())
-            : accessLogDao.insertAnonymousUserRecord(
-                loginRecord.getUserName().getValue(),
-                loginRecord.getIp(),
-                loginRecord.getSystemId().getValue());
+        accessLogDao.insertUserAccessRecord(
+            loginRecord.getUserName().getValue(),
+            loginRecord.getIp(),
+            loginRecord.getSystemId().getValue());
 
     Postconditions.assertState(updateCount == 1);
   }

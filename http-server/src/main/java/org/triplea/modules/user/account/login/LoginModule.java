@@ -67,16 +67,14 @@ class LoginModule {
 
     if (hasPassword && registeredLogin.test(loginRequest)) {
       final ApiKey apiKey =
-          recordRegisteredLoginAndGenerateApiKey(
-              loginRequest, playerSystemId, PlayerChatId.newId(), ip);
+          recordLoginAndGenerateApiKey(loginRequest, playerSystemId, PlayerChatId.newId(), ip);
       return LobbyLoginResponse.builder()
           .apiKey(apiKey.getValue())
           .moderator(isModerator(loginRequest.getName()))
           .build();
     } else if (hasPassword && tempPasswordLogin.test(loginRequest)) {
       final ApiKey apiKey =
-          recordRegisteredLoginAndGenerateApiKey(
-              loginRequest, playerSystemId, PlayerChatId.newId(), ip);
+          recordLoginAndGenerateApiKey(loginRequest, playerSystemId, PlayerChatId.newId(), ip);
       return LobbyLoginResponse.builder()
           .apiKey(apiKey.getValue())
           .passwordChangeRequired(true)
@@ -93,42 +91,23 @@ class LoginModule {
         return LobbyLoginResponse.builder().failReason(errorMessage.get()).build();
       } else {
         final ApiKey apiKey =
-            recordAnonymousLoginAndGenerateApiKey(
-                loginRequest, playerSystemId, PlayerChatId.newId(), ip);
+            recordLoginAndGenerateApiKey(loginRequest, playerSystemId, PlayerChatId.newId(), ip);
         return LobbyLoginResponse.builder().apiKey(apiKey.getValue()).build();
       }
     }
-  }
-
-  private ApiKey recordRegisteredLoginAndGenerateApiKey(
-      final LoginRequest loginRequest,
-      final SystemId systemId,
-      final PlayerChatId playerChatId,
-      final String ip) {
-    return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, true);
-  }
-
-  private ApiKey recordAnonymousLoginAndGenerateApiKey(
-      final LoginRequest loginRequest,
-      final SystemId systemId,
-      final PlayerChatId playerChatId,
-      final String ip) {
-    return recordLoginAndGenerateApiKey(loginRequest, systemId, playerChatId, ip, false);
   }
 
   private ApiKey recordLoginAndGenerateApiKey(
       final LoginRequest loginRequest,
       final SystemId systemId,
       final PlayerChatId playerchatId,
-      final String ip,
-      final boolean isRegistered) {
+      final String ip) {
     final var loginRecord =
         LoginRecord.builder()
             .userName(UserName.of(loginRequest.getName()))
             .systemId(systemId)
             .playerChatId(playerchatId)
             .ip(ip)
-            .registered(isRegistered)
             .build();
     accessLogUpdater.accept(loginRecord);
     return apiKeyGenerator.apply(loginRecord);

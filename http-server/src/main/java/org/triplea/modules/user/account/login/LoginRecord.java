@@ -14,5 +14,4 @@ public class LoginRecord {
   @Nonnull private String ip;
   @Nonnull private final SystemId systemId;
   @Nonnull private final PlayerChatId playerChatId;
-  private final boolean registered;
 }

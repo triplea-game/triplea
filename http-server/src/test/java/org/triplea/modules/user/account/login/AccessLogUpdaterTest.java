@@ -17,18 +17,8 @@ import org.triplea.domain.data.UserName;
 @ExtendWith(MockitoExtension.class)
 class AccessLogUpdaterTest {
 
-  private static final LoginRecord REGISTEREDLOGIN_RECORD =
+  private static final LoginRecord REGISTERED_LOGIN_RECORD =
       LoginRecord.builder()
-          .registered(true)
-          .systemId(SystemId.of("system-id"))
-          .playerChatId(PlayerChatId.newId())
-          .ip("ip")
-          .userName(UserName.of("player-name"))
-          .build();
-
-  private static final LoginRecord ANONYMOUS_LOGIN_RECORD =
-      LoginRecord.builder()
-          .registered(false)
           .systemId(SystemId.of("system-id"))
           .playerChatId(PlayerChatId.newId())
           .ip("ip")
@@ -45,28 +35,15 @@ class AccessLogUpdaterTest {
   }
 
   @Test
-  void acceptRegistered() {
-    when(accessLogDao.insertRegisteredUserRecord(any(), any(), any())).thenReturn(1);
+  void insertUserAccessRecord() {
+    when(accessLogDao.insertUserAccessRecord(any(), any(), any())).thenReturn(1);
 
-    accessLogUpdater.accept(REGISTEREDLOGIN_RECORD);
-
-    verify(accessLogDao)
-        .insertRegisteredUserRecord(
-            REGISTEREDLOGIN_RECORD.getUserName().getValue(),
-            REGISTEREDLOGIN_RECORD.getIp(),
-            REGISTEREDLOGIN_RECORD.getSystemId().getValue());
-  }
-
-  @Test
-  void acceptAnonymous() {
-    when(accessLogDao.insertAnonymousUserRecord(any(), any(), any())).thenReturn(1);
-
-    accessLogUpdater.accept(ANONYMOUS_LOGIN_RECORD);
+    accessLogUpdater.accept(REGISTERED_LOGIN_RECORD);
 
     verify(accessLogDao)
-        .insertAnonymousUserRecord(
-            ANONYMOUS_LOGIN_RECORD.getUserName().getValue(),
-            ANONYMOUS_LOGIN_RECORD.getIp(),
-            ANONYMOUS_LOGIN_RECORD.getSystemId().getValue());
+        .insertUserAccessRecord(
+            REGISTERED_LOGIN_RECORD.getUserName().getValue(),
+            REGISTERED_LOGIN_RECORD.getIp(),
+            REGISTERED_LOGIN_RECORD.getSystemId().getValue());
   }
 }

@@ -39,12 +39,6 @@ class UserJdbiDaoTest extends DaoTest {
     assertThat(userDao.getPassword("DNE"), isEmpty());
   }
 
-  @Test
-  void updateLastLogin() {
-    assertThat(userDao.updateLastLoginTime(USERNAME), is(1));
-    assertThat(userDao.updateLastLoginTime("DNE"), is(0));
-  }
-
   @DataSet(cleanBefore = true, value = "user/change_password_before.yml")
   @ExpectedDataSet("user/change_password_after.yml")
   @Test

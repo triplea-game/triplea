@@ -5,6 +5,7 @@ user_role:
     name: MODERATOR
   - id: 3
     name: ADMIN
+
 lobby_user:
   - id: 100000
     username: not moderator
@@ -16,10 +17,15 @@ lobby_user:
     password: 12345678901234567890123456
     email: email@
     user_role_id: 2
-    last_login: 2001-01-01 23:59:20.0
   - id: 900001
     username: Super! moderator
     password: 12345678901234567890123456
     email: email@
     user_role_id: 3
-    last_login:
+
+access_log:
+  - username: registered
+    ip: 127.0.0.20
+    system_id: registered-system-id
+    lobby_user_id: 900000
+    access_time: 2001-01-01 23:59:20.0

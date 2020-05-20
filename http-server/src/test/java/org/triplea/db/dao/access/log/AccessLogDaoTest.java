@@ -103,13 +103,13 @@ class AccessLogDaoTest extends DaoTest {
   @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
   @ExpectedDataSet("access_log/insert_registered_after.yml")
   void insertRegisteredUserAccessLog() {
-    accessLogDao.insertRegisteredUserRecord("registered", "127.0.0.20", "registered-system-id");
+    accessLogDao.insertUserAccessRecord("registered", "127.0.0.20", "registered-system-id");
   }
 
   @Test
   @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
   @ExpectedDataSet("access_log/insert_anonymous_after.yml")
   void insertAnonymousAccessLog() {
-    accessLogDao.insertAnonymousUserRecord("anonymous", "127.0.0.50", "anonymous-system-id");
+    accessLogDao.insertUserAccessRecord("anonymous", "127.0.0.50", "anonymous-system-id");
   }
 }

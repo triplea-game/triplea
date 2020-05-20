@@ -9,10 +9,8 @@ lobby_user:
     password: 12345678901234567890123456
     email: email@
     user_role_id: 3
-    last_login: 2001-01-01 23:59:20.0
   - id: 900001
     username: Super! moderator
     password: 12345678901234567890123456
     email: email@
     user_role_id: 1
-    last_login:

@@ -90,7 +90,7 @@ access_log:
     username: example
     ip: 1.1.1.1
     system_id: system-id
-    registered: false
+    lobby_user_id: null
 
 lobby_api_key:
   - key: 238b90e6e2382ddafadc35266b2fa9a371fb3962b675ccab1b5538321f469070d0f3762f29b21ac7ad772eb6bd299d09f8e75d38ed8b7067965d5d5f26ebc3f5

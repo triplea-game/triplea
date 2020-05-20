@@ -152,7 +152,6 @@ class LoginModuleTest {
       final ArgumentCaptor<LoginRecord> loginRecordArgumentCaptor =
           ArgumentCaptor.forClass(LoginRecord.class);
       verify(accessLogUpdater).accept(loginRecordArgumentCaptor.capture());
-      assertThat(loginRecordArgumentCaptor.getValue().isRegistered(), is(false));
     }
   }
 
@@ -191,7 +190,6 @@ class LoginModuleTest {
       final ArgumentCaptor<LoginRecord> loginRecordArgumentCaptor =
           ArgumentCaptor.forClass(LoginRecord.class);
       verify(accessLogUpdater).accept(loginRecordArgumentCaptor.capture());
-      assertThat(loginRecordArgumentCaptor.getValue().isRegistered(), is(true));
     }
   }
 
