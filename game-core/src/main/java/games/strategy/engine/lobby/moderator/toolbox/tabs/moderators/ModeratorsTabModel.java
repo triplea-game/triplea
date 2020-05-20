@@ -13,7 +13,7 @@ class ModeratorsTabModel {
   @VisibleForTesting static final List<String> HEADERS = List.of("Name", "Last Login");
 
   @VisibleForTesting
-  static final List<String> SUPER_MOD_HEADERS = List.of("Name", "Last Login", "", "");
+  static final List<String> HEADERS_FOR_ADMIN = List.of("Name", "Last Login", "", "");
 
   @VisibleForTesting static final String REMOVE_MOD_BUTTON_TEXT = "Remove Mod";
   @VisibleForTesting static final String MAKE_ADMIN_BUTTON_TEXT = "Make Admin";
@@ -33,7 +33,7 @@ class ModeratorsTabModel {
   }
 
   List<String> fetchTableHeaders() {
-    return isAdmin() ? SUPER_MOD_HEADERS : HEADERS;
+    return isAdmin() ? HEADERS_FOR_ADMIN : HEADERS;
   }
 
   List<List<String>> fetchTableData() {

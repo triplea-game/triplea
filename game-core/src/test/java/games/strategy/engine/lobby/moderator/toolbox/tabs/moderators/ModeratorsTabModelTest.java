@@ -49,7 +49,7 @@ class ModeratorsTabModelTest {
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
-      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.SUPER_MOD_HEADERS));
+      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.HEADERS_FOR_ADMIN));
     }
 
     @Test
@@ -75,7 +75,7 @@ class ModeratorsTabModelTest {
       final List<List<String>> tableData = moderatorsTabModel.fetchTableData();
 
       ToolboxTabModelTestUtil.verifyTableDimensions(
-          tableData, ModeratorsTabModel.SUPER_MOD_HEADERS);
+          tableData, ModeratorsTabModel.HEADERS_FOR_ADMIN);
       ToolboxTabModelTestUtil.verifyTableDataAtRow(
           tableData,
           0,
