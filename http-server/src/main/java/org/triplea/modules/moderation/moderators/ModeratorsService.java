@@ -87,7 +87,7 @@ class ModeratorsService {
   }
 
   /** Promotes a user to super-moderator. Can only be done by super moderators. */
-  void addSuperMod(final int moderatorIdRequesting, final String username) {
+  void addAdmin(final int moderatorIdRequesting, final String username) {
     final int userId =
         userJdbiDao
             .lookupUserIdByName(username)

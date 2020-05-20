@@ -12,8 +12,8 @@ class ModeratorsControllerIntegrationTest
   }
 
   @Test
-  void isSuperMod() {
-    verifyEndpoint(ToolboxModeratorManagementClient::isCurrentUserSuperMod);
+  void isAdmin() {
+    verifyEndpoint(ToolboxModeratorManagementClient::isCurrentUserAdmin);
   }
 
   @Test
@@ -22,7 +22,7 @@ class ModeratorsControllerIntegrationTest
   }
 
   @Test
-  void setSuperMod() {
-    verifyEndpoint(AllowedUserRole.ADMIN, client -> client.addSuperMod("mod3"));
+  void setAdmin() {
+    verifyEndpoint(AllowedUserRole.ADMIN, client -> client.addAdmin("mod3"));
   }
 }

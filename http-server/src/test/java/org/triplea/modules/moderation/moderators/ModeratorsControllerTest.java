@@ -52,19 +52,19 @@ class ModeratorsControllerTest {
   }
 
   @Test
-  void isSuperModPositiveCase() {
+  void isAdminPositiveCase() {
     when(authenticatedUser.getUserRole()).thenReturn(UserRole.ADMIN);
 
-    final Response response = moderatorsController.isSuperMod(authenticatedUser);
+    final Response response = moderatorsController.isAdmin(authenticatedUser);
 
     verifyResponse(response, true);
   }
 
   @Test
-  void isSuperModNegativeCase() {
+  void isAdminNegativeCase() {
     when(authenticatedUser.getUserRole()).thenReturn(UserRole.MODERATOR);
 
-    final Response response = moderatorsController.isSuperMod(authenticatedUser);
+    final Response response = moderatorsController.isAdmin(authenticatedUser);
 
     verifyResponse(response, false);
   }
@@ -79,11 +79,11 @@ class ModeratorsControllerTest {
   }
 
   @Test
-  void setSuperMod() {
-    final Response response = moderatorsController.setSuperMod(AUTHENTICATED_USER, MODERATOR_NAME);
+  void setAdmin() {
+    final Response response = moderatorsController.setAdmin(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).addSuperMod(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
+    verify(moderatorsService).addAdmin(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
   }
 
   @Test

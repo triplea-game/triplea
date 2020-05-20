@@ -13,11 +13,10 @@ class ModeratorsTabModel {
   @VisibleForTesting static final List<String> HEADERS = List.of("Name", "Last Login");
 
   @VisibleForTesting
-  static final List<String> SUPER_MOD_HEADERS =
-      List.of("Name", "Last Login", "Remove Mod", "Add Super-Mod");
+  static final List<String> HEADERS_FOR_ADMIN = List.of("Name", "Last Login", "", "");
 
   @VisibleForTesting static final String REMOVE_MOD_BUTTON_TEXT = "Remove Mod";
-  @VisibleForTesting static final String ADD_SUPER_MOD_BUTTON = "Add Super-Mod";
+  @VisibleForTesting static final String MAKE_ADMIN_BUTTON_TEXT = "Make Admin";
 
   private static final Function<Long, String> dateTimeFormatter =
       epochMillis ->
@@ -26,29 +25,29 @@ class ModeratorsTabModel {
 
   private final ToolboxModeratorManagementClient toolboxModeratorManagementClient;
 
-  @Getter private final boolean isSuperMod;
+  @Getter private final boolean isAdmin;
 
   ModeratorsTabModel(final ToolboxModeratorManagementClient toolboxModeratorManagementClient) {
     this.toolboxModeratorManagementClient = toolboxModeratorManagementClient;
-    isSuperMod = toolboxModeratorManagementClient.isCurrentUserSuperMod();
+    isAdmin = toolboxModeratorManagementClient.isCurrentUserAdmin();
   }
 
   List<String> fetchTableHeaders() {
-    return isSuperMod() ? SUPER_MOD_HEADERS : HEADERS;
+    return isAdmin() ? HEADERS_FOR_ADMIN : HEADERS;
   }
 
   List<List<String>> fetchTableData() {
     return toolboxModeratorManagementClient.fetchModeratorList().stream()
         .map(
             modInfo ->
-                isSuperMod
+                isAdmin
                     ? List.of(
                         modInfo.getName(),
                         Optional.ofNullable(modInfo.getLastLoginEpochMillis())
                             .map(dateTimeFormatter)
                             .orElse(""),
                         REMOVE_MOD_BUTTON_TEXT,
-                        ADD_SUPER_MOD_BUTTON)
+                        MAKE_ADMIN_BUTTON_TEXT)
                     : List.of(
                         modInfo.getName(),
                         Optional.ofNullable(modInfo.getLastLoginEpochMillis())
@@ -61,8 +60,8 @@ class ModeratorsTabModel {
     toolboxModeratorManagementClient.removeMod(user);
   }
 
-  void addSuperMod(final String user) {
-    toolboxModeratorManagementClient.addSuperMod(user);
+  void addAdmin(final String user) {
+    toolboxModeratorManagementClient.addAdmin(user);
   }
 
   boolean checkUserExists(final String user) {

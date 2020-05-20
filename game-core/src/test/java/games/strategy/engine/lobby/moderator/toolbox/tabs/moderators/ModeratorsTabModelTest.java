@@ -44,17 +44,17 @@ class ModeratorsTabModelTest {
   @Nested
   final class FetchTableHeadersTest {
     @Test
-    void superModeratorHeaders() {
-      when(toolboxModeratorManagementClient.isCurrentUserSuperMod()).thenReturn(true);
+    void adminHeaders() {
+      when(toolboxModeratorManagementClient.isCurrentUserAdmin()).thenReturn(true);
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
-      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.SUPER_MOD_HEADERS));
+      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.HEADERS_FOR_ADMIN));
     }
 
     @Test
     void moderatorHeaders() {
-      when(toolboxModeratorManagementClient.isCurrentUserSuperMod()).thenReturn(false);
+      when(toolboxModeratorManagementClient.isCurrentUserAdmin()).thenReturn(false);
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
@@ -65,8 +65,8 @@ class ModeratorsTabModelTest {
   @Nested
   final class FetchTableData {
     @Test
-    void superModerator() {
-      when(toolboxModeratorManagementClient.isCurrentUserSuperMod()).thenReturn(true);
+    void admin() {
+      when(toolboxModeratorManagementClient.isCurrentUserAdmin()).thenReturn(true);
       when(toolboxModeratorManagementClient.fetchModeratorList())
           .thenReturn(List.of(MODERATOR_INFO, MODERATOR_INFO_WITH_NULL));
 
@@ -75,26 +75,26 @@ class ModeratorsTabModelTest {
       final List<List<String>> tableData = moderatorsTabModel.fetchTableData();
 
       ToolboxTabModelTestUtil.verifyTableDimensions(
-          tableData, ModeratorsTabModel.SUPER_MOD_HEADERS);
+          tableData, ModeratorsTabModel.HEADERS_FOR_ADMIN);
       ToolboxTabModelTestUtil.verifyTableDataAtRow(
           tableData,
           0,
           MODERATOR_INFO.getName(),
           "2020-5-8 10:54",
           ModeratorsTabModel.REMOVE_MOD_BUTTON_TEXT,
-          ModeratorsTabModel.ADD_SUPER_MOD_BUTTON);
+          ModeratorsTabModel.MAKE_ADMIN_BUTTON_TEXT);
       ToolboxTabModelTestUtil.verifyTableDataAtRow(
           tableData,
           1,
           MODERATOR_INFO.getName(),
           "",
           ModeratorsTabModel.REMOVE_MOD_BUTTON_TEXT,
-          ModeratorsTabModel.ADD_SUPER_MOD_BUTTON);
+          ModeratorsTabModel.MAKE_ADMIN_BUTTON_TEXT);
     }
 
     @Test
     void moderator() {
-      when(toolboxModeratorManagementClient.isCurrentUserSuperMod()).thenReturn(false);
+      when(toolboxModeratorManagementClient.isCurrentUserAdmin()).thenReturn(false);
       when(toolboxModeratorManagementClient.fetchModeratorList())
           .thenReturn(List.of(MODERATOR_INFO, MODERATOR_INFO_WITH_NULL));
 
@@ -117,10 +117,10 @@ class ModeratorsTabModelTest {
   }
 
   @Test
-  void addSuperMod() {
-    new ModeratorsTabModel(toolboxModeratorManagementClient).addSuperMod(USERNAME);
+  void addAdmin() {
+    new ModeratorsTabModel(toolboxModeratorManagementClient).addAdmin(USERNAME);
 
-    verify(toolboxModeratorManagementClient).addSuperMod(USERNAME);
+    verify(toolboxModeratorManagementClient).addAdmin(USERNAME);
   }
 
   @Nested

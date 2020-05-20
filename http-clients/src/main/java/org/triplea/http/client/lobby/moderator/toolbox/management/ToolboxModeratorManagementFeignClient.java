@@ -12,11 +12,11 @@ interface ToolboxModeratorManagementFeignClient {
   @RequestLine("GET " + ToolboxModeratorManagementClient.FETCH_MODERATORS_PATH)
   List<ModeratorInfo> fetchModerators(@HeaderMap Map<String, Object> headerMap);
 
-  @RequestLine("GET " + ToolboxModeratorManagementClient.IS_SUPER_MOD_PATH)
-  boolean isSuperMod(@HeaderMap Map<String, Object> headerMap);
+  @RequestLine("GET " + ToolboxModeratorManagementClient.IS_ADMIN_PATH)
+  boolean isAdmin(@HeaderMap Map<String, Object> headerMap);
 
-  @RequestLine("POST " + ToolboxModeratorManagementClient.ADD_SUPER_MOD_PATH)
-  void addSuperMod(@HeaderMap Map<String, Object> headers, String moderatorName);
+  @RequestLine("POST " + ToolboxModeratorManagementClient.ADD_ADMIN_PATH)
+  void addAdmin(@HeaderMap Map<String, Object> headers, String moderatorName);
 
   @RequestLine("POST " + ToolboxModeratorManagementClient.REMOVE_MOD_PATH)
   void removeMod(@HeaderMap Map<String, Object> headers, String moderatorName);
