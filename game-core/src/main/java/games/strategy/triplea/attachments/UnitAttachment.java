@@ -75,6 +75,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int attackRolls = 1;
   private int defenseRolls = 1;
   private boolean chooseBestRoll = false;
+  private Boolean canRetreatOnStalemate;
 
   // sub/destroyer related
   private boolean canEvade = false;
@@ -2610,6 +2611,22 @@ public class UnitAttachment extends DefaultAttachment {
     tuv = -1;
   }
 
+  public void setCanRetreatOnStalemate(final boolean value) {
+    canRetreatOnStalemate = value;
+  }
+
+  public void setCanRetreatOnStalemate(final String value) {
+    canRetreatOnStalemate = getBool(value);
+  }
+
+  public Boolean getCanRetreatOnStalemate() {
+    return canRetreatOnStalemate;
+  }
+
+  public void resetCanRetreatOnStalemate() {
+    canRetreatOnStalemate = null;
+  }
+
   /**
    * Returns the maximum number of units of the specified type that can be placed in the specified
    * territory according to the specified stacking limit (movement, attack, or placement).
@@ -4363,6 +4380,11 @@ public class UnitAttachment extends DefaultAttachment {
             "isAAmovement",
             MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement))
         .put("isTwoHit", MutableProperty.<Boolean>ofWriteOnly(this::setIsTwoHit, this::setIsTwoHit))
+        .put(
+            "canRetreatOnStalemate",
+            MutableProperty.of(
+                this::setCanRetreatOnStalemate, this::setCanRetreatOnStalemate,
+                this::getCanRetreatOnStalemate, this::resetCanRetreatOnStalemate))
         .build();
   }
 }
