@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import java.awt.GridBagConstraints;
@@ -69,7 +70,9 @@ public class DicePanel extends JPanel {
   }
 
   private static String colorizeHitString(final Object hitsString) {
-    return "<font color='#8B0000'>" + hitsString + "</font>";
+    // On a dark theme, use red. Use a darker red with a light theme.
+    final String color = LookAndFeel.isCurrentLookAndFeelDark() ? "red" : "#8B0000";
+    return "<font color='" + color + "'>" + hitsString + "</font>";
   }
 
   private void add(final JComponent component) {

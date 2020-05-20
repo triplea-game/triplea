@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkState;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -76,6 +77,18 @@ public final class LookAndFeel {
         : getSubstanceLookAndFeelManager()
             .map(SubstanceLookAndFeelManager::getDefaultLookAndFeelClassName)
             .orElseGet(UIManager::getSystemLookAndFeelClassName);
+  }
+
+  public static boolean isCurrentLookAndFeelDark() {
+    final Color background = UIManager.getColor("Panel.background");
+    return background != null && isColorDark(background);
+  }
+
+  public static boolean isColorDark(final Color color) {
+    // From the Wikipedia definition: https://en.wikipedia.org/wiki/Luma_%28video%29
+    final double luma =
+        (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255;
+    return luma < 0.5;
   }
 
   private static void setupLookAndFeel(final String lookAndFeelName) {
