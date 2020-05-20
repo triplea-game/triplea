@@ -9,13 +9,11 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 public interface UsernameBanDao {
 
   @SqlQuery(
-      "select "
-          + UsernameBanRecord.USERNAME_COLUMN
-          + ", "
-          + UsernameBanRecord.DATE_CREATED_COLUMN
-          + "\n"
-          + "from banned_username\n"
-          + "order by username asc")
+      "select"
+          + "    username,"
+          + "    date_created"
+          + "  from banned_username"
+          + "  order by username asc")
   List<UsernameBanRecord> getBannedUserNames();
 
   @SqlUpdate(
