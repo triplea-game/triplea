@@ -101,7 +101,8 @@ public final class MapDownloadController {
 
       @Override
       public List<File> getZipFileCandidates(final String mapName) {
-        return ResourceLoader.getMapZipFileCandidates(mapName);
+        return ResourceLoader.getMapZipFileCandidates(
+            mapName, ClientFileSystemHelper.getUserMapsFolder());
       }
     };
   }
