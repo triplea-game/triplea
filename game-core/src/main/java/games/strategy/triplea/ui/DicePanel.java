@@ -40,10 +40,10 @@ public class DicePanel extends JPanel {
   /** Sets the dice roll to display. */
   public void setDiceRoll(final DiceRoll diceRoll) {
     removeAll();
+    final String hitsString = colorizeHitString(diceRoll.getHits());
     add(
         new JLabel(
-            "<html><b><font style='font-size:120%'>Total hits: <font color='#8B0000'>"
-                + diceRoll.getHits(),
+            "<html><b><font style='font-size:120%'>Total hits: " + hitsString,
             SwingConstants.LEFT));
     add(new JSeparator());
 
@@ -62,18 +62,14 @@ public class DicePanel extends JPanel {
   }
 
   private JLabel makeDiceRolledLabel(final List<Die> dice, final int value) {
-    int hits = 0;
-    for (final Die die : dice) {
-      if (die.getType() == Die.DieType.HIT) {
-        hits++;
-      }
-    }
+    final long hits = dice.stream().map(Die::getType).filter(Die.DieType.HIT::equals).count();
     final String countString = dice.size() == 1 ? "1 die" : dice.size() + " dice";
-    String hitsString = hits == 1 ? "1 hit" : hits + " hits";
-    if (hits != 0) {
-      hitsString = "<font color='#8B0000'>" + hitsString + "</font>";
-    }
+    final String hitsString = colorizeHitString(hits == 1 ? "1 hit" : hits + " hits");
     return new JLabel("<html><b>Rolled " + countString + " at " + value + " (" + hitsString + "):");
+  }
+
+  private static String colorizeHitString(final Object hitString) {
+    return "<font color='#8B0000'>" + hitsString + "</font>";
   }
 
   private void add(final JComponent component) {
