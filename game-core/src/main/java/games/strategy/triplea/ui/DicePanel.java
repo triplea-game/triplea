@@ -68,7 +68,7 @@ public class DicePanel extends JPanel {
     return new JLabel("<html><b>Rolled " + countString + " at " + value + " (" + hitsString + "):");
   }
 
-  private static String colorizeHitString(final Object hitString) {
+  private static String colorizeHitString(final Object hitsString) {
     return "<font color='#8B0000'>" + hitsString + "</font>";
   }
 
