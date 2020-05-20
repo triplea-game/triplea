@@ -40,7 +40,11 @@ public class DicePanel extends JPanel {
   /** Sets the dice roll to display. */
   public void setDiceRoll(final DiceRoll diceRoll) {
     removeAll();
-    add(new JLabel("Total hits: " + diceRoll.getHits(), SwingConstants.LEFT));
+    add(
+        new JLabel(
+            "<html><b><font style='font-size:120%'>Total hits: <font color='#8B0000'>"
+                + diceRoll.getHits(),
+            SwingConstants.LEFT));
     add(new JSeparator());
 
     for (int i = 1; i <= data.getDiceSides(); i++) {
@@ -65,8 +69,11 @@ public class DicePanel extends JPanel {
       }
     }
     final String countString = dice.size() == 1 ? "1 die" : dice.size() + " dice";
-    final String hitsString = hits == 1 ? "1 hit" : hits + " hits";
-    return new JLabel("Rolled " + countString + " at " + value + " (" + hitsString + "):");
+    String hitsString = hits == 1 ? "1 hit" : hits + " hits";
+    if (hits != 0) {
+      hitsString = "<font color='#8B0000'>" + hitsString + "</font>";
+    }
+    return new JLabel("<html><b>Rolled " + countString + " at " + value + " (" + hitsString + "):");
   }
 
   private void add(final JComponent component) {

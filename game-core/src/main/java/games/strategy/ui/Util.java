@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -62,8 +63,9 @@ public final class Util {
 
   /** Centers the specified window on the screen. */
   public static void center(final Window w) {
-    final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-    final int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+    final Dimension screenSize = getScreenSize(w);
+    final int screenWidth = screenSize.width;
+    final int screenHeight = screenSize.height;
     final int windowWidth = w.getWidth();
     final int windowHeight = w.getHeight();
     if (windowHeight > screenHeight) {
@@ -75,6 +77,16 @@ public final class Util {
     final int x = (screenWidth - windowWidth) / 2;
     final int y = (screenHeight - windowHeight) / 2;
     w.setLocation(x, y);
+  }
+
+  /** Returns the size of the screen associated with the passed window. */
+  public static Dimension getScreenSize(final Window window) {
+    final var graphicsConfiguration = window.getGraphicsConfiguration();
+    if (graphicsConfiguration == null) {
+      return Toolkit.getDefaultToolkit().getScreenSize();
+    }
+    final var displayMode = graphicsConfiguration.getDevice().getDisplayMode();
+    return new Dimension(displayMode.getWidth(), displayMode.getHeight());
   }
 
   /**

@@ -14,9 +14,10 @@ import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -270,13 +271,14 @@ public final class BattlePanel extends ActionPanel {
               attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
           battleWindow.getContentPane().removeAll();
           battleWindow.getContentPane().add(battleDisplay);
-          final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+          final Frame parent = JOptionPane.getFrameForComponent(BattlePanel.this);
+          final Dimension screenSize = Util.getScreenSize(parent);
           if (screenSize.width > 1024 && screenSize.height > 768) {
             battleWindow.setMinimumSize(new Dimension(1024, 768));
           } else {
             battleWindow.setMinimumSize(new Dimension(800, 600));
           }
-          battleWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+          battleWindow.setLocationRelativeTo(parent);
           boolean foundHumanInBattle = false;
           for (final Player gamePlayer :
               getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
