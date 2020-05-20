@@ -3,7 +3,7 @@ package org.triplea.io;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +18,7 @@ public final class FileUtils {
    * method to concatenate the path together with an OS specific file separator.
    */
   public static File newFile(final String parentDir, final String... childDirs) {
-    final List<String> dirs = new ArrayList<>();
-    dirs.add(parentDir);
-    dirs.addAll(List.of(childDirs));
-    return new File(String.join(File.separator, dirs));
+    return Path.of(parentDir, childDirs).toFile();
   }
 
   /**
