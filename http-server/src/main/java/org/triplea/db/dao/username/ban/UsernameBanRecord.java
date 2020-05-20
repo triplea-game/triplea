@@ -14,10 +14,6 @@ import org.triplea.db.TimestampMapper;
 @NoArgsConstructor
 @Getter
 public class UsernameBanRecord {
-
-  public static final String USERNAME_COLUMN = "username";
-  public static final String DATE_CREATED_COLUMN = "date_created";
-
   private String username;
   private Instant dateCreated;
 
@@ -25,8 +21,8 @@ public class UsernameBanRecord {
   public static RowMapper<UsernameBanRecord> buildResultMapper() {
     return (rs, ctx) ->
         UsernameBanRecord.builder()
-            .username(rs.getString(USERNAME_COLUMN))
-            .dateCreated(TimestampMapper.map(rs, DATE_CREATED_COLUMN))
+            .username(rs.getString("username"))
+            .dateCreated(TimestampMapper.map(rs, "date_created"))
             .build();
   }
 }
