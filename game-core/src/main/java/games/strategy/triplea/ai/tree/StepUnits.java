@@ -278,11 +278,11 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
   }
 
   boolean noMoreFriendlies() {
-    return countOfFriendlyDamagedOrDead() == friendlyUnits.size() && retreatedFriendly.size() == 0;
+    return countOfFriendlyDamagedOrDead() == friendlyUnits.size() && retreatedFriendly.isEmpty();
   }
 
   boolean noMoreEnemies() {
-    return countOfEnemyDamagedOrDead() == enemyUnits.size() && retreatedEnemy.size() == 0;
+    return countOfEnemyDamagedOrDead() == enemyUnits.size() && retreatedEnemy.isEmpty();
   }
 
   int countOfFriendliesNotDamagedOrDead() {

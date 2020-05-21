@@ -273,7 +273,7 @@ public class BattleStep {
       badProbability += child.badProbability * child.probability;
       averageRounds += child.averageRounds * child.probability;
     }
-    if (children.size() == 0) {
+    if (children.isEmpty()) {
       tieProbability = 1;
     }
 
@@ -370,7 +370,7 @@ public class BattleStep {
   // Most of this logic comes from FireAa::execute
   private List<StepUnits> getAaFightOutcomes(final StepUnits aliveOrInjuredUnits) {
     final Tuple<List<Unit>, List<String>> aaUnits = getAaUnits(aliveOrInjuredUnits);
-    if (aaUnits.getFirst().size() == 0) {
+    if (aaUnits.getFirst().isEmpty()) {
       // no aa units
       return List.of(new StepUnits(aliveOrInjuredUnits.swapSides(), 1.0));
     }
