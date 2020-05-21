@@ -142,6 +142,25 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
     );
   }
 
+  StepUnits mergeParent(StepUnits parent) {
+    return new StepUnits(
+        type,
+        friendlyBits,
+        player,
+        friendlyUnits,
+        friendlyWaitingToDieBits,
+        friendlyHitPoints,
+        retreatedFriendly,
+        parent.friendlyBits,
+        parent.player,
+        parent.friendlyUnits,
+        parent.friendlyWaitingToDieBits,
+        parent.friendlyHitPoints,
+        parent.retreatedFriendly,
+        probability
+    );
+  }
+
   StepUnits removeWaitingToDie() {
     final StepUnits units = new StepUnits(this);
     units.friendlyBits.or(friendlyWaitingToDieBits);

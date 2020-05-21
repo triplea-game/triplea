@@ -101,6 +101,8 @@ public class BattleStep {
   private final Map<StepUnits, BattleStep> nodeCache;
   private final Map<Integer, Map<Integer, double[]>> calculatedProbabilityCache;
 
+  private List<StepUnits> cachedDefenderOutcomes = null;
+
   BattleStep(
       final StepUnits units,
       final GamePlayer player,
@@ -216,7 +218,24 @@ public class BattleStep {
       aliveOrInjuredUnits = units;
     }
 
-    final List<StepUnits> children = getFightOutcomes(new StepUnits(aliveOrInjuredUnits));
+    // for a single ATTACKER level, all of the DEFENDERs have the same outcome
+    // since units are only damaged, not killed outright
+    // this allows copying the first defender outcomes to all of the other defenders.
+    List<StepUnits> newCachedDefenderOutcomes = null;
+    final List<StepUnits> children;
+    final List<StepUnits> tmp;
+    if (units.getType() == Type.DEFENDER) {
+      if (this.cachedDefenderOutcomes == null) {
+        children = getFightOutcomes(new StepUnits(aliveOrInjuredUnits));
+        this.cachedDefenderOutcomes = children;
+      } else {
+        children = this.cachedDefenderOutcomes.stream()
+            .map(childUnits -> childUnits.mergeParent(units))
+            .collect(Collectors.toList());
+      }
+    } else {
+      children = getFightOutcomes(new StepUnits(aliveOrInjuredUnits));
+    }
     averageUnits = new StepUnits(units);
     for (final StepUnits childUnits : children) {
       final BattleStep child = new BattleStep(
@@ -238,8 +257,14 @@ public class BattleStep {
         }
       } else {
         addChild(child);
+        if (units.getType() == Type.ATTACKER && newCachedDefenderOutcomes != null) {
+          child.cachedDefenderOutcomes = newCachedDefenderOutcomes;
+        }
         child.calculateBattle(childUnits, player);
         averageUnits.updateUnitChances(child.averageUnits, child.probability);
+        if (units.getType() == Type.ATTACKER && newCachedDefenderOutcomes == null) {
+          newCachedDefenderOutcomes = child.cachedDefenderOutcomes;
+        }
       }
       winProbability += child.winProbability * child.probability;
       loseProbability += child.loseProbability * child.probability;
@@ -276,7 +301,7 @@ public class BattleStep {
   private List<StepUnits> getRegularFightOutcomes(
       final StepUnits aliveOrInjuredUnits,
       final Predicate<Unit> firingUnitPredicate,
-      MustFightBattle.ReturnFire returnFire
+      final MustFightBattle.ReturnFire returnFire
   ) {
     final Collection<Unit> allFiringUnits = CollectionUtils.getMatches(
         aliveOrInjuredUnits.getAliveOrWaitingToDieFriendly(),
@@ -1134,7 +1159,7 @@ public class BattleStep {
         type = "??";
         break;
     }
-    String out = ""
+    final String out = ""
         + player.getName()
         + " ("
         + type
