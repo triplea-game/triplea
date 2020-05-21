@@ -17,9 +17,7 @@ public class BattleTreeResults extends AggregateResults {
   private final double winProbabality;
   private final double badProbability;
 
-  public BattleTreeResults(
-      final BattleStep root
-  ) {
+  public BattleTreeResults(final BattleStep root) {
     super(1);
     this.root = root;
     this.winProbabality = root.getWinProbability();
@@ -47,14 +45,12 @@ public class BattleTreeResults extends AggregateResults {
 
   Collection<Unit> getAverageAttackingUnitsRemaining(final double chance) {
     return CollectionUtils.getMatches(
-        root.getAverageUnits().getFriendlyWithChance(chance),
-        Matches.unitIsNotInfrastructure());
+        root.getAverageUnits().getFriendlyWithChance(chance), Matches.unitIsNotInfrastructure());
   }
 
   Collection<Unit> getAverageDefendingUnitsRemaining(final double chance) {
     return CollectionUtils.getMatches(
-        root.getAverageUnits().getEnemyWithChance(chance),
-        Matches.unitIsNotInfrastructure());
+        root.getAverageUnits().getEnemyWithChance(chance), Matches.unitIsNotInfrastructure());
   }
 
   @Override
@@ -67,9 +63,11 @@ public class BattleTreeResults extends AggregateResults {
     for (int i = 1; i <= 20; i++) {
       count++;
       attackerTuv +=
-          TuvUtils.getTuv(getAverageAttackingUnitsRemaining((double) i / 20.0), attackerCostsForTuv);
+          TuvUtils.getTuv(
+              getAverageAttackingUnitsRemaining((double) i / 20.0), attackerCostsForTuv);
       defenderTuv +=
-          TuvUtils.getTuv(getAverageDefendingUnitsRemaining((double) i / 20.0), defenderCostsForTuv);
+          TuvUtils.getTuv(
+              getAverageDefendingUnitsRemaining((double) i / 20.0), defenderCostsForTuv);
     }
     return Tuple.of(attackerTuv / count, defenderTuv / count);
   }

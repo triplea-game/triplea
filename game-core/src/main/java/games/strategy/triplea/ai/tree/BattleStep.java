@@ -39,21 +39,13 @@ import org.triplea.util.Tuple;
 
 public class BattleStep {
 
-  static private boolean DEBUG = false;
+  // enable this to keep children in memory for analysis
+  // watch out for running out of memory, though
+  private static boolean DEBUG = false;
 
   static int MAX_ROUNDS = 16;
   private static final double IGNORE_BRANCH_PROBABILITY = 0.005;
 
-  /**
-   * The tree is built:
-   * ATTACKER
-   * |-DEFENDER
-   *  |-ATTACKER
-   *  |-ATTACKER
-   *   |-DEFENDER
-   *    |-...
-   * |-DEFENDER
-   */
   enum Type {
     AA_ATTACKER,
     AA_DEFENDER,
@@ -85,15 +77,33 @@ public class BattleStep {
   }
 
   private final List<BattleStep> children = new ArrayList<>();
-  @Getter(AccessLevel.PACKAGE) private BattleStep parent;
+
+  @Getter(AccessLevel.PACKAGE)
+  private BattleStep parent;
+
   private double probability = 0.0;
-  @Getter(AccessLevel.PACKAGE) private double winProbability = 0;
-  @Getter(AccessLevel.PACKAGE) private double loseProbability = 0;
-  @Getter(AccessLevel.PACKAGE) private double tieProbability = 0;
-  @Getter(AccessLevel.PACKAGE) private double badProbability = 0;
-  @Getter(AccessLevel.PACKAGE) private boolean hasResult = false;
-  @Getter(AccessLevel.PACKAGE) private StepUnits averageUnits;
-  @Getter(AccessLevel.PACKAGE) private double averageRounds;
+
+  @Getter(AccessLevel.PACKAGE)
+  private double winProbability = 0;
+
+  @Getter(AccessLevel.PACKAGE)
+  private double loseProbability = 0;
+
+  @Getter(AccessLevel.PACKAGE)
+  private double tieProbability = 0;
+
+  @Getter(AccessLevel.PACKAGE)
+  private double badProbability = 0;
+
+  @Getter(AccessLevel.PACKAGE)
+  private boolean hasResult = false;
+
+  @Getter(AccessLevel.PACKAGE)
+  private StepUnits averageUnits;
+
+  @Getter(AccessLevel.PACKAGE)
+  private double averageRounds;
+
   private final StepUnits units;
   private final GamePlayer player;
   private final int round;
@@ -107,16 +117,8 @@ public class BattleStep {
       final StepUnits units,
       final GamePlayer player,
       final int round,
-      final Parameters parameters
-  ) {
-    this(
-        units,
-        player,
-        round,
-        parameters,
-        new HashMap<>(),
-        new HashMap<>()
-    );
+      final Parameters parameters) {
+    this(units, player, round, parameters, new HashMap<>(), new HashMap<>());
   }
 
   private BattleStep(
@@ -125,8 +127,7 @@ public class BattleStep {
       final int round,
       final Parameters parameters,
       final Map<StepUnits, BattleStep> nodeCache,
-      final Map<Integer, Map<Integer, double[]>> calculatedProbabilityCache
-  ) {
+      final Map<Integer, Map<Integer, double[]>> calculatedProbabilityCache) {
     this.units = units;
     this.player = player;
     this.round = round;
@@ -147,12 +148,11 @@ public class BattleStep {
   }
 
   // Taken from MustFightBattle::updateOffensiveAaUnits
-  private Tuple<List<Unit>, List<String>> getAaUnits(
-      final StepUnits units
-  ) {
+  private Tuple<List<Unit>, List<String>> getAaUnits(final StepUnits units) {
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed;
     if (units.getType() == Type.AA_DEFENDER) {
-      airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAa(units.getEnemy(), parameters.data);
+      airborneTechTargetsAllowed =
+          TechAbilityAttachment.getAirborneTargettedByAa(units.getEnemy(), parameters.data);
     } else {
       airborneTechTargetsAllowed = Map.of();
     }
@@ -187,7 +187,8 @@ public class BattleStep {
 
   // TODO:
   //  handle bombardment
-  //   - only first round and causalities can't fire back unless true == Properties.getNavalBombardCasualtiesReturnFire(gameData)
+  //   - only first round and causalities can't fire back unless true ==
+  // Properties.getNavalBombardCasualtiesReturnFire(gameData)
   //  handle subs first strike
   //  - handle destroyer being present or not to negate first strike
   void calculateBattle(final StepUnits units, final GamePlayer otherPlayer) {
@@ -228,23 +229,24 @@ public class BattleStep {
         children = getFightOutcomes(new StepUnits(aliveOrInjuredUnits));
         this.cachedDefenderOutcomes = children;
       } else {
-        children = this.cachedDefenderOutcomes.stream()
-            .map(childUnits -> childUnits.mergeParent(units))
-            .collect(Collectors.toList());
+        children =
+            this.cachedDefenderOutcomes.stream()
+                .map(childUnits -> childUnits.mergeParent(units))
+                .collect(Collectors.toList());
       }
     } else {
       children = getFightOutcomes(new StepUnits(aliveOrInjuredUnits));
     }
     averageUnits = new StepUnits(units);
     for (final StepUnits childUnits : children) {
-      final BattleStep child = new BattleStep(
-          childUnits,
-          otherPlayer,
-          nextRound,
-          parameters,
-          nodeCache,
-          calculatedProbabilityCache
-      );
+      final BattleStep child =
+          new BattleStep(
+              childUnits,
+              otherPlayer,
+              nextRound,
+              parameters,
+              nodeCache,
+              calculatedProbabilityCache);
       child.probability = childUnits.getProbability();
 
       if (child.probability < IGNORE_BRANCH_PROBABILITY) {
@@ -287,38 +289,49 @@ public class BattleStep {
         || aliveOrInjuredUnits.getType() == Type.AA_DEFENDER) {
       return getAaFightOutcomes(aliveOrInjuredUnits);
     } else if (aliveOrInjuredUnits.getType() == Type.SUB_ATTACKER) {
-      final MustFightBattle.ReturnFire returnFire = returnFireAgainstAttackingSubs(units.getAliveOrWaitingToDieFriendly(), units.getAliveOrWaitingToDieEnemy());
+      final MustFightBattle.ReturnFire returnFire =
+          returnFireAgainstAttackingSubs(
+              units.getAliveOrWaitingToDieFriendly(), units.getAliveOrWaitingToDieEnemy());
       return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike(), returnFire);
     } else if (aliveOrInjuredUnits.getType() == Type.SUB_DEFENDER) {
-      final MustFightBattle.ReturnFire returnFire = returnFireAgainstAttackingSubs(units.getAliveOrWaitingToDieEnemy(), units.getAliveOrWaitingToDieFriendly());
+      final MustFightBattle.ReturnFire returnFire =
+          returnFireAgainstAttackingSubs(
+              units.getAliveOrWaitingToDieEnemy(), units.getAliveOrWaitingToDieFriendly());
       return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike(), returnFire);
     } else {
-      return getRegularFightOutcomes(aliveOrInjuredUnits, Matches.unitIsFirstStrike().negate(), MustFightBattle.ReturnFire.ALL);
+      return getRegularFightOutcomes(
+          aliveOrInjuredUnits,
+          Matches.unitIsFirstStrike().negate(),
+          MustFightBattle.ReturnFire.ALL);
     }
   }
 
   private List<StepUnits> getRegularFightOutcomes(
       final StepUnits aliveOrInjuredUnits,
       final Predicate<Unit> firingUnitPredicate,
-      final MustFightBattle.ReturnFire returnFire
-  ) {
-    final Collection<Unit> allFiringUnits = CollectionUtils.getMatches(
-        aliveOrInjuredUnits.getAliveOrWaitingToDieFriendly(),
-        firingUnitPredicate
-    );
+      final MustFightBattle.ReturnFire returnFire) {
+    final Collection<Unit> allFiringUnits =
+        CollectionUtils.getMatches(
+            aliveOrInjuredUnits.getAliveOrWaitingToDieFriendly(), firingUnitPredicate);
     final Collection<Unit> allEnemyUnits = aliveOrInjuredUnits.getAliveOrWaitingToDieEnemy();
-    final List<Triple<Collection<Unit>, Collection<Unit>, Boolean>> groupsAndTargets = new ArrayList<>();
-    final List<TargetGroup> targetGroups = TargetGroup.newTargetGroups(allFiringUnits, allEnemyUnits);
+    final List<Triple<Collection<Unit>, Collection<Unit>, Boolean>> groupsAndTargets =
+        new ArrayList<>();
+    final List<TargetGroup> targetGroups =
+        TargetGroup.newTargetGroups(allFiringUnits, allEnemyUnits);
     for (final TargetGroup targetGroup : targetGroups) {
       final Collection<Unit> firingUnits = targetGroup.getFiringUnits(allFiringUnits);
       final Collection<Unit> attackableUnits = targetGroup.getTargetUnits(allEnemyUnits);
       final Collection<Unit> targetUnits =
           CollectionUtils.getMatches(
-            attackableUnits,
-            PredicateBuilder.of(Matches.unitIsNotInfrastructure())
-                .andIf(aliveOrInjuredUnits.getType() == Type.DEFENDER, Matches.unitIsSuicideOnAttack().negate())
-                .andIf(aliveOrInjuredUnits.getType() == Type.ATTACKER, Matches.unitIsSuicideOnDefense().negate())
-                .build());
+              attackableUnits,
+              PredicateBuilder.of(Matches.unitIsNotInfrastructure())
+                  .andIf(
+                      aliveOrInjuredUnits.getType() == Type.DEFENDER,
+                      Matches.unitIsSuicideOnAttack().negate())
+                  .andIf(
+                      aliveOrInjuredUnits.getType() == Type.ATTACKER,
+                      Matches.unitIsSuicideOnDefense().negate())
+                  .build());
 
       if (targetUnits.isEmpty() || firingUnits.isEmpty()) {
         continue;
@@ -347,21 +360,24 @@ public class BattleStep {
 
     final List<StepUnits> units = new ArrayList<>(outcomes.values());
 
-    units.sort(Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead).reversed().thenComparingInt(StepUnits::countOfFriendlyHitPoints));
+    units.sort(
+        Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead)
+            .reversed()
+            .thenComparingInt(StepUnits::countOfFriendlyHitPoints));
     return units;
   }
 
   // Most of this logic comes from FireAa::execute
   private List<StepUnits> getAaFightOutcomes(final StepUnits aliveOrInjuredUnits) {
-    final Tuple<List<Unit>, List<String>> aaUnits =
-        getAaUnits(aliveOrInjuredUnits);
+    final Tuple<List<Unit>, List<String>> aaUnits = getAaUnits(aliveOrInjuredUnits);
     if (aaUnits.getFirst().size() == 0) {
       // no aa units
       return List.of(new StepUnits(aliveOrInjuredUnits.swapSides(), 1.0));
     }
     final boolean allowMultipleHitsPerUnit = false;
 
-    final List<Triple<Collection<Unit>, Collection<Unit>, Boolean>> aaGroupsAndTargets = new ArrayList<>();
+    final List<Triple<Collection<Unit>, Collection<Unit>, Boolean>> aaGroupsAndTargets =
+        new ArrayList<>();
 
     for (final String aaType : aaUnits.getSecond()) {
       final Collection<Unit> aaTypeUnits =
@@ -411,7 +427,10 @@ public class BattleStep {
 
     final List<StepUnits> units = new ArrayList<>(outcomes.values());
 
-    units.sort(Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead).thenComparingInt(StepUnits::countOfFriendlyHitPoints).reversed());
+    units.sort(
+        Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead)
+            .thenComparingInt(StepUnits::countOfFriendlyHitPoints)
+            .reversed());
     return units;
   }
 
@@ -423,15 +442,16 @@ public class BattleStep {
       final Type type,
       final MustFightBattle.ReturnFire returnFire,
       final boolean allowMultipleHitsPerUnit,
-      final double probability
-  ) {
-    final List<Unit> firingGroup = new ArrayList<>(groupsAndTargets.get(groupsAndTargetsIndex).getFirst());
+      final double probability) {
+    final List<Unit> firingGroup =
+        new ArrayList<>(groupsAndTargets.get(groupsAndTargetsIndex).getFirst());
     final Collection<Unit> aliveUnits = currentUnits.getAliveFriendly();
-    final Collection<Unit> validAliveOrInjuredTargets = groupsAndTargets.get(groupsAndTargetsIndex).getSecond();
-    final List<Unit> validAliveTargets = groupsAndTargets.get(groupsAndTargetsIndex).getSecond()
-        .stream()
-        .filter(aliveUnits::contains)
-        .collect(Collectors.toList());
+    final Collection<Unit> validAliveOrInjuredTargets =
+        groupsAndTargets.get(groupsAndTargetsIndex).getSecond();
+    final List<Unit> validAliveTargets =
+        groupsAndTargets.get(groupsAndTargetsIndex).getSecond().stream()
+            .filter(aliveUnits::contains)
+            .collect(Collectors.toList());
 
     final boolean isSuicideOnHit = groupsAndTargets.get(groupsAndTargetsIndex).getThird();
 
@@ -447,11 +467,7 @@ public class BattleStep {
               firingGroup,
               validAliveOrInjuredTargets);
     } else {
-      diceTuple =
-          getRegularRollData(
-              defending,
-              firingGroup,
-              validAliveOrInjuredTargets);
+      diceTuple = getRegularRollData(defending, firingGroup, validAliveOrInjuredTargets);
     }
     final List<Double> hitProbabilities = calculateHitProbabilities(diceTuple);
 
@@ -475,8 +491,7 @@ public class BattleStep {
             type,
             returnFire,
             allowMultipleHitsPerUnit,
-            hitProbability * probability
-        );
+            hitProbability * probability);
       } else {
         outcomes.compute(
             new StepUnits(currentUnits, hitProbability * probability),
@@ -487,8 +502,7 @@ public class BattleStep {
                 value.addProbability(hitProbability * probability);
               }
               return value;
-            }
-        );
+            });
       }
 
       totalHits += 1;
@@ -523,8 +537,7 @@ public class BattleStep {
               value.addProbability(childProbability * probability);
             }
             return value;
-          }
-      );
+          });
     }
   }
 
@@ -558,7 +571,8 @@ public class BattleStep {
             ? CasualtyUtil.getTotalHitpointsLeft(validAliveOrInjuredTargets)
             : validAliveOrInjuredTargets.size());
     final int totalRolls = Math.min(planeHitPoints, maxRollsAvailable);
-    final Map<Integer, Integer> rollsByDicePower = Map.of(maxAttackAndDiceSides.getFirst(), totalRolls);
+    final Map<Integer, Integer> rollsByDicePower =
+        Map.of(maxAttackAndDiceSides.getFirst(), totalRolls);
     return RollData.of(totalRolls, rollsByDicePower, maxAttackAndDiceSides.getSecond());
   }
 
@@ -568,8 +582,7 @@ public class BattleStep {
       final Collection<Unit> validAliveOrInjuredTargets) {
     final Map<Integer, Integer> rollsByDicePower =
         getRegularDiceGrouped(parameters, defending, firingGroup, validAliveOrInjuredTargets);
-    final int totalRolls =
-        rollsByDicePower.values().stream().reduce(0, Integer::sum);
+    final int totalRolls = rollsByDicePower.values().stream().reduce(0, Integer::sum);
     return RollData.of(totalRolls, rollsByDicePower, parameters.data.getDiceSides());
   }
 
@@ -597,7 +610,8 @@ public class BattleStep {
 
     final Map<Integer, Integer> rollsByDicePower = new HashMap<>();
     for (final Unit unit : friendlyUnits) {
-      final DiceRoll.TotalPowerAndTotalRolls totalPowerAndTotalRolls = unitPowerAndRollsMap.get(unit);
+      final DiceRoll.TotalPowerAndTotalRolls totalPowerAndTotalRolls =
+          unitPowerAndRollsMap.get(unit);
       final int power = totalPowerAndTotalRolls.getTotalPower();
       final int rolls = totalPowerAndTotalRolls.getTotalRolls();
       if (power == 0) {
@@ -612,8 +626,7 @@ public class BattleStep {
             } else {
               return prevRolls + rolls;
             }
-          }
-      );
+          });
     }
     return rollsByDicePower;
   }
@@ -624,8 +637,7 @@ public class BattleStep {
     final Collection<Unit> defendingUnits = units.getAliveOrWaitingToDieEnemy();
     final GamePlayer attacker = units.getPlayer();
     final Territory battleSite = parameters.getLocation();
-    if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size()
-        == 0) {
+    if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
       if (!Properties.getTransportCasualtiesRestricted(parameters.getData())) {
         loseProbability = 1;
         hasResult = true;
@@ -653,8 +665,7 @@ public class BattleStep {
           hasResult = true;
         }
       }
-    } else if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure())
-        .size()
+    } else if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).size()
         == 0) {
       if (Properties.getTransportCasualtiesRestricted(parameters.getData())) {
         // If there are undefended attacking transports, determine if they automatically die
@@ -667,41 +678,41 @@ public class BattleStep {
       tieProbability = 1;
       hasResult = true;
       /*
-       * Removed the else because this is slow for every iteration and
-       * is already taken care of by getFightOutcomes
-    } else {
-      final Collection<TerritoryEffect> territoryEffects = parameters.getTerritoryEffects();
-      final int attackPower =
-          DiceRoll.getTotalPower(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                  attackingUnits,
-                  defendingUnits,
-                  attackingUnits,
-                  false,
-                  parameters.getData(),
-                  battleSite,
-                  territoryEffects,
-                  parameters.isAmphibious,
-                  parameters.amphibiousLandAttackers),
-              parameters.getData());
-      final int defensePower =
-          DiceRoll.getTotalPower(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                  defendingUnits,
-                  attackingUnits,
-                  defendingUnits,
-                  true,
-                  parameters.getData(),
-                  battleSite,
-                  territoryEffects,
-                  parameters.isAmphibious,
-                  parameters.amphibiousLandAttackers),
-              parameters.getData());
-      if (attackPower == 0 && defensePower == 0) {
-        tieProbability = 1;
-        hasResult = true;
-      }
-       */
+         * Removed the else because this is slow for every iteration and
+         * is already taken care of by getFightOutcomes
+      } else {
+        final Collection<TerritoryEffect> territoryEffects = parameters.getTerritoryEffects();
+        final int attackPower =
+            DiceRoll.getTotalPower(
+                DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                    attackingUnits,
+                    defendingUnits,
+                    attackingUnits,
+                    false,
+                    parameters.getData(),
+                    battleSite,
+                    territoryEffects,
+                    parameters.isAmphibious,
+                    parameters.amphibiousLandAttackers),
+                parameters.getData());
+        final int defensePower =
+            DiceRoll.getTotalPower(
+                DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                    defendingUnits,
+                    attackingUnits,
+                    defendingUnits,
+                    true,
+                    parameters.getData(),
+                    battleSite,
+                    territoryEffects,
+                    parameters.isAmphibious,
+                    parameters.amphibiousLandAttackers),
+                parameters.getData());
+        if (attackPower == 0 && defensePower == 0) {
+          tieProbability = 1;
+          hasResult = true;
+        }
+         */
     }
     // if a result was found, but no one is still alive, treat it as a draw
     // see BattleResults::draw
@@ -715,6 +726,7 @@ public class BattleStep {
 
   /**
    * Determines the result of the battle if it is finished
+   *
    * @param units The two sides of the battle
    * @return did the battle end
    */
@@ -739,13 +751,12 @@ public class BattleStep {
         this.badProbability = cachedBattleStep.badProbability;
         this.averageUnits = cachedBattleStep.averageUnits;
         this.averageRounds = round + 1;
-        //System.out.println("Cached: " + this);
+        // System.out.println("Cached: " + this);
       } else {
         // this node reaches itself
         // an example scenario would be two units fighting
         // each round, there is a possibility that no one will hit
         // so the units never change
-
 
         final double[] siblingResults = new double[5];
         siblingResults[0] = cachedBattleStep.winProbability;
@@ -755,7 +766,8 @@ public class BattleStep {
         siblingResults[4] = 1.0;
         final StepUnits siblingUnits = cachedBattleStep.averageUnits.swapSides();
 
-        calculateSiblingResultsForRecursiveEnd(cachedBattleStep.children, siblingResults, siblingUnits);
+        calculateSiblingResultsForRecursiveEnd(
+            cachedBattleStep.children, siblingResults, siblingUnits);
 
         this.averageUnits = units;
 
@@ -773,10 +785,11 @@ public class BattleStep {
           this.averageUnits.updateUnitChances(siblingUnits, Math.pow(siblingResults[4], level));
         }
         // put the rest in "bad"
-        this.badProbability = 1.0 - (this.winProbability + this.loseProbability + this.tieProbability);
+        this.badProbability =
+            1.0 - (this.winProbability + this.loseProbability + this.tieProbability);
         // overwrite the cached one with this that has a result
         nodeCache.put(units, this);
-        //System.out.println("Recurse: " + this);
+        // System.out.println("Recurse: " + this);
       }
       this.hasResult = true;
       return true;
@@ -789,7 +802,7 @@ public class BattleStep {
       System.out.println("Reached max rounds");
       hasResult = true;
       badProbability = 1.0;
-      //System.out.println("Max: " + this);
+      // System.out.println("Max: " + this);
       return true;
     }
 
@@ -797,7 +810,8 @@ public class BattleStep {
     return false;
   }
 
-  private void calculateSiblingResultsForRecursiveEnd(final List<BattleStep> steps, final double[] siblingResults, final StepUnits siblingUnits) {
+  private void calculateSiblingResultsForRecursiveEnd(
+      final List<BattleStep> steps, final double[] siblingResults, final StepUnits siblingUnits) {
     for (final BattleStep level : steps) {
       if (level.hasResult) {
         continue;
@@ -820,12 +834,11 @@ public class BattleStep {
 
   /**
    * Figures out all the probabilities of rolling dice with a specific set of powers and amounts.
+   *
    * @param rollData The details about the dice available to roll
    * @return List of possible probabilities from rolling 0 dice to rolling rollData.totalRolls})
    */
-  List<Double> calculateHitProbabilities(
-      final RollData rollData
-  ) {
+  List<Double> calculateHitProbabilities(final RollData rollData) {
     if (rollData.totalRolls == 0) {
       return List.of();
     }
@@ -837,8 +850,7 @@ public class BattleStep {
     final Map<Integer, double[]> calculatedProbabilityCache =
         this.calculatedProbabilityCache.computeIfAbsent(
             rollData.maxDiceSides,
-            key -> new HashMap<>(rollData.maxDiceSides * rollData.totalRolls)
-          );
+            key -> new HashMap<>(rollData.maxDiceSides * rollData.totalRolls));
 
     final int[] diceAvailableGroupedByPower = new int[maxPower + 1];
     for (int dicePowerIndex = 0; dicePowerIndex < dicePowersList.size(); dicePowerIndex++) {
@@ -852,11 +864,12 @@ public class BattleStep {
     calculateHitProbabilitiesWorker(
         0,
         dicePowersList.size() - 1,
-        probabilities, 1.0, rollData.maxDiceSides,
+        probabilities,
+        1.0,
+        rollData.maxDiceSides,
         dicePowers,
         diceAvailableGroupedByPower,
-        calculatedProbabilityCache
-    );
+        calculatedProbabilityCache);
 
     final List<Double> probabilitiesList = new ArrayList<>();
     for (final double probability : probabilities) {
@@ -869,10 +882,10 @@ public class BattleStep {
   /**
    * Recursive worker for {@link #calculateHitProbabilities}
    *
-   * This recursively goes through all of the dicePowers and calculates the probabilities
-   * for every combination of dicePower and their amounts.
+   * <p>This recursively goes through all of the dicePowers and calculates the probabilities for
+   * every combination of dicePower and their amounts.
    *
-   * This is a hotspot and so should not do anything more than necessary.
+   * <p>This is a hotspot and so should not do anything more than necessary.
    *
    * @param totalDiceHits The number of dice hit so far
    * @param dicePowerIndex The position in the dicePower
@@ -891,20 +904,19 @@ public class BattleStep {
       final int maxDiceSides,
       final int[] dicePowers,
       final int[] diceAvailableGroupedByPower,
-      final Map<Integer, double[]> calculatedProbabilityCache
-  ) {
+      final Map<Integer, double[]> calculatedProbabilityCache) {
     final int dicePower = dicePowers[dicePowerIndex];
 
     for (int diceHits = diceAvailableGroupedByPower[dicePower]; diceHits >= 0; diceHits--) {
 
-      final double newTotalProbability = totalProbability *
-          calculateHitProbability(
-              calculatedProbabilityCache,
-              diceHits,
-              dicePower,
-              diceAvailableGroupedByPower[dicePower],
-              maxDiceSides
-          );
+      final double newTotalProbability =
+          totalProbability
+              * calculateHitProbability(
+                  calculatedProbabilityCache,
+                  diceHits,
+                  dicePower,
+                  diceAvailableGroupedByPower[dicePower],
+                  maxDiceSides);
 
       final int newTotalDiceHits = totalDiceHits + diceHits;
       if (dicePowerIndex == 0) {
@@ -913,18 +925,19 @@ public class BattleStep {
         calculateHitProbabilitiesWorker(
             newTotalDiceHits,
             dicePowerIndex - 1,
-            probabilities, newTotalProbability, maxDiceSides,
+            probabilities,
+            newTotalProbability,
+            maxDiceSides,
             dicePowers,
             diceAvailableGroupedByPower,
-            calculatedProbabilityCache
-            );
+            calculatedProbabilityCache);
       }
     }
   }
 
   /**
-   * Figures out the probability of getting diceAmount hits out of diceRolls where the
-   * dice hits if dicePower or lower is rolled.
+   * Figures out the probability of getting diceAmount hits out of diceRolls where the dice hits if
+   * dicePower or lower is rolled.
    *
    * @param calculatedProbabilityCache A cache of previously seen probabilities
    * @param diceAmount Number of hits wanted
@@ -938,8 +951,7 @@ public class BattleStep {
       final int diceAmount,
       final int dicePower,
       final int diceRolls,
-      final int maxDiceSides
-  ) {
+      final int maxDiceSides) {
     final Integer cacheKey = (diceRolls * 31) + dicePower;
     final double[] probabilities;
     final double[] result = calculatedProbabilityCache.get(cacheKey);
@@ -949,15 +961,16 @@ public class BattleStep {
       final double[] innerProbabilities = new double[diceRolls + 1];
       final double hitProbability = (double) dicePower / maxDiceSides;
       final double missProbability = 1.0 - hitProbability;
-      final BinomialDistribution bin =
-          new BinomialDistribution(
-              null, diceRolls, hitProbability);
+      final BinomialDistribution bin = new BinomialDistribution(null, diceRolls, hitProbability);
 
       innerProbabilities[0] = bin.probability(0);
       double previousValue = innerProbabilities[0];
       for (int hitsNeeded = 1; hitsNeeded <= diceRolls; hitsNeeded++) {
-        previousValue = previousValue * hitProbability * (diceRolls - hitsNeeded + 1)
-            / (missProbability * hitsNeeded);
+        previousValue =
+            previousValue
+                * hitProbability
+                * (diceRolls - hitsNeeded + 1)
+                / (missProbability * hitsNeeded);
         innerProbabilities[hitsNeeded] = previousValue;
       }
       probabilities = innerProbabilities;
@@ -969,7 +982,8 @@ public class BattleStep {
 
   // Taken from MustFightBattle::checkForUnitsThatCanRollLeft
   void checkForUnitsThatCanRollLeft(final boolean attacker, final StepUnits units) {
-    if (units.getAliveOrWaitingToDieFriendly().isEmpty() || units.getAliveOrWaitingToDieEnemy().isEmpty()) {
+    if (units.getAliveOrWaitingToDieFriendly().isEmpty()
+        || units.getAliveOrWaitingToDieEnemy().isEmpty()) {
       return;
     }
     final Predicate<Unit> notSubmergedAndType =
@@ -988,7 +1002,8 @@ public class BattleStep {
                   notSubmergedAndType.and(Matches.unitIsSupporterOrHasCombatAbility(attacker)));
       unitsToKill =
           CollectionUtils.getMatches(
-              units.getAliveOrWaitingToDieFriendly(), notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
+              units.getAliveOrWaitingToDieFriendly(),
+              notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
     } else {
       hasUnitsThatCanRollLeft =
           units.getAliveOrWaitingToDieEnemy().stream()
@@ -996,7 +1011,8 @@ public class BattleStep {
                   notSubmergedAndType.and(Matches.unitIsSupporterOrHasCombatAbility(attacker)));
       unitsToKill =
           CollectionUtils.getMatches(
-              units.getAliveOrWaitingToDieEnemy(), notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
+              units.getAliveOrWaitingToDieEnemy(),
+              notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
     }
     final boolean enemy = !attacker;
     final boolean enemyHasUnitsThatCanRollLeft;
@@ -1089,10 +1105,12 @@ public class BattleStep {
   }
 
   // Taken from MustFightBattle::returnFireAgainstAttackingSubs
-  private MustFightBattle.ReturnFire returnFireAgainstAttackingSubs(final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits) {
+  private MustFightBattle.ReturnFire returnFireAgainstAttackingSubs(
+      final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits) {
     final boolean attackingSubsSneakAttack =
         defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits);
+    final boolean defendingSubsSneakAttack =
+        defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits);
     final MustFightBattle.ReturnFire returnFireAgainstAttackingSubs;
     if (!attackingSubsSneakAttack) {
       returnFireAgainstAttackingSubs = MustFightBattle.ReturnFire.ALL;
@@ -1123,20 +1141,22 @@ public class BattleStep {
    */
 
   // Taken from MustFightBattle::defendingSubsSneakAttackAndNoAttackingDestroyers
-  private boolean defendingSubsSneakAttackAndNoAttackingDestroyers(final Collection<Unit> attackingUnits) {
+  private boolean defendingSubsSneakAttackAndNoAttackingDestroyers(
+      final Collection<Unit> attackingUnits) {
     return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
         && defendingSubsSneakAttack();
   }
 
   // Taken from MustFightBattle::defendingSubsSneakAttack
   private boolean defendingSubsSneakAttack() {
-    return Properties.getWW2V2(parameters.getData()) || Properties.getDefendingSubsSneakAttack(parameters.getData());
+    return Properties.getWW2V2(parameters.getData())
+        || Properties.getDefendingSubsSneakAttack(parameters.getData());
   }
 
   @Override
   public String toString() {
     final String type;
-    switch(units.getType()) {
+    switch (units.getType()) {
       case AA_ATTACKER:
         type = "AA";
         break;
@@ -1159,24 +1179,35 @@ public class BattleStep {
         type = "??";
         break;
     }
-    final String out = ""
-        + player.getName()
-        + " ("
-        + type
-        + ") "
-        + units.getAliveOrWaitingToDieFriendly()
-        + "(" + units.getAliveFriendly() + ")"
-        + " vs "
-        + units.getAliveOrWaitingToDieEnemy()
-        + "(" + units.getAliveEnemy() + ")"
-        + " has "
-        + String.format("%.4f", probability)
-        + "% chance"
-        + " w:" + String.format("%.3f", winProbability)
-        + " l:" + String.format("%.3f", loseProbability)
-        + " t:" + String.format("%.3f", tieProbability)
-        + " b:" + String.format("%.3f", badProbability)
-        + " [r:" + round + "]";
+    final String out =
+        ""
+            + player.getName()
+            + " ("
+            + type
+            + ") "
+            + units.getAliveOrWaitingToDieFriendly()
+            + "("
+            + units.getAliveFriendly()
+            + ")"
+            + " vs "
+            + units.getAliveOrWaitingToDieEnemy()
+            + "("
+            + units.getAliveEnemy()
+            + ")"
+            + " has "
+            + String.format("%.4f", probability)
+            + "% chance"
+            + " w:"
+            + String.format("%.3f", winProbability)
+            + " l:"
+            + String.format("%.3f", loseProbability)
+            + " t:"
+            + String.format("%.3f", tieProbability)
+            + " b:"
+            + String.format("%.3f", badProbability)
+            + " [r:"
+            + round
+            + "]";
 
     return out;
   }

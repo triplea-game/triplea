@@ -46,7 +46,8 @@ public enum PlayerType {
     }
   },
 
-  BATTLE_TREE_COMP_AI("BattleTree Compare (AI)", ClientSetting.showBetaFeatures.getValue().orElse(false)) {
+  BATTLE_TREE_COMP_AI(
+      "BattleTree Compare (AI)", ClientSetting.showBetaFeatures.getValue().orElse(false)) {
     @Override
     public Player newPlayerWithName(final String name) {
       return new BattleTreeCompAi(name);

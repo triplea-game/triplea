@@ -5,28 +5,21 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
-import games.strategy.triplea.delegate.battle.MustFightBattle;
-import games.strategy.triplea.delegate.battle.UnitBattleComparator;
-import games.strategy.triplea.delegate.battle.casualty.CasualtyOrderOfLosses;
 import games.strategy.triplea.odds.calculator.AggregateResults;
-import games.strategy.triplea.odds.calculator.BattleCalculator;
 import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
 import games.strategy.triplea.odds.calculator.IBattleCalculator;
-import games.strategy.triplea.util.TuvUtils;
 import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.List;
 
 public class BattleTreeCompCalculator implements IBattleCalculator {
 
   private GameData data;
   private static final BattleTreeCalculator battleTreeCalculator = new BattleTreeCalculator();
-  private static final ConcurrentBattleCalculator hardAiCalculator = new ConcurrentBattleCalculator();
+  private static final ConcurrentBattleCalculator hardAiCalculator =
+      new ConcurrentBattleCalculator();
 
-  public BattleTreeCompCalculator() {
-  }
+  public BattleTreeCompCalculator() {}
 
   public void setGameData(final GameData data) {
     this.data = data;
@@ -48,47 +41,48 @@ public class BattleTreeCompCalculator implements IBattleCalculator {
       final Collection<Unit> bombardingUnits,
       final Collection<TerritoryEffect> territoryEffects,
       final boolean retreatWhenOnlyAirLeft,
-      final int runCount
-  ) {
+      final int runCount) {
     final DecimalFormat timeFormat = new DecimalFormat("0.00s");
     final DecimalFormat percentFormat = new DecimalFormat("0.00%");
 
     long start = System.nanoTime();
-    final AggregateResults battleTreeResults = battleTreeCalculator.calculate(
-        attacker,
-        defender,
-        location,
-        attackingUnits,
-        defendingUnits,
-        bombardingUnits,
-        territoryEffects,
-        retreatWhenOnlyAirLeft,
-        runCount
-    );
+    final AggregateResults battleTreeResults =
+        battleTreeCalculator.calculate(
+            attacker,
+            defender,
+            location,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects,
+            retreatWhenOnlyAirLeft,
+            runCount);
     final long battleTreeTime = System.nanoTime() - start;
 
     start = System.nanoTime();
-    final AggregateResults hardAiResults = hardAiCalculator.calculate(
-        attacker,
-        defender,
-        location,
-        attackingUnits,
-        defendingUnits,
-        bombardingUnits,
-        territoryEffects,
-        retreatWhenOnlyAirLeft,
-        runCount
-    );
+    final AggregateResults hardAiResults =
+        hardAiCalculator.calculate(
+            attacker,
+            defender,
+            location,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects,
+            retreatWhenOnlyAirLeft,
+            runCount);
     final long hardAiTime = System.nanoTime() - start;
 
     // if the battleTree took longer or was more than 5% different with win percentage
     boolean logDetails = false;
-    if (Math.abs(hardAiResults.getAttackerWinPercent() - battleTreeResults.getAttackerWinPercent()) > .05) {
+    if (Math.abs(hardAiResults.getAttackerWinPercent() - battleTreeResults.getAttackerWinPercent())
+        > .05) {
       logDetails = true;
-      ProLogger.warn("BT: Hard AI had win percentage of "
-          + percentFormat.format(hardAiResults.getAttackerWinPercent())
-          + " while BattleTree AI had win percentage of "
-          + percentFormat.format(battleTreeResults.getAttackerWinPercent()));
+      ProLogger.warn(
+          "BT: Hard AI had win percentage of "
+              + percentFormat.format(hardAiResults.getAttackerWinPercent())
+              + " while BattleTree AI had win percentage of "
+              + percentFormat.format(battleTreeResults.getAttackerWinPercent()));
     }
     if (battleTreeTime > hardAiTime) {
       logDetails = true;

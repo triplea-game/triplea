@@ -36,16 +36,13 @@ class BattleStepGlobal1940Test {
       checkNotNull(data.getUnitTypeList().getUnitType("infantry"));
   private static final UnitType ARTILLERY =
       checkNotNull(data.getUnitTypeList().getUnitType("artillery"));
-  private static final UnitType ARMOUR =
-      checkNotNull(data.getUnitTypeList().getUnitType("armour"));
+  private static final UnitType ARMOUR = checkNotNull(data.getUnitTypeList().getUnitType("armour"));
   private static final UnitType FIGHTER =
       checkNotNull(data.getUnitTypeList().getUnitType("fighter"));
   private static final UnitType TACTICAL_BOMBER =
       checkNotNull(data.getUnitTypeList().getUnitType("tactical_bomber"));
-  private static final UnitType BOMBER =
-      checkNotNull(data.getUnitTypeList().getUnitType("bomber"));
-  private static final UnitType AAGUN =
-      checkNotNull(data.getUnitTypeList().getUnitType("aaGun"));
+  private static final UnitType BOMBER = checkNotNull(data.getUnitTypeList().getUnitType("bomber"));
+  private static final UnitType AAGUN = checkNotNull(data.getUnitTypeList().getUnitType("aaGun"));
   private static final UnitType CRUISER =
       checkNotNull(data.getUnitTypeList().getUnitType("cruiser"));
   private static final UnitType BATTLESHIP =
@@ -57,26 +54,18 @@ class BattleStepGlobal1940Test {
   private static final UnitType TRANSPORT =
       checkNotNull(data.getUnitTypeList().getUnitType("transport"));
 
-  private Map<Integer, Integer> getDiceGrouped(final List<Unit> attackers, final List<Unit> defenders) {
-    final BattleStep.Parameters parameters = BattleStep.Parameters.builder()
-        .data(data)
-        .location(FRANCE)
-        .territoryEffects(FRANCE_TERRITORY_EFFECTS)
-        .build();
+  private Map<Integer, Integer> getDiceGrouped(
+      final List<Unit> attackers, final List<Unit> defenders) {
+    final BattleStep.Parameters parameters =
+        BattleStep.Parameters.builder()
+            .data(data)
+            .location(FRANCE)
+            .territoryEffects(FRANCE_TERRITORY_EFFECTS)
+            .build();
 
     final StepUnits attackingUnits = new StepUnits(attackers, BRITISH, List.of(), GERMAN);
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
-    return root.getRegularDiceGrouped(
-        parameters,
-        false,
-        attackers,
-        defenders
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
+    return root.getRegularDiceGrouped(parameters, false, attackers, defenders);
   }
 
   @Test
@@ -116,16 +105,11 @@ class BattleStepGlobal1940Test {
 
     final int diceSides = data.getDiceSides();
     final Map<Integer, Integer> diceGrouped = getDiceGrouped(attackingOrderOfLoss, List.of());
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
-    final List<Double> hitProbability = root.calculateHitProbabilities(
-        BattleStep.RollData.of(1, diceGrouped, diceSides)
-    );
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
+    final List<Double> hitProbability =
+        root.calculateHitProbabilities(BattleStep.RollData.of(1, diceGrouped, diceSides));
 
     assertEquals(0.5, hitProbability.get(0));
     assertEquals(0.5, hitProbability.get(1));
@@ -139,16 +123,11 @@ class BattleStepGlobal1940Test {
 
     final int diceSides = data.getDiceSides();
     final Map<Integer, Integer> diceGrouped = getDiceGrouped(attackingOrderOfLoss, List.of());
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
-    final List<Double> hitProbability = root.calculateHitProbabilities(
-        BattleStep.RollData.of(2, diceGrouped, diceSides)
-    );
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
+    final List<Double> hitProbability =
+        root.calculateHitProbabilities(BattleStep.RollData.of(2, diceGrouped, diceSides));
 
     assertEquals(0.4166, hitProbability.get(0), 0.0001);
     assertEquals(0.5, hitProbability.get(1), 0.0001);
@@ -164,16 +143,11 @@ class BattleStepGlobal1940Test {
     final int diceSides = data.getDiceSides();
     final Map<Integer, Integer> diceGrouped = getDiceGrouped(attackingOrderOfLoss, List.of());
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
-    final List<Double> hitProbability = root.calculateHitProbabilities(
-        BattleStep.RollData.of(2, diceGrouped, diceSides)
-    );
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
+    final List<Double> hitProbability =
+        root.calculateHitProbabilities(BattleStep.RollData.of(2, diceGrouped, diceSides));
 
     assertEquals(0.5, hitProbability.get(1), 0.0001);
   }
@@ -189,17 +163,12 @@ class BattleStepGlobal1940Test {
     final int diceSides = data.getDiceSides();
     final Map<Integer, Integer> diceGrouped = getDiceGrouped(attackingOrderOfLoss, List.of());
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
-    final List<Double> hitProbability = root.calculateHitProbabilities(
-        BattleStep.RollData.of(4, diceGrouped, diceSides)
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
+    final List<Double> hitProbability =
+        root.calculateHitProbabilities(BattleStep.RollData.of(4, diceGrouped, diceSides));
 
     assertEquals(0.0833, hitProbability.get(3), 0.0001);
   }
@@ -218,17 +187,12 @@ class BattleStepGlobal1940Test {
     final int diceSides = data.getDiceSides();
     final Map<Integer, Integer> diceGrouped = getDiceGrouped(attackingOrderOfLoss, List.of());
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
-    final List<Double> hitProbability = root.calculateHitProbabilities(
-        BattleStep.RollData.of(7, diceGrouped, diceSides)
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
+    final List<Double> hitProbability =
+        root.calculateHitProbabilities(BattleStep.RollData.of(7, diceGrouped, diceSides));
 
     assertEquals(0.3171, hitProbability.get(3), 0.0001);
   }
@@ -247,17 +211,12 @@ class BattleStepGlobal1940Test {
     final int diceSides = data.getDiceSides();
     final Map<Integer, Integer> diceGrouped = getDiceGrouped(attackingOrderOfLoss, List.of());
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, List.of(), GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
-    final List<Double> hitProbability = root.calculateHitProbabilities(
-        BattleStep.RollData.of(7, diceGrouped, diceSides)
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
+    final List<Double> hitProbability =
+        root.calculateHitProbabilities(BattleStep.RollData.of(7, diceGrouped, diceSides));
 
     assertEquals(0.0096, hitProbability.get(0), 0.0001);
     assertEquals(0.0713, hitProbability.get(1), 0.0001);
@@ -285,7 +244,7 @@ class BattleStepGlobal1940Test {
         .build();
   }
 
-  final static class CalculateResult {
+  static final class CalculateResult {
     final double THRESHOLD = .001;
     double winProbability = 0;
     double loseProbability = 0;
@@ -294,12 +253,16 @@ class BattleStepGlobal1940Test {
 
     @Override
     public String toString() {
-      return "CalculateResult{" +
-          "winProbability=" + winProbability +
-          ", loseProbability=" + loseProbability +
-          ", tieProbability=" + tieProbability +
-          ", badProbability=" + badProbability +
-          '}';
+      return "CalculateResult{"
+          + "winProbability="
+          + winProbability
+          + ", loseProbability="
+          + loseProbability
+          + ", tieProbability="
+          + tieProbability
+          + ", badProbability="
+          + badProbability
+          + '}';
     }
 
     @Override
@@ -307,10 +270,10 @@ class BattleStepGlobal1940Test {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       final CalculateResult that = (CalculateResult) o;
-      return Math.abs(that.winProbability - winProbability) < THRESHOLD &&
-          Math.abs(that.loseProbability - loseProbability) < THRESHOLD &&
-          Math.abs(that.tieProbability - tieProbability) < THRESHOLD &&
-          Math.abs(that.badProbability - badProbability) < THRESHOLD;
+      return Math.abs(that.winProbability - winProbability) < THRESHOLD
+          && Math.abs(that.loseProbability - loseProbability) < THRESHOLD
+          && Math.abs(that.tieProbability - tieProbability) < THRESHOLD
+          && Math.abs(that.badProbability - badProbability) < THRESHOLD;
     }
 
     @Override
@@ -326,14 +289,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.add(INFANTRY.create(GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.499;
@@ -356,14 +315,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.add(new Unit(INFANTRY, GERMAN, data));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.671;
@@ -385,14 +340,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.245;
@@ -414,14 +365,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(2, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.212;
@@ -444,14 +391,10 @@ class BattleStepGlobal1940Test {
     attackingOrderOfLoss.addAll(INFANTRY.create(5, BRITISH));
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(5, GERMAN));
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.116;
@@ -473,14 +416,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(10, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.049;
@@ -502,14 +441,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(15, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.021;
@@ -531,14 +466,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(20, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.009;
@@ -563,14 +494,10 @@ class BattleStepGlobal1940Test {
     defendingOrderOfLoss.addAll(INFANTRY.create(2, GERMAN));
     defendingOrderOfLoss.addAll(ARMOUR.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.453;
@@ -598,14 +525,10 @@ class BattleStepGlobal1940Test {
     defendingOrderOfLoss.addAll(INFANTRY.create(3, GERMAN));
     defendingOrderOfLoss.addAll(ARMOUR.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.985;
@@ -619,7 +542,9 @@ class BattleStepGlobal1940Test {
     actual.badProbability = root.getBadProbability();
     assertEquals(expected, actual);
 
-    assertEquals(attackingOrderOfLoss.subList(2, attackingOrderOfLoss.size()), root.getAverageUnits().getFriendlyWithChance(0.5));
+    assertEquals(
+        attackingOrderOfLoss.subList(2, attackingOrderOfLoss.size()),
+        root.getAverageUnits().getFriendlyWithChance(0.5));
     assertEquals(List.of(), root.getAverageUnits().getEnemyWithChance(0.5));
   }
 
@@ -632,14 +557,10 @@ class BattleStepGlobal1940Test {
     defendingOrderOfLoss.addAll(INFANTRY.create(3, GERMAN));
     defendingOrderOfLoss.addAll(ARMOUR.create(3, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.018;
@@ -654,7 +575,9 @@ class BattleStepGlobal1940Test {
     assertEquals(expected, actual);
 
     assertEquals(List.of(), root.getAverageUnits().getFriendlyWithChance(0.5));
-    assertEquals(defendingOrderOfLoss.subList(2, defendingOrderOfLoss.size()), root.getAverageUnits().getEnemyWithChance(0.5));
+    assertEquals(
+        defendingOrderOfLoss.subList(2, defendingOrderOfLoss.size()),
+        root.getAverageUnits().getEnemyWithChance(0.5));
   }
 
   @Test
@@ -664,14 +587,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(AAGUN.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.833;
@@ -695,14 +614,10 @@ class BattleStepGlobal1940Test {
     defendingOrderOfLoss.addAll(AAGUN.create(1, GERMAN));
     defendingOrderOfLoss.addAll(INFANTRY.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.549;
@@ -724,14 +639,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(CRUISER.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createSeaParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.879;
@@ -753,14 +664,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(SUBMARINE.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createSeaParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 1.0;
@@ -783,14 +690,10 @@ class BattleStepGlobal1940Test {
     defendingOrderOfLoss.addAll(FIGHTER.create(1, GERMAN));
     defendingOrderOfLoss.addAll(DESTROYER.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createSeaParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.0;
@@ -814,14 +717,10 @@ class BattleStepGlobal1940Test {
     defendingOrderOfLoss.addAll(DESTROYER.create(1, GERMAN));
     defendingOrderOfLoss.addAll(FIGHTER.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createSeaParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.300;
@@ -844,14 +743,10 @@ class BattleStepGlobal1940Test {
     defendingOrderOfLoss.addAll(CRUISER.create(1, GERMAN));
     defendingOrderOfLoss.addAll(FIGHTER.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createSeaParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.0;
@@ -873,14 +768,10 @@ class BattleStepGlobal1940Test {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(BATTLESHIP.create(1, GERMAN));
 
-    final StepUnits attackingUnits = new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITISH, defendingOrderOfLoss, GERMAN);
 
-    final BattleStep root = new BattleStep(
-        attackingUnits,
-        BRITISH,
-        0,
-        createSeaParameters()
-    );
+    final BattleStep root = new BattleStep(attackingUnits, BRITISH, 0, createSeaParameters());
     root.calculateBattle(attackingUnits, GERMAN);
     final CalculateResult expected = new CalculateResult();
     expected.winProbability = 0.061;

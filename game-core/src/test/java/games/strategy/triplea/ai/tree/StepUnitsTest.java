@@ -19,8 +19,7 @@ class StepUnitsTest {
       checkNotNull(data.getPlayerList().getPlayerId("Germans"));
   private static final UnitType INFANTRY =
       checkNotNull(data.getUnitTypeList().getUnitType("infantry"));
-  private static final UnitType ARMOUR =
-      checkNotNull(data.getUnitTypeList().getUnitType("armour"));
+  private static final UnitType ARMOUR = checkNotNull(data.getUnitTypeList().getUnitType("armour"));
   private static final UnitType ARTILLERY =
       checkNotNull(data.getUnitTypeList().getUnitType("artillery"));
   private static final UnitType BATTLESHIP =
@@ -28,21 +27,10 @@ class StepUnitsTest {
 
   @Test
   void testFilterWithNoHits() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARTILLERY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders =
+        List.of(INFANTRY.create(GERMAN), ARTILLERY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     assertEquals(attackers, units.getAliveOrWaitingToDieFriendly());
     assertEquals(defenders, units.getAliveOrWaitingToDieEnemy());
@@ -50,21 +38,10 @@ class StepUnitsTest {
 
   @Test
   void testFilterWithHits() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARTILLERY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders =
+        List.of(INFANTRY.create(GERMAN), ARTILLERY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
     units.hitFriendly(attackers.get(0));
     units.hitEnemy(defenders.get(1));
     final StepUnits actual = units.removeWaitingToDie();
@@ -75,20 +52,9 @@ class StepUnitsTest {
 
   @Test
   void testNoMoreFriendliesWithExistingFriendlies() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders = List.of(INFANTRY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     assertFalse(units.noMoreFriendlies());
     assertFalse(units.noMoreEnemies());
@@ -96,20 +62,9 @@ class StepUnitsTest {
 
   @Test
   void testNoMoreFriendliesWithNoFriendlies() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders = List.of(INFANTRY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
     units.hitFriendly(attackers.get(0));
     units.hitFriendly(attackers.get(1));
 
@@ -119,20 +74,9 @@ class StepUnitsTest {
 
   @Test
   void testNoMoreEnemiesWithNoEnemies() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders = List.of(INFANTRY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
     units.hitEnemy(defenders.get(0));
     units.hitEnemy(defenders.get(1));
 
@@ -142,20 +86,9 @@ class StepUnitsTest {
 
   @Test
   void testCountWithExisting() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders = List.of(INFANTRY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     assertEquals(2, units.countOfFriendliesNotDamagedOrDead());
     assertEquals(2, units.countOfEnemiesNotDamagedOrDead());
@@ -163,20 +96,9 @@ class StepUnitsTest {
 
   @Test
   void testCountWithNoFriendlies() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders = List.of(INFANTRY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
     units.hitFriendly(attackers.get(0));
     units.hitFriendly(attackers.get(1));
 
@@ -186,20 +108,9 @@ class StepUnitsTest {
 
   @Test
   void testCountWithNoEnemies() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        ARMOUR.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-        INFANTRY.create(GERMAN),
-        ARMOUR.create(GERMAN)
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), ARMOUR.create(BRITISH));
+    final List<Unit> defenders = List.of(INFANTRY.create(GERMAN), ARMOUR.create(GERMAN));
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
     units.hitEnemy(defenders.get(0));
     units.hitEnemy(defenders.get(1));
 
@@ -209,51 +120,28 @@ class StepUnitsTest {
 
   @Test
   void addMultiHitTargetsWithNoMultiHitTargets() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     assertEquals(List.of(attackers.get(0)), units.addFriendlyMultiHitTargets(attackers));
   }
 
   @Test
   void addMultiHitTargetsWithOneMultiHitWithFullHitPoints() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
-    assertEquals(List.of(attackers.get(0), attackers.get(0)), units.addFriendlyMultiHitTargets(attackers));
+    assertEquals(
+        List.of(attackers.get(0), attackers.get(0)), units.addFriendlyMultiHitTargets(attackers));
   }
 
   @Test
   void addMultiHitTargetsWithOneMultiHitWithOneHit() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     units.hitFriendly(attackers.get(0));
 
@@ -262,35 +150,20 @@ class StepUnitsTest {
 
   @Test
   void addMultiHitTargetsWithOneMultiHitAndOneNonMultiHit() {
-    final List<Unit> attackers = List.of(
-        INFANTRY.create(BRITISH),
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(INFANTRY.create(BRITISH), BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
-    assertEquals(List.of(attackers.get(1), attackers.get(0), attackers.get(1)), units.addFriendlyMultiHitTargets(attackers));
+    assertEquals(
+        List.of(attackers.get(1), attackers.get(0), attackers.get(1)),
+        units.addFriendlyMultiHitTargets(attackers));
   }
 
   @Test
   void multiHitTargetIsNotKilledOffWithPartialDamage() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     units.hitFriendly(attackers.get(0));
 
@@ -300,17 +173,9 @@ class StepUnitsTest {
 
   @Test
   void multiHitTargetIsKilledOffWithFullDamage() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     units.hitFriendly(attackers.get(0));
     units.hitFriendly(attackers.get(0));
@@ -321,34 +186,18 @@ class StepUnitsTest {
 
   @Test
   void countOfHitPointsOneUnitNoDamage() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     assertEquals(2, units.countOfFriendlyHitPoints());
   }
 
   @Test
   void countOfHitPointsOneUnitOneDamage() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     units.hitFriendly(attackers.get(0));
 
@@ -357,17 +206,9 @@ class StepUnitsTest {
 
   @Test
   void countOfHitPointsOneUnitTwoDamage() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     units.hitFriendly(attackers.get(0));
     units.hitFriendly(attackers.get(0));
@@ -377,18 +218,9 @@ class StepUnitsTest {
 
   @Test
   void countOfHitPointsTwoUnits() {
-    final List<Unit> attackers = List.of(
-        BATTLESHIP.create(BRITISH),
-        BATTLESHIP.create(BRITISH)
-    );
-    final List<Unit> defenders = List.of(
-    );
-    final StepUnits units = new StepUnits(
-        attackers,
-        BRITISH,
-        defenders,
-        GERMAN
-    );
+    final List<Unit> attackers = List.of(BATTLESHIP.create(BRITISH), BATTLESHIP.create(BRITISH));
+    final List<Unit> defenders = List.of();
+    final StepUnits units = new StepUnits(attackers, BRITISH, defenders, GERMAN);
 
     assertEquals(4, units.countOfFriendlyHitPoints());
   }

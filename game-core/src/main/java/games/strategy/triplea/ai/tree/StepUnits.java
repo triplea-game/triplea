@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
@@ -33,7 +32,11 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
   private final List<Unit> retreatedEnemy;
   @Getter private double probability;
 
-  StepUnits(final List<Unit> friendlyUnits, final GamePlayer player, final List<Unit> enemyUnits, final GamePlayer enemy) {
+  StepUnits(
+      final List<Unit> friendlyUnits,
+      final GamePlayer player,
+      final List<Unit> enemyUnits,
+      final GamePlayer enemy) {
     this.type = BattleStep.Type.AA_ATTACKER;
     this.friendlyBits = new BitSet(friendlyUnits.size());
     this.friendlyWaitingToDieBits = new BitSet(friendlyUnits.size());
@@ -99,8 +102,7 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
       final BitSet enemyWaitingToDieBits,
       final Map<Unit, Integer> enemyHitPoints,
       final List<Unit> retreatedEnemy,
-      final double probability
-  ) {
+      final double probability) {
     this.type = type;
 
     this.player = player;
@@ -138,8 +140,7 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
         friendlyWaitingToDieBits,
         friendlyHitPoints,
         retreatedFriendly,
-        0.0
-    );
+        0.0);
   }
 
   StepUnits mergeParent(StepUnits parent) {
@@ -157,8 +158,7 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
         parent.friendlyWaitingToDieBits,
         parent.friendlyHitPoints,
         parent.retreatedFriendly,
-        probability
-    );
+        probability);
   }
 
   StepUnits removeWaitingToDie() {
@@ -196,22 +196,28 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
     }
   }
 
-  private void hit(final Unit unit, final int unitIndex, final BitSet waitingToDie, final Map<Unit, Integer> hitPointsMap) {
-    hitPointsMap.compute(unit, (key, hitPoints) -> {
-      if (hitPoints == null) {
-        waitingToDie.set(unitIndex);
-        return null;
-      } else {
-        hitPoints--;
-        if (hitPoints == 0) {
-          waitingToDie.set(unitIndex);
-          return null;
-        } else {
-          hitPointsMap.put(unit, hitPoints);
-          return hitPoints;
-        }
-      }
-    });
+  private void hit(
+      final Unit unit,
+      final int unitIndex,
+      final BitSet waitingToDie,
+      final Map<Unit, Integer> hitPointsMap) {
+    hitPointsMap.compute(
+        unit,
+        (key, hitPoints) -> {
+          if (hitPoints == null) {
+            waitingToDie.set(unitIndex);
+            return null;
+          } else {
+            hitPoints--;
+            if (hitPoints == 0) {
+              waitingToDie.set(unitIndex);
+              return null;
+            } else {
+              hitPointsMap.put(unit, hitPoints);
+              return hitPoints;
+            }
+          }
+        });
   }
 
   void retreatFriendly(final Unit friendly) {
@@ -231,7 +237,8 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
   }
 
   List<Unit> getAliveFriendly() {
-    return filterUnits(this.friendlyUnits, this.friendlyWaitingToDieBits, this.friendlyUnits.size());
+    return filterUnits(
+        this.friendlyUnits, this.friendlyWaitingToDieBits, this.friendlyUnits.size());
   }
 
   List<Unit> getAliveOrWaitingToDieEnemy() {
@@ -314,9 +321,7 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
     return friendlyHitPoints.values().stream().reduce(0, Integer::sum);
   }
 
-  /**
-   * Store whether the units were alive
-   */
+  /** Store whether the units were alive */
   void recordChances() {
     for (final Unit unit : getAliveFriendly()) {
       friendlyUnitsChances.put(unit, 1.0);
@@ -334,22 +339,26 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
 
   void updateUnitChances(final StepUnits child, final double probability) {
     for (final Map.Entry<Unit, Double> entry : child.enemyUnitsChances.entrySet()) {
-      friendlyUnitsChances.compute(entry.getKey(), (key, value) -> {
-        if (value == null) {
-          return entry.getValue() * probability;
-        } else {
-          return value + entry.getValue() * probability;
-        }
-      });
+      friendlyUnitsChances.compute(
+          entry.getKey(),
+          (key, value) -> {
+            if (value == null) {
+              return entry.getValue() * probability;
+            } else {
+              return value + entry.getValue() * probability;
+            }
+          });
     }
     for (final Map.Entry<Unit, Double> entry : child.friendlyUnitsChances.entrySet()) {
-      enemyUnitsChances.compute(entry.getKey(), (key, value) -> {
-        if (value == null) {
-          return entry.getValue() * probability;
-        } else {
-          return value + entry.getValue() * probability;
-        }
-      });
+      enemyUnitsChances.compute(
+          entry.getKey(),
+          (key, value) -> {
+            if (value == null) {
+              return entry.getValue() * probability;
+            } else {
+              return value + entry.getValue() * probability;
+            }
+          });
     }
   }
 
@@ -381,7 +390,8 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, friendlyBits, enemyBits, friendlyWaitingToDieBits, enemyWaitingToDieBits);
+    return Objects.hash(
+        type, friendlyBits, enemyBits, friendlyWaitingToDieBits, enemyWaitingToDieBits);
   }
 
   @Override
@@ -406,17 +416,27 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
 
   @Override
   public String toString() {
-    return "Units{" +
-        "type=" + type +
-        ", friendlyDead=" + friendlyBits +
-        ", friendlyInjured=" + friendlyWaitingToDieBits +
-        ", friendliesCount=" + friendlyUnits.size() +
-        ", friendlyHitPoints=" + friendlyHitPoints +
-        ", enemyDead=" + enemyBits +
-        ", enemyInjured=" + enemyWaitingToDieBits +
-        ", enemiesCount=" + enemyUnits.size() +
-        ", enemyHitPoints =" + enemyHitPoints +
-        ", probability=" + probability +
-        '}';
+    return "Units{"
+        + "type="
+        + type
+        + ", friendlyDead="
+        + friendlyBits
+        + ", friendlyInjured="
+        + friendlyWaitingToDieBits
+        + ", friendliesCount="
+        + friendlyUnits.size()
+        + ", friendlyHitPoints="
+        + friendlyHitPoints
+        + ", enemyDead="
+        + enemyBits
+        + ", enemyInjured="
+        + enemyWaitingToDieBits
+        + ", enemiesCount="
+        + enemyUnits.size()
+        + ", enemyHitPoints ="
+        + enemyHitPoints
+        + ", probability="
+        + probability
+        + '}';
   }
 }

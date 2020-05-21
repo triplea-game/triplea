@@ -27,35 +27,30 @@ import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
 class BattleCalculatorComparisonTests {
   private static final GameData data = TestMapGameData.GLOBAL1940.getGameData();
   private static final GamePlayer BRITISH =
       checkNotNull(data.getPlayerList().getPlayerId("British"));
-  private static final GamePlayer FRENCH =
-      checkNotNull(data.getPlayerList().getPlayerId("French"));
+  private static final GamePlayer FRENCH = checkNotNull(data.getPlayerList().getPlayerId("French"));
   private static final GamePlayer GERMAN =
       checkNotNull(data.getPlayerList().getPlayerId("Germans"));
   private static final Territory FRANCE = checkNotNull(territory("France", data));
   private static final Territory SEA_ZONE = checkNotNull(territory("110 Sea Zone", data));
-  private static final UnitType AAGUN =
-      checkNotNull(data.getUnitTypeList().getUnitType("aaGun"));
+  private static final UnitType AAGUN = checkNotNull(data.getUnitTypeList().getUnitType("aaGun"));
   private static final UnitType INFANTRY =
       checkNotNull(data.getUnitTypeList().getUnitType("infantry"));
   private static final UnitType MECH_INFANTRY =
       checkNotNull(data.getUnitTypeList().getUnitType("mech_infantry"));
   private static final UnitType ARTILLERY =
       checkNotNull(data.getUnitTypeList().getUnitType("artillery"));
-  private static final UnitType ARMOUR =
-      checkNotNull(data.getUnitTypeList().getUnitType("armour"));
+  private static final UnitType ARMOUR = checkNotNull(data.getUnitTypeList().getUnitType("armour"));
   private static final UnitType FIGHTER =
       checkNotNull(data.getUnitTypeList().getUnitType("fighter"));
   private static final UnitType TACTICAL_BOMBER =
       checkNotNull(data.getUnitTypeList().getUnitType("tactical_bomber"));
-  private static final UnitType BOMBER =
-      checkNotNull(data.getUnitTypeList().getUnitType("bomber"));
+  private static final UnitType BOMBER = checkNotNull(data.getUnitTypeList().getUnitType("bomber"));
   private static final UnitType DESTROYER =
       checkNotNull(data.getUnitTypeList().getUnitType("destroyer"));
   private static final UnitType CRUISER =
@@ -68,58 +63,100 @@ class BattleCalculatorComparisonTests {
       checkNotNull(data.getUnitTypeList().getUnitType("transport"));
 
   private static final GameData dataTww = TestMapGameData.TWW.getGameData();
-  private static final GamePlayer BRITAIN =
-      checkNotNull(GameDataTestUtil.britain(dataTww));
-  private static final GamePlayer AMERICAN =
-      checkNotNull(GameDataTestUtil.usa(dataTww));
-  private static final GamePlayer GERMANY =
-      checkNotNull(GameDataTestUtil.germany(dataTww));
-  private static final Territory LAND_NO_ATTACHMENTS = checkNotNull(GameDataTestUtil.territory("Alberta", dataTww));
-  private static final Territory SEA_NO_ATTACHMENTS = checkNotNull(GameDataTestUtil.territory("100 Sea Zone", data));
+  private static final GamePlayer BRITAIN = checkNotNull(GameDataTestUtil.britain(dataTww));
+  private static final GamePlayer AMERICAN = checkNotNull(GameDataTestUtil.usa(dataTww));
+  private static final GamePlayer GERMANY = checkNotNull(GameDataTestUtil.germany(dataTww));
+  private static final Territory LAND_NO_ATTACHMENTS =
+      checkNotNull(GameDataTestUtil.territory("Alberta", dataTww));
+  private static final Territory SEA_NO_ATTACHMENTS =
+      checkNotNull(GameDataTestUtil.territory("100 Sea Zone", data));
 
   @Test
   void comparePerformanceOfCalculators() throws InterruptedException {
-    //System.out.println("Sleeping to allow attaching asyncProfiler");
-    //Thread.sleep(2000);
+    // System.out.println("Sleeping to allow attaching asyncProfiler");
+    // Thread.sleep(2000);
     if (false) {
       final int quantity = 3;
       System.out.println(quantity + " of each Total World War land units");
       final Collection<Unit> attackingUnits = new ArrayList<>();
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishInfantry").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishAlpineInfantry").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishMarine").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishArtillery").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishHeavyArtillery").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishMobileArtillery").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishMech.Infantry").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishTank").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishHeavyTank").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishFighter").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishAdvancedFighter").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishTacticalBomber").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishAdvancedTacticalBomber").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishAntiAirGun").create(quantity, BRITAIN));
-      attackingUnits.addAll(dataTww.getUnitTypeList().getUnitType("britishAntiTankGun").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishInfantry").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishAlpineInfantry").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishMarine").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishArtillery").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishHeavyArtillery").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww
+              .getUnitTypeList()
+              .getUnitType("britishMobileArtillery")
+              .create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishMech.Infantry").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishTank").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishHeavyTank").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishFighter").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww
+              .getUnitTypeList()
+              .getUnitType("britishAdvancedFighter")
+              .create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishTacticalBomber").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww
+              .getUnitTypeList()
+              .getUnitType("britishAdvancedTacticalBomber")
+              .create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishAntiAirGun").create(quantity, BRITAIN));
+      attackingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("britishAntiTankGun").create(quantity, BRITAIN));
       final Collection<Unit> defendingUnits = new ArrayList<>();
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanInfantry").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanAlpineInfantry").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanMarine").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanArtillery").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanHeavyArtillery").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanMobileArtillery").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanMech.Infantry").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanTank").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanHeavyTank").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanFighter").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanAdvancedFighter").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanTacticalBomber").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanAdvancedTacticalBomber").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanAntiAirGun").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanAntiTankGun").create(quantity, GERMANY));
-      defendingUnits.addAll(dataTww.getUnitTypeList().getUnitType("germanATSupport").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanInfantry").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanAlpineInfantry").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanMarine").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanArtillery").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanHeavyArtillery").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanMobileArtillery").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanMech.Infantry").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanTank").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanHeavyTank").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanFighter").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanAdvancedFighter").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanTacticalBomber").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww
+              .getUnitTypeList()
+              .getUnitType("germanAdvancedTacticalBomber")
+              .create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanAntiAirGun").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanAntiTankGun").create(quantity, GERMANY));
+      defendingUnits.addAll(
+          dataTww.getUnitTypeList().getUnitType("germanATSupport").create(quantity, GERMANY));
       compareCalculators(attackingUnits, defendingUnits, LAND_NO_ATTACHMENTS, dataTww);
     }
-    //if (true) return;
+    // if (true) return;
 
     if (true) {
       final Collection<Unit> attackingUnits = new ArrayList<>();
@@ -223,93 +260,103 @@ class BattleCalculatorComparisonTests {
     }
   }
 
-  void compareCalculators(final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Territory territory) {
-   compareCalculators(attackingUnits, defendingUnits, territory, data);
+  void compareCalculators(
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Territory territory) {
+    compareCalculators(attackingUnits, defendingUnits, territory, data);
   }
 
-  void compareCalculators(final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Territory territory, final GameData data) {
+  void compareCalculators(
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Territory territory,
+      final GameData data) {
     final Collection<Unit> bombardingUnits = new ArrayList<>();
 
-    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
+    final Collection<TerritoryEffect> territoryEffects =
+        TerritoryEffectHelper.getEffects(territory);
 
     final BattleTreeCalculator estimator = new BattleTreeCalculator();
     estimator.setGameData(data);
-    final AggregateResults estimate = estimator.calculate(
-        attackingUnits.iterator().next().getOwner(),
-        defendingUnits.iterator().next().getOwner(),
-        territory,
-        attackingUnits,
-        defendingUnits,
-        bombardingUnits,
-        territoryEffects,
-        false,
-        1
-    );
+    final AggregateResults estimate =
+        estimator.calculate(
+            attackingUnits.iterator().next().getOwner(),
+            defendingUnits.iterator().next().getOwner(),
+            territory,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects,
+            false,
+            1);
 
     printResult("BattleTree", estimate, attackingUnits, defendingUnits, territory, data);
-    //if (true) return;
+    // if (true) return;
 
     final BattleCalculator singleCalculator = new BattleCalculator(data, false);
-    final AggregateResults singleRunResults = singleCalculator.calculate(
-        attackingUnits.iterator().next().getOwner(),
-        defendingUnits.iterator().next().getOwner(),
-        territory,
-        attackingUnits,
-        defendingUnits,
-        bombardingUnits,
-        territoryEffects,
-        false,
-        200
-    );
+    final AggregateResults singleRunResults =
+        singleCalculator.calculate(
+            attackingUnits.iterator().next().getOwner(),
+            defendingUnits.iterator().next().getOwner(),
+            territory,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects,
+            false,
+            200);
 
-    printResult("BattleCalculator", singleRunResults, attackingUnits, defendingUnits, territory, data);
+    printResult(
+        "BattleCalculator", singleRunResults, attackingUnits, defendingUnits, territory, data);
 
     final ConcurrentBattleCalculator hardAiCalculator = new ConcurrentBattleCalculator();
     hardAiCalculator.setGameData(data);
-    final AggregateResults hardAiResults = hardAiCalculator.calculate(
-        attackingUnits.iterator().next().getOwner(),
-        defendingUnits.iterator().next().getOwner(),
-        territory,
-        attackingUnits,
-        defendingUnits,
-        bombardingUnits,
-        territoryEffects,
-        false,
-        200
-    );
+    final AggregateResults hardAiResults =
+        hardAiCalculator.calculate(
+            attackingUnits.iterator().next().getOwner(),
+            defendingUnits.iterator().next().getOwner(),
+            territory,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects,
+            false,
+            200);
 
     printResult("Hard AI 200 runs", hardAiResults, attackingUnits, defendingUnits, territory, data);
 
     final ConcurrentBattleCalculator hardAi2Calculator = new ConcurrentBattleCalculator();
     hardAi2Calculator.setGameData(data);
-    final AggregateResults hardAi2Results = hardAi2Calculator.calculate(
-        attackingUnits.iterator().next().getOwner(),
-        defendingUnits.iterator().next().getOwner(),
-        territory,
-        attackingUnits,
-        defendingUnits,
-        bombardingUnits,
-        territoryEffects,
-        false,
-        2000
-    );
+    final AggregateResults hardAi2Results =
+        hardAi2Calculator.calculate(
+            attackingUnits.iterator().next().getOwner(),
+            defendingUnits.iterator().next().getOwner(),
+            territory,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects,
+            false,
+            2000);
 
-    printResult("Hard AI 2000 runs", hardAi2Results, attackingUnits, defendingUnits, territory, data);
+    printResult(
+        "Hard AI 2000 runs", hardAi2Results, attackingUnits, defendingUnits, territory, data);
 
     final ProData proData = new ProData();
     proData.initializeSimulation(null, data, attackingUnits.iterator().next().getOwner());
     final IBattleCalculator fastOddsEstimator = new FastOddsEstimator(proData);
-    final AggregateResults fastOddsResults = fastOddsEstimator.calculate(
-        attackingUnits.iterator().next().getOwner(),
-        defendingUnits.iterator().next().getOwner(),
-        territory,
-        attackingUnits,
-        defendingUnits,
-        bombardingUnits,
-        territoryEffects,
-        false,
-        3
-    );
+    final AggregateResults fastOddsResults =
+        fastOddsEstimator.calculate(
+            attackingUnits.iterator().next().getOwner(),
+            defendingUnits.iterator().next().getOwner(),
+            territory,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects,
+            false,
+            3);
 
     printResult("FastOdds", fastOddsResults, attackingUnits, defendingUnits, territory, data);
   }
@@ -320,8 +367,7 @@ class BattleCalculatorComparisonTests {
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
       final Territory territory,
-      final GameData data
-  ) {
+      final GameData data) {
     final DecimalFormat df = new DecimalFormat("0.00");
     String output = String.format("%-18s", name + ":");
     output += " Time: " + String.format("%-7.3f", result.getTime() / 1000.0);
@@ -333,18 +379,24 @@ class BattleCalculatorComparisonTests {
     final List<Unit> mainCombatDefenders =
         CollectionUtils.getMatches(
             defendingUnits, Matches.unitCanBeInBattle(false, !territory.isWater(), 1, true));
-    output += " Avg Tuv Swing: " + df.format(result.getAverageTuvSwing(
-        attackingUnits.iterator().next().getOwner(),
-        mainCombatAttackers,
-        defendingUnits.iterator().next().getOwner(),
-        mainCombatDefenders,
-        data
-    ));
-    final Tuple<Double, Double> tuvUnitsLeft = result.getAverageTuvOfUnitsLeftOver(
-        TuvUtils.getCostsForTuv(attackingUnits.iterator().next().getOwner(), data),
-        TuvUtils.getCostsForTuv(defendingUnits.iterator().next().getOwner(), data)
-    );
-    output += " Avg Tuv Units Left: " + df.format(tuvUnitsLeft.getFirst()) + "," + df.format(tuvUnitsLeft.getSecond());
+    output +=
+        " Avg Tuv Swing: "
+            + df.format(
+                result.getAverageTuvSwing(
+                    attackingUnits.iterator().next().getOwner(),
+                    mainCombatAttackers,
+                    defendingUnits.iterator().next().getOwner(),
+                    mainCombatDefenders,
+                    data));
+    final Tuple<Double, Double> tuvUnitsLeft =
+        result.getAverageTuvOfUnitsLeftOver(
+            TuvUtils.getCostsForTuv(attackingUnits.iterator().next().getOwner(), data),
+            TuvUtils.getCostsForTuv(defendingUnits.iterator().next().getOwner(), data));
+    output +=
+        " Avg Tuv Units Left: "
+            + df.format(tuvUnitsLeft.getFirst())
+            + ","
+            + df.format(tuvUnitsLeft.getSecond());
 
     System.out.println(output);
     System.out.println("Avg Attacking Units: " + result.getAverageAttackingUnitsRemaining());

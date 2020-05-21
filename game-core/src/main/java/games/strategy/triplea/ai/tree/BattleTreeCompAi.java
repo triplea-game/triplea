@@ -1,10 +1,10 @@
 package games.strategy.triplea.ai.tree;
 
-    import games.strategy.engine.data.GameData;
-    import games.strategy.engine.framework.startup.ui.PlayerType;
-    import games.strategy.triplea.ai.pro.AbstractProAi;
-    import games.strategy.triplea.ai.pro.ProData;
-    import games.strategy.triplea.ai.pro.logging.ProLogUi;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.triplea.ai.pro.AbstractProAi;
+import games.strategy.triplea.ai.pro.ProData;
+import games.strategy.triplea.ai.pro.logging.ProLogUi;
 
 /** Battle Tree AI. */
 public class BattleTreeCompAi extends AbstractProAi {
