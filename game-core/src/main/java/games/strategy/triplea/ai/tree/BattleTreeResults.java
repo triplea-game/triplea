@@ -38,14 +38,14 @@ public class BattleTreeResults extends AggregateResults {
     return getAverageAttackingUnitsRemaining(0.5);
   }
 
-  @Override
-  public Collection<Unit> getAverageDefendingUnitsRemaining() {
-    return getAverageDefendingUnitsRemaining(0.5);
-  }
-
   Collection<Unit> getAverageAttackingUnitsRemaining(final double chance) {
     return CollectionUtils.getMatches(
         root.getAverageUnits().getFriendlyWithChance(chance), Matches.unitIsNotInfrastructure());
+  }
+
+  @Override
+  public Collection<Unit> getAverageDefendingUnitsRemaining() {
+    return getAverageDefendingUnitsRemaining(0.5);
   }
 
   Collection<Unit> getAverageDefendingUnitsRemaining(final double chance) {

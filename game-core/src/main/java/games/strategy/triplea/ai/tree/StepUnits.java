@@ -143,7 +143,7 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
         0.0);
   }
 
-  StepUnits mergeParent(StepUnits parent) {
+  StepUnits mergeParent(final StepUnits parent) {
     return new StepUnits(
         type,
         friendlyBits,
@@ -376,8 +376,12 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
 
   @Override
   public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (!(o instanceof StepUnits)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof StepUnits)) {
+      return false;
+    }
     final StepUnits units = (StepUnits) o;
     return type == units.type
         && Objects.equals(friendlyBits, units.friendlyBits)

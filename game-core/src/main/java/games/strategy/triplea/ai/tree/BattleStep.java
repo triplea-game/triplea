@@ -41,9 +41,9 @@ public class BattleStep {
 
   // enable this to keep children in memory for analysis
   // watch out for running out of memory, though
-  private static boolean DEBUG = false;
+  private static final boolean DEBUG = false;
 
-  static int MAX_ROUNDS = 16;
+  private static final int MAX_ROUNDS = 16;
   private static final double IGNORE_BRANCH_PROBABILITY = 0.005;
 
   enum Type {
@@ -1124,10 +1124,12 @@ public class BattleStep {
 
   /*
   // Taken from MustFightBattle::returnFireAgainstDefendingSubs
-  private MustFightBattle.ReturnFire returnFireAgainstDefendingSubs(final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits) {
+  private MustFightBattle.ReturnFire returnFireAgainstDefendingSubs(
+  final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits) {
     final boolean attackingSubsSneakAttack =
         defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits);
+    final boolean defendingSubsSneakAttack =
+    defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits);
     final MustFightBattle.ReturnFire returnFireAgainstDefendingSubs;
     if (!defendingSubsSneakAttack) {
       returnFireAgainstDefendingSubs = MustFightBattle.ReturnFire.ALL;

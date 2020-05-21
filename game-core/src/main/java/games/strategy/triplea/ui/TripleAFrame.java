@@ -2145,7 +2145,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   try {
                     final File f = SaveGameFileChooser.getSaveGameLocation(TripleAFrame.this, data);
                     if (f != null) {
-                      try (final FileOutputStream fileOutputStream = new FileOutputStream(f)) {
+                      try (FileOutputStream fileOutputStream = new FileOutputStream(f)) {
                         final GameData datacopy = GameDataUtils.cloneGameData(data, true);
                         datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
                         datacopy

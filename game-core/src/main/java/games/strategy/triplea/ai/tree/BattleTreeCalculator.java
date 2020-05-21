@@ -38,13 +38,6 @@ public class BattleTreeCalculator implements IBattleCalculator {
       final boolean retreatWhenOnlyAirLeft, // TODO: handle this flag
       final int runCount) {
     final long startTime = System.currentTimeMillis();
-    final int maxRounds =
-        location.isWater()
-            ? Properties.getSeaBattleRounds(data)
-            : Properties.getLandBattleRounds(data);
-    if (maxRounds > 0) {
-      BattleStep.MAX_ROUNDS = maxRounds;
-    }
 
     // remove all of the non combatants
     final MustFightBattle battle = new MustFightBattle(location, attacker, data, null);

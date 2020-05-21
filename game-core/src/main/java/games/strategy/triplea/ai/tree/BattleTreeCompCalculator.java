@@ -14,7 +14,6 @@ import java.util.Collection;
 
 public class BattleTreeCompCalculator implements IBattleCalculator {
 
-  private GameData data;
   private static final BattleTreeCalculator battleTreeCalculator = new BattleTreeCalculator();
   private static final ConcurrentBattleCalculator hardAiCalculator =
       new ConcurrentBattleCalculator();
@@ -22,9 +21,8 @@ public class BattleTreeCompCalculator implements IBattleCalculator {
   public BattleTreeCompCalculator() {}
 
   public void setGameData(final GameData data) {
-    this.data = data;
-    battleTreeCalculator.setGameData(this.data);
-    hardAiCalculator.setGameData(this.data);
+    battleTreeCalculator.setGameData(data);
+    hardAiCalculator.setGameData(data);
   }
 
   public void cancel() {

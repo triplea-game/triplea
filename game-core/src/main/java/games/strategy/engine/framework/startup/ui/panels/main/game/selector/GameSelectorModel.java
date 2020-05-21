@@ -86,7 +86,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
     final GameData newData;
     // if the file name is xml, load it as a new game
     if (file.getName().toLowerCase().endsWith("xml")) {
-      try (final InputStream inputStream = new FileInputStream(file)) {
+      try (InputStream inputStream = new FileInputStream(file)) {
         newData = GameParser.parse(file.getAbsolutePath(), inputStream);
       }
     } else {
