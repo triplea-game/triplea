@@ -18,6 +18,7 @@ dependencies {
     implementation project(':game-core')
     implementation project(':swing-lib')
     implementation project(':java-extras')
+    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
 task release(group: 'release', dependsOn: [shadowJar]) {
