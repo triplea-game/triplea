@@ -775,8 +775,7 @@ public class BattleStep {
         siblingResults.averageRounds = cachedBattleStep.averageRounds;
         siblingResults.units = cachedBattleStep.averageUnits.swapSides();
 
-        calculateSiblingResultsForRecursiveEnd(
-            cachedBattleStep.children, siblingResults);
+        calculateSiblingResultsForRecursiveEnd(cachedBattleStep.children, siblingResults);
 
         this.averageUnits = units;
 
@@ -787,11 +786,16 @@ public class BattleStep {
         // Inside of the .5, it will also go to the .2 and .3 nodes and itself.
         // So, its score is basically .5 * (.2 * 1 + .3 * -1) + .5^2 * (.2 * 1 + .3 * -1) + ...
         for (int level = 0; level < 6; level++) {
-          this.winProbability += siblingResults.winProbability * Math.pow(siblingResults.probability, level);
-          this.loseProbability += siblingResults.loseProbability * Math.pow(siblingResults.probability, level);
-          this.tieProbability += siblingResults.tieProbability * Math.pow(siblingResults.probability, level);
-          this.averageRounds += siblingResults.averageRounds * Math.pow(siblingResults.probability, level);
-          this.averageUnits.updateUnitChances(siblingResults.units, Math.pow(siblingResults.probability, level));
+          this.winProbability +=
+              siblingResults.winProbability * Math.pow(siblingResults.probability, level);
+          this.loseProbability +=
+              siblingResults.loseProbability * Math.pow(siblingResults.probability, level);
+          this.tieProbability +=
+              siblingResults.tieProbability * Math.pow(siblingResults.probability, level);
+          this.averageRounds +=
+              siblingResults.averageRounds * Math.pow(siblingResults.probability, level);
+          this.averageUnits.updateUnitChances(
+              siblingResults.units, Math.pow(siblingResults.probability, level));
         }
         // put the rest in "bad"
         this.badProbability =
@@ -832,7 +836,8 @@ public class BattleStep {
       siblingResults.averageRounds += siblingResults.probability * level.averageRounds;
       if (level.units.getType() != Type.AA_ATTACKER) {
         if (siblingResults.units.getPlayer().equals(level.averageUnits.getPlayer())) {
-          siblingResults.units.updateUnitChances(level.averageUnits.swapSides(), siblingResults.probability);
+          siblingResults.units.updateUnitChances(
+              level.averageUnits.swapSides(), siblingResults.probability);
         } else {
           siblingResults.units.updateUnitChances(level.averageUnits, siblingResults.probability);
         }

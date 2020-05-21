@@ -832,14 +832,12 @@ class BattleStepTest {
 
     final BattleStep root = new BattleStep(attackingUnits, BRITAIN, 0, createTwwLandParameters());
     root.calculateBattle(attackingUnits, GERMANY);
-    final BattleStepTest.CalculateResult expected =
-        new BattleStepTest.CalculateResult();
+    final BattleStepTest.CalculateResult expected = new BattleStepTest.CalculateResult();
     expected.winProbability = 0.431;
     expected.loseProbability = 0.524;
     expected.tieProbability = 0.042;
     expected.badProbability = 0.002;
-    final BattleStepTest.CalculateResult actual =
-        new BattleStepTest.CalculateResult();
+    final BattleStepTest.CalculateResult actual = new BattleStepTest.CalculateResult();
     actual.winProbability = root.getWinProbability();
     actual.loseProbability = root.getLoseProbability();
     actual.tieProbability = root.getTieProbability();
@@ -859,14 +857,12 @@ class BattleStepTest {
 
     final BattleStep root = new BattleStep(attackingUnits, USA, 0, createTwwSeaParameters());
     root.calculateBattle(attackingUnits, GERMANY);
-    final BattleStepTest.CalculateResult expected =
-        new BattleStepTest.CalculateResult();
+    final BattleStepTest.CalculateResult expected = new BattleStepTest.CalculateResult();
     expected.winProbability = 0.671;
     expected.loseProbability = 0.0;
     expected.tieProbability = 0.322;
     expected.badProbability = 0.006;
-    final BattleStepTest.CalculateResult actual =
-        new BattleStepTest.CalculateResult();
+    final BattleStepTest.CalculateResult actual = new BattleStepTest.CalculateResult();
     actual.winProbability = root.getWinProbability();
     actual.loseProbability = root.getLoseProbability();
     actual.tieProbability = root.getTieProbability();
@@ -916,7 +912,8 @@ class BattleStepTest {
     attackingOrderOfLoss.addAll(
         dataTww.getUnitTypeList().getUnitType("britishTacticalBomber").create(quantity, BRITAIN));
     attackingOrderOfLoss.addAll(
-        dataTww.getUnitTypeList()
+        dataTww
+            .getUnitTypeList()
             .getUnitType("britishAdvancedTacticalBomber")
             .create(quantity, BRITAIN));
     attackingOrderOfLoss.addAll(

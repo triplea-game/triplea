@@ -90,11 +90,9 @@ public class BattleTreeCalculator implements IBattleCalculator {
     if (Properties.getTransportCasualtiesRestricted(data)) {
       // move all transports to the end so that they are picked last
       attackingOrderOfLoss.sort(
-              Comparator.comparing(
-                  Matches.unitIsTransport().and(Matches.unitIsSea())::test));
+          Comparator.comparing(Matches.unitIsTransport().and(Matches.unitIsSea())::test));
       defendingOrderOfLoss.sort(
-              Comparator.comparing(
-                  Matches.unitIsTransport().and(Matches.unitIsSea())::test));
+          Comparator.comparing(Matches.unitIsTransport().and(Matches.unitIsSea())::test));
     }
 
     final StepUnits attackingUnitsObject =
