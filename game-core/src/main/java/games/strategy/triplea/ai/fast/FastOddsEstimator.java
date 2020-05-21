@@ -1,10 +1,11 @@
 package games.strategy.triplea.ai.fast;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.IProDataUnitValue;
+import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.odds.calculator.AggregateResults;
@@ -13,11 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@VisibleForTesting
 public class FastOddsEstimator implements IBattleCalculator {
 
-  private final IProDataUnitValue proData;
+  private final ProData proData;
 
-  public FastOddsEstimator(final IProDataUnitValue proData) {
+  @VisibleForTesting
+  public FastOddsEstimator(final ProData proData) {
     this.proData = proData;
   }
 

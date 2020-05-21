@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.IProDataUnitValue;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOptionMap;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -23,7 +22,7 @@ import org.triplea.java.collections.IntegerMap;
 
 /** Pro AI data. */
 @Getter
-public final class ProData implements IProDataUnitValue {
+public final class ProData {
   // Default values
   private boolean isSimulation = false;
   private double winPercentage = 95;
@@ -54,14 +53,8 @@ public final class ProData implements IProDataUnitValue {
     return unitTerritoryMap.get(unit);
   }
 
-  @Override
   public int getUnitValue(final UnitType type) {
     return unitValueMap.getInt(type);
-  }
-
-  @Override
-  public IntegerMap<UnitType> getUnitValueMap() {
-    return unitValueMap;
   }
 
   private void hiddenInitialize(

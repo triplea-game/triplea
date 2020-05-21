@@ -10,6 +10,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.fast.FastOddsEstimator;
+import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.tree.BattleTreeCalculator;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.Matches;
@@ -65,18 +66,6 @@ class BattleCalculatorComparisonTests {
       checkNotNull(data.getUnitTypeList().getUnitType("submarine"));
   private static final UnitType TRANSPORT =
       checkNotNull(data.getUnitTypeList().getUnitType("transport"));
-  private static final IProDataUnitValue PRO_DATA = new IProDataUnitValue() {
-        final IntegerMap<UnitType> unitValueMap = TuvUtils.getCostsForTuv(BRITISH, data);
-        @Override
-        public int getUnitValue(final UnitType type) {
-          return unitValueMap.getInt(type);
-        }
-
-        @Override
-        public IntegerMap<UnitType> getUnitValueMap() {
-          return unitValueMap;
-        }
-      };
 
   private static final GameData dataTww = TestMapGameData.TWW.getGameData();
   private static final GamePlayer BRITAIN =
@@ -307,7 +296,9 @@ class BattleCalculatorComparisonTests {
 
     printResult("Hard AI 2000 runs", hardAi2Results, attackingUnits, defendingUnits, territory, data);
 
-    final IBattleCalculator fastOddsEstimator = new FastOddsEstimator(PRO_DATA);
+    final ProData proData = new ProData();
+    proData.initializeSimulation(null, data, attackingUnits.iterator().next().getOwner());
+    final IBattleCalculator fastOddsEstimator = new FastOddsEstimator(proData);
     final AggregateResults fastOddsResults = fastOddsEstimator.calculate(
         attackingUnits.iterator().next().getOwner(),
         defendingUnits.iterator().next().getOwner(),

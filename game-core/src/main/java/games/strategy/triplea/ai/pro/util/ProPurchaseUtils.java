@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.UnitUtils;
-import games.strategy.triplea.ai.IProDataUnitValue;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -257,14 +256,14 @@ public final class ProPurchaseUtils {
   }
 
   /** Comparator that sorts cheaper units before expensive ones. */
-  public static Comparator<Unit> getCostComparator(final IProDataUnitValue proData) {
+  public static Comparator<Unit> getCostComparator(final ProData proData) {
     return Comparator.comparingDouble((unit) -> ProPurchaseUtils.getCost(proData, unit));
   }
 
   /**
    * How many PU's does it cost the given player to produce the given unit including any dependents.
    */
-  public static double getCost(final IProDataUnitValue proData, final Unit unit) {
+  public static double getCost(final ProData proData, final Unit unit) {
     final Resource pus = unit.getData().getResourceList().getResource(Constants.PUS);
     final Collection<Unit> units = TransportTracker.transportingAndUnloaded(unit);
     units.add(unit);

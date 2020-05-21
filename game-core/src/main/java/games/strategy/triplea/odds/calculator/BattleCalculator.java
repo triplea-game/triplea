@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import lombok.Setter;
 
+@VisibleForTesting
 public class BattleCalculator implements IBattleCalculator {
   @Nonnull private final GameData gameData;
   @Setter private boolean keepOneAttackingLandUnit = false;
@@ -31,6 +33,7 @@ public class BattleCalculator implements IBattleCalculator {
   private volatile boolean cancelled = false;
   private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
+  @VisibleForTesting
   public BattleCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
     gameData =
         Preconditions.checkNotNull(
