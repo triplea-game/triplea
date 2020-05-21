@@ -10,6 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
-class BattleStepGlobal1940Test {
+class BattleStepTest {
   private static final GameData data = TestMapGameData.GLOBAL1940.getGameData();
   private static final GamePlayer BRITISH =
       checkNotNull(data.getPlayerList().getPlayerId("British"));
@@ -53,6 +54,19 @@ class BattleStepGlobal1940Test {
       checkNotNull(data.getUnitTypeList().getUnitType("destroyer"));
   private static final UnitType TRANSPORT =
       checkNotNull(data.getUnitTypeList().getUnitType("transport"));
+
+  private static final GameData dataTww = TestMapGameData.TWW.getGameData();
+  private static final GamePlayer BRITAIN = checkNotNull(GameDataTestUtil.britain(dataTww));
+  private static final GamePlayer USA = checkNotNull(GameDataTestUtil.usa(dataTww));
+  private static final GamePlayer GERMANY = checkNotNull(GameDataTestUtil.germany(dataTww));
+  private static final Territory LAND_NO_ATTACHMENTS_TWW =
+      checkNotNull(GameDataTestUtil.territory("Alberta", dataTww));
+  private static final Collection<TerritoryEffect> LAND_NO_ATTACHMENTS_EFFECTS_TWW =
+      TerritoryEffectHelper.getEffects(LAND_NO_ATTACHMENTS_TWW);
+  private static final Territory SEA_NO_ATTACHMENTS_TWW =
+      checkNotNull(GameDataTestUtil.territory("100 Sea Zone", dataTww));
+  private static final Collection<TerritoryEffect> SEA_NO_ATTACHMENTS_EFFECTS_TWW =
+      TerritoryEffectHelper.getEffects(SEA_NO_ATTACHMENTS_TWW);
 
   private Map<Integer, Integer> getDiceGrouped(
       final List<Unit> attackers, final List<Unit> defenders) {
@@ -784,5 +798,143 @@ class BattleStepGlobal1940Test {
     actual.tieProbability = root.getTieProbability();
     actual.badProbability = root.getBadProbability();
     assertEquals(expected, actual);
+  }
+
+  private BattleStep.Parameters createTwwLandParameters() {
+    return BattleStep.Parameters.builder()
+        .data(dataTww)
+        .location(LAND_NO_ATTACHMENTS_TWW)
+        .territoryEffects(LAND_NO_ATTACHMENTS_EFFECTS_TWW)
+        .build();
+  }
+
+  private BattleStep.Parameters createTwwSeaParameters() {
+    return BattleStep.Parameters.builder()
+        .data(dataTww)
+        .location(SEA_NO_ATTACHMENTS_TWW)
+        .territoryEffects(SEA_NO_ATTACHMENTS_EFFECTS_TWW)
+        .build();
+  }
+
+  @Test
+  void attackAaWithMultipleTargetGroups() {
+    final List<Unit> attackingOrderOfLoss = new ArrayList<>();
+    attackingOrderOfLoss.addAll(GameDataTestUtil.britishInfantry(dataTww).create(1, BRITAIN));
+    attackingOrderOfLoss.addAll(GameDataTestUtil.britishFighter(dataTww).create(1, BRITAIN));
+    attackingOrderOfLoss.addAll(GameDataTestUtil.britishTank(dataTww).create(1, BRITAIN));
+    final List<Unit> defendingOrderOfLoss = new ArrayList<>();
+    defendingOrderOfLoss.addAll(GameDataTestUtil.germanAntiAirGun(dataTww).create(1, GERMANY));
+    defendingOrderOfLoss.addAll(GameDataTestUtil.germanAntiTankGun(dataTww).create(1, GERMANY));
+    defendingOrderOfLoss.addAll(GameDataTestUtil.germanMobileArtillery(dataTww).create(1, GERMANY));
+
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITAIN, defendingOrderOfLoss, GERMANY);
+
+    final BattleStep root = new BattleStep(attackingUnits, BRITAIN, 0, createTwwLandParameters());
+    root.calculateBattle(attackingUnits, GERMANY);
+    final BattleStepTest.CalculateResult expected =
+        new BattleStepTest.CalculateResult();
+    expected.winProbability = 0.431;
+    expected.loseProbability = 0.524;
+    expected.tieProbability = 0.042;
+    expected.badProbability = 0.002;
+    final BattleStepTest.CalculateResult actual =
+        new BattleStepTest.CalculateResult();
+    actual.winProbability = root.getWinProbability();
+    actual.loseProbability = root.getLoseProbability();
+    actual.tieProbability = root.getTieProbability();
+    actual.badProbability = root.getBadProbability();
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void attackSuicideAa() {
+    final List<Unit> attackingOrderOfLoss = new ArrayList<>();
+    attackingOrderOfLoss.addAll(GameDataTestUtil.americanCruiser(dataTww).create(1, USA));
+    final List<Unit> defendingOrderOfLoss = new ArrayList<>();
+    defendingOrderOfLoss.addAll(GameDataTestUtil.germanMine(dataTww).create(1, GERMANY));
+
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, USA, defendingOrderOfLoss, GERMANY);
+
+    final BattleStep root = new BattleStep(attackingUnits, USA, 0, createTwwSeaParameters());
+    root.calculateBattle(attackingUnits, GERMANY);
+    final BattleStepTest.CalculateResult expected =
+        new BattleStepTest.CalculateResult();
+    expected.winProbability = 0.671;
+    expected.loseProbability = 0.0;
+    expected.tieProbability = 0.322;
+    expected.badProbability = 0.006;
+    final BattleStepTest.CalculateResult actual =
+        new BattleStepTest.CalculateResult();
+    actual.winProbability = root.getWinProbability();
+    actual.loseProbability = root.getLoseProbability();
+    actual.tieProbability = root.getTieProbability();
+    actual.badProbability = root.getBadProbability();
+    assertEquals(expected, actual);
+  }
+
+  private Map<Integer, Integer> getTwwDiceGrouped(
+      final List<Unit> attackers, final List<Unit> defenders) {
+    final BattleStep.Parameters parameters =
+        BattleStep.Parameters.builder()
+            .data(dataTww)
+            .location(LAND_NO_ATTACHMENTS_TWW)
+            .territoryEffects(LAND_NO_ATTACHMENTS_EFFECTS_TWW)
+            .build();
+    final StepUnits attackingUnits = new StepUnits(attackers, BRITAIN, List.of(), GERMANY);
+    final BattleStep root = new BattleStep(attackingUnits, BRITAIN, 0, createTwwLandParameters());
+    return root.getRegularDiceGrouped(parameters, false, attackers, defenders);
+  }
+
+  @Test
+  void calculateComplexProbabilities() throws InterruptedException {
+    final int quantity = 7;
+    final List<Unit> attackingOrderOfLoss = new ArrayList<>();
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishInfantry").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishAlpineInfantry").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishMarine").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishArtillery").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishHeavyArtillery").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishMobileArtillery").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishMech.Infantry").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishTank").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishHeavyTank").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishFighter").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishAdvancedFighter").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishTacticalBomber").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList()
+            .getUnitType("britishAdvancedTacticalBomber")
+            .create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishAntiAirGun").create(quantity, BRITAIN));
+    attackingOrderOfLoss.addAll(
+        dataTww.getUnitTypeList().getUnitType("britishAntiTankGun").create(quantity, BRITAIN));
+
+    final int diceSides = dataTww.getDiceSides();
+    final Map<Integer, Integer> diceGrouped = getTwwDiceGrouped(attackingOrderOfLoss, List.of());
+
+    final StepUnits attackingUnits =
+        new StepUnits(attackingOrderOfLoss, BRITAIN, List.of(), GERMANY);
+
+    final BattleStep root = new BattleStep(attackingUnits, BRITAIN, 0, createTwwLandParameters());
+    final List<Double> hitProbability =
+        root.calculateHitProbabilities(
+            BattleStep.RollData.of(15 * quantity, diceGrouped, diceSides));
+
+    assertEquals(0.0314, hitProbability.get(35), 0.0001);
   }
 }
