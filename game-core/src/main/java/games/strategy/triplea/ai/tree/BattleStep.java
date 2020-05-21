@@ -758,16 +758,16 @@ public class BattleStep {
         // each round, there is a possibility that no one will hit
         // so the units never change
 
-        final double[] siblingResults = new double[5];
-        siblingResults[0] = cachedBattleStep.winProbability;
-        siblingResults[1] = cachedBattleStep.loseProbability;
-        siblingResults[2] = cachedBattleStep.tieProbability;
-        siblingResults[3] = cachedBattleStep.averageRounds;
-        siblingResults[4] = 1.0;
-        final StepUnits siblingUnits = cachedBattleStep.averageUnits.swapSides();
+        final BattleStepSiblings siblingResults = new BattleStepSiblings();
+        siblingResults.probability = 1.0;
+        siblingResults.winProbability = cachedBattleStep.winProbability;
+        siblingResults.loseProbability = cachedBattleStep.loseProbability;
+        siblingResults.tieProbability = cachedBattleStep.tieProbability;
+        siblingResults.averageRounds = cachedBattleStep.averageRounds;
+        siblingResults.units = cachedBattleStep.averageUnits.swapSides();
 
         calculateSiblingResultsForRecursiveEnd(
-            cachedBattleStep.children, siblingResults, siblingUnits);
+            cachedBattleStep.children, siblingResults);
 
         this.averageUnits = units;
 
@@ -778,11 +778,11 @@ public class BattleStep {
         // Inside of the .5, it will also go to the .2 and .3 nodes and itself.
         // So, its score is basically .5 * (.2 * 1 + .3 * -1) + .5^2 * (.2 * 1 + .3 * -1) + ...
         for (int level = 0; level < 6; level++) {
-          this.winProbability += siblingResults[0] * Math.pow(siblingResults[4], level);
-          this.loseProbability += siblingResults[1] * Math.pow(siblingResults[4], level);
-          this.tieProbability += siblingResults[2] * Math.pow(siblingResults[4], level);
-          this.averageRounds += siblingResults[3] * Math.pow(siblingResults[4], level);
-          this.averageUnits.updateUnitChances(siblingUnits, Math.pow(siblingResults[4], level));
+          this.winProbability += siblingResults.winProbability * Math.pow(siblingResults.probability, level);
+          this.loseProbability += siblingResults.loseProbability * Math.pow(siblingResults.probability, level);
+          this.tieProbability += siblingResults.tieProbability * Math.pow(siblingResults.probability, level);
+          this.averageRounds += siblingResults.averageRounds * Math.pow(siblingResults.probability, level);
+          this.averageUnits.updateUnitChances(siblingResults.units, Math.pow(siblingResults.probability, level));
         }
         // put the rest in "bad"
         this.badProbability =
@@ -811,23 +811,23 @@ public class BattleStep {
   }
 
   private void calculateSiblingResultsForRecursiveEnd(
-      final List<BattleStep> steps, final double[] siblingResults, final StepUnits siblingUnits) {
+      final List<BattleStep> steps, final BattleStepSiblings siblingResults) {
     for (final BattleStep level : steps) {
       if (level.hasResult) {
         continue;
       }
-      siblingResults[4] *= level.probability;
-      siblingResults[0] += siblingResults[4] * level.winProbability;
-      siblingResults[1] += siblingResults[4] * level.loseProbability;
-      siblingResults[2] += siblingResults[4] * level.tieProbability;
-      siblingResults[3] += siblingResults[4] * level.averageRounds;
+      siblingResults.probability *= level.probability;
+      siblingResults.winProbability += siblingResults.probability * level.winProbability;
+      siblingResults.loseProbability += siblingResults.probability * level.loseProbability;
+      siblingResults.tieProbability += siblingResults.probability * level.tieProbability;
+      siblingResults.averageRounds += siblingResults.probability * level.averageRounds;
       if (level.units.getType() != Type.AA_ATTACKER) {
-        if (siblingUnits.getPlayer().equals(level.averageUnits.getPlayer())) {
-          siblingUnits.updateUnitChances(level.averageUnits.swapSides(), siblingResults[4]);
+        if (siblingResults.units.getPlayer().equals(level.averageUnits.getPlayer())) {
+          siblingResults.units.updateUnitChances(level.averageUnits.swapSides(), siblingResults.probability);
         } else {
-          siblingUnits.updateUnitChances(level.averageUnits, siblingResults[4]);
+          siblingResults.units.updateUnitChances(level.averageUnits, siblingResults.probability);
         }
-        calculateSiblingResultsForRecursiveEnd(level.children, siblingResults, siblingUnits);
+        calculateSiblingResultsForRecursiveEnd(level.children, siblingResults);
       }
     }
   }
