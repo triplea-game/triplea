@@ -13,6 +13,7 @@ import static org.triplea.game.client.ui.javafx.screens.RoleSelection.SELECTED_M
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 import org.triplea.game.client.ui.javafx.UserAgentStylesheetTestCase;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
@@ -34,6 +37,12 @@ import org.triplea.game.client.ui.javafx.util.FxmlManager;
 public class RoleSelectionTest extends UserAgentStylesheetTestCase {
 
   private final RoleSelection roleSelection = new RoleSelection();
+
+  @BeforeEach
+  @SuppressWarnings("static-method")
+  void initializeClientSettingPreferences() {
+    ClientSetting.setPreferences(new MemoryPreferences());
+  }
 
   @Test
   void correctRootNodeIsReturned() {
