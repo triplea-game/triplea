@@ -21,7 +21,7 @@ public class BattleTreeCompAi extends AbstractProAi {
 
   @Override
   public PlayerType getPlayerType() {
-    return PlayerType.BATTLE_TREE_AI;
+    return PlayerType.BATTLE_TREE_COMP_AI;
   }
 
   public static void gameOverClearCache() {
