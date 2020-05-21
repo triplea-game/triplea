@@ -342,7 +342,7 @@ public class BattleStep {
         groupsAndTargets.add(Triple.of(firingGroup, targetUnits, isSuicideOnHit));
       }
     }
-    final Map<StepUnits, StepUnits> outcomes = new HashMap<>();
+    final Map<StepUnits, Double> outcomes = new HashMap<>();
 
     if (!groupsAndTargets.isEmpty()) {
       getTargetGroupFightOutcomes(
@@ -358,7 +358,12 @@ public class BattleStep {
       return List.of(new StepUnits(aliveOrInjuredUnits.swapSides(), 1.0));
     }
 
-    final List<StepUnits> units = new ArrayList<>(outcomes.values());
+    final List<StepUnits> units = new ArrayList<>();
+    for (final Map.Entry<StepUnits, Double> set : outcomes.entrySet()) {
+      final StepUnits stepUnit = set.getKey();
+      stepUnit.addProbability(set.getValue());
+      units.add(stepUnit);
+    }
 
     units.sort(
         Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead)
@@ -410,7 +415,7 @@ public class BattleStep {
       }
     }
 
-    final Map<StepUnits, StepUnits> outcomes = new HashMap<>();
+    final Map<StepUnits, Double> outcomes = new HashMap<>();
     if (!aaGroupsAndTargets.isEmpty()) {
       getTargetGroupFightOutcomes(
           outcomes,
@@ -425,7 +430,12 @@ public class BattleStep {
       return List.of(new StepUnits(aliveOrInjuredUnits.swapSides(), 1.0));
     }
 
-    final List<StepUnits> units = new ArrayList<>(outcomes.values());
+    final List<StepUnits> units = new ArrayList<>();
+    for (final Map.Entry<StepUnits, Double> set : outcomes.entrySet()) {
+      final StepUnits stepUnit = set.getKey();
+      stepUnit.addProbability(set.getValue());
+      units.add(stepUnit);
+    }
 
     units.sort(
         Comparator.comparingInt(StepUnits::countOfFriendlyDamagedOrDead)
@@ -435,7 +445,7 @@ public class BattleStep {
   }
 
   private void getTargetGroupFightOutcomes(
-      final Map<StepUnits, StepUnits> outcomes,
+      final Map<StepUnits, Double> outcomes,
       final List<Triple<Collection<Unit>, Collection<Unit>, Boolean>> groupsAndTargets,
       final int groupsAndTargetsIndex,
       final StepUnits currentUnits,
@@ -494,14 +504,13 @@ public class BattleStep {
             hitProbability * probability);
       } else {
         outcomes.compute(
-            new StepUnits(currentUnits, hitProbability * probability),
+            new StepUnits(currentUnits),
             (key, value) -> {
               if (value == null) {
-                return key;
+                return hitProbability * probability;
               } else {
-                value.addProbability(hitProbability * probability);
+                return value + hitProbability * probability;
               }
-              return value;
             });
       }
 
@@ -516,6 +525,7 @@ public class BattleStep {
       }
     }
 
+    final double hitProbability = 1.0 - totalProbability;
     if (groupsAndTargetsIndex > 0) {
       getTargetGroupFightOutcomes(
           outcomes,
@@ -525,18 +535,16 @@ public class BattleStep {
           type,
           returnFire,
           allowMultipleHitsPerUnit,
-          (1.0 - totalProbability) * probability);
+          hitProbability * probability);
     } else {
-      final double childProbability = 1.0 - totalProbability;
       outcomes.compute(
-          new StepUnits(currentUnits, childProbability * probability),
+          new StepUnits(currentUnits),
           (key, value) -> {
             if (value == null) {
-              return key;
+              return hitProbability * probability;
             } else {
-              value.addProbability(childProbability * probability);
+              return value + hitProbability * probability;
             }
-            return value;
           });
     }
   }
