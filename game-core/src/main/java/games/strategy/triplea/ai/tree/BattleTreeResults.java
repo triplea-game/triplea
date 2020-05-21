@@ -15,8 +15,6 @@ import org.triplea.util.Tuple;
 public class BattleTreeResults extends AggregateResults {
   private final BattleStep root;
   private final double winProbabality;
-  private final double loseProbability;
-  private final double tieProbability;
   private final double badProbability;
 
   public BattleTreeResults(
@@ -25,8 +23,6 @@ public class BattleTreeResults extends AggregateResults {
     super(1);
     this.root = root;
     this.winProbabality = root.getWinProbability();
-    this.loseProbability = root.getLoseProbability();
-    this.tieProbability = root.getTieProbability();
     this.badProbability = root.getBadProbability();
   }
 

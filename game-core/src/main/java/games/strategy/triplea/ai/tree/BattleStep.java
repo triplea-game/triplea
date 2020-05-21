@@ -223,7 +223,6 @@ public class BattleStep {
     // this allows copying the first defender outcomes to all of the other defenders.
     List<StepUnits> newCachedDefenderOutcomes = null;
     final List<StepUnits> children;
-    final List<StepUnits> tmp;
     if (units.getType() == Type.DEFENDER) {
       if (this.cachedDefenderOutcomes == null) {
         children = getFightOutcomes(new StepUnits(aliveOrInjuredUnits));
@@ -625,7 +624,6 @@ public class BattleStep {
     final Collection<Unit> defendingUnits = units.getAliveOrWaitingToDieEnemy();
     final GamePlayer attacker = units.getPlayer();
     final Territory battleSite = parameters.getLocation();
-    final Collection<TerritoryEffect> territoryEffects = parameters.getTerritoryEffects();
     if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size()
         == 0) {
       if (!Properties.getTransportCasualtiesRestricted(parameters.getData())) {
@@ -672,6 +670,7 @@ public class BattleStep {
        * Removed the else because this is slow for every iteration and
        * is already taken care of by getFightOutcomes
     } else {
+      final Collection<TerritoryEffect> territoryEffects = parameters.getTerritoryEffects();
       final int attackPower =
           DiceRoll.getTotalPower(
               DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -1024,7 +1023,6 @@ public class BattleStep {
   // Taken from MustFightBattle::checkUndefendedTransports
   private void checkUndefendedTransports(final GamePlayer player, final StepUnits units) {
     final GamePlayer attacker = units.getPlayer();
-    final Collection<Unit> attackingUnits = units.getAliveOrWaitingToDieFriendly();
     final Territory battleSite = parameters.getLocation();
     // if we are the attacker, we can retreat instead of dying
     if (player.equals(attacker)) {
@@ -1106,6 +1104,7 @@ public class BattleStep {
     return returnFireAgainstAttackingSubs;
   }
 
+  /*
   // Taken from MustFightBattle::returnFireAgainstDefendingSubs
   private MustFightBattle.ReturnFire returnFireAgainstDefendingSubs(final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits) {
     final boolean attackingSubsSneakAttack =
@@ -1121,6 +1120,7 @@ public class BattleStep {
     }
     return returnFireAgainstDefendingSubs;
   }
+   */
 
   // Taken from MustFightBattle::defendingSubsSneakAttackAndNoAttackingDestroyers
   private boolean defendingSubsSneakAttackAndNoAttackingDestroyers(final Collection<Unit> attackingUnits) {
