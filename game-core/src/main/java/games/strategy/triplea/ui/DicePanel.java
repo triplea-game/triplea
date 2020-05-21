@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.List;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,6 +22,9 @@ import org.triplea.swing.WrapLayout;
  */
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
+
+  private static final String DARKER_RED = "#8B0000";
+
   private final UiContext uiContext;
   private final GameData data;
 
@@ -35,7 +39,7 @@ public class DicePanel extends JPanel {
     removeAll();
     add(new JLabel("Cost: " + cost, SwingConstants.LEFT));
     add(create(dice));
-    addBottomLabel(new JLabel());
+    addBottomSpacing();
   }
 
   /** Sets the dice roll to display. */
@@ -56,7 +60,7 @@ public class DicePanel extends JPanel {
       add(makeDiceRolledLabel(dice, i));
       add(create(dice));
     }
-    addBottomLabel(new JLabel());
+    addBottomSpacing();
     invalidate();
     validate();
     repaint();
@@ -71,7 +75,7 @@ public class DicePanel extends JPanel {
 
   private static String colorizeHitString(final Object hitsString) {
     // On a dark theme, use red. Use a darker red with a light theme.
-    final String color = LookAndFeel.isCurrentLookAndFeelDark() ? "red" : "#8B0000";
+    final String color = LookAndFeel.isCurrentLookAndFeelDark() ? "red" : DARKER_RED;
     return "<font color='" + color + "'>" + hitsString + "</font>";
   }
 
@@ -83,14 +87,13 @@ public class DicePanel extends JPanel {
     add(component, constraints);
   }
 
-  private void addBottomLabel(final JLabel label) {
+  private void addBottomSpacing() {
     final GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.BOTH;
     constraints.weightx = 1;
     constraints.weighty = 1;
     constraints.gridx = 0;
-    label.setVerticalAlignment(SwingConstants.BOTTOM);
-    add(label, constraints);
+    add(Box.createVerticalGlue(), constraints);
   }
 
   private JComponent create(final List<Die> dice) {

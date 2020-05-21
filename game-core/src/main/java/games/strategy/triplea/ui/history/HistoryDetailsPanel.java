@@ -38,7 +38,7 @@ import org.triplea.swing.ScrollableJPanel;
  * </ul>
  */
 public class HistoryDetailsPanel extends JPanel {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 5092004144144006960L;
   private final GameData data;
   private final MapPanel mapPanel;
   private final JTextArea title = new JTextArea();
