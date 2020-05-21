@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.tree;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -52,8 +52,6 @@ class BattleStepTest {
       checkNotNull(data.getUnitTypeList().getUnitType("submarine"));
   private static final UnitType DESTROYER =
       checkNotNull(data.getUnitTypeList().getUnitType("destroyer"));
-  private static final UnitType TRANSPORT =
-      checkNotNull(data.getUnitTypeList().getUnitType("transport"));
 
   private static final GameData dataTww = TestMapGameData.TWW.getGameData();
   private static final GamePlayer BRITAIN = checkNotNull(GameDataTestUtil.britain(dataTww));
@@ -259,7 +257,7 @@ class BattleStepTest {
   }
 
   static final class CalculateResult {
-    final double THRESHOLD = .001;
+    private static final double THRESHOLD = .001;
     double winProbability = 0;
     double loseProbability = 0;
     double tieProbability = 0;
@@ -281,8 +279,12 @@ class BattleStepTest {
 
     @Override
     public boolean equals(final Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
       final CalculateResult that = (CalculateResult) o;
       return Math.abs(that.winProbability - winProbability) < THRESHOLD
           && Math.abs(that.loseProbability - loseProbability) < THRESHOLD

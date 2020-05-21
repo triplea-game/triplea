@@ -1,7 +1,9 @@
 package games.strategy.triplea.ai.tree;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;

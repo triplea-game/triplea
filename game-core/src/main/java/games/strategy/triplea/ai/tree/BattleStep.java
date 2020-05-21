@@ -646,7 +646,7 @@ public class BattleStep {
     final Collection<Unit> defendingUnits = units.getAliveOrWaitingToDieEnemy();
     final GamePlayer attacker = units.getPlayer();
     final Territory battleSite = parameters.getLocation();
-    if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
+    if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).isEmpty()) {
       if (!Properties.getTransportCasualtiesRestricted(parameters.getData())) {
         loseProbability = 1;
         hasResult = true;

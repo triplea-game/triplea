@@ -33,7 +33,6 @@ class BattleCalculatorComparisonTests {
   private static final GameData data = TestMapGameData.GLOBAL1940.getGameData();
   private static final GamePlayer BRITISH =
       checkNotNull(data.getPlayerList().getPlayerId("British"));
-  private static final GamePlayer FRENCH = checkNotNull(data.getPlayerList().getPlayerId("French"));
   private static final GamePlayer GERMAN =
       checkNotNull(data.getPlayerList().getPlayerId("Germans"));
   private static final Territory FRANCE = checkNotNull(territory("France", data));
@@ -41,8 +40,6 @@ class BattleCalculatorComparisonTests {
   private static final UnitType AAGUN = checkNotNull(data.getUnitTypeList().getUnitType("aaGun"));
   private static final UnitType INFANTRY =
       checkNotNull(data.getUnitTypeList().getUnitType("infantry"));
-  private static final UnitType MECH_INFANTRY =
-      checkNotNull(data.getUnitTypeList().getUnitType("mech_infantry"));
   private static final UnitType ARTILLERY =
       checkNotNull(data.getUnitTypeList().getUnitType("artillery"));
   private static final UnitType ARMOUR = checkNotNull(data.getUnitTypeList().getUnitType("armour"));
@@ -57,19 +54,12 @@ class BattleCalculatorComparisonTests {
       checkNotNull(data.getUnitTypeList().getUnitType("cruiser"));
   private static final UnitType BATTLESHIP =
       checkNotNull(data.getUnitTypeList().getUnitType("battleship"));
-  private static final UnitType SUBMARINE =
-      checkNotNull(data.getUnitTypeList().getUnitType("submarine"));
-  private static final UnitType TRANSPORT =
-      checkNotNull(data.getUnitTypeList().getUnitType("transport"));
 
   private static final GameData dataTww = TestMapGameData.TWW.getGameData();
   private static final GamePlayer BRITAIN = checkNotNull(GameDataTestUtil.britain(dataTww));
-  private static final GamePlayer AMERICAN = checkNotNull(GameDataTestUtil.usa(dataTww));
   private static final GamePlayer GERMANY = checkNotNull(GameDataTestUtil.germany(dataTww));
   private static final Territory LAND_NO_ATTACHMENTS =
       checkNotNull(GameDataTestUtil.territory("Alberta", dataTww));
-  private static final Territory SEA_NO_ATTACHMENTS =
-      checkNotNull(GameDataTestUtil.territory("100 Sea Zone", data));
 
   @Test
   void comparePerformanceOfCalculators() throws InterruptedException {
