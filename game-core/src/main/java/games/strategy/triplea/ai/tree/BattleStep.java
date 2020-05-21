@@ -247,6 +247,9 @@ public class BattleStep {
       badProbability += child.badProbability * child.probability;
       averageRounds += child.averageRounds * child.probability;
     }
+    if (children.size() == 0) {
+      tieProbability = 1;
+    }
 
     hasResult = true;
     // the children are no longer needed so clear them out to reduce memory usage
@@ -640,6 +643,9 @@ public class BattleStep {
     } else if (MAX_ROUNDS > 0 && MAX_ROUNDS <= round) {
       tieProbability = 1;
       hasResult = true;
+      /*
+       * Removed the else because this is slow for every iteration and
+       * is already taken care of by getFightOutcomes
     } else {
       final int attackPower =
           DiceRoll.getTotalPower(
@@ -671,6 +677,7 @@ public class BattleStep {
         tieProbability = 1;
         hasResult = true;
       }
+       */
     }
     // if a result was found, but no one is still alive, treat it as a draw
     // see BattleResults::draw
@@ -688,8 +695,6 @@ public class BattleStep {
    * @return did the battle end
    */
   private boolean checkEndOfBranch(final StepUnits units) {
-    final Collection<Unit> attackingUnits = units.getAliveOrWaitingToDieFriendly();
-    final Collection<Unit> defendingUnits = units.getAliveOrWaitingToDieEnemy();
     checkEndOfBattle(units);
     if (hasResult) {
       averageUnits = units;
