@@ -6,12 +6,21 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.player.Player;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 
 class PlayerTypeTest {
+
+  @BeforeEach
+  @SuppressWarnings("static-method")
+  void initializeClientSettingPreferences() {
+    ClientSetting.setPreferences(new MemoryPreferences());
+  }
 
   @Test
   void playerTypes() {
