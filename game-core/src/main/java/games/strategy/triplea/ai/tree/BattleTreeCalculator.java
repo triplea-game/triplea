@@ -14,6 +14,7 @@ import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 public class BattleTreeCalculator implements IBattleCalculator {
@@ -89,15 +90,11 @@ public class BattleTreeCalculator implements IBattleCalculator {
     if (Properties.getTransportCasualtiesRestricted(data)) {
       // move all transports to the end so that they are picked last
       attackingOrderOfLoss.sort(
-          (unit1, unit2) ->
-              Boolean.compare(
-                  Matches.unitIsTransport().and(Matches.unitIsSea()).test(unit1),
-                  Matches.unitIsTransport().and(Matches.unitIsSea()).test(unit2)));
+              Comparator.comparing(
+                  Matches.unitIsTransport().and(Matches.unitIsSea())::test));
       defendingOrderOfLoss.sort(
-          (unit1, unit2) ->
-              Boolean.compare(
-                  Matches.unitIsTransport().and(Matches.unitIsSea()).test(unit1),
-                  Matches.unitIsTransport().and(Matches.unitIsSea()).test(unit2)));
+              Comparator.comparing(
+                  Matches.unitIsTransport().and(Matches.unitIsSea())::test));
     }
 
     final StepUnits attackingUnitsObject =

@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.TargetGroup;
 import games.strategy.triplea.delegate.battle.casualty.CasualtyUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -590,7 +591,7 @@ public class BattleStep {
       final Collection<Unit> validAliveOrInjuredTargets) {
     final Map<Integer, Integer> rollsByDicePower =
         getRegularDiceGrouped(parameters, defending, firingGroup, validAliveOrInjuredTargets);
-    final int totalRolls = rollsByDicePower.values().stream().reduce(0, Integer::sum);
+    final int totalRolls = rollsByDicePower.values().stream().mapToInt(i -> i).sum();
     return RollData.of(totalRolls, rollsByDicePower, parameters.data.getDiceSides());
   }
 
@@ -879,12 +880,7 @@ public class BattleStep {
         diceAvailableGroupedByPower,
         calculatedProbabilityCache);
 
-    final List<Double> probabilitiesList = new ArrayList<>();
-    for (final double probability : probabilities) {
-      probabilitiesList.add(probability);
-    }
-
-    return probabilitiesList;
+    return Arrays.stream(probabilities).boxed().collect(Collectors.toList());
   }
 
   /**
