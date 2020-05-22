@@ -170,30 +170,12 @@ public class Fire implements IExecutable {
             attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
 
     if (BaseEditDelegate.getEditMode(bridge.getData())) {
-      final CasualtyDetails message =
-          CasualtySelector.selectCasualties(
-              hitPlayer,
-              attackableUnits,
-              allEnemyUnitsNotIncludingWaitingToDie,
-              allFriendlyUnitsNotIncludingWaitingToDie,
-              isAmphibious,
-              amphibiousLandAttackers,
-              battleSite,
-              territoryEffects,
-              bridge,
-              text,
-              dice,
-              !defending,
-              battleId,
-              headless,
-              0,
-              true);
+      final CasualtyDetails message = selectCasualties(bridge, attackableUnits, 0);
       killed = message.getKilled();
       damaged = message.getDamaged();
       confirmOwnCasualties = true;
     } else if (countTransports > 0
         && Properties.getTransportCasualtiesRestricted(bridge.getData())) {
-      final CasualtyDetails message;
       final Collection<Unit> nonTransports =
           CollectionUtils.getMatches(
               attackableUnits,
@@ -232,24 +214,7 @@ public class Fire implements IExecutable {
         if (extraHits > transportsOnly.size()) {
           extraHits = transportsOnly.size();
         }
-        message =
-            CasualtySelector.selectCasualties(
-                hitPlayer,
-                transportsOnly,
-                allEnemyUnitsNotIncludingWaitingToDie,
-                allFriendlyUnitsNotIncludingWaitingToDie,
-                isAmphibious,
-                amphibiousLandAttackers,
-                battleSite,
-                territoryEffects,
-                bridge,
-                text,
-                dice,
-                !defending,
-                battleId,
-                headless,
-                extraHits,
-                true);
+        final CasualtyDetails message = selectCasualties(bridge, transportsOnly, extraHits);
         killed.addAll(message.getKilled());
         confirmOwnCasualties = true;
       } else if (hitCount == numPossibleHits) { // exact number of combat units
@@ -257,24 +222,7 @@ public class Fire implements IExecutable {
         damaged = List.of();
         confirmOwnCasualties = true;
       } else { // less than possible number
-        message =
-            CasualtySelector.selectCasualties(
-                hitPlayer,
-                nonTransports,
-                allEnemyUnitsNotIncludingWaitingToDie,
-                allFriendlyUnitsNotIncludingWaitingToDie,
-                isAmphibious,
-                amphibiousLandAttackers,
-                battleSite,
-                territoryEffects,
-                bridge,
-                text,
-                dice,
-                !defending,
-                battleId,
-                headless,
-                dice.getHits(),
-                true);
+        final CasualtyDetails message = selectCasualties(bridge, nonTransports, dice.getHits());
         killed = message.getKilled();
         damaged = message.getDamaged();
         confirmOwnCasualties = message.getAutoCalculated();
@@ -287,30 +235,33 @@ public class Fire implements IExecutable {
         // everything died, so we need to confirm
         confirmOwnCasualties = true;
       } else { // Choose casualties
-        final CasualtyDetails message;
-        message =
-            CasualtySelector.selectCasualties(
-                hitPlayer,
-                attackableUnits,
-                allEnemyUnitsNotIncludingWaitingToDie,
-                allFriendlyUnitsNotIncludingWaitingToDie,
-                isAmphibious,
-                amphibiousLandAttackers,
-                battleSite,
-                territoryEffects,
-                bridge,
-                text,
-                dice,
-                !defending,
-                battleId,
-                headless,
-                dice.getHits(),
-                true);
+        final CasualtyDetails message = selectCasualties(bridge, attackableUnits, dice.getHits());
         killed = message.getKilled();
         damaged = message.getDamaged();
         confirmOwnCasualties = message.getAutoCalculated();
       }
     }
+  }
+
+  private CasualtyDetails selectCasualties(
+      final IDelegateBridge bridge, final Collection<Unit> targetsToPickFrom, final int extraHits) {
+    return CasualtySelector.selectCasualties(
+        hitPlayer,
+        targetsToPickFrom,
+        allEnemyUnitsNotIncludingWaitingToDie,
+        allFriendlyUnitsNotIncludingWaitingToDie,
+        isAmphibious,
+        amphibiousLandAttackers,
+        battleSite,
+        territoryEffects,
+        bridge,
+        text,
+        dice,
+        !defending,
+        battleId,
+        headless,
+        extraHits,
+        true);
   }
 
   private void notifyCasualties(final IDelegateBridge bridge) {
@@ -340,7 +291,8 @@ public class Fire implements IExecutable {
             },
             "Click to continue waiter");
     t.start();
-    if (confirmOwnCasualties) {
+    // Always confirm casualties for AI to give them a chance to pause.
+    if (confirmOwnCasualties || hitPlayer.isAi()) {
       AbstractBattle.getRemote(hitPlayer, bridge)
           .confirmOwnCasualties(battleId, "Press space to continue");
     }
