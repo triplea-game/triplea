@@ -1681,7 +1681,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!canAttackerRetreatSubs()) {
       return;
     }
-    if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
+    if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())
+        && !onlyDefenselessDefendingTransportsLeft()) {
       queryRetreat(false, RetreatType.SUBS, bridge, getAttackerRetreatTerritories());
     }
   }
