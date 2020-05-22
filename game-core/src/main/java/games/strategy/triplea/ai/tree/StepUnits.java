@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.tree;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 public class StepUnits implements Cloneable, Comparable<StepUnits> {
@@ -18,15 +20,27 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
   @Getter private final BattleStep.Type type;
   @Getter private final GamePlayer player;
   private final BitSet friendlyBits;
+
+  @Getter(AccessLevel.PACKAGE)
   private final List<Unit> friendlyUnits;
+
+  @VisibleForTesting
+  @Getter(AccessLevel.PACKAGE)
   private final Map<Unit, Double> friendlyUnitsChances = new LinkedHashMap<>();
+
   private final BitSet friendlyWaitingToDieBits;
   private final Map<Unit, Integer> friendlyHitPoints;
   private final List<Unit> retreatedFriendly;
   @Getter private final GamePlayer enemy;
   private final BitSet enemyBits;
+
+  @Getter(AccessLevel.PACKAGE)
   private final List<Unit> enemyUnits;
+
+  @VisibleForTesting
+  @Getter(AccessLevel.PACKAGE)
   private final Map<Unit, Double> enemyUnitsChances = new LinkedHashMap<>();
+
   private final BitSet enemyWaitingToDieBits;
   private final Map<Unit, Integer> enemyHitPoints;
   private final List<Unit> retreatedEnemy;
@@ -337,9 +351,20 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
     }
   }
 
-  void updateUnitChances(final StepUnits child, final double probability) {
-    for (final Map.Entry<Unit, Double> entry : child.enemyUnitsChances.entrySet()) {
-      friendlyUnitsChances.compute(
+  void updateFriendlyChances(final Map<Unit, Double> friendlyChances, final double probability) {
+    updateUnitChances(friendlyUnitsChances, friendlyChances, probability);
+  }
+
+  void updateEnemyChances(final Map<Unit, Double> enemyChances, final double probability) {
+    updateUnitChances(enemyUnitsChances, enemyChances, probability);
+  }
+
+  private void updateUnitChances(
+      final Map<Unit, Double> chances,
+      final Map<Unit, Double> updatedChances,
+      final double probability) {
+    for (final Map.Entry<Unit, Double> entry : updatedChances.entrySet()) {
+      chances.compute(
           entry.getKey(),
           (key, value) -> {
             if (value == null) {
@@ -349,17 +374,11 @@ public class StepUnits implements Cloneable, Comparable<StepUnits> {
             }
           });
     }
-    for (final Map.Entry<Unit, Double> entry : child.friendlyUnitsChances.entrySet()) {
-      enemyUnitsChances.compute(
-          entry.getKey(),
-          (key, value) -> {
-            if (value == null) {
-              return entry.getValue() * probability;
-            } else {
-              return value + entry.getValue() * probability;
-            }
-          });
-    }
+  }
+
+  void updateWithChildUnitChances(final StepUnits child, final double probability) {
+    updateFriendlyChances(child.getEnemyUnitsChances(), probability);
+    updateEnemyChances(child.getFriendlyUnitsChances(), probability);
   }
 
   List<Unit> getFriendlyWithChance(final double chance) {

@@ -263,7 +263,7 @@ public class BattleStep {
           child.cachedDefenderOutcomes = newCachedDefenderOutcomes;
         }
         child.calculateBattle(childUnits, player);
-        averageUnits.updateUnitChances(child.averageUnits, child.probability);
+        averageUnits.updateWithChildUnitChances(child.averageUnits, child.probability);
         if (units.getType() == Type.ATTACKER && newCachedDefenderOutcomes == null) {
           newCachedDefenderOutcomes = child.cachedDefenderOutcomes;
         }
@@ -766,7 +766,12 @@ public class BattleStep {
         // an example scenario would be two units fighting
         // each round, there is a possibility that no one will hit
         // so the units never change
+        this.averageUnits = units;
 
+        // determine the win, lose, tie, etc probabilities of the cachedNode
+        // by adding up all of the possible probabilities of the non-recursive
+        // branches
+        // then, scale these probabilities by the "gap" caused by the recursive branch
         final BattleStepSiblings siblingResults = new BattleStepSiblings();
         siblingResults.probability = 1.0;
         siblingResults.winProbability = cachedBattleStep.winProbability;
@@ -776,30 +781,14 @@ public class BattleStep {
         siblingResults.units = cachedBattleStep.averageUnits.swapSides();
 
         calculateSiblingResultsForRecursiveEnd(cachedBattleStep.children, siblingResults);
+        final double gap = 1.0 - siblingResults.probability;
 
-        this.averageUnits = units;
+        this.winProbability = siblingResults.winProbability / gap;
+        this.loseProbability = siblingResults.loseProbability / gap;
+        this.tieProbability = siblingResults.tieProbability / gap;
+        this.averageRounds = siblingResults.averageRounds / gap;
+        this.averageUnits.updateWithChildUnitChances(siblingResults.units, 1.0 / gap);
 
-        // add 5 levels worth of the sibling probabilities
-        // example on how this works:
-        // three children, with probabilities of .2, .3, and .5
-        // The .5 child is recursive and the .2 has a result of 1 and the .3 has a result of -1
-        // Inside of the .5, it will also go to the .2 and .3 nodes and itself.
-        // So, its score is basically .5 * (.2 * 1 + .3 * -1) + .5^2 * (.2 * 1 + .3 * -1) + ...
-        for (int level = 0; level < 6; level++) {
-          this.winProbability +=
-              siblingResults.winProbability * Math.pow(siblingResults.probability, level);
-          this.loseProbability +=
-              siblingResults.loseProbability * Math.pow(siblingResults.probability, level);
-          this.tieProbability +=
-              siblingResults.tieProbability * Math.pow(siblingResults.probability, level);
-          this.averageRounds +=
-              siblingResults.averageRounds * Math.pow(siblingResults.probability, level);
-          this.averageUnits.updateUnitChances(
-              siblingResults.units, Math.pow(siblingResults.probability, level));
-        }
-        // put the rest in "bad"
-        this.badProbability =
-            1.0 - (this.winProbability + this.loseProbability + this.tieProbability);
         // overwrite the cached one with this that has a result
         nodeCache.put(units, this);
         // System.out.println("Recurse: " + this);
@@ -835,11 +824,18 @@ public class BattleStep {
       siblingResults.tieProbability += siblingResults.probability * level.tieProbability;
       siblingResults.averageRounds += siblingResults.probability * level.averageRounds;
       if (level.units.getType() != Type.AA_ATTACKER) {
-        if (siblingResults.units.getPlayer().equals(level.averageUnits.getPlayer())) {
-          siblingResults.units.updateUnitChances(
-              level.averageUnits.swapSides(), siblingResults.probability);
+        // Since the friendly units list never changes, doing an instance equal check will tell
+        // if the units are on the same side
+        if (siblingResults.units.getFriendlyUnits() == level.averageUnits.getFriendlyUnits()) {
+          siblingResults.units.updateFriendlyChances(
+              level.averageUnits.getFriendlyUnitsChances(), siblingResults.probability);
+          siblingResults.units.updateEnemyChances(
+              level.averageUnits.getEnemyUnitsChances(), siblingResults.probability);
         } else {
-          siblingResults.units.updateUnitChances(level.averageUnits, siblingResults.probability);
+          siblingResults.units.updateFriendlyChances(
+              level.averageUnits.getEnemyUnitsChances(), siblingResults.probability);
+          siblingResults.units.updateEnemyChances(
+              level.averageUnits.getFriendlyUnitsChances(), siblingResults.probability);
         }
         calculateSiblingResultsForRecursiveEnd(level.children, siblingResults);
       }

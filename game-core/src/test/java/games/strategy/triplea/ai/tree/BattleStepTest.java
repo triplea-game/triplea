@@ -390,13 +390,13 @@ class BattleStepTest {
   }
 
   @Test
-  void simpleFightCalculation() {
+  void attackerWith1ArmourVs1Inf() {
     final List<Unit> attackingOrderOfLoss = new ArrayList<>();
     attackingOrderOfLoss.add(ARMOUR.create(BRITISH));
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.add(INFANTRY.create(GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.499, 0.249, 0.249, 0.0);
+    final CalculateResult expected = CalculateResult.of(0.5, 0.25, 0.25, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -407,7 +407,7 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.add(INFANTRY.create(GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.671, 0.263, 0.052, 0.011);
+    final CalculateResult expected = CalculateResult.of(0.676, 0.269, 0.053, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -418,7 +418,7 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(1, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.245, 0.614, 0.122, 0.016);
+    final CalculateResult expected = CalculateResult.of(0.25, 0.625, 0.125, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -429,7 +429,7 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(2, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.212, 0.737, 0.042, 0.008);
+    final CalculateResult expected = CalculateResult.of(0.214, 0.742, 0.042, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -441,7 +441,7 @@ class BattleStepTest {
     attackingOrderOfLoss.addAll(INFANTRY.create(5, BRITISH));
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(5, GERMAN));
-    final CalculateResult expected = CalculateResult.of(0.116, 0.861, 0.008, 0.013);
+    final CalculateResult expected = CalculateResult.of(0.117, 0.863, 0.008, 0.009);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -452,7 +452,7 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(10, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.049, 0.935, 0.001, 0.013);
+    final CalculateResult expected = CalculateResult.of(0.049, 0.936, 0.001, 0.008);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -463,7 +463,7 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(15, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.021, 0.961, 0.000, 0.015);
+    final CalculateResult expected = CalculateResult.of(0.021, 0.961, 0.000, 0.011);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -474,8 +474,26 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(INFANTRY.create(20, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.009, 0.966, 0.000, 0.024);
+    final CalculateResult expected = CalculateResult.of(0.009, 0.966, 0.000, 0.021);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
+  }
+
+  @Test
+  void averageUnitsFromInfVsInf() {
+    final List<Unit> attackingOrderOfLoss = new ArrayList<>();
+    attackingOrderOfLoss.addAll(INFANTRY.create(1, BRITISH));
+    final List<Unit> defendingOrderOfLoss = new ArrayList<>();
+    defendingOrderOfLoss.addAll(INFANTRY.create(1, GERMAN));
+
+    final CalculateResult expected = CalculateResult.of(0.25, 0.625, 0.125, 0.0);
+    final BattleStep root =
+        runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
+
+    final Map<Unit, Double> friendlyChances = root.getAverageUnits().getFriendlyUnitsChances();
+    final Map<Unit, Double> enemyChances = root.getAverageUnits().getEnemyUnitsChances();
+
+    assertEquals(.625, enemyChances.get(defendingOrderOfLoss.get(0)), 0.001);
+    assertEquals(.25, friendlyChances.get(attackingOrderOfLoss.get(0)), 0.001);
   }
 
   @Test
@@ -555,7 +573,7 @@ class BattleStepTest {
     defendingOrderOfLoss.addAll(AAGUN.create(1, GERMAN));
     defendingOrderOfLoss.addAll(INFANTRY.create(1, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.549, 0.363, 0.083, 0.003);
+    final CalculateResult expected = CalculateResult.of(0.549, 0.366, 0.083, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createLandParameters());
   }
 
@@ -566,7 +584,7 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(CRUISER.create(1, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.879, 0.039, 0.079, 0.000);
+    final CalculateResult expected = CalculateResult.of(0.88, 0.04, 0.08, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createSeaParameters());
   }
 
@@ -614,7 +632,7 @@ class BattleStepTest {
     defendingOrderOfLoss.addAll(CRUISER.create(1, GERMAN));
     defendingOrderOfLoss.addAll(FIGHTER.create(1, GERMAN));
 
-    final CalculateResult expected = CalculateResult.of(0.0, 0.999, 0.0, 0.0);
+    final CalculateResult expected = CalculateResult.of(0.0, 1.0, 0.0, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createSeaParameters());
   }
 
@@ -640,7 +658,7 @@ class BattleStepTest {
     defendingOrderOfLoss.addAll(GameDataTestUtil.germanAntiTankGun(dataTww).create(1, GERMANY));
     defendingOrderOfLoss.addAll(GameDataTestUtil.germanMobileArtillery(dataTww).create(1, GERMANY));
 
-    final CalculateResult expected = CalculateResult.of(0.431, 0.524, 0.042, 0.002);
+    final CalculateResult expected = CalculateResult.of(0.432, 0.525, 0.042, 0.000);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createTwwLandParameters());
   }
 
@@ -651,7 +669,7 @@ class BattleStepTest {
     final List<Unit> defendingOrderOfLoss = new ArrayList<>();
     defendingOrderOfLoss.addAll(GameDataTestUtil.germanMine(dataTww).create(1, GERMANY));
 
-    final CalculateResult expected = CalculateResult.of(0.671, 0.0, 0.322, 0.006);
+    final CalculateResult expected = CalculateResult.of(0.675, 0.0, 0.324, 0.0);
     runFight(attackingOrderOfLoss, defendingOrderOfLoss, expected, createTwwSeaParameters());
   }
 }
