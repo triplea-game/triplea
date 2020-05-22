@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
  * <p>Originally from: https://tips4java.wordpress.com/2008/11/06/wrap-layout/.
  */
 public class WrapLayout extends FlowLayout {
-  private static final long serialVersionUID = 2L;
+  private static final long serialVersionUID = 1L;
 
   private boolean revalidateScheduled;
 

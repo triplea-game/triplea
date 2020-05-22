@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 final class LookAndFeelTest {
   @Test
-  void testIsColorDark() throws Exception {
+  void testIsColorDark() {
     assertThat(LookAndFeel.isColorDark(Color.BLACK), is(true));
     assertThat(LookAndFeel.isColorDark(Color.DARK_GRAY), is(true));
     assertThat(LookAndFeel.isColorDark(Color.WHITE), is(false));
