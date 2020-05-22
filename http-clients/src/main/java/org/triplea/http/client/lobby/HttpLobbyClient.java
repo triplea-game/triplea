@@ -7,6 +7,7 @@ import org.triplea.http.client.lobby.game.ConnectivityCheckClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.moderator.ModeratorChatClient;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
+import org.triplea.http.client.lobby.player.PlayerLobbyActionsClient;
 import org.triplea.http.client.lobby.user.account.UserAccountClient;
 import org.triplea.http.client.remote.actions.RemoteActionsClient;
 
@@ -21,6 +22,7 @@ public class HttpLobbyClient {
   private final ModeratorChatClient moderatorLobbyClient;
   private final UserAccountClient userAccountClient;
   private final RemoteActionsClient remoteActionsClient;
+  private final PlayerLobbyActionsClient playerLobbyActionsClient;
 
   private HttpLobbyClient(final URI lobbyUri, final ApiKey apiKey) {
     this.lobbyUri = lobbyUri;
@@ -31,6 +33,7 @@ public class HttpLobbyClient {
     moderatorLobbyClient = ModeratorChatClient.newClient(lobbyUri, apiKey);
     userAccountClient = UserAccountClient.newClient(lobbyUri, apiKey);
     remoteActionsClient = new RemoteActionsClient(lobbyUri, apiKey);
+    playerLobbyActionsClient = new PlayerLobbyActionsClient(lobbyUri, apiKey);
   }
 
   public GameListingClient newGameListingClient() {

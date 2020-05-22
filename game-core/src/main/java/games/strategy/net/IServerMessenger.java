@@ -2,7 +2,9 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.triplea.domain.data.UserName;
 
@@ -19,6 +21,13 @@ public interface IServerMessenger extends IMessenger {
 
   /** Get a list of nodes. */
   Set<INode> getNodes();
+
+  default Collection<String> getPlayerNames() {
+    return getNodes().stream()
+        .map(INode::getPlayerName)
+        .map(UserName::getValue)
+        .collect(Collectors.toList());
+  }
 
   /**
    * Notifies the server that the specified IP address and MAC should be banned.

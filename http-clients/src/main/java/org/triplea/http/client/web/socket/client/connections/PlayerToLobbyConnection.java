@@ -1,6 +1,7 @@
 package org.triplea.http.client.web.socket.client.connections;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -13,7 +14,7 @@ import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.ChatHistoryMessage;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebSocket;
@@ -124,8 +125,8 @@ public class PlayerToLobbyConnection {
     return httpLobbyClient.getHttpModeratorToolboxClient();
   }
 
-  public PlayerSummaryForModerator fetchPlayerInformation(final PlayerChatId playerChatId) {
-    return httpLobbyClient.getModeratorLobbyClient().fetchPlayerInformation(playerChatId);
+  public PlayerSummary fetchPlayerInformation(final PlayerChatId playerChatId) {
+    return httpLobbyClient.getPlayerLobbyActionsClient().fetchPlayerInformation(playerChatId);
   }
 
   public void mutePlayer(final PlayerChatId playerChatId, final long minutes) {
@@ -134,5 +135,9 @@ public class PlayerToLobbyConnection {
 
   public List<ChatHistoryMessage> fetchChatHistoryForGame(final String gameId) {
     return httpLobbyClient.getModeratorLobbyClient().fetchChatHistoryForGame(gameId);
+  }
+
+  public Collection<String> fetchPlayersInGame(final String gameId) {
+    return httpLobbyClient.getPlayerLobbyActionsClient().fetchPlayersInGame(gameId);
   }
 }

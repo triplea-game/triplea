@@ -25,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
 import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.web.socket.MessageBroadcaster;
@@ -47,6 +48,48 @@ class ChattersTest {
   @Test
   void chattersIsInitiallyEmpty() {
     assertThat(chatters.getChatters(), is(empty()));
+  }
+
+  @Nested
+  class PlayerLookup {
+    @Test
+    void lookupPlayerBySessionEmptyCase() {
+      when(session2.getId()).thenReturn("session2-id");
+      chatters.getParticipants().put("session-id", buildChatterSession(session));
+
+      assertThat(
+          "Searching for wrong session, session2 DNE",
+          chatters.lookupPlayerBySession(session2),
+          isEmpty());
+    }
+
+    @Test
+    void lookupPlayerBySession() {
+      when(session.getId()).thenReturn("session-id");
+      final ChatterSession chatterSession = buildChatterSession(session);
+      chatters.getParticipants().put("session-id", buildChatterSession(session));
+
+      assertThat(chatters.lookupPlayerBySession(session), isPresentAndIs(chatterSession));
+    }
+
+    @Test
+    void lookupPlayerByChatIdEmptyCase() {
+      chatters.getParticipants().put("session-id", buildChatterSession(session));
+
+      assertThat(
+          chatters.lookupPlayerByChatId(PlayerChatId.of("DNE")), //
+          isEmpty());
+    }
+
+    @Test
+    void lookupPlayerByChatId() {
+      final ChatterSession chatterSession = buildChatterSession(session);
+      chatters.getParticipants().put("session-id", buildChatterSession(session));
+
+      assertThat(
+          chatters.lookupPlayerByChatId(chatterSession.getChatParticipant().getPlayerChatId()),
+          isPresentAndIs(chatterSession));
+    }
   }
 
   @Nested

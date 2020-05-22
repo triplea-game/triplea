@@ -1,6 +1,7 @@
 package org.triplea.http.client.lobby.moderator;
 
 import java.util.Collection;
+import javax.annotation.Nullable;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,12 +16,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class PlayerSummaryForModerator {
-  private String name;
-  private String ip;
-  private String systemId;
-  private Collection<Alias> aliases;
-  private Collection<BanInformation> bans;
+public class PlayerSummary {
+  @Nullable private String ip;
+  @Nullable private String systemId;
+  @Nullable private Collection<Alias> aliases;
+  @Nullable private Collection<BanInformation> bans;
+  private Collection<String> currentGames;
 
   @Builder
   @Getter

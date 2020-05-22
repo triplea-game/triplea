@@ -1,11 +1,16 @@
 package org.triplea.modules.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +24,9 @@ import org.triplea.db.dao.lobby.games.LobbyGameDao;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.LobbyGame;
+import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
@@ -56,6 +63,9 @@ public class GameListing {
   @NonNull private final TtlCache<GameId, LobbyGame> games;
   @NonNull private final WebSocketMessagingBus playerMessagingBus;
 
+  /** Map of player names to the games they are in, both observing and playing. */
+  @NonNull private final Multimap<UserName, GameId> playerIsInGames = HashMultimap.create();
+
   @AllArgsConstructor
   @EqualsAndHashCode
   @Getter
@@ -80,10 +90,17 @@ public class GameListing {
   }
 
   /** Adds a game. */
-  public String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
+  public String postGame(final ApiKey apiKey, final GamePostingRequest gamePostingRequest) {
     final String id = UUID.randomUUID().toString();
-    games.put(new GameId(apiKey, id), lobbyGame);
-    final var lobbyGameListing = LobbyGameListing.builder().gameId(id).lobbyGame(lobbyGame).build();
+    final GameId gameId = new GameId(apiKey, id);
+    games.put(gameId, gamePostingRequest.getLobbyGame());
+
+    Optional.ofNullable(gamePostingRequest.getPlayerNames())
+        .ifPresent(
+            names ->
+                names.forEach(playerName -> playerIsInGames.put(UserName.of(playerName), gameId)));
+    final var lobbyGameListing =
+        LobbyGameListing.builder().gameId(id).lobbyGame(gamePostingRequest.getLobbyGame()).build();
     lobbyGameDao.insertLobbyGame(apiKey, lobbyGameListing);
     playerMessagingBus.broadcastMessage(new LobbyGameUpdatedMessage(lobbyGameListing));
     log.info("Posted game: {}", id);
@@ -105,9 +122,19 @@ public class GameListing {
     }
   }
 
+  /**
+   * Removes a game from the active listing, any players marked as in the game are updated to no
+   * longer be listed as participating in that game.
+   */
   public void removeGame(final ApiKey apiKey, final String id) {
     log.info("Removing game: {}", id);
     final GameId key = new GameId(apiKey, id);
+
+    final var gameEntries =
+        playerIsInGames.entries().stream()
+            .filter(entry -> entry.getValue().equals(key))
+            .collect(Collectors.toList());
+    gameEntries.forEach(entry -> playerIsInGames.remove(entry.getKey(), entry.getValue()));
 
     games
         .invalidate(key)
@@ -166,5 +193,42 @@ public class GameListing {
         .map(
             lobbyGame ->
                 new InetSocketAddress(lobbyGame.getHostAddress(), lobbyGame.getHostPort()));
+  }
+
+  public void addPlayerToGame(final UserName userName, final ApiKey apiKey, final String gameId) {
+    playerIsInGames.put(userName, new GameId(apiKey, gameId));
+  }
+
+  public void removePlayerFromGame(
+      final UserName userName, final ApiKey apiKey, final String gameId) {
+    playerIsInGames.remove(userName, new GameId(apiKey, gameId));
+  }
+
+  /**
+   * Gets the collection of active games (identified by hostname) that a player is playing in or has
+   * joined as an observer.
+   */
+  public Collection<String> getGameNamesPlayerHasJoined(final UserName userName) {
+    final Collection<GameId> expiredGames =
+        playerIsInGames.get(userName).stream()
+            .filter(gameId -> games.get(gameId).isEmpty())
+            .collect(Collectors.toList());
+    expiredGames.forEach(gameId -> playerIsInGames.remove(userName, gameId));
+
+    return playerIsInGames.get(userName).stream()
+        .map(gameId -> games.get(gameId).map(LobbyGame::getHostName).orElse(null))
+        .collect(Collectors.toList());
+  }
+
+  public Collection<String> getPlayersInGame(final String gameId) {
+    return playerIsInGames.asMap().entrySet().stream()
+        .filter(playerIsInGame(gameId))
+        .map(Map.Entry::getKey)
+        .map(UserName::getValue)
+        .collect(Collectors.toList());
+  }
+
+  private Predicate<Map.Entry<UserName, Collection<GameId>>> playerIsInGame(final String gameId) {
+    return entry -> entry.getValue().stream().map(GameId::getId).anyMatch(gameId::equals);
   }
 }

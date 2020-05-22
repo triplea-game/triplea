@@ -21,11 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
+import org.triplea.http.client.lobby.game.lobby.watcher.PlayerJoinedNotification;
+import org.triplea.http.client.lobby.game.lobby.watcher.PlayerLeftNotification;
 import org.triplea.http.client.lobby.game.lobby.watcher.UpdateGameRequest;
 import org.triplea.modules.access.authentication.AuthenticatedUser;
 import org.triplea.modules.game.listing.GameListing;
@@ -58,8 +60,11 @@ public class LobbyWatcherController extends HttpController {
   @POST
   @Path(LobbyWatcherClient.POST_GAME_PATH)
   public String postGame(
-      @Auth final AuthenticatedUser authenticatedUser, final LobbyGame lobbyGame) {
-    return gameListing.postGame(authenticatedUser.getApiKey(), lobbyGame);
+      @Auth final AuthenticatedUser authenticatedUser,
+      final GamePostingRequest gamePostingRequest) {
+    Preconditions.checkArgument(gamePostingRequest != null);
+    Preconditions.checkArgument(gamePostingRequest.getLobbyGame() != null);
+    return gameListing.postGame(authenticatedUser.getApiKey(), gamePostingRequest);
   }
 
   /** Explicit remove of a game from the lobby. */
@@ -126,6 +131,41 @@ public class LobbyWatcherController extends HttpController {
               + "gameID and API-key pair did not match any existing games.",
           request.getRemoteHost());
     }
+
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path(LobbyWatcherClient.PLAYER_JOINED_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
+  @RolesAllowed(UserRole.HOST)
+  public Response playerJoinedGame(
+      @Auth final AuthenticatedUser authenticatedUser,
+      final PlayerJoinedNotification playerJoinedNotification) {
+    gameListing.addPlayerToGame(
+        UserName.of(playerJoinedNotification.getPlayerName()),
+        authenticatedUser.getApiKey(),
+        playerJoinedNotification.getGameId());
+
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path(LobbyWatcherClient.PLAYER_LEFT_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {@Rate(limit = 20, duration = 1, timeUnit = TimeUnit.MINUTES)})
+  @RolesAllowed(UserRole.HOST)
+  public Response playerLeftGame(
+      @Auth final AuthenticatedUser authenticatedUser,
+      final PlayerLeftNotification playerLeftNotification) {
+
+    gameListing.removePlayerFromGame(
+        UserName.of(playerLeftNotification.getPlayerName()),
+        authenticatedUser.getApiKey(),
+        playerLeftNotification.getGameId());
 
     return Response.ok().build();
   }

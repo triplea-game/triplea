@@ -4,6 +4,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.ui.action.FetchChatHistory;
+import games.strategy.engine.lobby.client.ui.action.ShowPlayersAction;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.net.URI;
@@ -153,7 +154,16 @@ class LobbyGamePanel extends JPanel {
 
     List.of(
             SwingAction.of("Join Game", this::joinGame),
-            SwingAction.of("Host Game", () -> hostGame(lobbyUri)))
+            SwingAction.of("Host Game", () -> hostGame(lobbyUri)),
+            ShowPlayersAction.builder()
+                .parentWindow(parent)
+                .gameIdSelection(
+                    () ->
+                        gameTableModel.getGameListingForRow(
+                            gameTable.convertRowIndexToModel(gameTable.getSelectedRow())))
+                .playerToLobbyConnection(lobbyClient.getPlayerToLobbyConnection())
+                .build()
+                .buildSwingAction())
         .forEach(menu::add);
 
     if (lobbyClient.isModerator()) {

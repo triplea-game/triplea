@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.Alias;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 
 class PlayerAliasRecordTest {
   private static final Instant DATE =

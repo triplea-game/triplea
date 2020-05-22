@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.Alias;
+import org.triplea.http.client.lobby.moderator.PlayerSummary;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 import org.triplea.java.DateTimeFormatterUtil;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
@@ -18,10 +18,10 @@ import org.triplea.swing.SwingComponents;
  */
 @AllArgsConstructor
 class PlayerAliasesTab {
-  private final PlayerSummaryForModerator playerSummaryForModerator;
+  private final PlayerSummary playerSummary;
 
   String getTabTitle() {
-    return "Aliases (" + playerSummaryForModerator.getAliases().size() + ")";
+    return "Aliases (" + playerSummary.getAliases().size() + ")";
   }
 
   Component getTabContents() {
@@ -29,7 +29,7 @@ class PlayerAliasesTab {
         new JTableBuilder<Alias>()
             .columnNames("Name", "Last Date Used", "IP", "System ID")
             .rowData(
-                playerSummaryForModerator.getAliases().stream()
+                playerSummary.getAliases().stream()
                     .sorted(Comparator.comparing(Alias::getEpochMilliDate))
                     .collect(Collectors.toList()))
             .rowMapper(

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.triplea.db.TimestampMapper;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.Alias;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.Alias;
 
 /**
  * Represents all distinct matching rows (within the last N days) in the access log table with a

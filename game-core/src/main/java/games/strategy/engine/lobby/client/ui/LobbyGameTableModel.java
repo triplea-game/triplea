@@ -101,6 +101,10 @@ class LobbyGameTableModel extends AbstractTableModel {
     return GameDescription.fromLobbyGame(gameList.get(i).getLobbyGame());
   }
 
+  LobbyGameListing getGameListingForRow(final int i) {
+    return gameList.get(i);
+  }
+
   String getGameIdForRow(final int i) {
     return gameList.get(i).getGameId();
   }

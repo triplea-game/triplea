@@ -4,8 +4,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.JTextArea;
@@ -36,6 +39,7 @@ public final class JTextAreaBuilder {
   private boolean readOnly;
   private boolean selectAllOnFocus;
   @Nullable private String toolTip;
+  private final Collection<KeyListener> keyListeners = new ArrayList<>();
 
   public JTextAreaBuilder() {}
 
@@ -55,7 +59,6 @@ public final class JTextAreaBuilder {
     textArea.setWrapStyleWord(true);
     textArea.setName(componentName);
     Optional.ofNullable(toolTip).ifPresent(textArea::setToolTipText);
-
     if (readOnly) {
       textArea.setEditable(false);
     }
@@ -79,6 +82,7 @@ public final class JTextAreaBuilder {
             }
           });
     }
+    keyListeners.forEach(textArea::addKeyListener);
     return textArea;
   }
 
@@ -137,6 +141,11 @@ public final class JTextAreaBuilder {
    */
   public JTextAreaBuilder toolTip(final String toolTip) {
     this.toolTip = toolTip;
+    return this;
+  }
+
+  public JTextAreaBuilder keyListener(final KeyListener keyListener) {
+    keyListeners.add(keyListener);
     return this;
   }
 }

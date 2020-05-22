@@ -9,9 +9,9 @@ import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.ApiKey;
-import org.triplea.domain.data.LobbyGame;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.TestData;
@@ -22,7 +22,8 @@ class LobbyWatcherClientTest extends WireMockTest {
 
   private static final String GAME_ID = "gameId";
 
-  private static final LobbyGame LOBBY_GAME = TestData.LOBBY_GAME;
+  private static final GamePostingRequest GAME_POSTING_REQUEST =
+      GamePostingRequest.builder().playerNames(List.of()).lobbyGame(TestData.LOBBY_GAME).build();
 
   private static LobbyWatcherClient newClient(final WireMockServer wireMockServer) {
     return newClient(wireMockServer, LobbyWatcherClient::newClient);
@@ -33,10 +34,10 @@ class LobbyWatcherClientTest extends WireMockTest {
     server.stubFor(
         post(LobbyWatcherClient.POST_GAME_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
-            .withRequestBody(equalToJson(toJson(LOBBY_GAME)))
+            .withRequestBody(equalToJson(toJson(GAME_POSTING_REQUEST)))
             .willReturn(WireMock.aResponse().withStatus(200).withBody(GAME_ID)));
 
-    final String gameId = newClient(server).postGame(LOBBY_GAME);
+    final String gameId = newClient(server).postGame(GAME_POSTING_REQUEST);
 
     assertThat(gameId, is(GAME_ID));
   }
@@ -49,10 +50,13 @@ class LobbyWatcherClientTest extends WireMockTest {
             .withRequestBody(
                 equalToJson(
                     toJson(
-                        UpdateGameRequest.builder().gameId(GAME_ID).gameData(LOBBY_GAME).build())))
+                        UpdateGameRequest.builder()
+                            .gameId(GAME_ID)
+                            .gameData(TestData.LOBBY_GAME)
+                            .build())))
             .willReturn(WireMock.aResponse().withStatus(200)));
 
-    newClient(server).updateGame(GAME_ID, LOBBY_GAME);
+    newClient(server).updateGame(GAME_ID, TestData.LOBBY_GAME);
   }
 
   @Test
@@ -92,5 +96,38 @@ class LobbyWatcherClientTest extends WireMockTest {
                 .chatMessage("chat-message")
                 .fromPlayer(UserName.of("player"))
                 .build());
+  }
+
+  @Test
+  void sendPlayerJoinedNotification(
+      @WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    wireMockServer.stubFor(
+        post(LobbyWatcherClient.PLAYER_JOINED_PATH)
+            .withRequestBody(
+                equalToJson(
+                    toJson(
+                        PlayerJoinedNotification.builder()
+                            .gameId("game-id")
+                            .playerName("player-joined")
+                            .build())))
+            .willReturn(WireMock.aResponse().withStatus(200)));
+
+    newClient(wireMockServer).playerJoined("game-id", UserName.of("player-joined"));
+  }
+
+  @Test
+  void sendPlayerLeftNotification(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    wireMockServer.stubFor(
+        post(LobbyWatcherClient.PLAYER_LEFT_PATH)
+            .withRequestBody(
+                equalToJson(
+                    toJson(
+                        PlayerLeftNotification.builder()
+                            .gameId("game-id")
+                            .playerName("player-left")
+                            .build())))
+            .willReturn(WireMock.aResponse().withStatus(200)));
+
+    newClient(wireMockServer).playerLeft("game-id", UserName.of("player-left"));
   }
 }

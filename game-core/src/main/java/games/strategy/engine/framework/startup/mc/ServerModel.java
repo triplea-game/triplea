@@ -57,6 +57,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
@@ -595,7 +596,24 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   }
 
   @Override
-  public void connectionAdded(final INode to) {}
+  public void connectionAdded(final INode to) {
+    notifyLobby(
+        (lobbyConnection, gameId) -> lobbyConnection.playerJoined(gameId, to.getPlayerName()));
+  }
+
+  /**
+   * If there is a connection to lobby, and we have established a lobby watcher, and that lobby
+   * watcher has a game-id, then the provided parameter is executed passing to it as arguments the
+   * lobby connection and game-id.
+   */
+  private void notifyLobby(
+      final BiConsumer<GameToLobbyConnection, String> connectionAndGameIdAction) {
+    if (gameToLobbyConnection != null && lobbyWatcherThread != null) {
+      lobbyWatcherThread
+          .getGameId()
+          .ifPresent(gameId -> connectionAndGameIdAction.accept(gameToLobbyConnection, gameId));
+    }
+  }
 
   @Override
   public void connectionRemoved(final INode node) {
@@ -607,12 +625,13 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       serverLauncher.connectionLost(node);
       return;
     }
-    // we lost a node. Remove the players he plays.
+    notifyLobby(
+        (lobbyConnection, gameId) -> lobbyConnection.playerLeft(gameId, node.getPlayerName()));
+    // we lost a node. Remove the player they play.
     final List<String> free = new ArrayList<>();
     synchronized (this) {
       for (final String player : playersToNodeListing.keySet()) {
-        final String playedBy = playersToNodeListing.get(player);
-        if (playedBy != null && playedBy.equals(node.getName())) {
+        if (node.getName().equals(playersToNodeListing.get(player))) {
           free.add(player);
         }
       }

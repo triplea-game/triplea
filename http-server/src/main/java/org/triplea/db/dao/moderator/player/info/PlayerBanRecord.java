@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.triplea.db.TimestampMapper;
-import org.triplea.http.client.lobby.moderator.PlayerSummaryForModerator.BanInformation;
+import org.triplea.http.client.lobby.moderator.PlayerSummary.BanInformation;
 
 /**
  * Represents each row from the ban table where a given system id or IP was banned (within the last
