@@ -96,14 +96,22 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
     }
   },
 
-  SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(SettingType.NETWORK_TIMEOUTS) {
+  PROXY_CHOICE(SettingType.NETWORK) {
+    @Override
+    public SelectionComponent<Region> newSelectionComponent() {
+      return proxySettings(
+          ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
+    }
+  },
+
+  SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(SettingType.NETWORK) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
       return intValueRange(ClientSetting.serverStartGameSyncWaitTime, 120, 1500);
     }
   },
 
-  SERVER_OBSERVER_JOIN_WAIT_TIME_BINDING(SettingType.NETWORK_TIMEOUTS) {
+  SERVER_OBSERVER_JOIN_WAIT_TIME_BINDING(SettingType.NETWORK) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
       return intValueRange(ClientSetting.serverObserverJoinWaitTime, 60, 1500);
@@ -158,14 +166,6 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
       return intValueRange(ClientSetting.wheelScrollAmount, 10, 300);
-    }
-  },
-
-  PROXY_CHOICE(SettingType.NETWORK_PROXY) {
-    @Override
-    public SelectionComponent<Region> newSelectionComponent() {
-      return proxySettings(
-          ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
   };
 

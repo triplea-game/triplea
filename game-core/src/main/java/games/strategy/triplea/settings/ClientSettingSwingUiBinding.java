@@ -169,9 +169,21 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  PROXY_CHOICE(
+      "Network Proxy",
+      SettingType.NETWORK,
+      "Configure TripleA's Network and Proxy Settings\n"
+          + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return proxySettings(
+          ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
+    }
+  },
+
   SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(
       "Start game timeout",
-      SettingType.NETWORK_TIMEOUTS,
+      SettingType.NETWORK,
       "Maximum time (in seconds) to wait for all clients to sync data on game start") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
@@ -181,7 +193,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
 
   SERVER_OBSERVER_JOIN_WAIT_TIME_BINDING(
       "Observer join timeout",
-      SettingType.NETWORK_TIMEOUTS,
+      SettingType.NETWORK,
       "Maximum time (in seconds) for host to wait for clients and observers") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
@@ -276,18 +288,6 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return intValueRange(ClientSetting.wheelScrollAmount, 10, 300);
-    }
-  },
-
-  PROXY_CHOICE(
-      "Network Proxy",
-      SettingType.NETWORK_PROXY,
-      "Configure TripleA's Network and Proxy Settings\n"
-          + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return proxySettings(
-          ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
   },
 

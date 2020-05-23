@@ -82,6 +82,15 @@ final class SelectionComponentFactory {
                               .boxLayoutHorizontal()
                               .addLeftJustified(new JLabel("Proxy Host:"))
                               .addLeftJustified(hostText)
+                              .build())
+                      .build())
+              .addLeftJustified(
+                  new JPanelBuilder()
+                      .boxLayoutHorizontal()
+                      .addHorizontalStrut(getRadioButtonLabelHorizontalOffset())
+                      .add(
+                          new JPanelBuilder()
+                              .boxLayoutHorizontal()
                               .addLeftJustified(new JLabel("Proxy Port:"))
                               .addLeftJustified(portText)
                               .build())
