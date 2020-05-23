@@ -26,10 +26,17 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
-  AI_PAUSE_DURATION_BINDING(SettingType.AI) {
+  AI_MOVE_PAUSE_DURATION_BINDING(SettingType.AI) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.aiPauseDuration, 0, 3000);
+      return intValueRange(ClientSetting.aiMovePauseDuration, 0, 3000);
+    }
+  },
+
+  AI_COMBAT_STEP_PAUSE_DURATION_BINDING(SettingType.AI) {
+    @Override
+    public SelectionComponent<Region> newSelectionComponent() {
+      return intValueRange(ClientSetting.aiCombatStepPauseDuration, 0, 3000);
     }
   },
 

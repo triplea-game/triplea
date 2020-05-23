@@ -9,6 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProOtherMoveOptions;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
@@ -2623,6 +2624,6 @@ class ProPurchaseAi {
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);
       }
     }
-    ProUtils.pause();
+    AbstractAi.movePause();
   }
 }

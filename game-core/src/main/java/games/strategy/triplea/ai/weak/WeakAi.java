@@ -119,7 +119,7 @@ public class WeakAi extends AbstractAi {
     } else {
       doCombatMove(moveDel, player, data);
     }
-    pause();
+    movePause();
   }
 
   private void doNonCombatMove(
@@ -229,7 +229,7 @@ public class WeakAi extends AbstractAi {
   private static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
     for (final MoveDescription move : moves) {
       moveDel.performMove(move);
-      pause();
+      movePause();
     }
   }
 
@@ -784,7 +784,7 @@ public class WeakAi extends AbstractAi {
         }
       }
       purchaseDelegate.purchase(purchase);
-      pause();
+      movePause();
       return;
     }
     final boolean isAmphib = isAmphibAttack(player, data);
@@ -1029,7 +1029,7 @@ public class WeakAi extends AbstractAi {
       }
     }
     purchaseDelegate.purchase(purchase);
-    pause();
+    movePause();
   }
 
   @Override
@@ -1104,7 +1104,7 @@ public class WeakAi extends AbstractAi {
   private static void doPlace(
       final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     del.placeUnits(new ArrayList<>(toPlace), where, IAbstractPlaceDelegate.BidMode.NOT_BID);
-    pause();
+    movePause();
   }
 
   @Override

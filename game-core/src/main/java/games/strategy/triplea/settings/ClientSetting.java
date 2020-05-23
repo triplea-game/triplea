@@ -36,10 +36,10 @@ import lombok.extern.java.Log;
  *
  * <p>Typical usage: <code><pre>
  * // loading a value
- * String value = ClientSetting.aiPauseDuration.getValueOrThrow();
+ * String value = ClientSetting.aiMovePauseDuration.getValueOrThrow();
  *
  * // saving value
- * ClientSetting.aiPauseDuration.setValue(500);
+ * ClientSetting.aiMovePauseDuration.setValue(500);
  * ClientSetting.flush();
  * </pre></code>
  *
@@ -48,8 +48,10 @@ import lombok.extern.java.Log;
 @SuppressWarnings("StaticInitializerReferencesSubClass")
 @Log
 public abstract class ClientSetting<T> implements GameSetting<T> {
-  public static final ClientSetting<Integer> aiPauseDuration =
-      new IntegerClientSetting("AI_PAUSE_DURATION", 400);
+  public static final ClientSetting<Integer> aiMovePauseDuration =
+      new IntegerClientSetting("AI_PAUSE_DURATION", 300);
+  public static final ClientSetting<Integer> aiCombatStepPauseDuration =
+      new IntegerClientSetting("AI_COMBAT_STEP_PAUSE_DURATION", 1000);
   public static final ClientSetting<Integer> arrowKeyScrollSpeed =
       new IntegerClientSetting("ARROW_KEY_SCROLL_SPEED", 70);
   public static final ClientSetting<Integer> battleCalcSimulationCountDice =

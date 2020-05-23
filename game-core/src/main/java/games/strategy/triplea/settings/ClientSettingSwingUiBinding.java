@@ -28,11 +28,21 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
-  AI_PAUSE_DURATION_BINDING(
-      "AI Pause Duration", SettingType.AI, "Time (in milliseconds) between AI moves") {
+  AI_MOVE_PAUSE_DURATION_BINDING(
+      "AI Move Pause Duration", SettingType.AI, "Time (in milliseconds) between AI moves") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.aiPauseDuration, 0, 3000);
+      return intValueRange(ClientSetting.aiMovePauseDuration, 0, 3000);
+    }
+  },
+
+  AI_COMBAT_STEP_PAUSE_DURATION_BINDING(
+      "AI Combat Step Pause Duration",
+      SettingType.AI,
+      "Time (in milliseconds) between AI combat steps") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.aiCombatStepPauseDuration, 0, 3000);
     }
   },
 
