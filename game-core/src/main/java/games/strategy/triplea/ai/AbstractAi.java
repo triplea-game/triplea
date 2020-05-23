@@ -476,7 +476,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
 
   @Override
   public void confirmOwnCasualties(final UUID battleId, final String message) {
-    pause();
+    combatStepPause();
   }
 
   @Override
@@ -697,7 +697,12 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   }
 
   /** Pause the game to allow the human player to see what is going on. */
-  protected static void pause() {
-    Interruptibles.sleep(ClientSetting.aiPauseDuration.getValueOrThrow());
+  public static void movePause() {
+    Interruptibles.sleep(ClientSetting.aiMovePauseDuration.getValueOrThrow());
+  }
+
+  /** Pause the combat to allow the human player to see what is going on. */
+  public static void combatStepPause() {
+    Interruptibles.sleep(ClientSetting.aiCombatStepPauseDuration.getValueOrThrow());
   }
 }

@@ -7,6 +7,7 @@ import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
@@ -459,7 +460,7 @@ public final class ProMoveUtils {
                 + result);
       }
       if (!proData.isSimulation()) {
-        ProUtils.pause();
+        AbstractAi.movePause();
       }
     }
   }

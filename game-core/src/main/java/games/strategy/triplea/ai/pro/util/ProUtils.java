@@ -11,14 +11,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI utilities (these are very general and maybe should be moved into delegate or engine). */
@@ -301,10 +299,5 @@ public final class ProUtils {
                 player.equals(s.getPlayerId())
                     && s.getName().endsWith("CombatMove")
                     && !s.getName().endsWith("NonCombatMove"));
-  }
-
-  /** Pause the game to allow the human player to see what is going on. */
-  public static void pause() {
-    Interruptibles.sleep(ClientSetting.aiPauseDuration.getValueOrThrow());
   }
 }

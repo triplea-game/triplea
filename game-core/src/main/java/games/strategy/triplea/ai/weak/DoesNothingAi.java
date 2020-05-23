@@ -41,23 +41,18 @@ public class DoesNothingAi extends AbstractAi {
       new WeakAi(this.getName())
           .purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
     }
-    pause();
   }
 
   @Override
   protected void tech(
-      final ITechDelegate techDelegate, final GameData data, final GamePlayer player) {
-    pause();
-  }
+      final ITechDelegate techDelegate, final GameData data, final GamePlayer player) {}
 
   @Override
   protected void move(
       final boolean nonCombat,
       final IMoveDelegate moveDel,
       final GameData data,
-      final GamePlayer player) {
-    pause();
-  }
+      final GamePlayer player) {}
 
   @Override
   protected void place(
@@ -69,13 +64,10 @@ public class DoesNothingAi extends AbstractAi {
     if (!player.getUnitCollection().isEmpty()) {
       new WeakAi(this.getName()).place(placeForBid, placeDelegate, data, player);
     }
-    pause();
   }
 
   @Override
-  public void politicalActions() {
-    pause();
-  }
+  public void politicalActions() {}
 
   @Override
   protected void endTurn(
