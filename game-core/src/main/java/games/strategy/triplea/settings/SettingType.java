@@ -16,9 +16,7 @@ public enum SettingType {
 
   MAP_SCROLLING("Map Scrolling"),
 
-  NETWORK_PROXY("Network Proxy"),
-
-  NETWORK_TIMEOUTS("Network Timeouts"),
+  NETWORK("Network"),
 
   LOOK_AND_FEEL("UI Theme"),
 
