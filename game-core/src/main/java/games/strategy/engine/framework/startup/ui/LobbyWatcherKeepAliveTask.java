@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 
 /**
  * Logic of this class:<br>
@@ -32,19 +33,37 @@ class LobbyWatcherKeepAliveTask implements Runnable {
   /** Call this to send a keep-alive request to server. */
   @Nonnull private final Predicate<String> keepAliveSender;
   /** Call this to re-post the current game, obtains a new game id. */
-  @Nonnull private final Supplier<String> gamePoster;
+  @Nonnull private final Supplier<GamePostingResponse> gamePoster;
 
   @Override
   public void run() {
     try {
       if (!keepAliveSender.test(gameId)) {
-        gameId = gamePoster.get();
-        if (keepAliveSender.test(gameId)) {
-          gameIdSetter.accept(gameId);
-        }
+        repostGame();
       }
     } catch (final FeignException e) {
       log.log(Level.INFO, "Unable to connect to lobby (lobby is shut down?)", e);
     }
+  }
+
+  private void repostGame() {
+    final GamePostingResponse gamePostingResponse = gamePoster.get();
+    if (gamePostingResponse.isConnectivityCheckSucceeded()) {
+      gameId = gamePostingResponse.getGameId();
+
+      // check if our new game is showing as alive
+      if (keepAliveSender.test(gameId)) {
+        gameIdSetter.accept(gameId);
+      }
+    } else {
+      messageConnectivityCheckFails();
+    }
+  }
+
+  private void messageConnectivityCheckFails() {
+    log.severe(
+        "Failed to re-post game back to the lobby, connectivity check to your host "
+            + "failed. This is unexpected and means your host is no longer reachable from "
+            + "the public internet, your game is no longer listed on the lobby.");
   }
 }

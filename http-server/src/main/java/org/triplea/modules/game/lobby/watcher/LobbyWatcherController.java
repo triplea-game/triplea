@@ -18,13 +18,16 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jetty.http.HttpStatus;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.AppConfig;
 import org.triplea.http.HttpController;
 import org.triplea.http.client.lobby.game.lobby.watcher.ChatMessageUpload;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyWatcherClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.PlayerJoinedNotification;
 import org.triplea.http.client.lobby.game.lobby.watcher.PlayerLeftNotification;
@@ -40,13 +43,21 @@ import org.triplea.modules.game.listing.GameListing;
 @RolesAllowed(UserRole.HOST)
 @Slf4j
 public class LobbyWatcherController extends HttpController {
+  @VisibleForTesting
+  public static final String TEST_ONLY_GAME_POSTING_PATH = "/test-only/lobby/post-game";
+
+  @Nonnull private final AppConfig appConfig;
   @Nonnull private final GameListing gameListing;
   @Nonnull private final ChatUploadModule chatUploadModule;
+  @Nonnull private final GamePostingModule gamePostingModule;
 
-  public static LobbyWatcherController build(final Jdbi jdbi, final GameListing gameListing) {
+  public static LobbyWatcherController build(
+      final AppConfig appConfig, final Jdbi jdbi, final GameListing gameListing) {
     return LobbyWatcherController.builder()
+        .appConfig(appConfig)
         .gameListing(gameListing)
         .chatUploadModule(ChatUploadModule.build(jdbi, gameListing))
+        .gamePostingModule(GamePostingModule.build(gameListing))
         .build();
   }
 
@@ -59,12 +70,36 @@ public class LobbyWatcherController extends HttpController {
       rates = {@Rate(limit = 20, duration = 4, timeUnit = TimeUnit.MINUTES)})
   @POST
   @Path(LobbyWatcherClient.POST_GAME_PATH)
-  public String postGame(
+  public GamePostingResponse postGame(
       @Auth final AuthenticatedUser authenticatedUser,
       final GamePostingRequest gamePostingRequest) {
     Preconditions.checkArgument(gamePostingRequest != null);
     Preconditions.checkArgument(gamePostingRequest.getLobbyGame() != null);
-    return gameListing.postGame(authenticatedUser.getApiKey(), gamePostingRequest);
+
+    return gamePostingModule.postGame(authenticatedUser.getApiKey(), gamePostingRequest);
+  }
+
+  /**
+   * A endpont available for non-prod-only that allows for integration tests to post games without
+   * actually hosting a game themselves (bypasses the reverse connectivity check).
+   */
+  @POST
+  @Path(TEST_ONLY_GAME_POSTING_PATH)
+  public Response postGameTestOnly(
+      @Auth final AuthenticatedUser authenticatedUser,
+      final GamePostingRequest gamePostingRequest) {
+    Preconditions.checkArgument(gamePostingRequest != null);
+    Preconditions.checkArgument(gamePostingRequest.getLobbyGame() != null);
+
+    return appConfig.isProd()
+        ? Response.status(HttpStatus.NOT_FOUND_404).build()
+        : Response.ok()
+            .entity(
+                GamePostingResponse.builder()
+                    .connectivityCheckSucceeded(true)
+                    .gameId(gameListing.postGame(authenticatedUser.getApiKey(), gamePostingRequest))
+                    .build())
+            .build();
   }
 
   /** Explicit remove of a game from the lobby. */

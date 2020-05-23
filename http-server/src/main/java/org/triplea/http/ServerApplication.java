@@ -39,7 +39,6 @@ import org.triplea.modules.chat.ChatMessagingService;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.error.reporting.ErrorReportController;
 import org.triplea.modules.forgot.password.ForgotPasswordController;
-import org.triplea.modules.game.ConnectivityController;
 import org.triplea.modules.game.hosting.GameHostingController;
 import org.triplea.modules.game.listing.GameListing;
 import org.triplea.modules.game.listing.GameListingController;
@@ -221,14 +220,13 @@ public class ServerApplication extends Application<AppConfig> {
     return ImmutableList.of(
         AccessLogController.build(jdbi),
         BadWordsController.build(jdbi),
-        ConnectivityController.build(gameListing),
         CreateAccountController.build(jdbi),
         DisconnectUserController.build(jdbi, chatters, playerMessagingBus),
         ForgotPasswordController.build(appConfig, jdbi),
         GameChatHistoryController.build(jdbi),
         GameHostingController.build(jdbi),
         GameListingController.build(gameListing),
-        LobbyWatcherController.build(jdbi, gameListing),
+        LobbyWatcherController.build(appConfig, jdbi, gameListing),
         LoginController.build(jdbi, chatters),
         UsernameBanController.build(jdbi),
         UserBanController.build(jdbi, chatters, playerMessagingBus, gameMessagingBus),
