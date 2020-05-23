@@ -298,24 +298,19 @@ public class CasualtySelector {
       final boolean allowMultipleHitsPerUnit) {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
     // Sort units by power and cost in ascending order
-    final List<Unit> sorted;
-    sorted =
-        CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
-            CasualtyOrderOfLosses.Parameters.builder()
-                .targetsToPickFrom(targetsToPickFrom)
-                .player(player)
-                .enemyUnits(enemyUnits)
-                .combatModifiers(
-                    CombatModifiers.builder()
-                        .territoryEffects(territoryEffects)
-                        .amphibious(amphibious)
-                        .defending(defending)
-                        .build())
-                .amphibiousLandAttackers(
-                    amphibiousLandAttackers == null ? List.of() : amphibiousLandAttackers)
-                .battlesite(battlesite)
-                .costs(costs)
-                .data(data)
+    final List<Unit> sorted =
+        getSortedUnits(
+            targetsToPickFrom,
+            player,
+            enemyUnits,
+            amphibiousLandAttackers,
+            battlesite,
+            costs,
+            data,
+            CombatModifiers.builder()
+                .territoryEffects(territoryEffects)
+                .amphibious(amphibious)
+                .defending(defending)
                 .build());
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
@@ -344,6 +339,29 @@ public class CasualtySelector {
       numSelectedCasualties++;
     }
     return Tuple.of(defaultCasualtySelection, sorted);
+  }
+
+  public static List<Unit> getSortedUnits(
+      final Collection<Unit> targetsToPickFrom,
+      final GamePlayer player,
+      final Collection<Unit> enemyUnits,
+      final Collection<Unit> amphibiousLandAttackers,
+      final Territory battlesite,
+      final IntegerMap<UnitType> costs,
+      final GameData data,
+      final CombatModifiers combatModifier) {
+    return CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
+        CasualtyOrderOfLosses.Parameters.builder()
+            .targetsToPickFrom(targetsToPickFrom)
+            .player(player)
+            .enemyUnits(enemyUnits)
+            .combatModifiers(combatModifier)
+            .amphibiousLandAttackers(
+                amphibiousLandAttackers == null ? List.of() : amphibiousLandAttackers)
+            .battlesite(battlesite)
+            .costs(costs)
+            .data(data)
+            .build());
   }
 
   /**

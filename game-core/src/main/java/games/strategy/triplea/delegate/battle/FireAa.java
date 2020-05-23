@@ -4,23 +4,20 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.attachments.TechAbilityAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
+import games.strategy.triplea.delegate.battle.grouptarget.Aa;
+import games.strategy.triplea.delegate.battle.grouptarget.FiringGroup;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
@@ -92,84 +89,77 @@ public class FireAa implements IExecutable {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
 
     // Loop through each type of AA and break into firing groups based on suicideOnHit
-    for (final String aaType : aaTypes) {
-      final Collection<Unit> aaTypeUnits =
-          CollectionUtils.getMatches(firingUnits, Matches.unitIsAaOfTypeAa(aaType));
-      final List<Collection<Unit>> firingGroups = MustFightBattle.newFiringUnitGroups(aaTypeUnits);
-      for (final Collection<Unit> firingGroup : firingGroups) {
-        final Set<UnitType> validTargetTypes =
-            UnitAttachment.get(firingGroup.iterator().next().getType())
-                .getTargetsAa(bridge.getData());
-        final Set<UnitType> airborneTypesTargeted =
-            defending
-                ? TechAbilityAttachment.getAirborneTargettedByAa(hitPlayer, bridge.getData())
-                    .get(aaType)
-                : new HashSet<>();
-        final Collection<Unit> validTargets =
-            CollectionUtils.getMatches(
-                attackableUnits,
-                Matches.unitIsOfTypes(validTargetTypes)
-                    .or(
-                        Matches.unitIsAirborne()
-                            .and(Matches.unitIsOfTypes(airborneTypesTargeted))));
-        final IExecutable rollDice =
-            new IExecutable() {
-              private static final long serialVersionUID = 6435935558879109347L;
+    final List<FiringGroup> groupsAndTargets =
+        Aa.builder()
+            .aaUnits(firingUnits)
+            .aaTypes(aaTypes)
+            .hitPlayer(hitPlayer)
+            .attackableUnits(attackableUnits)
+            .defending(defending)
+            .gameData(bridge.getData())
+            .build()
+            .getFiringGroups();
 
-              @Override
-              public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-                validTargets.removeAll(casualtiesSoFar);
-                if (!validTargets.isEmpty()) {
-                  dice =
-                      DiceRoll.rollAa(
-                          validTargets,
-                          firingGroup,
-                          allEnemyUnitsAliveOrWaitingToDie,
-                          allFriendlyUnitsAliveOrWaitingToDie,
-                          bridge,
-                          battleSite,
-                          defending);
-                  if (!headless) {
-                    SoundUtils.playFireBattleAa(firingPlayer, aaType, dice.getHits() > 0, bridge);
-                  }
+    for (final FiringGroup groupAndTarget : groupsAndTargets) {
+      final Collection<Unit> validTargets = groupAndTarget.getValidTargets();
+      final Collection<Unit> firingGroup = groupAndTarget.getFiringGroup();
+      final String aaType = groupAndTarget.getAaType();
+
+      final IExecutable rollDice =
+          new IExecutable() {
+            private static final long serialVersionUID = 6435935558879109347L;
+
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              validTargets.removeAll(casualtiesSoFar);
+              if (!validTargets.isEmpty()) {
+                dice =
+                    DiceRoll.rollAa(
+                        validTargets,
+                        firingGroup,
+                        allEnemyUnitsAliveOrWaitingToDie,
+                        allFriendlyUnitsAliveOrWaitingToDie,
+                        bridge,
+                        battleSite,
+                        defending);
+                if (!headless) {
+                  SoundUtils.playFireBattleAa(firingPlayer, aaType, dice.getHits() > 0, bridge);
                 }
               }
-            };
-        final IExecutable selectCasualties =
-            new IExecutable() {
-              private static final long serialVersionUID = 7943295620796835166L;
+            }
+          };
+      final IExecutable selectCasualties =
+          new IExecutable() {
+            private static final long serialVersionUID = 7943295620796835166L;
 
-              @Override
-              public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-                if (!validTargets.isEmpty()) {
-                  final CasualtyDetails details =
-                      selectCasualties(validTargets, firingGroup, bridge, aaType);
-                  battle.markDamaged(details.getDamaged(), bridge);
-                  casualties = details;
-                  casualtiesSoFar.addAll(details.getKilled());
-                }
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              if (!validTargets.isEmpty()) {
+                final CasualtyDetails details =
+                    selectCasualties(validTargets, firingGroup, bridge, aaType);
+                battle.markDamaged(details.getDamaged(), bridge);
+                casualties = details;
+                casualtiesSoFar.addAll(details.getKilled());
               }
-            };
-        final IExecutable notifyCasualties =
-            new IExecutable() {
-              private static final long serialVersionUID = -6759782085212899725L;
+            }
+          };
+      final IExecutable notifyCasualties =
+          new IExecutable() {
+            private static final long serialVersionUID = -6759782085212899725L;
 
-              @Override
-              public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-                if (!validTargets.isEmpty()) {
-                  notifyCasualtiesAa(bridge, aaType);
-                  battle.removeCasualties(
-                      casualties.getKilled(), ReturnFire.ALL, !defending, bridge);
-                  battle.removeSuicideOnHitCasualties(
-                      firingGroup, dice.getHits(), defending, bridge);
-                }
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              if (!validTargets.isEmpty()) {
+                notifyCasualtiesAa(bridge, aaType);
+                battle.removeCasualties(casualties.getKilled(), ReturnFire.ALL, !defending, bridge);
+                battle.removeSuicideOnHitCasualties(firingGroup, dice.getHits(), defending, bridge);
               }
-            };
-        // push in reverse order of execution
-        stack.push(notifyCasualties);
-        stack.push(selectCasualties);
-        stack.push(rollDice);
-      }
+            }
+          };
+      // push in reverse order of execution
+      stack.push(notifyCasualties);
+      stack.push(selectCasualties);
+      stack.push(rollDice);
     }
   }
 
