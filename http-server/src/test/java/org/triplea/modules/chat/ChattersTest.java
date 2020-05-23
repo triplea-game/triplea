@@ -165,11 +165,11 @@ class ChattersTest {
   }
 
   @Nested
-  class DisconnectPlayerSessions {
+  class DisconnectPlayerByName {
     @Test
     void noOpIfPlayerNotConnected() {
       final boolean result =
-          chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+          chatters.disconnectPlayerByName(CHAT_PARTICIPANT.getUserName(), "disconnect message");
       assertThat(result, is(false));
     }
 
@@ -179,7 +179,7 @@ class ChattersTest {
       chatters.connectPlayer(buildChatterSession(session));
 
       final boolean result =
-          chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+          chatters.disconnectPlayerByName(CHAT_PARTICIPANT.getUserName(), "disconnect message");
       assertThat(result, is(true));
 
       verify(session).close(any(CloseReason.class));
@@ -195,7 +195,46 @@ class ChattersTest {
       chatters.connectPlayer(buildChatterSession(session2));
 
       final boolean result =
-          chatters.disconnectPlayerSessions(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+          chatters.disconnectPlayerByName(CHAT_PARTICIPANT.getUserName(), "disconnect message");
+      assertThat(result, is(true));
+
+      verify(session).close(any(CloseReason.class));
+      verify(session2).close(any(CloseReason.class));
+    }
+  }
+
+  @Nested
+  class DisconnectPlayerByIp {
+    @Test
+    void noOpIfPlayerNotConnected() {
+      final boolean result =
+          chatters.disconnectIp(IpAddressParser.fromString("1.1.1.1"), "disconnect message");
+      assertThat(result, is(false));
+    }
+
+    @Test
+    void singleSessionDisconnected() throws Exception {
+      when(session.getId()).thenReturn("100");
+      final ChatterSession chatterSession = buildChatterSession(session);
+      chatters.connectPlayer(chatterSession);
+
+      final boolean result = chatters.disconnectIp(chatterSession.getIp(), "disconnect message");
+      assertThat(result, is(true));
+
+      verify(session).close(any(CloseReason.class));
+    }
+
+    @Test
+    @DisplayName("Players can have multiple sessions, verify they are all closed")
+    void allSameIpsAreDisconnected() throws Exception {
+      when(session.getId()).thenReturn("1");
+      when(session2.getId()).thenReturn("2");
+
+      final ChatterSession session1 = buildChatterSession(session);
+      chatters.connectPlayer(session1);
+      chatters.connectPlayer(buildChatterSession(session2));
+
+      final boolean result = chatters.disconnectIp(session1.getIp(), "disconnect message");
       assertThat(result, is(true));
 
       verify(session).close(any(CloseReason.class));

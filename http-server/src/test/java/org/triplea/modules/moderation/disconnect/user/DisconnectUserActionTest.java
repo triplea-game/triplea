@@ -61,7 +61,7 @@ class DisconnectUserActionTest {
     }
 
     private void verifyNoOp() {
-      verify(chatters, never()).disconnectPlayerSessions(any(), any());
+      verify(chatters, never()).disconnectPlayerByName(any(), any());
       verify(playerConnections, never()).broadcastMessage(any());
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
@@ -90,7 +90,7 @@ class DisconnectUserActionTest {
       when(apiKeyDaoWrapper.lookupPlayerByChatId(PLAYER_CHAT_ID))
           .thenReturn(Optional.of(PLAYER_ID_LOOKUP));
       when(chatters.isPlayerConnected(PLAYER_ID_LOOKUP.getUserName())).thenReturn(true);
-      when(chatters.disconnectPlayerSessions(eq(PLAYER_ID_LOOKUP.getUserName()), any()))
+      when(chatters.disconnectPlayerByName(eq(PLAYER_ID_LOOKUP.getUserName()), any()))
           .thenReturn(true);
 
       disconnectUserAction.disconnectPlayer(MODERATOR_ID, PLAYER_CHAT_ID);
@@ -103,7 +103,7 @@ class DisconnectUserActionTest {
     private void verifyPlayerIsDisconnected() {
       final ArgumentCaptor<String> disconnectMessageCaptor = ArgumentCaptor.forClass(String.class);
       verify(chatters)
-          .disconnectPlayerSessions(
+          .disconnectPlayerByName(
               eq(PLAYER_ID_LOOKUP.getUserName()), disconnectMessageCaptor.capture());
       assertThat(
           "Disconnect message should contain the word 'disconnect'",

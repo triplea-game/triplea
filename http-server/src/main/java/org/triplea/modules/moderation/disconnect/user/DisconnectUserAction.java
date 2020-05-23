@@ -40,7 +40,7 @@ public class DisconnectUserAction {
       return false;
     }
 
-    if (chatters.disconnectPlayerSessions(
+    if (chatters.disconnectPlayerByName(
         gamePlayerLookup.getUserName(), "Disconnected by moderator")) {
       playerConnections.broadcastMessage(
           new ChatEventReceivedMessage(

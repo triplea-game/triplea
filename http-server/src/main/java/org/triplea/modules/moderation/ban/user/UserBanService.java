@@ -14,7 +14,7 @@ import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.ModeratorAuditHistoryDao;
 import org.triplea.db.dao.user.ban.UserBanDao;
 import org.triplea.domain.data.PlayerChatId;
-import org.triplea.domain.data.UserName;
+import org.triplea.http.client.IpAddressParser;
 import org.triplea.http.client.lobby.moderator.BanDurationFormatter;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
@@ -135,8 +135,8 @@ public class UserBanService {
   }
 
   private boolean removePlayerFromChat(final UserBanParams userBanParams) {
-    return chatters.disconnectPlayerSessions(
-        UserName.of(userBanParams.getUsername()),
+    return chatters.disconnectIp(
+        IpAddressParser.fromString(userBanParams.getIp()),
         String.format(
             "You have been banned for %s for violating lobby rules",
             BanDurationFormatter.formatBanMinutes(userBanParams.getMinutesToBan())));
