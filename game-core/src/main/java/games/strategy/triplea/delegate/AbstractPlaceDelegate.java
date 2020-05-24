@@ -812,7 +812,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return "Too many constructions in " + to.getName();
     }
     final List<Territory> capitalsListOwned =
-        new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, getData()));
+        TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, getData());
     if (!capitalsListOwned.contains(to) && isPlacementInCapitalRestricted(player)) {
       return "Cannot place these units outside of the capital";
     }

@@ -185,7 +185,7 @@ public class BattleTracker implements Serializable {
   }
 
   void clearFinishedBattles(final IDelegateBridge bridge) {
-    for (final IBattle battle : new ArrayList<>(pendingBattles)) {
+    for (final IBattle battle : List.copyOf(pendingBattles)) {
       if (FinishedBattle.class.isAssignableFrom(battle.getClass())) {
         final FinishedBattle finished = (FinishedBattle) battle;
         finishedBattlesUnitAttackFromMap.put(
@@ -196,7 +196,7 @@ public class BattleTracker implements Serializable {
   }
 
   void clearEmptyAirBattleAttacks(final IDelegateBridge bridge) {
-    for (final IBattle battle : pendingBattles) {
+    for (final IBattle battle : List.copyOf(pendingBattles)) {
       if (AirBattle.class.isAssignableFrom(battle.getClass())) {
         final AirBattle airBattle = (AirBattle) battle;
         airBattle.updateDefendingUnits();
@@ -700,7 +700,7 @@ public class BattleTracker implements Serializable {
       final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
       final List<Territory> capitalsList =
-          new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data));
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data);
       // we are losing one right now, so it is < not <=
       if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
         // do nothing, we keep our money since we still control enough capitals
@@ -783,14 +783,12 @@ public class BattleTracker implements Serializable {
         && relationshipTracker.isAllied(terrOrigOwner, gamePlayer)
         && !terrOrigOwner.equals(territory.getOwner())) {
       final List<Territory> capitalsListOwned =
-          new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data));
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data);
       if (!capitalsListOwned.isEmpty()) {
         newOwner = terrOrigOwner;
       } else {
         newOwner = gamePlayer;
-        final List<Territory> capitalsListOriginal =
-            new ArrayList<>(TerritoryAttachment.getAllCapitals(terrOrigOwner, data));
-        for (final Territory current : capitalsListOriginal) {
+        for (final Territory current : TerritoryAttachment.getAllCapitals(terrOrigOwner, data)) {
           if (territory.equals(current) || current.getOwner().equals(GamePlayer.NULL_PLAYERID)) {
             // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
             newOwner = terrOrigOwner;
