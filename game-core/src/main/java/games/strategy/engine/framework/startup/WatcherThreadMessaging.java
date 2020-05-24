@@ -12,14 +12,31 @@ import org.triplea.util.ExitStatus;
 
 /** Interface to communicate lobby watcher events to user. */
 public interface WatcherThreadMessaging {
-  void serverNotAvailableHandler(String message);
+  String COMPUTER_NOT_REACHABLE_ERROR_MESSAGE =
+      "Your computer is not reachable from the internet.\n"
+          + "Please make sure your Firewall allows incoming connections (hosting) "
+          + "for TripleA.\n"
+          + "(The firewall exception must be updated every time a new version of "
+          + "TripleA comes out.)\n"
+          + "And that your Router is configured to send TCP traffic the correct port "
+          + " to your local ip address.\n"
+          + "See 'How To Host...' in the help menu, at the top of the lobby "
+          + "screen.";
+  /**
+   * When a host posts a game to the lobby, the lobby will verify connectivity to the host via a
+   * 'reverse connection' back to the game host. If the reverse connection fails then this method is
+   * invoked. Once that happens the server game should initiate a shutdown and instruct the user
+   * their host is not available on the internet and give them a link on how to set up port
+   * forwarding.
+   */
+  void handleCurrentGameHostNotReachable();
 
   /** Simply logs notifications */
   @Log
   class HeadlessWatcherThreadMessaging implements WatcherThreadMessaging {
     @Override
-    public void serverNotAvailableHandler(final String message) {
-      log.severe(message);
+    public void handleCurrentGameHostNotReachable() {
+      log.severe(COMPUTER_NOT_REACHABLE_ERROR_MESSAGE);
       ExitStatus.FAILURE.exit();
     }
   }
@@ -30,13 +47,13 @@ public interface WatcherThreadMessaging {
     private final Component parent;
 
     @Override
-    public void serverNotAvailableHandler(final String message) {
+    public void handleCurrentGameHostNotReachable() {
       SwingUtilities.invokeLater(
           () -> {
             final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
             if (JOptionPane.showConfirmDialog(
                     parentComponent,
-                    message
+                    COMPUTER_NOT_REACHABLE_ERROR_MESSAGE
                         + "\nDo you want to view the tutorial on how to host? "
                         + "This will open in your internet browser.",
                     "View Help Website?",

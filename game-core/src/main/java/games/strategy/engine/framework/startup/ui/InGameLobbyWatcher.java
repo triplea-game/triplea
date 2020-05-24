@@ -21,6 +21,7 @@ import lombok.extern.java.Log;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
@@ -41,13 +42,9 @@ public class InGameLobbyWatcher {
   private GameDescription gameDescription;
   private final IConnectionChangeListener connectionChangeListener;
   private final boolean humanPlayer;
-
   private final GameToLobbyConnection gameToLobbyConnection;
-
   private final IServerMessenger serverMessenger;
-
   private final ScheduledTimer keepAliveTimer;
-  private final WatcherThreadMessaging watcherThreadMessaging;
 
   private InGameLobbyWatcher(
       final IServerMessenger serverMessenger,
@@ -70,7 +67,6 @@ public class InGameLobbyWatcher {
       @Nullable final IGame oldGame) {
     this.serverMessenger = serverMessenger;
     this.gameToLobbyConnection = gameToLobbyConnection;
-    this.watcherThreadMessaging = watcherThreadMessaging;
     humanPlayer = !HeadlessGameServer.headless();
 
     final boolean passworded = SystemPropertyReader.serverIsPassworded();
@@ -113,12 +109,21 @@ public class InGameLobbyWatcher {
             .gameVersion("0")
             .build();
 
-    gameId =
+    final GamePostingResponse gamePostingResponse =
         gameToLobbyConnection.postGame(
             GamePostingRequest.builder()
                 .playerNames(serverMessenger.getPlayerNames())
                 .lobbyGame(gameDescription.toLobbyGame())
                 .build());
+
+    if (!gamePostingResponse.isConnectivityCheckSucceeded()) {
+      // Shutdown and the handling current error message will call System.exit, this code
+      // path will be a dead-end.
+      shutDown();
+      watcherThreadMessaging.handleCurrentGameHostNotReachable();
+    }
+
+    gameId = gamePostingResponse.getGameId();
 
     // Period time is chosen to less than half the keep-alive cut-off time. In case a keep-alive
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
@@ -224,9 +229,8 @@ public class InGameLobbyWatcher {
   }
 
   private void cleanUpGameModelListener() {
-    if (gameSelectorModel != null) {
-      gameSelectorModel.deleteObserver(gameSelectorModelObserver);
-    }
+    Optional.ofNullable(gameSelectorModel)
+        .ifPresent(selectorModel -> selectorModel.deleteObserver(gameSelectorModelObserver));
   }
 
   private void updatePlayerCount() {
@@ -246,7 +250,7 @@ public class InGameLobbyWatcher {
     isShutdown = true;
     gameToLobbyConnection.disconnect(gameId);
     serverMessenger.removeConnectionChangeListener(connectionChangeListener);
-    keepAliveTimer.cancel();
+    Optional.ofNullable(keepAliveTimer).ifPresent(ScheduledTimer::cancel);
     cleanUpGameModelListener();
   }
 
@@ -272,14 +276,5 @@ public class InGameLobbyWatcher {
 
   void setPassworded(final boolean passworded) {
     postUpdate(gameDescription.withPassworded(passworded));
-  }
-
-  void executeConnectivityCheck() {
-    LocalServerAvailabilityCheck.builder()
-        .gameToLobbyConnection(gameToLobbyConnection)
-        .gameId(gameId)
-        .errorHandler(watcherThreadMessaging::serverNotAvailableHandler)
-        .build()
-        .run();
   }
 }

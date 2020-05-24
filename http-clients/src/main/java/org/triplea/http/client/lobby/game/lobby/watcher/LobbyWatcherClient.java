@@ -32,7 +32,7 @@ public class LobbyWatcherClient {
         new HttpClient<>(LobbyWatcherFeignClient.class, serverUri).get());
   }
 
-  public String postGame(final GamePostingRequest gamePostingRequest) {
+  public GamePostingResponse postGame(final GamePostingRequest gamePostingRequest) {
     return lobbyWatcherFeignClient.postGame(
         authenticationHeaders.createHeaders(), gamePostingRequest);
   }

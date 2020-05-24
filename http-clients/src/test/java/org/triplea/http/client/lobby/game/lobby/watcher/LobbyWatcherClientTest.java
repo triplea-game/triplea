@@ -35,11 +35,20 @@ class LobbyWatcherClientTest extends WireMockTest {
         post(LobbyWatcherClient.POST_GAME_PATH)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(toJson(GAME_POSTING_REQUEST)))
-            .willReturn(WireMock.aResponse().withStatus(200).withBody(GAME_ID)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withStatus(200)
+                    .withBody(
+                        toJson(
+                            GamePostingResponse.builder()
+                                .gameId(GAME_ID)
+                                .connectivityCheckSucceeded(true)
+                                .build()))));
 
-    final String gameId = newClient(server).postGame(GAME_POSTING_REQUEST);
+    final GamePostingResponse response = newClient(server).postGame(GAME_POSTING_REQUEST);
 
-    assertThat(gameId, is(GAME_ID));
+    assertThat(response.getGameId(), is(GAME_ID));
+    assertThat(response.isConnectivityCheckSucceeded(), is(true));
   }
 
   @Test

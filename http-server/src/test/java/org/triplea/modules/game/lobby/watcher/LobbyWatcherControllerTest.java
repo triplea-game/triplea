@@ -28,31 +28,22 @@ class LobbyWatcherControllerTest extends ProtectedEndpointTest<LobbyWatcherClien
 
   @Test
   void removeGame() {
-    final String gameId =
-        verifyEndpointReturningObject(client -> client.postGame(GAME_POSTING_REQUEST));
-    verifyEndpoint(client -> client.removeGame(gameId));
+    verifyEndpoint(client -> client.removeGame("game-id"));
   }
 
   @Test
   void keepAlive() {
-    final String gameId =
-        verifyEndpointReturningObject(client -> client.postGame(GAME_POSTING_REQUEST));
-    final boolean result = verifyEndpointReturningObject(client -> client.sendKeepAlive(gameId));
-    assertThat(result, is(true));
+    final boolean result = verifyEndpointReturningObject(client -> client.sendKeepAlive("game-id"));
+    assertThat(result, is(false));
   }
 
   @Test
   void updateGame() {
-    final String gameId =
-        verifyEndpointReturningObject(client -> client.postGame(GAME_POSTING_REQUEST));
-    verifyEndpoint(client -> client.updateGame(gameId, GAME_POSTING_REQUEST.getLobbyGame()));
+    verifyEndpointReturningObject(client -> client.postGame(GAME_POSTING_REQUEST));
   }
 
   @Test
   void uploadChat() {
-    final String gameId =
-        verifyEndpointReturningObject(client -> client.postGame(GAME_POSTING_REQUEST));
-
     verifyEndpoint(
         client ->
             client.uploadChatMessage(
@@ -60,7 +51,7 @@ class LobbyWatcherControllerTest extends ProtectedEndpointTest<LobbyWatcherClien
                 ChatUploadParams.builder()
                     .fromPlayer(UserName.of("player"))
                     .chatMessage("chat")
-                    .gameId(gameId)
+                    .gameId("game-id")
                     .build()));
   }
 

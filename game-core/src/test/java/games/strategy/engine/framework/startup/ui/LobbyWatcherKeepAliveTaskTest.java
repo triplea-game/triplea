@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 
 @ExtendWith(MockitoExtension.class)
 class LobbyWatcherKeepAliveTaskTest {
@@ -23,7 +24,7 @@ class LobbyWatcherKeepAliveTaskTest {
 
   @Mock private Consumer<String> gameIdSetter;
   @Mock private Predicate<String> keepAliveSender;
-  @Mock private Supplier<String> gamePoster;
+  @Mock private Supplier<GamePostingResponse> gamePoster;
 
   private LobbyWatcherKeepAliveTask lobbyWatcherKeepAliveTask;
 
@@ -58,7 +59,9 @@ class LobbyWatcherKeepAliveTaskTest {
   @Test
   void negativeKeepAliveReEstablishesConnection() {
     when(keepAliveSender.test(ID_0)).thenReturn(false);
-    when(gamePoster.get()).thenReturn(ID_1);
+    when(gamePoster.get())
+        .thenReturn(
+            GamePostingResponse.builder().gameId(ID_1).connectivityCheckSucceeded(true).build());
     when(keepAliveSender.test(ID_1)).thenReturn(true);
 
     lobbyWatcherKeepAliveTask.run();
@@ -73,7 +76,9 @@ class LobbyWatcherKeepAliveTaskTest {
   @Test
   void negativeKeepAliveDoesNotReportSuccess() {
     when(keepAliveSender.test(ID_0)).thenReturn(false);
-    when(gamePoster.get()).thenReturn(ID_1);
+    when(gamePoster.get())
+        .thenReturn(
+            GamePostingResponse.builder().gameId(ID_1).connectivityCheckSucceeded(true).build());
     when(keepAliveSender.test(ID_1)).thenReturn(false);
 
     lobbyWatcherKeepAliveTask.run();
@@ -94,7 +99,11 @@ class LobbyWatcherKeepAliveTaskTest {
     when(keepAliveSender.test(ID_0)).thenReturn(false);
     when(keepAliveSender.test(ID_1)).thenReturn(false).thenReturn(false);
     when(keepAliveSender.test(ID_2)).thenReturn(true);
-    when(gamePoster.get()).thenReturn(ID_1).thenReturn(ID_2);
+    when(gamePoster.get())
+        .thenReturn(
+            GamePostingResponse.builder().gameId(ID_1).connectivityCheckSucceeded(true).build())
+        .thenReturn(
+            GamePostingResponse.builder().gameId(ID_2).connectivityCheckSucceeded(true).build());
 
     lobbyWatcherKeepAliveTask.run();
     lobbyWatcherKeepAliveTask.run();
@@ -140,7 +149,9 @@ class LobbyWatcherKeepAliveTaskTest {
   @Test
   void connectionEstablishedIsReportedAfterSuccess() {
     when(keepAliveSender.test(ID_0)).thenThrow(feignException).thenReturn(false);
-    when(gamePoster.get()).thenReturn(ID_1);
+    when(gamePoster.get())
+        .thenReturn(
+            GamePostingResponse.builder().gameId(ID_1).connectivityCheckSucceeded(true).build());
     when(keepAliveSender.test(ID_1)).thenReturn(true);
 
     lobbyWatcherKeepAliveTask.run();
@@ -180,7 +191,9 @@ class LobbyWatcherKeepAliveTaskTest {
   @Test
   void willSendLastPostedGameIdOnKeepAlive() {
     when(keepAliveSender.test(ID_0)).thenThrow(feignException).thenReturn(false);
-    when(gamePoster.get()).thenReturn(ID_1);
+    when(gamePoster.get())
+        .thenReturn(
+            GamePostingResponse.builder().gameId(ID_1).connectivityCheckSucceeded(true).build());
     when(keepAliveSender.test(ID_1)).thenReturn(false);
 
     lobbyWatcherKeepAliveTask.run();
