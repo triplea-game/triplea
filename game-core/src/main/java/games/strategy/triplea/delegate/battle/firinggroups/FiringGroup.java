@@ -44,6 +44,18 @@ public class FiringGroup {
 
     final List<FiringGroup> result = new ArrayList<>();
     // add all of the suicide hit groups first
+    buildSuicideFiringGroups(getValidTargets, type, suicideUnitsByType, result);
+
+    // add the non suicide hit group last
+    buildNonSuicideFiringGroup(getValidTargets, type, nonSuicideFiringGroup, result);
+    return result;
+  }
+
+  private static void buildSuicideFiringGroups(
+      final Function<Collection<Unit>, Collection<Unit>> getValidTargets,
+      final String type,
+      final Map<UnitType, Collection<Unit>> suicideUnitsByType,
+      final List<FiringGroup> result) {
     for (final Collection<Unit> suicideFiringGroup : suicideUnitsByType.values()) {
       final Collection<Unit> validTargets = getValidTargets.apply(suicideFiringGroup);
       if (validTargets.isEmpty() || suicideFiringGroup.isEmpty()) {
@@ -51,14 +63,18 @@ public class FiringGroup {
       }
       result.add(FiringGroup.of(suicideFiringGroup, validTargets, true, type));
     }
+  }
 
-    // add the non suicide hit group last
+  private static void buildNonSuicideFiringGroup(
+      final Function<Collection<Unit>, Collection<Unit>> getValidTargets,
+      final String type,
+      final Collection<Unit> nonSuicideFiringGroup,
+      final List<FiringGroup> result) {
     if (!nonSuicideFiringGroup.isEmpty()) {
       final Collection<Unit> validTargets = getValidTargets.apply(nonSuicideFiringGroup);
       if (!validTargets.isEmpty()) {
         result.add(FiringGroup.of(nonSuicideFiringGroup, validTargets, false, type));
       }
     }
-    return result;
   }
 }
