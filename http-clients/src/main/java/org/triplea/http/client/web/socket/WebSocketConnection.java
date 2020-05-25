@@ -118,8 +118,7 @@ class WebSocketConnection {
     Preconditions.checkState(client == null);
     Preconditions.checkState(!closed);
 
-    connectAsync()
-        .thenRun(pingSender::start)
+    connectAsyncAndStartPingSender()
         .exceptionally(
             throwable -> {
               errorHandler.accept("Failed to connect: " + throwable.getMessage());
@@ -127,11 +126,12 @@ class WebSocketConnection {
             });
   }
 
-  private CompletableFuture<WebSocket> connectAsync() {
+  private CompletableFuture<Void> connectAsyncAndStartPingSender() {
     return httpClient
         .newWebSocketBuilder()
         .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
-        .buildAsync(this.serverUri, internalListener);
+        .buildAsync(this.serverUri, internalListener)
+        .thenRun(pingSender::start);
   }
 
   /**
