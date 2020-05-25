@@ -122,9 +122,7 @@ class WebSocketConnection {
         .thenRun(pingSender::start)
         .exceptionally(
             throwable -> {
-              errorHandler.accept("Failed to connect to: " + serverUri);
-              log.log(
-                  Level.SEVERE, "Unexpected exception completing websocket connection", throwable);
+              errorHandler.accept("Failed to connect: " + throwable.getMessage());
               return null;
             });
   }
