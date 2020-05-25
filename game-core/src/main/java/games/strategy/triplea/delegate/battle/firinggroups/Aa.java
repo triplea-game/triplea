@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle.grouptarget;
+package games.strategy.triplea.delegate.battle.firinggroups;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -9,9 +9,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
@@ -32,39 +32,31 @@ public class Aa {
     for (final String aaType : aaTypes) {
       final Collection<Unit> aaTypeUnits =
           CollectionUtils.getMatches(aaUnits, Matches.unitIsAaOfTypeAa(aaType));
-      getGroupsAndTargets(aaGroupsAndTargets, aaType, aaTypeUnits);
+      aaGroupsAndTargets.addAll(getGroupsAndTargets(aaType, aaTypeUnits));
     }
     return aaGroupsAndTargets;
   }
 
-  private void getGroupsAndTargets(
-      final List<FiringGroup> aaGroupsAndTargets,
-      final String aaType,
-      final Collection<Unit> aaTypeUnits) {
-    final List<Collection<Unit>> firingGroups = FiringGroup.newFiringUnitGroups(aaTypeUnits);
-    for (final Collection<Unit> firingGroup : firingGroups) {
-      final Collection<Unit> validTargets = getValidTargets(aaType, firingGroup);
+  private List<FiringGroup> getGroupsAndTargets(
+      final String aaType, final Collection<Unit> aaTypeUnits) {
 
-      if (firingGroup.isEmpty() || validTargets.isEmpty()) {
-        continue;
-      }
-      final boolean isSuicideOnHit = firingGroup.stream().anyMatch(Matches.unitIsSuicideOnHit());
-
-      aaGroupsAndTargets.add(FiringGroup.of(firingGroup, validTargets, isSuicideOnHit, aaType));
-    }
+    return FiringGroup.newFiringUnitGroups(
+        aaTypeUnits, firingGroup -> getValidTargets(aaType, firingGroup), aaType);
   }
 
   private Collection<Unit> getValidTargets(
       final String aaType, final Collection<Unit> firingGroup) {
     final Set<UnitType> validTargetTypes =
         UnitAttachment.get(firingGroup.iterator().next().getType()).getTargetsAa(gameData);
-    final Set<UnitType> airborneTypesTargeted =
-        defending
-            ? TechAbilityAttachment.getAirborneTargettedByAa(hitPlayer, gameData).get(aaType)
-            : new HashSet<>();
-    return CollectionUtils.getMatches(
-        attackableUnits,
-        Matches.unitIsOfTypes(validTargetTypes)
-            .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargeted))));
+
+    Predicate<Unit> validTargetTypesOrAirborneTypes = Matches.unitIsOfTypes(validTargetTypes);
+    if (defending) {
+      final Set<UnitType> airborneTypesTargeted =
+          TechAbilityAttachment.getAirborneTargettedByAa(hitPlayer, gameData).get(aaType);
+      validTargetTypesOrAirborneTypes =
+          validTargetTypesOrAirborneTypes.or(
+              Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargeted)));
+    }
+    return CollectionUtils.getMatches(attackableUnits, validTargetTypesOrAirborneTypes);
   }
 }

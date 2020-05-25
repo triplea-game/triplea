@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle.grouptarget;
+package games.strategy.triplea.delegate.battle.firinggroups;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
@@ -27,14 +27,13 @@ public class Regular {
     for (final TargetGroup targetGroup : targetGroups) {
       final Collection<Unit> firingUnits = targetGroup.getFiringUnits(allFiringUnits);
       final Collection<Unit> attackableUnits = targetGroup.getTargetUnits(allEnemyUnits);
-      getFiringGroupsWorker(defending, groupsAndTargets, firingUnits, attackableUnits);
+      groupsAndTargets.addAll(getFiringGroupsWorker(defending, firingUnits, attackableUnits));
     }
     return groupsAndTargets;
   }
 
-  static void getFiringGroupsWorker(
+  static List<FiringGroup> getFiringGroupsWorker(
       final boolean defending,
-      final List<FiringGroup> groupsAndTargets,
       final Collection<Unit> firingUnits,
       final Collection<Unit> attackableUnits) {
     final Collection<Unit> targetUnits =
@@ -46,12 +45,8 @@ public class Regular {
                 .build());
 
     if (targetUnits.isEmpty() || firingUnits.isEmpty()) {
-      return;
+      return List.of();
     }
-    final List<Collection<Unit>> firingGroups = FiringGroup.newFiringUnitGroups(firingUnits);
-    for (final Collection<Unit> firingGroup : firingGroups) {
-      final boolean isSuicideOnHit = firingGroup.stream().anyMatch(Matches.unitIsSuicideOnHit());
-      groupsAndTargets.add(FiringGroup.of(firingGroup, targetUnits, isSuicideOnHit, ""));
-    }
+    return FiringGroup.newFiringUnitGroups(firingUnits, firingGroup -> targetUnits, "");
   }
 }

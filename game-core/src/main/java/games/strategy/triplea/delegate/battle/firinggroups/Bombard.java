@@ -1,7 +1,6 @@
-package games.strategy.triplea.delegate.battle.grouptarget;
+package games.strategy.triplea.delegate.battle.firinggroups;
 
 import games.strategy.engine.data.Unit;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.Builder;
@@ -15,8 +14,6 @@ public class Bombard {
   private final boolean defending;
 
   public List<FiringGroup> getFiringGroups() {
-    final List<FiringGroup> groupsAndTargets = new ArrayList<>();
-    Regular.getFiringGroupsWorker(defending, groupsAndTargets, firingUnits, attackableUnits);
-    return groupsAndTargets;
+    return Regular.getFiringGroupsWorker(defending, firingUnits, attackableUnits);
   }
 }

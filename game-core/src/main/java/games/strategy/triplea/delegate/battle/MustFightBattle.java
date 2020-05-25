@@ -29,9 +29,9 @@ import games.strategy.triplea.delegate.battle.end.NoMoreUnits;
 import games.strategy.triplea.delegate.battle.end.NoUnitsWithRolls;
 import games.strategy.triplea.delegate.battle.end.SubsVsOnlyAir;
 import games.strategy.triplea.delegate.battle.end.UndefendedTransports;
-import games.strategy.triplea.delegate.battle.grouptarget.Bombard;
-import games.strategy.triplea.delegate.battle.grouptarget.FiringGroup;
-import games.strategy.triplea.delegate.battle.grouptarget.Regular;
+import games.strategy.triplea.delegate.battle.firinggroups.Bombard;
+import games.strategy.triplea.delegate.battle.firinggroups.FiringGroup;
+import games.strategy.triplea.delegate.battle.firinggroups.Regular;
 import games.strategy.triplea.delegate.battle.subs.Subs;
 import games.strategy.triplea.delegate.battle.units.Aa;
 import games.strategy.triplea.delegate.data.BattleRecord;
@@ -1349,11 +1349,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     for (final FiringGroup firingGroup : firingGroups) {
       stack.push(
           new Fire(
-              firingGroup.getValidTargets(),
+              firingGroup,
               returnFire,
               firingPlayer,
               hitPlayer,
-              firingGroup.getFiringGroup(),
               stepName,
               text,
               this,

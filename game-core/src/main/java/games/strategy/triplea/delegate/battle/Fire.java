@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
+import games.strategy.triplea.delegate.battle.firinggroups.FiringGroup;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,11 +56,10 @@ public class Fire implements IExecutable {
   private boolean confirmOwnCasualties = true;
 
   Fire(
-      final Collection<Unit> attackableUnits,
+      final FiringGroup firingGroup,
       final MustFightBattle.ReturnFire canReturnFire,
       final GamePlayer firingPlayer,
       final GamePlayer hitPlayer,
-      final Collection<Unit> firingUnits,
       final String stepName,
       final String text,
       final MustFightBattle battle,
@@ -70,9 +70,9 @@ public class Fire implements IExecutable {
       final Collection<TerritoryEffect> territoryEffects,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
-    this.attackableUnits = attackableUnits;
+    this.attackableUnits = firingGroup.getValidTargets();
     this.canReturnFire = canReturnFire;
-    this.firingUnits = firingUnits;
+    this.firingUnits = firingGroup.getFiringGroup();
     this.stepName = stepName;
     this.text = text;
     this.battle = battle;

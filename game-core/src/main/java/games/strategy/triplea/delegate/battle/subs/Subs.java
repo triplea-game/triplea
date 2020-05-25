@@ -17,7 +17,7 @@ public class Subs {
     DEF_WITH_REGULAR
   }
 
-  public FireOrder getFireOrder(
+  public static FireOrder getFireOrder(
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
       final GameData gameData) {
@@ -34,7 +34,7 @@ public class Subs {
     return FireOrder.DEF_WITH_REGULAR;
   }
 
-  public boolean defenderSubsFireFirst(
+  public static boolean defenderSubsFireFirst(
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
       final GameData gameData) {
@@ -44,7 +44,7 @@ public class Subs {
             == ReturnFire.NONE;
   }
 
-  public ReturnFire returnFireAgainstAttackingSubs(
+  public static ReturnFire returnFireAgainstAttackingSubs(
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
       final GameData gameData) {
@@ -55,7 +55,7 @@ public class Subs {
     return returnFireAgainstSubs(gameData, attackingSubsSneakAttack, defendingSubsSneakAttack);
   }
 
-  public ReturnFire returnFireAgainstDefendingSubs(
+  public static ReturnFire returnFireAgainstDefendingSubs(
       final Collection<Unit> attackingUnits,
       final Collection<Unit> defendingUnits,
       final GameData gameData) {
@@ -79,7 +79,7 @@ public class Subs {
     return returnFireAgainstAttackingSubs;
   }
 
-  public boolean defendingSubsSneakAttack(final GameData gameData) {
+  public static boolean defendingSubsSneakAttack(final GameData gameData) {
     return Properties.getWW2V2(gameData) || Properties.getDefendingSubsSneakAttack(gameData);
   }
 

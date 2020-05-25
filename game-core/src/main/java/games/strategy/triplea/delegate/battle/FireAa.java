@@ -11,8 +11,8 @@ import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
-import games.strategy.triplea.delegate.battle.grouptarget.Aa;
-import games.strategy.triplea.delegate.battle.grouptarget.FiringGroup;
+import games.strategy.triplea.delegate.battle.firinggroups.Aa;
+import games.strategy.triplea.delegate.battle.firinggroups.FiringGroup;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,7 +103,7 @@ public class FireAa implements IExecutable {
     for (final FiringGroup groupAndTarget : groupsAndTargets) {
       final Collection<Unit> validTargets = groupAndTarget.getValidTargets();
       final Collection<Unit> firingGroup = groupAndTarget.getFiringGroup();
-      final String aaType = groupAndTarget.getAaType();
+      final String aaType = groupAndTarget.getType();
 
       final IExecutable rollDice =
           new IExecutable() {
