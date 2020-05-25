@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
+import org.triplea.java.Interruptibles;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
 
@@ -121,7 +122,10 @@ class WebSocketConnection {
     connectAsyncAndStartPingSender()
         .exceptionally(
             throwable -> {
-              errorHandler.accept("Failed to connect: " + throwable.getMessage());
+              // Do a single retry with fixed back-off
+              log.log(Level.INFO, "Failed to connect, will retrying", throwable);
+              Interruptibles.sleep(1000);
+              retryConnection(errorHandler);
               return null;
             });
   }
@@ -132,6 +136,16 @@ class WebSocketConnection {
         .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
         .buildAsync(this.serverUri, internalListener)
         .thenRun(pingSender::start);
+  }
+
+  private void retryConnection(final Consumer<String> errorHandler) {
+    connectAsyncAndStartPingSender()
+        .exceptionally(
+            throwable -> {
+              log.log(Level.INFO, "Failed to connect", throwable);
+              errorHandler.accept("Failed to connect: " + throwable.getMessage());
+              return null;
+            });
   }
 
   /**
