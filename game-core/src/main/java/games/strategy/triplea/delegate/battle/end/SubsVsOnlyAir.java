@@ -10,11 +10,12 @@ import lombok.NonNull;
 import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
+/** Detects any subs that are only opposed by air units */
 @Builder
 public class SubsVsOnlyAir {
 
-  private @NonNull final Collection<Unit> attackingUnits;
-  private @NonNull final Collection<Unit> defendingUnits;
+  private @NonNull final Collection<Unit> friendlyUnits;
+  private @NonNull final Collection<Unit> enemyUnits;
 
   @Value(staticConstructor = "of")
   public static class Result {
@@ -22,28 +23,14 @@ public class SubsVsOnlyAir {
     boolean isAttacker;
   }
 
-  private final Result emptyResult = Result.of(List.of(), false);
-
-  /** Submerge attacking/defending subs if they're alone OR with transports against only air. */
-  public Result check() {
-    // if All attackers are AIR, submerge any defending subs
-    final Predicate<Unit> subMatch =
-        Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
-    if (!attackingUnits.isEmpty()
-        && attackingUnits.stream().allMatch(Matches.unitIsAir())
-        && defendingUnits.stream().anyMatch(subMatch)) {
-      // Get all defending subs (including allies) in the territory
-      final List<Unit> defendingSubs = CollectionUtils.getMatches(defendingUnits, subMatch);
-      return Result.of(defendingSubs, false);
-      // checking defending air on attacking subs
-    } else if (!defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitIsAir())
-        && attackingUnits.stream().anyMatch(subMatch)) {
-      // Get all attacking subs in the territory
-      final List<Unit> attackingSubs = CollectionUtils.getMatches(attackingUnits, subMatch);
-      return Result.of(attackingSubs, true);
+  public List<Unit> check() {
+    // if ALL enemy units are AIR, return any friendly sub
+    if (enemyUnits.stream().allMatch(Matches.unitIsAir())) {
+      final Predicate<Unit> subMatch =
+          Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
+      return CollectionUtils.getMatches(friendlyUnits, subMatch);
     }
 
-    return emptyResult;
+    return List.of();
   }
 }

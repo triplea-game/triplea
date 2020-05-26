@@ -13,6 +13,9 @@ import lombok.NonNull;
 import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
+/**
+ * Check for unescorted transports and return them and enemy units with them
+ */
 @Builder
 public class UndefendedTransports {
 
@@ -31,7 +34,6 @@ public class UndefendedTransports {
 
   private final Result emptyResult = Result.of(List.of(), List.of());
 
-  /** Check for unescorted transports and kill them immediately. */
   public Result check() {
     // if we are the attacker, we can retreat instead of dying
     if (isAttacker && (canRetreat || attackingUnits.stream().anyMatch(Matches.unitIsAir()))) {

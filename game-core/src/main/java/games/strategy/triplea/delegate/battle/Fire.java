@@ -12,7 +12,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
-import games.strategy.triplea.delegate.battle.firinggroups.FiringGroup;
+import games.strategy.triplea.delegate.battle.firing.group.FiringGroup;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +72,7 @@ public class Fire implements IExecutable {
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie) {
     this.attackableUnits = firingGroup.getValidTargets();
     this.canReturnFire = canReturnFire;
-    this.firingUnits = firingGroup.getFiringGroup();
+    this.firingUnits = firingGroup.getFiringUnits();
     this.stepName = stepName;
     this.text = text;
     this.battle = battle;

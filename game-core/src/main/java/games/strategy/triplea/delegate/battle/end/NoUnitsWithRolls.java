@@ -10,36 +10,31 @@ import lombok.Builder;
 import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
 
+/**
+ * Detects units that can be killed off because they have no supporting units that can
+ * attack/defend.
+ */
 @Builder
 public class NoUnitsWithRolls {
-  private final boolean isAttacker;
-  private final boolean hasRetreatTerritories;
-  private @NonNull final Collection<Unit> attackingUnits;
-  private @NonNull final Collection<Unit> defendingUnits;
+  private @NonNull final Boolean isAttacker;
+  private @NonNull final Boolean hasRetreatTerritories;
+  private @NonNull final Collection<Unit> friendlyUnits;
+  private @NonNull final Collection<Unit> enemyUnits;
   private @NonNull final Territory battleSite;
 
   public Collection<Unit> check() {
-    if (isRetreatPossible() || attackingUnits.isEmpty() || defendingUnits.isEmpty()) {
+    if (isRetreatPossible() || friendlyUnits.isEmpty() || enemyUnits.isEmpty()) {
       return List.of();
-    }
-    final Collection<Unit> units;
-    final Collection<Unit> enemyUnits;
-    if (isAttacker) {
-      units = attackingUnits;
-      enemyUnits = defendingUnits;
-    } else {
-      units = defendingUnits;
-      enemyUnits = attackingUnits;
     }
     final Predicate<Unit> notSubmergedAndType = getSubmergedAndTerritoryTypePredicate();
     final boolean hasUnitsThatCanRollLeft =
-        getUnitsThatCanRoll(notSubmergedAndType, units, isAttacker);
+        getUnitsThatCanRoll(notSubmergedAndType, friendlyUnits, isAttacker);
     final boolean enemyHasUnitsThatCanRollLeft =
         getUnitsThatCanRoll(notSubmergedAndType, enemyUnits, !isAttacker);
 
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
       return CollectionUtils.getMatches(
-          units, notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
+          friendlyUnits, notSubmergedAndType.and(Matches.unitIsNotInfrastructure()));
     }
     return List.of();
   }
@@ -55,7 +50,7 @@ public class NoUnitsWithRolls {
   private boolean isRetreatPossible() {
     // if we are the attacker, we can retreat instead of dying
     return isAttacker
-        && (hasRetreatTerritories || attackingUnits.stream().anyMatch(Matches.unitIsAir()));
+        && (hasRetreatTerritories || friendlyUnits.stream().anyMatch(Matches.unitIsAir()));
   }
 
   private Predicate<Unit> getSubmergedAndTerritoryTypePredicate() {

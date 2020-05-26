@@ -13,6 +13,12 @@ import lombok.Builder;
 import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
 
+/**
+ * Detect if there is a winner because there are no more units on the opposing side.
+ *
+ * <p>checkUndefendedTransports and checkForUnitsThatCanRollLeft will be called if the defender has
+ * no more fighting units so that undefended units can be cleaned up.
+ */
 @Builder
 public class NoMoreUnits {
 
@@ -20,7 +26,7 @@ public class NoMoreUnits {
     ATTACKER,
     DEFENDER,
     DEFENDER_TURN_1,
-    UNDETERMINED
+    NONE
   }
 
   private @NonNull final GameData gameData;
@@ -28,18 +34,17 @@ public class NoMoreUnits {
   private @NonNull final Collection<Unit> attackingUnits;
   private @NonNull final Collection<Unit> defendingUnits;
   private @NonNull final Territory battleSite;
-  private final int round;
+  private @NonNull final Integer round;
   private @NonNull final Runnable checkUndefendedTransports;
   private @NonNull final Runnable checkForUnitsThatCanRollLeft;
 
   public Winner check() {
-    final Predicate<Unit> notInfrastructure = Matches.unitIsNotInfrastructure();
-    if (CollectionUtils.getMatches(attackingUnits, notInfrastructure).isEmpty()) {
+    if (attackingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
       return noAttackingUnits();
-    } else if (CollectionUtils.getMatches(defendingUnits, notInfrastructure).isEmpty()) {
+    } else if (defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
       return noDefendingUnits();
     }
-    return Winner.UNDETERMINED;
+    return Winner.NONE;
   }
 
   private Winner noAttackingUnits() {
@@ -47,17 +52,7 @@ public class NoMoreUnits {
     if (!Properties.getTransportCasualtiesRestricted(gameData)) {
       result = Winner.DEFENDER;
     } else {
-      // Get all allied transports in the territory
-      final Predicate<Unit> matchAllied =
-          Matches.unitIsTransport()
-              .and(Matches.unitIsNotCombatTransport())
-              .and(Matches.isUnitAllied(attacker, gameData));
-      final List<Unit> alliedTransports =
-          CollectionUtils.getMatches(battleSite.getUnits(), matchAllied);
-      // If no transports, just end the battle
-      if (alliedTransports.isEmpty()) {
-        result = Winner.DEFENDER;
-      } else if (round <= 1) {
+      if (round <= 1) {
         result = Winner.DEFENDER_TURN_1;
       } else {
         result = Winner.DEFENDER;

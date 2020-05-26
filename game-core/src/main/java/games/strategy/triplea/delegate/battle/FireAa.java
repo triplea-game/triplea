@@ -11,8 +11,8 @@ import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
-import games.strategy.triplea.delegate.battle.firinggroups.Aa;
-import games.strategy.triplea.delegate.battle.firinggroups.FiringGroup;
+import games.strategy.triplea.delegate.battle.firing.group.AaFiringGroup;
+import games.strategy.triplea.delegate.battle.firing.group.FiringGroup;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,7 +90,7 @@ public class FireAa implements IExecutable {
 
     // Loop through each type of AA and break into firing groups based on suicideOnHit
     final List<FiringGroup> groupsAndTargets =
-        Aa.builder()
+        AaFiringGroup.builder()
             .aaUnits(firingUnits)
             .aaTypes(aaTypes)
             .hitPlayer(hitPlayer)
@@ -100,10 +100,10 @@ public class FireAa implements IExecutable {
             .build()
             .getFiringGroups();
 
-    for (final FiringGroup groupAndTarget : groupsAndTargets) {
-      final Collection<Unit> validTargets = groupAndTarget.getValidTargets();
-      final Collection<Unit> firingGroup = groupAndTarget.getFiringGroup();
-      final String aaType = groupAndTarget.getType();
+    for (final FiringGroup firingGroup : groupsAndTargets) {
+      final Collection<Unit> validTargets = firingGroup.getValidTargets();
+      final Collection<Unit> firingUnits = firingGroup.getFiringUnits();
+      final String aaType = firingGroup.getType();
 
       final IExecutable rollDice =
           new IExecutable() {
@@ -116,7 +116,7 @@ public class FireAa implements IExecutable {
                 dice =
                     DiceRoll.rollAa(
                         validTargets,
-                        firingGroup,
+                        firingUnits,
                         allEnemyUnitsAliveOrWaitingToDie,
                         allFriendlyUnitsAliveOrWaitingToDie,
                         bridge,
@@ -135,8 +135,7 @@ public class FireAa implements IExecutable {
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
               if (!validTargets.isEmpty()) {
-                final CasualtyDetails details =
-                    selectCasualties(validTargets, firingGroup, bridge, aaType);
+                final CasualtyDetails details = selectCasualties(bridge, firingGroup);
                 battle.markDamaged(details.getDamaged(), bridge);
                 casualties = details;
                 casualtiesSoFar.addAll(details.getKilled());
@@ -152,7 +151,7 @@ public class FireAa implements IExecutable {
               if (!validTargets.isEmpty()) {
                 notifyCasualtiesAa(bridge, aaType);
                 battle.removeCasualties(casualties.getKilled(), ReturnFire.ALL, !defending, bridge);
-                battle.removeSuicideOnHitCasualties(firingGroup, dice.getHits(), defending, bridge);
+                battle.removeSuicideOnHitCasualties(firingUnits, dice.getHits(), defending, bridge);
               }
             }
           };
@@ -164,10 +163,7 @@ public class FireAa implements IExecutable {
   }
 
   private CasualtyDetails selectCasualties(
-      final Collection<Unit> validAttackingUnitsForThisRoll,
-      final Collection<Unit> defendingAa,
-      final IDelegateBridge bridge,
-      final String currentTypeAa) {
+      final IDelegateBridge bridge, final FiringGroup firingGroup) {
     // send defender the dice roll so he can see what the dice are while he waits for attacker to
     // select casualties
     bridge
@@ -176,13 +172,13 @@ public class FireAa implements IExecutable {
             dice,
             hitPlayer.getName()
                 + BattleStepStrings.SELECT_PREFIX
-                + currentTypeAa
+                + firingGroup.getType()
                 + BattleStepStrings.CASUALTIES_SUFFIX);
     return AaCasualtySelector.getAaCasualties(
         !defending,
-        validAttackingUnitsForThisRoll,
+        firingGroup.getValidTargets(),
         attackableUnits,
-        defendingAa,
+        firingGroup.getFiringUnits(),
         firingUnits,
         dice,
         bridge,

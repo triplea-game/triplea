@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle.firinggroups;
+package games.strategy.triplea.delegate.battle.firing.group;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -7,17 +7,17 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
 
 @Builder
-public class Aa {
+public class AaFiringGroup {
 
   private @NonNull final Collection<Unit> aaUnits;
   private @NonNull final List<String> aaTypes;
@@ -27,19 +27,16 @@ public class Aa {
   private @NonNull final GameData gameData;
 
   public List<FiringGroup> getFiringGroups() {
-    final List<FiringGroup> aaGroupsAndTargets = new ArrayList<>();
-
-    for (final String aaType : aaTypes) {
-      final Collection<Unit> aaTypeUnits =
-          CollectionUtils.getMatches(aaUnits, Matches.unitIsAaOfTypeAa(aaType));
-      aaGroupsAndTargets.addAll(getGroupsAndTargets(aaType, aaTypeUnits));
-    }
-    return aaGroupsAndTargets;
+    return aaTypes.stream()
+        .map(this::mapAaTypesToFiringGroups)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
-  private List<FiringGroup> getGroupsAndTargets(
-      final String aaType, final Collection<Unit> aaTypeUnits) {
+  private List<FiringGroup> mapAaTypesToFiringGroups(final String aaType) {
 
+    final Collection<Unit> aaTypeUnits =
+        CollectionUtils.getMatches(aaUnits, Matches.unitIsAaOfTypeAa(aaType));
     return FiringGroup.newFiringUnitGroups(
         aaTypeUnits, firingGroup -> getValidTargets(aaType, firingGroup), aaType);
   }

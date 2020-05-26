@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle.firinggroups;
+package games.strategy.triplea.delegate.battle.firing.group;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
@@ -12,11 +12,11 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
 @Builder
-public class Regular {
+public class RegularFiringGroup {
 
   private @NonNull final Collection<Unit> allFiringUnits;
   private @NonNull final Collection<Unit> allEnemyUnits;
-  private final boolean defending;
+  private @NonNull final Boolean defending;
 
   public List<FiringGroup> getFiringGroups() {
 

@@ -29,9 +29,9 @@ import games.strategy.triplea.delegate.battle.end.NoMoreUnits;
 import games.strategy.triplea.delegate.battle.end.NoUnitsWithRolls;
 import games.strategy.triplea.delegate.battle.end.SubsVsOnlyAir;
 import games.strategy.triplea.delegate.battle.end.UndefendedTransports;
-import games.strategy.triplea.delegate.battle.firinggroups.Bombard;
-import games.strategy.triplea.delegate.battle.firinggroups.FiringGroup;
-import games.strategy.triplea.delegate.battle.firinggroups.Regular;
+import games.strategy.triplea.delegate.battle.firing.group.BombardFiringGroup;
+import games.strategy.triplea.delegate.battle.firing.group.FiringGroup;
+import games.strategy.triplea.delegate.battle.firing.group.RegularFiringGroup;
 import games.strategy.triplea.delegate.battle.subs.Subs;
 import games.strategy.triplea.delegate.battle.units.Aa;
 import games.strategy.triplea.delegate.data.BattleRecord;
@@ -1317,7 +1317,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
       final List<FiringGroup> firingGroups =
-          Bombard.builder()
+          BombardFiringGroup.builder()
               .firingUnits(bombard)
               .attackableUnits(attacked)
               .defending(false)
@@ -1644,8 +1644,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         NoUnitsWithRolls.builder()
             .isAttacker(isAttacker)
             .hasRetreatTerritories(!getAttackerRetreatTerritories().isEmpty())
-            .attackingUnits(attackingUnits)
-            .defendingUnits(defendingUnits)
+            .friendlyUnits(isAttacker ? attackingUnits : defendingUnits)
+            .enemyUnits(isAttacker ? defendingUnits : attackingUnits)
             .battleSite(battleSite)
             .build()
             .check();
@@ -1654,16 +1654,27 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
+  /** Submerge attacking/defending subs if they're alone OR with transports against only air. */
   private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
-    final SubsVsOnlyAir.Result result =
+    final List<Unit> attackingSubsThatCanSubmerge =
         SubsVsOnlyAir.builder()
-            .attackingUnits(attackingUnits)
-            .defendingUnits(defendingUnits)
+            .friendlyUnits(attackingUnits)
+            .enemyUnits(defendingUnits)
             .build()
             .check();
-    if (!result.getSubs().isEmpty()) {
+    if (!attackingSubsThatCanSubmerge.isEmpty()) {
       // submerge subs
-      submergeUnits(result.getSubs(), !result.isAttacker(), bridge);
+      submergeUnits(attackingSubsThatCanSubmerge, false, bridge);
+    }
+    final List<Unit> defendingSubsThatCanSubmerge =
+        SubsVsOnlyAir.builder()
+            .friendlyUnits(defendingUnits)
+            .enemyUnits(attackingUnits)
+            .build()
+            .check();
+    if (!defendingSubsThatCanSubmerge.isEmpty()) {
+      // submerge subs
+      submergeUnits(defendingSubsThatCanSubmerge, true, bridge);
     }
   }
 
@@ -1738,7 +1749,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       firing = CollectionUtils.getMatches(firing, Matches.unitIsOwnedBy(attacker));
     }
     final List<FiringGroup> firingGroups =
-        Regular.builder()
+        RegularFiringGroup.builder()
             .allFiringUnits(firing)
             .allEnemyUnits(enemyUnits)
             .defending(defending)
@@ -1810,7 +1821,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                     CollectionUtils.getMatches(
                         battleSite.getUnits(), Matches.unitIsOwnedBy(attacker));
                 return;
-              case UNDETERMINED:
+              case NONE:
               default:
                 break;
             }
