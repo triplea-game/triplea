@@ -108,12 +108,6 @@ public class GameChooser extends JDialog {
     infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
     infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
     infoPanel.add(notesScroll, BorderLayout.CENTER);
-
-    setupListeners();
-    updateInfoPanel();
-  }
-
-  private void setupListeners() {
     okButton.addActionListener(e -> selectAndReturn());
     cancelButton.addActionListener(e -> cancelAndReturn());
     gameList.addListSelectionListener(
@@ -143,6 +137,7 @@ public class GameChooser extends JDialog {
           @Override
           public void mouseExited(final MouseEvent e) {}
         });
+    updateInfoPanel();
   }
 
   /**
