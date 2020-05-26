@@ -34,10 +34,7 @@ import org.triplea.util.LocalizeHtml;
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
-  private final JButton okButton = new JButton("OK");
-  private final JButton cancelButton = new JButton("Cancel");
   private final JList<GameChooserEntry> gameList;
-  private final JPanel infoPanel = new JPanel();
   private final JEditorPane notesPanel = new JEditorPane();
   private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
@@ -53,6 +50,7 @@ public class GameChooser extends JDialog {
     }
     gameListModel.findByName(gameName).ifPresent(entry -> gameList.setSelectedValue(entry, true));
 
+    final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
@@ -106,7 +104,9 @@ public class GameChooser extends JDialog {
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
     buttonsPanel.add(Box.createHorizontalStrut(30));
     buttonsPanel.add(Box.createGlue());
+    final JButton okButton = new JButton("OK");
     buttonsPanel.add(okButton);
+    final JButton cancelButton = new JButton("Cancel");
     buttonsPanel.add(cancelButton);
     buttonsPanel.add(Box.createGlue());
     final JScrollPane notesScroll = new JScrollPane();
