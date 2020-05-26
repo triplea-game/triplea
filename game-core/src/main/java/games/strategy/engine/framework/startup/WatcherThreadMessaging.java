@@ -19,9 +19,7 @@ public interface WatcherThreadMessaging {
           + "(The firewall exception must be updated every time a new version of "
           + "TripleA comes out.)\n"
           + "And that your Router is configured to send TCP traffic the correct port "
-          + " to your local ip address.\n"
-          + "See 'How To Host...' in the help menu, at the top of the lobby "
-          + "screen.";
+          + " to your local ip address.";
   /**
    * When a host posts a game to the lobby, the lobby will verify connectivity to the host via a
    * 'reverse connection' back to the game host. If the reverse connection fails then this method is
@@ -54,8 +52,8 @@ public interface WatcherThreadMessaging {
             if (JOptionPane.showConfirmDialog(
                     parentComponent,
                     COMPUTER_NOT_REACHABLE_ERROR_MESSAGE
-                        + "\nDo you want to view the tutorial on how to host? "
-                        + "This will open in your internet browser.",
+                        + "\nWould you like to view the TripleA user-guide which has a "
+                        + "tutorial on how to host?",
                     "View Help Website?",
                     JOptionPane.YES_NO_OPTION)
                 == JOptionPane.YES_OPTION) {
