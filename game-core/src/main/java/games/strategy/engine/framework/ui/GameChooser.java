@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.LocalizeHtml;
 
 /**
@@ -46,8 +47,6 @@ public class GameChooser extends JDialog {
     gameChooserModel
         .findByName(gameName)
         .ifPresent(entry -> gameList.setSelectedValue(entry, true));
-    final JPanel infoPanel = new JPanel();
-    infoPanel.setLayout(new BorderLayout());
     final JEditorPane notesPanel = new JEditorPane();
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
@@ -56,10 +55,6 @@ public class GameChooser extends JDialog {
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();
     add(mainSplit, BorderLayout.CENTER);
-    final JScrollPane listScroll = new JScrollPane();
-    listScroll.setBorder(null);
-    listScroll.getViewport().setBorder(null);
-    listScroll.setViewportView(gameList);
     final JPanel leftPanel = new JPanel();
     leftPanel.setLayout(new GridBagLayout());
     final JLabel gamesLabel = new JLabel("Games");
@@ -79,6 +74,9 @@ public class GameChooser extends JDialog {
             new Insets(10, 10, 10, 10),
             0,
             0));
+
+    final JScrollPane listScroll = SwingComponents.newJScrollPane(gameList);
+    listScroll.setMinimumSize(new Dimension(200, 0));
     leftPanel.add(
         listScroll,
         new GridBagConstraints(
@@ -94,9 +92,11 @@ public class GameChooser extends JDialog {
             0,
             0));
     mainSplit.setLeftComponent(leftPanel);
+
+    final JPanel infoPanel = new JPanel();
+    infoPanel.setLayout(new BorderLayout());
     mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
-    listScroll.setMinimumSize(new Dimension(200, 0));
     final JPanel buttonsPanel = new JPanel();
     add(buttonsPanel, BorderLayout.SOUTH);
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
@@ -107,13 +107,9 @@ public class GameChooser extends JDialog {
     final JButton cancelButton = new JButton("Cancel");
     buttonsPanel.add(cancelButton);
     buttonsPanel.add(Box.createGlue());
-    final JScrollPane notesScroll = new JScrollPane();
-    notesScroll.setViewportView(notesPanel);
-    notesScroll.setBorder(null);
-    notesScroll.getViewport().setBorder(null);
     infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
     infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
-    infoPanel.add(notesScroll, BorderLayout.CENTER);
+    infoPanel.add(SwingComponents.newJScrollPane(notesPanel), BorderLayout.CENTER);
 
     final ActionListener selectAndReturn =
         e -> {
