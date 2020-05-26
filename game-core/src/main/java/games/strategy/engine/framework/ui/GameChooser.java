@@ -12,8 +12,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -131,25 +131,13 @@ public class GameChooser extends JDialog {
           }
         });
     gameList.addMouseListener(
-        new MouseListener() {
+        new MouseAdapter() {
           @Override
           public void mouseClicked(final MouseEvent event) {
             if (event.getClickCount() == 2) {
               selectAndReturn.actionPerformed(null);
             }
           }
-
-          @Override
-          public void mousePressed(final MouseEvent e) {}
-
-          @Override
-          public void mouseReleased(final MouseEvent e) {}
-
-          @Override
-          public void mouseEntered(final MouseEvent e) {}
-
-          @Override
-          public void mouseExited(final MouseEvent e) {}
         });
     updateInfoPanel();
   }
