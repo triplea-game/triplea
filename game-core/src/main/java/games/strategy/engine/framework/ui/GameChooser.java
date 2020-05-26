@@ -45,12 +45,6 @@ public class GameChooser extends JDialog {
     super(owner, "Select a Game", true);
     gameListModel = gameChooserModel;
     gameList = new JList<>(gameListModel);
-    layoutComponents();
-    setupListeners();
-    updateInfoPanel();
-  }
-
-  private void layoutComponents() {
     infoPanel.setLayout(new BorderLayout());
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
@@ -114,6 +108,9 @@ public class GameChooser extends JDialog {
     infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
     infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
     infoPanel.add(notesScroll, BorderLayout.CENTER);
+
+    setupListeners();
+    updateInfoPanel();
   }
 
   /**
