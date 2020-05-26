@@ -34,20 +34,19 @@ import org.triplea.util.LocalizeHtml;
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
-  private final JList<GameChooserEntry> gameList;
-  private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
   private GameChooser(
       final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
     super(owner, "Select a Game", true);
-    gameListModel = gameChooserModel;
-    gameList = new JList<>(gameListModel);
+    final JList<GameChooserEntry> gameList = new JList<>(gameChooserModel);
     if (gameName == null || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
       return;
     }
-    gameListModel.findByName(gameName).ifPresent(entry -> gameList.setSelectedValue(entry, true));
+    gameChooserModel
+        .findByName(gameName)
+        .ifPresent(entry -> gameList.setSelectedValue(entry, true));
     final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
     final JEditorPane notesPanel = new JEditorPane();
