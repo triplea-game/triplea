@@ -23,32 +23,25 @@ public class Aa {
   private @NonNull final Collection<Unit> targetUnits;
   private @NonNull final GameData gameData;
   private @NonNull final GamePlayer hitPlayer;
-  private final int round;
+  private @NonNull final Integer round;
 
-  @Value(staticConstructor = "of")
-  public static class Result {
-    List<Unit> units;
-    List<String> types;
-  }
-
-  public Result offensiveUnits() {
+  public List<Unit> offensiveUnits() {
     // no airborne targets for offensive aa
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed = Map.of();
     return getUnits(hitPlayer, airborneTechTargetsAllowed, false);
   }
 
-  public Result defensiveUnits() {
+  public List<Unit> defensiveUnits() {
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(hitPlayer, gameData);
     return getUnits(hitPlayer, airborneTechTargetsAllowed, true);
   }
 
-  private Result getUnits(
+  private List<Unit> getUnits(
       final GamePlayer hitPlayer,
       final Map<String, Set<UnitType>> airborneTechTargetsAllowed,
       final boolean defending) {
-    final List<Unit> aaUnits =
-        CollectionUtils.getMatches(
+    return CollectionUtils.getMatches(
             firingUnits,
             Matches.unitIsAaThatCanFire(
                 targetUnits,
@@ -58,10 +51,5 @@ public class Aa {
                 round,
                 defending,
                 gameData));
-    // comes ordered alphabetically
-    final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(aaUnits);
-    // stacks are backwards
-    Collections.reverse(aaTypes);
-    return Result.of(aaUnits, aaTypes);
   }
 }

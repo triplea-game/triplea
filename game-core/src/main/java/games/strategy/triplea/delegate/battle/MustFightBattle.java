@@ -111,8 +111,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private List<String> stepStrings;
   private List<Unit> defendingAa;
   private List<Unit> offensiveAa;
-  private List<String> defendingAaTypes;
-  private List<String> offensiveAaTypes;
   private final List<Unit> attackingUnitsRetreated = new ArrayList<>();
   private final List<Unit> defendingUnitsRetreated = new ArrayList<>();
   // -1 would mean forever until one side is eliminated (the default is infinite)
@@ -768,17 +766,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void updateOffensiveAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(attackingUnits);
     canFire.addAll(attackingWaitingToDie);
-    final Aa.Result result = getAaUnits(canFire, defendingUnits, defender).offensiveUnits();
-    offensiveAa = result.getUnits();
-    offensiveAaTypes = result.getTypes();
+    offensiveAa = getAaUnits(canFire, defendingUnits, defender).offensiveUnits();
   }
 
   private void updateDefendingAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(defendingUnits);
     canFire.addAll(defendingWaitingToDie);
-    final Aa.Result result = getAaUnits(canFire, attackingUnits, attacker).defensiveUnits();
-    defendingAa = result.getUnits();
-    defendingAaTypes = result.getTypes();
+    defendingAa = getAaUnits(canFire, attackingUnits, attacker).defensiveUnits();
   }
 
   private Aa getAaUnits(
@@ -1269,8 +1263,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             battleSite,
             territoryEffects,
             allFriendlyUnitsAliveOrWaitingToDie,
-            allEnemyUnitsAliveOrWaitingToDie,
-            offensiveAaTypes));
+            allEnemyUnitsAliveOrWaitingToDie));
   }
 
   private void fireDefensiveAaGuns() {
@@ -1291,8 +1284,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             battleSite,
             territoryEffects,
             allFriendlyUnitsAliveOrWaitingToDie,
-            allEnemyUnitsAliveOrWaitingToDie,
-            defendingAaTypes));
+            allEnemyUnitsAliveOrWaitingToDie));
   }
 
   private void fireNavalBombardment(final IDelegateBridge bridge) {

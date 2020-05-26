@@ -8,6 +8,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -20,14 +21,16 @@ import org.triplea.java.collections.CollectionUtils;
 public class AaFiringGroup {
 
   private @NonNull final Collection<Unit> aaUnits;
-  private @NonNull final List<String> aaTypes;
   private @NonNull final GamePlayer hitPlayer;
   private @NonNull final Collection<Unit> attackableUnits;
   private final boolean defending;
   private @NonNull final GameData gameData;
 
   public List<FiringGroup> getFiringGroups() {
+    final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(aaUnits);
     return aaTypes.stream()
+        // aaTypes come ordered alphabetically but stacks are backwards so reverse the order
+        .sorted(Collections.reverseOrder())
         .map(this::mapAaTypesToFiringGroups)
         .flatMap(Collection::stream)
         .collect(Collectors.toList());

@@ -45,7 +45,6 @@ public class FireAa implements IExecutable {
   private final List<Unit> allEnemyUnitsAliveOrWaitingToDie;
   private final boolean isAmphibious;
   private final Collection<Unit> amphibiousLandAttackers;
-  private final List<String> aaTypes;
 
   // These variables change state during execution
   private DiceRoll dice;
@@ -64,8 +63,7 @@ public class FireAa implements IExecutable {
       final Territory battleSite,
       final Collection<TerritoryEffect> territoryEffects,
       final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final List<String> aaTypes) {
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     this.attackableUnits =
         CollectionUtils.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
     this.firingUnits = firingUnits;
@@ -82,7 +80,6 @@ public class FireAa implements IExecutable {
     this.allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
     isAmphibious = this.battle.isAmphibious();
     amphibiousLandAttackers = this.battle.getAmphibiousLandAttackers();
-    this.aaTypes = aaTypes;
   }
 
   @Override
@@ -92,7 +89,6 @@ public class FireAa implements IExecutable {
     final List<FiringGroup> groupsAndTargets =
         AaFiringGroup.builder()
             .aaUnits(firingUnits)
-            .aaTypes(aaTypes)
             .hitPlayer(hitPlayer)
             .attackableUnits(attackableUnits)
             .defending(defending)
