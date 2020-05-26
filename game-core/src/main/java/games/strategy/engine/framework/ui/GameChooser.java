@@ -113,6 +113,38 @@ public class GameChooser extends JDialog {
     updateInfoPanel();
   }
 
+  private void setupListeners() {
+    okButton.addActionListener(e -> selectAndReturn());
+    cancelButton.addActionListener(e -> cancelAndReturn());
+    gameList.addListSelectionListener(
+        e -> {
+          if (!e.getValueIsAdjusting()) {
+            updateInfoPanel();
+          }
+        });
+    gameList.addMouseListener(
+        new MouseListener() {
+          @Override
+          public void mouseClicked(final MouseEvent event) {
+            if (event.getClickCount() == 2) {
+              selectAndReturn();
+            }
+          }
+
+          @Override
+          public void mousePressed(final MouseEvent e) {}
+
+          @Override
+          public void mouseReleased(final MouseEvent e) {}
+
+          @Override
+          public void mouseEntered(final MouseEvent e) {}
+
+          @Override
+          public void mouseExited(final MouseEvent e) {}
+        });
+  }
+
   /**
    * Displays the Game Chooser dialog and returns the game selected by the user or {@code null} if
    * no game was selected.
@@ -181,38 +213,6 @@ public class GameChooser extends JDialog {
       return null;
     }
     return gameListModel.get(selected);
-  }
-
-  private void setupListeners() {
-    okButton.addActionListener(e -> selectAndReturn());
-    cancelButton.addActionListener(e -> cancelAndReturn());
-    gameList.addListSelectionListener(
-        e -> {
-          if (!e.getValueIsAdjusting()) {
-            updateInfoPanel();
-          }
-        });
-    gameList.addMouseListener(
-        new MouseListener() {
-          @Override
-          public void mouseClicked(final MouseEvent event) {
-            if (event.getClickCount() == 2) {
-              selectAndReturn();
-            }
-          }
-
-          @Override
-          public void mousePressed(final MouseEvent e) {}
-
-          @Override
-          public void mouseReleased(final MouseEvent e) {}
-
-          @Override
-          public void mouseEntered(final MouseEvent e) {}
-
-          @Override
-          public void mouseExited(final MouseEvent e) {}
-        });
   }
 
   private void selectAndReturn() {
