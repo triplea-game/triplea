@@ -35,7 +35,6 @@ public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
   private final JList<GameChooserEntry> gameList;
-  private final JEditorPane notesPanel = new JEditorPane();
   private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
@@ -49,12 +48,13 @@ public class GameChooser extends JDialog {
       return;
     }
     gameListModel.findByName(gameName).ifPresent(entry -> gameList.setSelectedValue(entry, true));
-
     final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
+    final JEditorPane notesPanel = new JEditorPane();
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
+    notesPanel.setText(buildGameNotesText());
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();
     add(mainSplit, BorderLayout.CENTER);
@@ -127,7 +127,10 @@ public class GameChooser extends JDialog {
     gameList.addListSelectionListener(
         e -> {
           if (!e.getValueIsAdjusting()) {
-            updateInfoPanel();
+            notesPanel.setText(buildGameNotesText());
+            // scroll to the top of the notes screen
+            SwingUtilities.invokeLater(
+                () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
           }
         });
     gameList.addMouseListener(
@@ -139,7 +142,9 @@ public class GameChooser extends JDialog {
             }
           }
         });
-    updateInfoPanel();
+    // scroll to the top of the notes screen
+    SwingUtilities.invokeLater(
+        () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
   }
 
   /**
@@ -158,12 +163,6 @@ public class GameChooser extends JDialog {
     chooser.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     chooser.setVisible(true); // Blocking and waits for user action
     return chooser.chosen;
-  }
-
-  private void updateInfoPanel() {
-    notesPanel.setText(buildGameNotesText());
-    // scroll to the top of the notes screen
-    SwingUtilities.invokeLater(() -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
   }
 
   private String buildGameNotesText() {
