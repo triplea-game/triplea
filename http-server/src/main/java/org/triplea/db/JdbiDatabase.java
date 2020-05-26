@@ -19,6 +19,7 @@ import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.user.ban.BanLookupRecord;
 import org.triplea.db.dao.user.ban.UserBanRecord;
+import org.triplea.db.dao.user.history.PlayerHistoryRecord;
 import org.triplea.db.dao.user.role.UserRoleLookup;
 import org.triplea.db.dao.username.ban.UsernameBanRecord;
 
@@ -60,6 +61,7 @@ public final class JdbiDatabase {
     jdbi.registerRowMapper(
         PlayerApiKeyLookupRecord.class, PlayerApiKeyLookupRecord.buildResultMapper());
     jdbi.registerRowMapper(PlayerAliasRecord.class, PlayerAliasRecord.buildResultMapper());
+    jdbi.registerRowMapper(PlayerHistoryRecord.class, PlayerHistoryRecord.buildResultMapper());
     jdbi.registerRowMapper(PlayerBanRecord.class, PlayerBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UserBanRecord.class, UserBanRecord.buildResultMapper());
     jdbi.registerRowMapper(UsernameBanRecord.class, UsernameBanRecord.buildResultMapper());

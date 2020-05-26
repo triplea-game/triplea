@@ -22,6 +22,7 @@ public class PlayerSummary {
   @Nullable private Collection<Alias> aliases;
   @Nullable private Collection<BanInformation> bans;
   private Collection<String> currentGames;
+  @Nullable private Long registrationDateEpochMillis;
 
   @Builder
   @Getter

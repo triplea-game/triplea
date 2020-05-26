@@ -3,6 +3,7 @@ package org.triplea.modules.player.info;
 import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.api.key.PlayerApiKeyDaoWrapper;
@@ -10,6 +11,8 @@ import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
+import org.triplea.db.dao.user.history.PlayerHistoryDao;
+import org.triplea.db.dao.user.history.PlayerHistoryRecord;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.SystemId;
@@ -24,6 +27,7 @@ import org.triplea.modules.game.listing.GameListing;
 class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatId, PlayerSummary> {
   private final PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   private final PlayerInfoForModeratorDao playerInfoForModeratorDao;
+  private final PlayerHistoryDao playerHistoryDao;
   private final Chatters chatters;
   private final GameListing gameListing;
 
@@ -32,6 +36,7 @@ class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatI
     return new FetchPlayerInfoModule(
         PlayerApiKeyDaoWrapper.build(jdbi),
         jdbi.onDemand(PlayerInfoForModeratorDao.class),
+        jdbi.onDemand(PlayerHistoryDao.class),
         chatters,
         gameListing);
   }
@@ -45,6 +50,7 @@ class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatI
 
     var playerSummaryBuilder =
         PlayerSummary.builder()
+            .registrationDateEpochMillis(lookupRegistrationDate(playerChatId))
             .currentGames(
                 gameListing.getGameNamesPlayerHasJoined(
                     chatterSession.getChatParticipant().getUserName()));
@@ -66,6 +72,15 @@ class FetchPlayerInfoModule implements BiFunction<AuthenticatedUser, PlayerChatI
     }
 
     return playerSummaryBuilder.build();
+  }
+
+  @Nullable
+  private Long lookupRegistrationDate(final PlayerChatId playerChatId) {
+    return apiKeyDaoWrapper
+        .lookupUserIdByChatId(playerChatId)
+        .flatMap(playerHistoryDao::lookupPlayerHistoryByUserId)
+        .map(PlayerHistoryRecord::getRegistrationDate)
+        .orElse(null);
   }
 
   private IllegalArgumentException playerLeftChatException() {

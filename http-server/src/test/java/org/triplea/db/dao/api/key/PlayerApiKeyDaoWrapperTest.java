@@ -152,4 +152,24 @@ class PlayerApiKeyDaoWrapperTest {
 
     assertThat(result, isPresentAndIs(PLAYER_ID_LOOKUP));
   }
+
+  @Test
+  void lookupUserByPlayerChatId() {
+    when(lobbyApiKeyDao.lookupPlayerIdByPlayerChatId(PLAYER_CHAT_ID.getValue()))
+        .thenReturn(Optional.of(123));
+
+    final Optional<Integer> result = wrapper.lookupUserIdByChatId(PLAYER_CHAT_ID);
+
+    assertThat(result, isPresentAndIs(123));
+  }
+
+  @Test
+  void lookupUserByPlayerChatIdNotFoundCase() {
+    when(lobbyApiKeyDao.lookupPlayerIdByPlayerChatId(PLAYER_CHAT_ID.getValue()))
+        .thenReturn(Optional.empty());
+
+    final Optional<Integer> result = wrapper.lookupUserIdByChatId(PLAYER_CHAT_ID);
+
+    assertThat(result, isEmpty());
+  }
 }
