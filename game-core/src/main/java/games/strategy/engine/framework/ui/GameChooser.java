@@ -41,10 +41,16 @@ public class GameChooser extends JDialog {
   private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
-  private GameChooser(final Frame owner, final GameChooserModel gameChooserModel) {
+  private GameChooser(final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
     super(owner, "Select a Game", true);
     gameListModel = gameChooserModel;
     gameList = new JList<>(gameListModel);
+    if (gameName == null || gameName.equals("-")) {
+      gameList.setSelectedIndex(0);
+      return;
+    }
+    gameListModel.findByName(gameName).ifPresent(entry -> gameList.setSelectedValue(entry, true));
+
     infoPanel.setLayout(new BorderLayout());
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
@@ -150,24 +156,15 @@ public class GameChooser extends JDialog {
         new GameChooserModel(
             BackgroundTaskRunner.runInBackgroundAndReturn(
                 "Loading all available games...", GameChooserModel::parseMapFiles));
-    final GameChooser chooser = new GameChooser(parent, gameChooserModel);
+    final GameChooser chooser = new GameChooser(parent, gameChooserModel, defaultGameName);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
-    chooser.selectGame(defaultGameName);
     chooser.setVisible(true); // Blocking
     // chooser is now visible and waits for user action
     chooser.setVisible(false);
     chooser.removeAll();
     chooser.dispose();
     return chooser.chosen;
-  }
-
-  private void selectGame(final String gameName) {
-    if (gameName == null || gameName.equals("-")) {
-      gameList.setSelectedIndex(0);
-      return;
-    }
-    gameListModel.findByName(gameName).ifPresent(entry -> gameList.setSelectedValue(entry, true));
   }
 
   private void updateInfoPanel() {
