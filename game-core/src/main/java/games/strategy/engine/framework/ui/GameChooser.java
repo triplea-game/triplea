@@ -11,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.Box;
@@ -41,7 +42,8 @@ public class GameChooser extends JDialog {
   private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
-  private GameChooser(final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
+  private GameChooser(
+      final Frame owner, final GameChooserModel gameChooserModel, final String gameName) {
     super(owner, "Select a Game", true);
     gameListModel = gameChooserModel;
     gameList = new JList<>(gameListModel);
@@ -114,8 +116,14 @@ public class GameChooser extends JDialog {
     infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
     infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
     infoPanel.add(notesScroll, BorderLayout.CENTER);
-    okButton.addActionListener(e -> selectAndReturn());
-    cancelButton.addActionListener(e -> cancelAndReturn());
+
+    final ActionListener selectAndReturn =
+        e -> {
+          chosen = getSelected();
+          setVisible(false);
+        };
+    okButton.addActionListener(selectAndReturn);
+    cancelButton.addActionListener(e -> dispose());
     gameList.addListSelectionListener(
         e -> {
           if (!e.getValueIsAdjusting()) {
@@ -127,7 +135,7 @@ public class GameChooser extends JDialog {
           @Override
           public void mouseClicked(final MouseEvent event) {
             if (event.getClickCount() == 2) {
-              selectAndReturn();
+              selectAndReturn.actionPerformed(null);
             }
           }
 
@@ -159,11 +167,8 @@ public class GameChooser extends JDialog {
     final GameChooser chooser = new GameChooser(parent, gameChooserModel, defaultGameName);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
-    chooser.setVisible(true); // Blocking
-    // chooser is now visible and waits for user action
-    chooser.setVisible(false);
-    chooser.removeAll();
-    chooser.dispose();
+    chooser.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    chooser.setVisible(true); // Blocking and waits for user action
     return chooser.chosen;
   }
 
@@ -205,15 +210,5 @@ public class GameChooser extends JDialog {
       return null;
     }
     return gameListModel.get(selected);
-  }
-
-  private void selectAndReturn() {
-    chosen = getSelected();
-    setVisible(false);
-  }
-
-  private void cancelAndReturn() {
-    chosen = null;
-    setVisible(false);
   }
 }
