@@ -103,4 +103,8 @@ public class PlayerApiKeyDaoWrapper {
       final PlayerChatId playerChatId) {
     return lobbyApiKeyDao.lookupByPlayerChatId(playerChatId.getValue());
   }
+
+  public Optional<Integer> lookupUserIdByChatId(final PlayerChatId playerChatId) {
+    return lobbyApiKeyDao.lookupPlayerIdByPlayerChatId(playerChatId.getValue());
+  }
 }

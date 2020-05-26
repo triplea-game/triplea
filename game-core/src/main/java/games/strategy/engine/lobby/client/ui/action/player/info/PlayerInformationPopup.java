@@ -21,17 +21,14 @@ class PlayerInformationPopup {
         () -> {
           new JDialogBuilder()
               .parent(parent)
-              .title("Player Info: " + playerName.getValue())
-              .add(
-                  dialog ->
-                      PlayerInformationPopup.buildContentPanel(dialog, playerName, playerSummary))
+              .title("Player: " + playerName.getValue())
+              .add(dialog -> PlayerInformationPopup.buildContentPanel(dialog, playerSummary))
               .escapeKeyCloses()
               .buildAndShow();
         });
   }
 
-  private JPanel buildContentPanel(
-      final JDialog dialog, final UserName playerName, final PlayerSummary playerSummary) {
+  private JPanel buildContentPanel(final JDialog dialog, final PlayerSummary playerSummary) {
     final JTabbedPaneBuilder tabbedPaneBuilder = new JTabbedPaneBuilder();
 
     final var playerGamesTab = new PlayerGamesTab(playerSummary);
@@ -50,12 +47,7 @@ class PlayerInformationPopup {
 
     return new JPanelBuilder()
         .borderLayout()
-        .addNorth(
-            // moderators will get IP and system-id information
-            playerSummary.getIp() == null
-                ? new JPanel()
-                : PlayerInfoSummaryTextArea.buildPlayerInfoSummary(
-                    dialog, playerName, playerSummary))
+        .addNorth(PlayerInfoSummaryTextArea.buildPlayerInfoSummary(dialog, playerSummary))
         .addCenter(tabbedPaneBuilder.build())
         .addSouth(new JButtonBuilder("Close").actionListener(dialog::dispose).build())
         .build();

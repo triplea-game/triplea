@@ -99,4 +99,19 @@ class PlayerApiKeyDaoTest extends DaoTest {
                 .ip("127.0.0.1")
                 .build()));
   }
+
+  @Test
+  //    @DataSet(cleanBefore = true, value = "lobby_api_key/initial.yml")
+  void foundCase() {
+    final Optional<Integer> result = playerApiKeyDao.lookupPlayerIdByPlayerChatId("chat-id0");
+
+    assertThat(result, isPresentAndIs(50));
+  }
+
+  @Test
+  void notFoundCase() {
+    final Optional<Integer> result = playerApiKeyDao.lookupPlayerIdByPlayerChatId("DNE");
+
+    assertThat(result, isEmpty());
+  }
 }

@@ -52,4 +52,11 @@ interface PlayerApiKeyDao {
           + " where player_chat_id = :playerChatId")
   Optional<PlayerIdentifiersByApiKeyLookup> lookupByPlayerChatId(
       @Bind("playerChatId") String playerChatId);
+
+  @SqlQuery(
+      "select "
+          + "    lobby_user_id"
+          + " from lobby_api_key "
+          + " where player_chat_id = :playerChatId")
+  Optional<Integer> lookupPlayerIdByPlayerChatId(@Bind("playerChatId") String playerChatId);
 }

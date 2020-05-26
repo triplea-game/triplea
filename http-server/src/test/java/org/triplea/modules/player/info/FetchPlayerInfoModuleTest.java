@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -29,6 +30,8 @@ import org.triplea.db.dao.api.key.PlayerIdentifiersByApiKeyLookup;
 import org.triplea.db.dao.moderator.player.info.PlayerAliasRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerBanRecord;
 import org.triplea.db.dao.moderator.player.info.PlayerInfoForModeratorDao;
+import org.triplea.db.dao.user.history.PlayerHistoryDao;
+import org.triplea.db.dao.user.history.PlayerHistoryRecord;
 import org.triplea.db.dao.user.role.UserRole;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.domain.data.ChatParticipant;
@@ -87,6 +90,7 @@ class FetchPlayerInfoModuleTest {
 
   @Mock private PlayerApiKeyDaoWrapper apiKeyDaoWrapper;
   @Mock private PlayerInfoForModeratorDao playerInfoForModeratorDao;
+  @Mock private PlayerHistoryDao playerHistoryDao;
   @Mock private Chatters chatters;
   @Mock private GameListing gameListing;
 
@@ -147,6 +151,34 @@ class FetchPlayerInfoModuleTest {
 
     // lookup of more information is reserved to moderator players.
     verify(apiKeyDaoWrapper, never()).lookupPlayerByChatId(any());
+  }
+
+  @Test
+  void lookupRegistrationDate() {
+    givenChatIdToUserIdLookup(PlayerChatId.of("chat-id"), 123);
+    when(playerHistoryDao.lookupPlayerHistoryByUserId(123))
+        .thenReturn(Optional.of(PlayerHistoryRecord.builder().registrationDate(5000).build()));
+
+    final var playerSummaryForPlayer =
+        fetchPlayerInfoModule.apply(authenticatedPlayer, PlayerChatId.of("chat-id"));
+
+    assertThat(playerSummaryForPlayer.getRegistrationDateEpochMillis(), is(5000L));
+  }
+
+  private void givenChatIdToUserIdLookup(final PlayerChatId playerChatId, final Integer userId) {
+    when(chatters.lookupPlayerByChatId(playerChatId)).thenReturn(Optional.of(chatterSession));
+    when(apiKeyDaoWrapper.lookupUserIdByChatId(PlayerChatId.of("chat-id")))
+        .thenReturn(Optional.ofNullable(userId));
+  }
+
+  @Test
+  void lookupRegistrationDateNotRegisteredUserCase() {
+    givenChatIdToUserIdLookup(PlayerChatId.of("chat-id"), null);
+
+    final var playerSummaryForPlayer =
+        fetchPlayerInfoModule.apply(authenticatedPlayer, PlayerChatId.of("chat-id"));
+
+    assertThat(playerSummaryForPlayer.getRegistrationDateEpochMillis(), is(nullValue()));
   }
 
   @Test
