@@ -45,7 +45,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     this(parseMapFiles());
   }
 
-  GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
+  public GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
     gameChooserEntries.stream().sorted().forEach(this::addElement);
   }
 

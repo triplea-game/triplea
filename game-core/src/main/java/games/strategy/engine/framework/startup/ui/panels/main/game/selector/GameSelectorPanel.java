@@ -16,6 +16,7 @@ import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
+import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.TaskRunner;
 import games.strategy.triplea.UrlConstants;
@@ -356,8 +357,13 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
   private void selectGameFile() {
     try {
+      final GameChooserModel gameChooserModel =
+          new GameChooserModel(
+              BackgroundTaskRunner.runInBackgroundAndReturn(
+                  "Loading all available games...", GameChooserModel::parseMapFiles));
       final GameChooserEntry entry =
-          GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+          GameChooser.chooseGame(
+              JOptionPane.getFrameForComponent(this), gameChooserModel, model.getGameName());
       if (entry != null) {
         BackgroundTaskRunner.runInBackground(
             "Loading map...",

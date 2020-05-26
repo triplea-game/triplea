@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -149,12 +148,8 @@ public class GameChooser extends JDialog {
    * Displays the Game Chooser dialog and returns the game selected by the user or {@code null} if
    * no game was selected.
    */
-  public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
-      throws InterruptedException {
-    final GameChooserModel gameChooserModel =
-        new GameChooserModel(
-            BackgroundTaskRunner.runInBackgroundAndReturn(
-                "Loading all available games...", GameChooserModel::parseMapFiles));
+  public static GameChooserEntry chooseGame(
+      final Frame parent, final GameChooserModel gameChooserModel, final String defaultGameName) {
     final GameChooser chooser = new GameChooser(parent, gameChooserModel, defaultGameName);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
