@@ -54,7 +54,7 @@ public class GameChooser extends JDialog {
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
-    notesPanel.setText(buildGameNotesText());
+    notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();
     add(mainSplit, BorderLayout.CENTER);
@@ -127,7 +127,7 @@ public class GameChooser extends JDialog {
     gameList.addListSelectionListener(
         e -> {
           if (!e.getValueIsAdjusting()) {
-            notesPanel.setText(buildGameNotesText());
+            notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
             // scroll to the top of the notes screen
             SwingUtilities.invokeLater(
                 () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
@@ -143,8 +143,7 @@ public class GameChooser extends JDialog {
           }
         });
     // scroll to the top of the notes screen
-    SwingUtilities.invokeLater(
-        () -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
+    SwingUtilities.invokeLater(() -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
   }
 
   /**
@@ -165,17 +164,17 @@ public class GameChooser extends JDialog {
     return chooser.chosen;
   }
 
-  private String buildGameNotesText() {
-    if (gameList.getSelectedValue() == null) {
+  private static String buildGameNotesText(final GameChooserEntry gameChooserEntry) {
+    if (gameChooserEntry == null) {
       return "";
     }
-    final GameData data = gameList.getSelectedValue().getGameData();
+    final GameData data = gameChooserEntry.getGameData();
     final StringBuilder notes = new StringBuilder();
     notes.append("<h1>").append(data.getGameName()).append("</h1>");
     final String mapNameDir = data.getProperties().get("mapName", "");
     appendListItem("Map Name", mapNameDir, notes);
     appendListItem("Number Of Players", data.getPlayerList().size() + "", notes);
-    appendListItem("Location", gameList.getSelectedValue().getLocation() + "", notes);
+    appendListItem("Location", gameChooserEntry.getLocation() + "", notes);
     appendListItem("Version", data.getGameVersion() + "", notes);
     notes.append("<p></p>");
     final String trimmedNotes = data.getProperties().get("notes", "").trim();
