@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,17 +12,17 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.LocalizeHtml;
 
 /**
@@ -46,21 +45,14 @@ public class GameChooser extends JDialog {
     gameChooserModel
         .findByName(gameName)
         .ifPresent(entry -> gameList.setSelectedValue(entry, true));
-    final JEditorPane notesPanel = new JEditorPane();
-    notesPanel.setEditable(false);
-    notesPanel.setContentType("text/html");
-    notesPanel.setForeground(Color.BLACK);
-    notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
     setLayout(new BorderLayout());
+
     final JSplitPane mainSplit = new JSplitPane();
     add(mainSplit, BorderLayout.CENTER);
     final JPanel leftPanel = new JPanel();
     leftPanel.setLayout(new GridBagLayout());
-    final JLabel gamesLabel = new JLabel("Games");
-    gamesLabel.setFont(
-        gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2.0F));
     leftPanel.add(
-        gamesLabel,
+        new JLabelBuilder("Games").adjustFontSize(2).bold().build(),
         new GridBagConstraints(
             0,
             0,
@@ -92,29 +84,37 @@ public class GameChooser extends JDialog {
             0));
     mainSplit.setLeftComponent(leftPanel);
 
+    final JEditorPane notesPanel = new JEditorPane();
+    notesPanel.setEditable(false);
+    notesPanel.setContentType("text/html");
+    notesPanel.setForeground(Color.BLACK);
+    notesPanel.setText(buildGameNotesText(gameList.getSelectedValue()));
+
     final JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
+    infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+    infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
+    infoPanel.add(SwingComponents.newJScrollPane(notesPanel), BorderLayout.CENTER);
+
     mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
-
-    final JPanel buttonsPanel = new JPanel();
-    add(buttonsPanel, BorderLayout.SOUTH);
-    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
-    buttonsPanel.add(Box.createHorizontalStrut(30));
-    buttonsPanel.add(Box.createGlue());
 
     final Runnable selectAndReturn =
         () -> {
           chosen = gameList.getSelectedValue();
           setVisible(false);
         };
-    buttonsPanel.add(new JButtonBuilder("OK").actionListener(selectAndReturn).build());
 
-    buttonsPanel.add(new JButtonBuilder("Cancel").actionListener(this::dispose).build());
-    buttonsPanel.add(Box.createGlue());
-    infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-    infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
-    infoPanel.add(SwingComponents.newJScrollPane(notesPanel), BorderLayout.CENTER);
+    final JPanel buttonsPanel =
+        new JPanelBuilder()
+            .boxLayoutHorizontal()
+            .addHorizontalStrut(30)
+            .add(Box.createGlue())
+            .add(new JButtonBuilder("OK").actionListener(selectAndReturn).build())
+            .add(new JButtonBuilder("Cancel").actionListener(this::dispose).build())
+            .add(Box.createGlue())
+            .build();
+    add(buttonsPanel, BorderLayout.SOUTH);
 
     gameList.addListSelectionListener(
         e -> {
