@@ -10,12 +10,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -24,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.LocalizeHtml;
 
@@ -97,27 +96,26 @@ public class GameChooser extends JDialog {
     infoPanel.setLayout(new BorderLayout());
     mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
+
     final JPanel buttonsPanel = new JPanel();
     add(buttonsPanel, BorderLayout.SOUTH);
     buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
     buttonsPanel.add(Box.createHorizontalStrut(30));
     buttonsPanel.add(Box.createGlue());
-    final JButton okButton = new JButton("OK");
-    buttonsPanel.add(okButton);
-    final JButton cancelButton = new JButton("Cancel");
-    buttonsPanel.add(cancelButton);
+
+    final Runnable selectAndReturn =
+        () -> {
+          chosen = gameList.getSelectedValue();
+          setVisible(false);
+        };
+    buttonsPanel.add(new JButtonBuilder("OK").actionListener(selectAndReturn).build());
+
+    buttonsPanel.add(new JButtonBuilder("Cancel").actionListener(this::dispose).build());
     buttonsPanel.add(Box.createGlue());
     infoPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
     infoPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
     infoPanel.add(SwingComponents.newJScrollPane(notesPanel), BorderLayout.CENTER);
 
-    final ActionListener selectAndReturn =
-        e -> {
-          chosen = gameList.getSelectedValue();
-          setVisible(false);
-        };
-    okButton.addActionListener(selectAndReturn);
-    cancelButton.addActionListener(e -> dispose());
     gameList.addListSelectionListener(
         e -> {
           if (!e.getValueIsAdjusting()) {
@@ -132,7 +130,7 @@ public class GameChooser extends JDialog {
           @Override
           public void mouseClicked(final MouseEvent event) {
             if (event.getClickCount() == 2) {
-              selectAndReturn.actionPerformed(null);
+              selectAndReturn.run();
             }
           }
         });
