@@ -119,7 +119,7 @@ public class GameChooser extends JDialog {
 
     final ActionListener selectAndReturn =
         e -> {
-          chosen = getSelected();
+          chosen = gameList.getSelectedValue();
           setVisible(false);
         };
     okButton.addActionListener(selectAndReturn);
@@ -166,16 +166,16 @@ public class GameChooser extends JDialog {
   }
 
   private String buildGameNotesText() {
-    if (getSelected() == null) {
+    if (gameList.getSelectedValue() == null) {
       return "";
     }
-    final GameData data = getSelected().getGameData();
+    final GameData data = gameList.getSelectedValue().getGameData();
     final StringBuilder notes = new StringBuilder();
     notes.append("<h1>").append(data.getGameName()).append("</h1>");
     final String mapNameDir = data.getProperties().get("mapName", "");
     appendListItem("Map Name", mapNameDir, notes);
     appendListItem("Number Of Players", data.getPlayerList().size() + "", notes);
-    appendListItem("Location", getSelected().getLocation() + "", notes);
+    appendListItem("Location", gameList.getSelectedValue().getLocation() + "", notes);
     appendListItem("Version", data.getGameVersion() + "", notes);
     notes.append("<p></p>");
     final String trimmedNotes = data.getProperties().get("notes", "").trim();
@@ -192,13 +192,5 @@ public class GameChooser extends JDialog {
   private static void appendListItem(
       final String title, final String value, final StringBuilder builder) {
     builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
-  }
-
-  private GameChooserEntry getSelected() {
-    final int selected = gameList.getSelectedIndex();
-    if (selected == -1) {
-      return null;
-    }
-    return gameListModel.get(selected);
   }
 }
