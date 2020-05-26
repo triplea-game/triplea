@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -1051,6 +1052,51 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return !getAttackerRetreatTerritories().isEmpty();
   }
 
+  private boolean canAttackerRetreatInStalemate() {
+    // First check if any units have an explicit "can retreat on stalemate"
+    // property. If none do (all are null), then we will use a fallback algorithm.
+    // If any unit has "can retreat on stalemate" set, then we will return true
+    // only if all units either have the property set to null or true, if any
+    // are set to false then we will return false.
+
+    // Otherwise, if we do not have an explicit property, then we fallback
+    // to enforcing the V3 transport vs transport rule that allows retreat in
+    // that situation. Ideally all maps would explicitly use the "can retreat
+    // on stalemate property", but not all do so we need to account for the
+    // V3 transport vs transport rule as a fallback algorithm without it.
+
+    // First, collect all of the non-null 'can retreat on stalemate' option values.
+    final Set<Boolean> canRetreatOptions =
+        attackingUnits.stream()
+            .map(Unit::getType)
+            .map(UnitAttachment::get)
+            .map(UnitAttachment::getCanRetreatOnStalemate)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+    final boolean propertyIsSetAtLeastOnce = !canRetreatOptions.isEmpty();
+
+    // next, check if all of the non-null properties are set to true.
+    final boolean allowRetreatFromProperty = canRetreatOptions.stream().allMatch(b -> b);
+
+    return (propertyIsSetAtLeastOnce && allowRetreatFromProperty)
+        || (!propertyIsSetAtLeastOnce && transportsVsTransports());
+  }
+
+  private boolean transportsVsTransports() {
+    // Check if both sides have only V3 (non-combat) transports remaining.
+    // See: https://github.com/triplea-game/triplea/issues/2367
+    // Rule: "In a sea battle, if both sides have only transports remaining, the
+    // attacker’s transports can remain in the contested sea zone or retreat.
+    return onlyPowerlessAttackingTransportsLeft() && onlyDefenselessDefendingTransportsLeft();
+  }
+
+  private boolean onlyPowerlessAttackingTransportsLeft() {
+    return Properties.getTransportCasualtiesRestricted(gameData)
+        && !attackingUnits.isEmpty()
+        && attackingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
+  }
+
   private boolean onlyDefenselessDefendingTransportsLeft() {
     return Properties.getTransportCasualtiesRestricted(gameData)
         && !defendingUnits.isEmpty()
@@ -2003,6 +2049,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                           amphibiousLandAttackers),
                       gameData);
               if (attackPower == 0 && defensePower == 0) {
+                if (canAttackerRetreatInStalemate()) {
+                  attackerRetreat(bridge);
+                }
+
                 endBattle(bridge);
                 nobodyWins(bridge);
               }
