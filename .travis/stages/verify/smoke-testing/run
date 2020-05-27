@@ -43,6 +43,8 @@ function main() {
   checkLogsForErrors
   echo "SUCCESS! Launched bot and lobby, bot connected to lobby and client was able to connect to both!"
   kill "$LOBBY_PID" "$BOT_PID"
+  
+  runJavaSmokeTests
 }
 
 function printLogs() {
@@ -108,6 +110,10 @@ function checkLogsForErrors() {
        && echo "Error!! Found errors in bot log") \
      && exit 1 \
      || echo "No errors found in bot logs"
+}
+
+function runJavaSmokeTests() {
+  ./gradlew :smoke-testing:test
 }
 
 main
