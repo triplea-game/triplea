@@ -17,3 +17,5 @@
 bin/
 build/
 out/
+
+smoke-testing/src/test/resources/map-xmls/
