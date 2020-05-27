@@ -113,7 +113,7 @@ function checkLogsForErrors() {
 }
 
 function runJavaSmokeTests() {
-  ./gradlew :smoke-testing:test
+  ./gradlew :smoke-testing:test :smoke-testing:integTest
 }
 
 main
