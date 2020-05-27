@@ -14,7 +14,7 @@ import org.triplea.java.collections.CollectionUtils;
 public class RegularFiringGroup {
 
   private @NonNull final Collection<Unit> firingUnits;
-  private @NonNull final Collection<Unit> allEnemyUnits;
+  private @NonNull final Collection<Unit> attackableUnits;
   private @NonNull final Boolean defending;
 
   public List<FiringGroup> getFiringGroupsWithSuicideFirst() {
@@ -22,10 +22,10 @@ public class RegularFiringGroup {
     final List<FiringGroup> groupsAndTargets = new ArrayList<>();
 
     final List<TargetGroup> targetGroups =
-        TargetGroup.newTargetGroups(firingUnits, allEnemyUnits);
+        TargetGroup.newTargetGroups(firingUnits, attackableUnits);
     for (final TargetGroup targetGroup : targetGroups) {
       final Collection<Unit> firingUnits = targetGroup.getFiringUnits(this.firingUnits);
-      final Collection<Unit> attackableUnits = targetGroup.getTargetUnits(allEnemyUnits);
+      final Collection<Unit> attackableUnits = targetGroup.getTargetUnits(this.attackableUnits);
       groupsAndTargets.addAll(getFiringGroupsWorker(defending, firingUnits, attackableUnits));
     }
     return groupsAndTargets;

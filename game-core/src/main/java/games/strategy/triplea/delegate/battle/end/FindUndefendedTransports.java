@@ -13,9 +13,7 @@ import lombok.NonNull;
 import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
-/**
- * Check for unescorted transports and return them and enemy units with them
- */
+/** Check for unescorted transports and return them and enemy units with them */
 @Builder
 public class FindUndefendedTransports {
 
@@ -59,7 +57,8 @@ public class FindUndefendedTransports {
 
   private boolean isRetreatPossible() {
     // if we are the attacker, we can retreat instead of dying
-    return isAttacker && (hasRetreatTerritories || friendlyUnits.stream().anyMatch(Matches.unitIsAir()));
+    return isAttacker
+        && (hasRetreatTerritories || friendlyUnits.stream().anyMatch(Matches.unitIsAir()));
   }
 
   private Collection<Unit> getEnemyUnits() {

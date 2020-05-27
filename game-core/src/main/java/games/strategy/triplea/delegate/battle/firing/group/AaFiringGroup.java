@@ -21,9 +21,9 @@ import org.triplea.java.collections.CollectionUtils;
 public class AaFiringGroup {
 
   private @NonNull final Collection<Unit> firingUnits;
-  private @NonNull final GamePlayer hitPlayer;
   private @NonNull final Collection<Unit> attackableUnits;
-  private final boolean defending;
+  private @NonNull final Boolean defending;
+  private @NonNull final GamePlayer hitPlayer;
   private @NonNull final GameData gameData;
 
   public List<FiringGroup> getFiringGroupsWithSuicideFirst() {

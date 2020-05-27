@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.NonNull;
-import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Detects any subs that are only opposed by air units */

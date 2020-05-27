@@ -18,24 +18,29 @@ import org.junit.jupiter.api.Test;
 
 class FindUnitsWithNoRollsLeftTest {
 
-  private final static GameData GLOBAL_1940_GAME_DATA = TestMapGameData.GLOBAL1940.getGameData();
-  private final static GamePlayer BRITISH = GameDataTestUtil.british(GLOBAL_1940_GAME_DATA);
-  private final static GamePlayer GERMANS = GameDataTestUtil.germans(GLOBAL_1940_GAME_DATA);
-  private final static Territory SEA_ZONE = GameDataTestUtil.territory("1 Sea Zone", GLOBAL_1940_GAME_DATA);
+  private static final GameData GLOBAL_1940_GAME_DATA = TestMapGameData.GLOBAL1940.getGameData();
+  private static final GamePlayer BRITISH = GameDataTestUtil.british(GLOBAL_1940_GAME_DATA);
+  private static final GamePlayer GERMANS = GameDataTestUtil.germans(GLOBAL_1940_GAME_DATA);
+  private static final Territory SEA_ZONE =
+      GameDataTestUtil.territory("1 Sea Zone", GLOBAL_1940_GAME_DATA);
 
   @Test
   @DisplayName("Verify attacker looses units if can't retreat")
   void attackerHasNoRetreat() {
-    final List<Unit> friendlyUnits = GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
-    final List<Unit> enemyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
+    final List<Unit> friendlyUnits =
+        GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
+    final List<Unit> enemyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(SEA_ZONE)
-        .hasRetreatTerritories(false)
-        .isAttacker(true)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(SEA_ZONE)
+            .hasRetreatTerritories(false)
+            .isAttacker(true)
+            .build()
+            .find();
 
     assertThat(result, is(friendlyUnits));
   }
@@ -43,22 +48,27 @@ class FindUnitsWithNoRollsLeftTest {
   @Test
   @DisplayName("Verify attacker can retreat if there are available territories")
   void attackerHasRetreat() {
-    final List<Unit> friendlyUnits = GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
-    final List<Unit> enemyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
+    final List<Unit> friendlyUnits =
+        GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
+    final List<Unit> enemyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(SEA_ZONE)
-        .hasRetreatTerritories(true)
-        .isAttacker(true)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(SEA_ZONE)
+            .hasRetreatTerritories(true)
+            .isAttacker(true)
+            .build()
+            .find();
 
     assertThat(result, is(List.of()));
   }
 
   @Test
-  @DisplayName("Verify attacker can retreat if an air unit is available, even if it has no attack or support")
+  @DisplayName(
+      "Verify attacker can retreat if an air unit is available, even if it has no attack or support")
   void attackerHasAirRetreat() {
     final GameData gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
     final GamePlayer british = GameDataTestUtil.british(gameData);
@@ -75,13 +85,15 @@ class FindUnitsWithNoRollsLeftTest {
     assertThat(ua.getAttack(british), is(0));
     assertThat(UnitSupportAttachment.get(airTransport.getType()).size(), is(0));
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(seaZone)
-        .hasRetreatTerritories(false)
-        .isAttacker(true)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(seaZone)
+            .hasRetreatTerritories(false)
+            .isAttacker(true)
+            .build()
+            .find();
 
     assertThat(result, is(List.of()));
   }
@@ -89,16 +101,20 @@ class FindUnitsWithNoRollsLeftTest {
   @Test
   @DisplayName("Verify attacker will not loose units if they can attack")
   void attackerHasUnitsWithRolls() {
-    final List<Unit> friendlyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
-    final List<Unit> enemyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
+    final List<Unit> friendlyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
+    final List<Unit> enemyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(SEA_ZONE)
-        .hasRetreatTerritories(false)
-        .isAttacker(true)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(SEA_ZONE)
+            .hasRetreatTerritories(false)
+            .isAttacker(true)
+            .build()
+            .find();
 
     assertThat(result, is(List.of()));
   }
@@ -106,19 +122,23 @@ class FindUnitsWithNoRollsLeftTest {
   @Test
   @DisplayName("Verify attacker looses units if subs are submerged")
   void attackerHasSubmergedSubs() {
-    final List<Unit> friendlyUnits = GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
+    final List<Unit> friendlyUnits =
+        GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
     final Unit submergedSub = GameDataTestUtil.submarine(GLOBAL_1940_GAME_DATA).create(BRITISH);
     submergedSub.setSubmerged(true);
     friendlyUnits.add(submergedSub);
-    final List<Unit> enemyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
+    final List<Unit> enemyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(SEA_ZONE)
-        .hasRetreatTerritories(false)
-        .isAttacker(true)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(SEA_ZONE)
+            .hasRetreatTerritories(false)
+            .isAttacker(true)
+            .build()
+            .find();
 
     assertThat(result, is(List.of(friendlyUnits.get(0))));
   }
@@ -126,51 +146,63 @@ class FindUnitsWithNoRollsLeftTest {
   @Test
   @DisplayName("Verify defender doesn't care about retreat options")
   void defenderIgnoresRetreat() {
-    final List<Unit> friendlyUnits = GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
-    final List<Unit> enemyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
+    final List<Unit> friendlyUnits =
+        GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
+    final List<Unit> enemyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(SEA_ZONE)
-        .hasRetreatTerritories(true)
-        .isAttacker(false)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(SEA_ZONE)
+            .hasRetreatTerritories(true)
+            .isAttacker(false)
+            .build()
+            .find();
 
     assertThat(result, is(friendlyUnits));
   }
 
   @Test
   void defenderHasUnitsWithRolls() {
-    final List<Unit> friendlyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
-    final List<Unit> enemyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
+    final List<Unit> friendlyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
+    final List<Unit> enemyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(SEA_ZONE)
-        .hasRetreatTerritories(true)
-        .isAttacker(false)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(SEA_ZONE)
+            .hasRetreatTerritories(true)
+            .isAttacker(false)
+            .build()
+            .find();
 
     assertThat(result, is(List.of()));
   }
 
   @Test
   void defenderHasSubmergedSubs() {
-    final List<Unit> friendlyUnits = GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
+    final List<Unit> friendlyUnits =
+        GameDataTestUtil.transport(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
     final Unit submergedSub = GameDataTestUtil.submarine(GLOBAL_1940_GAME_DATA).create(BRITISH);
     submergedSub.setSubmerged(true);
     friendlyUnits.add(submergedSub);
-    final List<Unit> enemyUnits = GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
+    final List<Unit> enemyUnits =
+        GameDataTestUtil.battleship(GLOBAL_1940_GAME_DATA).create(1, GERMANS);
 
-    final Collection<Unit> result = FindUnitsWithNoRollsLeft.builder()
-        .friendlyUnits(friendlyUnits)
-        .enemyUnits(enemyUnits)
-        .battleSite(SEA_ZONE)
-        .hasRetreatTerritories(false)
-        .isAttacker(false)
-        .build().find();
+    final Collection<Unit> result =
+        FindUnitsWithNoRollsLeft.builder()
+            .friendlyUnits(friendlyUnits)
+            .enemyUnits(enemyUnits)
+            .battleSite(SEA_ZONE)
+            .hasRetreatTerritories(false)
+            .isAttacker(false)
+            .build()
+            .find();
 
     assertThat(result, is(List.of(friendlyUnits.get(0))));
   }

@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.firing.group;
 
-import com.google.common.collect.Sets;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;

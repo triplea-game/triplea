@@ -26,14 +26,14 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.battle.end.DetectWinner;
-import games.strategy.triplea.delegate.battle.end.FindUnitsWithNoRollsLeft;
 import games.strategy.triplea.delegate.battle.end.FindSubsVsOnlyAir;
 import games.strategy.triplea.delegate.battle.end.FindUndefendedTransports;
+import games.strategy.triplea.delegate.battle.end.FindUnitsWithNoRollsLeft;
 import games.strategy.triplea.delegate.battle.firing.group.BombardFiringGroup;
 import games.strategy.triplea.delegate.battle.firing.group.FiringGroup;
 import games.strategy.triplea.delegate.battle.firing.group.RegularFiringGroup;
 import games.strategy.triplea.delegate.battle.subs.Subs;
-import games.strategy.triplea.delegate.battle.units.Aa;
+import games.strategy.triplea.delegate.battle.units.FindAaUnits;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -766,20 +766,20 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void updateOffensiveAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(attackingUnits);
     canFire.addAll(attackingWaitingToDie);
-    offensiveAa = getAaUnits(canFire, defendingUnits, defender).offensiveUnits();
+    offensiveAa = getAaUnits(canFire, defendingUnits, defender).offensive();
   }
 
   private void updateDefendingAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(defendingUnits);
     canFire.addAll(defendingWaitingToDie);
-    defendingAa = getAaUnits(canFire, attackingUnits, attacker).defensiveUnits();
+    defendingAa = getAaUnits(canFire, attackingUnits, attacker).defensive();
   }
 
-  private Aa getAaUnits(
+  private FindAaUnits getAaUnits(
       final Collection<Unit> firingUnits,
       final Collection<Unit> targetUnits,
       final GamePlayer hitPlayer) {
-    return Aa.builder()
+    return FindAaUnits.builder()
         .firingUnits(firingUnits)
         .targetUnits(targetUnits)
         .hitPlayer(hitPlayer)
@@ -840,11 +840,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
     }
     final boolean defenderSubsFireFirst =
-        Subs.defenderSubsFireFirst(attackingUnits, defendingUnits, gameData);
+        Subs.defenderSubsFireFirst(gameData, attackingUnits, defendingUnits);
     final ReturnFire returnFireAgainstAttackingSubs =
-        Subs.returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData);
+        Subs.returnFireAgainstAttackingSubs(gameData, attackingUnits, defendingUnits);
     final ReturnFire returnFireAgainstDefendingSubs =
-        Subs.returnFireAgainstDefendingSubs(attackingUnits, defendingUnits, gameData);
+        Subs.returnFireAgainstDefendingSubs(gameData, attackingUnits, defendingUnits);
     // if attacker has no sneak attack subs, then defender sneak attack subs fire first and remove
     // casualties
     if (defenderSubsFireFirst && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
@@ -1508,11 +1508,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         });
 
     final Subs.FireOrder subsFireOrder =
-        Subs.getFireOrder(attackingUnits, defendingUnits, gameData);
+        Subs.getFireOrder(gameData, attackingUnits, defendingUnits);
     final ReturnFire returnFireAgainstAttackingSubs =
-        Subs.returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData);
+        Subs.returnFireAgainstAttackingSubs(gameData, attackingUnits, defendingUnits);
     final ReturnFire returnFireAgainstDefendingSubs =
-        Subs.returnFireAgainstDefendingSubs(attackingUnits, defendingUnits, gameData);
+        Subs.returnFireAgainstDefendingSubs(gameData, attackingUnits, defendingUnits);
     if (subsFireOrder == Subs.FireOrder.DEF_BEFORE_ATT) {
       steps.add(
           new FirstStrikeDefendersFire() {
@@ -1630,8 +1630,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void removeUnitsWithNoRollsLeft(
-      final IDelegateBridge bridge, final boolean isAttacker) {
+  private void removeUnitsWithNoRollsLeft(final IDelegateBridge bridge, final boolean isAttacker) {
     final Collection<Unit> unitsToKill =
         FindUnitsWithNoRollsLeft.builder()
             .isAttacker(isAttacker)
@@ -1743,7 +1742,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final List<FiringGroup> firingGroups =
         RegularFiringGroup.builder()
             .firingUnits(firing)
-            .allEnemyUnits(enemyUnits)
+            .attackableUnits(enemyUnits)
             .defending(defending)
             .build()
             .getFiringGroupsWithSuicideFirst();

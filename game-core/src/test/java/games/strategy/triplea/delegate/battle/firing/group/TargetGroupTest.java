@@ -12,7 +12,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractDelegateTestCase;
 import games.strategy.triplea.delegate.GameDataTestUtil;
-import games.strategy.triplea.delegate.battle.firing.group.TargetGroup;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

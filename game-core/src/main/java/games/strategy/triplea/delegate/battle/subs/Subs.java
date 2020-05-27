@@ -18,15 +18,15 @@ public class Subs {
   }
 
   public static FireOrder getFireOrder(
+      final GameData gameData,
       final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final GameData gameData) {
-    if (defenderSubsFireFirst(attackingUnits, defendingUnits, gameData)) {
+      final Collection<Unit> defendingUnits) {
+    if (defenderSubsFireFirst(gameData, attackingUnits, defendingUnits)) {
       return FireOrder.DEF_BEFORE_ATT;
     }
     final boolean defendingSubsFireWithAllDefenders =
         !Properties.getWW2V2(gameData)
-            && returnFireAgainstDefendingSubs(attackingUnits, defendingUnits, gameData)
+            && returnFireAgainstDefendingSubs(gameData, attackingUnits, defendingUnits)
                 == ReturnFire.ALL;
     if (defendingSubsSneakAttack(gameData) && !defendingSubsFireWithAllDefenders) {
       return FireOrder.DEF_BEFORE_REGULAR;
@@ -35,34 +35,34 @@ public class Subs {
   }
 
   public static boolean defenderSubsFireFirst(
+      final GameData gameData,
       final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final GameData gameData) {
-    return returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData)
+      final Collection<Unit> defendingUnits) {
+    return returnFireAgainstAttackingSubs(gameData, attackingUnits, defendingUnits)
             == ReturnFire.ALL
-        && returnFireAgainstDefendingSubs(attackingUnits, defendingUnits, gameData)
+        && returnFireAgainstDefendingSubs(gameData, attackingUnits, defendingUnits)
             == ReturnFire.NONE;
   }
 
   public static ReturnFire returnFireAgainstAttackingSubs(
+      final GameData gameData,
       final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final GameData gameData) {
+      final Collection<Unit> defendingUnits) {
     final boolean attackingSubsSneakAttack =
         defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
     final boolean defendingSubsSneakAttack =
-        defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits, gameData);
+        defendingSubsSneakAttackAndNoAttackingDestroyers(gameData, attackingUnits);
     return returnFireAgainstSubs(gameData, attackingSubsSneakAttack, defendingSubsSneakAttack);
   }
 
   public static ReturnFire returnFireAgainstDefendingSubs(
+      final GameData gameData,
       final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final GameData gameData) {
+      final Collection<Unit> defendingUnits) {
     final boolean attackingSubsSneakAttack =
         defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
     final boolean defendingSubsSneakAttack =
-        defendingSubsSneakAttackAndNoAttackingDestroyers(attackingUnits, gameData);
+        defendingSubsSneakAttackAndNoAttackingDestroyers(gameData, attackingUnits);
     return returnFireAgainstSubs(gameData, defendingSubsSneakAttack, attackingSubsSneakAttack);
   }
 
@@ -84,7 +84,7 @@ public class Subs {
   }
 
   private boolean defendingSubsSneakAttackAndNoAttackingDestroyers(
-      final Collection<Unit> attackingUnits, final GameData gameData) {
+      final GameData gameData, final Collection<Unit> attackingUnits) {
     return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
         && defendingSubsSneakAttack(gameData);
   }
