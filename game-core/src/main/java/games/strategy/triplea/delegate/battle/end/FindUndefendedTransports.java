@@ -17,12 +17,12 @@ import org.triplea.java.collections.CollectionUtils;
  * Check for unescorted transports and return them and enemy units with them
  */
 @Builder
-public class UndefendedTransports {
+public class FindUndefendedTransports {
 
   private @NonNull final GamePlayer player;
-  private final boolean isAttacker;
-  private final boolean canRetreat;
-  private @NonNull final Collection<Unit> attackingUnits;
+  private @NonNull final Boolean isAttacker;
+  private @NonNull final Boolean hasRetreatTerritories;
+  private @NonNull final Collection<Unit> friendlyUnits;
   private @NonNull final GameData gameData;
   private @NonNull final Territory battleSite;
 
@@ -34,9 +34,8 @@ public class UndefendedTransports {
 
   private final Result emptyResult = Result.of(List.of(), List.of());
 
-  public Result check() {
-    // if we are the attacker, we can retreat instead of dying
-    if (isAttacker && (canRetreat || attackingUnits.stream().anyMatch(Matches.unitIsAir()))) {
+  public Result find() {
+    if (isRetreatPossible()) {
       return emptyResult;
     }
     // Get all allied transports in the territory
@@ -56,6 +55,11 @@ public class UndefendedTransports {
       }
     }
     return emptyResult;
+  }
+
+  private boolean isRetreatPossible() {
+    // if we are the attacker, we can retreat instead of dying
+    return isAttacker && (hasRetreatTerritories || friendlyUnits.stream().anyMatch(Matches.unitIsAir()));
   }
 
   private Collection<Unit> getEnemyUnits() {

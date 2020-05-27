@@ -100,6 +100,10 @@ public final class GameDataTestUtil {
     return data.getPlayerList().getPlayerId("Britain");
   }
 
+  public static GamePlayer french(final GameData data) {
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_FRENCH);
+  }
+
   /**
    * Get the japanese PlayerId for the given GameData object.
    *
@@ -169,6 +173,10 @@ public final class GameDataTestUtil {
   /** Returns a fighter UnitType object for the specified GameData object. */
   public static UnitType fighter(final GameData data) {
     return unitType(Constants.UNIT_TYPE_FIGHTER, data);
+  }
+
+  public static UnitType airTransport(final GameData data) {
+    return unitType("air_transport", data);
   }
 
   /** Returns a germanFighter UnitType object for the specified GameData object. */

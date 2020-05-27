@@ -88,13 +88,13 @@ public class FireAa implements IExecutable {
     // Loop through each type of AA and break into firing groups based on suicideOnHit
     final List<FiringGroup> groupsAndTargets =
         AaFiringGroup.builder()
-            .aaUnits(firingUnits)
+            .firingUnits(firingUnits)
             .hitPlayer(hitPlayer)
             .attackableUnits(attackableUnits)
             .defending(defending)
             .gameData(bridge.getData())
             .build()
-            .getFiringGroups();
+            .getFiringGroupsWithSuicideFirst();
 
     for (final FiringGroup firingGroup : groupsAndTargets) {
       final Collection<Unit> validTargets = firingGroup.getValidTargets();

@@ -25,10 +25,10 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
-import games.strategy.triplea.delegate.battle.end.NoMoreUnits;
-import games.strategy.triplea.delegate.battle.end.NoUnitsWithRolls;
-import games.strategy.triplea.delegate.battle.end.SubsVsOnlyAir;
-import games.strategy.triplea.delegate.battle.end.UndefendedTransports;
+import games.strategy.triplea.delegate.battle.end.DetectWinner;
+import games.strategy.triplea.delegate.battle.end.FindUnitsWithNoRollsLeft;
+import games.strategy.triplea.delegate.battle.end.FindSubsVsOnlyAir;
+import games.strategy.triplea.delegate.battle.end.FindUndefendedTransports;
 import games.strategy.triplea.delegate.battle.firing.group.BombardFiringGroup;
 import games.strategy.triplea.delegate.battle.firing.group.FiringGroup;
 import games.strategy.triplea.delegate.battle.firing.group.RegularFiringGroup;
@@ -1314,7 +1314,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               .attackableUnits(attacked)
               .defending(false)
               .build()
-              .getFiringGroups();
+              .getFiringGroupsWithSuicideFirst();
       fire(
           SELECT_NAVAL_BOMBARDMENT_CASUALTIES,
           firingGroups,
@@ -1489,10 +1489,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              checkUndefendedTransports(bridge, false);
-              checkUndefendedTransports(bridge, true);
-              checkForUnitsThatCanRollLeft(bridge, true);
-              checkForUnitsThatCanRollLeft(bridge, false);
+              removeUndefendedTransports(bridge, false);
+              removeUndefendedTransports(bridge, true);
+              removeUnitsWithNoRollsLeft(bridge, true);
+              removeUnitsWithNoRollsLeft(bridge, false);
             }
           });
     }
@@ -1609,18 +1609,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void checkUndefendedTransports(final IDelegateBridge bridge, final boolean isAttacker) {
-    final UndefendedTransports.Result result =
-        UndefendedTransports.builder()
+  private void removeUndefendedTransports(final IDelegateBridge bridge, final boolean isAttacker) {
+    final FindUndefendedTransports.Result result =
+        FindUndefendedTransports.builder()
             .player(isAttacker ? attacker : defender)
             .isAttacker(isAttacker)
-            .canRetreat(!getAttackerRetreatTerritories().isEmpty())
-            .attackingUnits(attackingUnits)
+            .hasRetreatTerritories(!getAttackerRetreatTerritories().isEmpty())
+            .friendlyUnits(attackingUnits)
             .gameData(gameData)
             .battleSite(battleSite)
             .build()
-            .check();
-    // If there are attackers set their movement to 0 and kill the transports
+            .find();
+    // If there are enemy units set their movement to 0 and kill the transports
     if (!result.getEnemyUnits().isEmpty()) {
       final Change change =
           ChangeFactory.markNoMovementChange(
@@ -1630,17 +1630,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void checkForUnitsThatCanRollLeft(
+  private void removeUnitsWithNoRollsLeft(
       final IDelegateBridge bridge, final boolean isAttacker) {
     final Collection<Unit> unitsToKill =
-        NoUnitsWithRolls.builder()
+        FindUnitsWithNoRollsLeft.builder()
             .isAttacker(isAttacker)
             .hasRetreatTerritories(!getAttackerRetreatTerritories().isEmpty())
             .friendlyUnits(isAttacker ? attackingUnits : defendingUnits)
             .enemyUnits(isAttacker ? defendingUnits : attackingUnits)
             .battleSite(battleSite)
             .build()
-            .check();
+            .find();
     if (!unitsToKill.isEmpty()) {
       remove(unitsToKill, bridge, battleSite, !isAttacker);
     }
@@ -1649,21 +1649,21 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   /** Submerge attacking/defending subs if they're alone OR with transports against only air. */
   private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
     final List<Unit> attackingSubsThatCanSubmerge =
-        SubsVsOnlyAir.builder()
+        FindSubsVsOnlyAir.builder()
             .friendlyUnits(attackingUnits)
             .enemyUnits(defendingUnits)
             .build()
-            .check();
+            .find();
     if (!attackingSubsThatCanSubmerge.isEmpty()) {
       // submerge subs
       submergeUnits(attackingSubsThatCanSubmerge, false, bridge);
     }
     final List<Unit> defendingSubsThatCanSubmerge =
-        SubsVsOnlyAir.builder()
+        FindSubsVsOnlyAir.builder()
             .friendlyUnits(defendingUnits)
             .enemyUnits(attackingUnits)
             .build()
-            .check();
+            .find();
     if (!defendingSubsThatCanSubmerge.isEmpty()) {
       // submerge subs
       submergeUnits(defendingSubsThatCanSubmerge, true, bridge);
@@ -1742,11 +1742,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final List<FiringGroup> firingGroups =
         RegularFiringGroup.builder()
-            .allFiringUnits(firing)
+            .firingUnits(firing)
             .allEnemyUnits(enemyUnits)
             .defending(defending)
             .build()
-            .getFiringGroups();
+            .getFiringGroupsWithSuicideFirst();
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(enemyUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(enemyUnitsWaitingToDie);
     final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(firingUnits);
@@ -1786,18 +1786,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            final NoMoreUnits.Winner winner =
-                NoMoreUnits.builder()
+            final DetectWinner.Winner winner =
+                DetectWinner.builder()
                     .gameData(gameData)
-                    .attacker(attacker)
                     .attackingUnits(attackingUnits)
                     .defendingUnits(defendingUnits)
-                    .battleSite(battleSite)
-                    .round(round)
-                    .checkUndefendedTransports(() -> checkUndefendedTransports(bridge, false))
-                    .checkForUnitsThatCanRollLeft(() -> checkForUnitsThatCanRollLeft(bridge, false))
+                    .removeUndefendedTransports(() -> removeUndefendedTransports(bridge, false))
+                    .removeUnitsWithNoRollsLeft(() -> removeUnitsWithNoRollsLeft(bridge, false))
                     .build()
-                    .check();
+                    .detect();
 
             switch (winner) {
               case ATTACKER:
@@ -1808,12 +1805,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                 endBattle(bridge);
                 defenderWins(bridge);
                 return;
-              case DEFENDER_TURN_1:
-                attackingUnits =
-                    CollectionUtils.getMatches(
-                        battleSite.getUnits(), Matches.unitIsOwnedBy(attacker));
-                return;
-              case NONE:
+              case NOT_YET:
               default:
                 break;
             }

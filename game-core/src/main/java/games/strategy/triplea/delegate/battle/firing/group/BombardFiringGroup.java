@@ -13,7 +13,7 @@ public class BombardFiringGroup {
   private @NonNull final Collection<Unit> attackableUnits;
   private @NonNull final Boolean defending;
 
-  public List<FiringGroup> getFiringGroups() {
+  public List<FiringGroup> getFiringGroupsWithSuicideFirst() {
     return RegularFiringGroup.getFiringGroupsWorker(defending, firingUnits, attackableUnits);
   }
 }

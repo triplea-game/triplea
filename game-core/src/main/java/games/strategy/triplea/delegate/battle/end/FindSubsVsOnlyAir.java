@@ -12,18 +12,12 @@ import org.triplea.java.collections.CollectionUtils;
 
 /** Detects any subs that are only opposed by air units */
 @Builder
-public class SubsVsOnlyAir {
+public class FindSubsVsOnlyAir {
 
   private @NonNull final Collection<Unit> friendlyUnits;
   private @NonNull final Collection<Unit> enemyUnits;
 
-  @Value(staticConstructor = "of")
-  public static class Result {
-    Collection<Unit> subs;
-    boolean isAttacker;
-  }
-
-  public List<Unit> check() {
+  public List<Unit> find() {
     // if ALL enemy units are AIR, return any friendly sub
     if (enemyUnits.stream().allMatch(Matches.unitIsAir())) {
       final Predicate<Unit> subMatch =

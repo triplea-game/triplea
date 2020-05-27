@@ -20,14 +20,14 @@ import org.triplea.java.collections.CollectionUtils;
 @Builder
 public class AaFiringGroup {
 
-  private @NonNull final Collection<Unit> aaUnits;
+  private @NonNull final Collection<Unit> firingUnits;
   private @NonNull final GamePlayer hitPlayer;
   private @NonNull final Collection<Unit> attackableUnits;
   private final boolean defending;
   private @NonNull final GameData gameData;
 
-  public List<FiringGroup> getFiringGroups() {
-    final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(aaUnits);
+  public List<FiringGroup> getFiringGroupsWithSuicideFirst() {
+    final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(firingUnits);
     return aaTypes.stream()
         // aaTypes come ordered alphabetically but stacks are backwards so reverse the order
         .sorted(Collections.reverseOrder())
@@ -39,7 +39,7 @@ public class AaFiringGroup {
   private List<FiringGroup> mapAaTypesToFiringGroups(final String aaType) {
 
     final Collection<Unit> aaTypeUnits =
-        CollectionUtils.getMatches(aaUnits, Matches.unitIsAaOfTypeAa(aaType));
+        CollectionUtils.getMatches(firingUnits, Matches.unitIsAaOfTypeAa(aaType));
     return FiringGroup.newFiringUnitGroups(
         aaTypeUnits, firingGroup -> getValidTargets(aaType, firingGroup), aaType);
   }

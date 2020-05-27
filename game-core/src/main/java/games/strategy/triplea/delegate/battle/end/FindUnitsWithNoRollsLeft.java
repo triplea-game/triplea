@@ -15,14 +15,14 @@ import org.triplea.java.collections.CollectionUtils;
  * attack/defend.
  */
 @Builder
-public class NoUnitsWithRolls {
+public class FindUnitsWithNoRollsLeft {
   private @NonNull final Boolean isAttacker;
   private @NonNull final Boolean hasRetreatTerritories;
   private @NonNull final Collection<Unit> friendlyUnits;
   private @NonNull final Collection<Unit> enemyUnits;
   private @NonNull final Territory battleSite;
 
-  public Collection<Unit> check() {
+  public Collection<Unit> find() {
     if (isRetreatPossible() || friendlyUnits.isEmpty() || enemyUnits.isEmpty()) {
       return List.of();
     }
