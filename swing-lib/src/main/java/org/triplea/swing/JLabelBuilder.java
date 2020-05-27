@@ -33,8 +33,13 @@ public class JLabelBuilder {
   private Integer borderSize;
   private int biggerFont;
   private Color foregroundColor;
+  private boolean bold;
 
   public JLabelBuilder() {}
+
+  public JLabelBuilder(final String text) {
+    this.text = text;
+  }
 
   public static JLabelBuilder builder() {
     return new JLabelBuilder();
@@ -71,11 +76,11 @@ public class JLabelBuilder {
 
     Optional.ofNullable(foregroundColor).ifPresent(label::setForeground);
 
-    if (biggerFont > 0) {
+    if (biggerFont != 0 || bold) {
       label.setFont(
           new Font(
               label.getFont().getName(),
-              label.getFont().getStyle(),
+              bold ? Font.BOLD : label.getFont().getStyle(),
               label.getFont().getSize() + biggerFont));
     }
     return label;
@@ -133,6 +138,16 @@ public class JLabelBuilder {
   /** Increases button text size by a default amount. */
   public JLabelBuilder biggerFont() {
     biggerFont = 4;
+    return this;
+  }
+
+  public JLabelBuilder adjustFontSize(final int increase) {
+    biggerFont = increase;
+    return this;
+  }
+
+  public JLabelBuilder bold() {
+    bold = true;
     return this;
   }
 
