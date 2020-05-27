@@ -25,8 +25,17 @@ class ParseGameXmlsTest {
   }
 
   static Collection<File> parseGameFiles() {
-    return Arrays.stream(Paths.get("src", "test", "resources", "map-xmls").toFile().listFiles())
+    return Arrays.stream(findMapXmlsFolder().listFiles())
         .sorted(Comparator.comparing(File::getName))
         .collect(Collectors.toList());
+  }
+
+  private static File findMapXmlsFolder() {
+    final File mapXmls = Paths.get("src", "test", "resources", "map-xmls").toFile();
+    if (mapXmls.exists()) {
+      return mapXmls;
+    }
+
+    return Paths.get("smoke-testing", "src", "test", "resources", "map-xmls").toFile();
   }
 }
