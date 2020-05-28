@@ -86,7 +86,8 @@ class DetectWinnerTest {
 
   @Test
   @DisplayName(
-      "Verify attacker wins if there are no defenders left with TRANSPORT_CASUALTIES_RESTRICTED == false")
+      "Verify attacker wins if there are no defenders left "
+          + "with TRANSPORT_CASUALTIES_RESTRICTED == false")
   void noDefendersLeftAndTransportCasualtiesUnrestricted() {
     final List<Unit> attackers = GameDataTestUtil.armour(GLOBAL_1940_GAME_DATA).create(1, BRITISH);
     final List<Unit> defenders = List.of();

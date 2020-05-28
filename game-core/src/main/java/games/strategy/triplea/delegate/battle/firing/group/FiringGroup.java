@@ -1,7 +1,8 @@
 package games.strategy.triplea.delegate.battle.firing.group;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -31,7 +32,8 @@ public class FiringGroup {
       final String type) {
 
     // split the units by suicideOnHit and unitType (if suicideOnHit)
-    final Multimap<UnitType, Unit> suicideUnitsByType = HashMultimap.create();
+    final ListMultimap<UnitType, Unit> suicideUnitsByType =
+        MultimapBuilder.hashKeys().arrayListValues().build();
     final Collection<Unit> nonSuicideFiringGroup = new ArrayList<>();
     for (final Unit unit : units) {
       final UnitType unitType = unit.getType();

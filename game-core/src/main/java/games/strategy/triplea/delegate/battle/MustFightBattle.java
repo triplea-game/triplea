@@ -1314,7 +1314,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               .attackableUnits(attacked)
               .defending(false)
               .build()
-              .getFiringGroupsWithSuicideFirst();
+              .getFiringGroups();
       fire(
           SELECT_NAVAL_BOMBARDMENT_CASUALTIES,
           firingGroups,
@@ -1745,7 +1745,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             .attackableUnits(enemyUnits)
             .defending(defending)
             .build()
-            .getFiringGroupsWithSuicideFirst();
+            .getFiringGroups();
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(enemyUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(enemyUnitsWaitingToDie);
     final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(firingUnits);

@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.firing.group;
 
+import com.google.common.collect.Sets;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -23,8 +24,8 @@ class TargetGroup {
   private final Set<UnitType> firingUnitTypes;
   private final Set<UnitType> targetUnitTypes;
 
-  public TargetGroup(final UnitType firingUnitType, final Set<UnitType> targetUnitTypes) {
-    firingUnitTypes = Set.of(firingUnitType);
+  TargetGroup(final UnitType firingUnitType, final Set<UnitType> targetUnitTypes) {
+    firingUnitTypes = Sets.newHashSet(firingUnitType);
     this.targetUnitTypes = targetUnitTypes;
   }
 
@@ -49,7 +50,7 @@ class TargetGroup {
         units.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
     final Set<UnitType> enemyUnitTypes =
         enemyUnits.stream().map(unit -> unit.getType()).collect(Collectors.toSet());
-    final List<TargetGroup> targetGroups = new ArrayList<TargetGroup>();
+    final List<TargetGroup> targetGroups = new ArrayList<>();
     for (final UnitType unitType : unitTypes) {
       final Set<UnitType> targets = findTargets(unitType, unitTypes, enemyUnitTypes);
       if (targets.isEmpty()) {

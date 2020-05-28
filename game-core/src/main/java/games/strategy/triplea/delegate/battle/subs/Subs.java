@@ -8,6 +8,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.Collection;
 import lombok.experimental.UtilityClass;
 
+/** Utility class to work with subs and their firing order. */
 @UtilityClass
 public class Subs {
 

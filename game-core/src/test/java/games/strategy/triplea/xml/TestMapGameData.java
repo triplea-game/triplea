@@ -45,6 +45,8 @@ public enum TestMapGameData {
   MINIMAP("minimap.xml"),
 
   NAPOLEONIC_EMPIRES("Napoleonic_Empires.xml"),
+
+  FIRING_GROUPS("firing_groups_test.xml"),
   ;
 
   private final String fileName;

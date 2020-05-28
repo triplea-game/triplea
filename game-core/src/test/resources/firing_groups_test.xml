@@ -1,0 +1,580 @@
+<?xml version="1.0"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Suicide Units" version="1.0"/>
+  <triplea minimumVersion="1.8"/>
+  <diceSides value="12"/>
+  <map>
+    <!-- Territory Definitions -->
+    <territory name="1 Sea Zone" water="true"/>
+    <territory name="Germany"/>
+    <territory name="Britain"/>
+    <territory name="Usa"/>
+    <territory name="Italy"/>
+    <!-- Territory Connections -->
+    <connection t1="1 Sea Zone" t2="Germany"/>
+    <connection t1="1 Sea Zone" t2="Britain"/>
+    <connection t1="1 Sea Zone" t2="Usa"/>
+    <connection t1="1 Sea Zone" t2="Italy"/>
+    <connection t1="Germany" t2="Britain"/>
+    <connection t1="Germany" t2="Usa"/>
+    <connection t1="Germany" t2="Italy"/>
+    <connection t1="Britain" t2="Usa"/>
+    <connection t1="Britain" t2="Italy"/>
+    <connection t1="Usa" t2="Italy"/>
+  </map>
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+  <playerList>
+    <!-- In turn order -->
+    <player name="Germany" optional="false"/>
+    <player name="Britain" optional="false"/>
+    <player name="Italy" optional="false"/>
+    <player name="Usa" optional="false"/>
+  </playerList>
+  <unitList>
+    <unit name="mine"/>
+    <unit name="missile"/>
+    <unit name="artillery"/>
+    <unit name="tank"/>
+    <unit name="spy"/>
+    <unit name="spyKiller"/>
+    <unit name="spySuicider"/>
+    <unit name="fighter"/>
+    <unit name="transport"/>
+    <unit name="submarine"/>
+    <unit name="antiAirGun"/>
+    <unit name="antiTankGun"/>
+    <unit name="destroyer"/>
+    <unit name="cruiser"/>
+    <unit name="suicideAttacker"/>
+    <unit name="suicideDefender"/>
+    <unit name="suicideAntiAirGun"/>
+  </unitList>
+  <relationshipTypes>
+    <relationshipType name="Allied"/>
+    <relationshipType name="War"/>
+  </relationshipTypes>
+  <gamePlay>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+    <sequence>
+      <!-- Normal Game Sequence -->
+      <step name="germanyCombatMove" delegate="move" player="Germany"/>
+      <step name="germanyBattle" delegate="battle" player="Germany"/>
+      <step name="germanyNonCombatMove" delegate="move" player="Germany" display="Non Combat Move"/>
+      <step name="germanyEndTurn" delegate="endTurn" player="Germany"/>
+      <step name="britainCombatMove" delegate="move" player="Britain"/>
+      <step name="britainBattle" delegate="battle" player="Britain"/>
+      <step name="britainNonCombatMove" delegate="move" player="Britain" display="Non Combat Move"/>
+      <step name="britainEndTurn" delegate="endTurn" player="Britain"/>
+      <step name="italyCombatMove" delegate="move" player="Italy"/>
+      <step name="italyBattle" delegate="battle" player="Italy"/>
+      <step name="italyNonCombatMove" delegate="move" player="Italy" display="Non Combat Move"/>
+      <step name="italyEndTurn" delegate="endTurn" player="Italy"/>
+      <step name="usaCombatMove" delegate="move" player="Usa"/>
+      <step name="usaBattle" delegate="battle" player="Usa"/>
+      <step name="usaNonCombatMove" delegate="move" player="Usa" display="Non Combat Move"/>
+      <step name="usaEndTurn" delegate="endTurn" player="Usa"/>
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+  <technology>
+  </technology>
+  <attachmentList>
+    <!-- German Units -->
+    <attachment name="unitAttachment" attachTo="mine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="isSea" value="true"/>
+      <option name="isSub" value="true"/>
+      <option name="isAAforCombatOnly" value="true"/>
+      <option name="mayOverStackAA" value="true"/>
+      <option name="typeAA" value="navalmine"/>
+      <option name="targetsAA" value="cruiser"/>
+      <option name="maxAAattacks" value="1"/>
+      <option name="maxRoundsAA" value="1"/>
+      <option name="movement" value="0"/>
+      <option name="attackAA" value="2"/>
+      <option name="damageableAA" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="isSuicideOnHit" value="true"/>
+    </attachment>        
+    <attachment name="unitAttachment" attachTo="missile" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="1"/>
+      <option name="defense" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="isSub" value="true"/>
+      <option name="movement" value="0"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="isSuicideOnHit" value="true"/>
+    </attachment>        
+    <attachment name="unitAttachment" attachTo="tank" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="6"/>
+      <option name="defense" value="4"/>
+      <option name="transportCost" value="4"/>
+      <option name="canBlitz" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="canNotBeTargetedBy" value="spyKiller:spySuicider"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="spy" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="6"/>
+      <option name="defense" value="4"/>
+      <option name="transportCost" value="4"/>
+      <option name="canBlitz" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="canNotBeTargetedBy" value="tank:missile"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="spyKiller" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="6"/>
+      <option name="defense" value="4"/>
+      <option name="transportCost" value="4"/>
+      <option name="canBlitz" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="canNotTarget" value="tank"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="spySuicider" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="6"/>
+      <option name="defense" value="4"/>
+      <option name="transportCost" value="4"/>
+      <option name="canBlitz" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="isSuicideOnHit" value="true"/>
+      <option name="canNotTarget" value="tank"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="antiAirGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="isAAforCombatOnly" value="true"/>
+      <option name="typeAA" value="AntiAirGun"/>
+      <option name="targetsAA" value="fighter"/>
+      <option name="maxAAattacks" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="mayOverStackAA" value="true"/>
+      <option name="movement" value="1"/>
+      <option name="attackAA" value="2"/>
+      <option name="damageableAA" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="antiTankGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="isAAforCombatOnly" value="true"/>
+      <option name="typeAA" value="AntiTankGun"/>
+      <option name="targetsAA" value="tank"/>
+      <option name="maxAAattacks" value="1"/>
+      <option name="transportCost" value="2"/>
+      <option name="mayOverStackAA" value="true"/>
+      <option name="movement" value="1"/>
+      <option name="attackAA" value="2"/>
+      <option name="damageableAA" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="transport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="1"/>
+      <option name="transportCapacity" value="5"/>
+      <option name="isSea" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="submarine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="4"/>
+      <option name="defense" value="1"/>
+      <option name="isSea" value="true"/>
+      <option name="isSub" value="true"/>
+      <option name="isAAforCombatOnly" value="true"/>
+      <option name="isAAforBombingThisUnitOnly" value="false"/>
+      <option name="isAAforFlyOverOnly" value="false"/>
+      <option name="typeAA" value="Substrike"/>
+      <option name="targetsAA" value="destroyer"/>
+      <option name="maxAAattacks" value="1"/>
+      <option name="mayOverStackAA" value="true"/>
+      <option name="attackAA" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="destroyer" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="isSea" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="cruiser" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="6"/>
+      <option name="canBombard" value="true"/>
+      <option name="isSea" value="true"/>
+      <option name="bombard" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="attack" value="5"/>
+      <option name="defense" value="6"/>
+      <option name="isAir" value="true"/>
+      <option name="canScramble" value="true"/>
+      <option name="maxScrambleDistance" value="1"/>
+      <option name="canIntercept" value="true"/>
+      <option name="canEscort" value="true"/>
+      <option name="airDefense" value="6"/>
+      <option name="airAttack" value="5"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="suicideAttacker" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="isSuicideOnAttack" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="suicideDefender" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="isSuicideOnDefense" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="suicideAntiAirGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="3"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="isAAforCombatOnly" value="true"/>
+      <option name="typeAA" value="AntiAirGun"/>
+      <option name="targetsAA" value="fighter"/>
+      <option name="maxAAattacks" value="1"/>
+      <option name="mayOverStackAA" value="true"/>
+      <option name="attackAA" value="2"/>
+      <option name="damageableAA" value="true"/>
+      <option name="isSuicideOnHit" value="true"/>
+    </attachment>
+  </attachmentList>
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Germany" owner="Germany"/>
+      <territoryOwner territory="Britain" owner="Britain"/>
+      <territoryOwner territory="Italy" owner="Italy"/>
+      <territoryOwner territory="Usa" owner="Usa"/>
+    </ownerInitialize>
+    <relationshipInitialize>
+      <relationship type="Allied" player1="Italy" player2="Germany" roundValue="1"/>
+      <relationship type="Allied" player1="Usa" player2="Britain" roundValue="1"/>
+      <relationship type="War" player1="Britain" player2="Germany" roundValue="1"/>
+      <relationship type="War" player1="Britain" player2="Italy" roundValue="1"/>
+      <relationship type="War" player1="Usa" player2="Germany" roundValue="1"/>
+      <relationship type="War" player1="Usa" player2="Italy" roundValue="1"/>
+    </relationshipInitialize>
+  </initialize>
+  <propertyList>
+    <property name="Germany bid" value="5" editable="false">
+      <number min="0" max="1000"/>
+    </property>
+    <property name="Projection of Power" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Honorable Surrender" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Total Victory" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Economic Victory" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Alliances Can Chain Together" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="National Objectives" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Low Luck" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for AntiAircraft" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Bombing and Territory Damage" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Tech Development" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Low Luck for Technology" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Use Triggers" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Use Politics" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="LHTR Heavy Bombers" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
+      <number min="1" max="3"/>
+    </property>
+    <property name="Paratroopers Can Move During Non Combat" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Paratroopers Can Attack Deep Into Enemy Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Always on AA" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Kamikaze Airplanes" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits End Turn" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Repair Hits Start Turn" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two HitPoint Units Require Repair Facilities" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Selectable Zero Movement Units" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Multiply PUs" value="1" editable="false">
+      <number min="1" max="10"/>
+    </property>
+    <property name="Display Sea Names" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="WW2V3" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="WW2V3 Tech Model" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Selectable Tech Roll" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Scramble Rules In Effect" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Scrambled Units Return To Base" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Scramble To Sea Only" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Scramble From Island Only" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Scramble To Any Amphibious Assault" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Use Shipyards" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="All Rockets Attack" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Movement By Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unit Placement Per Territory Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Place in Any Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unplaced units live when not placed" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Can Be Changed On Capture" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Give Units By Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Capture Units On Entering Territory" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units Can Be Destroyed Instead Of Captured" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="More Constructions with Factory" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="More Constructions without Factory" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unlimited Constructions" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Blitz Through Factories And AA Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Roll AA Individually" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Choose AA Casualties" value="true" editable="true">
+      <boolean/>
+    </property>
+    <property name="Random AA Casualties" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="AA Territory Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Multiple AA Per Territory" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Suicide and Munition Casualties Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Defending Suicide and Munition Units Do Not Fire" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Units May Give Bonus Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Partial Amphibious Retreat" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Attacker Retreat Planes" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Hari-Kari Units" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Allied Air Dependents" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Surviving Air Move To Land" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Air Attack Sub Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Transport Restricted Unload" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Transport In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Transport Casualties Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unescorted Transport Dies" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Ignore Sub In Movement" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Defending Subs Sneak Attack" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Retreat Before Battle" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Submersible Subs" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Previous Units Fight" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Two hit Battleship" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="LHTR Carrier production rules" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unit Placement In Enemy Seas" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="maxFactoriesPerTerritory" value="1" editable="false">
+      <number min="1" max="10"/>
+    </property>
+    <property name="Placement Restricted By Factory" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Production Per Valued Territory Restricted" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Production Per X Territories Restricted" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Unit Placement Restrictions" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Raids May Be Preceeded By Air Battles" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Limit SBR Damage Per Turn" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="Use Bombing Max Dice Sides And Bonus" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Limit SBR Damage To Factory Production" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="neutralCharge" value="0" editable="false">
+      <number min="0" max="9999999"/>
+    </property>
+    <property name="Neutrals Are Impassable" value="false" editable="true">
+      <boolean/>
+    </property>
+    <property name="Neutrals Are Blitzable" value="true" editable="false">
+      <boolean/>
+    </property>
+    <property name="Neutral Flyover Allowed" value="false" editable="false">
+      <boolean/>
+    </property>
+    <property name="AI Bonus Income Flat Rate" value="0" editable="false">
+      <number min="-10" max="30"/>
+    </property>
+    <property name="AI Bonus Income Percentage" value="0" editable="false">
+      <number min="-30" max="120"/>
+    </property>
+    <property name="AI Bonus Attack" value="0" editable="false">
+      <number min="0" max="2"/>
+    </property>
+    <property name="AI Bonus Defense" value="0" editable="false">
+      <number min="0" max="2"/>
+    </property>
+    <property name="mapName" value="total_world_war" editable="false">
+      <string/>
+    </property>
+    <property name="notes">
+      <value><![CDATA[
+]]></value>
+    </property>
+  </propertyList>
+</game>

@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
 
+/** Finds AA units that can fire a shot against one of the targets. */
 @Builder
 public class FindAaUnits {
   private @NonNull final Collection<Unit> firingUnits;

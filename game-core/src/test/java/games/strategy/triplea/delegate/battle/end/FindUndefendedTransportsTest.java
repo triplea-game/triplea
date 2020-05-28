@@ -2,7 +2,6 @@ package games.strategy.triplea.delegate.battle.end;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -65,7 +64,8 @@ class FindUndefendedTransportsTest {
 
   @Test
   @DisplayName(
-      "Verify attacker can retreat if an air unit is available, even if it has no attack or support")
+      "Verify attacker can retreat if an air unit is available, "
+          + "even if it has no attack or support")
   void attackerHasAirRetreat() {
     final GameData gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
     final GamePlayer british = GameDataTestUtil.british(gameData);

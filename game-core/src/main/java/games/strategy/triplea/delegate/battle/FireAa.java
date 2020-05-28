@@ -94,7 +94,7 @@ public class FireAa implements IExecutable {
             .defending(defending)
             .gameData(bridge.getData())
             .build()
-            .getFiringGroupsWithSuicideFirst();
+            .getFiringGroups();
 
     for (final FiringGroup firingGroup : groupsAndTargets) {
       final Collection<Unit> validTargets = firingGroup.getValidTargets();

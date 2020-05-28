@@ -68,7 +68,8 @@ class FindUnitsWithNoRollsLeftTest {
 
   @Test
   @DisplayName(
-      "Verify attacker can retreat if an air unit is available, even if it has no attack or support")
+      "Verify attacker can retreat if an air unit is available, "
+          + "even if it has no attack or support")
   void attackerHasAirRetreat() {
     final GameData gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
     final GamePlayer british = GameDataTestUtil.british(gameData);

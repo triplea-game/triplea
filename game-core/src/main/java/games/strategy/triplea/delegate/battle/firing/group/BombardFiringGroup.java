@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.NonNull;
 
+/** Builds groups of bombarding units and their targets. */
 @Builder
 public class BombardFiringGroup {
 
@@ -13,7 +14,7 @@ public class BombardFiringGroup {
   private @NonNull final Collection<Unit> attackableUnits;
   private @NonNull final Boolean defending;
 
-  public List<FiringGroup> getFiringGroupsWithSuicideFirst() {
+  public List<FiringGroup> getFiringGroups() {
     return RegularFiringGroup.getFiringGroupsWorker(defending, firingUnits, attackableUnits);
   }
 }

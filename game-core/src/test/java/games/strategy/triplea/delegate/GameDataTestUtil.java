@@ -165,6 +165,14 @@ public final class GameDataTestUtil {
     return unitType("germanBattleship", data);
   }
 
+  public static UnitType britishBattleship(final GameData data) {
+    return unitType("britishBattleship", data);
+  }
+
+  public static UnitType britishAlpineInfantry(final GameData data) {
+    return unitType("britishAlpineInfantry", data);
+  }
+
   /** Returns a carrier UnitType object for the specified GameData object. */
   public static UnitType carrier(final GameData data) {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
@@ -300,6 +308,10 @@ public final class GameDataTestUtil {
     return unitType("germanAntiTankGun", data);
   }
 
+  public static UnitType germanAntiAirGun(final GameData data) {
+    return unitType("germanAntiAirGun", data);
+  }
+
   /** Returns a germanATSupport UnitType object for the specified GameData object. */
   public static UnitType germanAtSupport(final GameData data) {
     return unitType("germanATSupport", data);
@@ -315,6 +327,14 @@ public final class GameDataTestUtil {
     return unitType("americanTank", data);
   }
 
+  public static UnitType britishTank(final GameData data) {
+    return unitType("britishTank", data);
+  }
+
+  public static UnitType germanTank(final GameData data) {
+    return unitType("germanTank", data);
+  }
+
   /** Returns a americanCruiser UnitType object for the specified GameData object. */
   public static UnitType americanCruiser(final GameData data) {
     return unitType("americanCruiser", data);
@@ -323,6 +343,50 @@ public final class GameDataTestUtil {
   /** Returns a americanStrategicBomber UnitType object for the specified GameData object. */
   public static UnitType americanStrategicBomber(final GameData data) {
     return unitType("americanStrategicBomber", data);
+  }
+
+  public static UnitType antiTankGun(final GameData data) {
+    return unitType("antiTankGun", data);
+  }
+
+  public static UnitType antiAirGun(final GameData data) {
+    return unitType("antiAirGun", data);
+  }
+
+  public static UnitType suicideAntiAirGun(final GameData data) {
+    return unitType("suicideAntiAirGun", data);
+  }
+
+  public static UnitType suicideAttacker(final GameData data) {
+    return unitType("suicideAttacker", data);
+  }
+
+  public static UnitType suicideDefender(final GameData data) {
+    return unitType("suicideDefender", data);
+  }
+
+  public static UnitType missile(final GameData data) {
+    return unitType("missile", data);
+  }
+
+  public static UnitType spySuicider(final GameData data) {
+    return unitType("spySuicider", data);
+  }
+
+  public static UnitType spyKiller(final GameData data) {
+    return unitType("spyKiller", data);
+  }
+
+  public static UnitType spy(final GameData data) {
+    return unitType("spy", data);
+  }
+
+  public static UnitType cruiser(final GameData data) {
+    return unitType("cruiser", data);
+  }
+
+  public static UnitType tank(final GameData data) {
+    return unitType("tank", data);
   }
 
   /**

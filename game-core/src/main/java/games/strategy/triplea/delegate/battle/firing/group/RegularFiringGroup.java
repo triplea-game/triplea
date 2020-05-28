@@ -10,6 +10,7 @@ import lombok.NonNull;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
+/** Builds groups of regular units and their targets. */
 @Builder
 public class RegularFiringGroup {
 
@@ -17,7 +18,7 @@ public class RegularFiringGroup {
   private @NonNull final Collection<Unit> attackableUnits;
   private @NonNull final Boolean defending;
 
-  public List<FiringGroup> getFiringGroupsWithSuicideFirst() {
+  public List<FiringGroup> getFiringGroups() {
 
     final List<FiringGroup> groupsAndTargets = new ArrayList<>();
 
