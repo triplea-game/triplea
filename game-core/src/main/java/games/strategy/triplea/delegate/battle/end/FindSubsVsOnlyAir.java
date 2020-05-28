@@ -17,8 +17,8 @@ public class FindSubsVsOnlyAir {
   private @NonNull final Collection<Unit> enemyUnits;
 
   public List<Unit> find() {
-    // if ALL enemy units are AIR, return any friendly sub
-    if (enemyUnits.stream().allMatch(Matches.unitIsAir())) {
+    // if there are enemy units and ALL are AIR, return any friendly sub
+    if (!enemyUnits.isEmpty() && enemyUnits.stream().allMatch(Matches.unitIsAir())) {
       final Predicate<Unit> subMatch =
           Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
       return CollectionUtils.getMatches(friendlyUnits, subMatch);
