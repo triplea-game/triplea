@@ -2007,31 +2007,33 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               nobodyWins(bridge);
             } else {
               final int attackPower =
-                  DiceRoll.getTotalPower(
-                      DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                          attackingUnits,
-                          defendingUnits,
-                          attackingUnits,
-                          false,
-                          gameData,
-                          battleSite,
-                          territoryEffects,
-                          isAmphibious,
-                          amphibiousLandAttackers),
-                      gameData);
+                  DiceRoll.getTotalPowerAndRolls(
+                          DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                              attackingUnits,
+                              defendingUnits,
+                              attackingUnits,
+                              false,
+                              gameData,
+                              battleSite,
+                              territoryEffects,
+                              isAmphibious,
+                              amphibiousLandAttackers),
+                          gameData)
+                      .getEffectivePower();
               final int defensePower =
-                  DiceRoll.getTotalPower(
-                      DiceRoll.getUnitPowerAndRollsForNormalBattles(
-                          defendingUnits,
-                          attackingUnits,
-                          defendingUnits,
-                          true,
-                          gameData,
-                          battleSite,
-                          territoryEffects,
-                          isAmphibious,
-                          amphibiousLandAttackers),
-                      gameData);
+                  DiceRoll.getTotalPowerAndRolls(
+                          DiceRoll.getUnitPowerAndRollsForNormalBattles(
+                              defendingUnits,
+                              attackingUnits,
+                              defendingUnits,
+                              true,
+                              gameData,
+                              battleSite,
+                              territoryEffects,
+                              isAmphibious,
+                              amphibiousLandAttackers),
+                          gameData)
+                      .getEffectivePower();
               if (attackPower == 0 && defensePower == 0) {
                 if (canAttackerRetreatInStalemate()) {
                   attackerRetreat(bridge);
