@@ -2019,6 +2019,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               endBattle(bridge);
               attackerWins(bridge);
             } else if (maxRounds > 0 && maxRounds <= round) {
+              if (canAttackerRetreatInStalemate()) {
+                attackerRetreat(bridge);
+              }
+
               endBattle(bridge);
               nobodyWins(bridge);
             } else {
