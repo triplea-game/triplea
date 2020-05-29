@@ -11,5 +11,5 @@ script_dir=$(dirname "$0")
 "$script_dir/launch-http-server"
 
 # Run Tests
-./gradlew integTest -x :smoke-testing:integTest -x :smoke-testing:test
+./gradlew integTest -x :smoke-testing:integTest
 
