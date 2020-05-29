@@ -27,7 +27,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
-import games.strategy.triplea.delegate.battle.steps.StepStrings;
+import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -784,28 +784,28 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @VisibleForTesting
   public List<String> determineStepStrings(final boolean showFirstRun) {
-    return StepStrings.determineStepStrings(
-        canFireOffensiveAa(),
-        canFireDefendingAa(),
-        showFirstRun,
-        attacker,
-        defender,
-        offensiveAa,
-        defendingAa,
-        attackingUnits,
-        defendingUnits,
-        defendingWaitingToDie,
-        battleSite,
-        gameData,
-        bombardingUnits,
-        this::getDependentUnits,
-        canAttackerRetreatSubs(),
-        canAttackerRetreat(),
-        canAttackerRetreatPartialAmphib(),
-        canAttackerRetreatPlanes(),
-        canDefenderRetreatSubs(),
-        battleSite.isWater()
-    );
+    return BattleSteps.builder()
+        .canFireOffensiveAa(canFireOffensiveAa())
+        .canFireDefendingAa(canFireDefendingAa())
+        .showFirstRun(showFirstRun)
+        .attacker(attacker)
+        .defender(defender)
+        .offensiveAa(offensiveAa)
+        .defendingAa(defendingAa)
+        .attackingUnits(attackingUnits)
+        .defendingUnits(defendingUnits)
+        .attackingWaitingToDie(attackingWaitingToDie)
+        .defendingWaitingToDie(defendingWaitingToDie)
+        .battleSite(battleSite)
+        .gameData(gameData)
+        .bombardingUnits(bombardingUnits)
+        .getDependentUnits(this::getDependentUnits)
+        .isBattleSiteWater(battleSite.isWater())
+        .isAmphibious(isAmphibious)
+        .getAttackerRetreatTerritories(this::getAttackerRetreatTerritories)
+        .getEmptyOrFriendlySeaNeighbors(this::getEmptyOrFriendlySeaNeighbors)
+        .build()
+        .get();
   }
 
   private boolean canFireOffensiveAa() {

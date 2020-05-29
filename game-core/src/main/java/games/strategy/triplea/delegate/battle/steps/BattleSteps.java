@@ -13,32 +13,40 @@ import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import lombok.Builder;
+import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
 
-public class StepStrings implements BattleStepStrings {
+/** Get the steps that will occurr in the battle */
+@Builder
+public class BattleSteps implements BattleStepStrings {
 
-  public static List<String> determineStepStrings(
-      final boolean canFireOffensiveAa,
-      final boolean canFireDefendingAa,
-      final boolean showFirstRun,
-      final GamePlayer attacker,
-      final GamePlayer defender,
-      final Collection<Unit> offensiveAa,
-      final Collection<Unit> defendingAa,
-      final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final Collection<Unit> defendingWaitingToDie,
-      final Territory battleSite,
-      final GameData gameData,
-      final Collection<Unit> bombardingUnits,
-      final Function<Collection<Unit>, Collection<Unit>> getDependentUnits,
-      final boolean canAttackerRetreatSubs,
-      final boolean canAttackerRetreat,
-      final boolean canAttackerRetreatPartialAmphib,
-      final boolean canAttackerRetreatPlanes,
-      final boolean canDefenderRetreatSubs,
-      final boolean isBattleSiteWater) {
+  final @NonNull Boolean canFireOffensiveAa;
+  final @NonNull Boolean canFireDefendingAa;
+  final @NonNull Boolean showFirstRun;
+  final @NonNull GamePlayer attacker;
+  final @NonNull GamePlayer defender;
+  final @NonNull Collection<Unit> offensiveAa;
+  final @NonNull Collection<Unit> defendingAa;
+  final @NonNull Collection<Unit> attackingUnits;
+  final @NonNull Collection<Unit> defendingUnits;
+  final @NonNull Collection<Unit> attackingWaitingToDie;
+  final @NonNull Collection<Unit> defendingWaitingToDie;
+  final @NonNull Territory battleSite;
+  final @NonNull GameData gameData;
+  final @NonNull Collection<Unit> bombardingUnits;
+  final @NonNull Function<Collection<Unit>, Collection<Unit>> getDependentUnits;
+  final @NonNull Boolean isBattleSiteWater;
+  final @NonNull Boolean isAmphibious;
+  final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories;
+  final @NonNull BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>>
+      getEmptyOrFriendlySeaNeighbors;
+
+  public List<String> get() {
+
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAas(offensiveAa)) {
@@ -88,12 +96,9 @@ public class StepStrings implements BattleStepStrings {
         steps.add(REMOVE_UNESCORTED_TRANSPORTS);
       }
     }
-    final boolean defenderSubsFireFirst =
-        defenderSubsFireFirst();
-    final ReturnFire returnFireAgainstAttackingSubs =
-        returnFireAgainstAttackingSubs();
-    final ReturnFire returnFireAgainstDefendingSubs =
-        returnFireAgainstDefendingSubs();
+    final boolean defenderSubsFireFirst = defenderSubsFireFirst();
+    final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
+    final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
     // if attacker has no sneak attack subs, then defender sneak attack subs fire first and remove
     // casualties
     if (defenderSubsFireFirst && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
@@ -120,8 +125,7 @@ public class StepStrings implements BattleStepStrings {
             && returnFireAgainstDefendingSubs == ReturnFire.ALL;
     // defender subs sneak attack, no sneak attack in Pacific/Europe Theaters or if destroyers are
     // present
-    final boolean defendingSubsFireWithAllDefendersAlways =
-        !defendingSubsSneakAttack();
+    final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack();
     if (!defendingSubsFireWithAllDefendersAlways
         && !defendingSubsFireWithAllDefenders
         && !defenderSubsFireFirst
@@ -130,11 +134,11 @@ public class StepStrings implements BattleStepStrings {
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
     if ((attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike())
-        || defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike()))
+            || defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike()))
         && !defenderSubsFireFirst
         && !onlyAttackerSneakAttack
         && (returnFireAgainstDefendingSubs != ReturnFire.ALL
-        || returnFireAgainstAttackingSubs != ReturnFire.ALL)) {
+            || returnFireAgainstAttackingSubs != ReturnFire.ALL)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
     // Air units can't attack subs without Destroyers present
@@ -150,9 +154,10 @@ public class StepStrings implements BattleStepStrings {
     }
     // classic rules, subs fire with all defenders
     // also, ww2v3/global rules, defending subs without sneak attack fire with all defenders
-    final Collection<Unit> units = new ArrayList<>(defendingUnits);
-    units.addAll(defendingWaitingToDie);
-    if (units.stream().anyMatch(Matches.unitCanNotTargetAll())
+    final Collection<Unit> defendingUnitsAliveAndDamaged = new ArrayList<>(defendingUnits);
+    defendingUnitsAliveAndDamaged.addAll(defendingWaitingToDie);
+    // TODO: BUG? why is unitCanNotTargetAll used instead of unitIsFirstStrike?
+    if (defendingUnitsAliveAndDamaged.stream().anyMatch(Matches.unitCanNotTargetAll())
         && !defenderSubsFireFirst
         && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways)) {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
@@ -161,7 +166,7 @@ public class StepStrings implements BattleStepStrings {
     // Air Units can't attack subs without Destroyers present
     if (defendingUnits.stream().anyMatch(Matches.unitIsAir())
         && attackingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
-        && !canAirAttackSubs(attackingUnits, units)) {
+        && !canAirAttackSubs(attackingUnits, defendingUnitsAliveAndDamaged)) {
       steps.add(AIR_DEFEND_NON_SUBS);
     }
     if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
@@ -173,11 +178,12 @@ public class StepStrings implements BattleStepStrings {
     // retreat attacking subs
     if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
       if (Properties.getSubmersibleSubs(gameData)) {
+        // TODO: BUG? Should the presence of destroyers be checked?
         if (!Properties.getSubRetreatBeforeBattle(gameData)) {
           steps.add(attacker.getName() + SUBS_SUBMERGE);
         }
       } else {
-        if (canAttackerRetreatSubs) {
+        if (canAttackerRetreatSubs()) {
           steps.add(attacker.getName() + SUBS_WITHDRAW);
         }
       }
@@ -191,20 +197,21 @@ public class StepStrings implements BattleStepStrings {
     // later, if our sea units die, we may ask the user to retreat
     final boolean someAirAtSea =
         isBattleSiteWater && attackingUnits.stream().anyMatch(Matches.unitIsAir());
-    if (canAttackerRetreat
+    if (canAttackerRetreat()
         || someAirAtSea
-        || canAttackerRetreatPartialAmphib
-        || canAttackerRetreatPlanes) {
+        || canAttackerRetreatPartialAmphib()
+        || canAttackerRetreatPlanes()) {
       steps.add(attacker.getName() + ATTACKER_WITHDRAW);
     }
     // retreat defending subs
     if (defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
       if (Properties.getSubmersibleSubs(gameData)) {
+        // TODO: BUG? Should the presence of destroyers be checked?
         if (!Properties.getSubRetreatBeforeBattle(gameData)) {
           steps.add(defender.getName() + SUBS_SUBMERGE);
         }
       } else {
-        if (canDefenderRetreatSubs) {
+        if (canDefenderRetreatSubs()) {
           steps.add(defender.getName() + SUBS_WITHDRAW);
         }
       }
@@ -212,8 +219,7 @@ public class StepStrings implements BattleStepStrings {
     return steps;
   }
 
-  private static boolean canAirAttackSubs(
-      final Collection<Unit> firedAt, final Collection<Unit> firing) {
+  private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
     return firedAt.stream().noneMatch(Matches.unitCanNotBeTargetedByAll())
         || firing.stream().anyMatch(Matches.unitIsDestroyer());
   }
@@ -231,7 +237,8 @@ public class StepStrings implements BattleStepStrings {
       return false;
     }
     return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (getEmptyOrFriendlySeaNeighbors.apply(
+        && (getEmptyOrFriendlySeaNeighbors
+                    .apply(
                         defender,
                         CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
                     .size()
@@ -253,6 +260,7 @@ public class StepStrings implements BattleStepStrings {
   }
 
   private boolean canAttackerRetreatPlanes() {
+    // TODO: BUG? Why must it be amphibious to retreat planes
     return (Properties.getWW2V2(gameData)
             || Properties.getAttackerRetreatPlanes(gameData)
             || Properties.getPartialAmphibiousRetreat(gameData))
