@@ -885,6 +885,11 @@ public class DiceRoll implements Externalizable {
     @Nonnull Integer totalPower;
     @Nonnull Integer totalRolls;
 
+    /** Returns the product of power and dice rolls. */
+    public int getEffectivePower() {
+      return totalPower * totalRolls;
+    }
+
     public TotalPowerAndTotalRolls subtractPower(final int powerToSubtract) {
       return TotalPowerAndTotalRolls.builder()
           .totalPower(totalPower - powerToSubtract)
@@ -900,7 +905,7 @@ public class DiceRoll implements Externalizable {
     }
   }
 
-  private static TotalPowerAndTotalRolls getTotalPowerAndRolls(
+  public static TotalPowerAndTotalRolls getTotalPowerAndRolls(
       final Map<Unit, TotalPowerAndTotalRolls> unitPowerAndRollsMap, final GameData data) {
 
     final int diceSides = data.getDiceSides();
