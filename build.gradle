@@ -197,6 +197,7 @@ subprojects {
     checkstyleTest {
         maxWarnings = 0
         source sourceSets.test.output.resourcesDir
+        exclude '**/map-xmls/*.xml'
     }
 
     compileTestJava {
