@@ -91,8 +91,7 @@ public class Route implements Serializable, Iterable<Territory> {
     }
     final Collection<Territory> c1 = new ArrayList<>(r1.steps);
     c1.add(r1.getStart());
-    final Collection<Territory> c2 = new ArrayList<>(r2.steps);
-    if (!CollectionUtils.intersection(c1, c2).isEmpty()) {
+    if (!CollectionUtils.intersection(c1, r2.steps).isEmpty()) {
       return null;
     }
     final Route joined = new Route(r1.getStart());

@@ -13,6 +13,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
@@ -34,7 +35,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -602,6 +602,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     bridge.getHistoryWriter().startEvent("Battle in " + battleSite, battleSite);
     removeAirNoLongerInTerritory();
+    markAttackingTransports(bridge);
     writeUnitsToHistory(bridge);
     if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).isEmpty()) {
       endBattle(bridge);
@@ -669,92 +670,71 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     attackingUnits.removeAll(CollectionUtils.getMatches(attackingUnits, airNotInTerritory));
   }
 
+  private void markAttackingTransports(final IDelegateBridge bridge) {
+    if (headless) {
+      return;
+    }
+    // If any attacking transports are in the battle, set their status to later restrict
+    // load/unload
+    final Collection<Unit> transports =
+        CollectionUtils.getMatches(
+            attackingUnits, Matches.unitCanTransport().and(Matches.unitIsOwnedBy(attacker)));
+    if (!transports.isEmpty()) {
+      final CompositeChange change = new CompositeChange();
+      for (final Unit unit : transports) {
+        change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.WAS_IN_COMBAT));
+      }
+      bridge.addChange(change);
+    }
+  }
+
   private void writeUnitsToHistory(final IDelegateBridge bridge) {
     if (headless) {
       return;
     }
-    final Set<GamePlayer> playerSet = battleSite.getUnitCollection().getPlayersWithUnits();
-    // find all attacking players (unsorted)
-    final Collection<GamePlayer> attackers = new ArrayList<>();
-    for (final GamePlayer current : playerSet) {
-      if (gameData.getRelationshipTracker().isAllied(attacker, current)
-          || current.equals(attacker)) {
-        attackers.add(current);
+    final Set<GamePlayer> playersWithUnits = battleSite.getUnitCollection().getPlayersWithUnits();
+
+    final Collection<GamePlayer> attackers = findAllies(playersWithUnits, attacker);
+    addPlayerCombatHistoryText(attackers, attackingUnits, true, bridge.getHistoryWriter());
+    final Collection<GamePlayer> defenders = findAllies(playersWithUnits, defender);
+    addPlayerCombatHistoryText(defenders, defendingUnits, false, bridge.getHistoryWriter());
+  }
+
+  private static Collection<GamePlayer> findAllies(
+      final Collection<GamePlayer> candidatePlayers, final GamePlayer player) {
+    final var relationshipTracker = player.getData().getRelationshipTracker();
+    final Collection<GamePlayer> allies = new ArrayList<>();
+    for (final GamePlayer current : candidatePlayers) {
+      if (current.equals(player) || relationshipTracker.isAllied(player, current)) {
+        allies.add(current);
       }
     }
-    final StringBuilder transcriptText = new StringBuilder();
-    // find all attacking units (unsorted)
-    final Collection<Unit> allAttackingUnits = new ArrayList<>();
-    for (final Iterator<GamePlayer> attackersIter = attackers.iterator();
-        attackersIter.hasNext(); ) {
-      final GamePlayer current = attackersIter.next();
-      final String delim;
-      if (attackersIter.hasNext()) {
-        delim = "; ";
-      } else {
-        delim = "";
+    return allies;
+  }
+
+  private void addPlayerCombatHistoryText(
+      final Collection<GamePlayer> players,
+      final Collection<Unit> units,
+      final boolean attacking,
+      final IDelegateHistoryWriter historyWriter) {
+    final StringBuilder sb = new StringBuilder();
+    final Collection<Unit> allUnits = new ArrayList<>();
+    for (final GamePlayer current : players) {
+      if (sb.length() > 0) {
+        sb.append("; ");
       }
-      final Collection<Unit> attackingUnits =
-          CollectionUtils.getMatches(this.attackingUnits, Matches.unitIsOwnedBy(current));
-      final String verb = current.equals(attacker) ? "attack" : "loiter and taunt";
-      transcriptText
-          .append(current.getName())
-          .append(" ")
-          .append(verb)
-          .append(
-              attackingUnits.isEmpty()
-                  ? ""
-                  : " with " + MyFormatter.unitsToTextNoOwner(attackingUnits))
-          .append(delim);
-      allAttackingUnits.addAll(attackingUnits);
-      // If any attacking transports are in the battle, set their status to later restrict
-      // load/unload
-      if (current.equals(attacker)) {
-        final CompositeChange change = new CompositeChange();
-        final Collection<Unit> transports =
-            CollectionUtils.getMatches(attackingUnits, Matches.unitCanTransport());
-        for (final Unit unit : transports) {
-          change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.WAS_IN_COMBAT));
-        }
-        bridge.addChange(change);
+      final Collection<Unit> filteredUnits =
+          CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(current));
+      final String verb =
+          (!attacking ? "defend" : current.equals(attacker) ? "attack" : "loiter and taunt");
+      sb.append(current.getName()).append(" ").append(verb);
+      if (!filteredUnits.isEmpty()) {
+        sb.append(" with ").append(MyFormatter.unitsToTextNoOwner(filteredUnits));
       }
+      allUnits.addAll(filteredUnits);
     }
-    // write attacking units to history
-    if (!attackingUnits.isEmpty()) {
-      bridge.getHistoryWriter().addChildToEvent(transcriptText.toString(), allAttackingUnits);
-    }
-    // find all defending players (unsorted)
-    final Collection<GamePlayer> defenders = new ArrayList<>();
-    for (final GamePlayer current : playerSet) {
-      if (gameData.getRelationshipTracker().isAllied(defender, current)
-          || current.equals(defender)) {
-        defenders.add(current);
-      }
-    }
-    final StringBuilder transcriptBuilder = new StringBuilder();
-    // find all defending units (unsorted)
-    final Collection<Unit> allDefendingUnits = new ArrayList<>();
-    for (final Iterator<GamePlayer> defendersIter = defenders.iterator();
-        defendersIter.hasNext(); ) {
-      final GamePlayer current = defendersIter.next();
-      final String delim;
-      if (defendersIter.hasNext()) {
-        delim = "; ";
-      } else {
-        delim = "";
-      }
-      final Collection<Unit> defendingUnits =
-          CollectionUtils.getMatches(this.defendingUnits, Matches.unitIsOwnedBy(current));
-      transcriptBuilder
-          .append(current.getName())
-          .append(" defend with ")
-          .append(MyFormatter.unitsToTextNoOwner(defendingUnits))
-          .append(delim);
-      allDefendingUnits.addAll(defendingUnits);
-    }
-    // write defending units to history
-    if (!defendingUnits.isEmpty()) {
-      bridge.getHistoryWriter().addChildToEvent(transcriptBuilder.toString(), allDefendingUnits);
+    if (!allUnits.isEmpty()) {
+      historyWriter.addChildToEvent(sb.toString(), allUnits);
     }
   }
 
