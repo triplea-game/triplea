@@ -31,6 +31,11 @@ jobs:
       addons: {postgresql: "10"}
       script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
 
+    
+    - stage: Verify
+      name: "Tests: Compatibility Checks"
+      script: [ $VERIFY_STAGE/compatibility-testing/run || $REPORT_FAIL "compatibility tests" ]
+
     - stage: Verify
       name: "Analysis: PMD Verification"
       script: [ $VERIFY_STAGE/pmd-verification/run || $REPORT_FAIL "pmd verification" ]

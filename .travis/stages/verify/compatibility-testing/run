@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Runs the tests in smoke-testing subproject.
+
+set -ux
+
+./gradlew :smoke-testing:test :smoke-testing:integTest
+
