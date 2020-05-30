@@ -96,9 +96,12 @@ public class BattleSteps implements BattleStepStrings {
         steps.add(REMOVE_UNESCORTED_TRANSPORTS);
       }
     }
-    final boolean defenderSubsFireFirst = defenderSubsFireFirst();
-    final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
-    final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
+    final boolean defenderSubsFireFirst =
+        SubsChecks.defenderSubsFireFirst(attackingUnits, defendingUnits, gameData);
+    final ReturnFire returnFireAgainstAttackingSubs =
+        SubsChecks.returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData);
+    final ReturnFire returnFireAgainstDefendingSubs =
+        SubsChecks.returnFireAgainstDefendingSubs(attackingUnits, defendingUnits, gameData);
     // if attacker has no sneak attack subs, then defender sneak attack subs fire first and remove
     // casualties
     if (defenderSubsFireFirst && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
@@ -125,7 +128,8 @@ public class BattleSteps implements BattleStepStrings {
             && returnFireAgainstDefendingSubs == ReturnFire.ALL;
     // defender subs sneak attack, no sneak attack in Pacific/Europe Theaters or if destroyers are
     // present
-    final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack();
+    final boolean defendingSubsFireWithAllDefendersAlways =
+        !SubsChecks.defendingSubsSneakAttack(gameData);
     if (!defendingSubsFireWithAllDefendersAlways
         && !defendingSubsFireWithAllDefenders
         && !defenderSubsFireFirst
@@ -183,7 +187,12 @@ public class BattleSteps implements BattleStepStrings {
           steps.add(attacker.getName() + SUBS_SUBMERGE);
         }
       } else {
-        if (canAttackerRetreatSubs()) {
+        if (RetreatChecks.canAttackerRetreatSubs(
+            defendingUnits,
+            defendingWaitingToDie,
+            gameData,
+            getAttackerRetreatTerritories,
+            isAmphibious)) {
           steps.add(attacker.getName() + SUBS_WITHDRAW);
         }
       }
@@ -197,10 +206,11 @@ public class BattleSteps implements BattleStepStrings {
     // later, if our sea units die, we may ask the user to retreat
     final boolean someAirAtSea =
         isBattleSiteWater && attackingUnits.stream().anyMatch(Matches.unitIsAir());
-    if (canAttackerRetreat()
+    if (RetreatChecks.canAttackerRetreat(
+            defendingUnits, gameData, getAttackerRetreatTerritories, isAmphibious)
         || someAirAtSea
-        || canAttackerRetreatPartialAmphib()
-        || canAttackerRetreatPlanes()) {
+        || RetreatChecks.canAttackerRetreatPartialAmphib(attackingUnits, gameData, isAmphibious)
+        || RetreatChecks.canAttackerRetreatPlanes(attackingUnits, gameData, isAmphibious)) {
       steps.add(attacker.getName() + ATTACKER_WITHDRAW);
     }
     // retreat defending subs
@@ -211,7 +221,13 @@ public class BattleSteps implements BattleStepStrings {
           steps.add(defender.getName() + SUBS_SUBMERGE);
         }
       } else {
-        if (canDefenderRetreatSubs()) {
+        if (RetreatChecks.canDefenderRetreatSubs(
+            attackingUnits,
+            attackingWaitingToDie,
+            defender,
+            defendingUnits,
+            gameData,
+            getEmptyOrFriendlySeaNeighbors)) {
           steps.add(defender.getName() + SUBS_WITHDRAW);
         }
       }
@@ -222,109 +238,5 @@ public class BattleSteps implements BattleStepStrings {
   private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
     return firedAt.stream().noneMatch(Matches.unitCanNotBeTargetedByAll())
         || firing.stream().anyMatch(Matches.unitIsDestroyer());
-  }
-
-  private boolean canAttackerRetreatSubs() {
-    if (defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return defendingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (canAttackerRetreat() || Properties.getSubmersibleSubs(gameData));
-  }
-
-  private boolean canDefenderRetreatSubs() {
-    if (attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (getEmptyOrFriendlySeaNeighbors
-                    .apply(
-                        defender,
-                        CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
-                    .size()
-                != 0
-            || Properties.getSubmersibleSubs(gameData));
-  }
-
-  private boolean canAttackerRetreatPartialAmphib() {
-    if (isAmphibious && Properties.getPartialAmphibiousRetreat(gameData)) {
-      // Only include land units when checking for allow amphibious retreat
-      final List<Unit> landUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand());
-      for (final Unit unit : landUnits) {
-        if (!unit.getWasAmphibious()) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  private boolean canAttackerRetreatPlanes() {
-    // TODO: BUG? Why must it be amphibious to retreat planes
-    return (Properties.getWW2V2(gameData)
-            || Properties.getAttackerRetreatPlanes(gameData)
-            || Properties.getPartialAmphibiousRetreat(gameData))
-        && isAmphibious
-        && attackingUnits.stream().anyMatch(Matches.unitIsAir());
-  }
-
-  private boolean canAttackerRetreat() {
-    if (onlyDefenselessDefendingTransportsLeft()) {
-      return false;
-    }
-    if (isAmphibious) {
-      return false;
-    }
-    return !getAttackerRetreatTerritories.get().isEmpty();
-  }
-
-  private boolean onlyDefenselessDefendingTransportsLeft() {
-    return Properties.getTransportCasualtiesRestricted(gameData)
-        && !defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
-  }
-
-  private boolean defenderSubsFireFirst() {
-    return returnFireAgainstAttackingSubs() == ReturnFire.ALL
-        && returnFireAgainstDefendingSubs() == ReturnFire.NONE;
-  }
-
-  private ReturnFire returnFireAgainstAttackingSubs() {
-    final boolean attackingSubsSneakAttack =
-        defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
-    final ReturnFire returnFireAgainstAttackingSubs;
-    if (!attackingSubsSneakAttack) {
-      returnFireAgainstAttackingSubs = ReturnFire.ALL;
-    } else if (defendingSubsSneakAttack || Properties.getWW2V2(gameData)) {
-      returnFireAgainstAttackingSubs = ReturnFire.SUBS;
-    } else {
-      returnFireAgainstAttackingSubs = ReturnFire.NONE;
-    }
-    return returnFireAgainstAttackingSubs;
-  }
-
-  private ReturnFire returnFireAgainstDefendingSubs() {
-    final boolean attackingSubsSneakAttack =
-        defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
-    final ReturnFire returnFireAgainstDefendingSubs;
-    if (!defendingSubsSneakAttack) {
-      returnFireAgainstDefendingSubs = ReturnFire.ALL;
-    } else if (attackingSubsSneakAttack || Properties.getWW2V2(gameData)) {
-      returnFireAgainstDefendingSubs = ReturnFire.SUBS;
-    } else {
-      returnFireAgainstDefendingSubs = ReturnFire.NONE;
-    }
-    return returnFireAgainstDefendingSubs;
-  }
-
-  private boolean defendingSubsSneakAttackAndNoAttackingDestroyers() {
-    return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-        && defendingSubsSneakAttack();
-  }
-
-  private boolean defendingSubsSneakAttack() {
-    return Properties.getWW2V2(gameData) || Properties.getDefendingSubsSneakAttack(gameData);
   }
 }
