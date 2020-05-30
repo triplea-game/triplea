@@ -15,13 +15,8 @@ fi
 
 function checkUri() {
   local -r uri="$1"
-  
-  local -r curlResult=$(curl -s --head "$uri" | head -n 1)
-  echo "$uri -- $curlResult"  
-  # Temporarily disabled. We're unable to connect to A&A.org from Travis.
-
-  # echo $curlResult |  grep -qE  "HTTP/2 200|(200|302) (OK|Found)" \
-  #  || reportBrokenUri "$uri"
+  curl -s --head "$uri" | head -n 1  | grep -qE  "HTTP/(2|1.1) (200|302) (OK|Found)" \
+    || reportBrokenUri "$uri"
 }
 
 function reportBrokenUri() {
@@ -29,7 +24,7 @@ function reportBrokenUri() {
   local -r red="\e[38;5;196m"
   local -r blue="\e[38;5;75m"
   echo -en "Error: ${red}$uri${end} ${blue}"
-  curl -s --head "$uri" | head -n 1 | sed 's|HTTP/[12][.01]?||'
+  curl -s --head "$uri" | head -n 1 | sed -E 's!HTTP/(2|1.1)!!'
   echo -en "${end}"
 }
 
