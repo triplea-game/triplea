@@ -412,7 +412,7 @@ public final class GameDataTestUtil {
     }
   }
 
-  static int getIndex(final List<IExecutable> steps, final Class<?> type) {
+  public static int getIndex(final List<IExecutable> steps, final Class<?> type) {
     int indexOfType = -1;
     int index = 0;
     for (final IExecutable e : steps) {
