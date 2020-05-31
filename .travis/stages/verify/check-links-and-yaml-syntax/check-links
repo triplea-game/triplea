@@ -24,7 +24,7 @@ function reportBrokenUri() {
   local -r red="\e[38;5;196m"
   local -r blue="\e[38;5;75m"
   echo -en "Error: ${red}$uri${end} ${blue}"
-  curl -s --head "$uri" | head -n 1 | sed -E 's!HTTP/(2|1.1)!!'
+  (curl -s --head "$uri" || echo "Failed to connect!") | head -n 1 | sed -E 's!HTTP/(2|1.1)!!'
   echo -en "${end}"
 }
 
