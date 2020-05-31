@@ -62,34 +62,34 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class BattleStepsTest {
 
-  @Mock GameData mockGameData;
-  @Mock GameProperties mockGameProperties;
-  @Mock Function<Collection<Unit>, Collection<Unit>> mockGetDependentUnits;
+  @Mock GameData gameData;
+  @Mock GameProperties gameProperties;
+  @Mock Function<Collection<Unit>, Collection<Unit>> getDependentUnits;
   @Mock Supplier<Collection<Territory>> getAttackerRetreatTerritories;
 
   @Mock
   BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
 
-  @Mock Territory mockBattleSite;
+  @Mock Territory battleSite;
   @Mock GamePlayer attacker;
   @Mock GamePlayer defender;
   @Mock TechAttachment techAttachment;
   @Mock Unit unit1;
-  @Mock UnitType mockUnit1Type;
-  @Mock UnitAttachment mockUnit1Attachment;
+  @Mock UnitType unit1Type;
+  @Mock UnitAttachment unit1Attachment;
   @Mock Unit unit2;
-  @Mock UnitType mockUnit2Type;
-  @Mock UnitAttachment mockUnit2Attachment;
+  @Mock UnitType unit2Type;
+  @Mock UnitAttachment unit2Attachment;
   @Mock Unit unit3;
-  @Mock UnitType mockUnit3Type;
-  @Mock UnitAttachment mockUnit3Attachment;
+  @Mock UnitType unit3Type;
+  @Mock UnitAttachment unit3Attachment;
   @Mock Unit unit4;
-  @Mock UnitType mockUnit4Type;
-  @Mock UnitAttachment mockUnit4Attachment;
+  @Mock UnitType unit4Type;
+  @Mock UnitAttachment unit4Attachment;
 
   @BeforeEach
   void setupMocks() {
-    when(mockGameData.getProperties()).thenReturn(mockGameProperties);
+    when(gameData.getProperties()).thenReturn(gameProperties);
   }
 
   private void players() {
@@ -98,23 +98,23 @@ class BattleStepsTest {
   }
 
   private void unit1() {
-    when(unit1.getType()).thenReturn(mockUnit1Type);
-    when(mockUnit1Type.getAttachment(anyString())).thenReturn(mockUnit1Attachment);
+    when(unit1.getType()).thenReturn(unit1Type);
+    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
   }
 
   private void unit2() {
-    when(unit2.getType()).thenReturn(mockUnit2Type);
-    when(mockUnit2Type.getAttachment(anyString())).thenReturn(mockUnit2Attachment);
+    when(unit2.getType()).thenReturn(unit2Type);
+    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
   }
 
   private void unit3() {
-    when(unit3.getType()).thenReturn(mockUnit3Type);
-    when(mockUnit3Type.getAttachment(anyString())).thenReturn(mockUnit3Attachment);
+    when(unit3.getType()).thenReturn(unit3Type);
+    when(unit3Type.getAttachment(anyString())).thenReturn(unit3Attachment);
   }
 
   private void unit4() {
-    when(unit4.getType()).thenReturn(mockUnit4Type);
-    when(mockUnit4Type.getAttachment(anyString())).thenReturn(mockUnit4Attachment);
+    when(unit4.getType()).thenReturn(unit4Type);
+    when(unit4Type.getAttachment(anyString())).thenReturn(unit4Attachment);
   }
 
   private void attackerRetreat() {
@@ -133,7 +133,7 @@ class BattleStepsTest {
   private void makeDefenderFirstStrike(final UnitAttachment attachment) {
     when(attachment.getIsFirstStrike()).thenReturn(true);
     when(attachment.getCanEvade()).thenReturn(true);
-    when(attachment.getCanNotTarget()).thenReturn(Set.of(mockUnit3Type));
+    when(attachment.getCanNotTarget()).thenReturn(Set.of(unit3Type));
   }
 
   private void makeDestroyer(final UnitAttachment attachment) {
@@ -172,10 +172,10 @@ class BattleStepsTest {
         .defendingUnits(List.of())
         .attackingWaitingToDie(List.of())
         .defendingWaitingToDie(List.of())
-        .battleSite(mockBattleSite)
-        .gameData(mockGameData)
+        .battleSite(battleSite)
+        .gameData(gameData)
         .bombardingUnits(List.of())
-        .getDependentUnits(mockGetDependentUnits)
+        .getDependentUnits(getDependentUnits)
         .isBattleSiteWater(true)
         .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
         .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
@@ -190,8 +190,8 @@ class BattleStepsTest {
 
     assertThat(steps, is(List.of(REMOVE_CASUALTIES)));
 
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -210,8 +210,8 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(basicFightSteps()));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -236,8 +236,8 @@ class BattleStepsTest {
             mergeSteps(
                 List.of(NAVAL_BOMBARDMENT, SELECT_NAVAL_BOMBARDMENT_CASUALTIES),
                 basicFightSteps())));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -257,8 +257,8 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(basicFightSteps()));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -274,9 +274,9 @@ class BattleStepsTest {
     when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
-    when(mockUnit3Attachment.getIsAirTransport()).thenReturn(true);
-    when(mockBattleSite.getUnits()).thenReturn(List.of(unit1, unit3));
-    when(mockGetDependentUnits.apply(any())).thenReturn(List.of(unit4));
+    when(unit3Attachment.getIsAirTransport()).thenReturn(true);
+    when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));
+    when(getDependentUnits.apply(any())).thenReturn(List.of(unit4));
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
@@ -286,8 +286,8 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(mergeSteps(List.of(LAND_PARATROOPS), basicFightSteps())));
-    verify(mockGetDependentUnits, times(1)).apply(any());
-    verify(mockBattleSite, times(1)).getUnits();
+    verify(getDependentUnits, times(1)).apply(any());
+    verify(battleSite, times(1)).getUnits();
   }
 
   @Test
@@ -309,8 +309,8 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(basicFightSteps()));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -331,8 +331,8 @@ class BattleStepsTest {
 
     assertThat(steps, is(basicFightSteps()));
     verify(attacker, times(0)).getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -348,9 +348,9 @@ class BattleStepsTest {
     when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
-    when(mockUnit3Attachment.getIsAirTransport()).thenReturn(true);
-    when(mockBattleSite.getUnits()).thenReturn(List.of(unit1, unit3));
-    when(mockGetDependentUnits.apply(any())).thenReturn(List.of());
+    when(unit3Attachment.getIsAirTransport()).thenReturn(true);
+    when(battleSite.getUnits()).thenReturn(List.of(unit1, unit3));
+    when(getDependentUnits.apply(any())).thenReturn(List.of());
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
@@ -361,8 +361,8 @@ class BattleStepsTest {
 
     assertThat(steps, is(basicFightSteps()));
 
-    verify(mockGetDependentUnits, times(1)).apply(any());
-    verify(mockBattleSite, times(1)).getUnits();
+    verify(getDependentUnits, times(1)).apply(any());
+    verify(battleSite, times(1)).getUnits();
   }
 
   @Test
@@ -372,7 +372,7 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockUnit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
     final List<String> steps =
         getStepBuilder()
             .canFireOffensiveAa(true)
@@ -393,8 +393,8 @@ class BattleStepsTest {
                     defender.getName() + REMOVE_PREFIX + "AntiAirGun" + CASUALTIES_SUFFIX),
                 basicFightSteps())));
 
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -404,7 +404,7 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockUnit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
     final List<String> steps =
         getStepBuilder()
             .canFireDefendingAa(true)
@@ -425,8 +425,8 @@ class BattleStepsTest {
                     attacker.getName() + REMOVE_PREFIX + "AntiAirGun" + CASUALTIES_SUFFIX),
                 basicFightSteps())));
 
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -436,8 +436,8 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockUnit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(mockUnit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
     final List<String> steps =
         getStepBuilder()
             .canFireOffensiveAa(true)
@@ -463,8 +463,8 @@ class BattleStepsTest {
                     attacker.getName() + REMOVE_PREFIX + "AntiAirGun" + CASUALTIES_SUFFIX),
                 basicFightSteps())));
 
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -486,7 +486,7 @@ class BattleStepsTest {
 
     assertThat(steps, is(basicFightSteps()));
 
-    verify(mockGetDependentUnits, times(0)).apply(any());
+    verify(getDependentUnits, times(0)).apply(any());
     verify(attacker, times(0)).getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 
@@ -499,8 +499,8 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(mockUnit1Attachment.getCanEvade()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(unit1Attachment.getCanEvade()).thenReturn(true);
 
     final List<String> steps =
         getStepBuilder()
@@ -512,8 +512,8 @@ class BattleStepsTest {
     assertThat(
         steps, is(mergeSteps(List.of(attacker.getName() + SUBS_SUBMERGE), basicFightSteps())));
 
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -526,8 +526,8 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(mockUnit2Attachment.getCanEvade()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(unit2Attachment.getCanEvade()).thenReturn(true);
 
     final List<String> steps =
         getStepBuilder()
@@ -548,9 +548,9 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    makeTransport(mockUnit1Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
+    makeTransport(unit1Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -569,9 +569,9 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    makeTransport(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
+    makeTransport(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -593,7 +593,7 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    makeAttackerFirstStrike(mockUnit1Attachment);
+    makeAttackerFirstStrike(unit1Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -622,8 +622,8 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDestroyer(mockUnit2Attachment);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDestroyer(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -654,7 +654,7 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -683,11 +683,11 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -718,12 +718,12 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit1Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit1Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -752,10 +752,10 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -784,11 +784,11 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit1Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit1Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -820,8 +820,8 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -851,12 +851,12 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -890,14 +890,14 @@ class BattleStepsTest {
     unit3();
     unit4();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit3Attachment);
-    makeDestroyer(mockUnit4Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit3Attachment);
+    makeDestroyer(unit4Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -930,11 +930,11 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -968,13 +968,13 @@ class BattleStepsTest {
     unit3();
     unit4();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit3Attachment);
-    makeDestroyer(mockUnit4Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit3Attachment);
+    makeDestroyer(unit4Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -1010,13 +1010,13 @@ class BattleStepsTest {
     unit2();
     unit3();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit3Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit3Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -1050,13 +1050,13 @@ class BattleStepsTest {
     unit2();
     unit3();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit3Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit3Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -1089,12 +1089,12 @@ class BattleStepsTest {
     unit2();
     unit3();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit3Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit3Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -1126,12 +1126,12 @@ class BattleStepsTest {
     unit2();
     unit3();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit3Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit3Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -1162,12 +1162,12 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    when(mockUnit1Attachment.getCanNotBeTargetedBy()).thenReturn(Set.of(mockUnit2Type));
-    when(mockUnit2Attachment.getIsAir()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    when(unit1Attachment.getCanNotBeTargetedBy()).thenReturn(Set.of(unit2Type));
+    when(unit2Attachment.getIsAir()).thenReturn(true);
 
     final List<String> steps =
         getStepBuilder()
@@ -1198,13 +1198,13 @@ class BattleStepsTest {
     unit2();
     unit3();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    when(mockUnit1Attachment.getCanNotBeTargetedBy()).thenReturn(Set.of(mockUnit2Type));
-    when(mockUnit2Attachment.getIsAir()).thenReturn(true);
-    makeDestroyer(mockUnit3Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    when(unit1Attachment.getCanNotBeTargetedBy()).thenReturn(Set.of(unit2Type));
+    when(unit2Attachment.getIsAir()).thenReturn(true);
+    makeDestroyer(unit3Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -1234,12 +1234,12 @@ class BattleStepsTest {
     unit1();
     unit2();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    when(mockUnit2Attachment.getCanNotBeTargetedBy()).thenReturn(Set.of(mockUnit3Type));
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
+    when(unit2Attachment.getCanNotBeTargetedBy()).thenReturn(Set.of(unit3Type));
 
     final List<String> steps =
         getStepBuilder()
@@ -1272,12 +1272,12 @@ class BattleStepsTest {
     unit2();
     unit3();
 
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
-    makeDestroyer(mockUnit3Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
+    makeDestroyer(unit3Attachment);
 
     final List<String> steps =
         getStepBuilder()
@@ -1306,10 +1306,10 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    makeTransport(mockUnit1Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    makeTransport(unit1Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1318,8 +1318,8 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightSteps())));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -1328,10 +1328,10 @@ class BattleStepsTest {
     players();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    makeTransport(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    makeTransport(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1340,8 +1340,8 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightSteps())));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
   }
 
   @Test
@@ -1352,9 +1352,9 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1363,10 +1363,10 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(basicFightSteps()));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
     // it shouldn't even ask for the transportCapacity
-    verify(mockUnit1Attachment, times(0)).getTransportCapacity();
+    verify(unit1Attachment, times(0)).getTransportCapacity();
   }
 
   @Test
@@ -1377,9 +1377,9 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1388,11 +1388,11 @@ class BattleStepsTest {
             .get();
 
     assertThat(steps, is(basicFightSteps()));
-    verify(mockGetDependentUnits, times(0)).apply(any());
-    verify(mockBattleSite, times(0)).getUnits();
+    verify(getDependentUnits, times(0)).apply(any());
+    verify(battleSite, times(0)).getUnits();
     // it shouldn't even ask for the transportCapacity
-    verify(mockUnit2Attachment, times(0)).getTransportCapacity();
-    verify(mockUnit2Attachment, times(0)).getIsSea();
+    verify(unit2Attachment, times(0)).getTransportCapacity();
+    verify(unit2Attachment, times(0)).getIsSea();
   }
 
   @Test
@@ -1402,12 +1402,12 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1436,13 +1436,13 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDestroyer(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDestroyer(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1471,12 +1471,12 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1504,14 +1504,14 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    when(mockGameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
-    when(mockGameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1540,15 +1540,15 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    when(mockGameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
-    when(mockGameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    makeDestroyer(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    makeDestroyer(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1577,14 +1577,14 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    when(mockGameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
-    when(mockGameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    makeDefenderFirstStrike(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1609,10 +1609,10 @@ class BattleStepsTest {
   @DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
   void attackingFirstStrikeWithdrawIfAble() {
     players();
-    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(mockBattleSite));
+    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(battleSite));
     unit1();
     unit2();
-    makeAttackerFirstStrike(mockUnit1Attachment);
+    makeAttackerFirstStrike(unit1Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1643,7 +1643,7 @@ class BattleStepsTest {
     when(getAttackerRetreatTerritories.get()).thenReturn(List.of());
     unit1();
     unit2();
-    makeAttackerFirstStrike(mockUnit1Attachment);
+    makeAttackerFirstStrike(unit1Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1669,11 +1669,11 @@ class BattleStepsTest {
           + "when SUBMERSIBLE_SUBS is false and destroyers present")
   void attackingFirstStrikeNoWithdrawIfDestroyers() {
     players();
-    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(mockBattleSite));
+    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(battleSite));
     unit1();
     unit2();
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDestroyer(mockUnit2Attachment);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDestroyer(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1699,12 +1699,12 @@ class BattleStepsTest {
           + "when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
   void attackingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
     players();
-    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(mockBattleSite));
+    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(battleSite));
     unit1();
     unit2();
     unit3();
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeDestroyer(mockUnit2Attachment);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeDestroyer(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1734,10 +1734,10 @@ class BattleStepsTest {
     players();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    makeAttackerFirstStrike(mockUnit1Attachment);
-    makeTransport(mockUnit2Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
+    makeAttackerFirstStrike(unit1Attachment);
+    makeTransport(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1764,12 +1764,12 @@ class BattleStepsTest {
           + "and defenseless transports with non restricted casualties")
   void attackingFirstStrikeWithdrawIfNonRestrictedDefenselessTransports() {
     players();
-    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(mockBattleSite));
+    when(getAttackerRetreatTerritories.get()).thenReturn(List.of(battleSite));
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    makeAttackerFirstStrike(mockUnit1Attachment);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    makeAttackerFirstStrike(unit1Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1790,7 +1790,7 @@ class BattleStepsTest {
                 attacker.getName() + SUBS_WITHDRAW,
                 attacker.getName() + ATTACKER_WITHDRAW)));
     // it shouldn't even ask for the transportCapacity
-    verify(mockUnit1Attachment, times(0)).getTransportCapacity();
+    verify(unit1Attachment, times(0)).getTransportCapacity();
   }
 
   @Test
@@ -1798,10 +1798,10 @@ class BattleStepsTest {
   void defendingFirstStrikeWithdrawIfAble() {
     players();
     attackerRetreat();
-    when(getEmptyOrFriendlySeaNeighbors.apply(any(), any())).thenReturn(List.of(mockBattleSite));
+    when(getEmptyOrFriendlySeaNeighbors.apply(any(), any())).thenReturn(List.of(battleSite));
     unit1();
     unit2();
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1831,7 +1831,7 @@ class BattleStepsTest {
     when(getEmptyOrFriendlySeaNeighbors.apply(any(), any())).thenReturn(List.of());
     unit1();
     unit2();
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1859,8 +1859,8 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    makeDestroyer(mockUnit1Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    makeDestroyer(unit1Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1889,8 +1889,8 @@ class BattleStepsTest {
     unit1();
     unit2();
     unit3();
-    makeDestroyer(mockUnit3Attachment);
-    makeDefenderFirstStrike(mockUnit2Attachment);
+    makeDestroyer(unit3Attachment);
+    makeDefenderFirstStrike(unit2Attachment);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1917,7 +1917,7 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -1936,16 +1936,16 @@ class BattleStepsTest {
     unit1();
     unit2();
     unit3();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(false);
-    when(mockUnit1Attachment.getIsSea()).thenReturn(false);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(false);
+    when(unit1Attachment.getIsSea()).thenReturn(false);
     when(unit1.getWasAmphibious()).thenReturn(true);
-    when(mockUnit3Attachment.getIsAir()).thenReturn(false);
-    when(mockUnit3Attachment.getIsSea()).thenReturn(false);
+    when(unit3Attachment.getIsAir()).thenReturn(false);
+    when(unit3Attachment.getIsSea()).thenReturn(false);
     when(unit3.getWasAmphibious()).thenReturn(false);
     final List<String> steps =
         getStepBuilder()
@@ -1967,16 +1967,16 @@ class BattleStepsTest {
     unit1();
     unit2();
     unit3();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(false);
-    when(mockUnit1Attachment.getIsSea()).thenReturn(false);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(false);
+    when(unit1Attachment.getIsSea()).thenReturn(false);
     when(unit1.getWasAmphibious()).thenReturn(true);
-    when(mockUnit3Attachment.getIsAir()).thenReturn(false);
-    when(mockUnit3Attachment.getIsSea()).thenReturn(false);
+    when(unit3Attachment.getIsAir()).thenReturn(false);
+    when(unit3Attachment.getIsSea()).thenReturn(false);
     when(unit3.getWasAmphibious()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
@@ -2021,14 +2021,14 @@ class BattleStepsTest {
     unit1();
     unit2();
     unit3();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(false);
-    when(mockUnit3Attachment.getIsAir()).thenReturn(false);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(false);
+    when(unit3Attachment.getIsAir()).thenReturn(false);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
@@ -2047,9 +2047,9 @@ class BattleStepsTest {
     players();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -2072,14 +2072,14 @@ class BattleStepsTest {
     unit1();
     unit2();
     unit3();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
-    when(mockUnit3Attachment.getIsAir()).thenReturn(false);
-    when(mockUnit3Attachment.getIsSea()).thenReturn(false);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
+    when(unit3Attachment.getIsAir()).thenReturn(false);
+    when(unit3Attachment.getIsSea()).thenReturn(false);
     when(unit3.getWasAmphibious()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
@@ -2100,13 +2100,13 @@ class BattleStepsTest {
     players();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
-    when(mockGameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -2127,9 +2127,9 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -2152,13 +2152,13 @@ class BattleStepsTest {
     unit1();
     unit2();
     unit3();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(mockGameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
@@ -2179,12 +2179,12 @@ class BattleStepsTest {
     attackerRetreat();
     unit1();
     unit2();
-    when(mockGameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(mockGameProperties.get(WW2V2, false)).thenReturn(false);
-    when(mockGameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(mockGameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(mockGameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
-    when(mockUnit1Attachment.getIsAir()).thenReturn(true);
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(true);
+    when(unit1Attachment.getIsAir()).thenReturn(true);
     final List<String> steps =
         getStepBuilder()
             .attackingUnits(List.of(unit1))
