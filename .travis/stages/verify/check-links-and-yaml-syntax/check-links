@@ -15,7 +15,7 @@ fi
 
 function checkUri() {
   local -r uri="$1"
-  curl -s --head "$uri" | head -n 1  | grep -qE "HTTP/(2|1.1) (200( OK)?|302 Found)" \
+  curl -s --head "$uri" | head -n 1  | grep -qE "HTTP/(2 200|1.1 (200 OK|302 Found))" \
     || reportBrokenUri "$uri"
 }
 
