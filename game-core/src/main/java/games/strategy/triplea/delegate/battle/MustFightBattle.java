@@ -1377,6 +1377,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                 attacker, battleSite, gameData));
     // bombarding units can't move after bombarding
     if (!headless) {
+      // TODO: StepRefactor: Why is a change always added even if there are no units?
+      //       Shouldn't this be moved inside of the if (!bombard.isEmpty() ...) check?
       final Change change = ChangeFactory.markNoMovementChange(bombard);
       bridge.addChange(change);
     }
