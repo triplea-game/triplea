@@ -16,6 +16,7 @@ fi
 
 function checkUri() {
   local -r uri="$1"
+  local output
   if ! output="$FAILURE_PREFIX$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri")"; then
     reportBrokenUri "$uri" "$output"
   fi
@@ -25,9 +26,8 @@ function reportBrokenUri() {
   FAILURE=1 
   local -r red="\e[38;5;196m"
   local -r blue="\e[38;5;75m"
-  echo -en "Error: ${red}$1${end} ${blue}"
-  echo -en "${2//${FAILURE_PREFIX}000/Connection Failure!}"
-  echo -e "${end}"
+  local -r error_reason=${2//${FAILURE_PREFIX}000/Connection Failure!}
+  echo -e "Error: ${red}${1}${end} ${error_reason}${blue}${end}"
 }
 
 FAILURE=0
