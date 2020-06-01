@@ -31,12 +31,6 @@
     dest: "{{ flyway_extracted_location }}/conf/flyway.conf"
     mode: "644"
 
-- name: install unzip
-  become: true
-  apt:
-    state: present
-    name: unzip
-
 - name: extract migrations
   become: true
   become_user: flyway
