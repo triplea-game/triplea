@@ -15,7 +15,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -385,24 +384,25 @@ public class ClipPlayer {
             if (zipFile.exists()) {
               try (ZipFile zf = new ZipFile(zipFile)) {
 
-                final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
-                while (zipEnumeration.hasMoreElements()) {
-                  final ZipEntry zipElement = zipEnumeration.nextElement();
-                  if (isZippedMp3(zipElement, resourceAndPathUrl)) {
-                    try {
-                      final URL zipSoundUrl = resourceLoader.getResource(zipElement.getName());
-                      if (zipSoundUrl == null) {
-                        continue;
-                      }
-                      availableSounds.add(zipSoundUrl);
-                    } catch (final Exception e) {
-                      log.log(
-                          Level.SEVERE,
-                          "Failed to load sound resource: " + zipElement.getName(),
-                          e);
-                    }
-                  }
-                }
+                zf.stream()
+                    .forEach(
+                        zipElement -> {
+                          if (isZippedMp3(zipElement, resourceAndPathUrl)) {
+                            try {
+                              final URL zipSoundUrl =
+                                  resourceLoader.getResource(zipElement.getName());
+                              if (zipSoundUrl == null) {
+                                return;
+                              }
+                              availableSounds.add(zipSoundUrl);
+                            } catch (final Exception e) {
+                              log.log(
+                                  Level.SEVERE,
+                                  "Failed to load sound resource: " + zipElement.getName(),
+                                  e);
+                            }
+                          }
+                        });
               }
             }
           } catch (final Exception e) {
