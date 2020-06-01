@@ -1,5 +1,4 @@
 flyway_user: "flyway"
 flyway_version: "5.2.4"
 flyway_download_location: "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/{{ flyway_version }}/flyway-commandline-{{ flyway_version }}-linux-x64.tar.gz"
-flyway_downloaded_file_location: "/home/flyway/flyway-cli.tar.gz"
 flyway_extracted_location: "/home/flyway/flyway-{{ flyway_version }}"
