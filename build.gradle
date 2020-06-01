@@ -68,6 +68,7 @@ subprojects {
         awaitilityVersion = '4.0.3'
         bcryptVersion = '0.9.0'
         caffeineVersion = '2.8.1'
+        checkstyleVersion = '8.23'
         commonsCliVersion = '1.4'
         commonsCodecVersion = '1.14'
         commonsIoVersion = '2.7'
@@ -175,7 +176,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion = '8.23'
+        toolVersion = "$checkstyleVersion"
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
         configProperties = [samedir: configFile.parent]
     }
