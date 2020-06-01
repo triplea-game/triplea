@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -23,11 +24,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.java.Log;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
+@Log
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
   private static final int entryPadding = 15;
@@ -278,7 +282,9 @@ public abstract class AbstractMovePanel extends ActionPanel {
         () -> {
           setUpSpecific();
           this.playerBridge = bridge;
-          updateMoves();
+          AsyncRunner.runAsync(this::updateMoves)
+              .exceptionally(e -> log.log(Level.WARNING, "Failed to receive move updates", e));
+
           if (listening) {
             throw new IllegalStateException("Not listening");
           }
