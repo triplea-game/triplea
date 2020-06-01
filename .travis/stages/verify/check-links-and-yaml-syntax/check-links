@@ -6,6 +6,7 @@ URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
 green="\e[32m"
 end="\e[0m"
 FAILURE_PREFIX="Failed with Code: "
+IGNORE_LIST=()
 
 if [ -z "$URI_FILE" ]; then
   echo "Error could not find file 'UrlConstants.java'"
@@ -19,21 +20,28 @@ function checkUri() {
   local output
   if ! output="$FAILURE_PREFIX$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri")"; then
     reportBrokenUri "$uri" "$output"
+    FAILURE=1
   fi
 }
 
 function reportBrokenUri() {
-  FAILURE=1 
   local -r red="\e[38;5;196m"
   local -r blue="\e[38;5;75m"
   local -r error_reason=${2//${FAILURE_PREFIX}000/Connection Failure!}
-  echo -e "Error: ${red}${1}${end} ${error_reason}${blue}${end}"
+  echo -e "Error: ${red}${1}${end} ${blue}${error_reason}${end}"
+}
+
+function checkIsOnIgnoreList() {
+  for ignored_uri in "${IGNORE_LIST[@]}"; do
+    [[ "$1" = "$ignored_uri" ]] && return 0
+  done
+  return 1
 }
 
 FAILURE=0
 
 while read -r uri; do
-  checkUri "$uri";
+  checkIsOnIgnoreList "$uri" || checkUri "$uri"
 done < <(sed 's/^.*"\(.*\)".*$/\1/' "$URI_FILE" | grep "http")
 
 if [ "$FAILURE" == 0 ]; then
