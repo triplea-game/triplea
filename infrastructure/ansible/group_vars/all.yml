@@ -7,7 +7,14 @@ ansible_user: root
 java_open_jdk_version_major: "11"
 lobby_db_name: lobby_db
 lobby_db_user: lobby_user
-version: "{{ lookup('env', 'VERSION') }}"
 
 admin_user: "admin"
 admin_home: "/home/{{ admin_user }}"
+
+# If using latest we will build jar files from source,
+# otherwise they will be downloaded.
+# When set to 'false', the version' variable will
+# typically be specified.
+using_latest: true
+version: "{{ lookup('env', 'VERSION') }}"
+
