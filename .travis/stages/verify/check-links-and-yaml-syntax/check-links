@@ -6,7 +6,7 @@ URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
 green="\e[32m"
 end="\e[0m"
 FAILURE_PREFIX="Failed with Code: "
-IGNORE_LIST=()
+IGNORE_LIST=("https://www.axisandallies.org/forums")
 
 if [ -z "$URI_FILE" ]; then
   echo "Error could not find file 'UrlConstants.java'"
