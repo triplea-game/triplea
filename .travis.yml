@@ -70,13 +70,13 @@ jobs:
       python: "3.8"
       addons: { apt: { packages: [ sshpass ] } }
       install: [ pip install ansible ]
-      script: [ $DEPLOY_PRERELEASE_STAGE/ansible-deploy-to-prerelease/run || $REPORT_FAIL "prerelease deployment" ]
+      script: [ $DEPLOY_PRERELEASE_STAGE/deploy-to-prerelease-servers/run || $REPORT_FAIL "prerelease deployment" ]
     
 
     - stage: DeployPrerelease
       name: "Build Installer Downloads & Upload to Github Releases"
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
-      script: [ $DEPLOY_PRERELEASE_STAGE/installers/run || $REPORT_FAIL "build installers" ]
+      script: [ $DEPLOY_PRERELEASE_STAGE/push-to-github-releases/run || $REPORT_FAIL "build installers" ]
       deploy:
         on: { tags: false, repo: triplea-game/triplea, branch: master }
         provider: releases
