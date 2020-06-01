@@ -5,6 +5,7 @@ set -eu
 URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
 green="\e[32m"
 end="\e[0m"
+FAILURE_PREFIX="Failed with Code: "
 
 if [ -z "$URI_FILE" ]; then
   echo "Error could not find file 'UrlConstants.java'"
@@ -15,17 +16,18 @@ fi
 
 function checkUri() {
   local -r uri="$1"
-  curl -s --head "$uri" | head -n 1  | grep -qE "HTTP/(2 200|1.1 (200 OK|302 Found))" \
-    || reportBrokenUri "$uri"
+  if ! output="$FAILURE_PREFIX$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri")"; then
+    reportBrokenUri "$uri" "$output"
+  fi
 }
 
 function reportBrokenUri() {
   FAILURE=1 
   local -r red="\e[38;5;196m"
   local -r blue="\e[38;5;75m"
-  echo -en "Error: ${red}$uri${end} ${blue}"
-  (curl -s --head "$uri" || echo "Failed to connect!") | head -n 1 | sed -E 's!HTTP/(2|1.1)!!'
-  echo -en "${end}"
+  echo -en "Error: ${red}$1${end} ${blue}"
+  echo -en "${2//${FAILURE_PREFIX}000/Connection Failure!}"
+  echo -e "${end}"
 }
 
 FAILURE=0
