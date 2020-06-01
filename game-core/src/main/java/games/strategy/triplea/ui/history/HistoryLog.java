@@ -21,8 +21,6 @@ import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.awt.BorderLayout;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -51,8 +49,7 @@ import org.triplea.java.collections.IntegerMap;
 public class HistoryLog extends JFrame {
   private static final long serialVersionUID = 4880602702815333376L;
   private final JTextArea textArea;
-  private final StringWriter stringWriter;
-  private final PrintWriter printWriter;
+  private final StringBuilder stringBuilder = new StringBuilder();
 
   public HistoryLog() {
     textArea = new JTextArea(40, 80);
@@ -62,8 +59,6 @@ public class HistoryLog extends JFrame {
     final JPanel content = new JPanel();
     content.setLayout(new BorderLayout());
     content.add(scrollingArea, BorderLayout.CENTER);
-    stringWriter = new StringWriter();
-    printWriter = new PrintWriter(stringWriter);
     // ... Set window characteristics.
     this.setContentPane(content);
     this.setTitle("History Log");
@@ -71,17 +66,17 @@ public class HistoryLog extends JFrame {
     this.setLocationRelativeTo(null);
   }
 
-  public PrintWriter getWriter() {
-    return printWriter;
+  public void append(final String string) {
+    stringBuilder.append(string);
   }
 
   @Override
   public String toString() {
-    return stringWriter.toString();
+    return stringBuilder.toString();
   }
 
   public void clear() {
-    stringWriter.getBuffer().delete(0, stringWriter.getBuffer().length());
+    stringBuilder.setLength(0);
     textArea.setText("");
   }
 
@@ -172,7 +167,6 @@ public class HistoryLog extends JFrame {
       final boolean verbose,
       final int diceSides,
       final Collection<GamePlayer> playersAllowed) {
-    final PrintWriter logWriter = printWriter;
     final String moreIndent = "    ";
     // print out the parent nodes
     final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
@@ -181,12 +175,10 @@ public class HistoryLog extends JFrame {
       final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
         final HistoryNode node = (HistoryNode) pathNode;
-        for (int i = 0; i < node.getLevel(); i++) {
-          logWriter.print(moreIndent);
-        }
-        logWriter.println(node.getTitle());
+        stringBuilder.append(moreIndent.repeat(Math.max(0, node.getLevel())));
+        stringBuilder.append(node.getTitle());
         if (node.getLevel() == 0) {
-          logWriter.println();
+          stringBuilder.append('\n');
         }
         if (node instanceof Step) {
           currentPlayer = ((Step) node).getPlayerId();
@@ -216,7 +208,7 @@ public class HistoryLog extends JFrame {
         if (moving && !(node instanceof Renderable)) {
           final Iterator<String> moveIter = moveList.iterator();
           while (moveIter.hasNext()) {
-            logWriter.println(moveIter.next());
+            stringBuilder.append(moveIter.next()).append('\n');
             moveIter.remove();
           }
           moving = false;
@@ -230,10 +222,10 @@ public class HistoryLog extends JFrame {
             final String diceMsg1 = title.substring(0, title.indexOf(':') + 1);
             if (diceMsg1.isEmpty()) {
               // tech roll
-              logWriter.println(indent + moreIndent + title);
+              stringBuilder.append(indent).append(moreIndent).append(title).append('\n');
             } else {
               // dice roll
-              logWriter.print(indent + moreIndent + diceMsg1);
+              stringBuilder.append(indent).append(moreIndent).append(diceMsg1);
               final String hitDifferentialKey =
                   parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
               final DiceRoll diceRoll = (DiceRoll) details;
@@ -243,14 +235,15 @@ public class HistoryLog extends JFrame {
                 rolls += diceRoll.getRolls(i).size();
               }
               final double expectedHits = diceRoll.getExpectedHits();
-              logWriter.println(
-                  " "
-                      + hits
-                      + "/"
-                      + rolls
-                      + " hits, "
-                      + String.format("%.2f", expectedHits)
-                      + " expected hits");
+              stringBuilder
+                  .append(" ")
+                  .append(hits)
+                  .append("/")
+                  .append(rolls)
+                  .append(" hits, ")
+                  .append(String.format("%.2f", expectedHits))
+                  .append(" expected hits")
+                  .append('\n');
               final double hitDifferential = hits - expectedHits;
               hitDifferentialMap.merge(hitDifferentialKey, hitDifferential, Double::sum);
             }
@@ -278,20 +271,20 @@ public class HistoryLog extends JFrame {
                 if (title.matches("\\w+ buy .*")
                     || title.matches("\\w+ attack with .*")
                     || title.matches("\\w+ defend with .*")) {
-                  logWriter.println(indent + title);
+                  stringBuilder.append(indent).append(title).append('\n');
                 } else if (title.matches("\\d+ \\w+ owned by the .*? lost .*")
                     || title.matches("\\d+ \\w+ owned by the .*? lost")) {
                   if (!verbose) {
                     continue;
                   }
-                  logWriter.println(indent + moreIndent + title);
+                  stringBuilder.append(indent).append(moreIndent).append(title).append('\n');
                 } else if (title.startsWith("Battle casualty summary:")) {
-                  // logWriter.println(indent+"CAS1: "+title);
-                  logWriter.println(
-                      indent
-                          + conquerStr.toString()
-                          + ". Battle score "
-                          + title.substring(title.indexOf("for attacker is")));
+                  stringBuilder
+                      .append(indent)
+                      .append(conquerStr.toString())
+                      .append(". Battle score ")
+                      .append(title.substring(title.indexOf("for attacker is")))
+                      .append('\n');
                   conquerStr = new StringBuilder();
                   // separate units by player and show casualty summary
                   final IntegerMap<GamePlayer> unitCount = new IntegerMap<>();
@@ -301,16 +294,17 @@ public class HistoryLog extends JFrame {
                     unitCount.add(unit.getOwner(), 1);
                   }
                   for (final GamePlayer player : unitCount.keySet()) {
-                    logWriter.println(
-                        indent
-                            + "Casualties for "
-                            + player.getName()
-                            + ": "
-                            + MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player));
+                    stringBuilder
+                        .append(indent)
+                        .append("Casualties for ")
+                        .append(player.getName())
+                        .append(": ")
+                        .append(MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player))
+                        .append('\n');
                   }
                 } else if (title.matches(".*? placed in .*")
                     || title.matches(".* owned by the \\w+ retreated to .*")) {
-                  logWriter.println(indent + title);
+                  stringBuilder.append(indent).append(title).append('\n');
                 } else if (title.matches("\\w+ win")) {
                   conquerStr =
                       new StringBuilder(
@@ -320,11 +314,11 @@ public class HistoryLog extends JFrame {
                               + MyFormatter.unitsToTextNoOwner(allUnitsInDetails)
                               + " remaining");
                 } else {
-                  logWriter.println(indent + title);
+                  stringBuilder.append(indent).append(title).append('\n');
                 }
               } else {
                 // collection of unhandled objects
-                logWriter.println(indent + title);
+                stringBuilder.append(indent).append(title).append('\n');
               }
             } else {
               // empty collection of something
@@ -332,16 +326,16 @@ public class HistoryLog extends JFrame {
                 conquerStr = new StringBuilder(title + conquerStr + " with no units remaining");
               } else {
                 // empty collection of unhandled objects
-                logWriter.println(indent + title);
+                stringBuilder.append(indent).append(title).append('\n');
               }
             }
           } else if (details instanceof Territory) {
             // territory details
-            logWriter.println(indent + title);
+            stringBuilder.append(indent).append(title).append('\n');
           } else if (details == null) {
             if (titleNeedsFurtherProcessing(title)) {
               if (title.matches("\\w+ collect \\d+ PUs?.*")) {
-                logWriter.println(indent + title);
+                stringBuilder.append(indent).append(title).append('\n');
               } else if (title.matches("\\w+ takes? .*? from \\w+")) {
                 // British take Libya from Germans
                 if (moving) {
@@ -351,32 +345,32 @@ public class HistoryLog extends JFrame {
                   conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
                 }
               } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
-                logWriter.println(indent + title);
+                stringBuilder.append(indent).append(title).append('\n');
               } else if (!title.startsWith("Rolls to resolve tech hits:")) {
-                logWriter.println(indent + title);
+                stringBuilder.append(indent).append(title).append('\n');
               }
             }
           } else {
             // unknown details object
-            logWriter.println(indent + title);
+            stringBuilder.append(indent).append(title).append('\n');
           }
         } else if (node instanceof Step) {
           final GamePlayer gamePlayer = ((Step) node).getPlayerId();
           if (!title.equals("Initializing Delegates")) {
-            logWriter.println();
-            logWriter.print(indent + title);
+            stringBuilder.append('\n');
+            stringBuilder.append(indent).append(title);
             if (gamePlayer != null) {
               currentPlayer = gamePlayer;
               players.add(currentPlayer);
-              logWriter.print(" - " + gamePlayer.getName());
+              stringBuilder.append(" - ").append(gamePlayer.getName());
             }
-            logWriter.println();
+            stringBuilder.append('\n');
           }
         } else if (node instanceof Round) {
-          logWriter.println();
-          logWriter.println(indent + title);
+          stringBuilder.append('\n');
+          stringBuilder.append(indent).append(title).append('\n');
         } else {
-          logWriter.println(indent + title);
+          stringBuilder.append(indent).append(title).append('\n');
         }
       } // while (nodeEnum.hasMoreElements())
       curNode = curNode.getNextSibling();
@@ -385,21 +379,25 @@ public class HistoryLog extends JFrame {
     if (moving && !moveList.isEmpty()) {
       final Iterator<String> moveIter = moveList.iterator();
       while (moveIter.hasNext()) {
-        logWriter.println(moveIter.next());
+        stringBuilder.append(moveIter.next()).append('\n');
         moveIter.remove();
       }
     }
-    logWriter.println();
+    stringBuilder.append('\n');
     if (verbose) {
-      logWriter.println("Combat Hit Differential Summary :");
-      logWriter.println();
+      stringBuilder.append("Combat Hit Differential Summary :").append('\n');
+      stringBuilder.append('\n');
       for (final String player : hitDifferentialMap.keySet()) {
-        logWriter.println(
-            moreIndent + player + " : " + String.format("%.2f", hitDifferentialMap.get(player)));
+        stringBuilder
+            .append(moreIndent)
+            .append(player)
+            .append(" : ")
+            .append(String.format("%.2f", hitDifferentialMap.get(player)))
+            .append('\n');
       }
     }
-    logWriter.println();
-    textArea.setText(stringWriter.toString());
+    stringBuilder.append('\n');
+    textArea.setText(stringBuilder.toString());
   }
 
   private static boolean titleNeedsFurtherProcessing(final String title) {
@@ -485,10 +483,12 @@ public class HistoryLog extends JFrame {
     if (players == null || players.isEmpty() || territories == null || territories.isEmpty()) {
       return;
     }
-    final PrintWriter logWriter = printWriter;
     // print all units in all territories, including "flags"
-    logWriter.println(
-        "Territory Summary for " + MyFormatter.defaultNamedToTextList(players) + " : \n");
+    stringBuilder
+        .append("Territory Summary for ")
+        .append(MyFormatter.defaultNamedToTextList(players))
+        .append(" : \n")
+        .append('\n');
     for (final Territory t : territories) {
       final List<Unit> ownedUnits =
           t.getUnitCollection().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
@@ -500,37 +500,33 @@ public class HistoryLog extends JFrame {
               && players.contains(t.getOwner())
               && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
       if (hasFlag || !ownedUnits.isEmpty()) {
-        logWriter.print("    " + t.getName() + " : ");
+        stringBuilder.append("    ").append(t.getName()).append(" : ");
         if (hasFlag && ownedUnits.isEmpty()) {
-          logWriter.println("1 flag");
+          stringBuilder.append("1 flag").append('\n');
         } else if (hasFlag) {
-          logWriter.print("1 flag, ");
+          stringBuilder.append("1 flag, ");
         }
         if (!ownedUnits.isEmpty()) {
-          logWriter.println(MyFormatter.unitsToTextNoOwner(ownedUnits));
+          stringBuilder.append(MyFormatter.unitsToTextNoOwner(ownedUnits)).append('\n');
         }
       }
     }
-    logWriter.println();
-    logWriter.println();
-    textArea.setText(stringWriter.toString());
+    stringBuilder.append('\n');
+    stringBuilder.append('\n');
+    textArea.setText(stringBuilder.toString());
   }
 
   public void printDiceStatistics(final GameData data, final IRandomStats randomStats) {
-    final PrintWriter logWriter = printWriter;
     final RandomStatsDetails stats = randomStats.getRandomStats(data.getDiceSides());
     final String diceStats = stats.getAllStatsString();
     if (diceStats.length() > 0) {
-      logWriter.println(diceStats);
-      logWriter.println();
-      logWriter.println();
+      stringBuilder.append(diceStats).append('\n').append('\n').append('\n');
     }
-    textArea.setText(stringWriter.toString());
+    textArea.setText(stringBuilder.toString());
   }
 
   /** Adds a production summary for each player in the game to the log. */
   public void printProductionSummary(final GameData data) {
-    final PrintWriter logWriter = printWriter;
     final Collection<GamePlayer> players;
     final Resource pus;
     data.acquireReadLock();
@@ -543,15 +539,21 @@ public class HistoryLog extends JFrame {
     if (pus == null) {
       return;
     }
-    logWriter.println("Production/PUs Summary :\n");
+    stringBuilder.append("Production/PUs Summary :\n").append('\n');
     for (final GamePlayer player : players) {
       final int pusQuantity = player.getResources().getQuantity(pus);
       final int production = getProduction(player, data);
-      logWriter.println("    " + player.getName() + " : " + production + " / " + pusQuantity);
+      stringBuilder
+          .append("    ")
+          .append(player.getName())
+          .append(" : ")
+          .append(production)
+          .append(" / ")
+          .append(pusQuantity)
+          .append('\n');
     }
-    logWriter.println();
-    logWriter.println();
-    textArea.setText(stringWriter.toString());
+    stringBuilder.append('\n').append('\n');
+    textArea.setText(stringBuilder.toString());
   }
 
   private static int getProduction(final GamePlayer player, final GameData data) {

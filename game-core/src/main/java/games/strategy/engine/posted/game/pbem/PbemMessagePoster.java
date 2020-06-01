@@ -287,7 +287,8 @@ public class PbemMessagePoster implements Serializable {
                 if (gameProperties.get(IEmailSender.SUBJECT) != null) {
                   sb1.append("\nEmails: ").append(emailSendStatus);
                 }
-                historyLog.getWriter().println(sb1.toString());
+                historyLog.append(sb1.toString());
+                historyLog.append("\n");
                 if (historyLog.isVisible()) {
                   historyLog.setVisible(true);
                 }
