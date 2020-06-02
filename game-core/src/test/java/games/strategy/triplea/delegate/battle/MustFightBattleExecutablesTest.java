@@ -148,140 +148,7 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify Offensive/Defensive AA step is not added if no AA offensive/defensive units")
-  void aaStepsNotAdded() {
-    final MustFightBattle battle = newBattle(LAND);
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertStepIsMissing(execs, MustFightBattle.FireOffensiveAaGuns.class);
-    assertStepIsMissing(execs, MustFightBattle.FireDefensiveAaGuns.class);
-    assertStepIsMissing(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class);
-  }
-
-  @Test
-  @DisplayName("Verify Offensive AA step is added if has AA offensive units")
-  void aaOffensiveStepAdded() {
-    final MustFightBattle battle = newBattle(LAND);
-    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
-    when(unit1.getType()).thenReturn(unit1Type);
-    when(unit1.getOwner()).thenReturn(attacker);
-    when(unit1.getData()).thenReturn(gameData);
-    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
-    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit1Attachment.getOffensiveAttackAa(attacker)).thenReturn(1);
-    when(unit1Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit1Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit1Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit2Type));
-    when(unit1Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    when(unit2.getType()).thenReturn(unit2Type);
-    when(unit2.getOwner()).thenReturn(defender);
-    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
-
-    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThat(
-        "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
-        is(0));
-
-    assertThat(
-        "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns",
-        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(1));
-
-    assertStepIsMissing(execs, MustFightBattle.FireDefensiveAaGuns.class);
-  }
-
-  @Test
-  @DisplayName("Verify Defensive AA step is added if has AA defensive units")
-  void aaDefensiveStepAdded() {
-    final MustFightBattle battle = newBattle(LAND);
-    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
-    when(unit2.getType()).thenReturn(unit2Type);
-    when(unit2.getOwner()).thenReturn(defender);
-    when(unit2.getData()).thenReturn(gameData);
-    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
-    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit2Attachment.getAttackAa(defender)).thenReturn(1);
-    when(unit2Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit2Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit2Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit1Type));
-    when(unit2Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    when(unit1.getType()).thenReturn(unit1Type);
-    when(unit1.getOwner()).thenReturn(attacker);
-    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
-
-    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThat(
-        "FireDefensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
-        is(0));
-
-    assertThat(
-        "ClearAaWaitingToDieAndDamagedChangesInto is after FireDefensiveAaGuns",
-        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(1));
-
-    assertStepIsMissing(execs, MustFightBattle.FireOffensiveAaGuns.class);
-  }
-
-  @Test
-  @DisplayName(
-      "Verify Offensive/Defensive AA step is added if has both AA offensive and defensive units")
-  void aaOffensiveAndDefensiveStepAdded() {
-    final MustFightBattle battle = newBattle(LAND);
-    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
-
-    // Unit1 is an AA attacker that can target Unit2
-    when(unit1.getType()).thenReturn(unit1Type);
-    when(unit1.getOwner()).thenReturn(attacker);
-    when(unit1.getData()).thenReturn(gameData);
-    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
-    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit1Attachment.getOffensiveAttackAa(attacker)).thenReturn(1);
-    when(unit1Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit1Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit1Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit2Type));
-    when(unit1Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    // Unit2 is an AA defender that can target Unit1
-    when(unit2.getType()).thenReturn(unit2Type);
-    when(unit2.getOwner()).thenReturn(defender);
-    when(unit2.getData()).thenReturn(gameData);
-    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
-    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
-    when(unit2Attachment.getAttackAa(defender)).thenReturn(1);
-    when(unit2Attachment.getMaxAaAttacks()).thenReturn(1);
-    when(unit2Attachment.getMaxRoundsAa()).thenReturn(-1);
-    when(unit2Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit1Type));
-    when(unit2Attachment.getIsAaForCombatOnly()).thenReturn(true);
-
-    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThat(
-        "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
-        is(0));
-
-    assertThat(
-        "FireDefensiveAaGuns should be the second step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
-        is(1));
-
-    assertThat(
-        "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns and FireDefensiveAaGuns",
-        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
-        is(2));
-  }
-
-  @Test
-  @DisplayName("Verify Bombard step is added on first round")
+  @DisplayName("Verify basic land battle with bombard on first run")
   void bombardStepAddedOnFirstRound() {
     final MustFightBattle battle = newBattle(LAND);
 
@@ -295,7 +162,7 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify Bombard step is not added on subsequent rounds")
+  @DisplayName("Verify basic land battle with bombard on subsequent run")
   void bombardStepNotAddedOnSubsequentRound() {
     final MustFightBattle battle = newBattle(LAND);
 
@@ -353,7 +220,7 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify Paratrooper step is added on first round")
+  @DisplayName("Verify basic land battle with paratroopers on first run")
   void paratrooperStepAddedOnFirstRound() {
     final MustFightBattle battle = newBattle(LAND);
 
@@ -365,9 +232,10 @@ class MustFightBattleExecutablesTest {
         getIndex(execs, MustFightBattle.LandParatroopers.class),
         greaterThanOrEqualTo(0));
   }
+  //@DisplayName("Verify basic land battle with no AirTransport tech on first run")
 
   @Test
-  @DisplayName("Verify Paratrooper step is not added on subsequent rounds")
+  @DisplayName("Verify basic land battle with paratroopers on subsequent run")
   void paratrooperStepNotAddedOnSubsequentRound() {
     final MustFightBattle battle = newBattle(LAND);
 
@@ -376,6 +244,132 @@ class MustFightBattleExecutablesTest {
 
     assertStepIsMissing(execs, MustFightBattle.LandParatroopers.class);
   }
+  //@DisplayName("Verify basic land battle with empty paratroopers on first run")
+
+  @Test
+  @DisplayName("Verify basic land battle with offensive Aa")
+  void aaOffensiveStepAdded() {
+    final MustFightBattle battle = newBattle(LAND);
+    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
+    when(unit1.getType()).thenReturn(unit1Type);
+    when(unit1.getOwner()).thenReturn(attacker);
+    when(unit1.getData()).thenReturn(gameData);
+    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
+    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit1Attachment.getOffensiveAttackAa(attacker)).thenReturn(1);
+    when(unit1Attachment.getMaxAaAttacks()).thenReturn(1);
+    when(unit1Attachment.getMaxRoundsAa()).thenReturn(-1);
+    when(unit1Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit2Type));
+    when(unit1Attachment.getIsAaForCombatOnly()).thenReturn(true);
+
+    when(unit2.getType()).thenReturn(unit2Type);
+    when(unit2.getOwner()).thenReturn(defender);
+    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
+
+    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
+    final List<IExecutable> execs = battle.getBattleExecutables(true);
+
+    assertThat(
+        "FireOffensiveAaGuns should be the first step",
+        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        is(0));
+
+    assertThat(
+        "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns",
+        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
+        is(1));
+
+    assertStepIsMissing(execs, MustFightBattle.FireDefensiveAaGuns.class);
+  }
+
+  @Test
+  @DisplayName("Verify basic land battle with defensive Aa")
+  void aaDefensiveStepAdded() {
+    final MustFightBattle battle = newBattle(LAND);
+    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
+    when(unit2.getType()).thenReturn(unit2Type);
+    when(unit2.getOwner()).thenReturn(defender);
+    when(unit2.getData()).thenReturn(gameData);
+    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
+    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit2Attachment.getAttackAa(defender)).thenReturn(1);
+    when(unit2Attachment.getMaxAaAttacks()).thenReturn(1);
+    when(unit2Attachment.getMaxRoundsAa()).thenReturn(-1);
+    when(unit2Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit1Type));
+    when(unit2Attachment.getIsAaForCombatOnly()).thenReturn(true);
+
+    when(unit1.getType()).thenReturn(unit1Type);
+    when(unit1.getOwner()).thenReturn(attacker);
+    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
+
+    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
+    final List<IExecutable> execs = battle.getBattleExecutables(true);
+
+    assertThat(
+        "FireDefensiveAaGuns should be the first step",
+        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        is(0));
+
+    assertThat(
+        "ClearAaWaitingToDieAndDamagedChangesInto is after FireDefensiveAaGuns",
+        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
+        is(1));
+
+    assertStepIsMissing(execs, MustFightBattle.FireOffensiveAaGuns.class);
+  }
+
+  @Test
+  @DisplayName("Verify basic land battle with offensive and defensive Aa")
+  void aaOffensiveAndDefensiveStepAdded() {
+    final MustFightBattle battle = newBattle(LAND);
+    when(gameData.getRelationshipTracker().isAtWar(defender, attacker)).thenReturn(true);
+
+    // Unit1 is an AA attacker that can target Unit2
+    when(unit1.getType()).thenReturn(unit1Type);
+    when(unit1.getOwner()).thenReturn(attacker);
+    when(unit1.getData()).thenReturn(gameData);
+    when(unit1Type.getAttachment(anyString())).thenReturn(unit1Attachment);
+    when(unit1Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit1Attachment.getOffensiveAttackAa(attacker)).thenReturn(1);
+    when(unit1Attachment.getMaxAaAttacks()).thenReturn(1);
+    when(unit1Attachment.getMaxRoundsAa()).thenReturn(-1);
+    when(unit1Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit2Type));
+    when(unit1Attachment.getIsAaForCombatOnly()).thenReturn(true);
+
+    // Unit2 is an AA defender that can target Unit1
+    when(unit2.getType()).thenReturn(unit2Type);
+    when(unit2.getOwner()).thenReturn(defender);
+    when(unit2.getData()).thenReturn(gameData);
+    when(unit2Type.getAttachment(anyString())).thenReturn(unit2Attachment);
+    when(unit2Attachment.getTypeAa()).thenReturn("AntiAirGun");
+    when(unit2Attachment.getAttackAa(defender)).thenReturn(1);
+    when(unit2Attachment.getMaxAaAttacks()).thenReturn(1);
+    when(unit2Attachment.getMaxRoundsAa()).thenReturn(-1);
+    when(unit2Attachment.getTargetsAa(gameData)).thenReturn(Set.of(unit1Type));
+    when(unit2Attachment.getIsAaForCombatOnly()).thenReturn(true);
+
+    battle.setUnits(List.of(unit2), List.of(unit1), List.of(), List.of(), defender, List.of());
+    final List<IExecutable> execs = battle.getBattleExecutables(true);
+
+    assertThat(
+        "FireOffensiveAaGuns should be the first step",
+        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        is(0));
+
+    assertThat(
+        "FireDefensiveAaGuns should be the second step",
+        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        is(1));
+
+    assertThat(
+        "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns and FireDefensiveAaGuns",
+        getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
+        is(2));
+  }
+  //@DisplayName("Verify impossible sea battle with bombarding and paratroopers will not add a bombarding or paratrooper step")
+
+  //@DisplayName("Verify attacking canEvade units retreating if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
+  //@DisplayName("Verify defending canEvade units retreating if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
 
   @Test
   @DisplayName(
@@ -433,10 +427,40 @@ class MustFightBattleExecutablesTest {
     assertStepIsMissing(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
   }
 
+  //@DisplayName("Verify attacking transports are removed if TRANSPORT_CASUALTIES_RESTRICTED is true")
+  //@DisplayName("Verify defending transports are removed if TRANSPORT_CASUALTIES_RESTRICTED is true")
+  //@DisplayName("Verify basic attacker firstStrike (no other attackers, no special defenders, all options false)")
+  //@DisplayName("Verify attacker firstStrike with destroyers")
+  //@DisplayName("Verify basic defender firstStrike (no other attackers, no special defenders, all options false)")
+  //@DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true")
+  //@DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true and attacker destroyers")
+  //@DisplayName("Verify defender firstStrike with WW2v2 true")
+  //@DisplayName("Verify defender firstStrike with WW2v2 true and attacker destroyers")
+  //@DisplayName("Verify basic attacker and defender firstStrikes (no other attackers, no special defenders, all options false)")
+  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true")
+  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacker/defender destroyers")
+  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true")
+  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and attacker/defender destroyers")
+  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and defender destroyers")
+  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacking destroyers")
+  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and defender destroyers")
+  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and attacking destroyers")
+  //@DisplayName("Verify attacking firstStrikes against air")
+  //@DisplayName("Verify attacking firstStrikes against air with destroyer")
+  //@DisplayName("Verify defending firstStrikes against air")
+  //@DisplayName("Verify defending firstStrikes against air with destroyer")
+  //@DisplayName("Verify unescorted attacking transports are removed if casualities are restricted")
+  //@DisplayName("Verify unescorted defending transports are removed if casualities are restricted")
+  //@DisplayName("Verify unescorted attacking transports are not removed if casualties are not restricted")
+  //@DisplayName("Verify unescorted defending transports are removed if casualities are not restricted")
+  //@DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true")
+  //@DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
+
   // destroyers always prevent submerging
   @Test
   @DisplayName(
-      "Verify attacking canEvade units retreating if SUB_RETREAT_BEFORE_BATTLE, no destroyers, and SUBMERSIBLE_SUBS")
+      "Verify attacking firstStrike submerge before battle "
+          + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true and no destroyers")
   void attackerSubsRetreatBeforeBattle() {
     final MustFightBattle battle = newBattle(LAND);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
@@ -463,11 +487,11 @@ class MustFightBattleExecutablesTest {
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     doAnswer(
-            invocation -> {
-              final Change change = invocation.getArgument(0);
-              gameData.performChange(change);
-              return null;
-            })
+        invocation -> {
+          final Change change = invocation.getArgument(0);
+          gameData.performChange(change);
+          return null;
+        })
         .when(delegateBridge)
         .addChange(any());
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
@@ -476,10 +500,35 @@ class MustFightBattleExecutablesTest {
     when(delegateBridge.getRemotePlayer(attacker)).thenReturn(remotePlayer);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
     when(remotePlayer.retreatQuery(
-            any(), eq(true), eq(battleSite), eq(List.of(battleSite)), anyString()))
+        any(), eq(true), eq(battleSite), eq(List.of(battleSite)), anyString()))
         .thenReturn(battleSite);
     step.execute(null, delegateBridge);
 
     verify(gameData, times(1)).performChange(argThat((Change change) -> !change.isEmpty()));
   }
+  
+  //@DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true")
+  //@DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
+  //@DisplayName("Verify defending firstStrike submerge before battle if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
+  //@DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
+  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
+  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
+  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
+  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with restricted casualties")
+  //@DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with non restricted casualties")
+  //@DisplayName("Verify defending firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
+  //@DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
+  //@DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
+  //@DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
+  //@DisplayName("Verify attacking air units at sea can withdraw")
+  //@DisplayName("Verify partial amphibious attack can withdraw if a unit was not amphibious")
+  //@DisplayName("Verify partial amphibious attack can not withdraw if all units were amphibious")
+  //@DisplayName("Verify partial amphibious attack can not withdraw if partial amphibious withdrawal not allowed")
+  //@DisplayName("Verify partial amphibious attack can not withdraw if not amphibious")
+  //@DisplayName("Verify attacker planes can withdraw if ww2v2 and amphibious")
+  //@DisplayName("Verify attacker planes can withdraw if attacker can partial amphibious retreat and amphibious")
+  //@DisplayName("Verify attacker planes can withdraw if attacker can retreat planes and amphibious")
+  //@DisplayName("Verify attacker planes can not withdraw if ww2v2 and not amphibious")
+  //@DisplayName("Verify attacker planes can not withdraw if attacker can partial amphibious retreat and not amphibious")
+  //@DisplayName("Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
 }
