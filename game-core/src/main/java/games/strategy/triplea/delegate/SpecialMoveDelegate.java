@@ -306,8 +306,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         }
       }
     } else if (onlyEnemyTerritories
-        && (!(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(end)
-            || Matches.territoryHasEnemyUnits(player, data).test(end)))) {
+        && !(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(end)
+            || Matches.territoryHasEnemyUnits(player, data).test(end))) {
       return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
     }
     return result;
