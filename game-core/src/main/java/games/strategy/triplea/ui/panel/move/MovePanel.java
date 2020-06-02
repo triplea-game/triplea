@@ -177,58 +177,56 @@ public class MovePanel extends AbstractMovePanel {
                 }
                 return true;
               };
-          if (units.isEmpty() && selectedUnits.isEmpty()) {
-            if (!mouseDetails.isShiftDown()) {
-              final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
-              if (unitsToMove.isEmpty()) {
-                return;
-              }
-              final String text = "Select units to move from " + t.getName();
-              final UnitChooser chooser;
-              if (BaseEditDelegate.getEditMode(getData())
-                  && !CollectionUtils.getMatches(
-                          unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove)))
-                      .containsAll(unitsToMove)) {
-                // use matcher to prevent units of different owners being chosen
-                chooser =
-                    new UnitChooser(
-                        unitsToMove,
-                        selectedUnits, /* mustMoveWith */
-                        null,
-                        /* categorizeMovement */ false, /* categorizeTransportCost */
-                        false, /* allowTwoHit */
-                        false,
-                        getMap().getUiContext(),
-                        ownerMatch);
-              } else {
-                chooser =
-                    new UnitChooser(
-                        unitsToMove,
-                        selectedUnits, /* mustMoveWith */
-                        null, /* categorizeMovement */
-                        false,
-                        /* categorizeTransportCost */ false, /* allowTwoHit */
-                        false,
-                        getMap().getUiContext());
-              }
-              final int option =
-                  JOptionPane.showOptionDialog(
-                      getTopLevelAncestor(),
-                      chooser,
-                      text,
-                      JOptionPane.OK_CANCEL_OPTION,
-                      JOptionPane.PLAIN_MESSAGE,
-                      null,
-                      null,
-                      null);
-              if (option != JOptionPane.OK_OPTION) {
-                return;
-              }
-              if (chooser.getSelected(false).isEmpty()) {
-                return;
-              }
-              selectedUnits.addAll(chooser.getSelected(false));
+          if (units.isEmpty() && selectedUnits.isEmpty() && !mouseDetails.isShiftDown()) {
+            final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
+            if (unitsToMove.isEmpty()) {
+              return;
             }
+            final String text = "Select units to move from " + t.getName();
+            final UnitChooser chooser;
+            if (BaseEditDelegate.getEditMode(getData())
+                && !CollectionUtils.getMatches(
+                        unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove)))
+                    .containsAll(unitsToMove)) {
+              // use matcher to prevent units of different owners being chosen
+              chooser =
+                  new UnitChooser(
+                      unitsToMove,
+                      selectedUnits, /* mustMoveWith */
+                      null,
+                      /* categorizeMovement */ false, /* categorizeTransportCost */
+                      false, /* allowTwoHit */
+                      false,
+                      getMap().getUiContext(),
+                      ownerMatch);
+            } else {
+              chooser =
+                  new UnitChooser(
+                      unitsToMove,
+                      selectedUnits, /* mustMoveWith */
+                      null, /* categorizeMovement */
+                      false,
+                      /* categorizeTransportCost */ false, /* allowTwoHit */
+                      false,
+                      getMap().getUiContext());
+            }
+            final int option =
+                JOptionPane.showOptionDialog(
+                    getTopLevelAncestor(),
+                    chooser,
+                    text,
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    null);
+            if (option != JOptionPane.OK_OPTION) {
+              return;
+            }
+            if (chooser.getSelected(false).isEmpty()) {
+              return;
+            }
+            selectedUnits.addAll(chooser.getSelected(false));
           }
           if (getFirstSelectedTerritory() == null) {
             setFirstSelectedTerritory(t);
