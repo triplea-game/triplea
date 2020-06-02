@@ -872,13 +872,16 @@ public class MapPanel extends ImageScrollerLargeView {
     movementLeftForCurrentUnits =
         movementLeft.getFirst()
             + (movementLeft.getSecond().compareTo(movementLeft.getFirst()) > 0 ? "+" : "");
-    gameData.acquireReadLock();
-    try {
-      movementFuelCost =
-          Route.getMovementFuelCostCharge(
-              units, routeDescription.getRoute(), units.iterator().next().getOwner(), gameData);
-    } finally {
-      gameData.releaseReadLock();
+    if (routeDescription != null) {
+      gameData.acquireReadLock();
+      try {
+
+        movementFuelCost =
+            Route.getMovementFuelCostCharge(
+                units, routeDescription.getRoute(), units.iterator().next().getOwner(), gameData);
+      } finally {
+        gameData.releaseReadLock();
+      }
     }
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units);
