@@ -40,6 +40,9 @@ public class GameDataWriter {
     }
   }
 
+  // error prone is detecting the identical boolean condition as an error, when it's
+  // intentional and is actually a retry.
+  @SuppressWarnings("IdentityBinaryExpression")
   private static void writeToOutputStream(
       final GameData gameData,
       final OutputStream out,
