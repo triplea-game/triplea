@@ -90,11 +90,11 @@ public class BattleSteps implements BattleStepStrings {
       }
     }
     // See if there any unescorted transports
-    if (isBattleSiteWater && Properties.getTransportCasualtiesRestricted(gameData)) {
-      if (attackingUnits.stream().anyMatch(Matches.unitIsTransport())
-          || defendingUnits.stream().anyMatch(Matches.unitIsTransport())) {
-        steps.add(REMOVE_UNESCORTED_TRANSPORTS);
-      }
+    if (isBattleSiteWater
+        && Properties.getTransportCasualtiesRestricted(gameData)
+        && (attackingUnits.stream().anyMatch(Matches.unitIsTransport())
+            || defendingUnits.stream().anyMatch(Matches.unitIsTransport()))) {
+      steps.add(REMOVE_UNESCORTED_TRANSPORTS);
     }
     final boolean defenderSubsFireFirst =
         SubsChecks.defenderSubsFireFirst(attackingUnits, defendingUnits, gameData);

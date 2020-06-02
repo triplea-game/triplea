@@ -305,10 +305,8 @@ final class ExportMenu extends JMenu {
           continue;
         }
         // this is to stop from having multiple entries for each players turn.
-        if (!showPhaseStats) {
-          if (Objects.equals(step.getPlayerId(), currentPlayer)) {
-            continue;
-          }
+        if (!showPhaseStats && Objects.equals(step.getPlayerId(), currentPlayer)) {
+          continue;
         }
         currentPlayer = step.getPlayerId();
         clone.getHistory().gotoNode(element);
