@@ -108,12 +108,10 @@ public class UnitScroller {
 
           @Override
           public void mouseEntered(@Nullable final Territory territory) {
-            if (parentPanelIsVisible.get()) {
-              if (territory != null && movesLeft > 0) {
-                lastFocusedTerritory = territory;
-                drawUnitAvatarPane(territory);
-                territoryNameLabel.setText(territory.getName());
-              }
+            if (parentPanelIsVisible.get() && territory != null && movesLeft > 0) {
+              lastFocusedTerritory = territory;
+              drawUnitAvatarPane(territory);
+              territoryNameLabel.setText(territory.getName());
             }
           }
 

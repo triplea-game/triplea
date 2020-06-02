@@ -49,12 +49,11 @@ public class GameDataWriter {
 
     try {
       // TODO: is this necessary to save a game?
-      if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-        // try again
-        if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-          log.severe(errorMessage + " could not lock delegate execution");
-          return;
-        }
+      // try twice
+      if (!delegateExecutionManager.blockDelegateExecution(6000)
+          && !delegateExecutionManager.blockDelegateExecution(6000)) {
+        log.severe(errorMessage + " could not lock delegate execution");
+        return;
       }
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();

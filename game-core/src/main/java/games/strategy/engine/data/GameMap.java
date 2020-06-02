@@ -459,10 +459,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   public boolean isValidRoute(final Route route) {
     Territory previous = null;
     for (final Territory t : route) {
-      if (previous != null) {
-        if (!getNeighbors(previous).contains(t)) {
-          return false;
-        }
+      if (previous != null && !getNeighbors(previous).contains(t)) {
+        return false;
       }
       previous = t;
     }

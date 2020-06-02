@@ -117,11 +117,11 @@ public class TerritoryNameDrawable extends AbstractDrawable {
       }
     }
     // draw territory names
-    if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(territoryName)) {
-      if (!territory.isWater() || showSeaNames) {
-        final Image nameImage = mapData.getTerritoryNameImages().get(territory.getName());
-        draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
-      }
+    if (mapData.drawTerritoryNames()
+        && mapData.shouldDrawTerritoryName(territoryName)
+        && (!territory.isWater() || showSeaNames)) {
+      final Image nameImage = mapData.getTerritoryNameImages().get(territory.getName());
+      draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
     }
     // draw the PUs.
     if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
@@ -208,14 +208,14 @@ public class TerritoryNameDrawable extends AbstractDrawable {
 
           // Score rectangle based on how close to vertical center and territory width at location
           final int score = verticalDistanceFromEdge * rectangle.width;
-          if (rectangle.width > nameWidth && score > maxScore) {
 
-            // Check to make sure rectangle is contained in the territory
-            if (isRectangleContainedInTerritory(rectangle, territory, mapData)) {
-              maxScore = score;
-              result = rectangle;
-              break;
-            }
+          // Check to make sure rectangle is contained in the territory
+          if (rectangle.width > nameWidth
+              && score > maxScore
+              && isRectangleContainedInTerritory(rectangle, territory, mapData)) {
+            maxScore = score;
+            result = rectangle;
+            break;
           }
         }
       }
