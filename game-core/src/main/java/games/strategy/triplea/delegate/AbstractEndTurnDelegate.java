@@ -381,9 +381,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       // if ownership should change in this territory
       if (inAllTerritories || (ta != null && !ta.getChangeUnitOwners().isEmpty())) {
         final List<GamePlayer> newOwners =
-            (ta != null && !ta.getChangeUnitOwners().isEmpty())
-                ? ta.getChangeUnitOwners()
-                : bridge.getData().getPlayerList().getPlayers();
+            new ArrayList<>(
+                (ta != null && !ta.getChangeUnitOwners().isEmpty())
+                    ? ta.getChangeUnitOwners()
+                    : bridge.getData().getPlayerList().getPlayers());
         newOwners.retainAll(possibleNewOwners);
         for (final GamePlayer newOwner : newOwners) {
           final Collection<Unit> units =
