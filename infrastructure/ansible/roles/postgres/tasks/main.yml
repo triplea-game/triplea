@@ -13,14 +13,11 @@
 - name: Install PostgreSQL
   become: true
   apt:
-    name: "{{ packages }}"
     state: present
-  vars:
-    packages:
+    name:
       - postgresql
       - postgresql-contrib
       - libpq-dev
-      - python-psycopg2
       - python3-psycopg2
 
 - name: Ensure the PostgreSQL service is running
