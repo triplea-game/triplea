@@ -53,7 +53,7 @@ class RouteFinderTest {
   };
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     for (int x = 0; x < graph.length; x++) {
       final Territory territory = mock(Territory.class);
       final int currentIndex = x;

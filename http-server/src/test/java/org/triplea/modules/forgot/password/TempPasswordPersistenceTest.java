@@ -28,7 +28,7 @@ class TempPasswordPersistenceTest {
   private TempPasswordPersistence tempPasswordPersistence;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     tempPasswordPersistence =
         new TempPasswordPersistence(tempPasswordDao, passwordHasher, hashedPasswordBcrypter);
   }

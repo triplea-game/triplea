@@ -27,7 +27,7 @@ final class IslandTerritoryFinderTest {
   private Polygon adjacentContainingRectange = new Polygon();
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     // inner is a 1x1 square
     inner.addPoint(1, 1);
     inner.addPoint(1, 2);

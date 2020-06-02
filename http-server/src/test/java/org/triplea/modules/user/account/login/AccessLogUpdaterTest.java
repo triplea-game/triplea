@@ -30,7 +30,7 @@ class AccessLogUpdaterTest {
   private AccessLogUpdater accessLogUpdater;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     accessLogUpdater = AccessLogUpdater.builder().accessLogDao(accessLogDao).build();
   }
 

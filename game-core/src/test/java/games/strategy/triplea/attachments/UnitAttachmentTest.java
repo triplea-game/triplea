@@ -40,7 +40,7 @@ class UnitAttachmentTest {
   private final UnitType unit2 = mock(UnitType.class);
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     when(gameData.getPlayerList()).thenReturn(playerList);
     when(unitTypeList.getUnitType(unit1String)).thenReturn(unit1);

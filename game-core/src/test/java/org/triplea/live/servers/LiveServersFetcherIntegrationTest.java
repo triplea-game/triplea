@@ -28,7 +28,7 @@ class LiveServersFetcherIntegrationTest extends AbstractClientSettingTestCase {
   @Mock private CloseableDownloader closeableDownloader;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     // clear cache
     FetchingCache.liveServersCache = null;
   }

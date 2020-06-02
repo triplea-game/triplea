@@ -22,7 +22,7 @@ class SystemIdLoaderTest {
   @Mock private PreferencesPersistence preferencesPersistence;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     SystemIdLoader.setPreferencesPersistence(preferencesPersistence);
   }
 

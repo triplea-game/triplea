@@ -80,7 +80,7 @@ class UserBanServiceTest {
   private UserBanService bannedUsersService;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     bannedUsersService =
         new UserBanService(
             moderatorAuditHistoryDao,
