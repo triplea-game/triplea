@@ -803,10 +803,8 @@ public class DiceRoll implements Externalizable {
                 UnitSupportAttachment::getStrength);
       } else {
         strength = ua.getAttack(unit.getOwner());
-        if (ua.getIsMarine() != 0 && isAmphibiousBattle) {
-          if (amphibiousLandAttackers.contains(unit)) {
-            strength += ua.getIsMarine();
-          }
+        if (ua.getIsMarine() != 0 && isAmphibiousBattle && amphibiousLandAttackers.contains(unit)) {
+          strength += ua.getIsMarine();
         }
         if (ua.getIsSea() && Matches.territoryIsLand().test(location)) {
           // Change the strength to be bombard, not attack/defense, because this is a bombarding

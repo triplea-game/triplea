@@ -80,12 +80,10 @@ public final class AiUtils {
         } else {
           strength += unitAttachment.getDefense(u.getOwner());
         }
-        if (attacking) {
-          // a unit with attack of 0 isn't worth much
-          // we dont want transports to try and gang up on subs
-          if (unitAttachment.getAttack(u.getOwner()) == 0) {
-            strength -= 1.2f;
-          }
+        // a unit with attack of 0 isn't worth much
+        // we dont want transports to try and gang up on subs
+        if (attacking && unitAttachment.getAttack(u.getOwner()) == 0) {
+          strength -= 1.2f;
         }
       }
     }

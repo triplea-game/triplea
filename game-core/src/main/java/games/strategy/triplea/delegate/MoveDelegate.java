@@ -367,10 +367,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
         continue;
       }
       for (final Unit fighter : ownedFighters) {
-        if (fighter.getTransportedBy() != null) {
-          if (crippledAlliedCarriers.contains(fighter.getTransportedBy())) {
-            change.add(ChangeFactory.markNoMovementChange(fighter));
-          }
+        if (fighter.getTransportedBy() != null
+            && crippledAlliedCarriers.contains(fighter.getTransportedBy())) {
+          change.add(ChangeFactory.markNoMovementChange(fighter));
         }
       }
     }
@@ -659,10 +658,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
     aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritores =
         aaInMoveUtil.getTerritoriesWhereAaWillFire(move.getRoute(), move.getUnits());
-    if (!aaFiringTerritores.isEmpty()) {
-      if (!bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
-        return null;
-      }
+    if (!aaFiringTerritores.isEmpty()
+        && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
+      return null;
     }
 
     // do the move
