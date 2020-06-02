@@ -283,10 +283,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       if (!land) {
         return result.setErrorReturnResult("Cannot Move Land Units To Sea");
       }
-    } else if (someSea) {
-      if (!sea) {
-        return result.setErrorReturnResult("Cannot Move Sea Units To Land");
-      }
+    } else if (someSea && !sea) {
+      return result.setErrorReturnResult("Cannot Move Sea Units To Land");
     }
     if (onlyWhereUnderAttackAlready) {
       if (!battleTracker.getConquered().contains(end)) {

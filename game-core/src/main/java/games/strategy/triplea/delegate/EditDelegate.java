@@ -79,34 +79,30 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final GamePlayer player = units.iterator().next().getOwner();
     final GameData data = getData();
     Map<Unit, Unit> mapLoading = null;
-    if (territory.isWater()) {
-      if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
-        if (units.stream().anyMatch(Matches.unitIsLand())) {
-          // this should be exact same as the one in the EditValidator
-          if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
-            return "Can't add mixed nationality units to water";
-          }
-          final Predicate<Unit> friendlySeaTransports =
-              Matches.unitIsTransport()
-                  .and(Matches.unitIsSea())
-                  .and(Matches.alliedUnit(player, data));
-          final Collection<Unit> seaTransports =
-              CollectionUtils.getMatches(units, friendlySeaTransports);
-          final Collection<Unit> landUnitsToAdd =
-              CollectionUtils.getMatches(units, Matches.unitIsLand());
-          if (landUnitsToAdd.isEmpty()
-              || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
-            return "Can't add land units that can't be transported, to water";
-          }
-          seaTransports.addAll(territory.getUnitCollection().getMatches(friendlySeaTransports));
-          if (seaTransports.isEmpty()) {
-            return "Can't add land units to water without enough transports";
-          }
-          mapLoading = TransportUtils.mapTransportsToLoad(landUnitsToAdd, seaTransports);
-          if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
-            return "Can't add land units to water without enough transports";
-          }
-        }
+    if (territory.isWater()
+        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea()))
+        && units.stream().anyMatch(Matches.unitIsLand())) {
+      // this should be exact same as the one in the EditValidator
+      if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
+        return "Can't add mixed nationality units to water";
+      }
+      final Predicate<Unit> friendlySeaTransports =
+          Matches.unitIsTransport().and(Matches.unitIsSea()).and(Matches.alliedUnit(player, data));
+      final Collection<Unit> seaTransports =
+          CollectionUtils.getMatches(units, friendlySeaTransports);
+      final Collection<Unit> landUnitsToAdd =
+          CollectionUtils.getMatches(units, Matches.unitIsLand());
+      if (landUnitsToAdd.isEmpty()
+          || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
+        return "Can't add land units that can't be transported, to water";
+      }
+      seaTransports.addAll(territory.getUnitCollection().getMatches(friendlySeaTransports));
+      if (seaTransports.isEmpty()) {
+        return "Can't add land units to water without enough transports";
+      }
+      mapLoading = TransportUtils.mapTransportsToLoad(landUnitsToAdd, seaTransports);
+      if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
+        return "Can't add land units to water without enough transports";
       }
     }
     // now perform the changes
