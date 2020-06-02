@@ -7,37 +7,41 @@
 
 - name: Download flyway CLI
   become: true
-  become_user: flyway
   get_url:
     url: "{{ flyway_download_location }}"
-    dest: "{{ flyway_downloaded_file_location }}"
+    dest: "/home/flyway/flyway-cli.tar.gz"
     mode: "644"
     checksum: "md5:57f496acc6399fe30ee1fd957545abf1"
+    owner: flyway
+    group: flyway
 
 - name: extract flyway
   become: true
-  become_user: flyway
   unarchive:
     copy: no
-    src: "{{ flyway_downloaded_file_location }}"
+    src: "/home/flyway/flyway-cli.tar.gz"
     dest: "/home/flyway/"
     creates: "{{ flyway_extracted_location }}"
+    owner: flyway
+    group: flyway
 
 - name: deploy flyway conf file
   become: true
-  become_user: flyway
   template:
     src: flyway.conf.j2
     dest: "{{ flyway_extracted_location }}/conf/flyway.conf"
     mode: "644"
+    owner: flyway
+    group: flyway
 
 - name: extract migrations
   become: true
-  become_user: flyway
   unarchive:
      src: migrations.zip
      dest: "{{ flyway_extracted_location }}/sql/"
      mode: "644"
+     owner: flyway
+     group: flyway
 
 - name: run flyway
   become: true
@@ -45,3 +49,4 @@
   command: "{{ flyway_extracted_location }}/flyway migrate"
   register: flyway
   changed_when: '"is up to date. No migration necessary" not in flyway.stdout'
+
