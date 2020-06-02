@@ -39,10 +39,9 @@ public final class LocalizeHtml {
    * that point to the correct location on the local file system.
    */
   public static String localizeImgLinksInHtml(final String htmlText, final String mapNameDir) {
-    if (htmlText == null || mapNameDir == null || mapNameDir.trim().isEmpty()) {
-      return htmlText;
-    }
-    return localizeImgLinksInHtml(htmlText, ResourceLoader.getMapResourceLoader(mapNameDir));
+    return htmlText == null || mapNameDir == null || mapNameDir.isBlank()
+        ? htmlText
+        : localizeImgLinksInHtml(htmlText, ResourceLoader.getMapResourceLoader(mapNameDir));
   }
 
   @VisibleForTesting

@@ -295,7 +295,7 @@ public final class CenterPicker {
       if (!rightMouse) {
         String name = findTerritoryName(point);
         name = JOptionPane.showInputDialog(this, "Enter the territory name:", name);
-        if (name == null || name.trim().length() == 0) {
+        if (name == null || name.isBlank()) {
           return;
         }
         if (centers.containsKey(name)

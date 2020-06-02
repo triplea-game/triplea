@@ -342,7 +342,7 @@ public class MapRouteDrawer {
 
     // Create and configure image
     final String unitMovementLeft =
-        (maxMovement == null || maxMovement.trim().length() == 0) ? "" : "/" + maxMovement;
+        (maxMovement == null || maxMovement.isBlank()) ? "" : "/" + maxMovement;
     final int imageWidth =
         findMovementLeftImageWidth(curMovement, unitMovementLeft, movementFuelCost);
     final BufferedImage image =

@@ -50,20 +50,20 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // do national objectives
     if (Properties.getNationalObjectives(getData())) {
       final String nationalObjectivesText = determineNationalObjectives(bridge);
-      if (nationalObjectivesText.trim().length() > 0) {
+      if (!nationalObjectivesText.isBlank()) {
         endTurnReport.append(nationalObjectivesText).append("<br />");
       }
     }
 
     // create resources if any owned units have the ability
     final String unitCreatedResourcesText = addUnitCreatedResources(bridge);
-    if (unitCreatedResourcesText.trim().length() > 0) {
+    if (!unitCreatedResourcesText.isBlank()) {
       endTurnReport.append(unitCreatedResourcesText).append("<br />");
     }
 
     // create units if any owned units have the ability
     final String createsUnitsText = createUnits(bridge);
-    if (createsUnitsText.trim().length() > 0) {
+    if (!createsUnitsText.isBlank()) {
       endTurnReport.append(createsUnitsText).append("<br />");
     }
 
