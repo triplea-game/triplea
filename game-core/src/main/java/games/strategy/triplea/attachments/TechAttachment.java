@@ -331,10 +331,8 @@ public class TechAttachment extends DefaultAttachment {
 
   private void setGenericTechs() {
     for (final TechAdvance ta : getData().getTechnologyFrontier()) {
-      if (ta instanceof GenericTechAdvance) {
-        if (((GenericTechAdvance) ta).getAdvance() == null) {
-          genericTech.put(ta.getProperty(), Boolean.FALSE);
-        }
+      if (ta instanceof GenericTechAdvance && ((GenericTechAdvance) ta).getAdvance() == null) {
+        genericTech.put(ta.getProperty(), Boolean.FALSE);
       }
     }
   }

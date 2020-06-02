@@ -273,17 +273,15 @@ public class UnitImageFactory {
       }
       if (UnitAttachment.get(type).getIsFirstStrike()
           && (UnitAttachment.get(type).getAttack(gamePlayer) > 0
-              || UnitAttachment.get(type).getDefense(gamePlayer) > 0)) {
-        if (TechTracker.hasSuperSubs(gamePlayer)) {
-          name.append("_ss");
-        }
+              || UnitAttachment.get(type).getDefense(gamePlayer) > 0)
+          && TechTracker.hasSuperSubs(gamePlayer)) {
+        name.append("_ss");
       }
-      if (type.getName().equals(Constants.UNIT_TYPE_FACTORY)
-          || UnitAttachment.get(type).getCanProduceUnits()) {
-        if (TechTracker.hasIndustrialTechnology(gamePlayer)
-            || TechTracker.hasIncreasedFactoryProduction(gamePlayer)) {
-          name.append("_it");
-        }
+      if ((type.getName().equals(Constants.UNIT_TYPE_FACTORY)
+              || UnitAttachment.get(type).getCanProduceUnits())
+          && (TechTracker.hasIndustrialTechnology(gamePlayer)
+              || TechTracker.hasIncreasedFactoryProduction(gamePlayer))) {
+        name.append("_it");
       }
     }
     if (disabled) {

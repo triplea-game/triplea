@@ -13,16 +13,15 @@ public class EndTurnPanel extends AbstractForumPosterPanel {
 
   @Override
   public void performDone() {
-    if (forumPosterComponent.canPostTurnSummary()) {
-      if (forumPosterComponent.getHasPostedTurnSummary()
-          || JOptionPane.YES_OPTION
-              == JOptionPane.showConfirmDialog(
-                  JOptionPane.getFrameForComponent(EndTurnPanel.this),
-                  "Are you sure you don't want to post?",
-                  "Bypass post",
-                  JOptionPane.YES_NO_OPTION)) {
-        release();
-      }
+    if (forumPosterComponent.canPostTurnSummary()
+        && (forumPosterComponent.getHasPostedTurnSummary()
+            || JOptionPane.YES_OPTION
+                == JOptionPane.showConfirmDialog(
+                    JOptionPane.getFrameForComponent(EndTurnPanel.this),
+                    "Are you sure you don't want to post?",
+                    "Bypass post",
+                    JOptionPane.YES_NO_OPTION))) {
+      release();
     }
   }
 

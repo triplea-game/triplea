@@ -54,10 +54,9 @@ final class Utils {
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.test(t)) {
         final Route r = data.getMap().getRoute(start, t, routeCondition);
-        if (r != null) {
-          if (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps()) {
-            shortestRoute = r;
-          }
+        if (r != null
+            && (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps())) {
+          shortestRoute = r;
         }
       }
     }
