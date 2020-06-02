@@ -31,7 +31,7 @@ class ExpiringAfterWriteCacheTest {
   @Mock private BiConsumer<String, Integer> cacheRemovalListener;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     realCache = new ExpiringAfterWriteCache<>(1, TimeUnit.MINUTES, cacheRemovalListener);
   }
 

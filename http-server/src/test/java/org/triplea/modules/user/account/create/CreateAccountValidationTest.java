@@ -32,7 +32,7 @@ class CreateAccountValidationTest {
   private CreateAccountValidation createAccountValidation;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     createAccountValidation =
         new CreateAccountValidation(
             nameValidator, nameIsAvailableValidator, emailValidator, passwordValidator);

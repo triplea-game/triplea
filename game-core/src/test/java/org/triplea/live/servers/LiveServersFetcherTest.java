@@ -36,7 +36,7 @@ class LiveServersFetcherTest {
   private LiveServersFetcher liveServersFetcher;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     liveServersFetcher = new LiveServersFetcher(currentVersionSelector, networkFetcher);
   }
 

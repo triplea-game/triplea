@@ -33,7 +33,7 @@ class GenericWebSocketClientTest {
   @Mock private Consumer<PlayerLeftMessage> playerLeftMessageListener;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     genericWebSocketClient =
         new GenericWebSocketClient(
             URI.create("ws://fake"), errorHandler, uri -> webSocketConnection);

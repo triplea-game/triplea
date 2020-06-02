@@ -58,7 +58,7 @@ class LoginModuleTest {
   private LoginModule loginModule;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     loginModule =
         LoginModule.builder()
             .registeredLogin(registeredLogin)

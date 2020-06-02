@@ -39,7 +39,7 @@ class FetchingCacheTest extends AbstractClientSettingTestCase {
   private FetchingCache fetchingCache;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     FetchingCache.liveServersCache = null;
     fetchingCache =
         FetchingCache.builder()

@@ -27,7 +27,7 @@ class UpdateAccountServiceTest {
   private UpdateAccountService userAccountService;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     userAccountService =
         UpdateAccountService.builder()
             .userJdbiDao(userJdbiDao)

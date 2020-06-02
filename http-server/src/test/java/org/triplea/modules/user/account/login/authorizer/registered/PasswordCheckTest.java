@@ -27,7 +27,7 @@ class PasswordCheckTest {
   private PasswordCheck passwordCheck;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     passwordCheck =
         PasswordCheck.builder().userJdbiDao(userJdbiDao).passwordVerifier(bcryptCheck).build();
   }

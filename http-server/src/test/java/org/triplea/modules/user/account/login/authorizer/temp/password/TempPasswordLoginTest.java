@@ -28,7 +28,7 @@ class TempPasswordLoginTest {
   private TempPasswordLogin tempPasswordLogin;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     tempPasswordLogin =
         TempPasswordLogin.builder()
             .passwordChecker(passwordChecker)
