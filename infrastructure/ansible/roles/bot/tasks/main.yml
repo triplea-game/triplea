@@ -6,12 +6,6 @@
     proto: tcp
   with_items: "{{ bot_numbers }}"
 
-- name: apt install unzip
-  become: true
-  apt:
-    name: unzip
-    state: present
-
 - name: create service user to run the app
   become: true
   user:
