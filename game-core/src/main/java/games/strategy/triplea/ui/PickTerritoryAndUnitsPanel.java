@@ -113,22 +113,20 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
             return;
           }
 
-          if (territory != null) {
-            // highlight territory
-            if (currentAction == selectTerritoryAction) {
-              if (!territory.equals(currentHighlightedTerritory)) {
-                if (currentHighlightedTerritory != null) {
-                  getMap().clearTerritoryOverlay(currentHighlightedTerritory);
-                }
-                currentHighlightedTerritory = territory;
-                if (territoryChoices.contains(currentHighlightedTerritory)) {
-                  getMap().setTerritoryOverlay(currentHighlightedTerritory, Color.WHITE, 200);
-                } else {
-                  getMap().setTerritoryOverlay(currentHighlightedTerritory, Color.RED, 200);
-                }
-                getMap().repaint();
-              }
+          // highlight territory
+          if (territory != null
+              && currentAction == selectTerritoryAction
+              && !territory.equals(currentHighlightedTerritory)) {
+            if (currentHighlightedTerritory != null) {
+              getMap().clearTerritoryOverlay(currentHighlightedTerritory);
             }
+            currentHighlightedTerritory = territory;
+            if (territoryChoices.contains(currentHighlightedTerritory)) {
+              getMap().setTerritoryOverlay(currentHighlightedTerritory, Color.WHITE, 200);
+            } else {
+              getMap().setTerritoryOverlay(currentHighlightedTerritory, Color.RED, 200);
+            }
+            getMap().repaint();
           }
         }
       };
