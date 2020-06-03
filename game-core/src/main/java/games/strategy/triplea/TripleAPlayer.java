@@ -333,11 +333,10 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     final MoveDescription moveDescription =
         ui.getMove(gamePlayer, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
-      if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
-        if (!canAirLand(true, gamePlayer)) {
-          // continue with the move loop
-          move(nonCombat, stepName);
-        }
+      if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())
+          && !canAirLand(true, gamePlayer)) {
+        // continue with the move loop
+        move(nonCombat, stepName);
       }
       if (!nonCombat && canUnitsFight()) {
         move(false, stepName);
@@ -410,43 +409,41 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
     final boolean isOnlyRepairIfDisabled = GameStepPropertiesHelper.isOnlyRepairIfDisabled(data);
     if (gamePlayer.getRepairFrontier() != null
         && gamePlayer.getRepairFrontier().getRules() != null
-        && !gamePlayer.getRepairFrontier().getRules().isEmpty()) {
-
-      if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        Predicate<Unit> myDamaged =
-            Matches.unitIsOwnedBy(gamePlayer).and(Matches.unitHasTakenSomeBombingUnitDamage());
-        if (isOnlyRepairIfDisabled) {
-          myDamaged = myDamaged.and(Matches.unitIsDisabled());
-        }
-        final Collection<Unit> damagedUnits = new ArrayList<>();
-        for (final Territory t : data.getMap().getTerritories()) {
-          damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
-        }
-        if (!damagedUnits.isEmpty()) {
-          final Map<Unit, IntegerMap<RepairRule>> repair =
-              ui.getRepair(
-                  gamePlayer, bid, GameStepPropertiesHelper.getRepairPlayers(data, gamePlayer));
-          if (repair != null) {
-            final IPurchaseDelegate purchaseDel;
-            try {
-              purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-            } catch (final ClassCastException e) {
-              final String errorContext =
-                  "PlayerBridge step name: "
-                      + getPlayerBridge().getStepName()
-                      + ", Remote class name: "
-                      + getPlayerBridge().getRemoteDelegate().getClass();
-              // for some reason the client is not seeing or getting these errors, so print to err
-              // too
-              log.log(Level.SEVERE, errorContext, e);
-              throw new IllegalStateException(errorContext, e);
-            }
-            final String error = purchaseDel.purchaseRepair(repair);
-            if (error != null) {
-              ui.notifyError(error);
-              // don't give up, keep going
-              purchase(bid);
-            }
+        && !gamePlayer.getRepairFrontier().getRules().isEmpty()
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+      Predicate<Unit> myDamaged =
+          Matches.unitIsOwnedBy(gamePlayer).and(Matches.unitHasTakenSomeBombingUnitDamage());
+      if (isOnlyRepairIfDisabled) {
+        myDamaged = myDamaged.and(Matches.unitIsDisabled());
+      }
+      final Collection<Unit> damagedUnits = new ArrayList<>();
+      for (final Territory t : data.getMap().getTerritories()) {
+        damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
+      }
+      if (!damagedUnits.isEmpty()) {
+        final Map<Unit, IntegerMap<RepairRule>> repair =
+            ui.getRepair(
+                gamePlayer, bid, GameStepPropertiesHelper.getRepairPlayers(data, gamePlayer));
+        if (repair != null) {
+          final IPurchaseDelegate purchaseDel;
+          try {
+            purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
+          } catch (final ClassCastException e) {
+            final String errorContext =
+                "PlayerBridge step name: "
+                    + getPlayerBridge().getStepName()
+                    + ", Remote class name: "
+                    + getPlayerBridge().getRemoteDelegate().getClass();
+            // for some reason the client is not seeing or getting these errors, so print to err
+            // too
+            log.log(Level.SEVERE, errorContext, e);
+            throw new IllegalStateException(errorContext, e);
+          }
+          final String error = purchaseDel.purchaseRepair(repair);
+          if (error != null) {
+            ui.notifyError(error);
+            // don't give up, keep going
+            purchase(bid);
           }
         }
       }
