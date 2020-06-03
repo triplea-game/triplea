@@ -2373,7 +2373,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void submergeUnits(
+  @VisibleForTesting
+  protected void submergeUnits(
       final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge) {
     final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
     final Collection<Unit> units = defender ? defendingUnits : attackingUnits;

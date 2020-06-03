@@ -22,6 +22,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAttackerFirstStrike;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.newUnitAndAttachment;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -132,14 +133,6 @@ class MustFightBattleExecutablesTest {
     return new MustFightBattle(battleSite, attacker, gameData, battleTracker);
   }
 
-  private void whenFire(final MustFightBattle battle) {
-    doNothing().when(battle).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
-  }
-
-  private void verifyFire(final MustFightBattle battle, final int times) {
-    verify(battle, times(times)).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
-  }
-
   private void assertThatStepIsMissing(
       final List<IExecutable> execs, final Class<? extends IExecutable> stepClass) {
     final AssertionFailedError missingClassException =
@@ -182,9 +175,6 @@ class MustFightBattleExecutablesTest {
     assertThatStepIsMissing(execs, MustFightBattle.FireNavalBombardment.class);
   }
 
-  //BattleSite isn't checked during the execution of the bombard step
-  //@DisplayName("Verify impossible sea battle with bombarding will not add a bombarding step")
-
   @Test
   @DisplayName("Verify Bombard step is added but no bombardment happens if bombard units are empty")
   void bombardStepAddedButNoBombardUnits() {
@@ -201,7 +191,7 @@ class MustFightBattleExecutablesTest {
     step.execute(null, delegateBridge);
 
     verify(delegateBridge).addChange(ChangeFactory.EMPTY_CHANGE);
-    verifyFire(battle, 0);
+    verify(battle, never()).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
   }
 
   @Test
@@ -225,12 +215,12 @@ class MustFightBattleExecutablesTest {
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
-    whenFire(battle);
+    doNothing().when(battle).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
 
     step.execute(null, delegateBridge);
 
     verify(delegateBridge).addChange(argThat((Change change) -> !change.isEmpty()));
-    verifyFire(battle, 1);
+    verify(battle).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
   }
 
   @Test
@@ -335,9 +325,6 @@ class MustFightBattleExecutablesTest {
 
     verify(delegateBridge, never()).addChange(any());
   }
-
-  //BattleSite isn't checked during the execution of the paratroopers step
-  //@DisplayName("Verify impossible sea battle with paratroopers will not add a paratrooper step")
 
   @Test
   @DisplayName("Verify basic land battle with offensive Aa")
@@ -462,7 +449,6 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  //@DisplayName("Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   @DisplayName("Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE, no destroyers, and retreat territory")
   void attackingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
@@ -681,7 +667,6 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  //@DisplayName("Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   @DisplayName("Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE, no destroyers, and retreat territory")
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
@@ -824,8 +809,6 @@ class MustFightBattleExecutablesTest {
 
   @Test
   @DisplayName("Verify transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is false")
-  //@DisplayName("Verify unescorted attacking transports are not removed if casualties are not restricted")
-  //@DisplayName("Verify unescorted defending transports are removed if casualities are not restricted")
   void transportsAreNotRemovedIfTransportCasualtiesUnRestricted() {
     final MustFightBattle battle = newBattle(WATER);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
@@ -1092,24 +1075,11 @@ class MustFightBattleExecutablesTest {
     verify(battle, never()).remove(any(), any(), any(), eq(false));
   }
 
-  // Executables don't care about firstStrike. It only cares if there are destroyers
-  // and a few properties so can't duplicate these tests
-  //@DisplayName("Verify basic attacker firstStrike (no other attackers, no special defenders, all options false)")
-  //@DisplayName("Verify attacker firstStrike with destroyers")
-  //@DisplayName("Verify basic defender firstStrike (no other attackers, no special defenders, all options false)")
-  //@DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true")
-  //@DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true and attacker destroyers")
-  //@DisplayName("Verify defender firstStrike with WW2v2 true")
-  //@DisplayName("Verify defender firstStrike with WW2v2 true and attacker destroyers")
-  //@DisplayName("Verify basic attacker and defender firstStrikes (no other attackers, no special defenders, all options false)")
-  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true")
-  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacker/defender destroyers")
-  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true")
-  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and attacker/defender destroyers")
-  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and defender destroyers")
-  //@DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacking destroyers")
-  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and defender destroyers")
-  //@DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and attacking destroyers")
+  @Test
+  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker before defender before standard")
+  void firstStrikeOrderAttackerHasDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
+    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, true, true, true, true), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.STANDARD));
+  }
 
   private Tuple<MustFightBattle, List<IExecutable>> givenFirstStrikeBattleSetup(final boolean attackerDestroyer, final boolean defenderDestroyer, final boolean ww2v2, final boolean defendingSubsSneakAttack, final boolean ignoreDefendingSubsSneakAttack) {
     final MustFightBattle battle = spy(newBattle(WATER));
@@ -1165,12 +1135,6 @@ class MustFightBattleExecutablesTest {
     } else {
       verify(battle).firstStrikeDefendersFire(returnFire);
     }
-  }
-
-  @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker before defender before standard")
-  void firstStrikeOrderAttackerHasDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, true, true, true, true), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.STANDARD));
   }
 
   @Test
@@ -1383,33 +1347,64 @@ class MustFightBattleExecutablesTest {
     assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, false, false, false, false), MustFightBattle.ReturnFire.ALL, false);
   }
 
-  //@DisplayName("Verify attacking firstStrikes against air")
-  //@DisplayName("Verify attacking firstStrikes against air with destroyer")
-  //@DisplayName("Verify defending firstStrikes against air")
-  //@DisplayName("Verify defending firstStrikes against air with destroyer")
-  //@DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true")
-  //@DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
-  //@DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true")
-  //@DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
-  //@DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
-  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
-  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
-  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
-  //@DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with restricted casualties")
-  //@DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with non restricted casualties")
-  //@DisplayName("Verify defending firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
-  //@DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
-  //@DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
-  //@DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
-  //@DisplayName("Verify attacking air units at sea can withdraw")
-  //@DisplayName("Verify partial amphibious attack can withdraw if a unit was not amphibious")
-  //@DisplayName("Verify partial amphibious attack can not withdraw if all units were amphibious")
-  //@DisplayName("Verify partial amphibious attack can not withdraw if partial amphibious withdrawal not allowed")
-  //@DisplayName("Verify partial amphibious attack can not withdraw if not amphibious")
-  //@DisplayName("Verify attacker planes can withdraw if ww2v2 and amphibious")
-  //@DisplayName("Verify attacker planes can withdraw if attacker can partial amphibious retreat and amphibious")
-  //@DisplayName("Verify attacker planes can withdraw if attacker can retreat planes and amphibious")
-  //@DisplayName("Verify attacker planes can not withdraw if ww2v2 and not amphibious")
-  //@DisplayName("Verify attacker planes can not withdraw if attacker can partial amphibious retreat and not amphibious")
-  //@DisplayName("Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
+  @Test
+  @DisplayName("Verify attacking canNotBeTargetedByAll can submerge if all is air")
+  void attackingCanNotBeTargetedByAllCanSubmergeWithAllAir() {
+    final MustFightBattle battle = spy(newBattle(WATER));
+
+    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
+    final Unit unit1 = unitAndAttachment.getFirst();
+    when(unit1.getOwner()).thenReturn(attacker);
+    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
+    when(attachment1.getCanEvade()).thenReturn(true);
+
+    final Unit unit3 = givenUnitDestroyer();
+
+    final Unit unit2 = givenUnitIsAir();
+    when(unit2.getOwner()).thenReturn(defender);
+
+    when(attachment1.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
+
+    battle.setUnits(List.of(unit2), List.of(unit1, unit3), List.of(), List.of(), defender, List.of());
+    final List<IExecutable> execs = battle.getBattleExecutables(true);
+
+    final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);
+    final IExecutable step = execs.get(index);
+
+    doNothing().when(battle).submergeUnits(any(), anyBoolean(), any());
+    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
+    step.execute(null, delegateBridge);
+
+    verify(battle).submergeUnits(List.of(unit1), false, delegateBridge);
+  }
+  @Test
+  @DisplayName("Verify defending canNotBeTargetedByAll can submerge if all is air")
+  void defendingCanNotBeTargetedByAllCanSubmergeWithAllAir() {
+    final MustFightBattle battle = spy(newBattle(WATER));
+
+    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
+    final Unit unit1 = unitAndAttachment.getFirst();
+    when(unit1.getOwner()).thenReturn(defender);
+    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
+    when(attachment1.getCanEvade()).thenReturn(true);
+
+    final Unit unit3 = givenUnitDestroyer();
+
+    final Unit unit2 = givenUnitIsAir();
+    when(unit2.getOwner()).thenReturn(attacker);
+
+    when(attachment1.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
+
+    battle.setUnits(List.of(unit1, unit3), List.of(unit2), List.of(), List.of(), defender, List.of());
+    final List<IExecutable> execs = battle.getBattleExecutables(true);
+
+    final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);
+    final IExecutable step = execs.get(index);
+
+    doNothing().when(battle).submergeUnits(any(), anyBoolean(), any());
+    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
+    step.execute(null, delegateBridge);
+
+    verify(battle).submergeUnits(List.of(unit1), true, delegateBridge);
+  }
 }
