@@ -754,7 +754,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void remove(
+  @VisibleForTesting
+  protected void remove(
       final Collection<Unit> killed,
       final IDelegateBridge bridge,
       final Territory battleSite,
@@ -1179,7 +1180,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return possible;
   }
 
-  private Collection<Territory> getEmptyOrFriendlySeaNeighbors(
+  @VisibleForTesting
+  protected Collection<Territory> getEmptyOrFriendlySeaNeighbors(
       final GamePlayer player, final Collection<Unit> unitsToRetreat) {
     Collection<Territory> possible = gameData.getMap().getNeighbors(battleSite);
     if (headless) {
@@ -1403,7 +1405,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void fire(
+  @VisibleForTesting
+  protected void fire(
       final String stepName,
       final Collection<Unit> firingUnits,
       final Collection<Unit> attackableUnits,
@@ -1869,7 +1872,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void firstStrikeDefendersFire(final ReturnFire returnFire) {
+  @VisibleForTesting
+  protected void firstStrikeDefendersFire(final ReturnFire returnFire) {
     findTargetGroupsAndFire(
         returnFire,
         attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
@@ -1882,7 +1886,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         attackingWaitingToDie);
   }
 
-  private void firstStrikeAttackersFire(final ReturnFire returnFire) {
+  @VisibleForTesting
+  protected void firstStrikeAttackersFire(final ReturnFire returnFire) {
     findTargetGroupsAndFire(
         returnFire,
         defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
@@ -2234,7 +2239,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void queryRetreat(
+  @VisibleForTesting
+  protected void queryRetreat(
       final boolean defender,
       final RetreatType retreatType,
       final IDelegateBridge bridge,
