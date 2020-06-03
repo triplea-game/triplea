@@ -64,7 +64,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.util.Tuple;
 
 @ExtendWith(MockitoExtension.class)
-class BattleStepsTest {
+public class BattleStepsTest {
 
   @Mock GameData gameData;
   @Mock GameProperties gameProperties;
@@ -105,7 +105,7 @@ class BattleStepsTest {
     when(getEmptyOrFriendlySeaNeighbors.apply(any(), any())).thenReturn(Arrays.asList(territories));
   }
 
-  private Tuple<Unit, UnitAttachment> newUnitAndAttachment() {
+  public static Tuple<Unit, UnitAttachment> newUnitAndAttachment() {
     final Unit unit = mock(Unit.class);
     final UnitType unitType = mock(UnitType.class);
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
@@ -114,24 +114,24 @@ class BattleStepsTest {
     return Tuple.of(unit, unitAttachment);
   }
 
-  public Unit givenUnit() {
+  public static Unit givenUnit() {
     return newUnitAndAttachment().getFirst();
   }
 
-  public Unit givenUnitCanEvade() {
+  public static Unit givenUnitCanEvade() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitAttackerFirstStrike() {
+  public static Unit givenUnitAttackerFirstStrike() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
     when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitAttackerFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
+  public static Unit givenUnitAttackerFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
     when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
@@ -139,7 +139,7 @@ class BattleStepsTest {
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitDefenderFirstStrike() {
+  public static Unit givenUnitDefenderFirstStrike() {
     final UnitType canNotTargetType = mock(UnitType.class);
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
@@ -148,7 +148,7 @@ class BattleStepsTest {
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitDefenderFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
+  public static Unit givenUnitDefenderFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
     final UnitType canNotTargetType = mock(UnitType.class);
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
@@ -158,32 +158,32 @@ class BattleStepsTest {
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitDestroyer() {
+  public static Unit givenUnitDestroyer() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getIsDestroyer()).thenReturn(true);
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitTransport() {
+  public static Unit givenUnitTransport() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getTransportCapacity()).thenReturn(2);
     when(unitAndAttachment.getSecond().getIsSea()).thenReturn(true);
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitAirTransport() {
+  public static Unit givenUnitAirTransport() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getIsAirTransport()).thenReturn(true);
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitWithTypeAa() {
+  public static Unit givenUnitWithTypeAa() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getTypeAa()).thenReturn("AntiAirGun");
     return unitAndAttachment.getFirst();
   }
 
-  public Unit givenUnitIsAir() {
+  public static Unit givenUnitIsAir() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getIsAir()).thenReturn(true);
     return unitAndAttachment.getFirst();
@@ -306,6 +306,27 @@ class BattleStepsTest {
   }
 
   @Test
+  @DisplayName("Verify impossible sea battle with bombarding will not add a bombarding step")
+  void impossibleSeaBattleWithBombarding() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnit();
+    final Unit unit2 = givenUnit();
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .bombardingUnits(List.of(mock(Unit.class)))
+            .build()
+            .get();
+
+    assertThat(steps, is(basicFightSteps()));
+
+    verify(getDependentUnits, never()).apply(any());
+    verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
+  }
+
+  @Test
   @DisplayName("Verify basic land battle with paratroopers on first run")
   void paratroopersFirstRun() {
     givenPlayers();
@@ -410,6 +431,26 @@ class BattleStepsTest {
   }
 
   @Test
+  @DisplayName("Verify impossible sea battle with paratroopers will not add a paratrooper step")
+  void impossibleSeaBattleWithParatroopers() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnit();
+    final Unit unit2 = givenUnit();
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(steps, is(basicFightSteps()));
+
+    verify(getDependentUnits, never()).apply(any());
+    verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
+  }
+
+  @Test
   @DisplayName("Verify basic land battle with offensive Aa")
   void offensiveAaFire() {
     givenPlayers();
@@ -511,31 +552,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify impossible sea battle with bombarding and paratroopers "
-          + "will not add a bombarding or paratrooper step")
-  void impossibleSeaBattleWithBombardingAndParatroopers() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .bombardingUnits(List.of(mock(Unit.class)))
-            .build()
-            .get();
-
-    assertThat(steps, is(basicFightSteps()));
-
-    verify(getDependentUnits, never()).apply(any());
-    verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking canEvade units retreating if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
+  @DisplayName("Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   void attackingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -559,8 +576,82 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defending canEvade units retreating if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
+  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
+  void attackingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnitCanEvade();
+    final Unit unit2 = givenUnitDestroyer();
+
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(
+        steps, is(basicFightSteps()));
+  }
+
+  @Test
+  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
+  void attackingSubsRetreatIfCanNotRetreatBeforeBattle() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnitCanEvade();
+    final Unit unit2 = givenUnit();
+
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(
+        steps, is(basicFightSteps()));
+  }
+
+  @Test
+  @DisplayName("Verify attacking firstStrike submerge before battle if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
+  void attackingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnitAttackerFirstStrike();
+    final Unit unit2 = givenUnit();
+
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(
+        steps,
+        is(
+            List.of(
+                attacker.getName() + SUBS_SUBMERGE,
+                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
+                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                defender.getName() + FIRE,
+                attacker.getName() + SELECT_CASUALTIES,
+                REMOVE_CASUALTIES)));
+  }
+
+  @Test
+  @DisplayName("Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -582,8 +673,86 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking transports are removed if TRANSPORT_CASUALTIES_RESTRICTED is true")
-  void attackingTransportsAreRemovedIfTransportCasualtiesRestricted() {
+  @DisplayName("Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
+  void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnitDestroyer();
+    final Unit unit2 = givenUnitCanEvade();
+
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(
+        steps, is(basicFightSteps()));
+  }
+
+  @Test
+  @DisplayName("Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
+  void defendingSubsRetreatIfCanNotRetreatBeforeBattle() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    givenDefenderNoRetreatTerritories();
+    final Unit unit1 = givenUnit();
+    final Unit unit2 = givenUnitCanEvade();
+
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(
+        steps, is(basicFightSteps()));
+  }
+
+  @Test
+  @DisplayName("Verify defending firstStrike submerge before battle if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
+  void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnit();
+    final Unit unit2 = givenUnitDefenderFirstStrike();
+
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
+    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
+    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
+    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(
+        steps,
+        is(
+            List.of(
+                defender.getName() + SUBS_SUBMERGE,
+                defender.getName() + FIRST_STRIKE_UNITS_FIRE,
+                attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
+                REMOVE_SNEAK_ATTACK_CASUALTIES,
+                attacker.getName() + FIRE,
+                defender.getName() + SELECT_CASUALTIES,
+                REMOVE_CASUALTIES)));
+  }
+
+  @Test
+  @DisplayName("Verify unescorted attacking transports are removed if casualities are restricted")
+  void unescortedAttackingTransportsAreRemovedWhenCasualtiesAreRestricted() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitTransport();
@@ -591,7 +760,6 @@ class BattleStepsTest {
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -603,15 +771,36 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defending transports are removed if TRANSPORT_CASUALTIES_RESTRICTED is true")
-  void defendingTransportsAreRemovedIfTransportCasualtiesRestricted() {
+  @DisplayName("Verify unescorted attacking transports are not removed if casualties are not restricted")
+  void unescortedAttackingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
+    final Unit unit1 = unitAndAttachment.getFirst();
+    final Unit unit2 = givenUnit();
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(steps, is(basicFightSteps()));
+    verify(unitAndAttachment.getSecond(), never()).getTransportCapacity();
+  }
+
+  @Test
+  @DisplayName("Verify unescorted defending transports are removed if casualities are restricted")
+  void unescortedDefendingTransportsAreRemovedWhenCasualtiesAreRestricted() {
     givenPlayers();
     final Unit unit1 = givenUnit();
     final Unit unit2 = givenUnitTransport();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -623,9 +812,29 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify basic attacker firstStrike "
-          + "(no other attackers, no special defenders, all options false)")
+  @DisplayName("Verify unescorted defending transports are removed if casualities are not restricted")
+  void unescortedDefendingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
+    givenPlayers();
+    givenAttackerNoRetreatTerritories();
+    final Unit unit1 = givenUnit();
+    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment.getFirst();
+    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
+    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
+    when(gameProperties.get(WW2V2, false)).thenReturn(false);
+    final List<String> steps =
+        newStepBuilder()
+            .attackingUnits(List.of(unit1))
+            .defendingUnits(List.of(unit2))
+            .build()
+            .get();
+
+    assertThat(steps, is(basicFightSteps()));
+    verify(unitAndAttachment.getSecond(), never()).getTransportCapacity();
+  }
+
+  @Test
+  @DisplayName("Verify basic attacker firstStrike (no other attackers, no special defenders, all options false)")
   void attackingFirstStrikeBasic() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -678,9 +887,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify basic defender firstStrike "
-          + "(no other attackers, no special defenders, all options false)")
+  @DisplayName("Verify basic defender firstStrike (no other attackers, no special defenders, all options false)")
   void defendingFirstStrikeBasic() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -740,9 +947,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true "
-          + "and attacker destroyers")
+  @DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true and attacker destroyers")
   void defendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -836,9 +1041,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify basic attacker and defender firstStrikes "
-          + "(no other attackers, no special defenders, all options false)")
+  @DisplayName("Verify basic attacker and defender firstStrikes (no other attackers, no special defenders, all options false)")
   void attackingDefendingFirstStrikeBasic() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -900,9 +1103,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true "
-          + "and attacker/defender destroyers")
+  @DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacker/defender destroyers")
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -972,9 +1173,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking/defender firstStrikes with WW2v2 true "
-          + "and attacker/defender destroyers")
+  @DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and attacker/defender destroyers")
   void attackingDefendingFirstStrikeWithWW2v2AndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1010,9 +1209,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true "
-          + "and defender destroyers")
+  @DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and defender destroyers")
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDefendingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1048,9 +1245,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true "
-          + "and attacking destroyers")
+  @DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacking destroyers")
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndAttackingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1286,101 +1481,6 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify unescorted attacking transports are removed if casualities are restricted")
-  void unescortedAttackingTransportsAreRemovedWhenCasualtiesAreRestricted() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitTransport();
-    final Unit unit2 = givenUnit();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightSteps())));
-    verify(getDependentUnits, never()).apply(any());
-    verify(battleSite, never()).getUnits();
-  }
-
-  @Test
-  @DisplayName("Verify unescorted defending transports are removed if casualities are restricted")
-  void unescortedDefendingTransportsAreRemovedWhenCasualtiesAreRestricted() {
-    givenPlayers();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnitTransport();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightSteps())));
-    verify(getDependentUnits, never()).apply(any());
-    verify(battleSite, never()).getUnits();
-  }
-
-  @Test
-  @DisplayName(
-      "Verify unescorted attacking transports are not removed if casualties are not restricted")
-  void unescortedAttackingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit1 = unitAndAttachment.getFirst();
-    final Unit unit2 = givenUnit();
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(steps, is(basicFightSteps()));
-    verify(getDependentUnits, never()).apply(any());
-    verify(battleSite, never()).getUnits();
-    verify(unitAndAttachment.getSecond(), never()).getTransportCapacity();
-  }
-
-  @Test
-  @DisplayName(
-      "Verify unescorted defending transports are removed if casualities are not restricted")
-  void unescortedDefendingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment.getFirst();
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(steps, is(basicFightSteps()));
-    verify(getDependentUnits, never()).apply(any());
-    verify(battleSite, never()).getUnits();
-    verify(unitAndAttachment.getSecond(), never()).getTransportCapacity();
-  }
-
-  @Test
   @DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true")
   void attackingFirstStrikeCanSubmergeIfSubmersibleSubs() {
     givenPlayers();
@@ -1414,8 +1514,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
+  @DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
   void attackingFirstStrikeCanSubmergeIfSubmersibleSubsAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1444,41 +1543,6 @@ class BattleStepsTest {
                 attacker.getName() + SELECT_CASUALTIES,
                 REMOVE_CASUALTIES,
                 attacker.getName() + SUBS_SUBMERGE)));
-  }
-
-  @Test
-  @DisplayName(
-      "Verify attacking firstStrike submerge before battle "
-          + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
-  void attackingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnit();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
-    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                attacker.getName() + SUBS_SUBMERGE,
-                attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
-                defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                defender.getName() + FIRE,
-                attacker.getName() + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1517,8 +1581,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
+  @DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
   void defendingFirstStrikeCanSubmergeIfSubmersibleSubsAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1552,43 +1615,6 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defending firstStrike submerge before battle "
-          + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
-  void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
-    givenPlayers();
-    givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnitDefenderFirstStrike();
-
-    when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
-    when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
-    when(gameProperties.get(WW2V2, false)).thenReturn(false);
-    when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(true);
-    when(gameProperties.get(ATTACKER_RETREAT_PLANES, false)).thenReturn(false);
-    when(gameProperties.get(PARTIAL_AMPHIBIOUS_RETREAT, false)).thenReturn(false);
-    when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(true);
-    final List<String> steps =
-        newStepBuilder()
-            .attackingUnits(List.of(unit1))
-            .defendingUnits(List.of(unit2))
-            .build()
-            .get();
-
-    assertThat(
-        steps,
-        is(
-            List.of(
-                defender.getName() + SUBS_SUBMERGE,
-                defender.getName() + FIRST_STRIKE_UNITS_FIRE,
-                attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
-                REMOVE_SNEAK_ATTACK_CASUALTIES,
-                attacker.getName() + FIRE,
-                defender.getName() + SELECT_CASUALTIES,
-                REMOVE_CASUALTIES)));
-  }
-
-  @Test
   @DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false")
   void attackingFirstStrikeWithdrawIfAble() {
     givenPlayers();
@@ -1618,9 +1644,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking firstStrike can't withdraw "
-          + "when SUBMERSIBLE_SUBS is false and no retreat territories")
+  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
   void attackingFirstStrikeNoWithdrawIfEmptyTerritories() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1647,9 +1671,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking firstStrike can't withdraw "
-          + "when SUBMERSIBLE_SUBS is false and destroyers present")
+  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
   void attackingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
@@ -1676,9 +1698,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking firstStrike can't withdraw "
-          + "when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
+  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
   void attackingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
@@ -1708,9 +1728,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking firstStrike can't withdraw "
-          + "when SUBMERSIBLE_SUBS is false and defenseless transports with restricted casualties")
+  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with restricted casualties")
   void attackingFirstStrikeNoWithdrawIfDefenselessTransports() {
     givenPlayers();
     final Unit unit1 = givenUnitAttackerFirstStrike();
@@ -1739,9 +1757,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false "
-          + "and defenseless transports with non restricted casualties")
+  @DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with non restricted casualties")
   void attackingFirstStrikeWithdrawIfNonRestrictedDefenselessTransports() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
@@ -1802,9 +1818,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defending firstStrike can't withdraw "
-          + "when SUBMERSIBLE_SUBS is false and no retreat territories")
+  @DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
   void defendingFirstStrikeNoWithdrawIfEmptyTerritories() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1831,9 +1845,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defending firstStrike can't withdraw "
-          + "when SUBMERSIBLE_SUBS is false and destroyers present")
+  @DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
   void defendingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1859,9 +1871,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify defending firstStrike can't withdraw "
-          + "when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
+  @DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
   void defendingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1961,9 +1971,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify partial amphibious attack can not withdraw "
-          + "if partial amphibious withdrawal not allowed")
+  @DisplayName("Verify partial amphibious attack can not withdraw if partial amphibious withdrawal not allowed")
   void partialAmphibiousAttackCanNotWithdrawIfNotAllowed() {
     givenPlayers();
     final Unit unit1 = givenUnit();
@@ -2032,9 +2040,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacker planes can withdraw "
-          + "if attacker can partial amphibious retreat and amphibious")
+  @DisplayName("Verify attacker planes can withdraw if attacker can partial amphibious retreat and amphibious")
   void attackingPlanesCanWithdrawPartialAmphibiousAndAmphibious() {
     givenPlayers();
     final Unit unit1 = givenUnitIsAir();
@@ -2109,9 +2115,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacker planes can not withdraw "
-          + "if attacker can partial amphibious retreat and not amphibious")
+  @DisplayName("Verify attacker planes can not withdraw if attacker can partial amphibious retreat and not amphibious")
   void attackingPlanesCanNotWithdrawPartialAmphibiousAndNotAmphibious() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -2138,8 +2142,7 @@ class BattleStepsTest {
   }
 
   @Test
-  @DisplayName(
-      "Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
+  @DisplayName("Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
   void attackingPlanesCanNotWithdrawPlanesRetreatAndNotAmphibious() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
