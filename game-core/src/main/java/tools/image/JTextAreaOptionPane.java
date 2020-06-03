@@ -19,7 +19,6 @@ class JTextAreaOptionPane {
   private final JTextArea editor = new JTextArea();
   private final JFrame windowFrame = new JFrame();
   private final JButton okButton = new JButton();
-  private final boolean logToSystemOut;
   private final Window parentComponent;
   private int counter;
 
@@ -31,10 +30,8 @@ class JTextAreaOptionPane {
       final Image icon,
       final int editorSizeX,
       final int editorSizeY,
-      final boolean logToSystemOut,
       final int latchCount,
       final CountDownLatch countDownLatch) {
-    this.logToSystemOut = logToSystemOut;
     counter = latchCount;
     this.parentComponent = parentComponent;
     windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -53,16 +50,15 @@ class JTextAreaOptionPane {
     okButton.setText("OK");
     okButton.setEnabled(false);
     editor.setEditable(false);
-    // editor.setContentType("text/html");
     editor.setText(initialEditorText);
-    if (this.logToSystemOut) {
-      log.info(initialEditorText);
-    }
+    log.info(initialEditorText);
     editor.setCaretPosition(0);
+
     windowFrame.setPreferredSize(new Dimension(editorSizeX, editorSizeY));
     windowFrame.getContentPane().add(label, BorderLayout.NORTH);
     windowFrame.getContentPane().add(new JScrollPane(editor), BorderLayout.CENTER);
     windowFrame.getContentPane().add(okButton, BorderLayout.SOUTH);
+
     okButton.addActionListener(
         e -> {
           if (countDownLatch != null) {
@@ -95,9 +91,7 @@ class JTextAreaOptionPane {
   }
 
   void append(final String text) {
-    if (logToSystemOut) {
-      log.info(text);
-    }
+    log.info(text);
     editor.append(text);
     editor.setCaretPosition(editor.getText().length());
   }

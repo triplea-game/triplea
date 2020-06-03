@@ -48,7 +48,6 @@ public final class TileImageReconstructor {
           null,
           500,
           300,
-          true,
           1,
           null);
   private int sizeX = -1;
