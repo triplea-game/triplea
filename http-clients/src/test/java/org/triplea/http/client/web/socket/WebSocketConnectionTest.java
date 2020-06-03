@@ -43,7 +43,7 @@ class WebSocketConnectionTest {
     private WebSocket.Listener listener;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
       webSocketConnection = new WebSocketConnection(INVALID_URI);
       webSocketConnection.connect(webSocketConnectionListener, err -> {});
       listener = webSocketConnection.getInternalListener();
@@ -131,7 +131,7 @@ class WebSocketConnectionTest {
     private WebSocketConnection webSocketConnection;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
       webSocketConnection = new WebSocketConnection(INVALID_URI);
     }
 

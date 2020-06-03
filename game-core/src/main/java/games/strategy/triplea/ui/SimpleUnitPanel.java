@@ -173,17 +173,15 @@ public class SimpleUnitPanel extends JPanel {
       final TreeSet<RepairRule> repairRules = new TreeSet<>(repairRuleComparator);
       repairRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repairRules) {
-        final int quantity = rules.getInt(repairRule);
-        if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-          // check to see if the repair rule matches the damaged unit
-          if (unit.getType().equals(repairRule.getResults().keySet().iterator().next())) {
-            addUnits(
-                player,
-                quantity,
-                unit.getType(),
-                Matches.unitHasTakenSomeBombingUnitDamage().test(unit),
-                Matches.unitIsDisabled().test(unit));
-          }
+        // check to see if the repair rule matches the damaged unit
+        if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+            && unit.getType().equals(repairRule.getResults().keySet().iterator().next())) {
+          addUnits(
+              player,
+              rules.getInt(repairRule),
+              unit.getType(),
+              Matches.unitHasTakenSomeBombingUnitDamage().test(unit),
+              Matches.unitIsDisabled().test(unit));
         }
       }
     }

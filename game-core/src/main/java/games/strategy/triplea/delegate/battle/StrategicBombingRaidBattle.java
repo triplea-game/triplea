@@ -274,23 +274,21 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                           + MyFormatter.pluralize("PU", bombingRaidTotal));
             }
             // TODO remove the reference to the constant.japanese- replace with a rule
-            if (Properties.getPacificTheater(gameData)
-                || Properties.getSbrVictoryPoints(gameData)) {
-              if (defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
-                final PlayerAttachment pa = PlayerAttachment.get(defender);
-                if (pa != null) {
-                  final Change changeVp =
-                      ChangeFactory.attachmentPropertyChange(
-                          pa, (-(bombingRaidTotal / 10) + pa.getVps()), "vps");
-                  bridge.addChange(changeVp);
-                  bridge
-                      .getHistoryWriter()
-                      .addChildToEvent(
-                          "Bombing raid costs "
-                              + (bombingRaidTotal / 10)
-                              + " "
-                              + MyFormatter.pluralize("vp", (bombingRaidTotal / 10)));
-                }
+            if ((Properties.getPacificTheater(gameData) || Properties.getSbrVictoryPoints(gameData))
+                && defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
+              final PlayerAttachment pa = PlayerAttachment.get(defender);
+              if (pa != null) {
+                final Change changeVp =
+                    ChangeFactory.attachmentPropertyChange(
+                        pa, (-(bombingRaidTotal / 10) + pa.getVps()), "vps");
+                bridge.addChange(changeVp);
+                bridge
+                    .getHistoryWriter()
+                    .addChildToEvent(
+                        "Bombing raid costs "
+                            + (bombingRaidTotal / 10)
+                            + " "
+                            + MyFormatter.pluralize("vp", (bombingRaidTotal / 10)));
               }
             }
             // kill any suicide attackers (veqryn)

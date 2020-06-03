@@ -29,7 +29,7 @@ class LoginControllerTest {
   private LoginController loginController;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     loginController = new LoginController(loginModule);
   }
 

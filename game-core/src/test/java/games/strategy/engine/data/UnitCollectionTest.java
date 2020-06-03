@@ -52,7 +52,7 @@ class UnitCollectionTest {
   private int unitCountUnitTypeTwo;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     unitTypeOne = new UnitType("Unit Type 1", mockGameData);
     unitTypeTwo = new UnitType("Unit Type 2", mockGameData);
 

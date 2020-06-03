@@ -4,9 +4,8 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.28.0'
     id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
-    id 'net.ltgt.errorprone' version '1.2.0' apply false
-    id 'com.diffplug.gradle.spotless' version '4.0.1' apply false
-    id "org.sonarqube" version "2.8"
+    id 'net.ltgt.errorprone' version '1.2.1' apply false
+    id 'com.diffplug.gradle.spotless' version '4.2.0' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -23,14 +22,6 @@ check {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
-}
-
-sonarqube {
-    properties {
-        property "sonar.host.url", "https://sonarcloud.io/"
-        property "sonar.organization", "triplea-game"
-        property "sonar.projectKey", "triplea-game-sonar"
-    }
 }
 
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
@@ -77,6 +68,7 @@ subprojects {
         awaitilityVersion = '4.0.3'
         bcryptVersion = '0.9.0'
         caffeineVersion = '2.8.1'
+        checkstyleVersion = '8.23'
         commonsCliVersion = '1.4'
         commonsCodecVersion = '1.14'
         commonsIoVersion = '2.7'
@@ -184,7 +176,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion = '8.23'
+        toolVersion = "$checkstyleVersion"
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
         configProperties = [samedir: configFile.parent]
     }

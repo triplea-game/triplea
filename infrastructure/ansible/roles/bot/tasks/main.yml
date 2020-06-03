@@ -6,12 +6,6 @@
     proto: tcp
   with_items: "{{ bot_numbers }}"
 
-- name: apt install unzip
-  become: true
-  apt:
-    name: unzip
-    state: present
-
 - name: create service user to run the app
   become: true
   user:
@@ -90,7 +84,7 @@
   become: true
   copy:
     remote_src: true
-    src: "{{ bot_install_home }}/bin/triplea-game-headless-{{ version }}-all.jar"
+    src: "{{ bot_install_home }}/bin/triplea-game-headless-{{ version }}.jar"
     dest: "{{ bot_jar }}"
     owner: "{{ bot_user }}"
     group: "{{ bot_user }}"

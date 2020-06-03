@@ -82,7 +82,7 @@ class GameListingTest {
   @Mock private LobbyGame lobbyGame2;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     gameListing =
         GameListing.builder()
             .playerMessagingBus(playerMessagingBus)

@@ -160,40 +160,32 @@ class EditPanel extends ActionPanel {
 
         private void selectUnitsToRemove(
             final List<Unit> units, final Territory t, final MouseDetails md) {
-          if (units.isEmpty() && selectedUnits.isEmpty()) {
-            if (!md.isShiftDown()) {
-              final Collection<Unit> unitsToMove = t.getUnits();
-              if (unitsToMove.isEmpty()) {
-                return;
-              }
-              final String text = "Remove from " + t.getName();
-              final UnitChooser chooser =
-                  new UnitChooser(
-                      unitsToMove,
-                      selectedUnits,
-                      null,
-                      false,
-                      false,
-                      false,
-                      getMap().getUiContext());
-              final int option =
-                  JOptionPane.showOptionDialog(
-                      getTopLevelAncestor(),
-                      chooser,
-                      text,
-                      JOptionPane.OK_CANCEL_OPTION,
-                      JOptionPane.PLAIN_MESSAGE,
-                      null,
-                      null,
-                      null);
-              if (option != JOptionPane.OK_OPTION) {
-                return;
-              }
-              if (chooser.getSelected(false).isEmpty()) {
-                return;
-              }
-              selectedUnits.addAll(chooser.getSelected(false));
+          if (units.isEmpty() && selectedUnits.isEmpty() && !md.isShiftDown()) {
+            final Collection<Unit> unitsToMove = t.getUnits();
+            if (unitsToMove.isEmpty()) {
+              return;
             }
+            final String text = "Remove from " + t.getName();
+            final UnitChooser chooser =
+                new UnitChooser(
+                    unitsToMove, selectedUnits, null, false, false, false, getMap().getUiContext());
+            final int option =
+                JOptionPane.showOptionDialog(
+                    getTopLevelAncestor(),
+                    chooser,
+                    text,
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    null);
+            if (option != JOptionPane.OK_OPTION) {
+              return;
+            }
+            if (chooser.getSelected(false).isEmpty()) {
+              return;
+            }
+            selectedUnits.addAll(chooser.getSelected(false));
           }
           if (selectedTerritory == null) {
             selectedTerritory = t;
@@ -314,15 +306,14 @@ class EditPanel extends ActionPanel {
               getMap().setMouseShadowUnits(selectedUnits);
             }
             // highlight territory
-            if (currentAction == changeTerritoryOwnerAction || currentAction == addUnitsAction) {
-              if (!Objects.equals(currentTerritory, territory)) {
-                if (currentTerritory != null) {
-                  getMap().clearTerritoryOverlay(currentTerritory);
-                }
-                currentTerritory = territory;
-                getMap().setTerritoryOverlay(currentTerritory, Color.WHITE, 200);
-                getMap().repaint();
+            if ((currentAction == changeTerritoryOwnerAction || currentAction == addUnitsAction)
+                && !Objects.equals(currentTerritory, territory)) {
+              if (currentTerritory != null) {
+                getMap().clearTerritoryOverlay(currentTerritory);
               }
+              currentTerritory = territory;
+              getMap().setTerritoryOverlay(currentTerritory, Color.WHITE, 200);
+              getMap().repaint();
             }
           }
         }

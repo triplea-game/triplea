@@ -68,7 +68,7 @@ class MainMenuControlsTest {
     private final MainMenuControls aboutInformation = new MainMenuControls();
 
     @BeforeEach
-    void setup() {
+    void setUp() {
       aboutInformation.connect(mock);
     }
 

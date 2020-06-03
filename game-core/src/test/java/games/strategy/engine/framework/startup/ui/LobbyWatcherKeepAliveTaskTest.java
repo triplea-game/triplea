@@ -31,7 +31,7 @@ class LobbyWatcherKeepAliveTaskTest {
   @Mock private FeignException feignException;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     lobbyWatcherKeepAliveTask =
         LobbyWatcherKeepAliveTask.builder()
             .gameId(ID_0)

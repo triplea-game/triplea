@@ -29,7 +29,7 @@ class DoneMoveActionTest {
   private DoneMoveAction doneMoveAction;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     doneMoveAction =
         DoneMoveAction.builder()
             .parentComponent(parentComponent)

@@ -30,7 +30,7 @@ class RegisteredLoginTest {
   private RegisteredLogin registeredLogin;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     registeredLogin =
         RegisteredLogin.builder()
             .passwordCheck(passwordCheck)

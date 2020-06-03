@@ -57,7 +57,6 @@ public final class AutoPlacementFinder {
           null,
           500,
           300,
-          true,
           1,
           null);
 

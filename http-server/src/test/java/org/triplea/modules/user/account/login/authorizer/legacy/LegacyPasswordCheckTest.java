@@ -26,7 +26,7 @@ class LegacyPasswordCheckTest {
   private LegacyPasswordCheck legacyPasswordCheck;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     legacyPasswordCheck = LegacyPasswordCheck.builder().userJdbiDao(userJdbiDao).build();
   }
 

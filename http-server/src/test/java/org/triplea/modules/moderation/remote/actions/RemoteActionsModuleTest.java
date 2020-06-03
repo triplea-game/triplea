@@ -33,7 +33,7 @@ class RemoteActionsModuleTest {
   private RemoteActionsModule remoteActionsModule;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     remoteActionsModule =
         RemoteActionsModule.builder()
             .userBanDao(userBanDao)

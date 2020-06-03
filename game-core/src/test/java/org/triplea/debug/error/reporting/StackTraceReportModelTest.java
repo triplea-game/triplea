@@ -36,7 +36,7 @@ class StackTraceReportModelTest {
   private StackTraceReportModel viewModel;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     viewModel =
         StackTraceReportModel.builder()
             .view(stackTraceReportView)

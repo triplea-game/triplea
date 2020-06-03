@@ -31,7 +31,7 @@ class CreateAccountModuleTest {
   private CreateAccountModule createAccountModule;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     createAccountModule =
         CreateAccountModule.builder()
             .createAccountValidation(createAccountValidation)

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 public abstract class UserAgentStylesheetTestCase {
 
   @BeforeEach
-  void setup() throws Exception {
+  void setUp() throws Exception {
     setUserAgentStylesheet("");
   }
 

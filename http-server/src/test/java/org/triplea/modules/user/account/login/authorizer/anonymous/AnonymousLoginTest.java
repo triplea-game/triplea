@@ -25,7 +25,7 @@ class AnonymousLoginTest {
   private AnonymousLogin anonymousLogin;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     anonymousLogin =
         AnonymousLogin.builder()
             .nameIsAvailableValidation(nameIsAvailableValidator)

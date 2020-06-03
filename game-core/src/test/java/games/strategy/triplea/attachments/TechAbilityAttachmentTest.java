@@ -41,7 +41,7 @@ class TechAbilityAttachmentTest {
   private final String testUnitType = "someExistentKey";
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     when(attachment.toString()).thenReturn(customToString);
     when(data.getUnitTypeList()).thenReturn(list);
     when(list.getUnitType(testUnitType)).thenReturn(dummyUnitType);

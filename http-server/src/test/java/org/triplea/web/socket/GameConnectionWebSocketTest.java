@@ -22,7 +22,7 @@ class GameConnectionWebSocketTest {
   @Mock private WebSocketMessagingBus webSocketMessagingBus;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     final Predicate<Session> banCheck = session -> false;
     when(session.getUserProperties())
         .thenReturn(

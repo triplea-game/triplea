@@ -323,14 +323,12 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     for (final GamePlayer p : shareWith) {
       final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
       final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
-      if (diceSides <= 0 && diceCount <= 0) {
-        // if both are zero, then it must mean we did not share our war bonds tech with them, even
-        // though we are sharing
-        // all tech (because they cannot have this tech)
-        if (canPlayerCollectIncome(p, data)) {
-          giveWarBondsTo = p;
-          break;
-        }
+      // if both are zero, then it must mean we did not share our war bonds tech with them, even
+      // though we are sharing
+      // all tech (because they cannot have this tech)
+      if (diceSides <= 0 && diceCount <= 0 && canPlayerCollectIncome(p, data)) {
+        giveWarBondsTo = p;
+        break;
       }
     }
     if (giveWarBondsTo == null) {
@@ -381,9 +379,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       // if ownership should change in this territory
       if (inAllTerritories || (ta != null && !ta.getChangeUnitOwners().isEmpty())) {
         final List<GamePlayer> newOwners =
-            (ta != null && !ta.getChangeUnitOwners().isEmpty())
-                ? ta.getChangeUnitOwners()
-                : bridge.getData().getPlayerList().getPlayers();
+            new ArrayList<>(
+                (ta != null && !ta.getChangeUnitOwners().isEmpty())
+                    ? ta.getChangeUnitOwners()
+                    : bridge.getData().getPlayerList().getPlayers());
         newOwners.retainAll(possibleNewOwners);
         for (final GamePlayer newOwner : newOwners) {
           final Collection<Unit> units =
