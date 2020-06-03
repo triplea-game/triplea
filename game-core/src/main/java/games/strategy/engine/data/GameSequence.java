@@ -31,13 +31,13 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     boolean found = false;
     for (int i = 0; i < steps.size(); i++) {
       final GameStep step = steps.get(i);
-      if (step != null && step.getDisplayName().equalsIgnoreCase(stepDisplayName)) {
-        if ((player == null && step.getPlayerId() == null)
-            || (player != null && player.equals(step.getPlayerId()))) {
-          currentIndex = i;
-          found = true;
-          break;
-        }
+      if (step != null
+          && step.getDisplayName().equalsIgnoreCase(stepDisplayName)
+          && ((player == null && step.getPlayerId() == null)
+              || (player != null && player.equals(step.getPlayerId())))) {
+        currentIndex = i;
+        found = true;
+        break;
       }
     }
     if (!found) {

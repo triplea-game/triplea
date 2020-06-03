@@ -182,10 +182,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final GamePlayer player, final Predicate<TriggerAttachment> cond) {
     final Set<TriggerAttachment> trigs = new HashSet<>();
     for (final IAttachment a : player.getAttachments().values()) {
-      if (a instanceof TriggerAttachment) {
-        if (cond == null || cond.test((TriggerAttachment) a)) {
-          trigs.add((TriggerAttachment) a);
-        }
+      if (a instanceof TriggerAttachment && (cond == null || cond.test((TriggerAttachment) a))) {
+        trigs.add((TriggerAttachment) a);
       }
     }
     return trigs;

@@ -842,15 +842,14 @@ public final class Matches {
         return false;
       }
       final @Nullable GamePlayer origOwner = OriginalOwnerTracker.getOriginalOwner(t);
-      if (t.isWater()) {
-        // if it's water, it is a Convoy Center
-        // Can't get PUs for capturing a CC, only original owner can get them. (Except capturing
-        // null player CCs)
-        if (!(origOwner == null
-            || origOwner.equals(GamePlayer.NULL_PLAYERID)
-            || origOwner.equals(player))) {
-          return false;
-        }
+      // if it's water, it is a Convoy Center
+      // Can't get PUs for capturing a CC, only original owner can get them. (Except capturing
+      // null player CCs)
+      if (t.isWater()
+          && !(origOwner == null
+              || origOwner.equals(GamePlayer.NULL_PLAYERID)
+              || origOwner.equals(player))) {
+        return false;
       }
       if (ta.getConvoyRoute() && !ta.getConvoyAttached().isEmpty()) {
         // Determine if at least one part of the convoy route is owned by us or an ally
@@ -2167,15 +2166,11 @@ public final class Matches {
           paa.getRelationshipChanges()) {
         final GamePlayer p1 = relationshipChange.player1;
         final GamePlayer p2 = relationshipChange.player2;
-        if (!currentPlayer.equals(p1)) {
-          if (p1.amNotDeadYet(data)) {
-            return true;
-          }
+        if (!currentPlayer.equals(p1) && p1.amNotDeadYet(data)) {
+          return true;
         }
-        if (!currentPlayer.equals(p2)) {
-          if (p2.amNotDeadYet(data)) {
-            return true;
-          }
+        if (!currentPlayer.equals(p2) && p2.amNotDeadYet(data)) {
+          return true;
         }
       }
       return false;

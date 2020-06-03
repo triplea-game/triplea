@@ -398,11 +398,10 @@ public class MoveValidator {
     if (!route.getStart().isWater()
         && !Matches.isAtWar(route.getStart().getOwner(), data).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data))
-            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).negate()))) {
-      if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
-          && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
-        return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
-      }
+            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).negate()))
+        && !Matches.territoryIsBlitzable(player, data).test(route.getStart())
+        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
+      return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
     }
 
     // Don't allow aa guns (and other disallowed units) to move in combat unless they are in a
@@ -483,32 +482,28 @@ public class MoveValidator {
         }
       }
     }
-    if (units.stream().anyMatch(Matches.unitIsAir())) { // check aircraft
-      if (route.hasSteps()
-          && (!Properties.getNeutralFlyoverAllowed(data)
-              || Properties.getNeutralsImpassable(data))) {
-        if (route.getMiddleSteps().stream().anyMatch(Matches.territoryIsNeutralButNotWater())) {
-          return result.setErrorReturnResult("Air units cannot fly over neutral territories");
-        }
-      }
+    // check aircraft
+    if (units.stream().anyMatch(Matches.unitIsAir())
+        && route.hasSteps()
+        && (!Properties.getNeutralFlyoverAllowed(data) || Properties.getNeutralsImpassable(data))
+        && route.getMiddleSteps().stream().anyMatch(Matches.territoryIsNeutralButNotWater())) {
+      return result.setErrorReturnResult("Air units cannot fly over neutral territories");
     }
     // make sure no conquered territories on route
-    if (hasConqueredNonBlitzedNonWaterOnRoute(route, data)) {
-      // unless we are all air or we are in non combat OR the route is water (was a bug in convoy
-      // zone movement)
-      if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir())) {
-        // what if we are paratroopers?
-        return result.setErrorReturnResult("Cannot move through newly captured territories");
-      }
+    // unless we are all air or we are in non combat OR the route is water (was a bug in convoy
+    // zone movement)
+    if (hasConqueredNonBlitzedNonWaterOnRoute(route, data)
+        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
+      // what if we are paratroopers?
+      return result.setErrorReturnResult("Cannot move through newly captured territories");
     }
     // See if they've already been in combat
     if (units.stream().anyMatch(Matches.unitWasInCombat())
-        && units.stream().anyMatch(Matches.unitWasUnloadedThisTurn())) {
-      if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data)
-              .test(route.getEnd())
-          && !route.getEnd().getUnitCollection().isEmpty()) {
-        return result.setErrorReturnResult("Units cannot participate in multiple battles");
-      }
+        && units.stream().anyMatch(Matches.unitWasUnloadedThisTurn())
+        && Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data)
+            .test(route.getEnd())
+        && !route.getEnd().getUnitCollection().isEmpty()) {
+      return result.setErrorReturnResult("Units cannot participate in multiple battles");
     }
     // See if we are doing invasions in combat phase, with units or transports that can't do
     // invasion.
@@ -1601,10 +1596,8 @@ public class MoveValidator {
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
         Collection<Unit> transporting = TransportTracker.transporting(airTransport);
-        if (transporting.isEmpty()) {
-          if (!newDependents.isEmpty()) {
-            transporting = newDependents.get(airTransport);
-          }
+        if (transporting.isEmpty() && !newDependents.isEmpty()) {
+          transporting = newDependents.get(airTransport);
         }
         mustMoveWith.put(airTransport, transporting);
       }
