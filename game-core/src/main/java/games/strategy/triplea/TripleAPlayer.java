@@ -52,6 +52,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
@@ -77,7 +78,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
           // All GameDataChangeListeners will be notified upon success
           final IEditDelegate editDelegate =
               (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
-          editDelegate.setEditMode(editMode);
+          AsyncRunner.runAsync(() -> editDelegate.setEditMode(editMode))
+              .exceptionally(
+                  throwable -> log.log(Level.SEVERE, "Failed to toggle edit mode", throwable));
         } catch (final Exception exception) {
           log.log(Level.SEVERE, "Failed to set edit mode to " + editMode, exception);
           // toggle back to previous state since setEditMode failed
