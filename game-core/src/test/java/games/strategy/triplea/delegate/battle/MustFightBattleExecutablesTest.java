@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.battle;
 
 import static games.strategy.engine.data.Unit.ALREADY_MOVED;
-import static games.strategy.engine.data.Unit.SUBMERGED;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.IGNORE_TRANSPORT_IN_MOVEMENT;
 import static games.strategy.triplea.Constants.LAND_BATTLE_ROUNDS;
@@ -10,16 +9,13 @@ import static games.strategy.triplea.Constants.SEA_BATTLE_ROUNDS;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.SUB_RETREAT_BEFORE_BATTLE;
 import static games.strategy.triplea.Constants.TRANSPORT_CASUALTIES_RESTRICTED;
-import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.WW2V2;
 import static games.strategy.triplea.Constants.WW2V3;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_UNESCORTED_TRANSPORTS;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.LAND;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.WATER;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAttackerFirstStrike;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
@@ -42,7 +38,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,9 +53,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.history.DelegateHistoryWriter;
-import games.strategy.engine.player.Player;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -160,8 +152,7 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    assertThatStepExists(
-        execs, MustFightBattle.FireNavalBombardment.class);
+    assertThatStepExists(execs, MustFightBattle.FireNavalBombardment.class);
   }
 
   @Test
@@ -191,7 +182,8 @@ class MustFightBattleExecutablesTest {
     step.execute(null, delegateBridge);
 
     verify(delegateBridge).addChange(ChangeFactory.EMPTY_CHANGE);
-    verify(battle, never()).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
+    verify(battle, never())
+        .fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
   }
 
   @Test
@@ -215,7 +207,9 @@ class MustFightBattleExecutablesTest {
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
-    doNothing().when(battle).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
+    doNothing()
+        .when(battle)
+        .fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
 
     step.execute(null, delegateBridge);
 
@@ -231,8 +225,7 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    assertThatStepExists(
-        execs, MustFightBattle.LandParatroopers.class);
+    assertThatStepExists(execs, MustFightBattle.LandParatroopers.class);
   }
 
   @Test
@@ -443,13 +436,16 @@ class MustFightBattleExecutablesTest {
         is(1));
 
     assertThat(
-        "ClearAaWaitingToDieAndDamagedChangesInto is after FireOffensiveAaGuns and FireDefensiveAaGuns",
+        "ClearAaWaitingToDieAndDamagedChangesInto is after "
+            + "FireOffensiveAaGuns and FireDefensiveAaGuns",
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(2));
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE, no destroyers, and retreat territory")
+  @DisplayName(
+      "Verify attacking canEvade units can retreat if "
+          + "SUB_RETREAT_BEFORE_BATTLE, no destroyers, and retreat territory")
   void attackingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
@@ -472,7 +468,8 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
+  @DisplayName(
+      "Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
   void attackingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
@@ -496,7 +493,9 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, and no retreat")
+  @DisplayName(
+      "Verify attacking canEvade units can not retreat if "
+          + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, and no retreat")
   void attackingSubsCanNotRetreatIfRetreatBeforeBattleAndSubmersibleAndNoRetreatTerritories() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
@@ -524,8 +523,11 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, retreat exists, but has defenseless transports")
-  void attackingSubsCanNotRetreatIfRetreatBeforeBattleAndSubmersibleAndRetreatTerritoriesAndDefenselessTransports() {
+  @DisplayName(
+      "Verify attacking canEvade units can not retreat if "
+          + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, retreat exists, "
+          + "but has defenseless transports")
+  void attackingSubsCanNotRetreatIfBeforeBattleAndSubmersibleAndTerritoriesAndDefenselessTransp() {
     final MustFightBattle battle = spy(newBattle(WATER));
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
@@ -553,8 +555,11 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, retreat exists, has defenseless transports that are not restricted")
-  void attackingSubsCanNotRetreatIfRetreatBeforeBattleAndSubmersibleAndRetreatTerritoriesAndUnRestrictedDefenselessTransports() {
+  @DisplayName(
+      "Verify attacking canEvade units can not retreat if "
+          + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, retreat exists, "
+          + "has defenseless transports that are not restricted")
+  void attackingSubsCanNotRetreatIfBeforeBattleAndSubmersibleAndTerritoriesAndUnRestrTransp() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of(battleSite)).when(battle).getAttackerRetreatTerritories();
 
@@ -584,8 +589,11 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, retreat exists, has no defenseless transports")
-  void attackingSubsCanRetreatIfBeforeBattleAndSubmersibleAndRetreatTerritoriesAndNoDefenselessTransports() {
+  @DisplayName(
+      "Verify attacking canEvade units can retreat if "
+          + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, retreat exists, "
+          + "has no defenseless transports")
+  void attackingSubsCanRetreatIfBeforeBattleAndSubmersibleAndRetreatAndNoDefenselessTransports() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of(battleSite)).when(battle).getAttackerRetreatTerritories();
 
@@ -620,12 +628,12 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    assertThatStepExists(
-        execs, MustFightBattle.AttackerRetreatSubsBeforeBattle.class);
+    assertThatStepExists(execs, MustFightBattle.AttackerRetreatSubsBeforeBattle.class);
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
+  @DisplayName(
+      "Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
   void attackingSubsRetreatIfCanNotRetreatBeforeBattle() {
     final MustFightBattle battle = newBattle(WATER);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -638,7 +646,9 @@ class MustFightBattleExecutablesTest {
 
   @Test
   // firstStrike is actually not checked, unlike in BattleSteps
-  @DisplayName("Verify attacking firstStrike submerge before battle if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true and no destroyers")
+  @DisplayName(
+      "Verify attacking firstStrike submerge before battle if "
+          + "SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true and no destroyers")
   void attackingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
@@ -667,7 +677,9 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE, no destroyers, and retreat territory")
+  @DisplayName(
+      "Verify defending canEvade units can retreat if "
+          + "SUB_RETREAT_BEFORE_BATTLE, no destroyers, and retreat territory")
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
@@ -690,7 +702,8 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
+  @DisplayName(
+      "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
   void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
@@ -701,7 +714,8 @@ class MustFightBattleExecutablesTest {
 
     final Unit destroyer = givenUnitDestroyer();
 
-    battle.setUnits(List.of(canEvadeUnit), List.of(destroyer), List.of(), List.of(), defender, List.of());
+    battle.setUnits(
+        List.of(canEvadeUnit), List.of(destroyer), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
     final int index = getIndex(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
@@ -714,7 +728,9 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, and no retreat")
+  @DisplayName(
+      "Verify defending canEvade units can not retreat if "
+          + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, and no retreat")
   void defendingSubsCanNotRetreatIfRetreatBeforeBattleAndSubmersibleAndNoRetreatTerritories() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any(), any());
@@ -750,12 +766,12 @@ class MustFightBattleExecutablesTest {
     battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    assertThatStepExists(
-        execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
+    assertThatStepExists(execs, MustFightBattle.DefenderRetreatSubsBeforeBattle.class);
   }
 
   @Test
-  @DisplayName("Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
+  @DisplayName(
+      "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
   void defendingSubsRetreatIfCanNotRetreatBeforeBattle() {
     final MustFightBattle battle = newBattle(WATER);
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -768,7 +784,9 @@ class MustFightBattleExecutablesTest {
 
   @Test
   // firstStrike is actually not checked, unlike in BattleSteps
-  @DisplayName("Verify defending firstStrike submerge before battle if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true and no destroyers")
+  @DisplayName(
+      "Verify defending firstStrike submerge before battle if "
+          + "SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true and no destroyers")
   void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
@@ -865,11 +883,13 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is true but has retreat territories")
+  @DisplayName(
+      "Verify attacking transports are not removed if "
+          + "TRANSPORT_CASUALTIES_RESTRICTED is true but has retreat territories")
   void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButHasRetreat() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of(retreatSite)).when(battle).getAttackerRetreatTerritories();
-    //doNothing().when(battle).remove(any(), any(), any(), any());
+    // doNothing().when(battle).remove(any(), any(), any(), any());
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
@@ -890,7 +910,9 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is true but has no transports")
+  @DisplayName(
+      "Verify attacking transports are not removed if "
+          + "TRANSPORT_CASUALTIES_RESTRICTED is true but has no transports")
   void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoTransports() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
@@ -923,7 +945,9 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify attacking transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is true but no defenders")
+  @DisplayName(
+      "Verify attacking transports are not removed if "
+          + "TRANSPORT_CASUALTIES_RESTRICTED is true but no defenders")
   void attackingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoDefenders() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
@@ -1006,7 +1030,9 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify defending transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is true but has no transports")
+  @DisplayName(
+      "Verify defending transports are not removed if "
+          + "TRANSPORT_CASUALTIES_RESTRICTED is true but has no transports")
   void defendingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoTransports() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
@@ -1038,7 +1064,9 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("Verify defending transports are not removed if TRANSPORT_CASUALTIES_RESTRICTED is true but no defenders")
+  @DisplayName(
+      "Verify defending transports are not removed if "
+          + "TRANSPORT_CASUALTIES_RESTRICTED is true but no defenders")
   void defendingTransportsAreNotRemovedIfTransportCasualtiesRestrictedButNoDefenders() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doReturn(List.of()).when(battle).getAttackerRetreatTerritories();
@@ -1076,12 +1104,24 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker before defender before standard")
-  void firstStrikeOrderAttackerHasDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, true, true, true, true), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.STANDARD));
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker>defender>standard")
+  void firstStrikeOrderAttHasDestroyerDefHasDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(true, true, true, true, true),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.DEFENDER,
+            FirstStrikeBattleStep.STANDARD));
   }
 
-  private Tuple<MustFightBattle, List<IExecutable>> givenFirstStrikeBattleSetup(final boolean attackerDestroyer, final boolean defenderDestroyer, final boolean ww2v2, final boolean defendingSubsSneakAttack, final boolean ignoreDefendingSubsSneakAttack) {
+  private Tuple<MustFightBattle, List<IExecutable>> givenFirstStrikeBattleSetup(
+      final boolean attackerDestroyer,
+      final boolean defenderDestroyer,
+      final boolean ww2v2,
+      final boolean defendingSubsSneakAttack,
+      final boolean ignoreDefendingSubsSneakAttack) {
     final MustFightBattle battle = spy(newBattle(WATER));
     lenient().doNothing().when(battle).firstStrikeAttackersFire(any());
     lenient().doNothing().when(battle).firstStrikeDefendersFire(any());
@@ -1090,13 +1130,15 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(ww2v2);
     if (!ignoreDefendingSubsSneakAttack) {
-      when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(defendingSubsSneakAttack);
+      when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false))
+          .thenReturn(defendingSubsSneakAttack);
     }
 
     final Unit attackerUnit = attackerDestroyer ? givenUnitDestroyer() : givenUnit();
     final Unit defenderUnit = defenderDestroyer ? givenUnitDestroyer() : givenUnit();
 
-    battle.setUnits(List.of(defenderUnit), List.of(attackerUnit), List.of(), List.of(), defender, List.of());
+    battle.setUnits(
+        List.of(defenderUnit), List.of(attackerUnit), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
     return Tuple.of(battle, execs);
@@ -1108,23 +1150,40 @@ class MustFightBattleExecutablesTest {
     STANDARD,
   }
 
-  private void assertThatFirstStrikeStepOrder(final Tuple<MustFightBattle, List<IExecutable>> battleTuple, final List<FirstStrikeBattleStep> stepOrder) {
+  private void assertThatFirstStrikeStepOrder(
+      final Tuple<MustFightBattle, List<IExecutable>> battleTuple,
+      final List<FirstStrikeBattleStep> stepOrder) {
     final List<IExecutable> execs = battleTuple.getSecond();
 
-    final EnumMap<FirstStrikeBattleStep, Integer> indices = new EnumMap(FirstStrikeBattleStep.class);
+    final EnumMap<FirstStrikeBattleStep, Integer> indices =
+        new EnumMap<>(FirstStrikeBattleStep.class);
 
-    indices.put(FirstStrikeBattleStep.ATTACKER, getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class));
-    indices.put(FirstStrikeBattleStep.DEFENDER, getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class));
-    indices.put(FirstStrikeBattleStep.STANDARD, getIndex(execs, MustFightBattle.StandardAttackersFire.class));
+    indices.put(
+        FirstStrikeBattleStep.ATTACKER,
+        getIndex(execs, MustFightBattle.FirstStrikeAttackersFire.class));
+    indices.put(
+        FirstStrikeBattleStep.DEFENDER,
+        getIndex(execs, MustFightBattle.FirstStrikeDefendersFire.class));
+    indices.put(
+        FirstStrikeBattleStep.STANDARD,
+        getIndex(execs, MustFightBattle.StandardAttackersFire.class));
 
     assertThat(indices.get(stepOrder.get(0)), lessThan(indices.get(stepOrder.get(1))));
     assertThat(indices.get(stepOrder.get(1)), lessThan(indices.get(stepOrder.get(2))));
   }
 
-  private void assertThatFirstStrikeReturnFireIs(final Tuple<MustFightBattle, List<IExecutable>> battleTuple, final MustFightBattle.ReturnFire returnFire, final boolean attacker) {
+  private void assertThatFirstStrikeReturnFireIs(
+      final Tuple<MustFightBattle, List<IExecutable>> battleTuple,
+      final MustFightBattle.ReturnFire returnFire,
+      final boolean attacker) {
     final MustFightBattle battle = battleTuple.getFirst();
     final List<IExecutable> execs = battleTuple.getSecond();
-    final int index = getIndex(execs, attacker ? MustFightBattle.FirstStrikeAttackersFire.class: MustFightBattle.FirstStrikeDefendersFire.class);
+    final int index =
+        getIndex(
+            execs,
+            attacker
+                ? MustFightBattle.FirstStrikeAttackersFire.class
+                : MustFightBattle.FirstStrikeDefendersFire.class);
     final IExecutable step = execs.get(index);
 
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
@@ -1138,213 +1197,410 @@ class MustFightBattleExecutablesTest {
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker has return fire all")
-  void firstStrikeAttackerReturnFireAttackerHasDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, true, true, true, true), MustFightBattle.ReturnFire.ALL, true);
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker has return fire all")
+  void firstStrikeAttackerReturnFireAttHasDestroyerDefHasDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, true, true, true, true),
+        MustFightBattle.ReturnFire.ALL,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerHasDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, true, true, true, true), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttHasDestroyerDefHasDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, true, true, true, true),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker before standard before defender")
-  void firstStrikeOrderAttackerHasDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, true, false, true, false), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.STANDARD, FirstStrikeBattleStep.DEFENDER));
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker>standard>defender")
+  void firstStrikeOrderAttHasDestroyerDefHasDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(true, true, false, true, false),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.STANDARD,
+            FirstStrikeBattleStep.DEFENDER));
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire all")
-  void firstStrikeAttackerReturnFireAttackerHasDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, true, false, true, false), MustFightBattle.ReturnFire.ALL, true);
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire all")
+  void firstStrikeAttackerReturnFireAttHasDestroyerDefHasDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, true, false, true, false),
+        MustFightBattle.ReturnFire.ALL,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerHasDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, true, false, true, false), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttHasDestroyerDefHasDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, true, false, true, false),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker before standard before defender")
-  void firstStrikeOrderAttackerHasDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, true, false, false, false), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.STANDARD, FirstStrikeBattleStep.DEFENDER));
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker>standard>defender")
+  void firstStrikeOrderAttHasDestroyerDefHasDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(true, true, false, false, false),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.STANDARD,
+            FirstStrikeBattleStep.DEFENDER));
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire all")
-  void firstStrikeAttackerReturnFireAttackerHasDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, true, false, false, false), MustFightBattle.ReturnFire.ALL, true);
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire all")
+  void firstStrikeAttackerReturnFireAttHasDestroyerDefHasDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, true, false, false, false),
+        MustFightBattle.ReturnFire.ALL,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerHasDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, true, false, false, false), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has a destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttHasDestroyerDefHasDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, true, false, false, false),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker before defender before standard")
-  void firstStrikeOrderAttackerHasDestroyerDefenderNoDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, false, true, true, true), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.STANDARD));
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker>defender>standard")
+  void firstStrikeOrderAttHasDestroyerDefNoDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(true, false, true, true, true),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.DEFENDER,
+            FirstStrikeBattleStep.STANDARD));
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker has return fire subs")
-  void firstStrikeAttackerReturnFireAttackerHasDestroyerDefenderNoDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, false, true, true, true), MustFightBattle.ReturnFire.SUBS, true);
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker has return fire subs")
+  void firstStrikeAttackerReturnFireAttHasDestroyerDefNoDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, false, true, true, true),
+        MustFightBattle.ReturnFire.SUBS,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerHasDestroyerDefenderNoDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, false, true, true, true), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttHasDestroyerDefNoDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, false, true, true, true),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker before standard before defender")
-  void firstStrikeOrderAttackerHasDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, false, false, true, false), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.STANDARD, FirstStrikeBattleStep.DEFENDER));
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker>standard>defender")
+  void firstStrikeOrderAttHasDestroyerDefNoDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(true, false, false, true, false),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.STANDARD,
+            FirstStrikeBattleStep.DEFENDER));
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire none")
-  void firstStrikeAttackerReturnFireAttackerHasDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, false, false, true, false), MustFightBattle.ReturnFire.NONE, true);
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire none")
+  void firstStrikeAttackerReturnFireAttHasDestroyerDefNoDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, false, false, true, false),
+        MustFightBattle.ReturnFire.NONE,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerHasDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, false, false, true, false), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttHasDestroyerDefNoDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, false, false, true, false),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker before standard before defender")
-  void firstStrikeOrderAttackerHasDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(true, false, false, false, false), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.STANDARD, FirstStrikeBattleStep.DEFENDER));
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker>standard>defender")
+  void firstStrikeOrderAttHasDestroyerDefNoDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(true, false, false, false, false),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.STANDARD,
+            FirstStrikeBattleStep.DEFENDER));
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire none")
-  void firstStrikeAttackerReturnFireAttackerHasDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, false, false, false, false), MustFightBattle.ReturnFire.NONE, true);
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire none")
+  void firstStrikeAttackerReturnFireAttHasDestroyerDefNoDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, false, false, false, false),
+        MustFightBattle.ReturnFire.NONE,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has a destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerHasDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(true, false, false, false, false), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has a destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttHasDestroyerDefNoDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(true, false, false, false, false),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker before defender before standard")
-  void firstStrikeOrderAttackerNoDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(false, true, true, true, true), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.STANDARD));
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker>defender>standard")
+  void firstStrikeOrderAttNoDestroyerDefHasDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(false, true, true, true, true),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.DEFENDER,
+            FirstStrikeBattleStep.STANDARD));
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker has return fire all")
-  void firstStrikeAttackerReturnFireAttackerNoDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, true, true, true, true), MustFightBattle.ReturnFire.ALL, true);
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker has return fire all")
+  void firstStrikeAttackerReturnFireAttNoDestroyerDefHasDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, true, true, true, true),
+        MustFightBattle.ReturnFire.ALL,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then defender has return fire subs")
-  void firstStrikeDefenderReturnFireAttackerNoDestroyerDefenderHasDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, true, true, true, true), MustFightBattle.ReturnFire.SUBS, false);
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then defender has return fire subs")
+  void firstStrikeDefenderReturnFireAttNoDestroyerDefHasDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, true, true, true, true),
+        MustFightBattle.ReturnFire.SUBS,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender before attacker before standard")
-  void firstStrikeOrderAttackerNoDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(false, true, false, true, false), List.of(FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.STANDARD));
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender>attacker>standard")
+  void firstStrikeOrderAttNoDestroyerDefHasDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(false, true, false, true, false),
+        List.of(
+            FirstStrikeBattleStep.DEFENDER,
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.STANDARD));
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire all")
-  void firstStrikeAttackerReturnFireAttackerNoDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, true, false, true, false), MustFightBattle.ReturnFire.ALL, true);
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire all")
+  void firstStrikeAttackerReturnFireAttNoDestroyerDefHasDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, true, false, true, false),
+        MustFightBattle.ReturnFire.ALL,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire none")
-  void firstStrikeDefenderReturnFireAttackerNoDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, true, false, true, false), MustFightBattle.ReturnFire.NONE, false);
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire none")
+  void firstStrikeDefenderReturnFireAttNoDestroyerDefHasDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, true, false, true, false),
+        MustFightBattle.ReturnFire.NONE,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker before standard before defender")
-  void firstStrikeOrderAttackerNoDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(false, true, false, false, false), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.STANDARD, FirstStrikeBattleStep.DEFENDER));
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker>standard>defender")
+  void firstStrikeOrderAttNoDestroyerDefHasDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(false, true, false, false, false),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.STANDARD,
+            FirstStrikeBattleStep.DEFENDER));
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire all")
-  void firstStrikeAttackerReturnFireAttackerNoDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, true, false, false, false), MustFightBattle.ReturnFire.ALL, true);
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire all")
+  void firstStrikeAttackerReturnFireAttNoDestroyerDefHasDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, true, false, false, false),
+        MustFightBattle.ReturnFire.ALL,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has a destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerNoDestroyerDefenderHasDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, true, false, false, false), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has no destroyer, defender has a destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttNoDestroyerDefHasDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, true, false, false, false),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker before defender before standard")
-  void firstStrikeOrderAttackerNoDestroyerDefenderNoDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(false, false, true, true, true), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.STANDARD));
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker>defender>standard")
+  void firstStrikeOrderAttNoDestroyerDefNoDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(false, false, true, true, true),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.DEFENDER,
+            FirstStrikeBattleStep.STANDARD));
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then attacker has return fire subs")
-  void firstStrikeAttackerReturnFireAttackerNoDestroyerDefenderNoDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, false, true, true, true), MustFightBattle.ReturnFire.SUBS, true);
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then attacker has return fire subs")
+  void firstStrikeAttackerReturnFireAttNoDestroyerDefNoDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, false, true, true, true),
+        MustFightBattle.ReturnFire.SUBS,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is true, and DEFENDING_SUBS_SNEAK_ATTACK is true or false, then defender has return fire subs")
-  void firstStrikeDefenderReturnFireAttackerNoDestroyerDefenderNoDestroyerWW2v2TrueDefendingSubsSneakAttackTrueFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, false, true, true, true), MustFightBattle.ReturnFire.SUBS, false);
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is true, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is either, then defender has return fire subs")
+  void firstStrikeDefenderReturnFireAttNoDestroyerDefNoDestroyerWW2v2TrueSneakAttackTrueFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, false, true, true, true),
+        MustFightBattle.ReturnFire.SUBS,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker before defender before standard")
-  void firstStrikeOrderAttackerNoDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(false, false, false, true, false), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.DEFENDER, FirstStrikeBattleStep.STANDARD));
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker>defender>standard")
+  void firstStrikeOrderAttNoDestroyerDefNoDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(false, false, false, true, false),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.DEFENDER,
+            FirstStrikeBattleStep.STANDARD));
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire subs")
-  void firstStrikeAttackerReturnFireAttackerNoDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, false, false, true, false), MustFightBattle.ReturnFire.SUBS, true);
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then attacker has return fire subs")
+  void firstStrikeAttackerReturnFireAttNoDestroyerDefNoDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, false, false, true, false),
+        MustFightBattle.ReturnFire.SUBS,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire subs")
-  void firstStrikeDefenderReturnFireAttackerNoDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackTrue() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, false, false, true, false), MustFightBattle.ReturnFire.SUBS, false);
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is true, then defender has return fire subs")
+  void firstStrikeDefenderReturnFireAttNoDestroyerDefNoDestroyerWW2v2FalseSneakAttackTrue() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, false, false, true, false),
+        MustFightBattle.ReturnFire.SUBS,
+        false);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker before standard before defender")
-  void firstStrikeOrderAttackerNoDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeStepOrder(givenFirstStrikeBattleSetup(false, false, false, false, false), List.of(FirstStrikeBattleStep.ATTACKER, FirstStrikeBattleStep.STANDARD, FirstStrikeBattleStep.DEFENDER));
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker>standard>defender")
+  void firstStrikeOrderAttNoDestroyerDefNoDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeStepOrder(
+        givenFirstStrikeBattleSetup(false, false, false, false, false),
+        List.of(
+            FirstStrikeBattleStep.ATTACKER,
+            FirstStrikeBattleStep.STANDARD,
+            FirstStrikeBattleStep.DEFENDER));
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire none")
-  void firstStrikeAttackerReturnFireAttackerNoDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, false, false, false, false), MustFightBattle.ReturnFire.NONE, true);
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then attacker has return fire none")
+  void firstStrikeAttackerReturnFireAttNoDestroyerDefNoDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, false, false, false, false),
+        MustFightBattle.ReturnFire.NONE,
+        true);
   }
 
   @Test
-  @DisplayName("When attacker has no destroyer, defender has no destroyer, WW2v2 is false, and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
-  void firstStrikeDefenderReturnFireAttackerNoDestroyerDefenderNoDestroyerWW2v2FalseDefendingSubsSneakAttackFalse() {
-    assertThatFirstStrikeReturnFireIs(givenFirstStrikeBattleSetup(false, false, false, false, false), MustFightBattle.ReturnFire.ALL, false);
+  @DisplayName(
+      "When attacker has no destroyer, defender has no destroyer, WW2v2 is false, "
+          + "and DEFENDING_SUBS_SNEAK_ATTACK is false, then defender has return fire all")
+  void firstStrikeDefenderReturnFireAttNoDestroyerDefNoDestroyerWW2v2FalseSneakAttackFalse() {
+    assertThatFirstStrikeReturnFireIs(
+        givenFirstStrikeBattleSetup(false, false, false, false, false),
+        MustFightBattle.ReturnFire.ALL,
+        false);
   }
 
   @Test
@@ -1365,7 +1621,8 @@ class MustFightBattleExecutablesTest {
 
     when(attachment1.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
 
-    battle.setUnits(List.of(unit2), List.of(unit1, unit3), List.of(), List.of(), defender, List.of());
+    battle.setUnits(
+        List.of(unit2), List.of(unit1, unit3), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
     final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);
@@ -1377,6 +1634,7 @@ class MustFightBattleExecutablesTest {
 
     verify(battle).submergeUnits(List.of(unit1), false, delegateBridge);
   }
+
   @Test
   @DisplayName("Verify defending canNotBeTargetedByAll can submerge if all is air")
   void defendingCanNotBeTargetedByAllCanSubmergeWithAllAir() {
@@ -1395,7 +1653,8 @@ class MustFightBattleExecutablesTest {
 
     when(attachment1.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
 
-    battle.setUnits(List.of(unit1, unit3), List.of(unit2), List.of(), List.of(), defender, List.of());
+    battle.setUnits(
+        List.of(unit1, unit3), List.of(unit2), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
     final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);

@@ -552,7 +552,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
+  @DisplayName(
+      "Verify attacking canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   void attackingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -576,7 +577,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
+  @DisplayName(
+      "Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
   void attackingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -592,12 +594,12 @@ public class BattleStepsTest {
             .build()
             .get();
 
-    assertThat(
-        steps, is(basicFightSteps()));
+    assertThat(steps, is(basicFightSteps()));
   }
 
   @Test
-  @DisplayName("Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
+  @DisplayName(
+      "Verify attacking canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
   void attackingSubsRetreatIfCanNotRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -613,12 +615,13 @@ public class BattleStepsTest {
             .build()
             .get();
 
-    assertThat(
-        steps, is(basicFightSteps()));
+    assertThat(steps, is(basicFightSteps()));
   }
 
   @Test
-  @DisplayName("Verify attacking firstStrike submerge before battle if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
+  @DisplayName(
+      "Verify attacking firstStrike submerge before battle "
+          + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
   void attackingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -651,7 +654,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
+  @DisplayName(
+      "Verify defending canEvade units can retreat if SUB_RETREAT_BEFORE_BATTLE and no destroyers")
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -673,7 +677,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
+  @DisplayName(
+      "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE and destroyers")
   void defendingSubsNotRetreatIfDestroyersAndCanRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -689,12 +694,12 @@ public class BattleStepsTest {
             .build()
             .get();
 
-    assertThat(
-        steps, is(basicFightSteps()));
+    assertThat(steps, is(basicFightSteps()));
   }
 
   @Test
-  @DisplayName("Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
+  @DisplayName(
+      "Verify defending canEvade units can not retreat if SUB_RETREAT_BEFORE_BATTLE is false")
   void defendingSubsRetreatIfCanNotRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -711,12 +716,13 @@ public class BattleStepsTest {
             .build()
             .get();
 
-    assertThat(
-        steps, is(basicFightSteps()));
+    assertThat(steps, is(basicFightSteps()));
   }
 
   @Test
-  @DisplayName("Verify defending firstStrike submerge before battle if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
+  @DisplayName(
+      "Verify defending firstStrike submerge before battle "
+          + "if SUB_RETREAT_BEFORE_BATTLE and SUBMERSIBLE_SUBS are true")
   void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -771,7 +777,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify unescorted attacking transports are not removed if casualties are not restricted")
+  @DisplayName(
+      "Verify unescorted attacking transports are not removed if casualties are not restricted")
   void unescortedAttackingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -812,7 +819,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify unescorted defending transports are removed if casualities are not restricted")
+  @DisplayName(
+      "Verify unescorted defending transports are removed if casualities are not restricted")
   void unescortedDefendingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -834,7 +842,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify basic attacker firstStrike (no other attackers, no special defenders, all options false)")
+  @DisplayName(
+      "Verify basic attacker firstStrike "
+          + "(no other attackers, no special defenders, all options false)")
   void attackingFirstStrikeBasic() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -887,7 +897,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify basic defender firstStrike (no other attackers, no special defenders, all options false)")
+  @DisplayName(
+      "Verify basic defender firstStrike "
+          + "(no other attackers, no special defenders, all options false)")
   void defendingFirstStrikeBasic() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -947,7 +959,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true and attacker destroyers")
+  @DisplayName(
+      "Verify defender firstStrike with DEFENDING_SUBS_SNEAK_ATTACK true and attacker destroyers")
   void defendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1041,7 +1054,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify basic attacker and defender firstStrikes (no other attackers, no special defenders, all options false)")
+  @DisplayName(
+      "Verify basic attacker and defender firstStrikes "
+          + "(no other attackers, no special defenders, all options false)")
   void attackingDefendingFirstStrikeBasic() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1103,7 +1118,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacker/defender destroyers")
+  @DisplayName(
+      "Verify attacking/defender firstStrikes with "
+          + "DEFENDING_SUBS_SNEAK_ATTACK true and attacker/defender destroyers")
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1173,7 +1190,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking/defender firstStrikes with WW2v2 true and attacker/defender destroyers")
+  @DisplayName(
+      "Verify attacking/defender firstStrikes with WW2v2 true and attacker/defender destroyers")
   void attackingDefendingFirstStrikeWithWW2v2AndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1209,7 +1227,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and defender destroyers")
+  @DisplayName(
+      "Verify attacking/defender firstStrikes with "
+          + "DEFENDING_SUBS_SNEAK_ATTACK true and defender destroyers")
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndDefendingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1245,7 +1265,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking/defender firstStrikes with DEFENDING_SUBS_SNEAK_ATTACK true and attacking destroyers")
+  @DisplayName(
+      "Verify attacking/defender firstStrikes with "
+          + "DEFENDING_SUBS_SNEAK_ATTACK true and attacking destroyers")
   void attackingDefendingFirstStrikeWithSneakAttackAllowedAndAttackingDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1514,7 +1536,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
+  @DisplayName(
+      "Verify attacking firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
   void attackingFirstStrikeCanSubmergeIfSubmersibleSubsAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1581,7 +1604,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
+  @DisplayName(
+      "Verify defending firstStrike can submerge if SUBMERSIBLE_SUBS is true even with destroyers")
   void defendingFirstStrikeCanSubmergeIfSubmersibleSubsAndDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1644,7 +1668,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
+  @DisplayName(
+      "Verify attacking firstStrike can't withdraw when "
+          + "SUBMERSIBLE_SUBS is false and no retreat territories")
   void attackingFirstStrikeNoWithdrawIfEmptyTerritories() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1671,7 +1697,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
+  @DisplayName(
+      "Verify attacking firstStrike can't withdraw when "
+          + "SUBMERSIBLE_SUBS is false and destroyers present")
   void attackingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
@@ -1698,7 +1726,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
+  @DisplayName(
+      "Verify attacking firstStrike can't withdraw when "
+          + "SUBMERSIBLE_SUBS is false and destroyers waiting to die")
   void attackingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
@@ -1728,7 +1758,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with restricted casualties")
+  @DisplayName(
+      "Verify attacking firstStrike can't withdraw when "
+          + "SUBMERSIBLE_SUBS is false and defenseless transports with restricted casualties")
   void attackingFirstStrikeNoWithdrawIfDefenselessTransports() {
     givenPlayers();
     final Unit unit1 = givenUnitAttackerFirstStrike();
@@ -1757,7 +1789,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacking firstStrike can withdraw when SUBMERSIBLE_SUBS is false and defenseless transports with non restricted casualties")
+  @DisplayName(
+      "Verify attacking firstStrike can withdraw when "
+          + "SUBMERSIBLE_SUBS is false and defenseless transports with non restricted casualties")
   void attackingFirstStrikeWithdrawIfNonRestrictedDefenselessTransports() {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
@@ -1818,7 +1852,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and no retreat territories")
+  @DisplayName(
+      "Verify defending firstStrike can't withdraw when "
+          + "SUBMERSIBLE_SUBS is false and no retreat territories")
   void defendingFirstStrikeNoWithdrawIfEmptyTerritories() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1845,7 +1881,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers present")
+  @DisplayName(
+      "Verify defending firstStrike can't withdraw when "
+          + "SUBMERSIBLE_SUBS is false and destroyers present")
   void defendingFirstStrikeNoWithdrawIfDestroyers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1871,7 +1909,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify defending firstStrike can't withdraw when SUBMERSIBLE_SUBS is false and destroyers waiting to die")
+  @DisplayName(
+      "Verify defending firstStrike can't withdraw when "
+          + "SUBMERSIBLE_SUBS is false and destroyers waiting to die")
   void defendingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -1971,7 +2011,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify partial amphibious attack can not withdraw if partial amphibious withdrawal not allowed")
+  @DisplayName(
+      "Verify partial amphibious attack can not withdraw if "
+          + "partial amphibious withdrawal not allowed")
   void partialAmphibiousAttackCanNotWithdrawIfNotAllowed() {
     givenPlayers();
     final Unit unit1 = givenUnit();
@@ -2040,7 +2082,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacker planes can withdraw if attacker can partial amphibious retreat and amphibious")
+  @DisplayName(
+      "Verify attacker planes can withdraw if "
+          + "attacker can partial amphibious retreat and amphibious")
   void attackingPlanesCanWithdrawPartialAmphibiousAndAmphibious() {
     givenPlayers();
     final Unit unit1 = givenUnitIsAir();
@@ -2115,7 +2159,9 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacker planes can not withdraw if attacker can partial amphibious retreat and not amphibious")
+  @DisplayName(
+      "Verify attacker planes can not withdraw if "
+          + "attacker can partial amphibious retreat and not amphibious")
   void attackingPlanesCanNotWithdrawPartialAmphibiousAndNotAmphibious() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
@@ -2142,7 +2188,8 @@ public class BattleStepsTest {
   }
 
   @Test
-  @DisplayName("Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
+  @DisplayName(
+      "Verify attacker planes can not withdraw if attacker can retreat planes and not amphibious")
   void attackingPlanesCanNotWithdrawPlanesRetreatAndNotAmphibious() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
