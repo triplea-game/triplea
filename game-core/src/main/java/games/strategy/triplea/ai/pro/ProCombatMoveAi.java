@@ -370,20 +370,18 @@ public class ProCombatMoveAi {
         }
 
         // If already used all transports then remove any remaining amphib territories
-        if (!haveRemovedAllAmphibTerritories) {
-          if (territoryManager.haveUsedAllAttackTransports()) {
-            final List<ProTerritory> amphibTerritoriesToRemove = new ArrayList<>();
-            for (int i = numToAttack; i < prioritizedTerritories.size(); i++) {
-              if (prioritizedTerritories.get(i).isNeedAmphibUnits()) {
-                amphibTerritoriesToRemove.add(prioritizedTerritories.get(i));
-                ProLogger.debug(
-                    "Removing amphib territory since already used all transports: "
-                        + prioritizedTerritories.get(i).getTerritory().getName());
-              }
+        if (!haveRemovedAllAmphibTerritories && territoryManager.haveUsedAllAttackTransports()) {
+          final List<ProTerritory> amphibTerritoriesToRemove = new ArrayList<>();
+          for (int i = numToAttack; i < prioritizedTerritories.size(); i++) {
+            if (prioritizedTerritories.get(i).isNeedAmphibUnits()) {
+              amphibTerritoriesToRemove.add(prioritizedTerritories.get(i));
+              ProLogger.debug(
+                  "Removing amphib territory since already used all transports: "
+                      + prioritizedTerritories.get(i).getTerritory().getName());
             }
-            prioritizedTerritories.removeAll(amphibTerritoriesToRemove);
-            haveRemovedAllAmphibTerritories = true;
           }
+          prioritizedTerritories.removeAll(amphibTerritoriesToRemove);
+          haveRemovedAllAmphibTerritories = true;
         }
 
         // Can attack all territories in list so end

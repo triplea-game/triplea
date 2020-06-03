@@ -273,11 +273,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               t.getUnitCollection().getMatches(ownedAndCanBombard);
           final List<Unit> listedBombardUnits = new ArrayList<>(bombardUnits);
           sortUnitsToBombard(listedBombardUnits);
-          if (!bombardUnits.isEmpty()) {
-            // ask if they want to bombard
-            if (!remotePlayer.selectShoreBombard(t)) {
-              continue;
-            }
+          // if bombarding, ask if they want to bombard
+          if (!bombardUnits.isEmpty() && !remotePlayer.selectShoreBombard(t)) {
+            continue;
           }
           for (final Unit u : listedBombardUnits) {
             final IBattle battle = selectBombardingBattle(u, t, battles);
@@ -581,22 +579,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // if only enemy transports and subs... attack them?
         if (ignoreTransports
             && !enemyUnits.isEmpty()
-            && enemyUnits.stream().allMatch(seaTranportsOrSubs)) {
-          if (!remotePlayer.selectAttackUnits(territory)) {
-            final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
-            battleTracker
-                .getBattleRecords()
-                .addResultToBattle(
-                    player,
-                    battle.getBattleId(),
-                    null,
-                    0,
-                    0,
-                    BattleRecord.BattleResultDescription.NO_BATTLE,
-                    results);
-            battle.cancelBattle(bridge);
-            battleTracker.removeBattle(battle, data);
-          }
+            && enemyUnits.stream().allMatch(seaTranportsOrSubs)
+            && !remotePlayer.selectAttackUnits(territory)) {
+          final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
+          battleTracker
+              .getBattleRecords()
+              .addResultToBattle(
+                  player,
+                  battle.getBattleId(),
+                  null,
+                  0,
+                  0,
+                  BattleRecord.BattleResultDescription.NO_BATTLE,
+                  results);
+          battle.cancelBattle(bridge);
+          battleTracker.removeBattle(battle, data);
         }
       }
     }
@@ -1298,43 +1295,39 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (t.getUnits().stream().noneMatch(Matches.unitIsOwnedBy(player))) {
           continue;
         }
-        if (onlyWhereThereAreBattlesOrAmphibious) {
-          // if no battle or amphibious from here, ignore it
-          if (!pendingBattles.contains(t)) {
-            if (!Matches.territoryIsWater().test(t)) {
-              continue;
-            }
-            boolean amphib = false;
-            final Collection<Territory> landNeighbors =
-                data.getMap().getNeighbors(t, Matches.territoryIsLand());
-            for (final Territory neighbor : landNeighbors) {
-              final IBattle battle =
-                  battleTracker.getPendingBattle(neighbor, false, BattleType.NORMAL);
-              if (battle == null) {
-                final Map<Territory, Collection<Unit>> whereFrom =
-                    battleTracker.getFinishedBattlesUnitAttackFromMap().get(neighbor);
-                if (whereFrom != null && whereFrom.containsKey(t)) {
-                  amphib = true;
-                  break;
-                }
-                continue;
-              }
-              if (battle.isAmphibious()
-                  && ((battle instanceof MustFightBattle
-                          && ((MustFightBattle) battle)
-                              .getAmphibiousAttackTerritories()
-                              .contains(t))
-                      || (battle instanceof NonFightingBattle
-                          && ((NonFightingBattle) battle)
-                              .getAmphibiousAttackTerritories()
-                              .contains(t)))) {
+        // if no battle or amphibious from here, ignore it
+        if (onlyWhereThereAreBattlesOrAmphibious && !pendingBattles.contains(t)) {
+          if (!Matches.territoryIsWater().test(t)) {
+            continue;
+          }
+          boolean amphib = false;
+          final Collection<Territory> landNeighbors =
+              data.getMap().getNeighbors(t, Matches.territoryIsLand());
+          for (final Territory neighbor : landNeighbors) {
+            final IBattle battle =
+                battleTracker.getPendingBattle(neighbor, false, BattleType.NORMAL);
+            if (battle == null) {
+              final Map<Territory, Collection<Unit>> whereFrom =
+                  battleTracker.getFinishedBattlesUnitAttackFromMap().get(neighbor);
+              if (whereFrom != null && whereFrom.containsKey(t)) {
                 amphib = true;
                 break;
               }
-            }
-            if (!amphib) {
               continue;
             }
+            if (battle.isAmphibious()
+                && ((battle instanceof MustFightBattle
+                        && ((MustFightBattle) battle).getAmphibiousAttackTerritories().contains(t))
+                    || (battle instanceof NonFightingBattle
+                        && ((NonFightingBattle) battle)
+                            .getAmphibiousAttackTerritories()
+                            .contains(t)))) {
+              amphib = true;
+              break;
+            }
+          }
+          if (!amphib) {
+            continue;
           }
         }
         final Collection<Territory> currentTerrs =

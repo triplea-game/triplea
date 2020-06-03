@@ -151,10 +151,8 @@ public class HistoryLog extends JFrame {
         if (node instanceof Step) {
           final String title = node.getTitle();
           final GamePlayer gamePlayer = ((Step) node).getPlayerId();
-          if (!title.equals("Initializing Delegates")) {
-            if (gamePlayer != null) {
-              curPlayer = gamePlayer;
-            }
+          if (!title.equals("Initializing Delegates") && gamePlayer != null) {
+            curPlayer = gamePlayer;
           }
         }
       }
@@ -566,10 +564,8 @@ public class HistoryLog extends JFrame {
               && place.getOwner().equals(player))) {
         isConvoyOrLand = true;
       }
-      if (place.getOwner().equals(player) && isConvoyOrLand) {
-        if (ta != null) {
-          production += ta.getProduction();
-        }
+      if (place.getOwner().equals(player) && isConvoyOrLand && ta != null) {
+        production += ta.getProduction();
       }
     }
     return production;
