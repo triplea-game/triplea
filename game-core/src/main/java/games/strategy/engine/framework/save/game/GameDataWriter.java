@@ -40,6 +40,9 @@ public class GameDataWriter {
     }
   }
 
+  // error prone is detecting the identical boolean condition as an error, when it's
+  // intentional and is actually a retry.
+  @SuppressWarnings("IdentityBinaryExpression")
   private static void writeToOutputStream(
       final GameData gameData,
       final OutputStream out,
@@ -49,12 +52,11 @@ public class GameDataWriter {
 
     try {
       // TODO: is this necessary to save a game?
-      if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-        // try again
-        if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-          log.severe(errorMessage + " could not lock delegate execution");
-          return;
-        }
+      // try twice
+      if (!delegateExecutionManager.blockDelegateExecution(6000)
+          && !delegateExecutionManager.blockDelegateExecution(6000)) {
+        log.severe(errorMessage + " could not lock delegate execution");
+        return;
       }
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();

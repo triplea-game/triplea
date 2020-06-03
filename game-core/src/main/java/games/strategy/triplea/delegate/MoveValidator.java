@@ -196,23 +196,21 @@ public class MoveValidator {
       // make sure we avoid land territories owned by nations with these 2 relationship type
       // attachment options
       for (final Territory t : landOnRoute) {
-        if (units.stream().anyMatch(Matches.unitIsLand())) {
-          if (!data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner())) {
-            result.setError(
-                player.getName()
-                    + " may not move land units over land owned by "
-                    + t.getOwner().getName());
-            return result;
-          }
+        if (units.stream().anyMatch(Matches.unitIsLand())
+            && !data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner())) {
+          result.setError(
+              player.getName()
+                  + " may not move land units over land owned by "
+                  + t.getOwner().getName());
+          return result;
         }
-        if (units.stream().anyMatch(Matches.unitIsAir())) {
-          if (!data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner())) {
-            result.setError(
-                player.getName()
-                    + " may not move air units over land owned by "
-                    + t.getOwner().getName());
-            return result;
-          }
+        if (units.stream().anyMatch(Matches.unitIsAir())
+            && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner())) {
+          result.setError(
+              player.getName()
+                  + " may not move air units over land owned by "
+                  + t.getOwner().getName());
+          return result;
         }
       }
     }
@@ -418,12 +416,11 @@ public class MoveValidator {
     }
 
     // If there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
-    if (route.hasNeutralBeforeEnd()) {
-      if ((units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
-          && !isNeutralsBlitzable(data)) {
-        return result.setErrorReturnResult(
-            "Must stop land units when passing through neutral territories");
-      }
+    if (route.hasNeutralBeforeEnd()
+        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
+        && !isNeutralsBlitzable(data)) {
+      return result.setErrorReturnResult(
+          "Must stop land units when passing through neutral territories");
     }
     if (units.stream().anyMatch(Matches.unitIsLand()) && route.hasSteps()) {
       // Check all the territories but the end, if there are enemy territories, make sure they are

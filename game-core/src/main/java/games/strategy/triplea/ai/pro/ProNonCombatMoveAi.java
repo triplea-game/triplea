@@ -869,11 +869,11 @@ class ProNonCombatMoveAi {
         Territory maxWinTerritory = null;
         double maxWinPercentage = -1;
         for (final Territory t : sortedUnitMoveOptions.get(unit)) {
-          if (t.isWater() && Matches.unitIsAir().test(unit)) {
-            if (!ProTransportUtils.validateCarrierCapacity(
-                player, t, moveMap.get(t).getAllDefendersForCarrierCalcs(data, player), unit)) {
-              continue; // skip moving air to water if not enough carrier capacity
-            }
+          if (t.isWater()
+              && Matches.unitIsAir().test(unit)
+              && !ProTransportUtils.validateCarrierCapacity(
+                  player, t, moveMap.get(t).getAllDefendersForCarrierCalcs(data, player), unit)) {
+            continue; // skip moving air to water if not enough carrier capacity
           }
           if (!t.isWater()
               && !t.getOwner().equals(player)
@@ -1209,15 +1209,14 @@ class ProNonCombatMoveAi {
         if (containsCapital
             && !currentTerritory.equals(myCapital)
             && moveMap.get(myCapital).getBattleResult().getWinPercentage()
-                > (100 - proData.getWinPercentage())) {
-          if (!Collections.disjoint(
-              moveMap.get(currentTerritory).getAllDefenders(),
-              moveMap.get(myCapital).getMaxDefenders())) {
-            areSuccessful = false;
-            ProLogger.debug(
-                "Capital isn't safe after defense moves with winPercentage="
-                    + moveMap.get(myCapital).getBattleResult().getWinPercentage());
-          }
+                > (100 - proData.getWinPercentage())
+            && !Collections.disjoint(
+                moveMap.get(currentTerritory).getAllDefenders(),
+                moveMap.get(myCapital).getMaxDefenders())) {
+          areSuccessful = false;
+          ProLogger.debug(
+              "Capital isn't safe after defense moves with winPercentage="
+                  + moveMap.get(myCapital).getBattleResult().getWinPercentage());
         }
 
         // Check capital local superiority
