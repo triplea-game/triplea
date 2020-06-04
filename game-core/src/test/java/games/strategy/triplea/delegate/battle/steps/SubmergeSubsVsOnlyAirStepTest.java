@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps;
 
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanNotBeTargetedBy;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -117,7 +117,7 @@ class SubmergeSubsVsOnlyAirStepTest {
   @DisplayName("valid(IN_ROUND) is false given some attacking evaders vs ALL air")
   void attackingEvadersVsAllAirIsValidInRound() {
 
-    final Unit attacker = givenUnitCanNotBeTargetedBy(mock(UnitType.class));
+    final Unit attacker = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
     final Unit defender1 = givenUnitIsAir();
     final Unit defender2 = givenUnitIsAir();
 
@@ -136,7 +136,7 @@ class SubmergeSubsVsOnlyAirStepTest {
 
     final Unit attacker1 = givenUnitIsAir();
     final Unit attacker2 = givenUnitIsAir();
-    final Unit defender = givenUnitCanNotBeTargetedBy(mock(UnitType.class));
+    final Unit defender = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
 
     final StepParameters parameters =
         givenParameters()
@@ -151,7 +151,7 @@ class SubmergeSubsVsOnlyAirStepTest {
   @DisplayName("Submerge attacking evaders vs ALL air")
   void attackingEvadersSubmergeVsAllAir() {
 
-    final Unit attacker1 = givenUnitCanNotBeTargetedBy(mock(UnitType.class));
+    final Unit attacker1 = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
     final Unit attacker2 = givenUnit();
     final Unit defender1 = givenUnitIsAir();
     final Unit defender2 = givenUnitIsAir();
@@ -173,7 +173,7 @@ class SubmergeSubsVsOnlyAirStepTest {
   @DisplayName("Submerge defending evaders vs ALL air")
   void defendingEvadersSubmergeVsAllAir() {
 
-    final Unit defender1 = givenUnitCanNotBeTargetedBy(mock(UnitType.class));
+    final Unit defender1 = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
     final Unit defender2 = givenUnit();
     final Unit attacker1 = givenUnitIsAir();
     final Unit attacker2 = givenUnitIsAir();

@@ -143,9 +143,15 @@ public class BattleStepsTest {
     return unitAndAttachment.getFirst();
   }
 
-  public static Unit givenUnitCanNotBeTargetedBy(final UnitType otherType) {
+  public static Unit givenUnitCanEvadeAndCanNotBeTargetedBy(final UnitType otherType) {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
+    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
+    return unitAndAttachment.getFirst();
+  }
+
+  public static Unit givenUnitCanNotBeTargetedBy(final UnitType otherType) {
+    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
     return unitAndAttachment.getFirst();
   }

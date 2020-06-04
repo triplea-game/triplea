@@ -52,6 +52,8 @@ public class BattleSteps implements BattleStepStrings {
     final StepParameters parameters = battleActions.getStepParameters();
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(parameters);
+    final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(parameters);
+    final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(parameters);
 
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa) {
@@ -156,12 +158,10 @@ public class BattleSteps implements BattleStepStrings {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
 
-    // Air units can't attack subs without Destroyers present
-    if (attackingUnits.stream().anyMatch(Matches.unitIsAir())
-        && defendingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
-        && !canAirAttackSubs(defendingUnits, attackingUnits)) {
-      steps.add(AIR_ATTACK_NON_SUBS);
+    if (airAttackVsNonSubs.valid(BattleStep.State.PRE_ROUND)) {
+      steps.addAll(airAttackVsNonSubs.getStepNames());
     }
+
     if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(attacker.getName() + FIRE);
       steps.add(defender.getName() + SELECT_CASUALTIES);
@@ -177,11 +177,8 @@ public class BattleSteps implements BattleStepStrings {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
-    // Air Units can't attack subs without Destroyers present
-    if (defendingUnits.stream().anyMatch(Matches.unitIsAir())
-        && attackingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
-        && !canAirAttackSubs(attackingUnits, defendingUnitsAliveAndDamaged)) {
-      steps.add(AIR_DEFEND_NON_SUBS);
+    if (airDefendVsNonSubs.valid(BattleStep.State.PRE_ROUND)) {
+      steps.addAll(airDefendVsNonSubs.getStepNames());
     }
     if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(defender.getName() + FIRE);
@@ -243,10 +240,5 @@ public class BattleSteps implements BattleStepStrings {
       }
     }
     return steps;
-  }
-
-  private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
-    return firedAt.stream().noneMatch(Matches.unitCanNotBeTargetedByAll())
-        || firing.stream().anyMatch(Matches.unitIsDestroyer());
   }
 }
