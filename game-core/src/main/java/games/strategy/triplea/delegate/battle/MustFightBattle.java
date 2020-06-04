@@ -27,8 +27,11 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
+import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
+import games.strategy.triplea.delegate.battle.steps.StepParameters;
+import games.strategy.triplea.delegate.battle.steps.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -55,7 +58,7 @@ import org.triplea.util.Tuple;
 
 /** Handles logic for battles in which fighting actually occurs. */
 @Log
-public class MustFightBattle extends DependentBattle implements BattleStepStrings {
+public class MustFightBattle extends DependentBattle implements BattleStepStrings, BattleActions {
 
   /** Determines whether casualties can return fire for various battle phases. */
   public enum ReturnFire {
@@ -907,6 +910,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         .isAmphibious(isAmphibious)
         .getAttackerRetreatTerritories(this::getAttackerRetreatTerritories)
         .getEmptyOrFriendlySeaNeighbors(this::getEmptyOrFriendlySeaNeighbors)
+        .battleActions(this)
         .build()
         .get();
   }
@@ -1470,16 +1474,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
     }
-    // Submerge subs if -vs air only & air restricted from attacking subs
-    steps.add(
-        new SubmergeSubsVsOnlyAir() {
-          private static final long serialVersionUID = 99990L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            submergeSubsVsOnlyAir(bridge);
-          }
-        });
+    final StepParameters parameters = this.getStepParameters();
+
+    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(parameters);
+    steps.addAll(submergeSubsVsOnlyAir.getStepExecutables());
+
     final ReturnFire returnFireAgainstAttackingSubs =
         SubsChecks.returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData);
     final ReturnFire returnFireAgainstDefendingSubs =
@@ -1696,29 +1696,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
       remove(unitsToKill, bridge, battleSite, !attacker);
-    }
-  }
-
-  /** Submerge attacking/defending subs if they're alone OR with transports against only air. */
-  private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
-    // if All attackers are AIR, submerge any defending subs
-    final Predicate<Unit> subMatch =
-        Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
-    if (!attackingUnits.isEmpty()
-        && attackingUnits.stream().allMatch(Matches.unitIsAir())
-        && defendingUnits.stream().anyMatch(subMatch)) {
-      // Get all defending subs (including allies) in the territory
-      final List<Unit> defendingSubs = CollectionUtils.getMatches(defendingUnits, subMatch);
-      // submerge defending subs
-      submergeUnits(defendingSubs, true, bridge);
-      // checking defending air on attacking subs
-    } else if (!defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitIsAir())
-        && attackingUnits.stream().anyMatch(subMatch)) {
-      // Get all attacking subs in the territory
-      final List<Unit> attackingSubs = CollectionUtils.getMatches(attackingUnits, subMatch);
-      // submerge attacking subs
-      submergeUnits(attackingSubs, false, bridge);
     }
   }
 
@@ -2223,8 +2200,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  @VisibleForTesting
-  protected void submergeUnits(
+  @Override
+  public StepParameters getStepParameters() {
+    return StepParameters.builder()
+        .attackingUnits(attackingUnits)
+        .defendingUnits(defendingUnits)
+        .battleActions(this)
+        .build();
+  }
+
+  @Override
+  public void submergeUnits(
       final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge) {
     final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
     final Collection<Unit> units = defender ? defendingUnits : attackingUnits;

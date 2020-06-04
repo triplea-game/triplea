@@ -57,6 +57,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.battle.steps.SubmergeSubsVsOnlyAirStep;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -1626,7 +1627,7 @@ class MustFightBattleExecutablesTest {
         List.of(unit2), List.of(unit1, unit3), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);
+    final int index = getIndex(execs, SubmergeSubsVsOnlyAirStep.SubmergeSubsVsOnlyAir.class);
     final IExecutable step = execs.get(index);
 
     doNothing().when(battle).submergeUnits(any(), anyBoolean(), any());
@@ -1658,7 +1659,7 @@ class MustFightBattleExecutablesTest {
         List.of(unit1, unit3), List.of(unit2), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);
+    final int index = getIndex(execs, SubmergeSubsVsOnlyAirStep.SubmergeSubsVsOnlyAir.class);
     final IExecutable step = execs.get(index);
 
     doNothing().when(battle).submergeUnits(any(), anyBoolean(), any());

@@ -31,6 +31,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleSteps.FIRE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -46,6 +47,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleActions;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -61,6 +63,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import org.triplea.util.Tuple;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,6 +71,7 @@ public class BattleStepsTest {
 
   @Mock GameData gameData;
   @Mock GameProperties gameProperties;
+  @Mock BattleActions battleActions;
   @Mock Function<Collection<Unit>, Collection<Unit>> getDependentUnits;
   @Mock Supplier<Collection<Territory>> getAttackerRetreatTerritories;
 
@@ -139,6 +143,13 @@ public class BattleStepsTest {
     return unitAndAttachment.getFirst();
   }
 
+  public static Unit givenUnitCanNotBeTargetedBy(final UnitType otherType) {
+    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
+    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
+    return unitAndAttachment.getFirst();
+  }
+
   public static Unit givenUnitDefenderFirstStrike() {
     final UnitType canNotTargetType = mock(UnitType.class);
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
@@ -204,26 +215,44 @@ public class BattleStepsTest {
   }
 
   private BattleSteps.BattleStepsBuilder newStepBuilder() {
-    return BattleSteps.builder()
-        .canFireOffensiveAa(false)
-        .canFireDefendingAa(false)
-        .showFirstRun(true)
-        .attacker(attacker)
-        .defender(defender)
-        .offensiveAa(List.of())
-        .defendingAa(List.of())
-        .attackingUnits(List.of())
-        .defendingUnits(List.of())
-        .attackingWaitingToDie(List.of())
-        .defendingWaitingToDie(List.of())
-        .battleSite(battleSite)
-        .gameData(gameData)
-        .bombardingUnits(List.of())
-        .getDependentUnits(getDependentUnits)
-        .isBattleSiteWater(true)
-        .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
-        .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
-        .isAmphibious(false);
+    final BattleSteps.BattleStepsBuilder builder =
+        BattleSteps.builder()
+            .canFireOffensiveAa(false)
+            .canFireDefendingAa(false)
+            .showFirstRun(true)
+            .attacker(attacker)
+            .defender(defender)
+            .offensiveAa(List.of())
+            .defendingAa(List.of())
+            .attackingUnits(List.of())
+            .defendingUnits(List.of())
+            .attackingWaitingToDie(List.of())
+            .defendingWaitingToDie(List.of())
+            .battleSite(battleSite)
+            .gameData(gameData)
+            .bombardingUnits(List.of())
+            .getDependentUnits(getDependentUnits)
+            .isBattleSiteWater(true)
+            .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
+            .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
+            .battleActions(battleActions)
+            .isAmphibious(false);
+
+    lenient()
+        .when(battleActions.getStepParameters())
+        .then(
+            (Answer<StepParameters>)
+                invocation -> {
+                  // get the latest parameters to the builder and pass them onto the StepParameters
+                  final BattleSteps battleSteps = builder.build();
+                  return StepParameters.builder()
+                      .attackingUnits(battleSteps.attackingUnits)
+                      .defendingUnits(battleSteps.defendingUnits)
+                      .battleActions(battleActions)
+                      .build();
+                });
+
+    return builder;
   }
 
   @Test
@@ -1393,6 +1422,7 @@ public class BattleStepsTest {
         steps,
         is(
             List.of(
+                SUBMERGE_SUBS_VS_AIR_ONLY,
                 attacker.getName() + FIRST_STRIKE_UNITS_FIRE,
                 defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
@@ -1408,7 +1438,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit2 = givenUnitIsAir();
-    final Unit unit1 = givenUnitAttackerFirstStrikeCanNotBeTargetedBy(unit2.getType());
+    final Unit unit1 = givenUnitAttackerFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1458,10 +1488,10 @@ public class BattleStepsTest {
         steps,
         is(
             List.of(
+                SUBMERGE_SUBS_VS_AIR_ONLY,
                 defender.getName() + FIRST_STRIKE_UNITS_FIRE,
                 attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
                 REMOVE_SNEAK_ATTACK_CASUALTIES,
-                SUBMERGE_SUBS_VS_AIR_ONLY,
                 AIR_ATTACK_NON_SUBS,
                 attacker.getName() + FIRE,
                 defender.getName() + SELECT_CASUALTIES,

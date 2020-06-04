@@ -8,6 +8,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import java.util.ArrayList;
@@ -44,8 +45,13 @@ public class BattleSteps implements BattleStepStrings {
   final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories;
   final @NonNull BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>>
       getEmptyOrFriendlySeaNeighbors;
+  final @NonNull BattleActions battleActions;
 
   public List<String> get() {
+
+    final StepParameters parameters = battleActions.getStepParameters();
+
+    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(parameters);
 
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa) {
@@ -96,6 +102,10 @@ public class BattleSteps implements BattleStepStrings {
             || defendingUnits.stream().anyMatch(Matches.unitIsTransport()))) {
       steps.add(REMOVE_UNESCORTED_TRANSPORTS);
     }
+    if (submergeSubsVsOnlyAir.valid(BattleStep.State.PRE_ROUND)) {
+      steps.addAll(submergeSubsVsOnlyAir.getStepNames());
+    }
+
     final boolean defenderSubsFireFirst =
         SubsChecks.defenderSubsFireFirst(attackingUnits, defendingUnits, gameData);
     final ReturnFire returnFireAgainstAttackingSubs =
@@ -145,11 +155,11 @@ public class BattleSteps implements BattleStepStrings {
             || returnFireAgainstAttackingSubs != ReturnFire.ALL)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
+
     // Air units can't attack subs without Destroyers present
     if (attackingUnits.stream().anyMatch(Matches.unitIsAir())
         && defendingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
         && !canAirAttackSubs(defendingUnits, attackingUnits)) {
-      steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
       steps.add(AIR_ATTACK_NON_SUBS);
     }
     if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
