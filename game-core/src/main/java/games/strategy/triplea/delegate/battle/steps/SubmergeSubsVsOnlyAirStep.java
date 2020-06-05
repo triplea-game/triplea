@@ -7,7 +7,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -49,8 +48,8 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   }
 
   @Override
-  public String getName() {
-    return SUBMERGE_SUBS_VS_AIR_ONLY;
+  public List<String> getNames() {
+    return List.of(SUBMERGE_SUBS_VS_AIR_ONLY);
   }
 
   @Override

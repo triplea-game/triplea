@@ -6,7 +6,6 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Air can not attack subs unless a destroyer is present

@@ -31,7 +31,7 @@ public abstract class BattleStep {
 
   public abstract IExecutable getExecutable();
 
-  public abstract String getName();
+  public abstract List<String> getNames();
 
   public abstract boolean valid(State state);
 

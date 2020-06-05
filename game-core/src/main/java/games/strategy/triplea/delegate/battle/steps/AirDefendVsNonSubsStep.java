@@ -2,7 +2,6 @@ package games.strategy.triplea.delegate.battle.steps;
 
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AIR_DEFEND_NON_SUBS;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +15,8 @@ public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  public String getName() {
-    return AIR_DEFEND_NON_SUBS;
+  public List<String> getNames() {
+    return List.of(AIR_DEFEND_NON_SUBS);
   }
 
   @Override
