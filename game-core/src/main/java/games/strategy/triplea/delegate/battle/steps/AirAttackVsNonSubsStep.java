@@ -16,12 +16,8 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  public List<String> getStepNames() {
-    final List<String> steps = new ArrayList<>();
-    if (airWillMissSubs(parameters.attackingUnits, parameters.defendingUnits)) {
-      steps.add(AIR_ATTACK_NON_SUBS);
-    }
-    return steps;
+  public String getName() {
+    return AIR_ATTACK_NON_SUBS;
   }
 
   @Override

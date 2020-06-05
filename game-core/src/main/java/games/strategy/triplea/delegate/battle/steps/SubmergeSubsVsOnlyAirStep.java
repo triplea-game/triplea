@@ -37,23 +37,20 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   public abstract static class SubmergeSubsVsOnlyAir extends BattleAtomic {}
 
   @Override
-  public List<IExecutable> getStepExecutables() {
-    return List.of(
-        new SubmergeSubsVsOnlyAir() {
-          private static final long serialVersionUID = 99990L;
+  public IExecutable getExecutable() {
+    return new SubmergeSubsVsOnlyAir() {
+      private static final long serialVersionUID = 99990L;
 
-          @Override
-          protected BattleStep getStep() {
-            return new SubmergeSubsVsOnlyAirStep(parameters.battleActions.getStepParameters());
-          }
-        });
+      @Override
+      protected BattleStep getStep() {
+        return new SubmergeSubsVsOnlyAirStep(parameters.battleActions.getStepParameters());
+      }
+    };
   }
 
   @Override
-  public List<String> getStepNames() {
-    final List<String> steps = new ArrayList<>();
-    steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
-    return steps;
+  public String getName() {
+    return SUBMERGE_SUBS_VS_AIR_ONLY;
   }
 
   @Override

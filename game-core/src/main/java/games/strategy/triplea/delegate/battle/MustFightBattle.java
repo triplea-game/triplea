@@ -1478,7 +1478,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final StepParameters parameters = this.getStepParameters();
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(parameters);
-    steps.addAll(submergeSubsVsOnlyAir.getStepExecutables());
+    steps.add(submergeSubsVsOnlyAir.getExecutable());
 
     final ReturnFire returnFireAgainstAttackingSubs =
         SubsChecks.returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData);

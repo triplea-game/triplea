@@ -105,7 +105,7 @@ public class BattleSteps implements BattleStepStrings {
       steps.add(REMOVE_UNESCORTED_TRANSPORTS);
     }
     if (submergeSubsVsOnlyAir.valid(BattleStep.State.PRE_ROUND)) {
-      steps.addAll(submergeSubsVsOnlyAir.getStepNames());
+      steps.add(submergeSubsVsOnlyAir.getName());
     }
 
     final boolean defenderSubsFireFirst =
@@ -159,7 +159,7 @@ public class BattleSteps implements BattleStepStrings {
     }
 
     if (airAttackVsNonSubs.valid(BattleStep.State.PRE_ROUND)) {
-      steps.addAll(airAttackVsNonSubs.getStepNames());
+      steps.add(airAttackVsNonSubs.getName());
     }
 
     if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
@@ -178,7 +178,7 @@ public class BattleSteps implements BattleStepStrings {
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
     if (airDefendVsNonSubs.valid(BattleStep.State.PRE_ROUND)) {
-      steps.addAll(airDefendVsNonSubs.getStepNames());
+      steps.add(airDefendVsNonSubs.getName());
     }
     if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(defender.getName() + FIRE);

@@ -20,8 +20,8 @@ public abstract class AirVsNonSubsStep extends BattleStep {
   }
 
   @Override
-  public List<IExecutable> getStepExecutables() {
-    return List.of();
+  public IExecutable getExecutable() {
+    return null;
   }
 
   @Override

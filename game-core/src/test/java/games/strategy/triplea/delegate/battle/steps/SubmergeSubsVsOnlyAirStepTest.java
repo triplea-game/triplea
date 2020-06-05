@@ -162,9 +162,9 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender1, defender2))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    final List<IExecutable> steps = underTest.getStepExecutables();
+    final IExecutable step = underTest.getExecutable();
 
-    steps.get(0).execute(executionStack, delegateBridge);
+    step.execute(executionStack, delegateBridge);
 
     verify(battleActions).submergeUnits(List.of(attacker1), false, delegateBridge);
   }
@@ -184,9 +184,9 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender1, defender2))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    final List<IExecutable> steps = underTest.getStepExecutables();
+    final IExecutable step = underTest.getExecutable();
 
-    steps.get(0).execute(executionStack, delegateBridge);
+    step.execute(executionStack, delegateBridge);
 
     verify(battleActions).submergeUnits(List.of(defender1), true, delegateBridge);
   }

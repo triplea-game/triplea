@@ -29,9 +29,9 @@ public abstract class BattleStep {
     IN_ROUND,
   }
 
-  public abstract List<IExecutable> getStepExecutables();
+  public abstract IExecutable getExecutable();
 
-  public abstract List<String> getStepNames();
+  public abstract String getName();
 
   public abstract boolean valid(State state);
 
