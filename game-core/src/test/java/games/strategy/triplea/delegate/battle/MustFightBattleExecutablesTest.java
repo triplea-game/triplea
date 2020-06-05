@@ -56,6 +56,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -344,7 +346,7 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        getIndex(execs, OffensiveAaFire.class),
         is(0));
 
     assertThat(
@@ -352,7 +354,7 @@ class MustFightBattleExecutablesTest {
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(1));
 
-    assertThatStepIsMissing(execs, MustFightBattle.FireDefensiveAaGuns.class);
+    assertThatStepIsMissing(execs, DefensiveAaFire.class);
   }
 
   @Test
@@ -381,7 +383,7 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireDefensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        getIndex(execs, DefensiveAaFire.class),
         is(0));
 
     assertThat(
@@ -389,7 +391,7 @@ class MustFightBattleExecutablesTest {
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(1));
 
-    assertThatStepIsMissing(execs, MustFightBattle.FireOffensiveAaGuns.class);
+    assertThatStepIsMissing(execs, OffensiveAaFire.class);
   }
 
   @Test
@@ -427,12 +429,12 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        getIndex(execs, OffensiveAaFire.class),
         is(0));
 
     assertThat(
         "FireDefensiveAaGuns should be the second step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        getIndex(execs, DefensiveAaFire.class),
         is(1));
 
     assertThat(

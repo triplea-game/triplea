@@ -221,8 +221,6 @@ public class BattleStepsTest {
 
   private BattleSteps.BattleStepsBuilder newStepBuilder() {
     return BattleSteps.builder()
-        .canFireOffensiveAa(false)
-        .canFireDefendingAa(false)
         .showFirstRun(true)
         .attacker(attacker)
         .defender(defender)
@@ -477,7 +475,6 @@ public class BattleStepsTest {
 
     final List<String> steps =
         newStepBuilder()
-            .canFireOffensiveAa(true)
             .offensiveAa(List.of(unit1))
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
@@ -509,7 +506,6 @@ public class BattleStepsTest {
 
     final List<String> steps =
         newStepBuilder()
-            .canFireDefendingAa(true)
             .defendingAa(List.of(unit2))
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
@@ -541,8 +537,6 @@ public class BattleStepsTest {
 
     final List<String> steps =
         newStepBuilder()
-            .canFireOffensiveAa(true)
-            .canFireDefendingAa(true)
             .offensiveAa(List.of(unit1))
             .defendingAa(List.of(unit2))
             .attackingUnits(List.of(unit1))
