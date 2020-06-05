@@ -537,11 +537,10 @@ public class TileManager {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           final Point placementPoint = drawer.getPlacementPoint();
           if (x > placementPoint.x
-              && x < placementPoint.x + uiContext.getUnitImageFactory().getUnitImageWidth()) {
-            if (y > placementPoint.y
-                && y < placementPoint.y + uiContext.getUnitImageFactory().getUnitImageHeight()) {
-              return drawer.getUnits(gameData);
-            }
+              && x < placementPoint.x + uiContext.getUnitImageFactory().getUnitImageWidth()
+              && y > placementPoint.y
+              && y < placementPoint.y + uiContext.getUnitImageFactory().getUnitImageHeight()) {
+            return drawer.getUnits(gameData);
           }
         }
         return null;

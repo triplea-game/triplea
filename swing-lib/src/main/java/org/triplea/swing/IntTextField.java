@@ -141,12 +141,8 @@ public class IntTextField extends JTextField {
       } catch (final NumberFormatException e) {
         // if an error dont insert
         // allow start of negative numbers
-        if (offs == 0) {
-          if (min < 0) {
-            if (str.equals("-")) {
-              super.insertString(0, str, a);
-            }
-          }
+        if (offs == 0 && min < 0 && str.equals("-")) {
+          super.insertString(0, str, a);
         }
       }
     }

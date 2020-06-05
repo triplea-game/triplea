@@ -196,17 +196,16 @@ public class ObjectivePanel extends AbstractStatPanel {
 
         // find which section
         boolean found = false;
-        if (sections.containsKey(player.getName())) {
-          if (sections.get(player.getName()).contains(key.get(1))) {
-            final Map<ICondition, String> map = statsObjectiveUnsorted.get(player.getName());
-            if (map == null) {
-              throw new IllegalStateException(
-                  "objective.properties group has nothing: " + player.getName());
-            }
-            map.put(condition, value);
-            statsObjectiveUnsorted.put(player.getName(), map);
-            found = true;
+        if (sections.containsKey(player.getName())
+            && sections.get(player.getName()).contains(key.get(1))) {
+          final Map<ICondition, String> map = statsObjectiveUnsorted.get(player.getName());
+          if (map == null) {
+            throw new IllegalStateException(
+                "objective.properties group has nothing: " + player.getName());
           }
+          map.put(condition, value);
+          statsObjectiveUnsorted.put(player.getName(), map);
+          found = true;
         }
         if (!found) {
           for (final Entry<String, List<String>> sectionEntry : sections.entrySet()) {
