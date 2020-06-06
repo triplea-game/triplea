@@ -5,7 +5,6 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBMERGE_
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
-import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +35,7 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   public abstract static class SubmergeSubsVsOnlyAir extends BattleAtomic {}
 
   @Override
-  public IExecutable getExecutable() {
+  public BattleAtomic getExecutable() {
     return new SubmergeSubsVsOnlyAir() {
       private static final long serialVersionUID = 99990L;
 
@@ -53,7 +52,7 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   }
 
   @Override
-  public boolean valid(final State state) {
+  boolean valid(final Request request) {
     return (isOnlyAirVsSubs(parameters.attackingUnits, parameters.defendingUnits)
         || isOnlyAirVsSubs(parameters.defendingUnits, parameters.attackingUnits));
   }

@@ -53,7 +53,7 @@ class AirDefendVsNonSubsStepTest {
             .defendingUnits(List.of(attacker))
             .build();
     final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.PRE_ROUND), is(true));
+    assertThat(underTest.valid(BattleStep.Request.NAME), is(true));
   }
 
   @Test
@@ -70,7 +70,7 @@ class AirDefendVsNonSubsStepTest {
             .defendingUnits(List.of(attacker))
             .build();
     final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.PRE_ROUND), is(false));
+    assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 
   @Test
@@ -86,6 +86,6 @@ class AirDefendVsNonSubsStepTest {
             .defendingUnits(List.of(attacker))
             .build();
     final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.PRE_ROUND), is(false));
+    assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 }

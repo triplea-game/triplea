@@ -59,7 +59,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender1, defender2))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.PRE_ROUND), is(false));
+    assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 
   @Test
@@ -76,7 +76,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.PRE_ROUND), is(false));
+    assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 
   @Test
@@ -93,7 +93,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender1, defender2))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.IN_ROUND), is(false));
+    assertThat(underTest.valid(BattleStep.Request.EXEC), is(false));
   }
 
   @Test
@@ -110,7 +110,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.IN_ROUND), is(false));
+    assertThat(underTest.valid(BattleStep.Request.EXEC), is(false));
   }
 
   @Test
@@ -127,7 +127,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender1, defender2))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.IN_ROUND), is(true));
+    assertThat(underTest.valid(BattleStep.Request.EXEC), is(true));
   }
 
   @Test
@@ -144,7 +144,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .defendingUnits(List.of(defender))
             .build();
     final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
-    assertThat(underTest.valid(BattleStep.State.IN_ROUND), is(true));
+    assertThat(underTest.valid(BattleStep.Request.EXEC), is(true));
   }
 
   @Test

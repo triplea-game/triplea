@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps;
 
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.State.IN_ROUND;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Request.EXEC;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -11,7 +11,8 @@ import lombok.AllArgsConstructor;
 /**
  * A step in a battle.
  *
- * <p>#valid is called to determine if the step should be shown or executed.
+ * Each step can have 0 or more names.  These names are shown in the {@link games.strategy.triplea.ui.BattlePanel}
+ * Each step can also have an executable.  See {@link BattleAtomic} on what an executable is comprised of.
  */
 @AllArgsConstructor
 public abstract class BattleStep {
@@ -19,28 +20,41 @@ public abstract class BattleStep {
   protected final StepParameters parameters;
 
   /**
-   * BattleStep's conditions are checked before the round actually happens and then later during the
-   * round.
+   * Indicates when {@link #valid} is being called
    */
-  public enum State {
-    // Check if the step may occur during the round
-    PRE_ROUND,
-    // Check if the step can occur right now
-    IN_ROUND,
+  public enum Request {
+    // Occurs at the start of the battle round
+    NAME,
+    // Occurs right before the step executes
+    EXEC,
   }
 
-  public abstract IExecutable getExecutable();
+  public abstract BattleAtomic getExecutable();
 
   public abstract List<String> getNames();
 
-  public abstract boolean valid(State state);
+  /**
+   * Determine if this step should run based on the request
+   *
+   * @param request Indicates when valid is being called
+   * @return true if valid
+   */
+  abstract boolean valid(Request request);
 
+  /**
+   * Executes the step
+   *
+   * This is called by the BattleAtomic and {@link #valid} has already been checked
+   *
+   * @param stack The current stack of steps
+   * @param bridge DelegateBridge for interacting with the rest of the program
+   */
   protected abstract void execute(ExecutionStack stack, IDelegateBridge bridge);
 
   /**
-   * A BattleExecutable is used to break up the battle into separate atomic pieces. If there is a
+   * This is used to break up the battle into separate atomic pieces. If there is a
    * network error, or some other unfortunate event, then we need to keep track of what pieces we
-   * have executed, and what is left to do. Each atomic step is in its own BattleExecutable with the
+   * have executed, and what is left to do. Each atomic step is in its own BattleAtomic with the
    * definition of atomic is that either:
    *
    * <ol>
@@ -61,11 +75,16 @@ public abstract class BattleStep {
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final BattleStep executingStep = getStep();
-      if (executingStep.valid(IN_ROUND)) {
+      if (executingStep.valid(EXEC)) {
         executingStep.execute(stack, bridge);
       }
     }
 
+    /**
+     * Get the BattleStep with the latest parameters
+     *
+     * @return an up-to-date BattleStep
+     */
     protected abstract BattleStep getStep();
   }
 }

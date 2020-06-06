@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.battle.steps;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
-import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 
@@ -19,7 +18,7 @@ public abstract class AirVsNonSubsStep extends BattleStep {
   }
 
   @Override
-  public IExecutable getExecutable() {
+  public BattleAtomic getExecutable() {
     return null;
   }
 

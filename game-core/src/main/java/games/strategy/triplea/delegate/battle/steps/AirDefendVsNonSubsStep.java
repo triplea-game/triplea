@@ -20,7 +20,7 @@ public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  public boolean valid(final State state) {
+  boolean valid(final Request request) {
     return airWillMissSubs(parameters.defendingUnits, parameters.attackingUnits);
   }
 }
