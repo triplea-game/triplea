@@ -73,6 +73,106 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
+   * An action representing attacking aa guns firing during a battle.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class FireOffensiveAaGuns implements IExecutable {
+    private static final long serialVersionUID = 7266708569436973099L;
+  }
+
+  /**
+   * An action representing defending aa guns firing during a battle.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class FireDefensiveAaGuns implements IExecutable {
+    private static final long serialVersionUID = 2124868665883519949L;
+  }
+
+  /**
+   * An action representing clearing damaged units during the aa round.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class ClearAaWaitingToDieAndDamagedChangesInto implements IExecutable {
+    private static final long serialVersionUID = -3223166334485741752L;
+  }
+
+  /**
+   * An action representing naval bombardment during a battle.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class FireNavalBombardment implements IExecutable {
+    private static final long serialVersionUID = -4807027908694648211L;
+  }
+
+  /**
+   * An action representing landing paratroopers.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class LandParatroopers implements IExecutable {
+    private static final long serialVersionUID = 5936225914851941086L;
+  }
+
+  /**
+   * An action representing attacker subs retreating before battle.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class AttackerRetreatSubsBeforeBattle implements IExecutable {
+    private static final long serialVersionUID = 2178507532676286044L;
+  }
+
+  /**
+   * An action representing definding subs retreating before battle.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class DefenderRetreatSubsBeforeBattle implements IExecutable {
+    private static final long serialVersionUID = -2081450648695833869L;
+  }
+
+  /**
+   * An action representing removing undefended transports.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class RemoveUndefendedTransports implements IExecutable {
+    private static final long serialVersionUID = 1369227461759133105L;
+  }
+
+  /**
+   * An action representing submerging subs vs only air.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class SubmergeSubsVsOnlyAir implements IExecutable {
+    private static final long serialVersionUID = 1369227461759133105L;
+  }
+
+  /**
+   * An action representing standard attacking fire.
+   *
+   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
+   * action of this type.
+   */
+  public abstract static class StandardAttackersFire implements IExecutable {
+    private static final long serialVersionUID = -6026031760663113621L;
+  }
+
+  /**
    * An action representing attacking subs firing during a battle.
    *
    * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
@@ -504,7 +604,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void remove(
+  @VisibleForTesting
+  protected void remove(
       final Collection<Unit> killed,
       final IDelegateBridge bridge,
       final Territory battleSite,
@@ -929,7 +1030,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return possible;
   }
 
-  private Collection<Territory> getEmptyOrFriendlySeaNeighbors(
+  @VisibleForTesting
+  protected Collection<Territory> getEmptyOrFriendlySeaNeighbors(
       final GamePlayer player, final Collection<Unit> unitsToRetreat) {
     Collection<Territory> possible = gameData.getMap().getNeighbors(battleSite);
     if (headless) {
@@ -992,7 +1094,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean defendingAa = canFireDefendingAa();
     if (offensiveAa) {
       steps.add(
-          new IExecutable() {
+          new FireOffensiveAaGuns() {
             private static final long serialVersionUID = 3802352588499530533L;
 
             @Override
@@ -1003,7 +1105,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (defendingAa) {
       steps.add(
-          new IExecutable() {
+          new FireDefensiveAaGuns() {
             private static final long serialVersionUID = -1370090785540214199L;
 
             @Override
@@ -1014,7 +1116,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (offensiveAa || defendingAa) {
       steps.add(
-          new IExecutable() {
+          new ClearAaWaitingToDieAndDamagedChangesInto() {
             private static final long serialVersionUID = 8762796262264296436L;
 
             @Override
@@ -1036,7 +1138,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (firstRun) {
       steps.add(
-          new IExecutable() {
+          new FireNavalBombardment() {
             private static final long serialVersionUID = -2255284529092427441L;
 
             @Override
@@ -1054,7 +1156,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
       steps.add(
-          new IExecutable() {
+          new LandParatroopers() {
             private static final long serialVersionUID = 7193353768857658286L;
 
             @Override
@@ -1127,6 +1229,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                 attacker, battleSite, gameData));
     // bombarding units can't move after bombarding
     if (!headless) {
+      // TODO: StepRefactor: Why is a change always added even if there are no units?
+      //       Shouldn't this be moved inside of the if (!bombard.isEmpty() ...) check?
       final Change change = ChangeFactory.markNoMovementChange(bombard);
       bridge.addChange(change);
     }
@@ -1151,7 +1255,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void fire(
+  @VisibleForTesting
+  protected void fire(
       final String stepName,
       final Collection<Unit> firingUnits,
       final Collection<Unit> attackableUnits,
@@ -1328,7 +1433,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // Ask to retreat defending subs before battle
     if (Properties.getSubRetreatBeforeBattle(gameData)) {
       steps.add(
-          new IExecutable() {
+          new AttackerRetreatSubsBeforeBattle() {
             private static final long serialVersionUID = 6775880082912594489L;
 
             @Override
@@ -1339,7 +1444,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
       steps.add(
-          new IExecutable() {
+          new DefenderRetreatSubsBeforeBattle() {
             private static final long serialVersionUID = 7056448091800764539L;
 
             @Override
@@ -1353,7 +1458,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // Remove undefended transports
     if (Properties.getTransportCasualtiesRestricted(gameData)) {
       steps.add(
-          new IExecutable() {
+          new RemoveUndefendedTransports() {
             private static final long serialVersionUID = 99989L;
 
             @Override
@@ -1367,7 +1472,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // Submerge subs if -vs air only & air restricted from attacking subs
     steps.add(
-        new IExecutable() {
+        new SubmergeSubsVsOnlyAir() {
           private static final long serialVersionUID = 99990L;
 
           @Override
@@ -1428,7 +1533,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         });
     // Attacker fire remaining units
     steps.add(
-        new IExecutable() {
+        new StandardAttackersFire() {
           private static final long serialVersionUID = 99994L;
 
           @Override
@@ -1617,7 +1722,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void firstStrikeDefendersFire(final ReturnFire returnFire) {
+  @VisibleForTesting
+  protected void firstStrikeDefendersFire(final ReturnFire returnFire) {
     findTargetGroupsAndFire(
         returnFire,
         attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
@@ -1630,7 +1736,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         attackingWaitingToDie);
   }
 
-  private void firstStrikeAttackersFire(final ReturnFire returnFire) {
+  @VisibleForTesting
+  protected void firstStrikeAttackersFire(final ReturnFire returnFire) {
     findTargetGroupsAndFire(
         returnFire,
         defender.getName() + SELECT_FIRST_STRIKE_CASUALTIES,
@@ -1982,7 +2089,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void queryRetreat(
+  @VisibleForTesting
+  protected void queryRetreat(
       final boolean defender,
       final RetreatType retreatType,
       final IDelegateBridge bridge,
@@ -2115,7 +2223,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void submergeUnits(
+  @VisibleForTesting
+  protected void submergeUnits(
       final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge) {
     final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
     final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
