@@ -34,10 +34,30 @@
     owner: flyway
     group: flyway
 
+- name: copy flyway migrations zip if deploying latest
+  become: true
+  when: using_latest
+  copy:
+    src: migrations.zip
+    dest: /home/flyway/migrations.zip
+    mode: "644"
+    owner: flyway
+    group: flyway
+
+- name: download flyway migrations if deploying a specific version
+  become: true
+  when: not using_latest
+  get_url:
+    url: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/migrations.zip"
+    dest: /home/flyway/migrations.zip
+    owner: flyway
+    group: flyway
+
 - name: extract migrations
   become: true
   unarchive:
-     src: migrations.zip
+     src: /home/flyway/migrations.zip
+     remote: true
      dest: "{{ flyway_extracted_location }}/sql/"
      mode: "644"
      owner: flyway
