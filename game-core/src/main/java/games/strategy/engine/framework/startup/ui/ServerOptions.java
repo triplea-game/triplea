@@ -69,10 +69,7 @@ public class ServerOptions extends JDialog {
       return null;
     }
     final String password = new String(passwordField.getPassword());
-    if (password.trim().length() == 0) {
-      return null;
-    }
-    return password;
+    return password.isBlank() ? null : password;
   }
 
   public int getPort() {
