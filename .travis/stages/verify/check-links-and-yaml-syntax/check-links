@@ -17,7 +17,7 @@ fi
 function checkUri() {
   local -r uri="$1"
   local code
-  if ! code=$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri"); then
+  if ! code=$(curl -X HEAD -Lsf -o /dev/null -w "%{http_code}" "$uri"); then
     reportBrokenUri "$uri" "$code"
     FAILURE=1
   else
