@@ -90,7 +90,7 @@ class OrderOfLossesInputPanel extends JPanel {
 
   /** Validates if a given string can be parsed for order of losses. */
   static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
-    if (orderOfLoss == null || orderOfLoss.trim().length() == 0) {
+    if (orderOfLoss == null || orderOfLoss.isBlank()) {
       return true;
     }
     try {
@@ -140,7 +140,7 @@ class OrderOfLossesInputPanel extends JPanel {
   /** Returns units in the same ordering as the 'order of loss' string passed in. */
   static List<Unit> getUnitListByOrderOfLoss(
       final String ool, final Collection<Unit> units, final GameData data) {
-    if (ool == null || ool.trim().length() == 0) {
+    if (ool == null || ool.isBlank()) {
       return null;
     }
     final List<Tuple<Integer, UnitType>> map = new ArrayList<>();

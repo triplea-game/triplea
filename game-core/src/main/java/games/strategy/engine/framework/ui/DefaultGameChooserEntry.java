@@ -88,7 +88,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
   // equals/hashcode below
   private String getMapNameProperty() {
     final String mapName = (String) gameData.getProperties().get(Constants.MAP_NAME);
-    if (mapName == null || mapName.trim().length() == 0) {
+    if (mapName == null || mapName.isBlank()) {
       throw new IllegalStateException("Map name property not set on game");
     }
     return mapName;
