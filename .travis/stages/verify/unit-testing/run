@@ -3,10 +3,8 @@
 set -eEux
 
 # Run Tests
-./gradlew --parallel test
+./gradlew -x :smoke-testing:test -parallel test jacocoTestReport
 
-# Generate reports
-./gradlew --parallel jacocoTestReport
 
 # upload coverage report - https://github.com/codecov/example-gradle
 bash <(curl -s https://codecov.io/bash)
