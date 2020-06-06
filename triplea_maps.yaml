@@ -2102,7 +2102,7 @@
     <br> This is the Charles de Gaulle 1939 Mod for the "Global 40" game.
     <br>
 - mapName: Twelve-Clans
-  mapCategory: GOOD
+  mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/twelve-clans/archive/master.zip
   version: 4
   img: https://raw.githubusercontent.com/triplea-maps/twelve-clans/master/description/MapDesc.png
