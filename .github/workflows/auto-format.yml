@@ -21,8 +21,7 @@ jobs:
         author_name: tripleabuilderbot
         author_email: tripleabuilderbot@gmail.com
         message: "Auto-Formatting"
-        path: "."
-        pattern: "*.java"
+        add: "*.java"
         force: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
