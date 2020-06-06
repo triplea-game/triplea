@@ -376,7 +376,7 @@ class ProLogWindow extends JDialog {
       }
       // Note, some players have observed a NPE here in initialization
       // java.lang.NullPointerException
-      //at java.desktop/javax.swing.text.PlainView.calculateLongestLine(PlainView.java:782)
+      // at java.desktop/javax.swing.text.PlainView.calculateLongestLine(PlainView.java:782)
       // See: https://github.com/triplea-game/triplea/issues/6481
       currentLogTextArea.append(message + "\r\n");
     } catch (
