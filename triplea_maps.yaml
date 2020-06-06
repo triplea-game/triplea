@@ -2104,11 +2104,11 @@
 - mapName: Twelve-Clans
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/twelve-clans/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/twelve-clans/master/description/MapDesc.png
   description: |
     <br>by Michael Hoover
-    <br>Version 1.2 for TripleA 1.9.0.0.13066
+    <br>Version 1.3 for TripleA 1.9.0.0.13066
     <br>
     <p style="font-size:14px;color:FFFFFF">
         In Twelve Clans (a Shogun type variant heavily inspired by the Samurai Warriors series of games) fight to expand your clan and become the dominant power in Japan.
