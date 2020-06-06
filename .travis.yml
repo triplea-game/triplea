@@ -111,7 +111,3 @@ jobs:
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       script: [ ".travis/shared/report-build-status SUCCESS" ] 
 
-after_failure:
-  - echo "================ Build step 'after_failure' =================" > /dev/null
-  - $REPORT_FAIL "end of script failure catch block"
-
