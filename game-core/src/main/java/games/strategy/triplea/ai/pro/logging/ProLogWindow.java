@@ -374,10 +374,14 @@ class ProLogWindow extends JDialog {
       if (currentLogTextArea == null) {
         currentLogTextArea = aiOutputLogArea;
       }
+      // Note, some players have observed a NPE here in initialization
+      // java.lang.NullPointerException
+      // at java.desktop/javax.swing.text.PlainView.calculateLongestLine(PlainView.java:782)
+      // See: https://github.com/triplea-game/triplea/issues/6481
       currentLogTextArea.append(message + "\r\n");
     } catch (
         final Exception ex) { // This is bad, but we don't want TripleA crashing because of this...
-      log.log(Level.SEVERE, "Error adding Pro log message! Message: " + message, ex);
+      log.log(Level.INFO, "Error adding Pro log message! Message: " + message, ex);
     }
   }
 
