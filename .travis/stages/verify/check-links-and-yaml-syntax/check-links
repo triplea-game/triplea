@@ -5,7 +5,6 @@ set -eu
 URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
 green="\e[32m"
 end="\e[0m"
-FAILURE_PREFIX="Failed with Code: "
 IGNORE_LIST=("https://www.axisandallies.org/forums")
 
 if [ -z "$URI_FILE" ]; then
@@ -17,9 +16,9 @@ fi
 
 function checkUri() {
   local -r uri="$1"
-  local output
-  if ! output="$FAILURE_PREFIX$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri")"; then
-    reportBrokenUri "$uri" "$output"
+  local code
+  if ! code=$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri"); then
+    reportBrokenUri "$uri" "$code"
     FAILURE=1
   fi
 }
@@ -27,7 +26,7 @@ function checkUri() {
 function reportBrokenUri() {
   local -r red="\e[38;5;196m"
   local -r blue="\e[38;5;75m"
-  local -r error_reason=${2//${FAILURE_PREFIX}000/Connection Failure!}
+  local -r error_reason=$([[ $2 -ne 0 ]] && echo "Failed with Code: $2" || echo "Connection Failure!")
   echo -e "Error: ${red}${1}${end} ${blue}${error_reason}${end}"
 }
 
