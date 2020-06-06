@@ -64,12 +64,10 @@ public class ServerOptions extends JDialog {
     return s;
   }
 
-  public String getPassword() {
-    if (!requirePasswordCheckBox.isSelected()) {
-      return null;
-    }
-    final String password = new String(passwordField.getPassword());
-    return password.isBlank() ? null : password;
+  public char[] getPassword() {
+    return !requirePasswordCheckBox.isSelected() || passwordField.getPassword().length == 0
+        ? null
+        : passwordField.getPassword();
   }
 
   public int getPort() {

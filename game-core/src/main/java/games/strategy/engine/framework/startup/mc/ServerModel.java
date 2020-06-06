@@ -351,7 +351,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
           ServerConnectionProps.builder()
               .name(System.getProperty(TRIPLEA_NAME))
               .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
-              .password(System.getProperty(SERVER_PASSWORD))
+              .password(
+                  Optional.ofNullable(System.getProperty(SERVER_PASSWORD))
+                      .map(String::toCharArray)
+                      .orElse(null))
               .build());
     }
     final UserName userName = UserName.of(ClientSetting.playerName.getValueOrThrow());
