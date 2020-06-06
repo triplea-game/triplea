@@ -515,11 +515,13 @@ public class MapData {
   /**
    * Returns the polygons for any territories contained within a given territory.
    *
-   * @param territoryName Name of the territory, expected to be a sea territory, where we will be
-   *     checking for any contained 'island' territories.
+   * @param territoryName Name of the territory, where we will be checking for any contained
+   *     'island' territories.
+   * @return Empty if the parameter is not a sea territory or contains no 'islands', otherwise
+   *     returns any 'islands' contained within the given territory.
    */
   public Set<Polygon> getContainedTerritoryPolygons(final String territoryName) {
-    return contains.get(territoryName).stream()
+    return contains.getOrDefault(territoryName, Set.of()).stream()
         .map(this::getPolygons)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
