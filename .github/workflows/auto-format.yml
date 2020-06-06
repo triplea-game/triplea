@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
@@ -16,7 +16,7 @@ jobs:
     - name: Run Spotless
       run: ./gradlew --parallel spotlessApply
     - name: Commit changes
-      uses: EndBug/add-and-commit@v2.1.0
+      uses: EndBug/add-and-commit@v4
       with:
         author_name: tripleabuilderbot
         author_email: tripleabuilderbot@gmail.com
