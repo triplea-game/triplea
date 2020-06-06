@@ -102,7 +102,7 @@ jobs:
       python: "3.8"
       addons: { apt: { packages: [ sshpass ] } }
       install: [ pip install ansible ]
-      script: [ $DEPLOY_PROD_STAGE/deploy-prod2-servers/run || $REPORT_FAIL "prerelease deployment" ]
+      script: [ $DEPLOY_PROD_STAGE/deploy-prod2-servers/run || $REPORT_FAIL "prod2 deployment" ]
 
     ########################################################################
     
