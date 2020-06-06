@@ -521,12 +521,10 @@ public class MapData {
    *     returns any 'islands' contained within the given territory.
    */
   public Set<Polygon> getContainedTerritoryPolygons(final String territoryName) {
-    return contains.get(territoryName) == null
-        ? Set.of()
-        : contains.get(territoryName).stream()
-            .map(this::getPolygons)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
+    return contains.getOrDefault(territoryName, Set.of()).stream()
+        .map(this::getPolygons)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public void verify(final GameData data) {
