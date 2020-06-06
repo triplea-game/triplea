@@ -1,7 +1,9 @@
-package games.strategy.triplea.delegate.battle.steps;
+package games.strategy.triplea.delegate.battle.steps.fire.air;
 
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AIR_ATTACK_NON_SUBS;
 
+import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  boolean valid(final Request request) {
+  public boolean valid(final BattleStep.Request request) {
     return airWillMissSubs(parameters.attackingUnits, parameters.defendingUnits);
   }
 }

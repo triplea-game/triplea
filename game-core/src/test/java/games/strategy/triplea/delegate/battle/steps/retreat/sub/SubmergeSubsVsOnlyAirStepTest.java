@@ -1,11 +1,11 @@
-package games.strategy.triplea.delegate.battle.steps;
+package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
+import static games.strategy.triplea.delegate.battle.steps.MockStepParameters.givenStepParameters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -15,35 +15,20 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 @ExtendWith(MockitoExtension.class)
 class SubmergeSubsVsOnlyAirStepTest {
 
-  @Mock BattleActions battleActions;
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;
-
-  private StepParameters.StepParametersBuilder givenParameters() {
-    final StepParameters.StepParametersBuilder builder =
-        StepParameters.builder()
-            .attackingUnits(List.of())
-            .defendingUnits(List.of())
-            .battleActions(battleActions);
-
-    // run build when it is called so that changes to the parameters in the test methods will take
-    // affect
-    lenient()
-        .when(battleActions.getStepParameters())
-        .then((Answer<StepParameters>) invocation -> builder.build());
-    return builder;
-  }
 
   @Test
   @DisplayName("valid() is false given some attacking evaders vs NO air")
@@ -54,7 +39,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender2 = mock(Unit.class);
 
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters()
             .attackingUnits(List.of(attacker))
             .defendingUnits(List.of(defender1, defender2))
             .build();
@@ -71,7 +56,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender = givenUnit();
 
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
@@ -88,7 +73,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender2 = givenUnit();
 
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters()
             .attackingUnits(List.of(attacker))
             .defendingUnits(List.of(defender1, defender2))
             .build();
@@ -105,7 +90,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender = givenUnit();
 
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
@@ -122,7 +107,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender2 = givenUnitIsAir();
 
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters()
             .attackingUnits(List.of(attacker))
             .defendingUnits(List.of(defender1, defender2))
             .build();
@@ -139,7 +124,7 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
 
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
@@ -156,8 +141,10 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender1 = givenUnitIsAir();
     final Unit defender2 = givenUnitIsAir();
 
+    final BattleActions battleActions = mock(BattleActions.class);
+
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters(battleActions)
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender1, defender2))
             .build();
@@ -178,8 +165,10 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit attacker1 = givenUnitIsAir();
     final Unit attacker2 = givenUnitIsAir();
 
+    final BattleActions battleActions = mock(BattleActions.class);
+
     final StepParameters parameters =
-        givenParameters()
+        givenStepParameters(battleActions)
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender1, defender2))
             .build();

@@ -39,7 +39,7 @@ public abstract class BattleStep {
    * @param request Indicates when valid is being called
    * @return true if valid
    */
-  abstract boolean valid(Request request);
+  public abstract boolean valid(Request request);
 
   /**
    * Executes the step

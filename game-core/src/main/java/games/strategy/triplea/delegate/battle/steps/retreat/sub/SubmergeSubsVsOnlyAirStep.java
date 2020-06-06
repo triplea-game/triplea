@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.battle.steps;
+package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBMERGE_SUBS_VS_AIR_ONLY;
 
@@ -6,6 +6,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -52,7 +54,7 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   }
 
   @Override
-  boolean valid(final Request request) {
+  public boolean valid(final Request request) {
     return (isOnlyAirVsSubs(parameters.attackingUnits, parameters.defendingUnits)
         || isOnlyAirVsSubs(parameters.defendingUnits, parameters.attackingUnits));
   }

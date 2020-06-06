@@ -1,9 +1,11 @@
-package games.strategy.triplea.delegate.battle.steps;
+package games.strategy.triplea.delegate.battle.steps.fire.air;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.Collection;
 
 /**
