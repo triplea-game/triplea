@@ -11,17 +11,23 @@ import lombok.AllArgsConstructor;
 /**
  * A step in a battle.
  *
- * Each step can have 0 or more names.  These names are shown in the {@link games.strategy.triplea.ui.BattlePanel}
- * Each step can also have an executable.  See {@link BattleAtomic} on what an executable is comprised of.
+ * <ol>
+ *   <ul>
+ *     Each step can have 0 or more names. These names are shown in the {@link
+ *     games.strategy.triplea.ui.BattlePanel}
+ *   </ul>
+ *   <ul>
+ *     Each step can also have an executable. See {@link BattleAtomic} on what an executable is
+ *     comprised of.
+ *   </ul>
+ * </ol>
  */
 @AllArgsConstructor
 public abstract class BattleStep {
 
   protected final StepParameters parameters;
 
-  /**
-   * Indicates when {@link #valid} is being called
-   */
+  /** Indicates when {@link #valid} is being called */
   public enum Request {
     // Occurs at the start of the battle round
     NAME,
@@ -44,7 +50,7 @@ public abstract class BattleStep {
   /**
    * Executes the step
    *
-   * This is called by the BattleAtomic and {@link #valid} has already been checked
+   * <p>This is called by the BattleAtomic and {@link #valid} has already been checked
    *
    * @param stack The current stack of steps
    * @param bridge DelegateBridge for interacting with the rest of the program
@@ -52,10 +58,10 @@ public abstract class BattleStep {
   protected abstract void execute(ExecutionStack stack, IDelegateBridge bridge);
 
   /**
-   * This is used to break up the battle into separate atomic pieces. If there is a
-   * network error, or some other unfortunate event, then we need to keep track of what pieces we
-   * have executed, and what is left to do. Each atomic step is in its own BattleAtomic with the
-   * definition of atomic is that either:
+   * This is used to break up the battle into separate atomic pieces. If there is a network error,
+   * or some other unfortunate event, then we need to keep track of what pieces we have executed,
+   * and what is left to do. Each atomic step is in its own BattleAtomic with the definition of
+   * atomic is that either:
    *
    * <ol>
    *   <li>The code does not call to an IDisplay, IPlayer, or IRandomSource

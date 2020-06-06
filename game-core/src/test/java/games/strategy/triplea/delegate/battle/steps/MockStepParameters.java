@@ -14,7 +14,8 @@ public final class MockStepParameters {
     return givenStepParameters(mock(BattleActions.class));
   }
 
-  public static StepParameters.StepParametersBuilder givenStepParameters(final BattleActions battleActions) {
+  public static StepParameters.StepParametersBuilder givenStepParameters(
+      final BattleActions battleActions) {
     final StepParameters.StepParametersBuilder builder =
         StepParameters.builder()
             .attackingUnits(List.of())

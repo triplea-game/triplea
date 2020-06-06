@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.MockStepParameters;
 import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AirDefendVsNonSubsStepTest {
-
 
   @Test
   @DisplayName("valid() is true if defender has air and no destroyer and attacker has sub")
