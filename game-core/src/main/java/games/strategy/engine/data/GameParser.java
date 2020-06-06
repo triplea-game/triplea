@@ -1487,13 +1487,13 @@ public final class GameParser {
       final String hitsTakenString = current.getAttribute("hitsTaken");
       final String unitDamageString = current.getAttribute("unitDamage");
       final GamePlayer owner;
-      if (ownerString == null || ownerString.trim().length() == 0) {
+      if (ownerString == null || ownerString.isBlank()) {
         owner = GamePlayer.NULL_PLAYERID;
       } else {
         owner = getPlayerId(current, "owner", false);
       }
       final int hits;
-      if (hitsTakenString != null && hitsTakenString.trim().length() > 0) {
+      if (hitsTakenString != null && !hitsTakenString.isBlank()) {
         hits = Integer.parseInt(hitsTakenString);
         if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
           throw newGameParseException(
@@ -1503,7 +1503,7 @@ public final class GameParser {
         hits = 0;
       }
       final int unitDamage;
-      if (unitDamageString != null && unitDamageString.trim().length() > 0) {
+      if (unitDamageString != null && !unitDamageString.isBlank()) {
         unitDamage = Integer.parseInt(unitDamageString);
         if (unitDamage < 0) {
           throw newGameParseException("unitDamage cannot be less than zero");

@@ -21,7 +21,7 @@ class PagerTest {
   private Pager pager;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     pager = Pager.builder().dataFetcher(dataFetcher).pageSize(PAGE_SIZE).build();
   }
 

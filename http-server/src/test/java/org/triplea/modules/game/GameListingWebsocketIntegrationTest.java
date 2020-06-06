@@ -56,7 +56,7 @@ class GameListingWebsocketIntegrationTest extends DropwizardTest {
   }
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     gamePostingTestOverrideClient =
         new HttpClient<>(GamePostingTestOverrideClient.class, localhost).get();
 

@@ -279,10 +279,8 @@ public class PbemMessagePoster implements Serializable {
                   postingDelegate.setHasPostedTurnSummary(postOk);
                 }
                 final StringBuilder sb1 = new StringBuilder();
-                if (gameProperties.get(IForumPoster.NAME) != null) {
-                  if (this.turnSummaryRef != null) {
-                    sb1.append("\nSummary Text: ").append(this.turnSummaryRef);
-                  }
+                if (gameProperties.get(IForumPoster.NAME) != null && this.turnSummaryRef != null) {
+                  sb1.append("\nSummary Text: ").append(this.turnSummaryRef);
                 }
                 if (gameProperties.get(IEmailSender.SUBJECT) != null) {
                   sb1.append("\nEmails: ").append(emailSendStatus);

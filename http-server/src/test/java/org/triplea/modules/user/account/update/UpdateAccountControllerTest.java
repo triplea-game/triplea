@@ -25,7 +25,7 @@ class UpdateAccountControllerTest {
   private UpdateAccountController userAccountController;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     userAccountController =
         UpdateAccountController.builder().userAccountService(userAccountService).build();
   }

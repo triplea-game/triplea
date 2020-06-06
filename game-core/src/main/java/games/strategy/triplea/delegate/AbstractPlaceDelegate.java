@@ -1205,19 +1205,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     // Restricts based on the STARTING number of units in a territory (otherwise it is infinite
     // placement)
-    if (unitPlacementPerTerritoryRestricted) {
-      if (ra != null && ra.getPlacementPerTerritory() > 0) {
-        final int allowedPlacement = ra.getPlacementPerTerritory();
-        final int ownedUnitsInTerritory =
-            CollectionUtils.countMatches(to.getUnits(), Matches.unitIsOwnedBy(player));
-        if (ownedUnitsInTerritory >= allowedPlacement) {
-          return 0;
-        }
-        if (ra.getMaxPlacePerTerritory() == -1) {
-          return -1;
-        }
-        return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
+    if (unitPlacementPerTerritoryRestricted && ra != null && ra.getPlacementPerTerritory() > 0) {
+      final int allowedPlacement = ra.getPlacementPerTerritory();
+      final int ownedUnitsInTerritory =
+          CollectionUtils.countMatches(to.getUnits(), Matches.unitIsOwnedBy(player));
+      if (ownedUnitsInTerritory >= allowedPlacement) {
+        return 0;
       }
+      if (ra.getMaxPlacePerTerritory() == -1) {
+        return -1;
+      }
+      return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
     }
     // a factory can produce the same number of units as the number of PUs the territory generates
     // each turn (or not, if

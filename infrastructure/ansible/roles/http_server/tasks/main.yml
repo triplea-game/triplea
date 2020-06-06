@@ -6,6 +6,7 @@
     system: yes
 
 - name: deploy jar file
+  when: using_latest
   become: true
   register: deploy_jar_file
   copy:
@@ -13,6 +14,28 @@
     dest: "{{ http_server_home_folder }}/{{ http_server_jar }}"
     owner: "{{ http_server_user }}"
     group: "{{ http_server_user }}"
+
+
+- name: download zip file if not using latest
+  when: not using_latest
+  become: true
+  register: deploy_jar_file
+  get_url:
+    url: "{{ http_server_zip_download }}"
+    dest: "{{ http_server_home_folder }}/triplea-http-server-{{ version }}.zip"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
+- name: extract zip file if not using latest
+  when: not using_latest
+  become: true
+  unarchive:
+    remote_src: yes
+    src: "{{ http_server_home_folder }}/triplea-http-server-{{ version }}.zip"
+    dest: "{{ http_server_home_folder }}/"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
 
 - name: deploy run_server script
   become: true

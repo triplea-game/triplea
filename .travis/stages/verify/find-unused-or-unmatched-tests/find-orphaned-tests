@@ -22,7 +22,8 @@ find . -type f -path "*/src/test/java/*" -name "*Test.java" \
 ## Exclude files with specific annotations or abstract test classes
 ## These tests may not have a 1:1 mapping to source code.
 while read -r testFile; do \
-  grep -LE "abstract class|@Integration|@ExtendedUnitTest" "$testFile" >> "$testFilesTemp"; \
+  grep -LE "abstract class|@Integration|@ExtendedUnitTest|@SuppressWarning.*UnmatchedTest" \
+      "$testFile" >> "$testFilesTemp"; \
 done < "$testFiles"
 
 cat "$testFilesTemp" > "$testFiles"
@@ -56,6 +57,7 @@ if [ "$status" -eq 1 ]; then
   echo " - renaming the test file to end with 'IntegrationTest'"
   echo " - adding an @Integration annotation to the test"
   echo " - adding an @ExtendedUnitTest annotation to the test"
+  echo " - adding an @SuppressWarnings(\"UnmatchedTest\") to the test"
 fi
 
 exit "$status"

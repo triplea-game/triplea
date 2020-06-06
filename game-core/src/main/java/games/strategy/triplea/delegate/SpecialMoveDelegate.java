@@ -129,10 +129,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritories =
         aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
-    if (!aaFiringTerritories.isEmpty()) {
-      if (!bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
-        return null;
-      }
+    if (!aaFiringTerritories.isEmpty()
+        && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
+      return null;
     }
     // do the move
     final UndoableMove currentMove = new UndoableMove(units, route);
@@ -283,10 +282,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       if (!land) {
         return result.setErrorReturnResult("Cannot Move Land Units To Sea");
       }
-    } else if (someSea) {
-      if (!sea) {
-        return result.setErrorReturnResult("Cannot Move Sea Units To Land");
-      }
+    } else if (someSea && !sea) {
+      return result.setErrorReturnResult("Cannot Move Sea Units To Land");
     }
     if (onlyWhereUnderAttackAlready) {
       if (!battleTracker.getConquered().contains(end)) {
@@ -306,11 +303,10 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
               "Battle Must Have Some Sea Units Participating Already");
         }
       }
-    } else if (onlyEnemyTerritories) {
-      if (!(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(end)
-          || Matches.territoryHasEnemyUnits(player, data).test(end))) {
-        return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
-      }
+    } else if (onlyEnemyTerritories
+        && !(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(end)
+            || Matches.territoryHasEnemyUnits(player, data).test(end))) {
+      return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
     }
     return result;
   }

@@ -141,10 +141,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final Map<String, IAttachment> map = player.getAttachments();
     for (final Map.Entry<String, IAttachment> entry : map.entrySet()) {
       final IAttachment attachment = entry.getValue();
-      if (attachment instanceof RulesAttachment) {
-        if (attachment.getName().startsWith(Constants.RULES_OBJECTIVE_PREFIX)) {
-          natObjs.add((RulesAttachment) attachment);
-        }
+      if (attachment instanceof RulesAttachment
+          && attachment.getName().startsWith(Constants.RULES_OBJECTIVE_PREFIX)) {
+        natObjs.add((RulesAttachment) attachment);
       }
     }
     return natObjs;
@@ -629,10 +628,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   @Override
   public boolean isSatisfied(
       final Map<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
-    if (testedConditions != null) {
-      if (testedConditions.containsKey(this)) {
-        return testedConditions.get(this);
-      }
+    if (testedConditions != null && testedConditions.containsKey(this)) {
+      return testedConditions.get(this);
     }
     boolean objectiveMet = true;
     final List<GamePlayer> players = getPlayers();

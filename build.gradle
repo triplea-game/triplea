@@ -5,7 +5,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.28.0'
     id 'io.franzbecker.gradle-lombok' version '4.0.0' apply false
     id 'net.ltgt.errorprone' version '1.2.1' apply false
-    id 'com.diffplug.gradle.spotless' version '4.0.1' apply false
+    id 'com.diffplug.gradle.spotless' version '4.2.1' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -99,7 +99,7 @@ subprojects {
         junitPlatformLauncherVersion = '1.5.2' // do not upgrade this to beyond 1.5.2 without testing IDEA test runner.
         mockitoVersion = '3.3.3'
         openFeignVersion = '10.5.1'
-        postgresqlVersion = '42.2.12'
+        postgresqlVersion = '42.2.13'
         rateLimitjVersion = '0.6.0'
         snakeYamlVersion = '2.1'
         sonatypeGoodiesPrefsVersion = '2.3.1'
@@ -206,8 +206,8 @@ subprojects {
     }
 
     lombok {
-        version = '1.18.4'
-        sha256 = '39f3922deb679b1852af519eb227157ef2dd0a21eec3542c8ce1b45f2df39742'
+        version = '1.18.12'
+        sha256 = '49381508ecb02b3c173368436ef71b24c0d4418ad260e6cc98becbcf4b345406'
     }
 
     pmd {

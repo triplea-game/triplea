@@ -27,7 +27,7 @@ class LegacyPasswordUpdateTest {
   private LegacyPasswordUpdate legacyPasswordUpdate;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     legacyPasswordUpdate =
         LegacyPasswordUpdate.builder()
             .userJdbiDao(userJdbiDao)

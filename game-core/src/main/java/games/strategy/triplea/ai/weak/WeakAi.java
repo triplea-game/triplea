@@ -286,25 +286,23 @@ public class WeakAi extends AbstractAi {
       // move sea units to the capitol, unless they are loaded transports
       if (t.isWater()) {
         // land units, move all towards the end point
-        if (t.getUnitCollection().anyMatch(Matches.unitIsLand())) {
-          // move along amphi route
-          if (lastSeaZoneOnAmphib != null) {
-            // two move route to end
-            final @Nullable Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
-            if (r != null) {
-              final List<Unit> unitsToMove =
-                  t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player));
-              moves.add(new MoveDescription(unitsToMove, r));
-            }
+        // and move along amphib route
+        if (t.getUnitCollection().anyMatch(Matches.unitIsLand()) && lastSeaZoneOnAmphib != null) {
+          // two move route to end
+          final @Nullable Route r = getMaxSeaRoute(data, t, lastSeaZoneOnAmphib, player);
+          if (r != null) {
+            final List<Unit> unitsToMove =
+                t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player));
+            moves.add(new MoveDescription(unitsToMove, r));
           }
         }
-        if (nonCombat && t.getUnitCollection().anyMatch(ownedAndNotMoved)) {
-          // move toward the start of the amphib route
-          if (firstSeaZoneOnAmphib != null) {
-            final @Nullable Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
-            if (r != null) {
-              moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
-            }
+        // move toward the start of the amphib route
+        if (nonCombat
+            && t.getUnitCollection().anyMatch(ownedAndNotMoved)
+            && firstSeaZoneOnAmphib != null) {
+          final @Nullable Route r = getMaxSeaRoute(data, t, firstSeaZoneOnAmphib, player);
+          if (r != null) {
+            moves.add(new MoveDescription(t.getUnitCollection().getMatches(ownedAndNotMoved), r));
           }
         }
       }
@@ -775,11 +773,9 @@ public class WeakAi extends AbstractAi {
             minCost = cost;
           }
           // give a preference to cheap units
-          if (Math.random() * cost < 2) {
-            if (cost <= leftToSpend) {
-              leftToSpend -= cost;
-              purchase.add(rule, 1);
-            }
+          if (Math.random() * cost < 2 && cost <= leftToSpend) {
+            leftToSpend -= cost;
+            purchase.add(rule, 1);
           }
         }
       }

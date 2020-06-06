@@ -234,14 +234,14 @@ public class RocketsFireHelper implements Serializable {
         Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowed);
-      if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current
-            .getUnitCollection()
-            .anyMatch(
-                attackableUnits.and(
-                    Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
-          hasFactory.add(current);
-        }
+      if (route != null
+          && route.numberOfSteps() <= maxDistance
+          && current
+              .getUnitCollection()
+              .anyMatch(
+                  attackableUnits.and(
+                      Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
+        hasFactory.add(current);
       }
     }
     return hasFactory;

@@ -5,6 +5,7 @@ set -eu
 URI_FILE=$(find . -type f -path "*/src/main/java/*" -name "UrlConstants.java")
 green="\e[32m"
 end="\e[0m"
+IGNORE_LIST=("https://www.axisandallies.org/forums")
 
 if [ -z "$URI_FILE" ]; then
   echo "Error could not find file 'UrlConstants.java'"
@@ -15,28 +16,37 @@ fi
 
 function checkUri() {
   local -r uri="$1"
-  
-  local -r curlResult=$(curl -s --head "$uri" | head -n 1)
-  echo "$uri -- $curlResult"  
-  # Temporarily disabled. We're unable to connect to A&A.org from Travis.
-
-  # echo $curlResult |  grep -qE  "HTTP/2 200|(200|302) (OK|Found)" \
-  #  || reportBrokenUri "$uri"
+  local code
+  if ! code=$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri"); then
+    reportBrokenUri "$uri" "$code"
+    FAILURE=1
+  else
+    echo "Successfully checked '$uri', returned $code"
+  fi
 }
 
 function reportBrokenUri() {
-  FAILURE=1 
   local -r red="\e[38;5;196m"
   local -r blue="\e[38;5;75m"
-  echo -en "Error: ${red}$uri${end} ${blue}"
-  curl -s --head "$uri" | head -n 1 | sed 's|HTTP/[12][.01]?||'
-  echo -en "${end}"
+  local -r error_reason=$([[ $2 -ne 0 ]] && echo "Failed with Code: $2" || echo "Connection Failure!")
+  echo -e "Error: ${red}${1}${end} ${blue}${error_reason}${end}"
+}
+
+function checkIsOnIgnoreList() {
+  for ignored_uri in "${IGNORE_LIST[@]}"; do
+    if [[ "$1" = "$ignored_uri" ]]
+    then
+      echo "Ignoring '$1'"
+      return 0
+    fi
+  done
+  return 1
 }
 
 FAILURE=0
 
 while read -r uri; do
-  checkUri "$uri";
+  checkIsOnIgnoreList "$uri" || checkUri "$uri"
 done < <(sed 's/^.*"\(.*\)".*$/\1/' "$URI_FILE" | grep "http")
 
 if [ "$FAILURE" == 0 ]; then

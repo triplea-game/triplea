@@ -32,11 +32,9 @@ class AirThatCantLandUtilTest {
   private static void fight(final IBattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :
         battle.getBattles().getBattles().entrySet()) {
-      if (!entry.getKey().isBombingRun()) {
-        if (entry.getValue().contains(territory)) {
-          battle.fightBattle(territory, false, entry.getKey());
-          return;
-        }
+      if (!entry.getKey().isBombingRun() && entry.getValue().contains(territory)) {
+        battle.fightBattle(territory, false, entry.getKey());
+        return;
       }
     }
     throw new IllegalStateException("Could not find  battle in: " + territory.getName());

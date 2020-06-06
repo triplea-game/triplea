@@ -2660,14 +2660,13 @@ public class UnitAttachment extends DefaultAttachment {
       return Integer.MAX_VALUE;
     }
     int max = stackingLimit.getFirst();
+    // under certain rules (classic rules) there can only be 1 aa gun in a territory.
     if (max == Integer.MAX_VALUE
-        && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())) {
-      // under certain rules (classic rules) there can only be 1 aa gun in a territory.
-      if (!(Properties.getWW2V2(data)
-          || Properties.getWW2V3(data)
-          || Properties.getMultipleAaPerTerritory(data))) {
-        max = 1;
-      }
+        && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())
+        && !(Properties.getWW2V2(data)
+            || Properties.getWW2V3(data)
+            || Properties.getMultipleAaPerTerritory(data))) {
+      max = 1;
     }
     final Predicate<Unit> stackingMatch;
     final String stackingType = stackingLimit.getSecond();

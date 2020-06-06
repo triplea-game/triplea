@@ -24,7 +24,7 @@ class ConnectivityCheckTest {
   private ConnectivityCheck connectivityCheck;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     connectivityCheck = new ConnectivityCheck(() -> socket);
   }
 

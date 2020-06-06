@@ -577,12 +577,10 @@ public final class PolygonGrabber {
       final Rectangle rect = poly.getBounds();
       for (int x = rect.x; x < rect.x + rect.width; x++) {
         for (int y = rect.y; y < rect.y + rect.height; y++) {
-          if (isBlack(x, y, imageCopy)) {
-            if (poly.contains(new Point(x, y))) {
-              imageCopyGraphics.setColor(Color.BLACK);
-              imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
-              return true;
-            }
+          if (isBlack(x, y, imageCopy) && poly.contains(new Point(x, y))) {
+            imageCopyGraphics.setColor(Color.BLACK);
+            imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
+            return true;
           }
         }
       }

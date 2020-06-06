@@ -212,11 +212,10 @@ public class InitializationDelegate extends BaseTripleADelegate {
     // must be notified (and have its ui) updated for each step,
     // so remove the bid steps that aren't used
     for (final GameStep step : data.getSequence()) {
-      if (step.getDelegate() instanceof BidPlaceDelegate
-          || step.getDelegate() instanceof BidPurchaseDelegate) {
-        if (!BidPurchaseDelegate.doesPlayerHaveBid(data, step.getPlayerId())) {
-          step.setMaxRunCount(0);
-        }
+      if ((step.getDelegate() instanceof BidPlaceDelegate
+              || step.getDelegate() instanceof BidPurchaseDelegate)
+          && !BidPurchaseDelegate.doesPlayerHaveBid(data, step.getPlayerId())) {
+        step.setMaxRunCount(0);
       }
     }
   }

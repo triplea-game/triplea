@@ -175,10 +175,9 @@ public class BattleTracker implements Serializable {
         continue;
       }
       final Tuple<RelationshipType, RelationshipType> relations = tuple.getSecond();
-      if (!Matches.relationshipTypeIsAtWar().test(relations.getFirst())) {
-        if (Matches.relationshipTypeIsAtWar().test(relations.getSecond())) {
-          return true;
-        }
+      if (!Matches.relationshipTypeIsAtWar().test(relations.getFirst())
+          && Matches.relationshipTypeIsAtWar().test(relations.getSecond())) {
+        return true;
       }
     }
     return false;
@@ -624,22 +623,21 @@ public class BattleTracker implements Serializable {
                         + " for the liberation the convoy route in "
                         + territory.getName());
           }
-        } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)) {
-          if (CollectionUtils.getMatches(
-                      cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
-                  .size()
-              == 1) {
-            bridge
-                .getHistoryWriter()
-                .addChildToEvent(
-                    convoyOwner.getName()
-                        + " loses "
-                        + cta.getProduction()
-                        + " production in "
-                        + convoy.getName()
-                        + " due to the capture of the convoy route in "
-                        + territory.getName());
-          }
+        } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
+            && CollectionUtils.getMatches(
+                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data))
+                    .size()
+                == 1) {
+          bridge
+              .getHistoryWriter()
+              .addChildToEvent(
+                  convoyOwner.getName()
+                      + " loses "
+                      + cta.getProduction()
+                      + " production in "
+                      + convoy.getName()
+                      + " due to the capture of the convoy route in "
+                      + territory.getName());
         }
       }
     }
@@ -711,15 +709,13 @@ public class BattleTracker implements Serializable {
       } else if (whoseCapital.equals(territory.getOwner())) {
         final Resource pus = data.getResourceList().getResource(Constants.PUS);
         final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
-        if (pa != null) {
-          if (isPacificTheater(data)) {
-            final Change changeVp =
-                ChangeFactory.attachmentPropertyChange(
-                    pa, (capturedPuCount + pa.getCaptureVps()), "captureVps");
-            bridge.addChange(changeVp);
-            if (changeTracker != null) {
-              changeTracker.addChange(changeVp);
-            }
+        if (pa != null && isPacificTheater(data)) {
+          final Change changeVp =
+              ChangeFactory.attachmentPropertyChange(
+                  pa, (capturedPuCount + pa.getCaptureVps()), "captureVps");
+          bridge.addChange(changeVp);
+          if (changeTracker != null) {
+            changeTracker.addChange(changeVp);
           }
         }
         final Change remove =
@@ -1162,10 +1158,10 @@ public class BattleTracker implements Serializable {
 
   public IBattle getPendingBattle(final Territory t, final boolean bombing, final BattleType type) {
     for (final IBattle battle : pendingBattles) {
-      if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing) {
-        if (type == null || type == battle.getBattleType()) {
-          return battle;
-        }
+      if (battle.getTerritory().equals(t)
+          && battle.isBombingRun() == bombing
+          && (type == null || type == battle.getBattleType())) {
+        return battle;
       }
     }
     return null;

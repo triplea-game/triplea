@@ -16,3 +16,4 @@ http_server_db_user: "{{ lobby_db_user }}"
 
 create_issues_github_api_token: test
 
+http_server_zip_download: "https://github.com/triplea-game/triplea/releases/download/{{ version }}/triplea-http-server-{{ version }}.zip"

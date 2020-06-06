@@ -64,7 +64,7 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     testObj = new GameSelectorModel();
     assertHasEmptyData(testObj);
     testObj.addObserver(mockObserver);

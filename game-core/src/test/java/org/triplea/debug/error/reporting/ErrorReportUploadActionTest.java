@@ -40,7 +40,7 @@ class ErrorReportUploadActionTest {
   private ErrorReportUploadAction errorReportUploadAction;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     errorReportUploadAction =
         ErrorReportUploadAction.builder()
             .serviceClient(errorReportClient)

@@ -43,7 +43,6 @@ public final class TileImageBreaker {
           null,
           500,
           300,
-          true,
           1,
           null);
 

@@ -31,7 +31,7 @@ class NameValidationTest {
   private NameValidation nameValidation;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     nameValidation =
         NameValidation.builder()
             .syntaxValidation(syntaxValidation)
