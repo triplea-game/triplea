@@ -103,16 +103,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * An action representing removing non combatants.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class RemoveNonCombatants implements IExecutable {
-    private static final long serialVersionUID = 4463743274796560494L;
-  }
-
-  /**
    * An action representing naval bombardment during a battle.
    *
    * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
@@ -123,16 +113,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * An action representing removing non combatants after naval bombardment.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class RemoveNonCombatantsAfterNavalBombardment implements IExecutable {
-    private static final long serialVersionUID = -1015756641864182626L;
-  }
-
-  /**
    * An action representing landing paratroopers.
    *
    * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
@@ -140,16 +120,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   public abstract static class LandParatroopers implements IExecutable {
     private static final long serialVersionUID = 5936225914851941086L;
-  }
-
-  /**
-   * An action representing marking no movement left.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class MarkNoMovementLeft implements IExecutable {
-    private static final long serialVersionUID = 1482181126769007815L;
   }
 
   /**
@@ -189,17 +159,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * action of this type.
    */
   public abstract static class SubmergeSubsVsOnlyAir implements IExecutable {
-    private static final long serialVersionUID = -2588373599526477215L;
-  }
-
-  /**
-   * An action representing removing first strike suicide units.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class RemoveFirstStrikeSuicideUnits implements IExecutable {
-    private static final long serialVersionUID = 994041503171919922L;
+    private static final long serialVersionUID = 1369227461759133105L;
   }
 
   /**
@@ -210,116 +170,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   public abstract static class StandardAttackersFire implements IExecutable {
     private static final long serialVersionUID = -6026031760663113621L;
-  }
-
-  /**
-   * An action representing standard defending fire.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class StandardDefendersFire implements IExecutable {
-    private static final long serialVersionUID = -164888878766070358L;
-  }
-
-  /**
-   * An action representing clearing damaged units.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class ClearWaitingToDieAndDamagedChangesInto implements IExecutable {
-    private static final long serialVersionUID = -2900730371312078498L;
-  }
-
-  /**
-   * An action representing removing standard suicide units.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class RemoveStandardSuicideUnits implements IExecutable {
-    private static final long serialVersionUID = -6647943315611838282L;
-  }
-
-  /**
-   * An action representing detecting the end of the battle.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class DetectBattleEnd implements IExecutable {
-    private static final long serialVersionUID = 6986541432718850362L;
-  }
-
-  /**
-   * An action representing attacking subs retreating.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class AttackerRetreatSubs implements IExecutable {
-    private static final long serialVersionUID = 6584236082198034101L;
-  }
-
-  /**
-   * An action representing attacking planes retreating.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class AttackerRetreatPlanes implements IExecutable {
-    private static final long serialVersionUID = 6828071620685651390L;
-  }
-
-  /**
-   * An action representing attacking non amphibious units retreating.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class AttackerRetreatNonAmphibUnits implements IExecutable {
-    private static final long serialVersionUID = 359102047832060965L;
-  }
-
-  /**
-   * An action representing standard attacker retreat.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class AttackerRetreat implements IExecutable {
-    private static final long serialVersionUID = 4572697663387503833L;
-  }
-
-  /**
-   * An action representing definding subs retreating.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class DefenderRetreatSubs implements IExecutable {
-    private static final long serialVersionUID = 6355510579355756145L;
-  }
-
-  /**
-   * An action representing pushing the fight loop onto the stack.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class PushFightLoopOnStack implements IExecutable {
-    private static final long serialVersionUID = -3675477063851590542L;
-  }
-
-  /**
-   * An action representing running the next battle round.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class NextBattleRound implements IExecutable {
-    private static final long serialVersionUID = -5022208210980741801L;
   }
 
   /**
@@ -1277,7 +1127,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (round > 1) {
       steps.add(
-          new RemoveNonCombatants() {
+          new IExecutable() {
             private static final long serialVersionUID = 2781652892457063082L;
 
             @Override
@@ -1297,7 +1147,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
       steps.add(
-          new RemoveNonCombatantsAfterNavalBombardment() {
+          new IExecutable() {
             private static final long serialVersionUID = 3389635558184415797L;
 
             @Override
@@ -1315,7 +1165,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
       steps.add(
-          new MarkNoMovementLeft() {
+          new IExecutable() {
             private static final long serialVersionUID = -6676316363537467594L;
 
             @Override
@@ -1673,7 +1523,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           });
     }
     steps.add(
-        new RemoveFirstStrikeSuicideUnits() {
+        new IExecutable() {
           private static final long serialVersionUID = -7634700553071456768L;
 
           @Override
@@ -1704,7 +1554,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           });
     }
     steps.add(
-        new StandardDefendersFire() {
+        new IExecutable() {
           private static final long serialVersionUID = 1560702114917865290L;
 
           @Override
@@ -1963,7 +1813,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void addCheckEndBattleAndRetreatingSteps(final List<IExecutable> steps) {
     steps.add(
-        new ClearWaitingToDieAndDamagedChangesInto() {
+        new IExecutable() {
           private static final long serialVersionUID = 8611067962952500496L;
 
           @Override
@@ -1972,7 +1822,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     steps.add(
-        new RemoveStandardSuicideUnits() {
+        new IExecutable() {
           private static final long serialVersionUID = 6387198382888361848L;
 
           @Override
@@ -1981,7 +1831,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     steps.add(
-        new DetectBattleEnd() {
+        new IExecutable() {
           private static final long serialVersionUID = 5259103822937067667L;
 
           @Override
@@ -2070,7 +1920,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     steps.add(
-        new AttackerRetreatSubs() {
+        new IExecutable() {
           private static final long serialVersionUID = 6775880082912594489L;
 
           @Override
@@ -2088,7 +1938,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     steps.add(
-        new AttackerRetreatNonAmphibUnits() {
+        new IExecutable() {
           private static final long serialVersionUID = -1150863964807721395L;
 
           @Override
@@ -2102,7 +1952,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     steps.add(
-        new AttackerRetreatPlanes() {
+        new IExecutable() {
           private static final long serialVersionUID = -1150863964807721395L;
 
           @Override
@@ -2115,7 +1965,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     steps.add(
-        new AttackerRetreat() {
+        new IExecutable() {
           private static final long serialVersionUID = 669349383898975048L;
 
           @Override
@@ -2126,7 +1976,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     steps.add(
-        new DefenderRetreatSubs() {
+        new IExecutable() {
           private static final long serialVersionUID = -1544916305666912480L;
 
           @Override
@@ -2153,7 +2003,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         });
     final IExecutable loop =
-        new PushFightLoopOnStack() {
+        new IExecutable() {
           private static final long serialVersionUID = 3118458517320468680L;
 
           @Override
@@ -2162,7 +2012,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         };
     steps.add(
-        new NextBattleRound() {
+        new IExecutable() {
           private static final long serialVersionUID = -3993599528368570254L;
 
           @Override
