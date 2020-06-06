@@ -271,11 +271,9 @@ public class HistoryPanel extends JPanel {
       final TreeNode current = nodeEnum.nextElement();
       if (current == selected) {
         foundSelected = true;
-      } else if (foundSelected) {
-        if (current.getParent() instanceof Step) {
-          next = current;
-          break;
-        }
+      } else if (foundSelected && current.getParent() instanceof Step) {
+        next = current;
+        break;
       }
     }
     if (next != null) {

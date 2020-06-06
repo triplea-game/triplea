@@ -52,7 +52,7 @@ public class SetPasswordAction extends AbstractAction {
     }
     final String password = new String(passwordField.getPassword());
     final boolean passworded;
-    if (password.trim().length() > 0) {
+    if (!password.isBlank()) {
       validator.setGamePassword(password);
       passworded = true;
     } else {

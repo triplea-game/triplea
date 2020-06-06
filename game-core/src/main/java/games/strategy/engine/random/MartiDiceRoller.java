@@ -68,7 +68,7 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   public String postRequest(
       final int max, final int numDice, final String subjectMessage, final String gameId)
       throws IOException {
-    final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
+    final String normalizedGameId = gameId.isBlank() ? "TripleA" : gameId;
     String message = normalizedGameId + ":" + subjectMessage;
     if (message.length() > MESSAGE_MAX_LENGTH) {
       message = message.substring(0, MESSAGE_MAX_LENGTH - 1);

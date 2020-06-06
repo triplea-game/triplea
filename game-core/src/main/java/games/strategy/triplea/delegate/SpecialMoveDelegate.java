@@ -129,10 +129,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritories =
         aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
-    if (!aaFiringTerritories.isEmpty()) {
-      if (!bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
-        return null;
-      }
+    if (!aaFiringTerritories.isEmpty()
+        && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
+      return null;
     }
     // do the move
     final UndoableMove currentMove = new UndoableMove(units, route);
@@ -304,11 +303,10 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
               "Battle Must Have Some Sea Units Participating Already");
         }
       }
-    } else if (onlyEnemyTerritories) {
-      if (!(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(end)
-          || Matches.territoryHasEnemyUnits(player, data).test(end))) {
-        return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
-      }
+    } else if (onlyEnemyTerritories
+        && !(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(end)
+            || Matches.territoryHasEnemyUnits(player, data).test(end))) {
+      return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
     }
     return result;
   }
