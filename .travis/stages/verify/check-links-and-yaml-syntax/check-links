@@ -20,6 +20,8 @@ function checkUri() {
   if ! code=$(curl -Lsf -o /dev/null -w "%{http_code}" "$uri"); then
     reportBrokenUri "$uri" "$code"
     FAILURE=1
+  else
+    echo "Successfully checked '$uri', returned $code"
   fi
 }
 
@@ -32,7 +34,11 @@ function reportBrokenUri() {
 
 function checkIsOnIgnoreList() {
   for ignored_uri in "${IGNORE_LIST[@]}"; do
-    [[ "$1" = "$ignored_uri" ]] && return 0
+    if [[ "$1" = "$ignored_uri" ]]
+    then
+      echo "Ignoring '$1'"
+      return 0
+    fi
   done
   return 1
 }
