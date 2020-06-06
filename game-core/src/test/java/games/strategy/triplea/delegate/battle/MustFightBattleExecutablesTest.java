@@ -69,11 +69,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.ISound;
-import org.triplea.test.common.Integration;
 import org.triplea.util.Tuple;
 
 @ExtendWith(MockitoExtension.class)
-@Integration
+@SuppressWarnings("UnmatchedTest")
 class MustFightBattleExecutablesTest {
 
   @Mock GameData gameData;
