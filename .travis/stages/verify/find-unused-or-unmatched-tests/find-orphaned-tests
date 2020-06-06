@@ -57,7 +57,7 @@ if [ "$status" -eq 1 ]; then
   echo " - renaming the test file to end with 'IntegrationTest'"
   echo " - adding an @Integration annotation to the test"
   echo " - adding an @ExtendedUnitTest annotation to the test"
-  echo " - adding an @SuppressWarngins(\"UnmatchedTest\") to the test"
+  echo " - adding an @SuppressWarnings(\"UnmatchedTest\") to the test"
 fi
 
 exit "$status"
