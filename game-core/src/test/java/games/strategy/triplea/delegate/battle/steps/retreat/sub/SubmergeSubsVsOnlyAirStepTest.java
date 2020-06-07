@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
 import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Request;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
@@ -16,7 +17,6 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
+    assertThat(underTest.valid(Request.NAME), is(false));
   }
 
   @Test
@@ -64,7 +64,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
+    assertThat(underTest.valid(Request.NAME), is(false));
   }
 
   @Test
@@ -82,7 +82,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(BattleStep.Request.EXEC), is(false));
+    assertThat(underTest.valid(Request.EXEC), is(false));
   }
 
   @Test
@@ -100,7 +100,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(BattleStep.Request.EXEC), is(false));
+    assertThat(underTest.valid(Request.EXEC), is(false));
   }
 
   @Test
@@ -118,7 +118,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(BattleStep.Request.EXEC), is(true));
+    assertThat(underTest.valid(Request.EXEC), is(true));
   }
 
   @Test
@@ -136,7 +136,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(BattleStep.Request.EXEC), is(true));
+    assertThat(underTest.valid(Request.EXEC), is(true));
   }
 
   @Test

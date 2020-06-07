@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.util.Tuple;
 
 /**
  * Units that canNotBeTargetedByAll can submerge if there are only Air units in the battle
@@ -58,27 +57,22 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
 
   @Override
   protected void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    final Tuple<List<Unit>, Boolean> subsAndSide = submergeSubsVsOnlyAir();
-    if (subsAndSide.getFirst().isEmpty()) {
-      // valid() should prevent this case but check for it anyways
-      return;
-    }
-    battleActions.submergeUnits(subsAndSide.getFirst(), subsAndSide.getSecond(), bridge);
-  }
-
-  private Tuple<List<Unit>, Boolean> submergeSubsVsOnlyAir() {
+    final Collection<Unit> submergingSubs;
+    final boolean defender;
     if (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())) {
       // submerge the defending units
-      return Tuple.of(
-          CollectionUtils.getMatches(battleState.getDefendingUnits(), canNotBeTargetedByAllMatch),
-          true);
+      submergingSubs =
+          CollectionUtils.getMatches(battleState.getDefendingUnits(), canNotBeTargetedByAllMatch);
+      defender = true;
     } else if (isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits())) {
       // submerge the attacking units
-      return Tuple.of(
-          CollectionUtils.getMatches(battleState.getAttackingUnits(), canNotBeTargetedByAllMatch),
-          false);
+      submergingSubs =
+          CollectionUtils.getMatches(battleState.getAttackingUnits(), canNotBeTargetedByAllMatch);
+      defender = false;
+    } else {
+      return;
     }
-    return Tuple.of(List.of(), false);
+    battleActions.submergeUnits(submergingSubs, defender, bridge);
   }
 
   private boolean isOnlyAirVsSubs(
