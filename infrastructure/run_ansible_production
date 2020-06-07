@@ -24,7 +24,7 @@ ansible-vault view \
 # Run deployment
 ansible-playbook \
     --vault-password-file vault_password \
-    $@ \
+    "$@" \
     -i ansible/inventory/prod2 \
  ansible/site.yml
 
