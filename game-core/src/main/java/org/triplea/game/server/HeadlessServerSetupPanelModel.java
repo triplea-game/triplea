@@ -3,7 +3,6 @@ package org.triplea.game.server;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 
-import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.ServerModel;
@@ -31,9 +30,8 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
   @Override
   public void onServerMessengerCreated(
       final ServerModel serverModel, final GameHostingResponse gameHostingResponse) {
-    Preconditions.checkNotNull(
-        gameHostingResponse, "hosting response is null, did the bot connect to lobby?");
-    Preconditions.checkNotNull(System.getProperty(LOBBY_URI));
+    checkNotNull(gameHostingResponse, "hosting response is null, did the bot connect to lobby?");
+    checkNotNull(System.getProperty(LOBBY_URI));
 
     Optional.ofNullable(headlessServerSetup).ifPresent(HeadlessServerSetup::cancel);
 

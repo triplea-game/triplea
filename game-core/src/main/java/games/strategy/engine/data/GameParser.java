@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
@@ -69,7 +68,7 @@ public final class GameParser {
       final GameData gameData,
       final String mapName,
       final XmlGameElementMapper xmlGameElementMapper) {
-    data = Preconditions.checkNotNull(gameData);
+    data = checkNotNull(gameData);
     this.mapName = mapName;
     this.xmlGameElementMapper = xmlGameElementMapper;
   }

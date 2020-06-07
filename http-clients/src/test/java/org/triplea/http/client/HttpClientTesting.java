@@ -56,10 +56,10 @@ public final class HttpClientTesting {
   public static void serve200ForToolboxPostWithBody(
       final WireMockServer server, final String path, final String body) {
     server.stubFor(
-        WireMock.post(path)
+        post(path)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalTo(body))
-            .willReturn(WireMock.aResponse().withStatus(200)));
+            .willReturn(aResponse().withStatus(200)));
   }
 
   /**
@@ -69,10 +69,10 @@ public final class HttpClientTesting {
   public static <T> void serve200ForToolboxPostWithBodyJson(
       final WireMockServer server, final String path, final T jsonObject) {
     server.stubFor(
-        WireMock.post(path)
+        post(path)
             .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(WireMockTest.toJson(jsonObject)))
-            .willReturn(WireMock.aResponse().withStatus(200)));
+            .willReturn(aResponse().withStatus(200)));
   }
 
   /**
