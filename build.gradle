@@ -45,6 +45,10 @@ allprojects {
             indentWithSpaces()
             trimTrailingWhitespace()
         }
+        format 'styling', {
+            target '**/*.css'
+            prettier().config(['parser': 'postcss'])
+        }
     }
 }
 

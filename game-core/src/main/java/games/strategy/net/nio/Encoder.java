@@ -2,7 +2,6 @@ package games.strategy.net.nio;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Preconditions;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 import java.io.IOException;
@@ -37,7 +36,7 @@ class Encoder {
   }
 
   private void write(final MessageHeader header, final ObjectOutputStream out) throws IOException {
-    Preconditions.checkNotNull(header.getFrom());
+    checkNotNull(header.getFrom());
     out.writeObject(header);
     out.reset();
   }

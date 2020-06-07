@@ -415,9 +415,7 @@ public class MoveValidator {
     }
 
     // If there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
-    if (route.hasNeutralBeforeEnd()
-        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
-        && !isNeutralsBlitzable(data)) {
+    if (nonAirPassingThroughNeutralTerritory(route, units, data)) {
       return result.setErrorReturnResult(
           "Must stop land units when passing through neutral territories");
     }
@@ -517,6 +515,13 @@ public class MoveValidator {
       }
     }
     return result;
+  }
+
+  private static boolean nonAirPassingThroughNeutralTerritory(
+      final Route route, final Collection<Unit> units, final GameData gameData) {
+    return route.hasNeutralBeforeEnd()
+        && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
+        && !isNeutralsBlitzable(gameData);
   }
 
   private MoveValidationResult validateNonCombat(
@@ -724,12 +729,9 @@ public class MoveValidator {
       }
 
       // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
-      if (route.hasNeutralBeforeEnd()) {
-        if ((units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))
-            && !isNeutralsBlitzable(data)) {
-          return result.setErrorReturnResult(
-              "Must stop land units when passing through neutral territories");
-        }
+      if (nonAirPassingThroughNeutralTerritory(route, units, data)) {
+        return result.setErrorReturnResult(
+            "Must stop land units when passing through neutral territories");
       }
       // a territory effect can disallow unit types in
       if (units.stream()

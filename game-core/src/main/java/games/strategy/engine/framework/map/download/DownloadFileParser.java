@@ -2,7 +2,6 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,17 +48,13 @@ final class DownloadFileParser {
         .map(Map.class::cast)
         .forEach(
             yaml -> {
-              final String url = (String) Preconditions.checkNotNull(yaml.get(Tags.url.toString()));
+              final String url = (String) checkNotNull(yaml.get(Tags.url.toString()));
               final String description =
-                  (String) Preconditions.checkNotNull(yaml.get(Tags.description.toString()));
-              final String mapName =
-                  (String) Preconditions.checkNotNull(yaml.get(Tags.mapName.toString()));
+                  (String) checkNotNull(yaml.get(Tags.description.toString()));
+              final String mapName = (String) checkNotNull(yaml.get(Tags.mapName.toString()));
 
               final Version version =
-                  new Version(
-                      Preconditions.checkNotNull((Integer) yaml.get(Tags.version.toString())),
-                      0,
-                      0);
+                  new Version(checkNotNull((Integer) yaml.get(Tags.version.toString())), 0, 0);
               final DownloadFileDescription.DownloadType downloadType =
                   optEnum(
                       yaml,

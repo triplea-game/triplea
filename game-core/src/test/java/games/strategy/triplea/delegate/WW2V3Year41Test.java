@@ -153,7 +153,7 @@ class WW2V3Year41Test {
   @Test
   void testAaCasualtiesLowLuckMixedRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
-    final GamePlayer british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = british(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
@@ -369,7 +369,7 @@ class WW2V3Year41Test {
   @Test
   void testTechTokens() {
     // Set up the test
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer germans = germans(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(germans);
     advanceToStep(delegateBridge, "germanTech");
     final TechnologyDelegate techDelegate = techDelegate(gameData);
@@ -600,7 +600,7 @@ class WW2V3Year41Test {
     /*
      * Test Building one
      */
-    final UnitType aaGun = GameDataTestUtil.aaGun(gameData);
+    final UnitType aaGun = aaGun(gameData);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 1);
     // Set up the test
@@ -639,7 +639,7 @@ class WW2V3Year41Test {
     final Territory eastPoland = territory("East Poland", gameData);
     final Territory belorussia = territory("Belorussia", gameData);
     // Set up the unit types
-    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final UnitType infantryType = infantry(gameData);
     // Remove all units from east poland
     removeFrom(eastPoland, eastPoland.getUnits());
     // Get total number of units in territories to start
@@ -681,7 +681,7 @@ class WW2V3Year41Test {
     final Territory poland = territory("Poland", gameData);
     final Territory eastPoland = territory("East Poland", gameData);
     // Set up the unit types
-    final UnitType fighterType = GameDataTestUtil.fighter(gameData);
+    final UnitType fighterType = fighter(gameData);
     advanceToStep(delegateBridge, "germanBattle");
     while (!gameData.getSequence().getStep().getName().equals("germanBattle")) {
       gameData.getSequence().next();
@@ -730,7 +730,7 @@ class WW2V3Year41Test {
     // Set up the territories
     final Territory egypt = territory("Union of South Africa", gameData);
     // Set up the unit types
-    final UnitType factoryType = GameDataTestUtil.factory(gameData);
+    final UnitType factoryType = factory(gameData);
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     advanceToStep(delegateBridge, "Place");
@@ -758,7 +758,7 @@ class WW2V3Year41Test {
      * with up to 3 Chinese units in them.
      */
     // Set up game
-    final GamePlayer chinese = GameDataTestUtil.chinese(gameData);
+    final GamePlayer chinese = chinese(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(chinese);
     advanceToStep(delegateBridge, "CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
@@ -843,7 +843,7 @@ class WW2V3Year41Test {
     removeFrom(sz5, sz5.getUnits());
     addTo(sz5, destroyer(gameData).create(1, british(gameData)));
     // Set up the unit types
-    final UnitType transportType = GameDataTestUtil.transport(gameData);
+    final UnitType transportType = transport(gameData);
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     advanceToStep(delegateBridge, "Place");
@@ -1229,7 +1229,7 @@ class WW2V3Year41Test {
     final GamePlayer british = GameDataTestUtil.british(gameData);
     addTo(eg, infantry(gameData).create(2, british));
     // create/load the destroyers and transports
-    final GamePlayer italians = GameDataTestUtil.italians(gameData);
+    final GamePlayer italians = italians(gameData);
     addTo(sz14, transport(gameData).create(1, italians));
     addTo(sz14, destroyer(gameData).create(2, italians));
     // load the transports
@@ -1518,8 +1518,7 @@ class WW2V3Year41Test {
     move(bomber, new Route(germany, poland));
     // Pick up a paratrooper
     final List<Unit> bomberAndParatroop = new ArrayList<>(bomber);
-    bomberAndParatroop.addAll(
-        poland.getUnitCollection().getUnits(GameDataTestUtil.infantry(gameData), 1));
+    bomberAndParatroop.addAll(poland.getUnitCollection().getUnits(infantry(gameData), 1));
     // move them
     final String error =
         moveDelegate(gameData).move(bomberAndParatroop, new Route(poland, bulgaria, ukraine));
@@ -1542,8 +1541,7 @@ class WW2V3Year41Test {
     final List<Unit> bomberAndParatroop = new ArrayList<>();
     bomberAndParatroop.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
     // add 2 infantry
-    bomberAndParatroop.addAll(
-        germany.getUnitCollection().getUnits(GameDataTestUtil.infantry(gameData), 2));
+    bomberAndParatroop.addAll(germany.getUnitCollection().getUnits(infantry(gameData), 2));
     // move the units to east poland
     final String error =
         moveDelegate(gameData).move(bomberAndParatroop, new Route(germany, poland, eastPoland));

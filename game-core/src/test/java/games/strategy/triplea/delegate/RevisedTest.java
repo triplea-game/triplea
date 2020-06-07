@@ -22,6 +22,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.placeDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
@@ -172,7 +173,7 @@ class RevisedTest {
 
   @Test
   void testMoveThroughSubmergedSubs() {
-    final GamePlayer british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = british(gameData);
     final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
     final Territory sz7 = gameData.getMap().getTerritory("7 Sea Zone");
     final Territory sz8 = gameData.getMap().getTerritory("8 Sea Zone");
@@ -195,8 +196,8 @@ class RevisedTest {
 
   @Test
   void testRetreatBug() {
-    final GamePlayer russians = GameDataTestUtil.russians(gameData);
-    final GamePlayer americans = GameDataTestUtil.americans(gameData);
+    final GamePlayer russians = russians(gameData);
+    final GamePlayer americans = americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -207,7 +208,7 @@ class RevisedTest {
     // make sinkian japanese owned, put one infantry in it
     final Territory sinkiang = gameData.getMap().getTerritory("Sinkiang");
     gameData.performChange(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits()));
-    final GamePlayer japanese = GameDataTestUtil.japanese(gameData);
+    final GamePlayer japanese = japanese(gameData);
     sinkiang.setOwner(japanese);
     final UnitType infantryType = infantry(gameData);
     gameData.performChange(ChangeFactory.addUnits(sinkiang, infantryType.create(1, japanese)));
@@ -243,7 +244,7 @@ class RevisedTest {
 
   @Test
   void testContinuedBattles() {
-    final GamePlayer russians = GameDataTestUtil.russians(gameData);
+    final GamePlayer russians = russians(gameData);
     final GamePlayer germans = germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
@@ -401,7 +402,7 @@ class RevisedTest {
   void testTransportAttack() {
     final Territory sz14 = gameData.getMap().getTerritory("14 Sea Zone");
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
@@ -417,8 +418,8 @@ class RevisedTest {
   void testLoadUndo() {
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
-    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
+    final UnitType infantryType = infantry(gameData);
+    final GamePlayer germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
@@ -715,10 +716,10 @@ class RevisedTest {
   void testMoveSubAwayFromSubmergedSubsInBattleZone() {
     final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
     final Territory sz50 = gameData.getMap().getTerritory("50 Sea Zone");
-    final GamePlayer british = GameDataTestUtil.british(gameData);
-    final GamePlayer japanese = GameDataTestUtil.japanese(gameData);
+    final GamePlayer british = british(gameData);
+    final GamePlayer japanese = japanese(gameData);
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
-    final UnitType sub = GameDataTestUtil.submarine(gameData);
+    final UnitType sub = submarine(gameData);
     final Change c = ChangeFactory.addUnits(sz45, sub.create(1, british));
     gameData.performChange(c);
     // new move delegate

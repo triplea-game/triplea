@@ -978,10 +978,8 @@ public class WeakAi extends AbstractAi {
         }
         final int transportCapacity = UnitAttachment.get(results).getTransportCapacity();
         // buy transports if we can be amphibious
-        if (Matches.unitTypeIsSea().test(results)) {
-          if (!isAmphib || transportCapacity <= 0) {
-            continue;
-          }
+        if (Matches.unitTypeIsSea().test(results) && (!isAmphib || transportCapacity <= 0)) {
+          continue;
         }
         final int cost = rule.getCosts().getInt(pus);
         if (cost < 1) {
@@ -1015,12 +1013,11 @@ public class WeakAi extends AbstractAi {
             (Math.random() < 0.7 && transportCount < goodNumberOfTransports)
                 || Math.random() < 0.10;
         final boolean dontBuyBecauseTooManyTransports = transportCount > 2 * goodNumberOfTransports;
-        if ((!isTransport && Math.random() * cost < 2)
-            || (isTransport && buyBecauseTransport && !dontBuyBecauseTooManyTransports)) {
-          if (cost <= leftToSpend) {
-            leftToSpend -= cost;
-            purchase.add(rule, 1);
-          }
+        if (((!isTransport && Math.random() * cost < 2)
+                || (isTransport && buyBecauseTransport && !dontBuyBecauseTooManyTransports))
+            && cost <= leftToSpend) {
+          leftToSpend -= cost;
+          purchase.add(rule, 1);
         }
       }
     }

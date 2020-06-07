@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.panels.map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
@@ -386,7 +385,7 @@ public class MapPanel extends ImageScrollerLargeView {
    * an null args
    */
   public void setUnitHighlight(@Nonnull final Collection<Collection<Unit>> units) {
-    highlightedUnits = Preconditions.checkNotNull(units);
+    highlightedUnits = checkNotNull(units);
     SwingUtilities.invokeLater(this::repaint);
   }
 

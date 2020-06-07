@@ -426,10 +426,9 @@ final class ProTechAi {
       }
       for (final Territory neighbor : data.getMap().getNeighbors(current)) {
         if (!distance.keySet().contains(neighbor)) {
-          if (!neighbor.getUnitCollection().anyMatch(unitCondition)) {
-            if (!routeCondition.test(neighbor)) {
-              continue;
-            }
+          if (!neighbor.getUnitCollection().anyMatch(unitCondition)
+              && !routeCondition.test(neighbor)) {
+            continue;
           }
           if (sea) {
             final Route r = new Route(neighbor, current);

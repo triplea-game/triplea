@@ -1,9 +1,9 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -150,7 +150,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighbors(
       final Territory territory, final int distance, final Predicate<Territory> cond) {
-    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
+    checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Set.of();
     }
@@ -202,7 +202,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighborsIgnoreEnd(
       final Territory territory, final int distance, final Predicate<Territory> cond) {
-    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
+    checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Set.of();
     }
@@ -263,8 +263,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Unit unit,
       final BigDecimal movementLeft,
       final Predicate<Territory> cond) {
-    Preconditions.checkNotNull(unit);
-    Preconditions.checkArgument(
+    checkNotNull(unit);
+    checkArgument(
         movementLeft.compareTo(BigDecimal.ZERO) >= 0,
         "MovementLeft must be non-negative: " + movementLeft);
     if (movementLeft.compareTo(BigDecimal.ZERO) == 0) {

@@ -180,7 +180,7 @@ public class UnifiedMessenger {
   public Object getImplementor(final String name) {
     synchronized (endPointMutex) {
       final EndPoint endPoint = localEndPoints.get(name);
-      Preconditions.checkNotNull(
+      checkNotNull(
           endPoint,
           "local endpoints: "
               + localEndPoints

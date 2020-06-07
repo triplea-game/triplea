@@ -344,8 +344,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "When scrolling through units, whether to also highlight territory") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.booleanRadioButtons(
-          ClientSetting.unitScrollerHighlightTerritory);
+      return booleanRadioButtons(ClientSetting.unitScrollerHighlightTerritory);
     }
   };
 

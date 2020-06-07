@@ -3,7 +3,6 @@ package games.strategy.engine.framework.ui.background;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,7 +20,7 @@ public final class BackgroundTaskRunner {
   private static JFrame mainFrame;
 
   public static void setMainFrame(final JFrame mainFrame) {
-    Preconditions.checkState(BackgroundTaskRunner.mainFrame == null);
+    checkState(BackgroundTaskRunner.mainFrame == null);
     BackgroundTaskRunner.mainFrame = mainFrame;
   }
 
