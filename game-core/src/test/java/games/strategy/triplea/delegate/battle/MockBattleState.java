@@ -9,8 +9,8 @@ import lombok.NonNull;
 /**
  * Simple implementation of BattleState for tests to use
  *
- * {@link #givenBattleState()} will return a builder with everything defaulted and the test
- * can override the specific items needed.
+ * <p>{@link #givenBattleState()} will return a builder with everything defaulted and the test can
+ * override the specific items needed.
  */
 @Builder
 public class MockBattleState implements BattleState {
@@ -30,5 +30,5 @@ public class MockBattleState implements BattleState {
   @Override
   public Collection<Unit> getDefendingUnits() {
     return defendingUnits;
-    }
+  }
 }
