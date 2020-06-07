@@ -5,13 +5,23 @@
     create_home: yes
     system: yes
 
+- name: create bin folder for jar file
+  when: using_latest
+  become: true
+  file:
+    state: directory
+    path: "{{ http_server_home_folder }}/bin/"
+    mode: "0755"
+    owner: "{{ http_server_user }}"
+    group: "{{ http_server_user }}"
+
 - name: deploy jar file
   when: using_latest
   become: true
   register: deploy_jar_file
   copy:
     src: "{{ http_server_jar }}"
-    dest: "{{ http_server_home_folder }}/{{ http_server_jar }}"
+    dest: "{{ http_server_home_folder }}/bin/{{ http_server_jar }}"
     owner: "{{ http_server_user }}"
     group: "{{ http_server_user }}"
 
@@ -35,7 +45,6 @@
     dest: "{{ http_server_home_folder }}/"
     owner: "{{ http_server_user }}"
     group: "{{ http_server_user }}"
-
 
 - name: deploy run_server script
   become: true
