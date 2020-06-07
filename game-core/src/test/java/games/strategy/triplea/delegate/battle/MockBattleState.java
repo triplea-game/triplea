@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class MockBattleState {
 
   @Builder
-  public static class TestBattleState implements BattleState {
+  public static class MockBattleStateBuilder implements BattleState {
 
     final @NonNull Collection<Unit> attackingUnits;
     final @NonNull Collection<Unit> defendingUnits;
@@ -27,7 +27,7 @@ public class MockBattleState {
     }
   }
 
-  public static TestBattleState.TestBattleStateBuilder givenBattleState() {
-    return TestBattleState.builder().attackingUnits(List.of()).defendingUnits(List.of());
+  public static MockBattleStateBuilder.MockBattleStateBuilderBuilder givenBattleState() {
+    return MockBattleStateBuilder.builder().attackingUnits(List.of()).defendingUnits(List.of());
   }
 }
