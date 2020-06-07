@@ -17,9 +17,9 @@ class ServerConnectionProps {
   /** Player name, the desired name for the current player connecting to remote host. */
   @Nonnull private final String name;
   /** Remote host address. */
-  @Nonnull private final int port;
+  @Nonnull private final Integer port;
   /**
    * Password to use to connect to the remotely hosted game, this is set by the host of the game.
    */
-  private final String password;
+  private final char[] password;
 }

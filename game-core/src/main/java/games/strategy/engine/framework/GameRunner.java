@@ -119,7 +119,7 @@ public final class GameRunner {
       final int port,
       final String playerName,
       final String comments,
-      final String password,
+      final char[] password,
       final URI lobbyUri) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
@@ -128,8 +128,8 @@ public final class GameRunner {
     commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
     commands.add("-D" + LOBBY_URI + "=" + lobbyUri);
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
-    if (password != null && password.length() > 0) {
-      commands.add("-D" + SERVER_PASSWORD + "=" + password);
+    if (password != null && password.length > 0) {
+      commands.add("-D" + SERVER_PASSWORD + "=" + String.valueOf(password));
     }
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (fileName.length() > 0) {
