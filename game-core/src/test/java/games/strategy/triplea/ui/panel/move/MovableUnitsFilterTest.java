@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
 
-public class MovableUnitsFilterTest {
+class MovableUnitsFilterTest {
 
   private List<UnitType> getUnitTypes(final FilterOperationResult result) {
     return result.getUnitsWithDependents().stream().map(Unit::getType).collect(Collectors.toList());
@@ -76,7 +76,7 @@ public class MovableUnitsFilterTest {
   }
 
   @Nested
-  public class RevisedTests {
+  class RevisedTests {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
     final GamePlayer germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
@@ -159,7 +159,7 @@ public class MovableUnitsFilterTest {
 
     @Test
     @DisplayName("moving 3 infantry and 2 tanks onto a transport loads 1 infantry and 1 tank")
-    void filterMixedUnitsLoadingOntoTransport() throws Exception {
+    void filterMixedUnitsLoadingOntoTransport() {
       final Route route = new Route(germany, sz5);
       final Collection<Unit> units = germanyTanksAndInfantry();
 
@@ -171,7 +171,7 @@ public class MovableUnitsFilterTest {
 
     @Test
     @DisplayName("moving 3 infantry onto a transport loads 2 infantry")
-    void filterInfantryLoadingOntoTransport() throws Exception {
+    void filterInfantryLoadingOntoTransport() {
       final Route route = new Route(germany, sz5);
       final Collection<Unit> units = germanyInfantry();
 
@@ -183,7 +183,7 @@ public class MovableUnitsFilterTest {
 
     @Test
     @DisplayName("moving 2 tanks onto a transport loads 1 tank")
-    void filterTankLoadingOntoTransport() throws Exception {
+    void filterTankLoadingOntoTransport() {
       final Route route = new Route(germany, sz5);
       final Collection<Unit> units = germanyTanks();
 
@@ -195,7 +195,7 @@ public class MovableUnitsFilterTest {
 
     @Test
     @DisplayName("moving 1 tank and 1 infantry onto a transport loads them both")
-    void filterFittingMixedUnitsLoadingOntoTransport() throws Exception {
+    void filterFittingMixedUnitsLoadingOntoTransport() {
       final Route route = new Route(germany, sz5);
       final Collection<Unit> units =
           List.of(germanyTanks().iterator().next(), germanyInfantry().iterator().next());
@@ -208,7 +208,7 @@ public class MovableUnitsFilterTest {
   }
 
   @Nested
-  public class WW2v3Tests {
+  class WW2v3Tests {
     final GameData data = TestMapGameData.WW2V3_1942.getGameData();
     final GamePlayer russians = russians(data);
     final Territory russia = territory("Russia", data);
