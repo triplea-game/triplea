@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate.battle.steps.fire.air;
 
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.AIR_ATTACK_NON_SUBS;
 
-import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.StepParameters;
+import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
 
 /**
@@ -12,8 +12,8 @@ import java.util.List;
  * <p>This step only occurs during naming so PRE_ROUND and IN_ROUND are the same
  */
 public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
-  public AirAttackVsNonSubsStep(final StepParameters parameters) {
-    super(parameters);
+  public AirAttackVsNonSubsStep(final BattleState battleState, final BattleActions battleActions) {
+    super(battleState, battleActions);
   }
 
   @Override
@@ -22,7 +22,7 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  public boolean valid(final BattleStep.Request request) {
-    return airWillMissSubs(parameters.attackingUnits, parameters.defendingUnits);
+  public boolean valid(final Request request) {
+    return airWillMissSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits());
   }
 }

@@ -9,6 +9,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
@@ -21,12 +22,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Get the steps that will occurr in the battle */
 @Builder
-public class BattleSteps implements BattleStepStrings {
+public class BattleSteps implements BattleStepStrings, BattleState {
 
   final @NonNull Boolean canFireOffensiveAa;
   final @NonNull Boolean canFireDefendingAa;
@@ -35,8 +37,13 @@ public class BattleSteps implements BattleStepStrings {
   final @NonNull GamePlayer defender;
   final @NonNull Collection<Unit> offensiveAa;
   final @NonNull Collection<Unit> defendingAa;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> attackingUnits;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingUnits;
+
   final @NonNull Collection<Unit> attackingWaitingToDie;
   final @NonNull Collection<Unit> defendingWaitingToDie;
   final @NonNull Territory battleSite;
@@ -52,11 +59,9 @@ public class BattleSteps implements BattleStepStrings {
 
   public List<String> get() {
 
-    final StepParameters parameters = battleActions.getStepParameters();
-
-    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(parameters);
-    final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(parameters);
-    final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(parameters);
+    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, battleActions);
+    final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this, battleActions);
+    final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this, battleActions);
 
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa) {

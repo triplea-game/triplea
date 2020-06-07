@@ -30,7 +30,6 @@ import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
-import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.data.BattleRecord;
@@ -58,7 +57,8 @@ import org.triplea.util.Tuple;
 
 /** Handles logic for battles in which fighting actually occurs. */
 @Log
-public class MustFightBattle extends DependentBattle implements BattleStepStrings, BattleActions {
+public class MustFightBattle extends DependentBattle
+    implements BattleStepStrings, BattleActions, BattleState {
 
   /** Determines whether casualties can return fire for various battle phases. */
   public enum ReturnFire {
@@ -1465,9 +1465,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           });
     }
 
-    final StepParameters parameters = this.getStepParameters();
-
-    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(parameters);
+    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, this);
     steps.add(submergeSubsVsOnlyAir.getExecutable());
 
     final ReturnFire returnFireAgainstAttackingSubs =
@@ -2188,15 +2186,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
       }
     }
-  }
-
-  @Override
-  public StepParameters getStepParameters() {
-    return StepParameters.builder()
-        .attackingUnits(attackingUnits)
-        .defendingUnits(defendingUnits)
-        .battleActions(this)
-        .build();
   }
 
   @Override

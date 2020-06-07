@@ -1,9 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
+import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
-import static games.strategy.triplea.delegate.battle.steps.MockStepParameters.givenStepParameters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -15,8 +15,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +29,7 @@ class SubmergeSubsVsOnlyAirStepTest {
 
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;
+  @Mock BattleActions battleActions;
 
   @Test
   @DisplayName("valid() is false given some attacking evaders vs NO air")
@@ -38,12 +39,13 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender1 = givenUnit();
     final Unit defender2 = mock(Unit.class);
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker))
             .defendingUnits(List.of(defender1, defender2))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 
@@ -55,12 +57,13 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit attacker2 = mock(Unit.class);
     final Unit defender = givenUnit();
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 
@@ -72,12 +75,13 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender1 = givenUnitIsAir();
     final Unit defender2 = givenUnit();
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker))
             .defendingUnits(List.of(defender1, defender2))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.EXEC), is(false));
   }
 
@@ -89,12 +93,13 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit attacker2 = givenUnit();
     final Unit defender = givenUnit();
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.EXEC), is(false));
   }
 
@@ -106,12 +111,13 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit defender1 = givenUnitIsAir();
     final Unit defender2 = givenUnitIsAir();
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker))
             .defendingUnits(List.of(defender1, defender2))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.EXEC), is(true));
   }
 
@@ -123,12 +129,13 @@ class SubmergeSubsVsOnlyAirStepTest {
     final Unit attacker2 = givenUnitIsAir();
     final Unit defender = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.EXEC), is(true));
   }
 
@@ -143,12 +150,13 @@ class SubmergeSubsVsOnlyAirStepTest {
 
     final BattleActions battleActions = mock(BattleActions.class);
 
-    final StepParameters parameters =
-        givenStepParameters(battleActions)
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender1, defender2))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     final IExecutable step = underTest.getExecutable();
 
     step.execute(executionStack, delegateBridge);
@@ -167,12 +175,13 @@ class SubmergeSubsVsOnlyAirStepTest {
 
     final BattleActions battleActions = mock(BattleActions.class);
 
-    final StepParameters parameters =
-        givenStepParameters(battleActions)
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender1, defender2))
             .build();
-    final SubmergeSubsVsOnlyAirStep underTest = new SubmergeSubsVsOnlyAirStep(parameters);
+    final SubmergeSubsVsOnlyAirStep underTest =
+        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     final IExecutable step = underTest.getExecutable();
 
     step.execute(executionStack, delegateBridge);

@@ -5,6 +5,8 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStep.Request.EX
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
 import lombok.AllArgsConstructor;
 
@@ -25,7 +27,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public abstract class BattleStep {
 
-  protected final StepParameters parameters;
+  /**
+   * The current state of the battle
+   *
+   * <p>Note: This is current mutable so the underlying data can change.
+   */
+  protected final BattleState battleState;
+
+  /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
+  protected final BattleActions battleActions;
 
   /** Indicates when {@link #valid} is being called */
   public enum Request {
@@ -70,7 +80,7 @@ public abstract class BattleStep {
    *       method can be called again.
    * </ol>
    */
-  protected abstract static class BattleAtomic implements IExecutable {
+  protected abstract class BattleAtomic implements IExecutable {
 
     /**
      * Executes an atomic step in a battle
@@ -80,17 +90,10 @@ public abstract class BattleStep {
      */
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      final BattleStep executingStep = getStep();
+      final BattleStep executingStep = BattleStep.this;
       if (executingStep.valid(EXEC)) {
         executingStep.execute(stack, bridge);
       }
     }
-
-    /**
-     * Get the BattleStep with the latest parameters
-     *
-     * @return an up-to-date BattleStep
-     */
-    protected abstract BattleStep getStep();
   }
 }

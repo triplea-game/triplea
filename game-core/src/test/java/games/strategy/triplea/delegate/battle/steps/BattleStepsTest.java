@@ -31,7 +31,6 @@ import static games.strategy.triplea.delegate.battle.steps.BattleSteps.FIRE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -63,7 +62,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 import org.triplea.util.Tuple;
 
 @ExtendWith(MockitoExtension.class)
@@ -243,20 +241,6 @@ public class BattleStepsTest {
             .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
             .battleActions(battleActions)
             .isAmphibious(false);
-
-    lenient()
-        .when(battleActions.getStepParameters())
-        .then(
-            (Answer<StepParameters>)
-                invocation -> {
-                  // get the latest parameters to the builder and pass them onto the StepParameters
-                  final BattleSteps battleSteps = builder.build();
-                  return StepParameters.builder()
-                      .attackingUnits(battleSteps.attackingUnits)
-                      .defendingUnits(battleSteps.defendingUnits)
-                      .battleActions(battleActions)
-                      .build();
-                });
 
     return builder;
   }

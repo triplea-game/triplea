@@ -6,8 +6,9 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -25,8 +26,9 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   private static final Predicate<Unit> canNotBeTargetedByAllMatch =
       Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
 
-  public SubmergeSubsVsOnlyAirStep(final StepParameters parameters) {
-    super(parameters);
+  public SubmergeSubsVsOnlyAirStep(
+      final BattleState battleState, final BattleActions battleActions) {
+    super(battleState, battleActions);
   }
 
   /**
@@ -34,17 +36,12 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
    * action of this type. This is temporary and will be removed once the battle step refactoring is
    * done
    */
-  public abstract static class SubmergeSubsVsOnlyAir extends BattleAtomic {}
+  public abstract class SubmergeSubsVsOnlyAir extends BattleAtomic {}
 
   @Override
   public BattleAtomic getExecutable() {
     return new SubmergeSubsVsOnlyAir() {
       private static final long serialVersionUID = 99990L;
-
-      @Override
-      protected BattleStep getStep() {
-        return new SubmergeSubsVsOnlyAirStep(parameters.battleActions.getStepParameters());
-      }
     };
   }
 
@@ -55,8 +52,8 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
 
   @Override
   public boolean valid(final Request request) {
-    return (isOnlyAirVsSubs(parameters.attackingUnits, parameters.defendingUnits)
-        || isOnlyAirVsSubs(parameters.defendingUnits, parameters.attackingUnits));
+    return (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())
+        || isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits()));
   }
 
   @Override
@@ -66,18 +63,20 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
       // valid() should prevent this case but check for it anyways
       return;
     }
-    parameters.battleActions.submergeUnits(subsAndSide.getFirst(), subsAndSide.getSecond(), bridge);
+    battleActions.submergeUnits(subsAndSide.getFirst(), subsAndSide.getSecond(), bridge);
   }
 
   private Tuple<List<Unit>, Boolean> submergeSubsVsOnlyAir() {
-    if (isOnlyAirVsSubs(parameters.attackingUnits, parameters.defendingUnits)) {
+    if (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())) {
       // submerge the defending units
       return Tuple.of(
-          CollectionUtils.getMatches(parameters.defendingUnits, canNotBeTargetedByAllMatch), true);
-    } else if (isOnlyAirVsSubs(parameters.defendingUnits, parameters.attackingUnits)) {
+          CollectionUtils.getMatches(battleState.getDefendingUnits(), canNotBeTargetedByAllMatch),
+          true);
+    } else if (isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits())) {
       // submerge the attacking units
       return Tuple.of(
-          CollectionUtils.getMatches(parameters.attackingUnits, canNotBeTargetedByAllMatch), false);
+          CollectionUtils.getMatches(battleState.getAttackingUnits(), canNotBeTargetedByAllMatch),
+          false);
     }
     return Tuple.of(List.of(), false);
   }

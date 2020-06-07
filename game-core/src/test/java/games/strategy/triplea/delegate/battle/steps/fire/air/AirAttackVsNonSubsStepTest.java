@@ -1,26 +1,30 @@
 package games.strategy.triplea.delegate.battle.steps.fire.air;
 
+import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
-import static games.strategy.triplea.delegate.battle.steps.MockStepParameters.givenStepParameters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.StepParameters;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AirAttackVsNonSubsStepTest {
+
+  @Mock BattleActions battleActions;
 
   @Test
   @DisplayName("valid() is true if attacker has air and no destroyer and defender has sub")
@@ -29,12 +33,12 @@ class AirAttackVsNonSubsStepTest {
     final Unit attacker2 = givenUnitIsAir();
     final Unit defender = givenUnitCanNotBeTargetedBy(mock(UnitType.class));
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(parameters);
+    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.NAME), is(true));
   }
 
@@ -46,12 +50,12 @@ class AirAttackVsNonSubsStepTest {
     // once a destroyer is around, it doesn't care about the defender units
     final Unit defender = mock(Unit.class);
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(parameters);
+    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 
@@ -62,12 +66,12 @@ class AirAttackVsNonSubsStepTest {
     final Unit attacker2 = givenUnitIsAir();
     final Unit defender = givenUnit();
 
-    final StepParameters parameters =
-        givenStepParameters()
+    final BattleState battleState =
+        givenBattleState()
             .attackingUnits(List.of(attacker1, attacker2))
             .defendingUnits(List.of(defender))
             .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(parameters);
+    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
     assertThat(underTest.valid(BattleStep.Request.NAME), is(false));
   }
 }
