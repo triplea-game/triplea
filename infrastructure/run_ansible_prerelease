@@ -7,11 +7,11 @@
 # to /home/ansible.
 
 function usage() {
-  echo "Usage: $0 [Version] [ansible_args]"
+  echo "Usage: $0 [Version] (ansible_args)"
   echo "  version: The version of tripleA we will deploy eg: 1.10.5252"
-  echo "  ansible_args: Args passed to ansible-playbook"
-  echo "Example: $0 1.10.5252 -i ansible/inventory/prerelease"
-  echo "Example: $0 1.10.5252 --diff -v -i ansible/inventory/prerelease"
+  echo "  (options) ansible_args: Additional args passed to ansible-playbook"
+  echo "Example: $0 1.10.5252"
+  echo "Example: $0 1.10.5252 --diff -v"
   exit 1
 }
 
@@ -50,5 +50,6 @@ ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.
 
 ansible-playbook \
   --vault-password-file "$VAULT_PASSWORD_FILE" \
+  -i ansible/inventory/prerelease \
  "$@" \
  ansible/site.yml
