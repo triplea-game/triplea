@@ -1544,32 +1544,20 @@ public class MoveValidator {
     sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>(transportsMustMoveWith(sortedUnits));
     // Check if there are combined transports (carriers that are transports) and load them.
-    if (mapping.isEmpty()) {
-      mapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
-    } else {
-      final Map<Unit, Collection<Unit>> newMapping =
-          new HashMap<>(carrierMustMoveWith(sortedUnits, start, data, player));
-      if (!newMapping.isEmpty()) {
-        addToMapping(mapping, newMapping);
-      }
-    }
-    if (mapping.isEmpty()) {
-      mapping.putAll(airTransportsMustMoveWith(sortedUnits, newDependents));
-    } else {
-      final Map<Unit, Collection<Unit>> newMapping =
-          new HashMap<>(airTransportsMustMoveWith(sortedUnits, newDependents));
-      if (!newMapping.isEmpty()) {
-        addToMapping(mapping, newMapping);
-      }
-    }
+    addToMapping(mapping, carrierMustMoveWith(sortedUnits, start, data, player));
+    addToMapping(mapping, airTransportsMustMoveWith(sortedUnits, newDependents));
     return mapping;
   }
 
   private static void addToMapping(
       final Map<Unit, Collection<Unit>> mapping, final Map<Unit, Collection<Unit>> newMapping) {
+    if (mapping.isEmpty()) {
+      mapping.putAll(newMapping);
+      return;
+    }
     for (final Unit key : newMapping.keySet()) {
       if (mapping.containsKey(key)) {
-        final Collection<Unit> heldUnits = mapping.get(key);
+        final Collection<Unit> heldUnits = new ArrayList<>(mapping.get(key));
         heldUnits.addAll(newMapping.get(key));
         mapping.put(key, heldUnits);
       } else {
