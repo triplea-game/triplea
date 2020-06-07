@@ -460,13 +460,9 @@ public class BattleDisplay extends JPanel {
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE,
             null);
-    if (option == JOptionPane.OK_OPTION) {
-      if (comp.getSelection() != null) {
-        return RetreatResult.retreatTo(comp.getSelection());
-      }
-    }
-
-    return RetreatResult.noResult();
+    return option == JOptionPane.OK_OPTION && comp.getSelection() != null
+        ? RetreatResult.retreatTo(comp.getSelection())
+        : RetreatResult.noResult();
   }
 
   private class RetreatComponent extends JPanel {
