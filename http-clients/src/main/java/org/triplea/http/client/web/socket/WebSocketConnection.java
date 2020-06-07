@@ -72,7 +72,7 @@ class WebSocketConnection {
   @Getter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  private final java.net.http.WebSocket.Listener internalListener = new InternalWebSocketListener();
+  private final Listener internalListener = new InternalWebSocketListener();
 
   @Getter(
       value = AccessLevel.PACKAGE,

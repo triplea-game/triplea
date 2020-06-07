@@ -69,7 +69,7 @@ public final class GameParser {
       final GameData gameData,
       final String mapName,
       final XmlGameElementMapper xmlGameElementMapper) {
-    data = Preconditions.checkNotNull(gameData);
+    data = checkNotNull(gameData);
     this.mapName = mapName;
     this.xmlGameElementMapper = xmlGameElementMapper;
   }
