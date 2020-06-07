@@ -152,8 +152,10 @@ public class UnifiedMessenger {
           endPoint.invokeLocal(call, number, getLocalNode());
       for (final RemoteMethodCallResults r : results) {
         if (r.getException() != null) {
-          // don't swallow errors
-          log.log(Level.WARNING, r.getException().getMessage(), r.getException());
+          log.log(
+              Level.WARNING,
+              "Remote method call exception: " + r.getException().getMessage(),
+              r.getException());
         }
       }
     }
