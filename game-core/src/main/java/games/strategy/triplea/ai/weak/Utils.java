@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
 final class Utils {
@@ -45,7 +46,7 @@ final class Utils {
     return strength;
   }
 
-  static Route findNearest(
+  static @Nullable Route findNearest(
       final Territory start,
       final Predicate<Territory> endCondition,
       final Predicate<Territory> routeCondition,

@@ -79,12 +79,13 @@ public class WeakAi extends AbstractAi {
         };
     final Predicate<Territory> routeCond =
         Matches.territoryIsWater().and(Matches.territoryHasNoEnemyUnits(player, data));
-    final Route withNoEnemy = Utils.findNearest(ourCapitol, endMatch, routeCond, data);
+    final @Nullable Route withNoEnemy = Utils.findNearest(ourCapitol, endMatch, routeCond, data);
     if (withNoEnemy != null && withNoEnemy.numberOfSteps() > 0) {
       return withNoEnemy;
     }
     // this will fail if our capitol is not next to water, c'est la vie.
-    final Route route = Utils.findNearest(ourCapitol, endMatch, Matches.territoryIsWater(), data);
+    final @Nullable Route route =
+        Utils.findNearest(ourCapitol, endMatch, Matches.territoryIsWater(), data);
     if (route != null && route.numberOfSteps() == 0) {
       return null;
     }
@@ -471,6 +472,7 @@ public class WeakAi extends AbstractAi {
       } else { // if we cant move to a capitol, move towards the enemy
         final Predicate<Territory> routeCondition =
             Matches.territoryIsLand().and(Matches.territoryIsImpassable().negate());
+        @Nullable
         Route newRoute =
             Utils.findNearest(
                 t, Matches.territoryHasEnemyLandUnits(player, data), routeCondition, data);
@@ -504,16 +506,20 @@ public class WeakAi extends AbstractAi {
             .and(Matches.territoryIsImpassable().negate());
     final var moves = new ArrayList<MoveDescription>();
     for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
-      final Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
-      final Route aaRoute =
+      final @Nullable Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
+      final @Nullable Route aaRoute =
           Utils.findNearest(t, canLand, Matches.territoryIsImpassable().negate(), data);
       final Collection<Unit> airToLand =
           t.getUnitCollection().getMatches(Matches.unitIsAir().and(Matches.unitIsOwnedBy(player)));
       // don't bother to see if all the air units have enough movement points to move without aa
       // guns firing
       // simply move first over no aa, then with aa one (but hopefully not both) will be rejected
-      moves.add(new MoveDescription(airToLand, noAaRoute));
-      moves.add(new MoveDescription(airToLand, aaRoute));
+      if (noAaRoute != null) {
+        moves.add(new MoveDescription(airToLand, noAaRoute));
+      }
+      if (aaRoute != null) {
+        moves.add(new MoveDescription(airToLand, aaRoute));
+      }
     }
     return moves;
   }
@@ -706,8 +712,10 @@ public class WeakAi extends AbstractAi {
       }
       final Predicate<Territory> routeCond =
           Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
-      final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
-      moves.add(new MoveDescription(bombers, bombRoute));
+      final @Nullable Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
+      if (bombRoute != null) {
+        moves.add(new MoveDescription(bombers, bombRoute));
+      }
     }
     return moves;
   }
