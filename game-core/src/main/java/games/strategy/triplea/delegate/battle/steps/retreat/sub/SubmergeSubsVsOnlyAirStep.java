@@ -25,16 +25,9 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
     super(battleState, battleActions);
   }
 
-  /**
-   * NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type. This is temporary and will be removed once the battle step refactoring is
-   * done
-   */
-  public abstract class SubmergeSubsVsOnlyAir extends BattleAtomic {}
-
   @Override
   public BattleAtomic getExecutable() {
-    return new SubmergeSubsVsOnlyAir() {
+    return new BattleAtomic() {
       private static final long serialVersionUID = 99990L;
     };
   }
