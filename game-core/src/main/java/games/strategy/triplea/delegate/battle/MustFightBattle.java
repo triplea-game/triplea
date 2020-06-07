@@ -156,16 +156,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * An action representing submerging subs vs only air.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class SubmergeSubsVsOnlyAir implements IExecutable {
-    private static final long serialVersionUID = 1369227461759133105L;
-  }
-
-  /**
    * An action representing standard attacking fire.
    *
    * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
