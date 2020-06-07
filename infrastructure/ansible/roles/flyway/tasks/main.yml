@@ -57,7 +57,7 @@
   become: true
   unarchive:
      src: /home/flyway/migrations.zip
-     remote: true
+     remote_src: true
      dest: "{{ flyway_extracted_location }}/sql/"
      mode: "644"
      owner: flyway
