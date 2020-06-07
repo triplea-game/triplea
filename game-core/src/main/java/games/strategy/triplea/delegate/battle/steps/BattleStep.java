@@ -8,35 +8,19 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
 import lombok.AllArgsConstructor;
 
-/**
- * A step in a battle.
- *
- * <ol>
- *   <ul>
- *     Each step can have 0 or more names. These names are shown in the {@link
- *     games.strategy.triplea.ui.BattlePanel}
- *   </ul>
- *   <ul>
- *     Each step can also have an executable. See {@link BattleAtomic} on what an executable is
- *     comprised of.
- *   </ul>
- * </ol>
- */
 @AllArgsConstructor
 public abstract class BattleStep {
 
-  /**
-   * The current state of the battle
-   *
-   * <p>Note: This is current mutable so the underlying data can change.
-   */
+  /** The current state of the battle */
   protected final BattleState battleState;
 
   /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
   protected final BattleActions battleActions;
 
+  /** @return an atomic action in a battle */
   public abstract BattleAtomic getExecutable();
 
+  /** @return a list of names that will be shown in {@link games.strategy.triplea.ui.BattlePanel} */
   public abstract List<String> getNames();
 
   /**
@@ -63,10 +47,10 @@ public abstract class BattleStep {
    * atomic is that either:
    *
    * <ol>
-   *   <li>The code does not call to an IDisplay, IPlayer, or IRandomSource
-   *   <li>If the code calls to an IDisplay, IPlayer, IRandomSource, and an exception is called from
-   *       one of those methods, the exception will be propagated out of execute() and the execute
-   *       method can be called again.
+   *   <li>The code does not use IDelegateBridge
+   *   <li>If the code uses IDelegateBridge, and an exception is called from one of those methods,
+   *       the exception will be propagated out of execute() and the execute method can be called
+   *       again.
    * </ol>
    */
   public abstract class BattleAtomic implements IExecutable {
