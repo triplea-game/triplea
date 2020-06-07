@@ -6,9 +6,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
 
-/**
- * Air can not attack subs unless a destroyer is present
- */
+/** Air can not attack subs unless a destroyer is present */
 public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
   public AirDefendVsNonSubsStep(final BattleState battleState, final BattleActions battleActions) {
     super(battleState, battleActions);

@@ -116,6 +116,10 @@ public class BattleStepsTest {
     return Tuple.of(unit, unitAttachment);
   }
 
+  public static Unit givenSimpleUnit() {
+    return mock(Unit.class);
+  }
+
   public static Unit givenUnit() {
     return newUnitAndAttachment().getFirst();
   }

@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
 import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSimpleUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
@@ -17,9 +18,10 @@ import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -30,161 +32,101 @@ class SubmergeSubsVsOnlyAirStepTest {
   @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
 
-  @Test
-  @DisplayName("valid() is false given some attacking evaders vs NO air")
-  void attackingEvadersVsNoAirIsValidPreRound() {
-
-    final Unit attacker = givenUnit();
-    final Unit defender1 = givenUnit();
-    final Unit defender2 = mock(Unit.class);
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker))
-            .defendingUnits(List.of(defender1, defender2))
-            .build();
+  @ParameterizedTest(name = "[{index}] {0} is {2}")
+  @MethodSource
+  void testWhatIsValid(
+      final String displayName, final BattleState battleState, final boolean expected) {
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(), is(false));
+    assertThat(underTest.valid(), is(expected));
   }
 
-  @Test
-  @DisplayName("valid() is true given some defending evaders vs NO air")
-  void defendingEvadersVsNoAirIsValidPreRound() {
-
-    final Unit attacker1 = givenUnit();
-    final Unit attacker2 = mock(Unit.class);
-    final Unit defender = givenUnit();
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker1, attacker2))
-            .defendingUnits(List.of(defender))
-            .build();
-    final SubmergeSubsVsOnlyAirStep underTest =
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(), is(false));
+  static List<Arguments> testWhatIsValid() {
+    return List.of(
+        Arguments.of(
+            "Attacking evaders vs NO air",
+            givenBattleState()
+                // if there is no air, it doesn't check if the attacker is an evader
+                .attackingUnits(List.of(givenUnit()))
+                .defendingUnits(List.of(givenUnit(), givenSimpleUnit()))
+                .build(),
+            false),
+        Arguments.of(
+            "Defending evaders vs NO air",
+            givenBattleState()
+                .attackingUnits(List.of(givenUnit(), givenSimpleUnit()))
+                // if there is no air, it doesn't check if the defender is an evader
+                .defendingUnits(List.of(givenUnit()))
+                .build(),
+            false),
+        Arguments.of(
+            "Attacking evaders vs SOME air",
+            givenBattleState()
+                // if there is some but not all air, it doesn't check if the attacker is an evader
+                .attackingUnits(List.of(givenUnit()))
+                .defendingUnits(List.of(givenUnitIsAir(), givenUnit()))
+                .build(),
+            false),
+        Arguments.of(
+            "Defending evaders vs SOME air",
+            givenBattleState()
+                .attackingUnits(List.of(givenUnitIsAir(), givenUnit()))
+                // if there is some but not all air, it doesn't check if the defender is an evader
+                .defendingUnits(List.of(givenUnit()))
+                .build(),
+            false),
+        Arguments.of(
+            "Attacking evaders vs ALL air",
+            givenBattleState()
+                .attackingUnits(
+                    List.of(givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class))))
+                .defendingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
+                .build(),
+            true),
+        Arguments.of(
+            "Defending evaders vs ALL air",
+            givenBattleState()
+                .attackingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
+                .defendingUnits(
+                    List.of(givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class))))
+                .build(),
+            true));
   }
 
-  @Test
-  @DisplayName("valid() is false given some attacking evaders vs SOME air")
-  void attackingEvadersVsSomeAirIsNotValidInRound() {
-
-    final Unit attacker = givenUnit();
-    final Unit defender1 = givenUnitIsAir();
-    final Unit defender2 = givenUnit();
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker))
-            .defendingUnits(List.of(defender1, defender2))
-            .build();
-    final SubmergeSubsVsOnlyAirStep underTest =
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(), is(false));
-  }
-
-  @Test
-  @DisplayName("valid() is true given some defending evaders vs SOME air")
-  void defendingEvadersVsSomeAirIsNotValidInRound() {
-
-    final Unit attacker1 = givenUnitIsAir();
-    final Unit attacker2 = givenUnit();
-    final Unit defender = givenUnit();
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker1, attacker2))
-            .defendingUnits(List.of(defender))
-            .build();
-    final SubmergeSubsVsOnlyAirStep underTest =
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(), is(false));
-  }
-
-  @Test
-  @DisplayName("valid() is false given some attacking evaders vs ALL air")
-  void attackingEvadersVsAllAirIsValidInRound() {
-
-    final Unit attacker = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
-    final Unit defender1 = givenUnitIsAir();
-    final Unit defender2 = givenUnitIsAir();
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker))
-            .defendingUnits(List.of(defender1, defender2))
-            .build();
-    final SubmergeSubsVsOnlyAirStep underTest =
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(), is(true));
-  }
-
-  @Test
-  @DisplayName("valid() is true given some defending evaders vs ALL air")
-  void defendingEvadersVsAllAirIsValidInRound() {
-
-    final Unit attacker1 = givenUnitIsAir();
-    final Unit attacker2 = givenUnitIsAir();
-    final Unit defender = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker1, attacker2))
-            .defendingUnits(List.of(defender))
-            .build();
-    final SubmergeSubsVsOnlyAirStep underTest =
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(), is(true));
-  }
-
-  @Test
-  @DisplayName("Submerge attacking evaders vs ALL air")
-  void attackingEvadersSubmergeVsAllAir() {
-
-    final Unit attacker1 = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
-    final Unit attacker2 = givenUnit();
-    final Unit defender1 = givenUnitIsAir();
-    final Unit defender2 = givenUnitIsAir();
-
-    final BattleActions battleActions = mock(BattleActions.class);
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker1, attacker2))
-            .defendingUnits(List.of(defender1, defender2))
-            .build();
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource
+  void testSubmerging(
+      final String displayName,
+      final BattleState battleState,
+      final List<Unit> expectedSubmergingSubs,
+      final boolean expectedSide) {
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     final IExecutable step = underTest.getExecutable();
 
     step.execute(executionStack, delegateBridge);
 
-    verify(battleActions).submergeUnits(List.of(attacker1), false, delegateBridge);
+    verify(battleActions).submergeUnits(expectedSubmergingSubs, expectedSide, delegateBridge);
   }
 
-  @Test
-  @DisplayName("Submerge defending evaders vs ALL air")
-  void defendingEvadersSubmergeVsAllAir() {
-
-    final Unit defender1 = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
-    final Unit defender2 = givenUnit();
-    final Unit attacker1 = givenUnitIsAir();
-    final Unit attacker2 = givenUnitIsAir();
-
-    final BattleActions battleActions = mock(BattleActions.class);
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(attacker1, attacker2))
-            .defendingUnits(List.of(defender1, defender2))
-            .build();
-    final SubmergeSubsVsOnlyAirStep underTest =
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    final IExecutable step = underTest.getExecutable();
-
-    step.execute(executionStack, delegateBridge);
-
-    verify(battleActions).submergeUnits(List.of(defender1), true, delegateBridge);
+  static List<Arguments> testSubmerging() {
+    final Unit sub = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
+    return List.of(
+        Arguments.of(
+            "Attacking subs submerge",
+            givenBattleState()
+                .attackingUnits(List.of(sub, givenUnit()))
+                .defendingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
+                .build(),
+            List.of(sub),
+            false),
+        Arguments.of(
+            "Defending subs submerge",
+            givenBattleState()
+                .attackingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
+                .defendingUnits(List.of(sub, givenUnit()))
+                .build(),
+            List.of(sub),
+            true));
   }
 }

@@ -14,9 +14,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 
-/**
- * Units that canNotBeTargetedByAll can submerge if there are only Air units in the battle
- */
+/** Units that canNotBeTargetedByAll can submerge if there are only Air units in the battle */
 public class SubmergeSubsVsOnlyAirStep extends BattleStep {
 
   private static final Predicate<Unit> canNotBeTargetedByAllMatch =
