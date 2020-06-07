@@ -15,12 +15,12 @@ import lombok.NonNull;
 @Builder
 public class MockBattleState implements BattleState {
 
+  final @NonNull Collection<Unit> attackingUnits;
+  final @NonNull Collection<Unit> defendingUnits;
+
   public static MockBattleState.MockBattleStateBuilder givenBattleState() {
     return MockBattleState.builder().attackingUnits(List.of()).defendingUnits(List.of());
   }
-
-  final @NonNull Collection<Unit> attackingUnits;
-  final @NonNull Collection<Unit> defendingUnits;
 
   @Override
   public Collection<Unit> getAttackingUnits() {
