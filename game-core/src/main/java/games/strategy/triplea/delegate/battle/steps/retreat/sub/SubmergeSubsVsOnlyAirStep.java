@@ -16,9 +16,6 @@ import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Units that canNotBeTargetedByAll can submerge if there are only Air units in the battle
- *
- * <p>This step always occurs at the start of the battle so PRE_ROUND and IN_ROUND checks are the
- * same
  */
 public class SubmergeSubsVsOnlyAirStep extends BattleStep {
 
@@ -50,7 +47,7 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   }
 
   @Override
-  public boolean valid(final Request request) {
+  public boolean valid() {
     return (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())
         || isOnlyAirVsSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits()));
   }

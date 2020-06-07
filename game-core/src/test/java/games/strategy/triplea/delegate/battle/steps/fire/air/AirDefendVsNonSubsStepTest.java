@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.fire.air;
 
 import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.Request;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
@@ -39,7 +38,7 @@ class AirDefendVsNonSubsStepTest {
             .defendingUnits(List.of(attacker))
             .build();
     final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.NAME), is(true));
+    assertThat(underTest.valid(), is(true));
   }
 
   @Test
@@ -56,7 +55,7 @@ class AirDefendVsNonSubsStepTest {
             .defendingUnits(List.of(attacker))
             .build();
     final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.NAME), is(false));
+    assertThat(underTest.valid(), is(false));
   }
 
   @Test
@@ -72,6 +71,6 @@ class AirDefendVsNonSubsStepTest {
             .defendingUnits(List.of(attacker))
             .build();
     final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.NAME), is(false));
+    assertThat(underTest.valid(), is(false));
   }
 }

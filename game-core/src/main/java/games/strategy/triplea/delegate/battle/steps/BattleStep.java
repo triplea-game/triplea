@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps;
 
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.Request.EXEC;
-
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.IExecutable;
@@ -37,14 +35,6 @@ public abstract class BattleStep {
   /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
   protected final BattleActions battleActions;
 
-  /** Indicates when {@link #valid} is being called */
-  public enum Request {
-    // Occurs at the start of the battle round
-    NAME,
-    // Occurs right before the step executes
-    EXEC,
-  }
-
   public abstract BattleAtomic getExecutable();
 
   public abstract List<String> getNames();
@@ -52,10 +42,9 @@ public abstract class BattleStep {
   /**
    * Determine if this step should run based on the request
    *
-   * @param request Indicates when valid is being called
    * @return true if valid
    */
-  public abstract boolean valid(Request request);
+  public abstract boolean valid();
 
   /**
    * Executes the step
@@ -91,7 +80,7 @@ public abstract class BattleStep {
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       final BattleStep executingStep = BattleStep.this;
-      if (executingStep.valid(EXEC)) {
+      if (executingStep.valid()) {
         executingStep.execute(stack, bridge);
       }
     }

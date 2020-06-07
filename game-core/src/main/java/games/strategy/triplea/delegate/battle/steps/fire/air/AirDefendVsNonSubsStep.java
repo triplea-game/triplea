@@ -8,8 +8,6 @@ import java.util.List;
 
 /**
  * Air can not attack subs unless a destroyer is present
- *
- * <p>This step only occurs during naming so PRE_ROUND and IN_ROUND are the same
  */
 public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
   public AirDefendVsNonSubsStep(final BattleState battleState, final BattleActions battleActions) {
@@ -22,7 +20,7 @@ public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
   }
 
   @Override
-  public boolean valid(final Request request) {
+  public boolean valid() {
     return airWillMissSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits());
   }
 }

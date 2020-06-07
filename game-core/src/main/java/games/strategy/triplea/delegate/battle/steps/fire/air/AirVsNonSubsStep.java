@@ -11,8 +11,6 @@ import java.util.Collection;
 
 /**
  * Air can not attack subs unless a destroyer is present
- *
- * <p>This step only occurs during naming so PRE_ROUND and IN_ROUND are the same
  */
 public abstract class AirVsNonSubsStep extends BattleStep {
 

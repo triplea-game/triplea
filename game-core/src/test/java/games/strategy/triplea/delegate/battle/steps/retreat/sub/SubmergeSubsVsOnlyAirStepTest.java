@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
 import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.Request;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
@@ -46,7 +45,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.NAME), is(false));
+    assertThat(underTest.valid(), is(false));
   }
 
   @Test
@@ -64,7 +63,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.NAME), is(false));
+    assertThat(underTest.valid(), is(false));
   }
 
   @Test
@@ -82,7 +81,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.EXEC), is(false));
+    assertThat(underTest.valid(), is(false));
   }
 
   @Test
@@ -100,11 +99,11 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.EXEC), is(false));
+    assertThat(underTest.valid(), is(false));
   }
 
   @Test
-  @DisplayName("valid(IN_ROUND) is false given some attacking evaders vs ALL air")
+  @DisplayName("valid() is false given some attacking evaders vs ALL air")
   void attackingEvadersVsAllAirIsValidInRound() {
 
     final Unit attacker = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
@@ -118,11 +117,11 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.EXEC), is(true));
+    assertThat(underTest.valid(), is(true));
   }
 
   @Test
-  @DisplayName("valid(IN_ROUND) is true given some defending evaders vs ALL air")
+  @DisplayName("valid() is true given some defending evaders vs ALL air")
   void defendingEvadersVsAllAirIsValidInRound() {
 
     final Unit attacker1 = givenUnitIsAir();
@@ -136,7 +135,7 @@ class SubmergeSubsVsOnlyAirStepTest {
             .build();
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(Request.EXEC), is(true));
+    assertThat(underTest.valid(), is(true));
   }
 
   @Test
