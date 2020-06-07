@@ -69,7 +69,7 @@ public abstract class BattleStep {
    *       method can be called again.
    * </ol>
    */
-  protected abstract class BattleAtomic implements IExecutable {
+  public abstract class BattleAtomic implements IExecutable {
 
     /**
      * Executes an atomic step in a battle

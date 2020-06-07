@@ -1467,6 +1467,20 @@ public class MustFightBattle extends DependentBattle
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, this);
     steps.add(submergeSubsVsOnlyAir.getExecutable());
+    // Each of the original steps were defined as inner anonymous classes, so the order in which
+    // they were defined affects their serializing/deserializing since their class name looks like
+    // MustFightBattle$5. For save compatibility, we must leave the anonymous classes around, though
+    // they don't need to be added to the steps. They can be removed once save compatibility can be
+    // broken.
+    new IExecutable() {
+      private static final long serialVersionUID = 99990L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // if this gets deserialized, then forward the work to the new BattleStep
+        submergeSubsVsOnlyAir.getExecutable().execute(stack, bridge);
+      }
+    };
 
     final ReturnFire returnFireAgainstAttackingSubs =
         SubsChecks.returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData);
