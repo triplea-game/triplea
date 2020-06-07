@@ -3,17 +3,6 @@
   apt:
     state: present
     name: software-properties-common
-  
-- name: install certbot apt-repositories
-  become: true
-  apt_repository:
-    state: present
-    repo: "{{ item }}"
-  loop:
-    - "deb http://archive.ubuntu.com/ubuntu/ bionic universe"
-    - "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe"
-    - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
-    - "ppa:certbot/certbot"
 
 - name: install certbot and python for certbot on nginx
   become: true
@@ -21,7 +10,7 @@
     update_cache: yes
     name:
       - certbot
-      - python-certbot-nginx
+      - python3-certbot-nginx
 
 - name: look for certbot generated key file
   become: true
