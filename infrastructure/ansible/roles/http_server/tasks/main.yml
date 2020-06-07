@@ -92,3 +92,14 @@
     name: http_server
     state: restarted
     enabled: yes
+
+- name: deploy admin scripts to facilite server operations, EG. check logs, start, stop
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: /home/admin/
+    owner: admin
+    group: admin
+    mode: "0700"
+  with_fileglob:
+    - "admin_scripts/*"
