@@ -37,8 +37,6 @@
 - hosts: botHosts
   tags: [bot, bots]
   roles:
-    - admin_user
-    - firewall
     - java
     - bot
 
