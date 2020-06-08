@@ -90,9 +90,9 @@ class WebSocketConnection {
   }
 
   /**
-   * Sends pings with retries. Retry threshold is set up to account for disconnect at 60 seconds.
-   * We send a ping every 45s, if that fails we'll try again at the 48s mark, again at 51s,
-   * again at 54s, and one last time at 57s.
+   * Sends pings with retries. Retry threshold is set up to account for disconnect at 60 seconds. We
+   * send a ping every 45s, if that fails we'll try again at the 48s mark, again at 51s, again at
+   * 54s, and one last time at 57s.
    */
   private void sendPingTask() {
     if (!client.isOutputClosed()) {
