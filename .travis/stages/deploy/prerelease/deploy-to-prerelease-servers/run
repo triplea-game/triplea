@@ -6,8 +6,7 @@ version=$(.travis/shared/set-version-number)
 
 eval "$(ssh-agent -s)"
 
-cd infrastructure
-./build_deployment_artifacts
 echo "$ANSIBLE_VAULT_PASSWORD" > vault_password
+cd infrastructure
 ./run_ansible_prerelease "$version" -i ansible/inventory/prerelease
  

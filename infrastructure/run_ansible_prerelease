@@ -28,28 +28,45 @@ if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
   exit 1
 fi
 
-HTTP_SERVER_JAR="ansible/roles/http_server/files/triplea-http-server-$VERSION.jar"
-if [ ! -f "$HTTP_SERVER_JAR" ]; then
-  echo "Error: File does not exist: $HTTP_SERVER_JAR"
-  exit 1
-fi
 
-BOT_JAR="ansible/roles/bot/files/triplea-game-headless-$VERSION.jar"
-if [ ! -f "$BOT_JAR" ]; then
-  echo "Error: File does not exist: $BOT_JAR"
-  exit 1
-fi
+function main() {
+  buildArtifacts
+  addPrivateSshKeyToAgent
+  runDeployment "$@"
+}
 
-MIGRATIONS_ZIP="ansible/roles/flyway/files/migrations.zip"
-if [ ! -f "$MIGRATIONS_ZIP" ]; then
-  echo "Error: File does not exist: $MIGRATIONS_ZIP"
-  exit 1
-fi
+function buildArtifacts() {
+  ../gradlew :http-server:shadowJar :game-headless:shadowJar :lobby-db:release
+  copyBuildArtifact "../lobby-db/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
+  copyBuildArtifact "../http-server/build/artifacts/triplea-http-server-$VERSION.jar" "ansible/roles/http_server/files/"
+  copyBuildArtifact "../game-headless/build/artifacts/triplea-game-headless-$VERSION.jar" "ansible/roles/bot/files/"
+}
 
-ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
+function copyBuildArtifact() {
+  local -r artifactSource="$1"
+  local -r artifactDestinationPath="$2"
 
-ansible-playbook \
-  --vault-password-file "$VAULT_PASSWORD_FILE" \
-  -i ansible/inventory/prerelease \
- "$@" \
- ansible/site.yml
+  if [ ! -f "$artifactSource" ]; then
+    echo "Error: File does not exist: $artifactSource"
+    exit 1
+  fi
+
+  mkdir -p "$artifactDestinationPath"
+  cp "$artifactSource" "$artifactDestinationPath"
+}
+
+
+function addPrivateSshKeyToAgent() {
+  ansible-vault view --vault-password-file="$VAULT_PASSWORD_FILE" ansible_ssh_key.ed25519 | ssh-add -
+}
+
+function runDeployment() {
+  ansible-playbook \
+    --vault-password-file "$VAULT_PASSWORD_FILE" \
+    -i ansible/inventory/prerelease \
+   "$@" \
+   ansible/site.yml
+}
+
+main "$@"
+
