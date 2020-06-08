@@ -32,7 +32,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final byte[] oldBytes = serverRemote.getGameOptions();
-    if (oldBytes == null || oldBytes.length == 0) {
+    if (oldBytes.length == 0) {
       return;
     }
     try {

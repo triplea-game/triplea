@@ -190,7 +190,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               || data.getProperties() == null
               || data.getProperties().getEditableProperties() == null
               || data.getProperties().getEditableProperties().isEmpty()) {
-            return null;
+            return new byte[0];
           }
           final List<IEditableProperty<?>> currentEditableProperties =
               data.getProperties().getEditableProperties();
