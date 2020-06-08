@@ -2,9 +2,7 @@
   become: true
   apt:
     state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
+    name:
       - bash
       - openssl
       - libssl-dev
@@ -35,3 +33,48 @@
     password: "{{ postgres_user_db_password }}"
     encrypted: yes
 
+- name: Create application database users
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    login_password: "{{ item.password }}"
+    encrypted: yes
+    state: "present"
+  with_items: "{{ databases }}"
+
+- name: Create application databases
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.user }}"
+  with_items: "{{ databases }}"
+
+- name: Ensure user has access to the database
+  become: true
+  become_user: postgres
+  postgresql_user:
+    db: "{{ item.name }}"
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    login_password: "{{ item.password }}"
+    encrypted: yes
+    priv: "ALL"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
+    state: "present"
+  with_items: "{{ databases }}"
+
+# This is a hack because the previous tasks were supposed to set
+# the DB level password for our DB user, but it typically does not.
+# To achieve this, we'll run the native SQL commands to set the
+# user DB password.
+- name: check if password is valid
+  shell: >
+      echo "select 1" |  psql -h localhost -U {{ lobby_db_user }} {{ lobby_db_name }}
+      || echo "alter role {{ item.user }} with password '{{ item.password }}';"  | sudo -u postgres psql
+  environment:
+    PGPASSWORD: "{{ item.password }}"
+  changed_when: false
+  with_items: "{{ databases }}"
