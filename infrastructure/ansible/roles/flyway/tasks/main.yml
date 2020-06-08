@@ -1,7 +1,7 @@
 - name: create service user to run flyway
   become: true
   user:
-    name: "{{ flyway_user }}"
+    name: flyway
     create_home: yes
     system: yes
 
