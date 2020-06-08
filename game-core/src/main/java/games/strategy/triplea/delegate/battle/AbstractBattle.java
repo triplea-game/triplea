@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -38,7 +39,7 @@ abstract class AbstractBattle implements IBattle {
    */
   boolean headless = false;
 
-  final Territory battleSite;
+  @Getter final Territory battleSite;
   final GamePlayer attacker;
   GamePlayer defender;
   final BattleTracker battleTracker;
@@ -253,6 +254,10 @@ abstract class AbstractBattle implements IBattle {
   @Override
   public int hashCode() {
     return Objects.hashCode(battleSite);
+  }
+
+  public Integer getRound() {
+    return round;
   }
 
   /**

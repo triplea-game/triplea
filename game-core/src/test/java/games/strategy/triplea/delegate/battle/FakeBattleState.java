@@ -1,7 +1,11 @@
 package games.strategy.triplea.delegate.battle;
 
+import static org.mockito.Mockito.mock;
+
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -16,12 +20,26 @@ import lombok.NonNull;
 public class FakeBattleState implements BattleState {
 
   @Getter(onMethod = @__({@Override}))
+  final @NonNull Integer round;
+
+  @Getter(onMethod = @__({@Override}))
+  final @NonNull Territory battleSite;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> attackingUnits;
 
   @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingUnits;
 
+  @Getter(onMethod = @__({@Override}))
+  final @NonNull Collection<Unit> bombardingUnits;
+
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
-    return FakeBattleState.builder();
+    return FakeBattleState.builder()
+        .round(2)
+        .battleSite(mock(Territory.class))
+        .attackingUnits(List.of())
+        .defendingUnits(List.of())
+        .bombardingUnits(List.of());
   }
 }

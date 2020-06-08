@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
+import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsStep;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
@@ -32,7 +33,10 @@ public class BattleSteps implements BattleStepStrings, BattleState {
 
   final @NonNull Boolean canFireOffensiveAa;
   final @NonNull Boolean canFireDefendingAa;
-  final @NonNull Boolean showFirstRun;
+
+  @Getter(onMethod = @__({@Override}))
+  final @NonNull Integer round;
+
   final @NonNull GamePlayer attacker;
   final @NonNull GamePlayer defender;
   final @NonNull Collection<Unit> offensiveAa;
@@ -46,11 +50,16 @@ public class BattleSteps implements BattleStepStrings, BattleState {
 
   final @NonNull Collection<Unit> attackingWaitingToDie;
   final @NonNull Collection<Unit> defendingWaitingToDie;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Territory battleSite;
+
   final @NonNull GameData gameData;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> bombardingUnits;
+
   final @NonNull Function<Collection<Unit>, Collection<Unit>> getDependentUnits;
-  final @NonNull Boolean isBattleSiteWater;
   final @NonNull Boolean isAmphibious;
   final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories;
   final @NonNull BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>>
@@ -58,10 +67,12 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   final @NonNull BattleActions battleActions;
 
   public List<String> get() {
+    final boolean isBattleSiteWater = battleSite.isWater();
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, battleActions);
     final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this);
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
+    final BattleStep navalBombardment = new NavalBombardment(this, battleActions);
 
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa) {
@@ -78,11 +89,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
         steps.add(attacker.getName() + REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
       }
     }
-    if (showFirstRun) {
-      if (!isBattleSiteWater && !bombardingUnits.isEmpty()) {
-        steps.add(NAVAL_BOMBARDMENT);
-        steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
-      }
+    steps.addAll(navalBombardment.getNames());
+    if (round == 1) {
       if (!isBattleSiteWater && TechAttachment.isAirTransportable(attacker)) {
         final Collection<Unit> bombers =
             CollectionUtils.getMatches(battleSite.getUnits(), Matches.unitIsAirTransport());

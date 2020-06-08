@@ -31,6 +31,7 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
+import games.strategy.triplea.delegate.battle.steps.fire.NavalBombardment;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -103,16 +104,6 @@ public class MustFightBattle extends DependentBattle
    */
   public abstract static class ClearAaWaitingToDieAndDamagedChangesInto implements IExecutable {
     private static final long serialVersionUID = -3223166334485741752L;
-  }
-
-  /**
-   * An action representing naval bombardment during a battle.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class FireNavalBombardment implements IExecutable {
-    private static final long serialVersionUID = -4807027908694648211L;
   }
 
   /**
@@ -883,7 +874,7 @@ public class MustFightBattle extends DependentBattle
     return BattleSteps.builder()
         .canFireOffensiveAa(canFireOffensiveAa())
         .canFireDefendingAa(canFireDefendingAa())
-        .showFirstRun(showFirstRun)
+        .round(round)
         .attacker(attacker)
         .defender(defender)
         .offensiveAa(offensiveAa)
@@ -896,7 +887,6 @@ public class MustFightBattle extends DependentBattle
         .gameData(gameData)
         .bombardingUnits(bombardingUnits)
         .getDependentUnits(this::getDependentUnits)
-        .isBattleSiteWater(battleSite.isWater())
         .isAmphibious(isAmphibious)
         .getAttackerRetreatTerritories(this::getAttackerRetreatTerritories)
         .getEmptyOrFriendlySeaNeighbors(this::getEmptyOrFriendlySeaNeighbors)
@@ -1084,6 +1074,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addFightStartSteps(final boolean firstRun, final List<IExecutable> steps) {
+    final BattleStep navalBombardment = new NavalBombardment(this, this);
     final boolean offensiveAa = canFireOffensiveAa();
     final boolean defendingAa = canFireDefendingAa();
     if (offensiveAa) {
@@ -1130,16 +1121,21 @@ public class MustFightBattle extends DependentBattle
             }
           });
     }
-    if (firstRun) {
-      steps.add(
-          new FireNavalBombardment() {
-            private static final long serialVersionUID = -2255284529092427441L;
+    if (navalBombardment.valid()) {
+      steps.add(navalBombardment);
+      // see Save Game Compatibility Note on getBattleExecutables
+      new IExecutable() {
+        private static final long serialVersionUID = -2255284529092427441L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              fireNavalBombardment(bridge);
-            }
-          });
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          final BattleStep navalBombardment =
+              new NavalBombardment(MustFightBattle.this, MustFightBattle.this);
+          navalBombardment.execute(stack, bridge);
+        }
+      };
+    }
+    if (firstRun) {
       steps.add(
           new IExecutable() {
             private static final long serialVersionUID = 3389635558184415797L;
@@ -1214,26 +1210,24 @@ public class MustFightBattle extends DependentBattle
             defendingAaTypes));
   }
 
-  private void fireNavalBombardment(final IDelegateBridge bridge) {
+  @Override
+  public void fireNavalBombardment(final IDelegateBridge bridge) {
     final Collection<Unit> bombard = getBombardingUnits();
     final Collection<Unit> attacked =
         CollectionUtils.getMatches(
             defendingUnits,
             Matches.unitIsNotInfrastructureAndNotCapturedOnEntering(
                 attacker, battleSite, gameData));
-    // bombarding units can't move after bombarding
-    if (!headless) {
-      // TODO: StepRefactor: Why is a change always added even if there are no units?
-      //       Shouldn't this be moved inside of the if (!bombard.isEmpty() ...) check?
-      final Change change = ChangeFactory.markNoMovementChange(bombard);
-      bridge.addChange(change);
-    }
     final boolean canReturnFire = Properties.getNavalBombardCasualtiesReturnFire(gameData);
     if (!bombard.isEmpty() && !attacked.isEmpty()) {
       if (!headless) {
         bridge
             .getSoundChannelBroadcaster()
             .playSoundForAll(SoundPath.CLIP_BATTLE_BOMBARD, attacker);
+
+        // bombarding units can't move after bombarding
+        final Change change = ChangeFactory.markNoMovementChange(bombard);
+        bridge.addChange(change);
       }
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);

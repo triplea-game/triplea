@@ -8,4 +8,6 @@ import java.util.Collection;
 public interface BattleActions {
 
   void submergeUnits(Collection<Unit> units, boolean defender, IDelegateBridge bridge);
+
+  void fireNavalBombardment(IDelegateBridge bridge);
 }
