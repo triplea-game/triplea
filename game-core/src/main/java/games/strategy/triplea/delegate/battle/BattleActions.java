@@ -4,7 +4,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import java.util.Collection;
 
-/** Exposes actions that occur in a battle and affect the game state */
+/** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
 
   void submergeUnits(Collection<Unit> units, boolean defender, IDelegateBridge bridge);

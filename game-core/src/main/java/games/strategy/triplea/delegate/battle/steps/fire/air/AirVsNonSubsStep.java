@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public abstract class AirVsNonSubsStep implements BattleStep {
 
-  /** The current state of the battle */
   protected final BattleState battleState;
 
   @Override

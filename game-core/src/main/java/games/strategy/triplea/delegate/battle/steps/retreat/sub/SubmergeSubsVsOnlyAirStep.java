@@ -15,20 +15,18 @@ import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
 
-/** Units that canNotBeTargetedByAll can submerge if there are only Air units in the battle */
+/** canNotBeTargetedByAll Units can submerge if there are only Air units in the battle */
 @AllArgsConstructor
 public class SubmergeSubsVsOnlyAirStep implements BattleStep {
 
   private static final long serialVersionUID = 99990L;
 
-  /** The current state of the battle */
-  protected final BattleState battleState;
-
-  /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
-  protected final BattleActions battleActions;
-
   private static final Predicate<Unit> canNotBeTargetedByAllMatch =
       Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
+
+  protected final BattleState battleState;
+
+  protected final BattleActions battleActions;
 
   @Override
   public List<String> getNames() {
