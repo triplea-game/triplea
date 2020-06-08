@@ -13,10 +13,7 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
 
   @Override
   public List<String> getNames() {
-    if (!valid()) {
-      return List.of();
-    }
-    return List.of(AIR_ATTACK_NON_SUBS);
+    return valid() ? List.of(AIR_ATTACK_NON_SUBS) : List.of();
   }
 
   @Override

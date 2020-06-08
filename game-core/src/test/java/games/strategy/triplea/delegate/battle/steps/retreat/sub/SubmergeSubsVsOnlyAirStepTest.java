@@ -1,9 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps.retreat.sub;
 
-import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSimpleUnit;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
+import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -12,7 +11,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -50,50 +48,48 @@ class SubmergeSubsVsOnlyAirStepTest {
     return List.of(
         Arguments.of(
             "Attacking evaders vs NO air",
-            givenBattleState()
+            givenBattleStateBuilder()
                 // if there is no air, it doesn't check if the attacker is an evader
-                .attackingUnits(List.of(givenUnit()))
-                .defendingUnits(List.of(givenUnit(), givenSimpleUnit()))
+                .attackingUnits(List.of(givenAnyUnit()))
+                .defendingUnits(List.of(givenAnyUnit(), mock(Unit.class)))
                 .build(),
             false),
         Arguments.of(
             "Defending evaders vs NO air",
-            givenBattleState()
-                .attackingUnits(List.of(givenUnit(), givenSimpleUnit()))
+            givenBattleStateBuilder()
+                .attackingUnits(List.of(givenAnyUnit(), mock(Unit.class)))
                 // if there is no air, it doesn't check if the defender is an evader
-                .defendingUnits(List.of(givenUnit()))
+                .defendingUnits(List.of(givenAnyUnit()))
                 .build(),
             false),
         Arguments.of(
             "Attacking evaders vs SOME air",
-            givenBattleState()
+            givenBattleStateBuilder()
                 // if there is some but not all air, it doesn't check if the attacker is an evader
-                .attackingUnits(List.of(givenUnit()))
-                .defendingUnits(List.of(givenUnitIsAir(), givenUnit()))
+                .attackingUnits(List.of(givenAnyUnit()))
+                .defendingUnits(List.of(givenUnitIsAir(), givenAnyUnit()))
                 .build(),
             false),
         Arguments.of(
             "Defending evaders vs SOME air",
-            givenBattleState()
-                .attackingUnits(List.of(givenUnitIsAir(), givenUnit()))
+            givenBattleStateBuilder()
+                .attackingUnits(List.of(givenUnitIsAir(), givenAnyUnit()))
                 // if there is some but not all air, it doesn't check if the defender is an evader
-                .defendingUnits(List.of(givenUnit()))
+                .defendingUnits(List.of(givenAnyUnit()))
                 .build(),
             false),
         Arguments.of(
             "Attacking evaders vs ALL air",
-            givenBattleState()
-                .attackingUnits(
-                    List.of(givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class))))
+            givenBattleStateBuilder()
+                .attackingUnits(List.of(givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit()))
                 .defendingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
                 .build(),
             true),
         Arguments.of(
             "Defending evaders vs ALL air",
-            givenBattleState()
+            givenBattleStateBuilder()
                 .attackingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
-                .defendingUnits(
-                    List.of(givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class))))
+                .defendingUnits(List.of(givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit()))
                 .build(),
             true));
   }
@@ -114,21 +110,21 @@ class SubmergeSubsVsOnlyAirStepTest {
   }
 
   static List<Arguments> testSubmerging() {
-    final Unit sub = givenUnitCanEvadeAndCanNotBeTargetedBy(mock(UnitType.class));
+    final Unit sub = givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit();
     return List.of(
         Arguments.of(
             "Attacking subs submerge",
-            givenBattleState()
-                .attackingUnits(List.of(sub, givenUnit()))
+            givenBattleStateBuilder()
+                .attackingUnits(List.of(sub, givenAnyUnit()))
                 .defendingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
                 .build(),
             List.of(sub),
             false),
         Arguments.of(
             "Defending subs submerge",
-            givenBattleState()
+            givenBattleStateBuilder()
                 .attackingUnits(List.of(givenUnitIsAir(), givenUnitIsAir()))
-                .defendingUnits(List.of(sub, givenUnit()))
+                .defendingUnits(List.of(sub, givenAnyUnit()))
                 .build(),
             List.of(sub),
             true));

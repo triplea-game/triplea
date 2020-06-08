@@ -116,11 +116,7 @@ public class BattleStepsTest {
     return Tuple.of(unit, unitAttachment);
   }
 
-  public static Unit givenSimpleUnit() {
-    return mock(Unit.class);
-  }
-
-  public static Unit givenUnit() {
+  public static Unit givenAnyUnit() {
     return newUnitAndAttachment().getFirst();
   }
 
@@ -145,10 +141,11 @@ public class BattleStepsTest {
     return unitAndAttachment.getFirst();
   }
 
-  public static Unit givenUnitCanEvadeAndCanNotBeTargetedBy(final UnitType otherType) {
+  public static Unit givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit() {
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
+    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy())
+        .thenReturn(Set.of(mock(UnitType.class)));
     return unitAndAttachment.getFirst();
   }
 
@@ -223,30 +220,27 @@ public class BattleStepsTest {
   }
 
   private BattleSteps.BattleStepsBuilder newStepBuilder() {
-    final BattleSteps.BattleStepsBuilder builder =
-        BattleSteps.builder()
-            .canFireOffensiveAa(false)
-            .canFireDefendingAa(false)
-            .showFirstRun(true)
-            .attacker(attacker)
-            .defender(defender)
-            .offensiveAa(List.of())
-            .defendingAa(List.of())
-            .attackingUnits(List.of())
-            .defendingUnits(List.of())
-            .attackingWaitingToDie(List.of())
-            .defendingWaitingToDie(List.of())
-            .battleSite(battleSite)
-            .gameData(gameData)
-            .bombardingUnits(List.of())
-            .getDependentUnits(getDependentUnits)
-            .isBattleSiteWater(true)
-            .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
-            .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
-            .battleActions(battleActions)
-            .isAmphibious(false);
-
-    return builder;
+    return BattleSteps.builder()
+        .canFireOffensiveAa(false)
+        .canFireDefendingAa(false)
+        .showFirstRun(true)
+        .attacker(attacker)
+        .defender(defender)
+        .offensiveAa(List.of())
+        .defendingAa(List.of())
+        .attackingUnits(List.of())
+        .defendingUnits(List.of())
+        .attackingWaitingToDie(List.of())
+        .defendingWaitingToDie(List.of())
+        .battleSite(battleSite)
+        .gameData(gameData)
+        .bombardingUnits(List.of())
+        .getDependentUnits(getDependentUnits)
+        .isBattleSiteWater(true)
+        .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
+        .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
+        .battleActions(battleActions)
+        .isAmphibious(false);
   }
 
   @Test
@@ -266,8 +260,8 @@ public class BattleStepsTest {
   void basicLandBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -286,8 +280,8 @@ public class BattleStepsTest {
   void bombardOnFirstRun() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -312,8 +306,8 @@ public class BattleStepsTest {
   void bombardOnSubsequentRun() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
             .showFirstRun(false)
@@ -333,8 +327,8 @@ public class BattleStepsTest {
   void impossibleSeaBattleWithBombarding() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -354,8 +348,8 @@ public class BattleStepsTest {
   void paratroopersFirstRun() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenUnitAirTransport();
 
     when(unit1.getOwner()).thenReturn(attacker);
@@ -383,9 +377,9 @@ public class BattleStepsTest {
   void noAirTransportTech() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
-    final Unit unit3 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
+    final Unit unit3 = givenAnyUnit();
     when(attacker.getAttachment(Constants.TECH_ATTACHMENT_NAME)).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(false);
     final List<String> steps =
@@ -406,8 +400,8 @@ public class BattleStepsTest {
   void paratroopersSubsequentRun() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
             .showFirstRun(false)
@@ -428,8 +422,8 @@ public class BattleStepsTest {
   void emptyParatroopersFirstRun() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final Unit unit3 = givenUnitAirTransport();
 
     when(unit1.getOwner()).thenReturn(attacker);
@@ -458,8 +452,8 @@ public class BattleStepsTest {
   void impossibleSeaBattleWithParatroopers() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1))
@@ -479,7 +473,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitWithTypeAa();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
         newStepBuilder()
@@ -510,7 +504,7 @@ public class BattleStepsTest {
   void defensiveAaFire() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitWithTypeAa();
 
     final List<String> steps =
@@ -581,7 +575,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitCanEvade();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
 
@@ -627,7 +621,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitCanEvade();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
 
@@ -649,7 +643,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -683,7 +677,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitCanEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
@@ -727,7 +721,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitCanEvade();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -749,7 +743,7 @@ public class BattleStepsTest {
   void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
@@ -785,7 +779,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitTransport();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
@@ -807,7 +801,7 @@ public class BattleStepsTest {
     givenAttackerNoRetreatTerritories();
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     final Unit unit1 = unitAndAttachment.getFirst();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
@@ -826,7 +820,7 @@ public class BattleStepsTest {
   @DisplayName("Verify unescorted defending transports are removed if casualities are restricted")
   void unescortedDefendingTransportsAreRemovedWhenCasualtiesAreRestricted() {
     givenPlayers();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitTransport();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -847,7 +841,7 @@ public class BattleStepsTest {
   void unescortedDefendingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
     final Unit unit2 = unitAndAttachment.getFirst();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -872,7 +866,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
         newStepBuilder()
@@ -927,7 +921,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     final List<String> steps =
@@ -954,7 +948,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1019,7 +1013,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1532,7 +1526,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1597,7 +1591,7 @@ public class BattleStepsTest {
   void defendingFirstStrikeCanSubmergeIfSubmersibleSubs() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -1668,7 +1662,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
     final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
         newStepBuilder()
@@ -1699,7 +1693,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
         newStepBuilder()
@@ -1758,7 +1752,7 @@ public class BattleStepsTest {
     givenAttackerRetreatTerritories(battleSite);
     final Unit unit1 = givenUnitAttackerFirstStrike();
     final Unit unit2 = givenUnitDestroyer();
-    final Unit unit3 = givenUnit();
+    final Unit unit3 = givenAnyUnit();
 
     final List<String> steps =
         newStepBuilder()
@@ -1853,7 +1847,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderRetreatTerritories(battleSite);
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     final List<String> steps =
@@ -1883,7 +1877,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     givenDefenderNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
 
     final List<String> steps =
@@ -1939,7 +1933,7 @@ public class BattleStepsTest {
   void defendingFirstStrikeNoWithdrawIfDestroyersWaitingToDie() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     final Unit unit2 = givenUnitDefenderFirstStrike();
     final Unit unit3 = givenUnitDestroyer();
 
@@ -1968,7 +1962,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     final List<String> steps =
         newStepBuilder()
@@ -1985,9 +1979,9 @@ public class BattleStepsTest {
   @DisplayName("Verify partial amphibious attack can withdraw if a unit was not amphibious")
   void partialAmphibiousAttackCanWithdrawIfHasNonAmphibious() {
     givenPlayers();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
-    final Unit unit3 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
+    final Unit unit3 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
@@ -2012,9 +2006,9 @@ public class BattleStepsTest {
   @DisplayName("Verify partial amphibious attack can not withdraw if all units were amphibious")
   void partialAmphibiousAttackCanNotWithdrawIfHasAllAmphibious() {
     givenPlayers();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
-    final Unit unit3 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
+    final Unit unit3 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
@@ -2040,9 +2034,9 @@ public class BattleStepsTest {
           + "partial amphibious withdrawal not allowed")
   void partialAmphibiousAttackCanNotWithdrawIfNotAllowed() {
     givenPlayers();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
-    final Unit unit3 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
+    final Unit unit3 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
@@ -2062,9 +2056,9 @@ public class BattleStepsTest {
   void partialAmphibiousAttackCanNotWithdrawIfNotAmphibious() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Unit unit1 = givenUnit();
-    final Unit unit2 = givenUnit();
-    final Unit unit3 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
+    final Unit unit2 = givenAnyUnit();
+    final Unit unit3 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
@@ -2088,7 +2082,7 @@ public class BattleStepsTest {
   void attackingPlanesCanWithdrawWW2v2AndAmphibious() {
     givenPlayers();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
@@ -2112,8 +2106,8 @@ public class BattleStepsTest {
   void attackingPlanesCanWithdrawPartialAmphibiousAndAmphibious() {
     givenPlayers();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnit();
-    final Unit unit3 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
+    final Unit unit3 = givenAnyUnit();
     when(unit3.getWasAmphibious()).thenReturn(true);
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
@@ -2139,7 +2133,7 @@ public class BattleStepsTest {
   void attackingPlanesCanWithdrawPlanesRetreatAndAmphibious() {
     givenPlayers();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
     when(gameProperties.get(DEFENDING_SUBS_SNEAK_ATTACK, false)).thenReturn(false);
@@ -2166,7 +2160,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(true);
 
@@ -2190,8 +2184,8 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnit();
-    final Unit unit3 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
+    final Unit unit3 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
@@ -2218,7 +2212,7 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenUnitIsAir();
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);

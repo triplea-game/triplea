@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.fire.air;
 
-import static games.strategy.triplea.delegate.battle.MockBattleState.givenBattleState;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
+import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
@@ -40,14 +40,14 @@ class AirDefendVsNonSubsStepTest {
     return List.of(
         Arguments.of(
             "Defender has air units and no destroyers vs Attacker subs",
-            givenBattleState()
+            givenBattleStateBuilder()
                 .attackingUnits(List.of(givenUnitCanNotBeTargetedBy(mock(UnitType.class))))
-                .defendingUnits(List.of(givenUnit(), givenUnitIsAir()))
+                .defendingUnits(List.of(givenAnyUnit(), givenUnitIsAir()))
                 .build(),
             true),
         Arguments.of(
             "Defender has air units and destroyers",
-            givenBattleState()
+            givenBattleStateBuilder()
                 // once a destroyer is around, it doesn't care about whether a sub exists or not
                 .attackingUnits(List.of(mock(Unit.class)))
                 .defendingUnits(List.of(givenUnitDestroyer(), givenUnitIsAir()))
@@ -55,9 +55,9 @@ class AirDefendVsNonSubsStepTest {
             false),
         Arguments.of(
             "Defender has air units but no destroyers vs Attacker with no subs",
-            givenBattleState()
-                .attackingUnits(List.of(givenUnit()))
-                .defendingUnits(List.of(givenUnit(), givenUnitIsAir()))
+            givenBattleStateBuilder()
+                .attackingUnits(List.of(givenAnyUnit()))
+                .defendingUnits(List.of(givenAnyUnit(), givenUnitIsAir()))
                 .build(),
             false));
   }
