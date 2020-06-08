@@ -1,5 +1,5 @@
 #!/bin/bash
 
 {% for item in bot_numbers %}
-sudo service bot@{{ item }} start
+sudo systemctl start bot@{{ item }}
 {% endfor %}
