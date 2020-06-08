@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 CUR_FOLDER=$(basename $(pwd))
 if [ "$CUR_FOLDER" != infrastructure ]; then
@@ -48,15 +48,11 @@ function buildMigrations() {
   local targetFolder=./ansible/roles/flyway/files/
   local zipFile=migrations.zip
   if [ ! -e $targetFolder/$zipFile ]; then
-    (
-      cd ../lobby-db
-      if [ ! -e build/distributions/$zipFile ]; then
-        ../gradlew release 
-      fi
-      cd ../infrastructure
-      mkdir -p $targetFolder
-      cp ../lobby-db/build/distributions/$zipFile $targetFolder
-    )
+    if [ ! -e ../lobby-db/build/distributions/$zipFile ]; then
+       ./gradlew :lobby-db:release
+    fi
+    mkdir -p $targetFolder
+    cp ../lobby-db/build/distributions/$zipFile $targetFolder
   fi
 }
 
