@@ -6,6 +6,12 @@
 # If the script is updated, upload a new copy to the infrastructure machine
 # to /home/ansible.
 
+VAULT_PASSWORD_FILE="vault_password"
+if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
+  echo "Error: $VAULT_PASSWORD_FILE must exist"
+  exit 1
+fi
+
 function usage() {
   echo "Usage: $0 [Version] (ansible_args)"
   echo "  version: The version of tripleA we will deploy eg: 1.10.5252"
@@ -22,11 +28,19 @@ fi
 export VERSION=${1-}
 shift
 
-VAULT_PASSWORD_FILE="vault_password"
-if [ ! -f "$VAULT_PASSWORD_FILE" ]; then
-  echo "Error: $VAULT_PASSWORD_FILE must exist"
-  exit 1
-fi
+../gradlew :http-server:shadowJar :game-headless:shadowJar :lobby-db:release
+
+ANSIBLE_ROLES_FOLDER="infrastructure/ansible/roles"
+
+mkdir -p "$ANSIBLE_ROLES_FOLDER/database/flyway/files/"
+cp "../lobby-db/build/artifacts/*" "$ANSIBLE_ROLES_FOLDER/database/flyway/files/"
+
+mkdir -p "$ANSIBLE_ROLES_FOLDER/http_server/files/"
+cp "../http-server/build/libs/*" "$ANSIBLE_ROLES_FOLDER/http_server/bot/files/"
+
+mkdir -p "$ANSIBLE_ROLES_FOLDER/bot/files/"
+cp "../game-headless/build/libs/*" "$ANSIBLE_ROLES_FOLDER/bot/files/"
+
 
 HTTP_SERVER_JAR="ansible/roles/http_server/files/triplea-http-server-$VERSION.jar"
 if [ ! -f "$HTTP_SERVER_JAR" ]; then
