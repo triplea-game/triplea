@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -37,7 +36,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
@@ -46,7 +44,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -66,7 +63,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.sound.ISound;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("UnmatchedTest")
@@ -140,79 +136,6 @@ class MustFightBattleExecutablesTest {
         stepClass.getName() + " is missing from the steps",
         getIndex(execs, stepClass),
         greaterThanOrEqualTo(0));
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with bombard on first run")
-  void bombardOnFirstRun() {
-    final MustFightBattle battle = newBattle(LAND);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    assertThatStepExists(execs, MustFightBattle.FireNavalBombardment.class);
-  }
-
-  @Test
-  @DisplayName("Verify basic land battle with bombard on subsequent run")
-  void bombardOnSubsequentRun() {
-    final MustFightBattle battle = newBattle(LAND);
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(false);
-
-    assertThatStepIsMissing(execs, MustFightBattle.FireNavalBombardment.class);
-  }
-
-  @Test
-  @DisplayName("Verify Bombard step is added but no bombardment happens if bombard units are empty")
-  void bombardStepAddedButNoBombardUnits() {
-    final MustFightBattle battle = spy(newBattle(LAND));
-
-    battle.setUnits(List.of(), List.of(), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, MustFightBattle.FireNavalBombardment.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge).addChange(ChangeFactory.EMPTY_CHANGE);
-    verify(battle, never())
-        .fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
-  }
-
-  @Test
-  @DisplayName("Verify Bombard step is added and bombardment happens if bombard units exist")
-  void bombardStepAddedAndBombardHappens() {
-    final MustFightBattle battle = spy(newBattle(LAND));
-
-    final Unit unit1 = mock(Unit.class);
-    when(unit1.getMovementLeft()).thenReturn(BigDecimal.ZERO);
-    final MutableProperty<Boolean> alreadyMovedProperty = MutableProperty.ofReadOnly(() -> true);
-    doReturn(alreadyMovedProperty).when(unit1).getPropertyOrThrow(ALREADY_MOVED);
-
-    final Unit unit2 = givenAnyUnit();
-    when(unit2.getOwner()).thenReturn(defender);
-
-    battle.setUnits(List.of(unit2), List.of(), List.of(unit1), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, MustFightBattle.FireNavalBombardment.class);
-    final IExecutable step = execs.get(index);
-
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
-    doNothing()
-        .when(battle)
-        .fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
-
-    step.execute(null, delegateBridge);
-
-    verify(delegateBridge).addChange(argThat((Change change) -> !change.isEmpty()));
-    verify(battle).fire(anyString(), any(), any(), any(), any(), anyBoolean(), any(), anyString());
   }
 
   @Test

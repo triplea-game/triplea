@@ -20,4 +20,6 @@ public interface BattleActions {
       RetreatType retreatType,
       IDelegateBridge bridge,
       Collection<Territory> initialAvailableTerritories);
+
+  void fireNavalBombardment(IDelegateBridge bridge);
 }

@@ -9,6 +9,10 @@ import java.util.Collection;
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
 
+  int getBattleRound();
+
+  Territory getBattleSite();
+
   Collection<Unit> getAttackingUnits();
 
   Collection<Unit> getDefendingUnits();
@@ -18,6 +22,8 @@ public interface BattleState {
   Collection<Unit> getOffensiveAa();
 
   Collection<Unit> getDefendingAa();
+
+  Collection<Unit> getBombardingUnits();
 
   GamePlayer getAttacker();
 

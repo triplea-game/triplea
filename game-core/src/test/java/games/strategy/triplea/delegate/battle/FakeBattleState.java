@@ -22,6 +22,12 @@ import lombok.NonNull;
 public class FakeBattleState implements BattleState {
 
   @Getter(onMethod = @__({@Override}))
+  final int battleRound;
+
+  @Getter(onMethod = @__({@Override}))
+  final @NonNull Territory battleSite;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull GamePlayer attacker;
 
   @Getter(onMethod = @__({@Override}))
@@ -54,8 +60,13 @@ public class FakeBattleState implements BattleState {
   @Getter(onMethod = @__({@Override}))
   final Collection<Territory> attackerRetreatTerritories;
 
+  @Getter(onMethod = @__({@Override}))
+  final @NonNull Collection<Unit> bombardingUnits;
+
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
     return FakeBattleState.builder()
+        .battleRound(2)
+        .battleSite(mock(Territory.class))
         .attackingUnits(List.of())
         .defendingUnits(List.of())
         .defendingWaitingToDie(List.of())
@@ -63,6 +74,7 @@ public class FakeBattleState implements BattleState {
         .defender(mock(GamePlayer.class))
         .offensiveAa(List.of())
         .defendingAa(List.of())
+        .bombardingUnits(List.of())
         .gameData(mock(GameData.class))
         .amphibious(false)
         .over(false)

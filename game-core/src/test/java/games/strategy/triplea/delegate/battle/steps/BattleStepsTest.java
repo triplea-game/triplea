@@ -105,6 +105,12 @@ public class BattleStepsTest {
     when(getEmptyOrFriendlySeaNeighbors.apply(any())).thenReturn(Arrays.asList(territories));
   }
 
+  public static Territory givenSeaBattleSite() {
+    final Territory battleSite = mock(Territory.class);
+    when(battleSite.isWater()).thenReturn(true);
+    return battleSite;
+  }
+
   @Value
   public static class UnitAndAttachment {
     private Unit unit;
@@ -231,7 +237,7 @@ public class BattleStepsTest {
 
   private BattleSteps.BattleStepsBuilder newStepBuilder() {
     return BattleSteps.builder()
-        .showFirstRun(true)
+        .battleRound(1)
         .attacker(attacker)
         .defender(defender)
         .offensiveAa(List.of())
@@ -244,7 +250,6 @@ public class BattleStepsTest {
         .gameData(gameData)
         .bombardingUnits(List.of())
         .getDependentUnits(getDependentUnits)
-        .isBattleSiteWater(true)
         .getAttackerRetreatTerritories(getAttackerRetreatTerritories)
         .getEmptyOrFriendlySeaNeighbors(getEmptyOrFriendlySeaNeighbors)
         .battleActions(battleActions)
@@ -275,7 +280,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -296,7 +301,8 @@ public class BattleStepsTest {
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
             .bombardingUnits(List.of(mock(Unit.class)))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
+            .battleRound(1)
             .build()
             .get();
 
@@ -319,10 +325,10 @@ public class BattleStepsTest {
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
-            .showFirstRun(false)
+            .battleRound(2)
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -343,6 +349,7 @@ public class BattleStepsTest {
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
             .bombardingUnits(List.of(mock(Unit.class)))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -372,7 +379,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -395,7 +402,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -413,10 +420,10 @@ public class BattleStepsTest {
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
-            .showFirstRun(false)
+            .battleRound(2)
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -446,7 +453,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -467,6 +474,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -489,7 +497,7 @@ public class BattleStepsTest {
             .offensiveAa(List.of(unit1))
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -520,7 +528,7 @@ public class BattleStepsTest {
             .defendingAa(List.of(unit2))
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -552,7 +560,7 @@ public class BattleStepsTest {
             .defendingAa(List.of(unit2))
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .build()
             .get();
 
@@ -690,6 +698,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -712,6 +721,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -732,6 +742,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -754,6 +765,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1021,6 +1033,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1058,6 +1071,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2, unit4))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1093,6 +1107,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1128,6 +1143,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2, unit4))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1167,6 +1183,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2, unit3))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1204,6 +1221,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1239,6 +1257,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2, unit3))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1273,6 +1292,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1306,6 +1326,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1340,6 +1361,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2, unit3))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1372,6 +1394,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1407,6 +1430,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1630,6 +1654,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1775,6 +1800,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
+            .battleSite(givenSeaBattleSite())
             .build()
             .get();
 
@@ -1800,7 +1826,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(true)
             .build()
             .get();
@@ -1827,7 +1853,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(true)
             .build()
             .get();
@@ -1848,7 +1874,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(true)
             .build()
             .get();
@@ -1876,7 +1902,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(false)
             .build()
             .get();
@@ -1897,7 +1923,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(true)
             .build()
             .get();
@@ -1926,7 +1952,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(true)
             .build()
             .get();
@@ -1952,7 +1978,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(true)
             .build()
             .get();
@@ -1975,7 +2001,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(false)
             .build()
             .get();
@@ -2004,7 +2030,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1, unit3))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(false)
             .build()
             .get();
@@ -2030,7 +2056,7 @@ public class BattleStepsTest {
         newStepBuilder()
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
-            .isBattleSiteWater(false)
+            .battleSite(battleSite)
             .isAmphibious(false)
             .build()
             .get();
