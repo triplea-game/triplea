@@ -8,8 +8,13 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.BattleActions;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.BattleStepStrings;
 import games.strategy.triplea.delegate.battle.MustFightBattle.ReturnFire;
+import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
+import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsStep;
+import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,12 +22,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Get the steps that will occurr in the battle */
 @Builder
-public class BattleSteps implements BattleStepStrings {
+public class BattleSteps implements BattleStepStrings, BattleState {
 
   final @NonNull Boolean canFireOffensiveAa;
   final @NonNull Boolean canFireDefendingAa;
@@ -31,8 +37,13 @@ public class BattleSteps implements BattleStepStrings {
   final @NonNull GamePlayer defender;
   final @NonNull Collection<Unit> offensiveAa;
   final @NonNull Collection<Unit> defendingAa;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> attackingUnits;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingUnits;
+
   final @NonNull Collection<Unit> attackingWaitingToDie;
   final @NonNull Collection<Unit> defendingWaitingToDie;
   final @NonNull Territory battleSite;
@@ -44,8 +55,13 @@ public class BattleSteps implements BattleStepStrings {
   final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories;
   final @NonNull BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>>
       getEmptyOrFriendlySeaNeighbors;
+  final @NonNull BattleActions battleActions;
 
   public List<String> get() {
+
+    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, battleActions);
+    final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this);
+    final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
 
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa) {
@@ -96,6 +112,8 @@ public class BattleSteps implements BattleStepStrings {
             || defendingUnits.stream().anyMatch(Matches.unitIsTransport()))) {
       steps.add(REMOVE_UNESCORTED_TRANSPORTS);
     }
+    steps.addAll(submergeSubsVsOnlyAir.getNames());
+
     final boolean defenderSubsFireFirst =
         SubsChecks.defenderSubsFireFirst(attackingUnits, defendingUnits, gameData);
     final ReturnFire returnFireAgainstAttackingSubs =
@@ -145,13 +163,9 @@ public class BattleSteps implements BattleStepStrings {
             || returnFireAgainstAttackingSubs != ReturnFire.ALL)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
-    // Air units can't attack subs without Destroyers present
-    if (attackingUnits.stream().anyMatch(Matches.unitIsAir())
-        && defendingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
-        && !canAirAttackSubs(defendingUnits, attackingUnits)) {
-      steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
-      steps.add(AIR_ATTACK_NON_SUBS);
-    }
+
+    steps.addAll(airAttackVsNonSubs.getNames());
+
     if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(attacker.getName() + FIRE);
       steps.add(defender.getName() + SELECT_CASUALTIES);
@@ -167,12 +181,7 @@ public class BattleSteps implements BattleStepStrings {
       steps.add(defender.getName() + FIRST_STRIKE_UNITS_FIRE);
       steps.add(attacker.getName() + SELECT_FIRST_STRIKE_CASUALTIES);
     }
-    // Air Units can't attack subs without Destroyers present
-    if (defendingUnits.stream().anyMatch(Matches.unitIsAir())
-        && attackingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
-        && !canAirAttackSubs(attackingUnits, defendingUnitsAliveAndDamaged)) {
-      steps.add(AIR_DEFEND_NON_SUBS);
-    }
+    steps.addAll(airDefendVsNonSubs.getNames());
     if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(defender.getName() + FIRE);
       steps.add(attacker.getName() + SELECT_CASUALTIES);
@@ -233,10 +242,5 @@ public class BattleSteps implements BattleStepStrings {
       }
     }
     return steps;
-  }
-
-  private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
-    return firedAt.stream().noneMatch(Matches.unitCanNotBeTargetedByAll())
-        || firing.stream().anyMatch(Matches.unitIsDestroyer());
   }
 }
