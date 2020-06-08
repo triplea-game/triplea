@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class ArgParserTest extends AbstractClientSettingTestCase {
 
   @AfterEach
-  void teardown() {
+  void tearDown() {
     System.clearProperty(TRIPLEA_GAME);
   }
 
