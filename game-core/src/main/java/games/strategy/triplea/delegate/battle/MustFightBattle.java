@@ -1466,7 +1466,7 @@ public class MustFightBattle extends DependentBattle
     }
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, this);
-    steps.add(submergeSubsVsOnlyAir.getExecutable());
+    steps.add(submergeSubsVsOnlyAir);
     // Each of the original steps were defined as inner anonymous classes, so the order in which
     // they were defined affects their serializing/deserializing since their class name looks like
     // MustFightBattle$5. For save compatibility, we must leave the anonymous classes around, though
@@ -1478,7 +1478,7 @@ public class MustFightBattle extends DependentBattle
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         // if this gets deserialized, then forward the work to the new BattleStep
-        submergeSubsVsOnlyAir.getExecutable().execute(stack, bridge);
+        submergeSubsVsOnlyAir.execute(stack, bridge);
       }
     };
 

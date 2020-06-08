@@ -102,9 +102,8 @@ class SubmergeSubsVsOnlyAirStepTest {
       final boolean expectedSide) {
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    final IExecutable step = underTest.getExecutable();
 
-    step.execute(executionStack, delegateBridge);
+    underTest.execute(executionStack, delegateBridge);
 
     verify(battleActions).submergeUnits(expectedSubmergingSubs, expectedSide, delegateBridge);
   }

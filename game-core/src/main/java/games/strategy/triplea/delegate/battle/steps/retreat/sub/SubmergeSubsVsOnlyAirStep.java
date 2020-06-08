@@ -12,28 +12,29 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Units that canNotBeTargetedByAll can submerge if there are only Air units in the battle */
-public class SubmergeSubsVsOnlyAirStep extends BattleStep {
+@AllArgsConstructor
+public class SubmergeSubsVsOnlyAirStep implements BattleStep {
+
+  private static final long serialVersionUID = 99990L;
+
+  /** The current state of the battle */
+  protected final BattleState battleState;
+
+  /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
+  protected final BattleActions battleActions;
 
   private static final Predicate<Unit> canNotBeTargetedByAllMatch =
       Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
 
-  public SubmergeSubsVsOnlyAirStep(
-      final BattleState battleState, final BattleActions battleActions) {
-    super(battleState, battleActions);
-  }
-
-  @Override
-  public BattleAtomic getExecutable() {
-    return new BattleAtomic() {
-      private static final long serialVersionUID = 99990L;
-    };
-  }
-
   @Override
   public List<String> getNames() {
+    if (!valid()) {
+      return List.of();
+    }
     return List.of(SUBMERGE_SUBS_VS_AIR_ONLY);
   }
 
@@ -44,7 +45,7 @@ public class SubmergeSubsVsOnlyAirStep extends BattleStep {
   }
 
   @Override
-  protected void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+  public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     final Collection<Unit> submergingSubs;
     final boolean defender;
     if (isOnlyAirVsSubs(battleState.getAttackingUnits(), battleState.getDefendingUnits())) {

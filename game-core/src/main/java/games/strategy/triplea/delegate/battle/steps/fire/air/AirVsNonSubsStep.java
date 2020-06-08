@@ -4,25 +4,20 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.util.Collection;
+import lombok.AllArgsConstructor;
 
 /** Air can not attack subs unless a destroyer is present */
-public abstract class AirVsNonSubsStep extends BattleStep {
+@AllArgsConstructor
+public abstract class AirVsNonSubsStep implements BattleStep {
 
-  public AirVsNonSubsStep(final BattleState battleState, final BattleActions battleActions) {
-    super(battleState, battleActions);
-  }
-
-  @Override
-  public BattleAtomic getExecutable() {
-    return null;
-  }
+  /** The current state of the battle */
+  protected final BattleState battleState;
 
   @Override
-  protected void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
+  public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
 
   protected boolean airWillMissSubs(
       final Collection<Unit> firingUnits, final Collection<Unit> firedAtUnits) {

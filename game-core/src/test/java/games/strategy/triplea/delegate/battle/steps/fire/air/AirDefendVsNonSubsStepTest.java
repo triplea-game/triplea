@@ -23,8 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AirDefendVsNonSubsStepTest {
 
-  @Mock BattleActions battleActions;
-
   @Test
   @DisplayName("valid() is true if defender has air and no destroyer and attacker has sub")
   void airVsSub() {
@@ -37,7 +35,7 @@ class AirDefendVsNonSubsStepTest {
             .attackingUnits(List.of(defender1, defender2))
             .defendingUnits(List.of(attacker))
             .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
+    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState);
     assertThat(underTest.valid(), is(true));
   }
 
@@ -54,7 +52,7 @@ class AirDefendVsNonSubsStepTest {
             .attackingUnits(List.of(defender1, defender2))
             .defendingUnits(List.of(attacker))
             .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
+    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState);
     assertThat(underTest.valid(), is(false));
   }
 
@@ -70,7 +68,7 @@ class AirDefendVsNonSubsStepTest {
             .attackingUnits(List.of(defender1, defender2))
             .defendingUnits(List.of(attacker))
             .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState, battleActions);
+    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState);
     assertThat(underTest.valid(), is(false));
   }
 }

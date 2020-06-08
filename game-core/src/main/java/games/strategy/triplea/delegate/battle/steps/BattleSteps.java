@@ -60,8 +60,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   public List<String> get() {
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, battleActions);
-    final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this, battleActions);
-    final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this, battleActions);
+    final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this);
+    final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
 
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa) {
