@@ -35,3 +35,50 @@
     password: "{{ postgres_user_db_password }}"
     encrypted: yes
 
+
+- name: Create user on DB for application use
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ lobby_db_user }}"
+    password: "{{ lobby_db_password }}"
+    login_password: "{{ lobby_db_password }}"
+    encrypted: yes
+    state: "present"
+
+- name: Ensure database is created
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ lobby_db_name }}"
+    owner: "{{ lobby_db_user }}"
+
+- name: Ensure user has access to the database
+  become: true
+  become_user: postgres
+  postgresql_user:
+    db: "{{ lobby_db_name }}"
+    name: "{{ lobby_db_user }}"
+    password: "{{ lobby_db_password }}"
+    login_password: "{{ lobby_db_password }}"
+    encrypted: yes
+    priv: "ALL"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
+    state: "present"
+
+- name: check if password is valid
+  shell: echo "select 1" |  psql -h localhost -U {{ lobby_db_user }} {{ lobby_db_name }}
+  environment:
+    PGPASSWORD: "{{ lobby_db_password }}"
+  register: password_check
+  changed_when: false
+
+# This is a hack because the previous tasks were supposed to set
+# the DB level password for our DB user, but it typically does not.
+# To achieve this, we'll run the native SQL commands to set the
+# user DB password.
+- name: "Hack, set password of {{ lobby_db_user }}"
+  when: password_check.rc != 0
+  shell: echo "alter role {{ lobby_db_user }} with password '{{ lobby_db_password }}';"  | sudo -u postgres psql
+  become_user: postgres
+
