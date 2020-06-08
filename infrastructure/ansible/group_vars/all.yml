@@ -4,7 +4,6 @@
 ansible_connection: ssh
 ansible_user: root
 
-java_open_jdk_version_major: "11"
 lobby_db_name: lobby_db
 lobby_db_user: lobby_user
 
