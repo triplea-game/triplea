@@ -2,9 +2,7 @@
   become: true
   apt:
     state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
+    name:
       - bash
       - openssl
       - libssl-dev
