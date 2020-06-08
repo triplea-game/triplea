@@ -11,9 +11,9 @@
     - security
 
 - hosts: postgresHosts
+  tags: postgres
   roles:
     - postgres
-    - lobby_database
     - flyway
 
 - hosts: dropwizardHosts
