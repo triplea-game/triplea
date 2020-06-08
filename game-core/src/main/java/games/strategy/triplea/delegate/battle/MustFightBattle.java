@@ -27,9 +27,11 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySortingUtil;
+import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
+import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -55,7 +57,8 @@ import org.triplea.util.Tuple;
 
 /** Handles logic for battles in which fighting actually occurs. */
 @Log
-public class MustFightBattle extends DependentBattle implements BattleStepStrings {
+public class MustFightBattle extends DependentBattle
+    implements BattleStepStrings, BattleActions, BattleState {
 
   /** Determines whether casualties can return fire for various battle phases. */
   public enum ReturnFire {
@@ -149,16 +152,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * action of this type.
    */
   public abstract static class RemoveUndefendedTransports implements IExecutable {
-    private static final long serialVersionUID = 1369227461759133105L;
-  }
-
-  /**
-   * An action representing submerging subs vs only air.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class SubmergeSubsVsOnlyAir implements IExecutable {
     private static final long serialVersionUID = 1369227461759133105L;
   }
 
@@ -907,6 +900,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         .isAmphibious(isAmphibious)
         .getAttackerRetreatTerritories(this::getAttackerRetreatTerritories)
         .getEmptyOrFriendlySeaNeighbors(this::getEmptyOrFriendlySeaNeighbors)
+        .battleActions(this)
         .build()
         .get();
   }
@@ -1470,16 +1464,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             }
           });
     }
-    // Submerge subs if -vs air only & air restricted from attacking subs
-    steps.add(
-        new SubmergeSubsVsOnlyAir() {
-          private static final long serialVersionUID = 99990L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            submergeSubsVsOnlyAir(bridge);
-          }
-        });
+    final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, this);
+    steps.add(submergeSubsVsOnlyAir);
+    // Each of the original steps were defined as inner anonymous classes, so the order in which
+    // they were defined affects their serializing/deserializing since their class name looks like
+    // MustFightBattle$5. For save compatibility, we must leave the anonymous classes around, though
+    // they don't need to be added to the steps. They can be removed once save compatibility can be
+    // broken.
+    new IExecutable() {
+      private static final long serialVersionUID = 99990L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // if this gets deserialized, then forward the work to the new BattleStep
+        submergeSubsVsOnlyAir.execute(stack, bridge);
+      }
+    };
+
     final ReturnFire returnFireAgainstAttackingSubs =
         SubsChecks.returnFireAgainstAttackingSubs(attackingUnits, defendingUnits, gameData);
     final ReturnFire returnFireAgainstDefendingSubs =
@@ -1696,29 +1698,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft) {
       remove(unitsToKill, bridge, battleSite, !attacker);
-    }
-  }
-
-  /** Submerge attacking/defending subs if they're alone OR with transports against only air. */
-  private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
-    // if All attackers are AIR, submerge any defending subs
-    final Predicate<Unit> subMatch =
-        Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
-    if (!attackingUnits.isEmpty()
-        && attackingUnits.stream().allMatch(Matches.unitIsAir())
-        && defendingUnits.stream().anyMatch(subMatch)) {
-      // Get all defending subs (including allies) in the territory
-      final List<Unit> defendingSubs = CollectionUtils.getMatches(defendingUnits, subMatch);
-      // submerge defending subs
-      submergeUnits(defendingSubs, true, bridge);
-      // checking defending air on attacking subs
-    } else if (!defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitIsAir())
-        && attackingUnits.stream().anyMatch(subMatch)) {
-      // Get all attacking subs in the territory
-      final List<Unit> attackingSubs = CollectionUtils.getMatches(attackingUnits, subMatch);
-      // submerge attacking subs
-      submergeUnits(attackingSubs, false, bridge);
     }
   }
 
@@ -2223,8 +2202,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  @VisibleForTesting
-  protected void submergeUnits(
+  @Override
+  public void submergeUnits(
       final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge) {
     final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
     final Collection<Unit> units = defender ? defendingUnits : attackingUnits;

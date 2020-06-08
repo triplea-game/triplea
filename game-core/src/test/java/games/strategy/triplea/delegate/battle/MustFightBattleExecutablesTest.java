@@ -14,11 +14,10 @@ import static games.strategy.triplea.Constants.WW2V3;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.LAND;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.WATER;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnit;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
-import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.newUnitAndAttachment;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -197,7 +196,7 @@ class MustFightBattleExecutablesTest {
     final MutableProperty<Boolean> alreadyMovedProperty = MutableProperty.ofReadOnly(() -> true);
     doReturn(alreadyMovedProperty).when(unit1).getPropertyOrThrow(ALREADY_MOVED);
 
-    final Unit unit2 = givenUnit();
+    final Unit unit2 = givenAnyUnit();
     when(unit2.getOwner()).thenReturn(defender);
 
     battle.setUnits(List.of(unit2), List.of(), List.of(unit1), List.of(), defender, List.of());
@@ -238,7 +237,7 @@ class MustFightBattleExecutablesTest {
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
 
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     when(unit1.getOwner()).thenReturn(attacker);
     final Unit unit3 = givenUnitAirTransport();
     when(unit3.getOwner()).thenReturn(attacker);
@@ -299,7 +298,7 @@ class MustFightBattleExecutablesTest {
     when(attacker.getTechAttachment()).thenReturn(techAttachment);
     when(techAttachment.getParatroopers()).thenReturn(true);
 
-    final Unit unit1 = givenUnit();
+    final Unit unit1 = givenAnyUnit();
     when(unit1.getOwner()).thenReturn(attacker);
     final Unit unit3 = givenUnitAirTransport();
     when(unit3.getOwner()).thenReturn(attacker);
@@ -476,7 +475,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
 
     // it doesn't even check if the unit can evade
-    final Unit unit = givenUnit();
+    final Unit unit = givenAnyUnit();
     when(unit.getOwner()).thenReturn(attacker);
 
     final Unit destroyer = givenUnitDestroyer();
@@ -508,7 +507,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(false);
 
     // it doesn't even check if the unit can evade
-    final Unit unit = givenUnit();
+    final Unit unit = givenAnyUnit();
     when(unit.getOwner()).thenReturn(attacker);
 
     battle.setUnits(List.of(), List.of(unit), List.of(), List.of(), defender, List.of());
@@ -538,7 +537,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(false);
 
     // it doesn't even check if the unit can evade
-    final Unit unit = givenUnit();
+    final Unit unit = givenAnyUnit();
     when(unit.getOwner()).thenReturn(attacker);
 
     final Unit transport = givenUnitTransport();
@@ -573,7 +572,7 @@ class MustFightBattleExecutablesTest {
     when(unit.getOwner()).thenReturn(attacker);
 
     // it won't even check if the unit is a transport
-    final Unit transport = givenUnit();
+    final Unit transport = givenAnyUnit();
 
     battle.setUnits(List.of(transport), List.of(unit), List.of(), List.of(), defender, List.of());
     final List<IExecutable> execs = battle.getBattleExecutables(true);
@@ -710,7 +709,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
 
     // it doesn't even check if the unit can evade
-    final Unit canEvadeUnit = givenUnit();
+    final Unit canEvadeUnit = givenAnyUnit();
     when(canEvadeUnit.getOwner()).thenReturn(defender);
 
     final Unit destroyer = givenUnitDestroyer();
@@ -743,7 +742,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUBMERSIBLE_SUBS, false)).thenReturn(false);
 
     // it doesn't even check if the unit can evade
-    final Unit unit = givenUnit();
+    final Unit unit = givenAnyUnit();
     when(unit.getOwner()).thenReturn(attacker);
 
     battle.setUnits(List.of(), List.of(unit), List.of(), List.of(), defender, List.of());
@@ -894,7 +893,7 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
-    final Unit unit = givenUnit();
+    final Unit unit = givenAnyUnit();
     when(unit.getOwner()).thenReturn(attacker);
 
     battle.setUnits(List.of(), List.of(unit), List.of(), List.of(), defender, List.of());
@@ -1135,8 +1134,8 @@ class MustFightBattleExecutablesTest {
           .thenReturn(defendingSubsSneakAttack);
     }
 
-    final Unit attackerUnit = attackerDestroyer ? givenUnitDestroyer() : givenUnit();
-    final Unit defenderUnit = defenderDestroyer ? givenUnitDestroyer() : givenUnit();
+    final Unit attackerUnit = attackerDestroyer ? givenUnitDestroyer() : givenAnyUnit();
+    final Unit defenderUnit = defenderDestroyer ? givenUnitDestroyer() : givenAnyUnit();
 
     battle.setUnits(
         List.of(defenderUnit), List.of(attackerUnit), List.of(), List.of(), defender, List.of());
@@ -1602,69 +1601,5 @@ class MustFightBattleExecutablesTest {
         givenFirstStrikeBattleSetup(false, false, false, false, false),
         MustFightBattle.ReturnFire.ALL,
         false);
-  }
-
-  @Test
-  @DisplayName("Verify attacking canNotBeTargetedByAll can submerge if all is air")
-  void attackingCanNotBeTargetedByAllCanSubmergeWithAllAir() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit1 = unitAndAttachment.getFirst();
-    when(unit1.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
-    when(attachment1.getCanEvade()).thenReturn(true);
-
-    final Unit unit3 = givenUnitDestroyer();
-
-    final Unit unit2 = givenUnitIsAir();
-    when(unit2.getOwner()).thenReturn(defender);
-
-    when(attachment1.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
-
-    battle.setUnits(
-        List.of(unit2), List.of(unit1, unit3), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);
-    final IExecutable step = execs.get(index);
-
-    doNothing().when(battle).submergeUnits(any(), anyBoolean(), any());
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(battle).submergeUnits(List.of(unit1), false, delegateBridge);
-  }
-
-  @Test
-  @DisplayName("Verify defending canNotBeTargetedByAll can submerge if all is air")
-  void defendingCanNotBeTargetedByAllCanSubmergeWithAllAir() {
-    final MustFightBattle battle = spy(newBattle(WATER));
-
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit1 = unitAndAttachment.getFirst();
-    when(unit1.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
-    when(attachment1.getCanEvade()).thenReturn(true);
-
-    final Unit unit3 = givenUnitDestroyer();
-
-    final Unit unit2 = givenUnitIsAir();
-    when(unit2.getOwner()).thenReturn(attacker);
-
-    when(attachment1.getCanNotBeTargetedBy()).thenReturn(Set.of(mock(UnitType.class)));
-
-    battle.setUnits(
-        List.of(unit1, unit3), List.of(unit2), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
-
-    final int index = getIndex(execs, MustFightBattle.SubmergeSubsVsOnlyAir.class);
-    final IExecutable step = execs.get(index);
-
-    doNothing().when(battle).submergeUnits(any(), anyBoolean(), any());
-    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    step.execute(null, delegateBridge);
-
-    verify(battle).submergeUnits(List.of(unit1), true, delegateBridge);
   }
 }
