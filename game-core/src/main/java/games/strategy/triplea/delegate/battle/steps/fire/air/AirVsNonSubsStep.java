@@ -15,9 +15,10 @@ public abstract class AirVsNonSubsStep implements BattleStep {
 
   protected final BattleState battleState;
 
-  /** Don't do anything because this step is only a visual indicator in the BattleUI */
   @Override
-  public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {}
+  public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    // Don't do anything because this step is only a visual indicator in the BattleUI
+  }
 
   protected boolean airWillMissSubs(
       final Collection<Unit> firingUnits, final Collection<Unit> firedAtUnits) {
