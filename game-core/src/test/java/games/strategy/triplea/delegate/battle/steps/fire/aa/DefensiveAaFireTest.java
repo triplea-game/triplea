@@ -1,7 +1,9 @@
 package games.strategy.triplea.delegate.battle.steps.fire.aa;
 
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitWithTypeAa;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -33,6 +35,11 @@ class DefensiveAaFireTest {
       final String displayName, final BattleState battleState, final boolean expected) {
     final DefensiveAaFire underTest = new DefensiveAaFire(battleState, battleActions);
     assertThat(underTest.valid(), is(expected));
+    if (expected) {
+      assertThat(underTest.getNames(), hasSize(3));
+    } else {
+      assertThat(underTest.getNames(), hasSize(0));
+    }
   }
 
   static List<Arguments> testWhatIsValid() {
@@ -41,14 +48,16 @@ class DefensiveAaFireTest {
             "No Defensive Aa", givenBattleStateBuilder().defendingAa(List.of()).build(), false),
         Arguments.of(
             "Some Defensive Aa",
-            givenBattleStateBuilder().defendingAa(List.of(mock(Unit.class))).build(),
+            givenBattleStateBuilder().defendingAa(List.of(givenUnitWithTypeAa())).build(),
             true));
   }
 
   @Test
   void testFiringAaGuns() {
     final DefensiveAaFire underTest =
-        new DefensiveAaFire(givenBattleStateBuilder().build(), battleActions);
+        new DefensiveAaFire(
+            givenBattleStateBuilder().defendingAa(List.of(mock(Unit.class))).build(),
+            battleActions);
 
     underTest.execute(executionStack, delegateBridge);
 

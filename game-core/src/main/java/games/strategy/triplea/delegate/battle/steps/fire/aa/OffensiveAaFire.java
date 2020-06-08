@@ -8,9 +8,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
 
-/**
- * Offensive Aa units can fire and the player can select their casualties
- */
+/** Offensive Aa units can fire and the player can select their casualties */
 public class OffensiveAaFire extends AaFireAndCasualtyStep {
   private static final long serialVersionUID = 5843852442617511691L;
 
