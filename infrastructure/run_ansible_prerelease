@@ -32,7 +32,7 @@ fi
 function main() {
   buildArtifacts
   addPrivateSshKeyToAgent
-  runDeployment
+  runDeployment "$@"
 }
 
 function buildArtifacts() {
@@ -68,5 +68,5 @@ function runDeployment() {
    ansible/site.yml
 }
 
-main
+main "$@"
 
