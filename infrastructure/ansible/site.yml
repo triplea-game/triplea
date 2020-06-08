@@ -5,53 +5,37 @@
 
 - hosts: all
   roles:
-    - role: apt_update
-      tags:
-        - bot
-        - nginx
-        - http_server
-    - name: admin_user
-      tags: [ admin_user, bots ]
-    - name: firewall
-      tags: [ firewall ]
-    - name: security
-      tags: [ security ]
+    - apt_update
+    - admin_user
+    - firewall
+    - security
 
 - hosts: postgresHosts
   roles:
-    - role: postgres
-      tags: [ postgres ]
-    - role: lobby_database
-      tags: [ lobby_database ]
-    - role: flyway
-      tags: [ flyway ]
+    - postgres
+    - lobby_database
+    - flyway
 
 - hosts: dropwizardHosts
   tags: lobby
   roles:
-    - role: java
-      tags: [ java ]
-    - role: http_server
-      tags: [ http_server ]
-    - role: nginx
-      tags: [ nginx ]
-    - role: postfix
-      tags: [ postfix ]
+    - java
+    - http_server
+    - nginx
+    - postfix
 
 - hosts: letsEncrypt
   tags: lobby
   roles:
     - role: certbot
-      tags: [ certbot ]
     # Re-run nginx role to fix configuration and do final restart.
     # Modifications to /etc/nginx/sites-enabled/default triggers a NGINX restart.
     # Certbot role adds a new line to /etc/nginx/sites-enabled/default
     # every time it runs and makes changes.
-    - role: nginx
-      tags: [ certbot ]
+    - nginx
 
 - hosts: botHosts
-  tags: bots
+  tags: [bot, bots]
   roles:
     - admin_user
     - firewall
