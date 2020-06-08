@@ -73,13 +73,9 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
 
     final List<String> steps = new ArrayList<>();
-    if (offensiveAaStep.valid()) {
-      steps.addAll(offensiveAaStep.getNames());
-    }
+    steps.addAll(offensiveAaStep.getNames());
 
-    if (defensiveAaStep.valid()) {
-      steps.addAll(defensiveAaStep.getNames());
-    }
+    steps.addAll(defensiveAaStep.getNames());
 
     if (showFirstRun) {
       if (!isBattleSiteWater && !bombardingUnits.isEmpty()) {

@@ -10,9 +10,6 @@ import java.util.Collection;
 
 /**
  * Offensive Aa units can fire and the player can select their casualties
- *
- * <p>This step always occurs at the start of the battle so PRE_ROUND and IN_ROUND checks are the
- * same
  */
 public class OffensiveAaFire extends AaFireAndCasualtyStep {
   private static final long serialVersionUID = 5843852442617511691L;
@@ -23,7 +20,9 @@ public class OffensiveAaFire extends AaFireAndCasualtyStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    battleActions.fireOffensiveAaGuns();
+    if (valid()) {
+      battleActions.fireOffensiveAaGuns();
+    }
   }
 
   @Override
