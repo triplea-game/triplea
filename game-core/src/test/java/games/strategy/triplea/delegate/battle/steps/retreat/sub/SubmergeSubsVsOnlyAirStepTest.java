@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvadeAndCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -38,6 +39,11 @@ class SubmergeSubsVsOnlyAirStepTest {
     final SubmergeSubsVsOnlyAirStep underTest =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(underTest.valid(), is(expected));
+    if (expected) {
+      assertThat(underTest.getNames(), hasSize(1));
+    } else {
+      assertThat(underTest.getNames(), hasSize(0));
+    }
   }
 
   static List<Arguments> testWhatIsValid() {

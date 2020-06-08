@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
@@ -13,60 +14,51 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AirDefendVsNonSubsStepTest {
 
-  @Test
-  @DisplayName("valid() is true if defender has air and no destroyer and attacker has sub")
-  void airVsSub() {
-    final Unit defender1 = givenUnit();
-    final Unit defender2 = givenUnitIsAir();
-    final Unit attacker = givenUnitCanNotBeTargetedBy(mock(UnitType.class));
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(defender1, defender2))
-            .defendingUnits(List.of(attacker))
-            .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState);
-    assertThat(underTest.valid(), is(true));
+  @ParameterizedTest(name = "[{index}] {0} is {2}")
+  @MethodSource
+  void testWhatIsValid(
+      final String displayName, final BattleState battleState, final boolean expected) {
+    final AirDefendVsNonSubsStep underTest = new AirDefendVsNonSubsStep(battleState);
+    assertThat(underTest.valid(), is(expected));
+    if (expected) {
+      assertThat(underTest.getNames(), hasSize(1));
+    } else {
+      assertThat(underTest.getNames(), hasSize(0));
+    }
   }
 
-  @Test
-  @DisplayName("valid() is false if defender has air and destroyer")
-  void airDestroyerVsAnything() {
-    final Unit defender1 = givenUnitDestroyer();
-    final Unit defender2 = givenUnitIsAir();
-    // once a destroyer is around, it doesn't care about the attacker units
-    final Unit attacker = mock(Unit.class);
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(defender1, defender2))
-            .defendingUnits(List.of(attacker))
-            .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState);
-    assertThat(underTest.valid(), is(false));
-  }
-
-  @Test
-  @DisplayName("valid() is false if defender has air and no destroyer and attacker has no sub")
-  void airVsOther() {
-    final Unit defender1 = givenUnit();
-    final Unit defender2 = givenUnitIsAir();
-    final Unit attacker = givenUnit();
-
-    final BattleState battleState =
-        givenBattleState()
-            .attackingUnits(List.of(defender1, defender2))
-            .defendingUnits(List.of(attacker))
-            .build();
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState);
-    assertThat(underTest.valid(), is(false));
+  static List<Arguments> testWhatIsValid() {
+    return List.of(
+        Arguments.of(
+            "Defender has air units and no destroyers vs Attacker subs",
+            givenBattleState()
+                .attackingUnits(List.of(givenUnitCanNotBeTargetedBy(mock(UnitType.class))))
+                .defendingUnits(List.of(givenUnit(), givenUnitIsAir()))
+                .build(),
+            true),
+        Arguments.of(
+            "Defender has air units and destroyers",
+            givenBattleState()
+                // once a destroyer is around, it doesn't care about whether a sub exists or not
+                .attackingUnits(List.of(mock(Unit.class)))
+                .defendingUnits(List.of(givenUnitDestroyer(), givenUnitIsAir()))
+                .build(),
+            false),
+        Arguments.of(
+            "Defender has air units but no destroyers vs Attacker with no subs",
+            givenBattleState()
+                .attackingUnits(List.of(givenUnit()))
+                .defendingUnits(List.of(givenUnit(), givenUnitIsAir()))
+                .build(),
+            false));
   }
 }
