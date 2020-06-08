@@ -34,7 +34,7 @@ jobs:
 
     - stage: Verify
       name: "Tests: Compatibility Checks"
-      script: [ $VERIFY_STAGE/compatibility-testing/run || $REPORT_FAIL "compatibility tests" ]
+      script: [ (travis_retry $VERIFY_STAGE/compatibility-testing/run) || $REPORT_FAIL "compatibility tests" ]
 
     - stage: Verify
       name: "Analysis: PMD Verification"
