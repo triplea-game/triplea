@@ -1099,6 +1099,9 @@ public class MustFightBattle extends DependentBattle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // if this gets deserialized, then forward the work to the new BattleStep
+        final BattleStep offensiveAaStep =
+            new OffensiveAaFire(MustFightBattle.this, MustFightBattle.this);
         offensiveAaStep.execute(stack, bridge);
       }
     };
@@ -1111,6 +1114,9 @@ public class MustFightBattle extends DependentBattle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        // if this gets deserialized, then forward the work to the new BattleStep
+        final BattleStep defensiveAaStep =
+            new DefensiveAaFire(MustFightBattle.this, MustFightBattle.this);
         defensiveAaStep.execute(stack, bridge);
       }
     };
@@ -1482,6 +1488,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         // if this gets deserialized, then forward the work to the new BattleStep
+        final BattleStep submergeSubsVsOnlyAir =
+            new SubmergeSubsVsOnlyAirStep(MustFightBattle.this, MustFightBattle.this);
         submergeSubsVsOnlyAir.execute(stack, bridge);
       }
     };
