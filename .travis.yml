@@ -4,7 +4,7 @@ sudo: false
 language: java
 jdk: openjdk11
 cache: { directories: [ ".gradle", "~/.gradle/caches" ] }
-install: skip travis_retry
+install: skip
 
 env:
   global:
