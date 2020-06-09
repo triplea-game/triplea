@@ -56,13 +56,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.util.Tuple;
 
 @ExtendWith(MockitoExtension.class)
 public class BattleStepsTest {
@@ -107,102 +107,108 @@ public class BattleStepsTest {
     when(getEmptyOrFriendlySeaNeighbors.apply(any(), any())).thenReturn(Arrays.asList(territories));
   }
 
-  public static Tuple<Unit, UnitAttachment> newUnitAndAttachment() {
+  @Value
+  public static class UnitAndAttachment {
+    private Unit unit;
+    private UnitAttachment unitAttachment;
+  }
+
+  public static UnitAndAttachment newUnitAndAttachment() {
     final Unit unit = mock(Unit.class);
     final UnitType unitType = mock(UnitType.class);
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
     when(unit.getType()).thenReturn(unitType);
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
-    return Tuple.of(unit, unitAttachment);
+    return new UnitAndAttachment(unit, unitAttachment);
   }
 
   public static Unit givenAnyUnit() {
-    return newUnitAndAttachment().getFirst();
+    return newUnitAndAttachment().unit;
   }
 
   public static Unit givenUnitCanEvade() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitAttackerFirstStrike() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitAttackerFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitCanEvadeAndCanNotBeTargetedByRandomUnit() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy())
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanNotBeTargetedBy())
         .thenReturn(Set.of(mock(UnitType.class)));
-    return unitAndAttachment.getFirst();
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitCanNotBeTargetedBy(final UnitType otherType) {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitDefenderFirstStrike() {
     final UnitType canNotTargetType = mock(UnitType.class);
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanNotTarget()).thenReturn(Set.of(canNotTargetType));
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanNotTarget()).thenReturn(Set.of(canNotTargetType));
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitDefenderFirstStrikeCanNotBeTargetedBy(final UnitType otherType) {
     final UnitType canNotTargetType = mock(UnitType.class);
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getIsFirstStrike()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanEvade()).thenReturn(true);
-    when(unitAndAttachment.getSecond().getCanNotTarget()).thenReturn(Set.of(canNotTargetType));
-    when(unitAndAttachment.getSecond().getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsFirstStrike()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanEvade()).thenReturn(true);
+    when(unitAndAttachment.unitAttachment.getCanNotTarget()).thenReturn(Set.of(canNotTargetType));
+    when(unitAndAttachment.unitAttachment.getCanNotBeTargetedBy()).thenReturn(Set.of(otherType));
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitDestroyer() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getIsDestroyer()).thenReturn(true);
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsDestroyer()).thenReturn(true);
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitTransport() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getTransportCapacity()).thenReturn(2);
-    when(unitAndAttachment.getSecond().getIsSea()).thenReturn(true);
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getTransportCapacity()).thenReturn(2);
+    when(unitAndAttachment.unitAttachment.getIsSea()).thenReturn(true);
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitAirTransport() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getIsAirTransport()).thenReturn(true);
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsAirTransport()).thenReturn(true);
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitWithTypeAa() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getTypeAa()).thenReturn("AntiAirGun");
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getTypeAa()).thenReturn("AntiAirGun");
+    return unitAndAttachment.unit;
   }
 
   public static Unit givenUnitIsAir() {
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    when(unitAndAttachment.getSecond().getIsAir()).thenReturn(true);
-    return unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    when(unitAndAttachment.unitAttachment.getIsAir()).thenReturn(true);
+    return unitAndAttachment.unit;
   }
 
   @SafeVarargs
@@ -799,8 +805,8 @@ public class BattleStepsTest {
   void unescortedAttackingTransportsAreNotRemovedWhenCasualtiesAreNotRestricted() {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit1 = unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    final Unit unit1 = unitAndAttachment.unit;
     final Unit unit2 = givenAnyUnit();
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -813,7 +819,7 @@ public class BattleStepsTest {
             .get();
 
     assertThat(steps, is(basicFightSteps()));
-    verify(unitAndAttachment.getSecond(), never()).getTransportCapacity();
+    verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
   }
 
   @Test
@@ -842,8 +848,8 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerNoRetreatTerritories();
     final Unit unit1 = givenAnyUnit();
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment.unit;
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);
@@ -855,7 +861,7 @@ public class BattleStepsTest {
             .get();
 
     assertThat(steps, is(basicFightSteps()));
-    verify(unitAndAttachment.getSecond(), never()).getTransportCapacity();
+    verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
   }
 
   @Test
@@ -1814,8 +1820,8 @@ public class BattleStepsTest {
     givenPlayers();
     givenAttackerRetreatTerritories(battleSite);
     final Unit unit1 = givenUnitAttackerFirstStrike();
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment.unit;
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -1838,7 +1844,7 @@ public class BattleStepsTest {
                 REMOVE_CASUALTIES,
                 attacker.getName() + SUBS_WITHDRAW,
                 attacker.getName() + ATTACKER_WITHDRAW)));
-    verify(unitAndAttachment.getSecond(), never()).getTransportCapacity();
+    verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
   }
 
   @Test
