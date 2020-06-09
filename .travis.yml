@@ -32,10 +32,9 @@ jobs:
       addons: {postgresql: "10"}
       script: [ $VERIFY_STAGE/smoke-testing/run || $REPORT_FAIL "smoke tests" ]
 
-    
     - stage: Verify
       name: "Tests: Compatibility Checks"
-      script: [ $VERIFY_STAGE/compatibility-testing/run || $REPORT_FAIL "compatibility tests" ]
+      script: [ (travis_retry $VERIFY_STAGE/compatibility-testing/run) || $REPORT_FAIL "compatibility tests" ]
 
     - stage: Verify
       name: "Analysis: PMD Verification"
@@ -51,7 +50,7 @@ jobs:
     
     - stage: Verify
       name: "Analysis: Check Links and YAML Syntax"
-      script: [ $VERIFY_STAGE/check-links-and-yaml-syntax/run || $REPORT_FAIL "valid links and yaml" ]
+      script: [ (travis_retry $VERIFY_STAGE/check-links-and-yaml-syntax/run) || $REPORT_FAIL "valid links and yaml" ]
       
     - stage: Verify
       name: "Analysis: Code Convention Checks"
