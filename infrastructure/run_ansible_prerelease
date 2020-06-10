@@ -36,7 +36,10 @@ function main() {
 }
 
 function buildArtifacts() {
-  ../gradlew :http-server:shadowJar :game-headless:shadowJar :lobby-db:release
+  (
+    cd ..
+    ./gradlew :http-server:shadowJar :game-headless:shadowJar :lobby-db:release
+  )
   copyBuildArtifact "../lobby-db/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
   copyBuildArtifact "../http-server/build/artifacts/triplea-http-server-$VERSION.jar" "ansible/roles/http_server/files/"
   copyBuildArtifact "../game-headless/build/artifacts/triplea-game-headless-$VERSION.jar" "ansible/roles/bot/files/"
