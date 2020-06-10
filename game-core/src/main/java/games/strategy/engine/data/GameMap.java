@@ -431,7 +431,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match EXCEPT FOR THE END
    */
-  public int getDistance_IgnoreEndForCondition(
+  public int getDistanceIgnoreEndForCondition(
       final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     return getDistance(t1, t2, Matches.territoryIs(t2).or(cond));
   }

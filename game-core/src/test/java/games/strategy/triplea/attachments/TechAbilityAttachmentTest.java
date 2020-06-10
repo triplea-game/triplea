@@ -55,7 +55,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testSplitAndValidate_emptyString() {
+  void splitAndValidateWithEmptyString() {
     final Exception e =
         assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, ""));
     assertTrue(e.getMessage().contains(name));
@@ -63,7 +63,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testSplitAndValidate_invalidLength() {
+  void splitAndValidateWithInvalidLength() {
     final Exception e =
         assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, "a:b:c"));
     assertTrue(e.getMessage().contains(name));
@@ -71,14 +71,14 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testSplitAndValidate_oneValue() throws Exception {
+  void splitAndValidateWithOneValue() throws Exception {
     final String[] result = attachment.splitAndValidate(name, "a");
     assertEquals(1, result.length);
     assertEquals("a", result[0]);
   }
 
   @Test
-  void testSplitAndValidate_twoValues() throws Exception {
+  void splitAndValidateWithTwoValues() throws Exception {
     final String[] result = attachment.splitAndValidate(name, "a:b");
     assertEquals(2, result.length);
     assertEquals("a", result[0]);
@@ -86,7 +86,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testGetIntInRange_noInt() {
+  void getIntInRangeWithNoInt() {
     final Exception e1 =
         assertThrows(
             IllegalArgumentException.class, () -> attachment.getIntInRange(name, "NaN", 10, false));
@@ -100,7 +100,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testGetIntInRange_tooHigh() {
+  void getIntInRangeWithTooHigh() {
     final Exception e =
         assertThrows(
             GameParseException.class, () -> attachment.getIntInRange(name, "20", 10, false));
@@ -111,7 +111,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testGetIntInRange_negativeNoUndefined() {
+  void getIntInRangeWithNegativeNoUndefined() {
     final Exception e =
         assertThrows(
             GameParseException.class, () -> attachment.getIntInRange(name, "-1", 10, false));
@@ -122,7 +122,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testGetIntInRange_negativeUndefined() {
+  void getIntInRangeWithNegativeUndefined() {
     final Exception e =
         assertThrows(
             GameParseException.class, () -> attachment.getIntInRange(name, "-2", 10, true));
@@ -133,7 +133,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testGetIntInRange_validValues() throws Exception {
+  void getIntInRangeWithValidValues() throws Exception {
     assertEquals(-1, attachment.getIntInRange(name, "-1", 10, true));
     assertEquals(10, attachment.getIntInRange(name, "10", 10, true));
     assertEquals(0, attachment.getIntInRange(name, "0", 10, false));
@@ -141,14 +141,14 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testGetUnitType() throws Exception {
+  void getUnitType() throws Exception {
     assertEquals(dummyUnitType, attachment.getUnitType(testUnitType));
     verify(list).getUnitType(testUnitType);
     verify(list).getUnitType(any());
   }
 
   @Test
-  void testGetUnitType_noValue() {
+  void getUnitTypeWithNoValue() {
     final String test = "someNonExistentKey";
     final Exception e = assertThrows(GameParseException.class, () -> attachment.getUnitType(test));
     verify(list).getUnitType(test);
@@ -157,7 +157,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testApplyCheckedValue() throws Exception {
+  void applyCheckedValue() throws Exception {
     final Map<UnitType, Integer> map = new HashMap<>();
     attachment.applyCheckedValue(name, "1:" + testUnitType, map::put);
     assertEquals(1, map.size());
@@ -165,7 +165,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testSumIntegerMap() {
+  void sumIntegerMap() {
     @SuppressWarnings("unchecked")
     final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper = mock(Function.class);
     doReturn(
@@ -180,7 +180,7 @@ class TechAbilityAttachmentTest {
   }
 
   @Test
-  void testSumNumbers() {
+  void sumNumbers() {
     final AtomicInteger counter = new AtomicInteger(1);
     final int result =
         TechAbilityAttachment.sumNumbers(
