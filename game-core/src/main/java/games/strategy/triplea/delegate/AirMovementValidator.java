@@ -164,7 +164,7 @@ public final class AirMovementValidator {
     return result;
   }
 
-  private static LinkedHashMap<Unit, BigDecimal> getMovementLeftForValidatingAir(
+  private static Map<Unit, BigDecimal> getMovementLeftForValidatingAir(
       final Collection<Unit> airBeingValidated, final GamePlayer player, final Route route) {
     final LinkedHashMap<Unit, BigDecimal> map = new LinkedHashMap<>();
     for (final Unit unit : airBeingValidated) {

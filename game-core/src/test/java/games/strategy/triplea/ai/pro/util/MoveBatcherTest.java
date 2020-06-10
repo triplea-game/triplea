@@ -15,7 +15,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.xml.TestMapGameData;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -39,8 +39,8 @@ public class MoveBatcherTest {
   private final Unit transport1 = transport(gameData).create(americans(gameData));
   private final Unit transport2 = transport(gameData).create(americans(gameData));
 
-  private static ArrayList<Unit> unitList(final Unit... units) {
-    return new ArrayList<>(List.of(units));
+  private static List<Unit> unitList(final Unit... units) {
+    return Arrays.asList(units);
   }
 
   @Test
