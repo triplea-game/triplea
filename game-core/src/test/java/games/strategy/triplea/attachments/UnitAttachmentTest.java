@@ -50,7 +50,7 @@ class UnitAttachmentTest {
   }
 
   @Test
-  void testSetWhenCapturedChangesInto_invalidLength() {
+  void testSetWhenCapturedChangesIntoWithInvalidLength() {
     assertThrows(GameParseException.class, () -> attachment.setWhenCapturedChangesInto(""));
     assertThrows(GameParseException.class, () -> attachment.setWhenCapturedChangesInto(":"));
     assertThrows(GameParseException.class, () -> attachment.setWhenCapturedChangesInto("::"));
@@ -69,7 +69,7 @@ class UnitAttachmentTest {
   }
 
   @Test
-  void testSetWhenCapturedChangesInto_invalidArgs() {
+  void testSetWhenCapturedChangesIntoWithnvalidArgs() {
     assertThrows(
         GameParseException.class,
         () -> attachment.setWhenCapturedChangesInto("NOT A PLAYER:any:true:Unit1:1"));

@@ -243,13 +243,13 @@ public final class ProMoveUtils {
               int distanceFromUnloadTerritory = 0;
               if (unloadTerritory != null) {
                 distanceFromUnloadTerritory =
-                    map.getDistance_IgnoreEndForCondition(
+                    map.getDistanceIgnoreEndForCondition(
                         neighbor,
                         unloadTerritory,
                         ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
               }
               int neighborDistanceFromEnd =
-                  map.getDistance_IgnoreEndForCondition(
+                  map.getDistanceIgnoreEndForCondition(
                       neighbor,
                       t,
                       ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));

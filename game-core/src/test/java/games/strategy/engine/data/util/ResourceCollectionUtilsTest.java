@@ -61,7 +61,7 @@ final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  void testExcludeByResources_ShouldIgnoreUnregisteredResources() {
+  void testExcludeByResourcesShouldIgnoreUnregisteredResources() {
     final Resource gold = newResource("gold");
     final ResourceCollection unfiltered = newResourceCollection(pus);
 
@@ -71,7 +71,7 @@ final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  void testExcludeByNames_ShouldExcludeSpecifiedResources() {
+  void testExcludeByNamesShouldExcludeSpecifiedResources() {
     givenGameResources(pus, vps);
     final ResourceCollection unfiltered = newResourceCollection(pus, techTokens, vps);
 
@@ -92,7 +92,7 @@ final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  void testExcludeByNames_ShouldIgnoreUnregisteredResourceNames() {
+  void testExcludeByNamesShouldIgnoreUnregisteredResourceNames() {
     final Resource gold = newResource("gold");
     givenGameResources();
     final ResourceCollection unfiltered = newResourceCollection(pus);
@@ -103,7 +103,7 @@ final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  void testGetProductionResources_ShouldIncludeAllResourcesExceptTechTokensAndVPs() {
+  void testGetProductionResourcesShouldIncludeAllResourcesExceptTechTokensAndVPs() {
     final Resource gold = newResource("gold");
     givenGameResources(techTokens, vps);
     final ResourceCollection unfiltered = newResourceCollection(gold, pus, techTokens, vps);

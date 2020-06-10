@@ -28,7 +28,7 @@ final class IoUtilsTest {
   }
 
   @Test
-  void consumeFromMemory_ShouldPassBytesToConsumer() throws Exception {
+  void consumeFromMemoryShouldPassBytesToConsumer() throws Exception {
     IoUtils.consumeFromMemory(bytes, consumer);
 
     final ArgumentCaptor<InputStream> inputStreamCaptor =
@@ -38,7 +38,7 @@ final class IoUtilsTest {
   }
 
   @Test
-  void readFromMemory_ShouldPassBytesToFunction() throws Exception {
+  void readFromMemoryShouldPassBytesToFunction() throws Exception {
     IoUtils.readFromMemory(bytes, function);
 
     final ArgumentCaptor<InputStream> inputStreamCaptor =
@@ -48,14 +48,14 @@ final class IoUtilsTest {
   }
 
   @Test
-  void readFromMemory_ShouldReturnFunctionResult() throws Exception {
+  void readFromMemoryShouldReturnFunctionResult() throws Exception {
     final Object result = new Object();
 
     assertThat(IoUtils.readFromMemory(bytes, is -> result), is(result));
   }
 
   @Test
-  void writeToMemory_ShouldReturnBytesWrittenByConsumer() throws Exception {
+  void writeToMemoryShouldReturnBytesWrittenByConsumer() throws Exception {
     assertThat(IoUtils.writeToMemory(os -> os.write(bytes)), is(bytes));
   }
 }

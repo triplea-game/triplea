@@ -41,7 +41,7 @@ final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  void hashCode_ShouldReturnHashCodeOfDelegate() {
+  void hashCodeShouldReturnHashCodeOfDelegate() {
     final Object delegate = "test";
     final Object proxy = newProxy(new WrappedInvocationHandler(delegate));
 
@@ -49,7 +49,7 @@ final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  void toString_ShouldReturnToStringOfDelegate() {
+  void toStringShouldReturnToStringOfDelegate() {
     final Object delegate = "test";
     final Object proxy = newProxy(new WrappedInvocationHandler(delegate));
 

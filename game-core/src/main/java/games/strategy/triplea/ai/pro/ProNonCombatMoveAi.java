@@ -1521,7 +1521,7 @@ class ProNonCombatMoveAi {
                   .test(t);
           final int distance =
               data.getMap()
-                  .getDistance_IgnoreEndForCondition(
+                  .getDistanceIgnoreEndForCondition(
                       currentTerritory, t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
           final boolean hasSeaNeighbor =
               Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);
