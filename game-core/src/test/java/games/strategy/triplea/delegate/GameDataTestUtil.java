@@ -325,7 +325,7 @@ public final class GameDataTestUtil {
   }
 
   /** Removes all units from the given Collection from the given Territory. */
-  static void removeFrom(final Territory t, final Collection<Unit> units) {
+  public static void removeFrom(final Territory t, final Collection<Unit> units) {
     t.getData().performChange(ChangeFactory.removeUnits(t, units));
   }
 

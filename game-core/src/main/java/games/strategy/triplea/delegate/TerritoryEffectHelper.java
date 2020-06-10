@@ -75,7 +75,7 @@ public final class TerritoryEffectHelper {
     return unitTypes;
   }
 
-  static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(
+  public static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(
       final Collection<Territory> steps) {
     final Set<UnitType> unitTypes = new HashSet<>();
     for (final Territory location : steps) {

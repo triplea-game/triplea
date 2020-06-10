@@ -20,6 +20,7 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -684,7 +685,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return null;
   }
 
-  static Collection<Territory> getEmptyNeutral(final Route route) {
+  public static Collection<Territory> getEmptyNeutral(final Route route) {
     final Predicate<Territory> emptyNeutral =
         Matches.territoryIsEmpty().and(Matches.territoryIsNeutralButNotWater());
     return route.getMatches(emptyNeutral);
