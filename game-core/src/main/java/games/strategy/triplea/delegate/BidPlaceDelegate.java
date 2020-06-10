@@ -16,8 +16,6 @@ import org.triplea.java.collections.IntegerMap;
 
 /** Logic for unit placement when bid mode is active. */
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
-  public BidPlaceDelegate() {}
-
   // Allow production of any number of units
   @Override
   protected String checkProduction(

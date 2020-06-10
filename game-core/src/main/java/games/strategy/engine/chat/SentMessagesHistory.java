@@ -7,8 +7,6 @@ class SentMessagesHistory {
   private final List<String> history = new ArrayList<>();
   private int historyPosition;
 
-  SentMessagesHistory() {}
-
   public void next() {
     historyPosition = Math.min(historyPosition + 1, history.size());
   }
