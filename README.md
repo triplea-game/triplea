@@ -3,7 +3,6 @@
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
 [![Maintainability](https://api.codeclimate.com/v1/badges/fa814ed45202485a92bf/maintainability)](https://codeclimate.com/github/triplea-game/triplea/maintainability)
 
-
 ## [Download and install TripleA](http://triplea-game.org/download/)
 TripleA is a free to play, volunteer run, 100% open source gaming community.
 

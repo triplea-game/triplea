@@ -3,8 +3,8 @@
 Home to infrastructure deployment, notably done with a technology
 called [ansible](https://www.ansible.com)
 
-See the "operations" section of 
-[wiki](https://github.com/triplea-game/triplea/wik) 
+See the "operations" section of
+[wiki](https://github.com/triplea-game/triplea/wik)
 for more documentation, on how to add servers, run ad-hoc commands,
 check logs etc..
 
@@ -20,7 +20,6 @@ Each ansible 'role' can be thought of as an application that is deployed.
 Roles should be pretty atomic and granular so that we can easily configure
 and re-use them between different hosts. Each [role folder](./ansible/roles)
 should have a README.md file that describes what is deployed by that role.
-
 
 ## Local Development with Vagrant
 

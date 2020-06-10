@@ -9,18 +9,13 @@ assignees: ''
 ### How can the problem be recreated?
 <!-- What list of steps can we take to see the problem, please be specific -->
 
-
-
 ### What is an expected fix?
 <!-- So we are all on the same page, what would a fix look like? -->
 
-
-
 ### (Optional) Additional information
 
-
-<!-- 
-  Place here any additional information, screenshots, and a save game, 
+<!--
+  Place here any additional information, screenshots, and a save game,
   it really helps.
 
   To zip and attach a save game:
