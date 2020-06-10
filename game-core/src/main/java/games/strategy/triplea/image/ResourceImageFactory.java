@@ -20,13 +20,10 @@ import org.triplea.java.collections.IntegerMap;
 public class ResourceImageFactory extends AbstractImageFactory {
 
   public static final int IMAGE_SIZE = 20;
-  private static final String FILE_NAME_BASE = "resources/";
-
-  public ResourceImageFactory() {}
 
   @Override
   protected String getFileNameBase() {
-    return FILE_NAME_BASE;
+    return "resources/";
   }
 
   public JLabel getLabel(final Resource resource, final IntegerMap<Resource> resources) {
