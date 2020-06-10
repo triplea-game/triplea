@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
@@ -165,9 +166,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private void updateUndoablePlacementIndexes() {
-    for (int i = 0; i < placements.size(); i++) {
-      placements.get(i).setIndex(i);
-    }
+    IntStream.range(0, placements.size()) //
+        .forEach(i -> placements.get(i).setIndex(i));
   }
 
   @Override
