@@ -15,6 +15,8 @@ public class ChatterListingMessage implements WebSocketMessage {
   public static final MessageType<ChatterListingMessage> TYPE =
       MessageType.of(ChatterListingMessage.class);
 
+  private final List<Chatter> chatters;
+
   @Builder
   private static class Chatter {
     private final String userName;
@@ -22,8 +24,6 @@ public class ChatterListingMessage implements WebSocketMessage {
     private final boolean isModerator;
     private final String status;
   }
-
-  private final List<Chatter> chatters;
 
   public ChatterListingMessage(final Collection<ChatParticipant> chatParticipants) {
     chatters =

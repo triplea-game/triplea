@@ -33,6 +33,14 @@ import org.triplea.java.collections.CollectionUtils;
  * Utility class for filtering a unit list to the subset of those units that can move on a route.
  */
 final class MovableUnitsFilter {
+  private final GamePlayer player;
+  private final GameData data;
+  private final Route route;
+  private final boolean nonCombat;
+  private final MoveType moveType;
+  private final List<UndoableMove> undoableMoves;
+  private final Map<Unit, Collection<Unit>> dependentUnits;
+
   /** The result of the filter operation. */
   @Getter
   public static class FilterOperationResult {
@@ -80,14 +88,6 @@ final class MovableUnitsFilter {
     private final MoveValidationResult result;
     private final Collection<Unit> unitsWithDependents;
   }
-
-  private final GamePlayer player;
-  private final GameData data;
-  private final Route route;
-  private final boolean nonCombat;
-  private final MoveType moveType;
-  private final List<UndoableMove> undoableMoves;
-  private final Map<Unit, Collection<Unit>> dependentUnits;
 
   MovableUnitsFilter(
       final GameData data,
