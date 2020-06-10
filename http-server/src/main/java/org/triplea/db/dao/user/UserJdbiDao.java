@@ -15,8 +15,7 @@ public interface UserJdbiDao {
   @SqlQuery("select bcrypt_password from lobby_user where username = :username")
   Optional<String> getPassword(@Bind("username") String username);
 
-  @SqlUpdate(
-      "update lobby_user set bcrypt_password = :newPassword where id = :userId")
+  @SqlUpdate("update lobby_user set bcrypt_password = :newPassword where id = :userId")
   int updatePassword(@Bind("userId") int userId, @Bind("newPassword") String newPassword);
 
   @SqlQuery("select email from lobby_user where id = :userId")
