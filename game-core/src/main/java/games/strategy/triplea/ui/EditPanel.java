@@ -15,7 +15,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;

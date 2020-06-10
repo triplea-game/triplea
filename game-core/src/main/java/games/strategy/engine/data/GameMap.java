@@ -6,7 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicates;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;

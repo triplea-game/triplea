@@ -25,7 +25,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.AirMovementValidator;
+import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.delegate.BaseTripleADelegate;
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.Matches;

@@ -84,6 +84,7 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;

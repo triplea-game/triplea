@@ -12,7 +12,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
-import games.strategy.triplea.delegate.AirMovementValidator;
+import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import java.util.ArrayList;

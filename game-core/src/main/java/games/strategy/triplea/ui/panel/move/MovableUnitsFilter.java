@@ -11,7 +11,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
