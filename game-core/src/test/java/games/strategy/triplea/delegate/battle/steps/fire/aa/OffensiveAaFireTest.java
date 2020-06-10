@@ -18,9 +18,6 @@ import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -35,7 +32,8 @@ class OffensiveAaFireTest {
   class IsValid {
     @Test
     void validIfAaIsAvailable() {
-      final BattleState battleState = givenBattleStateBuilder().offensiveAa(List.of(mock(Unit.class))).build();
+      final BattleState battleState =
+          givenBattleStateBuilder().offensiveAa(List.of(mock(Unit.class))).build();
       final OffensiveAaFire offensiveAaFire = new OffensiveAaFire(battleState, battleActions);
       assertThat(offensiveAaFire.valid(), is(true));
     }
@@ -52,7 +50,8 @@ class OffensiveAaFireTest {
   class GetNames {
     @Test
     void hasNamesIfAaIsAvailable() {
-      final BattleState battleState = givenBattleStateBuilder().offensiveAa(List.of(givenUnitWithTypeAa())).build();
+      final BattleState battleState =
+          givenBattleStateBuilder().offensiveAa(List.of(givenUnitWithTypeAa())).build();
       final OffensiveAaFire offensiveAaFire = new OffensiveAaFire(battleState, battleActions);
       assertThat(offensiveAaFire.getNames(), hasSize(3));
     }
@@ -83,8 +82,7 @@ class OffensiveAaFireTest {
     void notFiredIfNoAaAreAvailable() {
       final OffensiveAaFire offensiveAaFire =
           new OffensiveAaFire(
-              givenBattleStateBuilder().offensiveAa(List.of()).build(),
-              battleActions);
+              givenBattleStateBuilder().offensiveAa(List.of()).build(), battleActions);
 
       offensiveAaFire.execute(executionStack, delegateBridge);
 
