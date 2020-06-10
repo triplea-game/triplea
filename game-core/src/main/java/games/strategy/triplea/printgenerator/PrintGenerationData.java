@@ -2,12 +2,12 @@ package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
 import java.io.File;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@Builder
 class PrintGenerationData {
-  private File outDir;
-  private GameData data;
+  private final File outDir;
+  private final GameData data;
 }
