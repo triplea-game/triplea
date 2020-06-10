@@ -382,13 +382,11 @@ public class MustFightBattle extends DependentBattle
 
   @Override
   public List<Unit> getOffensiveAa() {
-    updateOffensiveAaUnits();
     return offensiveAa;
   }
 
   @Override
   public List<Unit> getDefendingAa() {
-    updateDefendingAaUnits();
     return defendingAa;
   }
 
@@ -874,6 +872,12 @@ public class MustFightBattle extends DependentBattle
 
   @VisibleForTesting
   public List<String> determineStepStrings(final boolean showFirstRun) {
+    if (offensiveAa == null) {
+      updateOffensiveAaUnits();
+    }
+    if (defendingAa == null) {
+      updateDefendingAaUnits();
+    }
     return BattleSteps.builder()
         .showFirstRun(showFirstRun)
         .attacker(attacker)
@@ -1086,6 +1090,12 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addFightStartSteps(final boolean firstRun, final List<IExecutable> steps) {
+    if (offensiveAa == null) {
+      updateOffensiveAaUnits();
+    }
+    if (defendingAa == null) {
+      updateDefendingAaUnits();
+    }
     final boolean offensiveAa = canFireOffensiveAa();
     final boolean defendingAa = canFireDefendingAa();
     final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
