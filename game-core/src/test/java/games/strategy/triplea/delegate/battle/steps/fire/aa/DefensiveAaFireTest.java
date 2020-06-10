@@ -33,12 +33,12 @@ class DefensiveAaFireTest {
   @MethodSource
   void testWhatIsValid(
       final String displayName, final BattleState battleState, final boolean expected) {
-    final DefensiveAaFire underTest = new DefensiveAaFire(battleState, battleActions);
-    assertThat(underTest.valid(), is(expected));
+    final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
+    assertThat(defensiveAaFire.valid(), is(expected));
     if (expected) {
-      assertThat(underTest.getNames(), hasSize(3));
+      assertThat(defensiveAaFire.getNames(), hasSize(3));
     } else {
-      assertThat(underTest.getNames(), hasSize(0));
+      assertThat(defensiveAaFire.getNames(), hasSize(0));
     }
   }
 
@@ -54,12 +54,12 @@ class DefensiveAaFireTest {
 
   @Test
   void testFiringAaGuns() {
-    final DefensiveAaFire underTest =
+    final DefensiveAaFire defensiveAaFire =
         new DefensiveAaFire(
             givenBattleStateBuilder().defendingAa(List.of(mock(Unit.class))).build(),
             battleActions);
 
-    underTest.execute(executionStack, delegateBridge);
+    defensiveAaFire.execute(executionStack, delegateBridge);
 
     verify(battleActions).fireDefensiveAaGuns();
   }
