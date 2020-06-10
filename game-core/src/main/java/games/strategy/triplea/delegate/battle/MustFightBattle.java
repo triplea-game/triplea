@@ -1103,13 +1103,11 @@ public class MustFightBattle extends DependentBattle
     if (offensiveAaStep.valid()) {
       steps.add(offensiveAaStep);
     }
-    // see Save Game Compatibility Note on getBattleExecutables
     new IExecutable() {
       private static final long serialVersionUID = 3802352588499530533L;
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // if this gets deserialized, then forward the work to the new BattleStep
         final BattleStep offensiveAaStep =
             new OffensiveAaFire(MustFightBattle.this, MustFightBattle.this);
         offensiveAaStep.execute(stack, bridge);
@@ -1118,13 +1116,11 @@ public class MustFightBattle extends DependentBattle
     if (defensiveAaStep.valid()) {
       steps.add(defensiveAaStep);
     }
-    // see Save Game Compatibility Note on getBattleExecutables
     new IExecutable() {
       private static final long serialVersionUID = -1370090785540214199L;
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // if this gets deserialized, then forward the work to the new BattleStep
         final BattleStep defensiveAaStep =
             new DefensiveAaFire(MustFightBattle.this, MustFightBattle.this);
         defensiveAaStep.execute(stack, bridge);
@@ -1491,13 +1487,11 @@ public class MustFightBattle extends DependentBattle
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, this);
     steps.add(submergeSubsVsOnlyAir);
-    // see Save Game Compatibility Note on getBattleExecutables
     new IExecutable() {
       private static final long serialVersionUID = 99990L;
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // if this gets deserialized, then forward the work to the new BattleStep
         final BattleStep submergeSubsVsOnlyAir =
             new SubmergeSubsVsOnlyAirStep(MustFightBattle.this, MustFightBattle.this);
         submergeSubsVsOnlyAir.execute(stack, bridge);
