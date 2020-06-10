@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.exceptions.YamlEngineException;
@@ -17,6 +18,7 @@ import org.triplea.util.Version;
  * Utility class to parse an available map list file config file - used to determine which maps are
  * available for download.
  */
+@UtilityClass
 final class DownloadFileParser {
 
   enum Tags {
