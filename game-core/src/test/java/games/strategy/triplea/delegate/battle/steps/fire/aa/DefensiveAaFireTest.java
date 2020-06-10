@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import games.strategy.engine.data.Unit;
@@ -14,6 +15,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,38 +31,64 @@ class DefensiveAaFireTest {
   @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
 
-  @ParameterizedTest(name = "[{index}] {0} is {2}")
-  @MethodSource
-  void testWhatIsValid(
-      final String displayName, final BattleState battleState, final boolean expected) {
-    final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
-    assertThat(defensiveAaFire.valid(), is(expected));
-    if (expected) {
+  @Nested
+  class IsValid {
+    @Test
+    void validIfAaIsAvailable() {
+      final BattleState battleState = givenBattleStateBuilder().defendingAa(List.of(mock(Unit.class))).build();
+      final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
+      assertThat(defensiveAaFire.valid(), is(true));
+    }
+
+    @Test
+    void notValidIfNoAaIsAvailable() {
+      final BattleState battleState = givenBattleStateBuilder().defendingAa(List.of()).build();
+      final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
+      assertThat(defensiveAaFire.valid(), is(false));
+    }
+  }
+
+  @Nested
+  class GetNames {
+    @Test
+    void hasNamesIfAaIsAvailable() {
+      final BattleState battleState = givenBattleStateBuilder().defendingAa(List.of(givenUnitWithTypeAa())).build();
+      final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
       assertThat(defensiveAaFire.getNames(), hasSize(3));
-    } else {
+    }
+
+    @Test
+    void hasNoNamesIfNoAaIsAvailable() {
+      final BattleState battleState = givenBattleStateBuilder().defendingAa(List.of()).build();
+      final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
       assertThat(defensiveAaFire.getNames(), hasSize(0));
     }
   }
 
-  static List<Arguments> testWhatIsValid() {
-    return List.of(
-        Arguments.of(
-            "No Defensive Aa", givenBattleStateBuilder().defendingAa(List.of()).build(), false),
-        Arguments.of(
-            "Some Defensive Aa",
-            givenBattleStateBuilder().defendingAa(List.of(givenUnitWithTypeAa())).build(),
-            true));
-  }
+  @Nested
+  class FireAa {
+    @Test
+    void firedIfAaAreAvailable() {
+      final DefensiveAaFire defensiveAaFire =
+          new DefensiveAaFire(
+              givenBattleStateBuilder().defendingAa(List.of(mock(Unit.class))).build(),
+              battleActions);
 
-  @Test
-  void testFiringAaGuns() {
-    final DefensiveAaFire defensiveAaFire =
-        new DefensiveAaFire(
-            givenBattleStateBuilder().defendingAa(List.of(mock(Unit.class))).build(),
-            battleActions);
+      defensiveAaFire.execute(executionStack, delegateBridge);
 
-    defensiveAaFire.execute(executionStack, delegateBridge);
+      verify(battleActions).fireDefensiveAaGuns();
+    }
 
-    verify(battleActions).fireDefensiveAaGuns();
+    @Test
+    void notFiredIfNoAaAreAvailable() {
+      final DefensiveAaFire defensiveAaFire =
+          new DefensiveAaFire(
+              givenBattleStateBuilder().defendingAa(List.of()).build(),
+              battleActions);
+
+      defensiveAaFire.execute(executionStack, delegateBridge);
+
+      verify(battleActions, never()).fireDefensiveAaGuns();
+    }
   }
 }
