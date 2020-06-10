@@ -19,8 +19,6 @@ import org.triplea.util.Version;
  */
 final class DownloadFileParser {
 
-  private DownloadFileParser() {}
-
   enum Tags {
     url,
     mapType,

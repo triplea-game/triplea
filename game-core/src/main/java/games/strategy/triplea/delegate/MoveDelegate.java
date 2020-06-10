@@ -55,8 +55,6 @@ public class MoveDelegate extends AbstractMoveDelegate {
   private boolean needToDoRockets = true;
   private IntegerMap<Territory> pusLost = new IntegerMap<>();
 
-  public MoveDelegate() {}
-
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));

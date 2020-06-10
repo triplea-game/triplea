@@ -15,8 +15,6 @@ import lombok.extern.java.Log;
 class InitialSetup {
   private final Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
 
-  InitialSetup() {}
-
   protected void run(final PrintGenerationData printData, final boolean useOriginalState) {
     final GameData gameData = printData.getData();
     if (useOriginalState) {

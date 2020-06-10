@@ -22,8 +22,6 @@ import org.triplea.java.collections.CollectionUtils;
 public class TechActivationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
-  public TechActivationDelegate() {}
-
   /** Called before the delegate will run. In this class, this does all the work. */
   @Override
   public void start() {

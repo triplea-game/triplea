@@ -29,8 +29,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     SPECIAL
   }
 
-  public AbstractMoveDelegate() {}
-
   @Override
   public void start() {
     super.start();

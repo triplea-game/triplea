@@ -18,8 +18,6 @@ import java.util.UUID;
  */
 public class HeadlessDisplay implements IDisplay {
 
-  public HeadlessDisplay() {}
-
   @Override
   public void shutDown() {}
 

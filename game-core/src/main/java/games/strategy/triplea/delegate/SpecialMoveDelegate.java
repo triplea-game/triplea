@@ -40,8 +40,6 @@ import org.triplea.java.collections.IntegerMap;
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean needToInitialize = true;
 
-  public SpecialMoveDelegate() {}
-
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));

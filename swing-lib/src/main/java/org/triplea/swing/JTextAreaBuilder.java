@@ -41,8 +41,6 @@ public final class JTextAreaBuilder {
   @Nullable private String toolTip;
   private final Collection<KeyListener> keyListeners = new ArrayList<>();
 
-  public JTextAreaBuilder() {}
-
   public static JTextAreaBuilder builder() {
     return new JTextAreaBuilder();
   }
