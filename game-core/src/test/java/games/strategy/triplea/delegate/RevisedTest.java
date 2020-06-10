@@ -453,8 +453,8 @@ class RevisedTest {
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
     final Territory norway = gameData.getMap().getTerritory("Norway");
-    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
+    final UnitType infantryType = infantry(gameData);
+    final GamePlayer germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
@@ -538,10 +538,10 @@ class RevisedTest {
   @Test
   void testLoadUnloadAlliedTransport() {
     // you cant load and unload an allied transport the same turn
-    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final UnitType infantryType = infantry(gameData);
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
     // add japanese infantry to eastern europe
-    final GamePlayer japanese = GameDataTestUtil.japanese(gameData);
+    final GamePlayer japanese = japanese(gameData);
     final Change change = ChangeFactory.addUnits(eastEurope, infantryType.create(1, japanese));
     gameData.performChange(change);
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
@@ -852,8 +852,8 @@ class RevisedTest {
   void testStratBombCasualties() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
-    final GamePlayer british = GameDataTestUtil.british(gameData);
+    final GamePlayer germans = germans(gameData);
+    final GamePlayer british = british(gameData);
     final BattleTracker tracker = new BattleTracker();
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber());
