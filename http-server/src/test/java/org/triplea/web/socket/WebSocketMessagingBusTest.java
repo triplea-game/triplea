@@ -34,6 +34,11 @@ import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("InnerClassMayBeStatic")
 class WebSocketMessagingBusTest {
+  @Mock private Consumer<WebSocketMessageContext<BooleanMessage>> booleanMessageListener;
+  @Mock private Consumer<WebSocketMessageContext<BooleanMessage>> booleanMessageListenerSecond;
+  @Mock private Consumer<WebSocketMessageContext<StringMessage>> stringMessageListener;
+  @Mock private Session session;
+
   private static class StringMessage implements WebSocketMessage {
     private static final MessageType<StringMessage> TYPE = MessageType.of(StringMessage.class);
 
@@ -55,11 +60,6 @@ class WebSocketMessagingBusTest {
       return MessageEnvelope.packageMessage(TYPE, this);
     }
   }
-
-  @Mock private Consumer<WebSocketMessageContext<BooleanMessage>> booleanMessageListener;
-  @Mock private Consumer<WebSocketMessageContext<BooleanMessage>> booleanMessageListenerSecond;
-  @Mock private Consumer<WebSocketMessageContext<StringMessage>> stringMessageListener;
-  @Mock private Session session;
 
   @Nested
   class MessageListening {
