@@ -1,16 +1,16 @@
 lobby_user:
   - id: 100000
     username: not moderator
-    password: 12345678901234567890123456
+    bcrypt_password: $2a$01234_123456789_123456789_123456789_123456789_123456700_
     email: email@
     user_role_id: 2
   - id: 900000
     username: moderator
-    password: 12345678901234567890123456
+    bcrypt_password: $2a$01234_123456789_123456789_123456789_123456789_123456700_
     email: email@
     user_role_id: 3
   - id: 900001
     username: Super! moderator
-    password: 12345678901234567890123456
+    bcrypt_password: $2a$01234_123456789_123456789_123456789_123456789_123456700_
     email: email@
     user_role_id: 1

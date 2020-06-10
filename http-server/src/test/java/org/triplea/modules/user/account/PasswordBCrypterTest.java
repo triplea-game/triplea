@@ -11,7 +11,7 @@ class PasswordBCrypterTest {
 
   @Test
   void bcrypt() {
-    final String cryptedResult = new PasswordBCrypter().apply("password");
+    final String cryptedResult = PasswordBCrypter.hashPassword("password");
 
     assertThat("Simple check to ensure we can invoke the library", cryptedResult, notNullValue());
 
@@ -23,10 +23,9 @@ class PasswordBCrypterTest {
 
   @Test
   void bcryptHashAndPasswordVerification() {
-    final String crypted = new PasswordBCrypter().apply("password");
+    final String crypted = PasswordBCrypter.hashPassword("password");
 
-    final boolean result =
-        PasswordBCrypter.verifyHash(PasswordBCrypter.hashPasswordWithSalt("password"), crypted);
+    final boolean result = PasswordBCrypter.verifyHash("password", crypted);
 
     assertThat(
         "Verify BCrypt to match a plaintext password against a crypted password", result, is(true));

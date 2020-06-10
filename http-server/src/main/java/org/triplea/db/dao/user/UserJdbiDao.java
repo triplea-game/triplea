@@ -16,7 +16,7 @@ public interface UserJdbiDao {
   Optional<String> getPassword(@Bind("username") String username);
 
   @SqlUpdate(
-      "update lobby_user set password = null, bcrypt_password = :newPassword where id = :userId")
+      "update lobby_user set bcrypt_password = :newPassword where id = :userId")
   int updatePassword(@Bind("userId") int userId, @Bind("newPassword") String newPassword);
 
   @SqlQuery("select email from lobby_user where id = :userId")
@@ -48,8 +48,5 @@ public interface UserJdbiDao {
   int createUser(
       @Bind("username") String username,
       @Bind("email") String email,
-      @Bind("password") String cryptedPassword);
-
-  @SqlQuery("select password from lobby_user where username = :username")
-  Optional<String> getLegacyPassword(@Bind("username") String username);
+      @Bind("password") String password);
 }

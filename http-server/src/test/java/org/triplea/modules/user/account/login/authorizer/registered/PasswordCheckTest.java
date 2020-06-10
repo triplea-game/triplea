@@ -12,11 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.db.dao.user.UserJdbiDao;
-import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.login.LoginRequest;
 
 @ExtendWith(MockitoExtension.class)
 class PasswordCheckTest {
-  private static final UserName PLAYER_NAME = UserName.of("player-name");
+  private static final String PLAYER_NAME = "player-name";
   private static final String PASSWORD = "plaintext-pass";
   private static final String DB_PASSWORD = "db-pass";
 
@@ -34,9 +34,10 @@ class PasswordCheckTest {
 
   @Test
   void userHasNoPassword() {
-    when(userJdbiDao.getPassword(PLAYER_NAME.getValue())).thenReturn(Optional.empty());
+    when(userJdbiDao.getPassword(PLAYER_NAME)).thenReturn(Optional.empty());
 
-    final boolean result = passwordCheck.test(PLAYER_NAME, PASSWORD);
+    final boolean result =
+        passwordCheck.test(LoginRequest.builder().name(PLAYER_NAME).password(PASSWORD).build());
 
     assertThat(result, is(false));
   }
@@ -45,13 +46,14 @@ class PasswordCheckTest {
   void incorrectPassword() {
     whenPasswordIsValid(false);
 
-    final boolean result = passwordCheck.test(PLAYER_NAME, PASSWORD);
+    final boolean result =
+        passwordCheck.test(LoginRequest.builder().name(PLAYER_NAME).password(PASSWORD).build());
 
     assertThat(result, is(false));
   }
 
   private void whenPasswordIsValid(final boolean isValid) {
-    when(userJdbiDao.getPassword(PLAYER_NAME.getValue())).thenReturn(Optional.of(DB_PASSWORD));
+    when(userJdbiDao.getPassword(PLAYER_NAME)).thenReturn(Optional.of(DB_PASSWORD));
     when(bcryptCheck.test(PASSWORD, DB_PASSWORD)).thenReturn(isValid);
   }
 
@@ -59,7 +61,8 @@ class PasswordCheckTest {
   void correctPassword() {
     whenPasswordIsValid(true);
 
-    final boolean result = passwordCheck.test(PLAYER_NAME, PASSWORD);
+    final boolean result =
+        passwordCheck.test(LoginRequest.builder().name(PLAYER_NAME).password(PASSWORD).build());
 
     assertThat(result, is(true));
   }

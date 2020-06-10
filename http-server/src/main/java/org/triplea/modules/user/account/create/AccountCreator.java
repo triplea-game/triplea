@@ -22,7 +22,7 @@ class AccountCreator implements Function<CreateAccountRequest, CreateAccountResp
   public static AccountCreator build(final Jdbi jdbi) {
     return AccountCreator.builder()
         .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
-        .passwordEncryptor(new PasswordBCrypter())
+        .passwordEncryptor(PasswordBCrypter::hashPassword)
         .build();
   }
 

@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
+import org.triplea.java.Sha512Hasher;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
@@ -178,7 +179,7 @@ public final class ChangePasswordPanel extends JPanel {
     } else {
       ClientSetting.lobbySavedPassword.resetValue();
     }
-    return Optional.of(String.valueOf(password));
+    return Optional.of(Sha512Hasher.hashPasswordWithSalt(String.valueOf(password)));
   }
 
   public static boolean doPasswordChange(

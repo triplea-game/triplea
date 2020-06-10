@@ -25,6 +25,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.domain.data.UserName;
+import org.triplea.java.Sha512Hasher;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.KeyTypeValidator;
 import org.triplea.swing.key.binding.KeyCode;
@@ -310,8 +311,7 @@ public final class CreateAccountPanel extends JPanel {
   }
 
   public String getPassword() {
-    // TODO: Md5-Deprecation SHA512 hash password on client side here
-    return new String(passwordField.getPassword());
+    return Sha512Hasher.hashPasswordWithSalt(new String(passwordField.getPassword()));
   }
 
   String getEmail() {

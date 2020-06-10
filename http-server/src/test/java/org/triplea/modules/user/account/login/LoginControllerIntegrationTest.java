@@ -8,19 +8,16 @@ import static org.hamcrest.core.IsNull.nullValue;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
+import org.triplea.java.Sha512Hasher;
 import org.triplea.modules.http.BasicEndpointTest;
 
 class LoginControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient> {
 
   private static final String USERNAME = "player";
 
-  // TODO: Md5-Deprecation - SHA512 hash these passwords
-  private static final String PASSWORD = "password";
-  private static final String TEMP_PASSWORD = "temp-password";
+  private static final String PASSWORD = Sha512Hasher.hashPasswordWithSalt("password");
+  private static final String TEMP_PASSWORD = Sha512Hasher.hashPasswordWithSalt("temp-password");
   private static final String INVALID_PASSWORD = "invalid";
-
-  private static final String LEGACY_PASSWORD_USER = "legacy-password-user";
-  private static final String LEGACY_PASSWORD = "legacy";
 
   LoginControllerIntegrationTest() {
     super(LobbyLoginClient::newClient);
@@ -54,22 +51,5 @@ class LoginControllerIntegrationTest extends BasicEndpointTest<LobbyLoginClient>
     assertThat(response.getFailReason(), nullValue());
     assertThat(response.getApiKey(), notNullValue());
     assertThat(response.isPasswordChangeRequired(), is(true));
-  }
-
-  @Test
-  void legacyLogin() {
-    LobbyLoginResponse response =
-        verifyEndpointReturningObject(
-            client -> client.login(LEGACY_PASSWORD_USER, LEGACY_PASSWORD));
-
-    assertThat(response.getFailReason(), nullValue());
-    assertThat(response.getApiKey(), notNullValue());
-
-    // second login should behind the scenes do a password upgrade, transparent to the client.
-    response =
-        verifyEndpointReturningObject(
-            client -> client.login(LEGACY_PASSWORD_USER, LEGACY_PASSWORD));
-    assertThat(response.getFailReason(), nullValue());
-    assertThat(response.getApiKey(), notNullValue());
   }
 }

@@ -4,7 +4,7 @@ user_role:
 lobby_user:
   - id: 500000
     username: username
-    password: 12345678901234567890123456
+    bcrypt_password: $2a$01234_123456789_123456789_123456789_123456789_123456700_
     email: email@
     user_role_id: 1
 
