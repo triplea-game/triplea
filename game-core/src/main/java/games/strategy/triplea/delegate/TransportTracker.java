@@ -212,7 +212,8 @@ public class TransportTracker {
     return capacity - used - unloaded;
   }
 
-  public static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units) {
+  public static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(
+      final Collection<Unit> units) {
     final Collection<Unit> loadedUnits = new ArrayList<>();
     for (final Unit unit : units) {
       // a unit loaded onto an allied transport cannot be unloaded in the same turn, so if we check

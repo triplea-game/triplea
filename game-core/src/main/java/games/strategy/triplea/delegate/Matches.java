@@ -882,8 +882,9 @@ public final class Matches {
     return not(list::contains);
   }
 
-  public static Predicate<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
-      final GameData data, final GamePlayer player) {
+  public static Predicate<Territory>
+      territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
+          final GameData data, final GamePlayer player) {
     return t ->
         !data.getMap()
             .getNeighbors(

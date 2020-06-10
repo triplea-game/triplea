@@ -103,7 +103,8 @@ public final class GameStepPropertiesHelper {
   }
 
   /** For various things related to movement validation. */
-  public static boolean isCombatMove(final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
+  public static boolean isCombatMove(
+      final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
     data.acquireReadLock();
     try {
       final String prop =
