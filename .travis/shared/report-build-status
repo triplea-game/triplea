@@ -17,7 +17,7 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ "$TRAVIS_BRANCH" != "master" ]; th
   exit 1
 fi
 
-set -eux
+set -eu
 
 # Should be one of {SUCCESS|FAILURE}
 RESULT=${1-}
