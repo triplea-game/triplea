@@ -9,8 +9,8 @@ import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class RetryableTest {
 
-  @Mock private Supplier<Boolean> task;
+  @Mock private BooleanSupplier task;
   @Mock private Consumer<Duration> threadSleeper;
 
   @ParameterizedTest
@@ -62,7 +62,7 @@ class RetryableTest {
             .buildAndExecute();
 
     assertThat(result, is(false));
-    verify(task, times(2)).get();
+    verify(task, times(2)).getAsBoolean();
   }
 
   @Test
@@ -73,12 +73,12 @@ class RetryableTest {
         .withTask(task)
         .buildAndExecute();
 
-    verify(task, times(3)).get();
+    verify(task, times(3)).getAsBoolean();
   }
 
   @Test
   void successOnFirstIsNotRetried() {
-    when(task.get()).thenReturn(true);
+    when(task.getAsBoolean()).thenReturn(true);
 
     final boolean result =
         Retryable.builder()
@@ -88,7 +88,7 @@ class RetryableTest {
             .buildAndExecute();
 
     assertThat(result, is(true));
-    verify(task).get();
+    verify(task).getAsBoolean();
   }
 
   @Test
@@ -106,7 +106,7 @@ class RetryableTest {
 
   @Test
   void returnsTrueIfRetryIsSuccess() {
-    when(task.get()).thenReturn(false).thenReturn(true);
+    when(task.getAsBoolean()).thenReturn(false).thenReturn(true);
 
     final boolean result =
         Retryable.builder()
@@ -116,6 +116,6 @@ class RetryableTest {
             .buildAndExecute();
 
     assertThat(result, is(true));
-    verify(task, times(2)).get();
+    verify(task, times(2)).getAsBoolean();
   }
 }

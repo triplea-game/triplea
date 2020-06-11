@@ -3,8 +3,8 @@ package org.triplea.java;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.time.Duration;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -20,10 +20,10 @@ public class Retryable {
   private final Consumer<Duration> threadSleeper;
   private final int maxAttempts;
   private final Duration fixedBackOff;
-  private final Supplier<Boolean> taskRunner;
+  private final BooleanSupplier taskRunner;
 
   public static MaxAttemptsBuilder builder() {
-    return new MaxAttemptsBuilder(DEFAULT_THREAD_SLEEP);
+    return builder(DEFAULT_THREAD_SLEEP);
   }
 
   @VisibleForTesting
@@ -61,7 +61,7 @@ public class Retryable {
     private final int maxAttempts;
     private final Duration backOff;
 
-    public RetryableBuilder withTask(final Supplier<Boolean> taskRunner) {
+    public RetryableBuilder withTask(final BooleanSupplier taskRunner) {
       Preconditions.checkNotNull(taskRunner);
       return new RetryableBuilder(threadSleeper, maxAttempts, backOff, taskRunner);
     }
@@ -72,7 +72,7 @@ public class Retryable {
     private final Consumer<Duration> threadSleeper;
     private final int maxAttempts;
     private final Duration fixedBackOff;
-    private final Supplier<Boolean> taskRunner;
+    private final BooleanSupplier taskRunner;
 
     public Retryable build() {
       return new Retryable(threadSleeper, maxAttempts, fixedBackOff, taskRunner);
@@ -96,18 +96,12 @@ public class Retryable {
    * period and try again.
    */
   public boolean execute() {
-    for (int i = 0; i < maxAttempts; i++) {
-      final Boolean result = taskRunner.get();
-      if (result != null && result) {
+    for (int i = 1; i < maxAttempts; i++) {
+      if (taskRunner.getAsBoolean()) {
         return true;
       }
-
-      final boolean wasLastAttempt = i + 1 == maxAttempts;
-      // only sleep if there are more attempts left
-      if (!wasLastAttempt) {
-        threadSleeper.accept(fixedBackOff);
-      }
+      threadSleeper.accept(fixedBackOff);
     }
-    return false;
+    return taskRunner.getAsBoolean();
   }
 }
