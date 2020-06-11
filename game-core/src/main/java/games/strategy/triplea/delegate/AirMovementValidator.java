@@ -270,7 +270,7 @@ public final class AirMovementValidator {
         // of new carriers
         populateStaticAlliedAndBuildingCarrierCapacity(
             landingSpots, movedCarriersAndTheirFighters, player, data);
-    final LinkedHashMap<Unit, BigDecimal> movementLeftForAirToValidate =
+    final Map<Unit, BigDecimal> movementLeftForAirToValidate =
         // calculate movement left only once
         getMovementLeftForValidatingAir(airThatMustLandOnCarriers, player, route);
     for (final Territory landingSpot : landingSpots) {
