@@ -21,6 +21,15 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 @ExtendWith(MockitoExtension.class)
 class MessageSenderTest {
 
+  private static final MessageEnvelope MESSAGE_ENVELOPE =
+      new StringMessage("message!").toEnvelope();
+
+  private static final String SERVER_MESSAGE_JSON = new Gson().toJson(MESSAGE_ENVELOPE);
+
+  @Mock private Session session;
+  @Mock private RemoteEndpoint.Async asyncRemote;
+  @Mock private Future<Void> future;
+
   @AllArgsConstructor
   private static class StringMessage implements WebSocketMessage {
     private static final MessageType<StringMessage> TYPE = MessageType.of(StringMessage.class);
@@ -33,15 +42,6 @@ class MessageSenderTest {
       return MessageEnvelope.packageMessage(TYPE, this);
     }
   }
-
-  private static final MessageEnvelope MESSAGE_ENVELOPE =
-      new StringMessage("message!").toEnvelope();
-
-  private static final String SERVER_MESSAGE_JSON = new Gson().toJson(MESSAGE_ENVELOPE);
-
-  @Mock private Session session;
-  @Mock private RemoteEndpoint.Async asyncRemote;
-  @Mock private Future<Void> future;
 
   @Test
   void sendToOnlyOpenSession() {

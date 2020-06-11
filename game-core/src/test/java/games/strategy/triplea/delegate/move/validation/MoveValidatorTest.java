@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.move.validation;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
@@ -14,6 +14,9 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.AbstractDelegateTestCase;
+import games.strategy.triplea.delegate.GameDataTestUtil;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class MoveValidatorTest extends AbstractDelegateTestCase {
@@ -40,7 +44,7 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
   @Test
   void testCarrierCapacity() {
     final Collection<Unit> units = carrier.create(5, british);
-    assertEquals(
+    Assertions.assertEquals(
         10,
         AirMovementValidator.carrierCapacity(
             units, new Territory("TestTerritory", true, gameData)));

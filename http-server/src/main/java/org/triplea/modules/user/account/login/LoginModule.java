@@ -19,7 +19,7 @@ import org.triplea.http.client.lobby.login.LoginRequest;
 import org.triplea.modules.chat.Chatters;
 import org.triplea.modules.user.account.NameValidation;
 import org.triplea.modules.user.account.login.authorizer.anonymous.AnonymousLogin;
-import org.triplea.modules.user.account.login.authorizer.registered.RegisteredLogin;
+import org.triplea.modules.user.account.login.authorizer.registered.PasswordCheck;
 import org.triplea.modules.user.account.login.authorizer.temp.password.TempPasswordLogin;
 
 @Builder
@@ -39,7 +39,7 @@ class LoginModule {
         .apiKeyGenerator(ApiKeyGenerator.build(jdbi))
         .anonymousLogin(AnonymousLogin.build(jdbi, chatters))
         .tempPasswordLogin(TempPasswordLogin.build(jdbi))
-        .registeredLogin(RegisteredLogin.build(jdbi))
+        .registeredLogin(PasswordCheck.build(jdbi))
         .nameValidation(NameValidation.build(jdbi))
         .build();
   }

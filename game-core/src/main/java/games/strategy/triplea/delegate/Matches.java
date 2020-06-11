@@ -26,6 +26,7 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.DependentBattle;
 import games.strategy.triplea.delegate.battle.IBattle;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
@@ -475,7 +476,7 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getIsLandTransport();
   }
 
-  static Predicate<Unit> unitIsLandTransportWithCapacity() {
+  public static Predicate<Unit> unitIsLandTransportWithCapacity() {
     return unit -> unitIsLandTransport().and(unitCanTransport()).test(unit);
   }
 
@@ -510,7 +511,7 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getIsSuicideOnHit();
   }
 
-  static Predicate<Unit> unitIsKamikaze() {
+  public static Predicate<Unit> unitIsKamikaze() {
     return unit -> UnitAttachment.get(unit.getType()).getIsKamikaze();
   }
 
@@ -530,7 +531,7 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1;
   }
 
-  static Predicate<Territory> territoryHasOwnedCarrier(final GamePlayer player) {
+  public static Predicate<Territory> territoryHasOwnedCarrier(final GamePlayer player) {
     return t -> t.getUnitCollection().anyMatch(unitIsOwnedBy(player).and(unitIsCarrier()));
   }
 
@@ -552,7 +553,7 @@ public final class Matches {
     return unitWasAmphibious().negate();
   }
 
-  static Predicate<Unit> unitWasInCombat() {
+  public static Predicate<Unit> unitWasInCombat() {
     return Unit::getWasInCombat;
   }
 
@@ -592,11 +593,11 @@ public final class Matches {
     return obj -> unitTypeIsRocket().test(obj.getType());
   }
 
-  static Predicate<Unit> unitHasMovementLimit() {
+  public static Predicate<Unit> unitHasMovementLimit() {
     return obj -> UnitAttachment.get(obj.getType()).getMovementLimit() != null;
   }
 
-  static Predicate<Unit> unitHasAttackingLimit() {
+  public static Predicate<Unit> unitHasAttackingLimit() {
     return obj -> UnitAttachment.get(obj.getType()).getAttackingLimit() != null;
   }
 
@@ -777,7 +778,7 @@ public final class Matches {
     };
   }
 
-  static Predicate<Unit> unitIsNotAirTransportable() {
+  public static Predicate<Unit> unitIsNotAirTransportable() {
     return unitIsAirTransportable().negate();
   }
 
@@ -881,8 +882,9 @@ public final class Matches {
     return not(list::contains);
   }
 
-  static Predicate<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
-      final GameData data, final GamePlayer player) {
+  public static Predicate<Territory>
+      territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
+          final GameData data, final GamePlayer player) {
     return t ->
         !data.getMap()
             .getNeighbors(
@@ -971,7 +973,7 @@ public final class Matches {
     return territoryIsImpassable().negate();
   }
 
-  static Predicate<Territory> seaCanMoveOver(final GamePlayer player, final GameData data) {
+  public static Predicate<Territory> seaCanMoveOver(final GamePlayer player, final GameData data) {
     return t ->
         territoryIsWater().test(t) && territoryIsPassableAndNotRestricted(player, data).test(t);
   }
@@ -1836,7 +1838,7 @@ public final class Matches {
     };
   }
 
-  static Predicate<Territory> territoryHasRequiredUnitsToMove(
+  public static Predicate<Territory> territoryHasRequiredUnitsToMove(
       final Collection<Unit> units, final GameData data) {
     return t -> units.stream().allMatch(unitHasRequiredUnitsToMove(t, data));
   }
@@ -2023,7 +2025,7 @@ public final class Matches {
     return u -> !UnitAttachment.get(u.getType()).getWhenCombatDamaged().isEmpty();
   }
 
-  static Predicate<Unit> unitHasWhenCombatDamagedEffect(final String filterForEffect) {
+  public static Predicate<Unit> unitHasWhenCombatDamagedEffect(final String filterForEffect) {
     return unitHasWhenCombatDamagedEffect()
         .and(
             unit -> {
@@ -2251,7 +2253,7 @@ public final class Matches {
     };
   }
 
-  static Predicate<Territory> territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(
+  public static Predicate<Territory> territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(
       final GamePlayer movingPlayer) {
     return t ->
         t.getOwner().equals(movingPlayer)

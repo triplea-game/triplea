@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class AllianceTrackerTest {
@@ -39,27 +41,34 @@ class AllianceTrackerTest {
     assertTrue(relationshipTracker.isAllied(bush, castro));
   }
 
-  @Test
-  void
-      getPlayersInAlliance_ShouldDifferentiateAllianceNamesThatAreSubstringsOfOtherAllianceNames() {
-    final GamePlayer player1 = new GamePlayer("Player1", gameData);
-    final GamePlayer player2 = new GamePlayer("Player2", gameData);
-    final GamePlayer player3 = new GamePlayer("Player3", gameData);
-    final GamePlayer player4 = new GamePlayer("Player4", gameData);
-    final String alliance1Name = "Alliance";
-    final String alliance2Name = "Anti" + alliance1Name;
-    final AllianceTracker allianceTracker =
-        new AllianceTracker(
-            ImmutableMultimap.<GamePlayer, String>builder()
-                .put(player1, alliance1Name)
-                .put(player2, alliance1Name)
-                .put(player3, alliance2Name)
-                .put(player4, alliance2Name)
-                .build());
+  @Nested
+  class GetPlayersInAlliance {
+    @Test
+    @DisplayName(
+        "Get Players In Alliance Should Differentiate Alliance Names That Are "
+            + "Substrings Of Other Alliance Names")
+    void differentiatsAllianceNamesThatAreSubstrings() {
+      final GamePlayer player1 = new GamePlayer("Player1", gameData);
+      final GamePlayer player2 = new GamePlayer("Player2", gameData);
+      final GamePlayer player3 = new GamePlayer("Player3", gameData);
+      final GamePlayer player4 = new GamePlayer("Player4", gameData);
+      final String alliance1Name = "Alliance";
+      final String alliance2Name = "Anti" + alliance1Name;
+      final AllianceTracker allianceTracker =
+          new AllianceTracker(
+              ImmutableMultimap.<GamePlayer, String>builder()
+                  .put(player1, alliance1Name)
+                  .put(player2, alliance1Name)
+                  .put(player3, alliance2Name)
+                  .put(player4, alliance2Name)
+                  .build());
 
-    assertThat(
-        allianceTracker.getPlayersInAlliance(alliance1Name), is(ImmutableSet.of(player1, player2)));
-    assertThat(
-        allianceTracker.getPlayersInAlliance(alliance2Name), is(ImmutableSet.of(player3, player4)));
+      assertThat(
+          allianceTracker.getPlayersInAlliance(alliance1Name),
+          is(ImmutableSet.of(player1, player2)));
+      assertThat(
+          allianceTracker.getPlayersInAlliance(alliance2Name),
+          is(ImmutableSet.of(player3, player4)));
+    }
   }
 }

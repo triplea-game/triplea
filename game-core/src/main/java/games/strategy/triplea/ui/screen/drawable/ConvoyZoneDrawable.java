@@ -30,7 +30,7 @@ public class ConvoyZoneDrawable extends AbstractDrawable {
       final Graphics2D graphics,
       final MapData mapData) {
     final Image img;
-    if (mapData.useNation_convoyFlags()) {
+    if (mapData.useNationConvoyFlags()) {
       img = uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerId(player));
     } else {
       img = uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerId(player));

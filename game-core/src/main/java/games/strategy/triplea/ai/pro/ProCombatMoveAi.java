@@ -247,7 +247,7 @@ public class ProCombatMoveAi {
           for (final Territory nearbyAlliedTerritory : nearbyTerritoriesWithOwnedUnits) {
             final int distance =
                 data.getMap()
-                    .getDistance_IgnoreEndForCondition(
+                    .getDistanceIgnoreEndForCondition(
                         nearbyAlliedTerritory,
                         nearbyEnemyTerritory,
                         ProMatches.territoryIsEnemyNotNeutralOrAllied(player, data));
@@ -1363,7 +1363,7 @@ public class ProCombatMoveAi {
           final int range = unit.getMovementLeft().intValue();
           final int distance =
               data.getMap()
-                  .getDistance_IgnoreEndForCondition(
+                  .getDistanceIgnoreEndForCondition(
                       proData.getUnitTerritory(unit),
                       t,
                       ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
@@ -1431,7 +1431,7 @@ public class ProCombatMoveAi {
           final int range = unit.getMovementLeft().intValue();
           final int distance =
               data.getMap()
-                  .getDistance_IgnoreEndForCondition(
+                  .getDistanceIgnoreEndForCondition(
                       proData.getUnitTerritory(unit),
                       t,
                       ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
@@ -1990,7 +1990,7 @@ public class ProCombatMoveAi {
     final int range = unit.getMovementLeft().intValue();
     final int distance =
         data.getMap()
-            .getDistance_IgnoreEndForCondition(
+            .getDistanceIgnoreEndForCondition(
                 proData.getUnitTerritory(unit),
                 t,
                 ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));

@@ -93,7 +93,7 @@ class JFrameBuilderTest {
   }
 
   @Test
-  void windowClosedAction_RaisingEventShouldNotThrowExceptionWhenActionNotSet() {
+  void windowClosedActionRaisingEventShouldNotThrowExceptionWhenActionNotSet() {
     final JFrame frame = JFrameBuilder.builder().build();
 
     assertDoesNotThrow(() -> frame.getWindowListeners()[0].windowClosed(null));
@@ -109,7 +109,7 @@ class JFrameBuilderTest {
   }
 
   @Test
-  void windowActivatedAction_RaisingEventShouldNotThrowExceptionWhenActionNotSet() {
+  void windowActivatedActionRaisingEventShouldNotThrowExceptionWhenActionNotSet() {
     final JFrame frame = JFrameBuilder.builder().build();
 
     assertDoesNotThrow(() -> frame.getWindowListeners()[0].windowActivated(null));

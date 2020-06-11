@@ -10,8 +10,6 @@ public class ImageIoCompletionWatcher implements ImageObserver {
   // we countdown when we are done
   private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-  public ImageIoCompletionWatcher() {}
-
   public void waitForCompletion() {
     Interruptibles.await(countDownLatch);
   }

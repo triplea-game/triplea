@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.move.validation;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -9,6 +9,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import java.math.BigDecimal;
 import java.util.ArrayList;

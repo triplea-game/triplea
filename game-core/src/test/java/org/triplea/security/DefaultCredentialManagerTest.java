@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.util.prefs.Preferences;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -46,59 +47,65 @@ final class DefaultCredentialManagerTest {
     assertThat(actual, is(expected));
   }
 
-  @Test
-  void getMasterPassword_ShouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist()
-      throws Exception {
-    givenMasterPasswordDoesNotExist();
+  @Nested
+  class GetMasterPassword {
+    @Test
+    void shouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist() throws Exception {
+      givenMasterPasswordDoesNotExist();
 
-    final char[] masterPassword = DefaultCredentialManager.getMasterPassword(preferences);
+      final char[] masterPassword = DefaultCredentialManager.getMasterPassword(preferences);
 
-    thenMasterPasswordExistsAndIs(masterPassword);
+      thenMasterPasswordExistsAndIs(masterPassword);
+    }
+
+    private void givenMasterPasswordDoesNotExist() {
+      when(preferences.getByteArray(
+              eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+          .then(returnsSecondArg());
+    }
+
+    private void thenMasterPasswordExistsAndIs(final char[] masterPassword) {
+      verify(preferences)
+          .putByteArray(
+              DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
+              DefaultCredentialManager.encodeCharsToBytes(masterPassword));
+    }
+
+    @Test
+    void shouldLoadMasterPasswordWhenMasterPasswordExists() throws Exception {
+      givenMasterPasswordExists(MASTER_PASSWORD);
+
+      final char[] actual = DefaultCredentialManager.getMasterPassword(preferences);
+
+      assertThat(actual, is(MASTER_PASSWORD));
+    }
+
+    private void givenMasterPasswordExists(final char[] masterPassword) {
+      when(preferences.getByteArray(
+              eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+          .thenReturn(DefaultCredentialManager.encodeCharsToBytes(masterPassword));
+    }
   }
 
-  private void givenMasterPasswordDoesNotExist() {
-    when(preferences.getByteArray(
-            eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
-        .then(returnsSecondArg());
-  }
+  @Nested
+  class Unprotect {
+    @Test
+    void shouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() {
+      final Exception e =
+          assertThrows(
+              CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
 
-  private void thenMasterPasswordExistsAndIs(final char[] masterPassword) {
-    verify(preferences)
-        .putByteArray(
-            DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
-            DefaultCredentialManager.encodeCharsToBytes(masterPassword));
-  }
+      assertThat(e.getMessage(), containsString("malformed protected credential"));
+    }
 
-  @Test
-  void getMasterPassword_ShouldLoadMasterPasswordWhenMasterPasswordExists() throws Exception {
-    givenMasterPasswordExists(MASTER_PASSWORD);
+    @Test
+    void shouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() {
+      final Exception e =
+          assertThrows(
+              CredentialManagerException.class,
+              () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 
-    final char[] actual = DefaultCredentialManager.getMasterPassword(preferences);
-
-    assertThat(actual, is(MASTER_PASSWORD));
-  }
-
-  private void givenMasterPasswordExists(final char[] masterPassword) {
-    when(preferences.getByteArray(
-            eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
-        .thenReturn(DefaultCredentialManager.encodeCharsToBytes(masterPassword));
-  }
-
-  @Test
-  void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() {
-    final Exception e =
-        assertThrows(
-            CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
-
-    assertThat(e.getMessage(), containsString("malformed protected credential"));
-  }
-
-  @Test
-  void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() {
-    final Exception e =
-        assertThrows(
-            CredentialManagerException.class, () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
-
-    assertThat(e.getMessage(), containsString("malformed protected credential"));
+      assertThat(e.getMessage(), containsString("malformed protected credential"));
+    }
   }
 }

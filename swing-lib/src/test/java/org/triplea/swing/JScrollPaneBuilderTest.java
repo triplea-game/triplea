@@ -17,13 +17,13 @@ final class JScrollPaneBuilderTest {
   private final JScrollPaneBuilder builder = JScrollPaneBuilder.builder();
 
   @Test
-  void build_ShouldThrowExceptionWhenViewUnspecified() {
+  void buildShouldThrowExceptionWhenViewUnspecified() {
     final Exception e = assertThrows(IllegalStateException.class, builder::build);
     assertThat(e.getMessage(), containsString("view"));
   }
 
   @Test
-  void build_ShouldSetBorderWhenProvided() {
+  void buildShouldSetBorderWhenProvided() {
     final Border border = BorderFactory.createEmptyBorder();
 
     final JScrollPane scrollPane = builder.view(new JLabel()).border(border).build();
@@ -32,7 +32,7 @@ final class JScrollPaneBuilderTest {
   }
 
   @Test
-  void build_ShouldSetView() {
+  void buildShouldSetView() {
     final Component view = new JLabel();
 
     final JScrollPane scrollPane = builder.view(view).build();
