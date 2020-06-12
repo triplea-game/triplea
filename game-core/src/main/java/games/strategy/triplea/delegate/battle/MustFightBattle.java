@@ -29,6 +29,8 @@ import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.BattleSteps;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
@@ -73,26 +75,6 @@ public class MustFightBattle extends DependentBattle
     SUBS,
     PLANES,
     PARTIAL_AMPHIB
-  }
-
-  /**
-   * An action representing attacking aa guns firing during a battle.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class FireOffensiveAaGuns implements IExecutable {
-    private static final long serialVersionUID = 7266708569436973099L;
-  }
-
-  /**
-   * An action representing defending aa guns firing during a battle.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class FireDefensiveAaGuns implements IExecutable {
-    private static final long serialVersionUID = 2124868665883519949L;
   }
 
   /**
@@ -396,6 +378,16 @@ public class MustFightBattle extends DependentBattle
               Matches.unitIsOwnedBy(defender).or(Matches.enemyUnit(attacker, gameData))));
     }
     return new ArrayList<>(remaining);
+  }
+
+  @Override
+  public List<Unit> getOffensiveAa() {
+    return offensiveAa;
+  }
+
+  @Override
+  public List<Unit> getDefendingAa() {
+    return defendingAa;
   }
 
   /**
@@ -880,14 +872,18 @@ public class MustFightBattle extends DependentBattle
 
   @VisibleForTesting
   public List<String> determineStepStrings(final boolean showFirstRun) {
+    if (offensiveAa == null) {
+      updateOffensiveAaUnits();
+    }
+    if (defendingAa == null) {
+      updateDefendingAaUnits();
+    }
     return BattleSteps.builder()
-        .canFireOffensiveAa(canFireOffensiveAa())
-        .canFireDefendingAa(canFireDefendingAa())
         .showFirstRun(showFirstRun)
         .attacker(attacker)
         .defender(defender)
-        .offensiveAa(offensiveAa)
-        .defendingAa(defendingAa)
+        .offensiveAa(getOffensiveAa())
+        .defendingAa(getDefendingAa())
         .attackingUnits(attackingUnits)
         .defendingUnits(defendingUnits)
         .attackingWaitingToDie(attackingWaitingToDie)
@@ -1073,6 +1069,16 @@ public class MustFightBattle extends DependentBattle
    * It is allowed for an IExecutable to add other IExecutables to the stack. If you read the code
    * in linear order, ignore wrapping stuff in anonymous IExecutables, then the code can be read as
    * it will execute. The steps are added to the stack and then reversed at the end.
+   *
+   * <p>Save Game Compatibility Note:
+   *
+   * <p>Because of saved game compatibility issues, the original steps are left behind as inner
+   * anonymous classes. The reason for this is that their class name is defined by the order in
+   * which they are defined. As an example, the first inner anonymous class is MustFightBattle$0 and
+   * the next one is MustFightBattle$1 and so on. When a saved game is deserialized, it will match
+   * the step by the class name and so if the order of inner anonymous classes change, it will not
+   * deserialize. So even though these old steps aren't being added to the steps array, they are
+   * still needed. They can be safely removed once save compatibility can be broken.
    */
   @VisibleForTesting
   public List<IExecutable> getBattleExecutables(final boolean firstRun) {
@@ -1084,30 +1090,42 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addFightStartSteps(final boolean firstRun, final List<IExecutable> steps) {
+    if (offensiveAa == null) {
+      updateOffensiveAaUnits();
+    }
+    if (defendingAa == null) {
+      updateDefendingAaUnits();
+    }
     final boolean offensiveAa = canFireOffensiveAa();
     final boolean defendingAa = canFireDefendingAa();
-    if (offensiveAa) {
-      steps.add(
-          new FireOffensiveAaGuns() {
-            private static final long serialVersionUID = 3802352588499530533L;
-
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              fireOffensiveAaGuns();
-            }
-          });
+    final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
+    final BattleStep defensiveAaStep = new DefensiveAaFire(this, this);
+    if (offensiveAaStep.valid()) {
+      steps.add(offensiveAaStep);
     }
-    if (defendingAa) {
-      steps.add(
-          new FireDefensiveAaGuns() {
-            private static final long serialVersionUID = -1370090785540214199L;
+    new IExecutable() {
+      private static final long serialVersionUID = 3802352588499530533L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              fireDefensiveAaGuns();
-            }
-          });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep offensiveAaStep =
+            new OffensiveAaFire(MustFightBattle.this, MustFightBattle.this);
+        offensiveAaStep.execute(stack, bridge);
+      }
+    };
+    if (defensiveAaStep.valid()) {
+      steps.add(defensiveAaStep);
     }
+    new IExecutable() {
+      private static final long serialVersionUID = -1370090785540214199L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep defensiveAaStep =
+            new DefensiveAaFire(MustFightBattle.this, MustFightBattle.this);
+        defensiveAaStep.execute(stack, bridge);
+      }
+    };
     if (offensiveAa || defendingAa) {
       steps.add(
           new ClearAaWaitingToDieAndDamagedChangesInto() {
@@ -1170,7 +1188,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  private void fireOffensiveAaGuns() {
+  @Override
+  public void fireOffensiveAaGuns() {
     final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
     allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
@@ -1192,7 +1211,8 @@ public class MustFightBattle extends DependentBattle
             offensiveAaTypes));
   }
 
-  private void fireDefensiveAaGuns() {
+  @Override
+  public void fireDefensiveAaGuns() {
     final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
     allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
@@ -1467,17 +1487,13 @@ public class MustFightBattle extends DependentBattle
 
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, this);
     steps.add(submergeSubsVsOnlyAir);
-    // Each of the original steps were defined as inner anonymous classes, so the order in which
-    // they were defined affects their serializing/deserializing since their class name looks like
-    // MustFightBattle$5. For save compatibility, we must leave the anonymous classes around, though
-    // they don't need to be added to the steps. They can be removed once save compatibility can be
-    // broken.
     new IExecutable() {
       private static final long serialVersionUID = 99990L;
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // if this gets deserialized, then forward the work to the new BattleStep
+        final BattleStep submergeSubsVsOnlyAir =
+            new SubmergeSubsVsOnlyAirStep(MustFightBattle.this, MustFightBattle.this);
         submergeSubsVsOnlyAir.execute(stack, bridge);
       }
     };
