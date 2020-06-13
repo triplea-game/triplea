@@ -72,8 +72,7 @@ public class BattleStepsTest {
   @Mock Function<Collection<Unit>, Collection<Unit>> getDependentUnits;
   @Mock Supplier<Collection<Territory>> getAttackerRetreatTerritories;
 
-  @Mock
-  Function<Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
+  @Mock Function<Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
 
   @Mock Territory battleSite;
   @Mock GamePlayer attacker;

@@ -1,14 +1,12 @@
 package games.strategy.triplea.delegate.battle.steps;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
@@ -38,14 +36,13 @@ public class RetreatChecks {
       final @NonNull Collection<Unit> defendingUnits,
       final @NonNull GameData gameData,
       final @NonNull Function<Collection<Unit>, Collection<Territory>>
-          getEmptyOrFriendlySeaNeighbors) {
+              getEmptyOrFriendlySeaNeighbors) {
     if (attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
     return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
         && (getEmptyOrFriendlySeaNeighbors
-                    .apply(
-                        CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
+                    .apply(CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
                     .size()
                 != 0
             || Properties.getSubmersibleSubs(gameData));
