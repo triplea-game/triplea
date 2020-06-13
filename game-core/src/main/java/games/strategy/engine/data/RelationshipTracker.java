@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * etc.) exist between two or more players.
  */
 public class RelationshipTracker extends GameDataComponent {
-  private static final long serialVersionUID = 2;
+  private static final long serialVersionUID = -4740671761925519069L;
 
   // map of "playername:playername" to RelationshipType that exists between those 2 players
   private final Map<RelatedPlayers, Relationship> relationships = new HashMap<>();
