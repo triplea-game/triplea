@@ -51,7 +51,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -74,7 +73,7 @@ public class BattleStepsTest {
   @Mock Supplier<Collection<Territory>> getAttackerRetreatTerritories;
 
   @Mock
-  BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
+  Function<Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
 
   @Mock Territory battleSite;
   @Mock GamePlayer attacker;
@@ -100,11 +99,11 @@ public class BattleStepsTest {
   }
 
   private void givenDefenderNoRetreatTerritories() {
-    when(getEmptyOrFriendlySeaNeighbors.apply(any(), any())).thenReturn(List.of());
+    when(getEmptyOrFriendlySeaNeighbors.apply(any())).thenReturn(List.of());
   }
 
   private void givenDefenderRetreatTerritories(final Territory... territories) {
-    when(getEmptyOrFriendlySeaNeighbors.apply(any(), any())).thenReturn(Arrays.asList(territories));
+    when(getEmptyOrFriendlySeaNeighbors.apply(any())).thenReturn(Arrays.asList(territories));
   }
 
   @Value
