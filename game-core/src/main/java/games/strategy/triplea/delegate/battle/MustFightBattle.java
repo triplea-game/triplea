@@ -785,8 +785,10 @@ public class MustFightBattle extends DependentBattle
 
     final Collection<GamePlayer> attackers = findAllies(playersWithUnits, attacker);
     addPlayerCombatHistoryText(attackers, attackingUnits, true, bridge.getHistoryWriter());
-    final Collection<GamePlayer> defenders = findAllies(playersWithUnits, defender);
-    addPlayerCombatHistoryText(defenders, defendingUnits, false, bridge.getHistoryWriter());
+    if (defender != null) {
+      final Collection<GamePlayer> defenders = findAllies(playersWithUnits, defender);
+      addPlayerCombatHistoryText(defenders, defendingUnits, false, bridge.getHistoryWriter());
+    }
   }
 
   private static Collection<GamePlayer> findAllies(
