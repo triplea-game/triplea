@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -28,44 +29,41 @@ class NavalBombardmentTest {
   @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
 
-  @ParameterizedTest(name = "[{index}] {0} is {2}")
-  @MethodSource
-  void testWhatIsValid(
-      final String displayName, final BattleState battleState, final boolean expected) {
-    final NavalBombardment underTest = new NavalBombardment(battleState, battleActions);
-    assertThat(underTest.valid(), is(expected));
-    if (expected) {
-      assertThat(underTest.getNames(), hasSize(2));
-      underTest.execute(executionStack, delegateBridge);
-      verify(battleActions).fireNavalBombardment(delegateBridge);
-    } else {
-      assertThat(underTest.getNames(), hasSize(0));
-      underTest.execute(executionStack, delegateBridge);
-      verify(battleActions, never()).fireNavalBombardment(delegateBridge);
-    }
+  @DisplayName("Has bombardment units and first round")
+  void validBombardmentSituation() {
+    final BattleState battleState =
+        givenBattleStateBuilder().bombardingUnits(List.of(givenAnyUnit())).round(1).build();
+    final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
+    assertThat(navalBombardment.valid(), is(true));
+    assertThat(navalBombardment.getNames(), hasSize(2));
+    navalBombardment.execute(executionStack, delegateBridge);
+    verify(battleActions).fireNavalBombardment(delegateBridge);
   }
 
-  static List<Arguments> testWhatIsValid() {
+  @ParameterizedTest(name = "[{index}] {0} is {2}")
+  @MethodSource
+  void invalidBombardmentSituations(final String displayName, final BattleState battleState) {
+    final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
+    assertThat(navalBombardment.valid(), is(false));
+    assertThat(navalBombardment.getNames(), hasSize(0));
+    navalBombardment.execute(executionStack, delegateBridge);
+    verify(battleActions, never()).fireNavalBombardment(delegateBridge);
+  }
+
+  static List<Arguments> invalidBombardmentSituations() {
     return List.of(
         Arguments.of(
-            "Has bombardment units and first round",
-            givenBattleStateBuilder().bombardingUnits(List.of(givenAnyUnit())).round(1).build(),
-            true),
-        Arguments.of(
             "Has bombardment units and subsequent round",
-            givenBattleStateBuilder().bombardingUnits(List.of(givenAnyUnit())).round(2).build(),
-            false),
+            givenBattleStateBuilder().bombardingUnits(List.of(givenAnyUnit())).round(2).build()),
         Arguments.of(
             "Has no bombardment units and first round",
-            givenBattleStateBuilder().bombardingUnits(List.of()).round(1).build(),
-            false),
+            givenBattleStateBuilder().bombardingUnits(List.of()).round(1).build()),
         Arguments.of(
             "Is impossible sea battle with bombardment",
             givenBattleStateBuilder()
                 .bombardingUnits(List.of(givenAnyUnit()))
                 .round(1)
                 .battleSite(givenSeaBattleSite())
-                .build(),
-            false));
+                .build()));
   }
 }

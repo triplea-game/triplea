@@ -1141,7 +1141,6 @@ public class MustFightBattle extends DependentBattle
     }
     if (navalBombardment.valid()) {
       steps.add(navalBombardment);
-      // see Save Game Compatibility Note on getBattleExecutables
       new IExecutable() {
         private static final long serialVersionUID = -2255284529092427441L;
 
