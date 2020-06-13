@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -40,7 +41,7 @@ abstract class AbstractBattle implements IBattle {
 
   final Territory battleSite;
   final GamePlayer attacker;
-  GamePlayer defender;
+  @Nullable GamePlayer defender;
   final BattleTracker battleTracker;
   int round = 1;
   final boolean isBombingRun;
