@@ -19,7 +19,6 @@ import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOn
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.Builder;
@@ -60,8 +59,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   final @NonNull Boolean isBattleSiteWater;
   final @NonNull Boolean isAmphibious;
   final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories;
-  final @NonNull BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>>
-      getEmptyOrFriendlySeaNeighbors;
+  final @NonNull Function<Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
   final @NonNull BattleActions battleActions;
 
   public List<String> get() {
@@ -232,7 +230,6 @@ public class BattleSteps implements BattleStepStrings, BattleState {
         if (RetreatChecks.canDefenderRetreatSubs(
             attackingUnits,
             attackingWaitingToDie,
-            defender,
             defendingUnits,
             gameData,
             getEmptyOrFriendlySeaNeighbors)) {
