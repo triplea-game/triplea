@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle;
 
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
@@ -15,5 +16,13 @@ public interface BattleState {
 
   Collection<Unit> getDefendingUnits();
 
+  Collection<Unit> getOffensiveAa();
+
+  Collection<Unit> getDefendingAa();
+
   Collection<Unit> getBombardingUnits();
+
+  GamePlayer getAttacker();
+
+  GamePlayer getDefender();
 }

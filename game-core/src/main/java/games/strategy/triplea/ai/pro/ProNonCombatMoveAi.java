@@ -29,9 +29,9 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
@@ -1521,7 +1521,7 @@ class ProNonCombatMoveAi {
                   .test(t);
           final int distance =
               data.getMap()
-                  .getDistance_IgnoreEndForCondition(
+                  .getDistanceIgnoreEndForCondition(
                       currentTerritory, t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
           final boolean hasSeaNeighbor =
               Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);

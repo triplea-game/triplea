@@ -34,8 +34,6 @@ import org.triplea.sound.SoundPath;
 
 /** Responsible allowing players to perform politicalActions. */
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate {
-  public PoliticsDelegate() {}
-
   @Override
   public void end() {
     super.end();

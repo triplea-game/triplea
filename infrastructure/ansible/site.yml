@@ -4,17 +4,18 @@
 #
 
 - hosts: all
+  tags: system
   roles:
-    - apt_update
-    - admin_user
-    - firewall
-    - security
+    - system/apt_update
+    - system/admin_user
+    - system/firewall
+    - system/security
 
 - hosts: postgresHosts
-  tags: postgres
+  tags: [database, postgres]
   roles:
-    - postgres
-    - flyway
+    - database/postgres
+    - database/flyway
 
 - hosts: dropwizardHosts
   tags: lobby
@@ -27,7 +28,7 @@
 - hosts: letsEncrypt
   tags: lobby
   roles:
-    - role: certbot
+    - certbot
     # Re-run nginx role to fix configuration and do final restart.
     # Modifications to /etc/nginx/sites-enabled/default triggers a NGINX restart.
     # Certbot role adds a new line to /etc/nginx/sites-enabled/default

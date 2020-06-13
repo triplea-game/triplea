@@ -24,6 +24,9 @@ import org.triplea.util.Version;
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
 
+  @Setter private IServerMessenger serverMessenger;
+  private @Nullable String password;
+
   @VisibleForTesting
   interface ErrorMessages {
     String NO_ERROR = null;
@@ -31,9 +34,6 @@ public final class ClientLoginValidator implements ILoginValidator {
     String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
     String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
   }
-
-  @Setter private IServerMessenger serverMessenger;
-  private @Nullable String password;
 
   /** Set the password required for the game. If {@code null} or empty, no password is required. */
   public void setGamePassword(final @Nullable String password) {

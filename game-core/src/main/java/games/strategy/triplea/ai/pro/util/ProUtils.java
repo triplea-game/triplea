@@ -245,7 +245,7 @@ public final class ProUtils {
     for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories) {
       final int distance =
           data.getMap()
-              .getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.territoryIsWater());
+              .getDistanceIgnoreEndForCondition(t, enemyLandTerritory, Matches.territoryIsWater());
       if (distance > 0 && distance < minDistance) {
         minDistance = distance;
       }

@@ -17,8 +17,6 @@ import org.triplea.util.Version;
 @Log
 class FileSystemAccessStrategy {
 
-  FileSystemAccessStrategy() {}
-
   Optional<Version> getMapVersion(final String mapName) {
     final File potentialFile = new File(mapName);
 

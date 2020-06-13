@@ -14,6 +14,7 @@ import static games.strategy.triplea.Constants.WW2V3;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.LAND;
 import static games.strategy.triplea.delegate.battle.MustFightBattleExecutablesTest.BattleTerrain.WATER;
+import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.UnitAndAttachment;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
@@ -53,6 +54,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -64,7 +67,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Tuple;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("UnmatchedTest")
@@ -267,7 +269,7 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        getIndex(execs, OffensiveAaFire.class),
         is(0));
 
     assertThat(
@@ -275,7 +277,7 @@ class MustFightBattleExecutablesTest {
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(1));
 
-    assertThatStepIsMissing(execs, MustFightBattle.FireDefensiveAaGuns.class);
+    assertThatStepIsMissing(execs, DefensiveAaFire.class);
   }
 
   @Test
@@ -304,7 +306,7 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireDefensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        getIndex(execs, DefensiveAaFire.class),
         is(0));
 
     assertThat(
@@ -312,7 +314,7 @@ class MustFightBattleExecutablesTest {
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(1));
 
-    assertThatStepIsMissing(execs, MustFightBattle.FireOffensiveAaGuns.class);
+    assertThatStepIsMissing(execs, OffensiveAaFire.class);
   }
 
   @Test
@@ -350,12 +352,12 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        getIndex(execs, OffensiveAaFire.class),
         is(0));
 
     assertThat(
         "FireDefensiveAaGuns should be the second step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        getIndex(execs, DefensiveAaFire.class),
         is(1));
 
     assertThat(
@@ -770,18 +772,18 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    final Unit unit = unitAndAttachment.getUnit();
     when(unit.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
+    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
     when(attachment1.getIsCombatTransport()).thenReturn(false);
     when(attachment1.getTransportCapacity()).thenReturn(2);
     when(attachment1.getIsSea()).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getFirst();
+    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment2.getUnit();
     when(unit2.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment2 = unitAndAttachment2.getSecond();
+    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
     when(attachment2.getTransportCapacity()).thenReturn(-1);
     when(attachment2.getMovement(attacker)).thenReturn(1);
     when(attachment2.getAttack(attacker)).thenReturn(1);
@@ -845,10 +847,10 @@ class MustFightBattleExecutablesTest {
     final Unit unit = givenUnitDestroyer();
     when(unit.getOwner()).thenReturn(attacker);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getFirst();
+    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment2.getUnit();
     when(unit2.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment2 = unitAndAttachment2.getSecond();
+    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
     when(attachment2.getTransportCapacity()).thenReturn(-1);
     when(attachment2.getIsSea()).thenReturn(true);
 
@@ -877,18 +879,18 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    final Unit unit = unitAndAttachment.getUnit();
     when(unit.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
+    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
     when(attachment1.getIsCombatTransport()).thenReturn(false);
     when(attachment1.getTransportCapacity()).thenReturn(2);
     when(attachment1.getIsSea()).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getFirst();
+    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment2.getUnit();
     when(unit2.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment2 = unitAndAttachment2.getSecond();
+    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
     when(attachment2.getTransportCapacity()).thenReturn(-1);
     when(attachment2.getMovement(attacker)).thenReturn(0);
     when(attachment2.getIsSea()).thenReturn(true);
@@ -917,18 +919,18 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    final Unit unit = unitAndAttachment.getUnit();
     when(unit.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
+    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
     when(attachment1.getIsCombatTransport()).thenReturn(false);
     when(attachment1.getTransportCapacity()).thenReturn(2);
     when(attachment1.getIsSea()).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getFirst();
+    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment2.getUnit();
     when(unit2.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment2 = unitAndAttachment2.getSecond();
+    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
     when(attachment2.getTransportCapacity()).thenReturn(-1);
     when(attachment2.getMovement(defender)).thenReturn(1);
     when(attachment2.getAttack(defender)).thenReturn(1);
@@ -965,10 +967,10 @@ class MustFightBattleExecutablesTest {
     final Unit unit = givenUnitDestroyer();
     when(unit.getOwner()).thenReturn(defender);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getFirst();
+    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment2.getUnit();
     when(unit2.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment2 = unitAndAttachment2.getSecond();
+    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
     when(attachment2.getIsSea()).thenReturn(true);
 
     when(battleSite.getUnits()).thenReturn(List.of(unit, unit2));
@@ -996,18 +998,18 @@ class MustFightBattleExecutablesTest {
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(false);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment = newUnitAndAttachment();
-    final Unit unit = unitAndAttachment.getFirst();
+    final UnitAndAttachment unitAndAttachment = newUnitAndAttachment();
+    final Unit unit = unitAndAttachment.getUnit();
     when(unit.getOwner()).thenReturn(defender);
-    final UnitAttachment attachment1 = unitAndAttachment.getSecond();
+    final UnitAttachment attachment1 = unitAndAttachment.getUnitAttachment();
     when(attachment1.getIsCombatTransport()).thenReturn(false);
     when(attachment1.getTransportCapacity()).thenReturn(2);
     when(attachment1.getIsSea()).thenReturn(true);
 
-    final Tuple<Unit, UnitAttachment> unitAndAttachment2 = newUnitAndAttachment();
-    final Unit unit2 = unitAndAttachment2.getFirst();
+    final UnitAndAttachment unitAndAttachment2 = newUnitAndAttachment();
+    final Unit unit2 = unitAndAttachment2.getUnit();
     when(unit2.getOwner()).thenReturn(attacker);
-    final UnitAttachment attachment2 = unitAndAttachment2.getSecond();
+    final UnitAttachment attachment2 = unitAndAttachment2.getUnitAttachment();
     when(attachment2.getMovement(defender)).thenReturn(0);
     when(attachment2.getIsSea()).thenReturn(true);
 
@@ -1039,7 +1041,7 @@ class MustFightBattleExecutablesTest {
             FirstStrikeBattleStep.STANDARD));
   }
 
-  private Tuple<MustFightBattle, List<IExecutable>> givenFirstStrikeBattleSetup(
+  private MustFightBattle givenFirstStrikeBattleSetup(
       final boolean attackerDestroyer,
       final boolean defenderDestroyer,
       final boolean ww2v2,
@@ -1062,9 +1064,8 @@ class MustFightBattleExecutablesTest {
 
     battle.setUnits(
         List.of(defenderUnit), List.of(attackerUnit), List.of(), List.of(), defender, List.of());
-    final List<IExecutable> execs = battle.getBattleExecutables(true);
 
-    return Tuple.of(battle, execs);
+    return battle;
   }
 
   private enum FirstStrikeBattleStep {
@@ -1074,9 +1075,8 @@ class MustFightBattleExecutablesTest {
   }
 
   private void assertThatFirstStrikeStepOrder(
-      final Tuple<MustFightBattle, List<IExecutable>> battleTuple,
-      final List<FirstStrikeBattleStep> stepOrder) {
-    final List<IExecutable> execs = battleTuple.getSecond();
+      final MustFightBattle battle, final List<FirstStrikeBattleStep> stepOrder) {
+    final List<IExecutable> execs = battle.getBattleExecutables(true);
 
     final EnumMap<FirstStrikeBattleStep, Integer> indices =
         new EnumMap<>(FirstStrikeBattleStep.class);
@@ -1096,11 +1096,10 @@ class MustFightBattleExecutablesTest {
   }
 
   private void assertThatFirstStrikeReturnFireIs(
-      final Tuple<MustFightBattle, List<IExecutable>> battleTuple,
+      final MustFightBattle battle,
       final MustFightBattle.ReturnFire returnFire,
       final boolean attacker) {
-    final MustFightBattle battle = battleTuple.getFirst();
-    final List<IExecutable> execs = battleTuple.getSecond();
+    final List<IExecutable> execs = battle.getBattleExecutables(true);
     final int index =
         getIndex(
             execs,

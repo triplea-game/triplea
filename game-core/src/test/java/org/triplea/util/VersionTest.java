@@ -14,42 +14,46 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 class VersionTest {
   @Test
   void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(Version.class).verify();
   }
 
-  @Test
-  void compareTo_ShouldThrowExceptionWhenOtherIsNull() {
-    assertThrows(NullPointerException.class, () -> new Version(1, 0, 0).compareTo(null));
-  }
+  @Nested
+  class CompareTo {
+    @Test
+    void shouldThrowExceptionWhenOtherIsNull() {
+      assertThrows(NullPointerException.class, () -> new Version(1, 0, 0).compareTo(null));
+    }
 
-  @Test
-  void compareTo_ShouldReturnNegativeIntegerWhenFirstIsLessThanSecond() {
-    List.of(
-            Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
-            Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
-            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)))
-        .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(lessThan(0))));
-  }
+    @Test
+    void shouldReturnNegativeIntegerWhenFirstIsLessThanSecond() {
+      List.of(
+              Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
+              Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
+              Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)))
+          .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(lessThan(0))));
+    }
 
-  @Test
-  void compareTo_ShouldReturnZeroWhenFirstIsEqualToSecond() {
-    List.of(
-            Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
-            Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
-            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)))
-        .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(0)));
-  }
+    @Test
+    void shouldReturnZeroWhenFirstIsEqualToSecond() {
+      List.of(
+              Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
+              Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
+              Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)))
+          .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(0)));
+    }
 
-  @Test
-  void compareTo_ShouldReturnPositiveIntegerWhenFirstIsGreaterThanSecond() {
-    List.of(
-            Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
-            Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),
-            Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)))
-        .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(greaterThan(0))));
+    @Test
+    void shouldReturnPositiveIntegerWhenFirstIsGreaterThanSecond() {
+      List.of(
+              Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
+              Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),
+              Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)))
+          .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(greaterThan(0))));
+    }
   }
 
   @Test

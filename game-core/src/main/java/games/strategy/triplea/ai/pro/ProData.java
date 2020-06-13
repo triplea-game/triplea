@@ -38,8 +38,6 @@ public final class ProData {
   private GameData data;
   private GamePlayer player;
 
-  public ProData() {}
-
   public void initialize(final AbstractProAi proAi) {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getGamePlayer(), false);
   }

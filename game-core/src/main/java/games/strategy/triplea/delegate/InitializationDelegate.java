@@ -33,8 +33,6 @@ import org.triplea.java.collections.IntegerMap;
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
-  public InitializationDelegate() {}
-
   @Override
   public void initialize(final String name, final String displayName) {
     this.name = name;

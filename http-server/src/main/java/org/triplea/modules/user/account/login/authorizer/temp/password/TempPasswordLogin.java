@@ -8,7 +8,7 @@ import lombok.Builder;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.db.dao.temp.password.TempPasswordDao;
 import org.triplea.http.client.lobby.login.LoginRequest;
-import org.triplea.modules.user.account.login.authorizer.BCryptHashVerifier;
+import org.triplea.modules.user.account.PasswordBCrypter;
 
 @Builder
 public class TempPasswordLogin implements Predicate<LoginRequest> {
@@ -19,7 +19,7 @@ public class TempPasswordLogin implements Predicate<LoginRequest> {
   public static TempPasswordLogin build(final Jdbi jdbi) {
     return TempPasswordLogin.builder()
         .tempPasswordDao(jdbi.onDemand(TempPasswordDao.class))
-        .passwordChecker(new BCryptHashVerifier())
+        .passwordChecker(PasswordBCrypter::verifyHash)
         .build();
   }
 

@@ -7,6 +7,10 @@ import java.util.Collection;
 /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
 
+  void fireOffensiveAaGuns();
+
+  void fireDefensiveAaGuns();
+
   void submergeUnits(Collection<Unit> units, boolean defender, IDelegateBridge bridge);
 
   void fireNavalBombardment(IDelegateBridge bridge);

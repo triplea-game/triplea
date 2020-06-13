@@ -291,7 +291,7 @@ public class UnifiedMessenger {
       synchronized (pendingLock) {
         results.put(methodId, spokeInvocationResults.results);
         final CountDownLatch latch = pendingInvocations.remove(methodId);
-        Preconditions.checkNotNull(
+        checkNotNull(
             latch,
             String.format(
                 "method id: %s, was not present in pending invocations: %s, "

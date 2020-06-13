@@ -9,6 +9,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.ArrayList;
 import java.util.Collection;

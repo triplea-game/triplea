@@ -22,7 +22,7 @@ class AbstractConditionsAttachmentTest {
       };
 
   @Test
-  void testSetConditionType_validValues() throws Exception {
+  void setConditionTypeWithValidValues() throws Exception {
     instance.setConditionType("OR");
     assertEquals("OR", instance.conditionType);
     instance.setConditionType("AND");
@@ -38,7 +38,7 @@ class AbstractConditionsAttachmentTest {
   }
 
   @Test
-  void testSetConditionType_validLowercase() throws Exception {
+  void setConditionTypeWithValidLowercase() throws Exception {
     instance.setConditionType("or");
     assertEquals("OR", instance.conditionType);
     instance.setConditionType("and");
@@ -52,7 +52,7 @@ class AbstractConditionsAttachmentTest {
   }
 
   @Test
-  void testSetConditionType_invalidValues() {
+  void setConditionTypeWithInvalidValues() {
     assertThrows(GameParseException.class, () -> instance.setConditionType("XNOR"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("NAND"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("NOR"));

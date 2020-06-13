@@ -84,6 +84,7 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
@@ -206,7 +207,7 @@ class WW2V3Year41Test {
   @Test
   void testAaCasualtiesLowLuckMixedWithRollingRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
-    final GamePlayer british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = british(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
@@ -604,7 +605,7 @@ class WW2V3Year41Test {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 1);
     // Set up the test
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer germans = germans(gameData);
     delegateBridge = newDelegateBridge(germans);
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     advanceToStep(delegateBridge, "Place");
@@ -769,7 +770,7 @@ class WW2V3Year41Test {
     final Territory kiangsu = territory("Kiangsu", gameData);
     final Territory hupeh = territory("Hupeh", gameData);
     // Set up the unit types
-    final UnitType infantryType = GameDataTestUtil.infantry(gameData);
+    final UnitType infantryType = infantry(gameData);
     // Remove all units
     removeFrom(kiangsu, kiangsu.getUnits());
     // add a VALID attack

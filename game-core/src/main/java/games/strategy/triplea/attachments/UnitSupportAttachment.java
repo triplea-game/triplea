@@ -28,23 +28,6 @@ import lombok.Value;
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
 
-  /** Type to represent name and count */
-  @Value
-  public static class BonusType implements Serializable {
-    private static final long serialVersionUID = -7445551357956238314L;
-
-    @Nonnull String name;
-    @Nonnull Integer count;
-
-    public int getCount() {
-      return count < 0 ? Integer.MAX_VALUE : count;
-    }
-
-    boolean isOldArtilleryRule() {
-      return name.equals(Constants.OLD_ART_RULE_NAME);
-    }
-  }
-
   private Set<UnitType> unitType = null;
   private boolean offence = false;
   private boolean defence = false;
@@ -65,6 +48,23 @@ public class UnitSupportAttachment extends DefaultAttachment {
   // offence or defence
   private String side;
   private String faction;
+
+  /** Type to represent name and count */
+  @Value
+  public static class BonusType implements Serializable {
+    private static final long serialVersionUID = -7445551357956238314L;
+
+    @Nonnull String name;
+    @Nonnull Integer count;
+
+    public int getCount() {
+      return count < 0 ? Integer.MAX_VALUE : count;
+    }
+
+    boolean isOldArtilleryRule() {
+      return name.equals(Constants.OLD_ART_RULE_NAME);
+    }
+  }
 
   public UnitSupportAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
