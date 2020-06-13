@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/** A collection of relationships between any two players.
- * Provides methods that determine whether various types of relationships (e.g. allied, at war,
- * etc.) exist between two or more players.
+/**
+ * A collection of relationships between any two players. Provides methods that determine whether
+ * various types of relationships (e.g. allied, at war, etc.) exist between two or more players.
  */
 public class RelationshipTracker extends GameDataComponent {
   private static final long serialVersionUID = -4740671761925519069L;
