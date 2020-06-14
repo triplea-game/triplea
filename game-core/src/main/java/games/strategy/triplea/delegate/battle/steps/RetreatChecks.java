@@ -15,20 +15,6 @@ import org.triplea.java.collections.CollectionUtils;
 
 @UtilityClass
 public class RetreatChecks {
-  public static boolean canAttackerRetreatSubs(
-      final @NonNull Collection<Unit> defendingUnits,
-      final @NonNull Collection<Unit> defendingWaitingToDie,
-      final @NonNull GameData gameData,
-      final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories,
-      final @NonNull Boolean isAmphibious) {
-    if (defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return defendingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (canAttackerRetreat(
-                defendingUnits, gameData, getAttackerRetreatTerritories, isAmphibious)
-            || Properties.getSubmersibleSubs(gameData));
-  }
 
   public static boolean canDefenderRetreatSubs(
       final @NonNull Collection<Unit> attackingUnits,

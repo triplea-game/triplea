@@ -1,6 +1,8 @@
 package games.strategy.triplea.delegate.battle;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import java.util.Collection;
 
@@ -11,6 +13,8 @@ public interface BattleState {
 
   Collection<Unit> getDefendingUnits();
 
+  Collection<Unit> getDefendingWaitingToDie();
+
   Collection<Unit> getOffensiveAa();
 
   Collection<Unit> getDefendingAa();
@@ -18,4 +22,12 @@ public interface BattleState {
   GamePlayer getAttacker();
 
   GamePlayer getDefender();
+
+  GameData getGameData();
+
+  boolean isAmphibious();
+
+  boolean isOver();
+
+  Collection<Territory> getAttackerRetreatTerritories();
 }

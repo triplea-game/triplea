@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
@@ -63,7 +64,8 @@ abstract class AbstractBattle implements IBattle {
   WhoWon whoWon = WhoWon.NOT_FINISHED;
   int attackerLostTuv = 0;
   int defenderLostTuv = 0;
-  final GameData gameData;
+
+  @Getter final GameData gameData;
 
   AbstractBattle(
       final Territory battleSite,

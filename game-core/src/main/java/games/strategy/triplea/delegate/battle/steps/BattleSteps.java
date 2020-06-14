@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle.steps;
 
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -15,6 +18,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirAttackVsNonSubsStep;
 import games.strategy.triplea.delegate.battle.steps.fire.air.AirDefendVsNonSubsStep;
+import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,16 +55,40 @@ public class BattleSteps implements BattleStepStrings, BattleState {
   final @NonNull Collection<Unit> defendingUnits;
 
   final @NonNull Collection<Unit> attackingWaitingToDie;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull Collection<Unit> defendingWaitingToDie;
+
   final @NonNull Territory battleSite;
+
+  @Getter(onMethod = @__({@Override}))
   final @NonNull GameData gameData;
+
   final @NonNull Collection<Unit> bombardingUnits;
   final @NonNull Function<Collection<Unit>, Collection<Unit>> getDependentUnits;
   final @NonNull Boolean isBattleSiteWater;
+
   final @NonNull Boolean isAmphibious;
   final @NonNull Supplier<Collection<Territory>> getAttackerRetreatTerritories;
   final @NonNull Function<Collection<Unit>, Collection<Territory>> getEmptyOrFriendlySeaNeighbors;
   final @NonNull BattleActions battleActions;
+
+  final @NonNull Boolean isOver;
+
+  @Override
+  public Collection<Territory> getAttackerRetreatTerritories() {
+    return getAttackerRetreatTerritories.get();
+  }
+
+  @Override
+  public boolean isOver() {
+    return isOver;
+  }
+
+  @Override
+  public boolean isAmphibious() {
+    return isAmphibious;
+  }
 
   public List<String> get() {
 
@@ -69,6 +97,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     final BattleStep submergeSubsVsOnlyAir = new SubmergeSubsVsOnlyAirStep(this, battleActions);
     final BattleStep airAttackVsNonSubs = new AirAttackVsNonSubsStep(this);
     final BattleStep airDefendVsNonSubs = new AirDefendVsNonSubsStep(this);
+    final BattleStep offensiveSubsSubmerge = new OffensiveSubsRetreat(this, battleActions);
 
     final List<String> steps = new ArrayList<>();
     steps.addAll(offensiveAaStep.getNames());
@@ -90,12 +119,12 @@ public class BattleSteps implements BattleStepStrings, BattleState {
         }
       }
     }
+
+    if (offensiveSubsSubmerge.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
+      steps.addAll(offensiveSubsSubmerge.getNames());
+    }
     // Check if defending subs can submerge before battle
     if (Properties.getSubRetreatBeforeBattle(gameData)) {
-      if (defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-          && attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
-        steps.add(attacker.getName() + SUBS_SUBMERGE);
-      }
       if (attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
           && defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
         steps.add(defender.getName() + SUBS_SUBMERGE);
@@ -185,22 +214,8 @@ public class BattleSteps implements BattleStepStrings, BattleState {
     // remove casualties
     steps.add(REMOVE_CASUALTIES);
     // retreat attacking subs
-    if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
-      if (Properties.getSubmersibleSubs(gameData)) {
-        // TODO: BUG? Should the presence of destroyers be checked?
-        if (!Properties.getSubRetreatBeforeBattle(gameData)) {
-          steps.add(attacker.getName() + SUBS_SUBMERGE);
-        }
-      } else {
-        if (RetreatChecks.canAttackerRetreatSubs(
-            defendingUnits,
-            defendingWaitingToDie,
-            gameData,
-            getAttackerRetreatTerritories,
-            isAmphibious)) {
-          steps.add(attacker.getName() + SUBS_WITHDRAW);
-        }
-      }
+    if (offensiveSubsSubmerge.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
+      steps.addAll(offensiveSubsSubmerge.getNames());
     }
     // if we are a sea zone, then we may not be able to retreat
     // (ie a sub traveled under another unit to get to the battle site)

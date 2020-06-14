@@ -1,5 +1,8 @@
 package games.strategy.triplea.delegate.battle;
 
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_AFTER_BATTLE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE;
+
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -31,6 +34,7 @@ import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.delegate.battle.steps.SubsChecks;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
 import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
@@ -49,6 +53,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
@@ -108,16 +113,6 @@ public class MustFightBattle extends DependentBattle
   }
 
   /**
-   * An action representing attacker subs retreating before battle.
-   *
-   * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
-   * action of this type.
-   */
-  public abstract static class AttackerRetreatSubsBeforeBattle implements IExecutable {
-    private static final long serialVersionUID = 2178507532676286044L;
-  }
-
-  /**
    * An action representing definding subs retreating before battle.
    *
    * <p>NOTE: This type exists solely for tests to interrogate the execution stack looking for an
@@ -170,6 +165,8 @@ public class MustFightBattle extends DependentBattle
   private static final long serialVersionUID = 5879502298361231540L;
 
   private final Collection<Unit> attackingWaitingToDie = new ArrayList<>();
+
+  @Getter(onMethod = @__({@Override}))
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> killed = new ArrayList<>();
@@ -899,6 +896,7 @@ public class MustFightBattle extends DependentBattle
         .getAttackerRetreatTerritories(this::getAttackerRetreatTerritories)
         .getEmptyOrFriendlySeaNeighbors(this::getEmptyOrFriendlySeaNeighbors)
         .battleActions(this)
+        .isOver(isOver)
         .build()
         .get();
   }
@@ -963,7 +961,7 @@ public class MustFightBattle extends DependentBattle
         && attackingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
 
-  @VisibleForTesting
+  @Override
   public Collection<Territory> getAttackerRetreatTerritories() {
     // TODO: when attacking with paratroopers (air + carried land), there are several bugs in
     // retreating.
@@ -1442,19 +1440,25 @@ public class MustFightBattle extends DependentBattle
   }
 
   private void addFightSteps(final List<IExecutable> steps) {
+    final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
+    if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
+      steps.add(offensiveSubsRetreat);
+    }
+
     // Ask to retreat defending subs before battle
     if (Properties.getSubRetreatBeforeBattle(gameData)) {
-      steps.add(
-          new AttackerRetreatSubsBeforeBattle() {
-            private static final long serialVersionUID = 6775880082912594489L;
+      new IExecutable() {
+        private static final long serialVersionUID = 6775880082912594489L;
 
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              if (!isOver) {
-                attackerRetreatSubs(bridge);
-              }
-            }
-          });
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          final BattleStep offensiveSubsRetreat =
+              new OffensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
+          if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE) {
+            offensiveSubsRetreat.execute(stack, bridge);
+          }
+        }
+      };
       steps.add(
           new DefenderRetreatSubsBeforeBattle() {
             private static final long serialVersionUID = 7056448091800764539L;
@@ -1578,21 +1582,6 @@ public class MustFightBattle extends DependentBattle
             standardDefendersFire();
           }
         });
-  }
-
-  private void attackerRetreatSubs(final IDelegateBridge bridge) {
-    if (!RetreatChecks.canAttackerRetreatSubs(
-        defendingUnits,
-        defendingWaitingToDie,
-        gameData,
-        this::getAttackerRetreatTerritories,
-        isAmphibious)) {
-      return;
-    }
-    if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())
-        && !RetreatChecks.onlyDefenselessDefendingTransportsLeft(defendingUnits, gameData)) {
-      queryRetreat(false, RetreatType.SUBS, bridge, getAttackerRetreatTerritories());
-    }
   }
 
   private void defenderRetreatSubs(final IDelegateBridge bridge) {
@@ -1911,24 +1900,22 @@ public class MustFightBattle extends DependentBattle
             }
           }
         });
-    steps.add(
-        new IExecutable() {
-          private static final long serialVersionUID = 6775880082912594489L;
+    final BattleStep offensiveSubsRetreat = new OffensiveSubsRetreat(this, this);
+    if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
+      steps.add(offensiveSubsRetreat);
+    }
+    new IExecutable() {
+      private static final long serialVersionUID = 6775880082912594489L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!isOver
-                && RetreatChecks.canAttackerRetreatSubs(
-                    defendingUnits,
-                    defendingWaitingToDie,
-                    gameData,
-                    () -> getAttackerRetreatTerritories(),
-                    isAmphibious)
-                && !Properties.getSubRetreatBeforeBattle(gameData)) {
-              attackerRetreatSubs(bridge);
-            }
-          }
-        });
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        final BattleStep offensiveSubsRetreat =
+            new OffensiveSubsRetreat(MustFightBattle.this, MustFightBattle.this);
+        if (offensiveSubsRetreat.getOrder() == SUB_OFFENSIVE_RETREAT_AFTER_BATTLE) {
+          offensiveSubsRetreat.execute(stack, bridge);
+        }
+      }
+    };
     steps.add(
         new IExecutable() {
           private static final long serialVersionUID = -1150863964807721395L;
@@ -2080,8 +2067,8 @@ public class MustFightBattle extends DependentBattle
     }
   }
 
-  @VisibleForTesting
-  protected void queryRetreat(
+  @Override
+  public void queryRetreat(
       final boolean defender,
       final RetreatType retreatType,
       final IDelegateBridge bridge,
