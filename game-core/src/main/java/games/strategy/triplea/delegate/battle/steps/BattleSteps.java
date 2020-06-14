@@ -33,7 +33,7 @@ import org.triplea.java.collections.CollectionUtils;
 public class BattleSteps implements BattleStepStrings, BattleState {
 
   @Getter(onMethod = @__({@Override}))
-  final @NonNull Integer round;
+  final int battleRound;
 
   @Getter(onMethod = @__({@Override}))
   final @NonNull GamePlayer attacker;
@@ -86,7 +86,7 @@ public class BattleSteps implements BattleStepStrings, BattleState {
 
     steps.addAll(defensiveAaStep.getNames());
     steps.addAll(navalBombardment.getNames());
-    if (round == 1) {
+    if (battleRound == 1) {
       if (!isBattleSiteWater && TechAttachment.isAirTransportable(attacker)) {
         final Collection<Unit> bombers =
             CollectionUtils.getMatches(battleSite.getUnits(), Matches.unitIsAirTransport());

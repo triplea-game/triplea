@@ -870,7 +870,7 @@ public class MustFightBattle extends DependentBattle
       updateDefendingAaUnits();
     }
     return BattleSteps.builder()
-        .round(round)
+        .battleRound(round)
         .attacker(attacker)
         .defender(defender)
         .offensiveAa(getOffensiveAa())

@@ -8,7 +8,7 @@ import java.util.Collection;
 /** Exposes the battle state and allows updates to it */
 public interface BattleState {
 
-  Integer getRound();
+  int getBattleRound();
 
   Territory getBattleSite();
 

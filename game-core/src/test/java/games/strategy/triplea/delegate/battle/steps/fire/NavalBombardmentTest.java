@@ -32,7 +32,7 @@ class NavalBombardmentTest {
   @DisplayName("Has bombardment units and first round")
   void validBombardmentSituation() {
     final BattleState battleState =
-        givenBattleStateBuilder().bombardingUnits(List.of(givenAnyUnit())).round(1).build();
+        givenBattleStateBuilder().bombardingUnits(List.of(givenAnyUnit())).battleRound(1).build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
     assertThat(navalBombardment.valid(), is(true));
     assertThat(navalBombardment.getNames(), hasSize(2));
@@ -54,15 +54,18 @@ class NavalBombardmentTest {
     return List.of(
         Arguments.of(
             "Has bombardment units and subsequent round",
-            givenBattleStateBuilder().bombardingUnits(List.of(givenAnyUnit())).round(2).build()),
+            givenBattleStateBuilder()
+                .bombardingUnits(List.of(givenAnyUnit()))
+                .battleRound(2)
+                .build()),
         Arguments.of(
             "Has no bombardment units and first round",
-            givenBattleStateBuilder().bombardingUnits(List.of()).round(1).build()),
+            givenBattleStateBuilder().bombardingUnits(List.of()).battleRound(1).build()),
         Arguments.of(
             "Is impossible sea battle with bombardment",
             givenBattleStateBuilder()
                 .bombardingUnits(List.of(givenAnyUnit()))
-                .round(1)
+                .battleRound(1)
                 .battleSite(givenSeaBattleSite())
                 .build()));
   }

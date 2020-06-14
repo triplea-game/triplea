@@ -256,10 +256,6 @@ abstract class AbstractBattle implements IBattle {
     return Objects.hashCode(battleSite);
   }
 
-  public Integer getRound() {
-    return round;
-  }
-
   /**
    * 2 Battles are equal if they occur in the same territory, and are both of the same type (bombing
    * / not-bombing), and are both of the same sub-type of bombing/normal (ex: MustFightBattle, or

@@ -21,7 +21,7 @@ import lombok.NonNull;
 public class FakeBattleState implements BattleState {
 
   @Getter(onMethod = @__({@Override}))
-  final @NonNull Integer round;
+  final int battleRound;
 
   @Getter(onMethod = @__({@Override}))
   final @NonNull Territory battleSite;
@@ -49,7 +49,7 @@ public class FakeBattleState implements BattleState {
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
     return FakeBattleState.builder()
-        .round(2)
+        .battleRound(2)
         .battleSite(mock(Territory.class))
         .attackingUnits(List.of())
         .defendingUnits(List.of())

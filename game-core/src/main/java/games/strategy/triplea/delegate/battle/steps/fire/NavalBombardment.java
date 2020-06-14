@@ -34,7 +34,7 @@ public class NavalBombardment implements BattleStep {
 
   @Override
   public boolean valid() {
-    return battleState.getRound() == 1
+    return battleState.getBattleRound() == 1
         && !battleState.getBombardingUnits().isEmpty()
         && !battleState.getBattleSite().isWater();
   }

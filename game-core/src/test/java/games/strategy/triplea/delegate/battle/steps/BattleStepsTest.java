@@ -233,7 +233,7 @@ public class BattleStepsTest {
 
   private BattleSteps.BattleStepsBuilder newStepBuilder() {
     return BattleSteps.builder()
-        .round(1)
+        .battleRound(1)
         .attacker(attacker)
         .defender(defender)
         .offensiveAa(List.of())
@@ -297,7 +297,7 @@ public class BattleStepsTest {
             .defendingUnits(List.of(unit2))
             .bombardingUnits(List.of(mock(Unit.class)))
             .battleSite(battleSite)
-            .round(1)
+            .battleRound(1)
             .build()
             .get();
 
@@ -320,7 +320,7 @@ public class BattleStepsTest {
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
-            .round(2)
+            .battleRound(2)
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
             .battleSite(battleSite)
@@ -415,7 +415,7 @@ public class BattleStepsTest {
     final Unit unit2 = givenAnyUnit();
     final List<String> steps =
         newStepBuilder()
-            .round(2)
+            .battleRound(2)
             .attackingUnits(List.of(unit1))
             .defendingUnits(List.of(unit2))
             .battleSite(battleSite)
