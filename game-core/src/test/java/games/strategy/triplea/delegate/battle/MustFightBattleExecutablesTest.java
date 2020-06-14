@@ -608,7 +608,7 @@ class MustFightBattleExecutablesTest {
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
-    doReturn(List.of(battleSite)).when(battle).getEmptyOrFriendlySeaNeighbors(any(), any());
+    doReturn(List.of(battleSite)).when(battle).getEmptyOrFriendlySeaNeighbors(any());
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
 
     final Unit canEvadeUnit = givenUnitCanEvade();
@@ -658,7 +658,7 @@ class MustFightBattleExecutablesTest {
           + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, and no retreat")
   void defendingSubsCanNotRetreatIfRetreatBeforeBattleAndSubmersibleAndNoRetreatTerritories() {
     final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any(), any());
+    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any());
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -715,7 +715,7 @@ class MustFightBattleExecutablesTest {
   void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
-    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any(), any());
+    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any());
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);

@@ -776,8 +776,10 @@ public class MustFightBattle extends DependentBattle
 
     final Collection<GamePlayer> attackers = findAllies(playersWithUnits, attacker);
     addPlayerCombatHistoryText(attackers, attackingUnits, true, bridge.getHistoryWriter());
-    final Collection<GamePlayer> defenders = findAllies(playersWithUnits, defender);
-    addPlayerCombatHistoryText(defenders, defendingUnits, false, bridge.getHistoryWriter());
+    if (defender != null) {
+      final Collection<GamePlayer> defenders = findAllies(playersWithUnits, defender);
+      addPlayerCombatHistoryText(defenders, defendingUnits, false, bridge.getHistoryWriter());
+    }
   }
 
   private static Collection<GamePlayer> findAllies(
@@ -1012,7 +1014,7 @@ public class MustFightBattle extends DependentBattle
 
   @VisibleForTesting
   protected Collection<Territory> getEmptyOrFriendlySeaNeighbors(
-      final GamePlayer player, final Collection<Unit> unitsToRetreat) {
+      final Collection<Unit> unitsToRetreat) {
     Collection<Territory> possible = gameData.getMap().getNeighbors(battleSite);
     if (headless) {
       return possible;
@@ -1025,7 +1027,7 @@ public class MustFightBattle extends DependentBattle
         };
     final Predicate<Territory> match =
         Matches.territoryIsWater()
-            .and(Matches.territoryHasNoEnemyUnits(player, gameData))
+            .and(Matches.territoryHasNoEnemyUnits(defender, gameData))
             .and(canalMatch);
     possible = CollectionUtils.getMatches(possible, match);
     return possible;
@@ -1594,7 +1596,6 @@ public class MustFightBattle extends DependentBattle
     if (!RetreatChecks.canDefenderRetreatSubs(
         attackingUnits,
         attackingWaitingToDie,
-        defender,
         defendingUnits,
         gameData,
         this::getEmptyOrFriendlySeaNeighbors)) {
@@ -1606,7 +1607,7 @@ public class MustFightBattle extends DependentBattle
           RetreatType.SUBS,
           bridge,
           getEmptyOrFriendlySeaNeighbors(
-              defender, CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())));
+              CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())));
     }
   }
 
@@ -1973,10 +1974,9 @@ public class MustFightBattle extends DependentBattle
               if (RetreatChecks.canDefenderRetreatSubs(
                       attackingUnits,
                       attackingWaitingToDie,
-                      defender,
                       defendingUnits,
                       gameData,
-                      (player, units) -> getEmptyOrFriendlySeaNeighbors(player, units))
+                      units -> getEmptyOrFriendlySeaNeighbors(units))
                   && !Properties.getSubRetreatBeforeBattle(gameData)) {
                 defenderRetreatSubs(bridge);
               }
