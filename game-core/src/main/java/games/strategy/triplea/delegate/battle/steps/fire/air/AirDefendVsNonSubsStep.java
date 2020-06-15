@@ -13,11 +13,15 @@ public class AirDefendVsNonSubsStep extends AirVsNonSubsStep {
 
   @Override
   public List<String> getNames() {
-    return valid() ? List.of(AIR_DEFEND_NON_SUBS) : List.of();
+    return List.of(AIR_DEFEND_NON_SUBS);
   }
 
   @Override
-  public boolean valid() {
+  public Order getOrder() {
+    return valid() ? Order.AIR_DEFENSIVE_NON_SUBS : Order.SKIP;
+  }
+
+  private boolean valid() {
     return airWillMissSubs(battleState.getDefendingUnits(), battleState.getAttackingUnits());
   }
 }

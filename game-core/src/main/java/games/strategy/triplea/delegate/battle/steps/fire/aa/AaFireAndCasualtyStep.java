@@ -26,9 +26,6 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
   @Override
   public List<String> getNames() {
     final List<String> steps = new ArrayList<>();
-    if (!valid()) {
-      return steps;
-    }
     for (final String typeAa : UnitAttachment.getAllOfTypeAas(aaGuns())) {
       steps.add(firingPlayer().getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
       steps.add(firedAtPlayer().getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
@@ -37,8 +34,7 @@ public abstract class AaFireAndCasualtyStep implements BattleStep {
     return steps;
   }
 
-  @Override
-  public boolean valid() {
+  protected boolean valid() {
     return !aaGuns().isEmpty();
   }
 
