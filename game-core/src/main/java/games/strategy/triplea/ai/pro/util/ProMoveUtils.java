@@ -12,8 +12,8 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -243,13 +243,13 @@ public final class ProMoveUtils {
               int distanceFromUnloadTerritory = 0;
               if (unloadTerritory != null) {
                 distanceFromUnloadTerritory =
-                    map.getDistance_IgnoreEndForCondition(
+                    map.getDistanceIgnoreEndForCondition(
                         neighbor,
                         unloadTerritory,
                         ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
               }
               int neighborDistanceFromEnd =
-                  map.getDistance_IgnoreEndForCondition(
+                  map.getDistanceIgnoreEndForCondition(
                       neighbor,
                       t,
                       ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));

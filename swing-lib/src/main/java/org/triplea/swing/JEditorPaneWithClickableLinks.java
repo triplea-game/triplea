@@ -11,9 +11,7 @@ import org.triplea.awt.OpenFileUtility;
  */
 public class JEditorPaneWithClickableLinks extends JEditorPane {
 
-  public JEditorPaneWithClickableLinks() {
-    this("");
-  }
+  private static final long serialVersionUID = -5293055334381354550L;
 
   public JEditorPaneWithClickableLinks(final String htmlTextContent) {
     super("text/html", htmlTextContent);

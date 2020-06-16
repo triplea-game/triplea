@@ -212,7 +212,8 @@ public class TransportTracker {
     return capacity - used - unloaded;
   }
 
-  static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units) {
+  public static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(
+      final Collection<Unit> units) {
     final Collection<Unit> loadedUnits = new ArrayList<>();
     for (final Unit unit : units) {
       // a unit loaded onto an allied transport cannot be unloaded in the same turn, so if we check
@@ -248,7 +249,7 @@ public class TransportTracker {
    * WW2V1 a transport can unload to multiple territories in non-combat phase, provided they are
    * both adjacent to the sea zone.
    */
-  static boolean isTransportUnloadRestrictedToAnotherTerritory(
+  public static boolean isTransportUnloadRestrictedToAnotherTerritory(
       final Unit transport, final Territory territory) {
     final Collection<Unit> unloaded = transport.getUnloaded();
     if (unloaded.isEmpty()) {
@@ -288,14 +289,14 @@ public class TransportTracker {
   }
 
   /** If a transport has been in combat, it cannot both load AND unload in NCM. */
-  static boolean isTransportUnloadRestrictedInNonCombat(final Unit transport) {
+  public static boolean isTransportUnloadRestrictedInNonCombat(final Unit transport) {
     return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
         && transport.getWasInCombat()
         && transport.getWasLoadedAfterCombat();
   }
 
   /** For ww2v3+ and LHTR, if a transport has been in combat then it can't load in NCM. */
-  static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
+  public static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
     final GameData data = transport.getData();
     return (Properties.getWW2V3(data) || Properties.getLhtrCarrierProductionRules(data))
         && GameStepPropertiesHelper.isNonCombatMove(data, true)

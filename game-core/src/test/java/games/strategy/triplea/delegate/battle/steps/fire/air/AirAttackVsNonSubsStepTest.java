@@ -27,12 +27,12 @@ class AirAttackVsNonSubsStepTest {
   @MethodSource
   void testWhatIsValid(
       final String displayName, final BattleState battleState, final boolean expected) {
-    final AirAttackVsNonSubsStep underTest = new AirAttackVsNonSubsStep(battleState);
-    assertThat(underTest.valid(), is(expected));
+    final AirAttackVsNonSubsStep airAttackVsNonSubsStep = new AirAttackVsNonSubsStep(battleState);
+    assertThat(airAttackVsNonSubsStep.valid(), is(expected));
     if (expected) {
-      assertThat(underTest.getNames(), hasSize(1));
+      assertThat(airAttackVsNonSubsStep.getNames(), hasSize(1));
     } else {
-      assertThat(underTest.getNames(), hasSize(0));
+      assertThat(airAttackVsNonSubsStep.getNames(), hasSize(0));
     }
   }
 

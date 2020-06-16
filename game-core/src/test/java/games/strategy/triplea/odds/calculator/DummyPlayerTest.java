@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 class DummyPlayerTest {
 
   @Nested
@@ -82,7 +83,7 @@ class DummyPlayerTest {
        * consideration.
        */
       @Test
-      void testSelectCasualties_noLossOrder() {
+      void selectCasualtiesWithNoLossOrder() {
         final DummyPlayer player = new DummyPlayer(null, false, "", null, true, 0, 0, false);
         final CasualtyDetails details =
             player.selectCasualties(
@@ -108,10 +109,10 @@ class DummyPlayerTest {
       /**
        * This test checks if a present non-empty orderOfLosses argument correctly overrules any
        * "keepAtLeastOneLand" considerations. The result should be the same as in {@link
-       * #testSelectCasualties_noLand}.
+       * #selectCasualtiesWithNoLand}.
        */
       @Test
-      void testSelectCasualties() {
+      void selectCasualties() {
         final DummyPlayer player =
             new DummyPlayer(null, false, "", orderOfLosses, true, 0, 0, false);
         final CasualtyDetails details =
@@ -140,7 +141,7 @@ class DummyPlayerTest {
      * present and keepAtLeastOneLand is false.
      */
     @Test
-    void testSelectCasualties_noLand_noLossOrder() {
+    void selectCasualtiesWithNoLandAndNoLossOrder() {
       final DummyPlayer player = new DummyPlayer(null, false, "", null, false, 0, 0, false);
       final CasualtyDetails details =
           player.selectCasualties(
@@ -168,7 +169,7 @@ class DummyPlayerTest {
      * example.)
      */
     @Test
-    void testSelectCasualties_noLand() {
+    void selectCasualtiesWithNoLand() {
       final DummyPlayer player =
           new DummyPlayer(null, false, "", orderOfLosses, false, 0, 0, false);
       final CasualtyDetails details =
@@ -197,7 +198,7 @@ class DummyPlayerTest {
      * DummyPlayer#selectCasualties}.
      */
     @Test
-    void testSelectCasualties_noLand_fewEntriesInLossOrder() {
+    void selectCasualtiesWithNoLandAndFewEntriesInLossOrder() {
       final DummyPlayer player =
           new DummyPlayer(null, false, "", List.of(unitPool.get(0)), false, 0, 0, false);
       final CasualtyDetails details =
@@ -222,7 +223,7 @@ class DummyPlayerTest {
   }
 
   @Nested
-  class GetUnitsTest {
+  class GetUnits {
 
     private final DummyDelegateBridge bridge = mock(DummyDelegateBridge.class);
     private final MustFightBattle battle = mock(MustFightBattle.class);
@@ -243,7 +244,7 @@ class DummyPlayerTest {
     }
 
     @Test
-    void testGetOurUnits() {
+    void getOurUnits() {
       assertThat(attacker.getOurUnits(), is(nullValue()));
       assertThat(defender.getOurUnits(), is(nullValue()));
 
@@ -258,7 +259,7 @@ class DummyPlayerTest {
     }
 
     @Test
-    void testGetEnemyUnits() {
+    void getEnemyUnits() {
       assertThat(attacker.getEnemyUnits(), is(nullValue()));
       assertThat(defender.getEnemyUnits(), is(nullValue()));
 

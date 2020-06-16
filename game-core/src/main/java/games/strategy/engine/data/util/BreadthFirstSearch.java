@@ -16,6 +16,11 @@ import org.triplea.java.ObjectUtils;
  * visit() and shouldContinueSearch() for customizing the behavior.
  */
 public final class BreadthFirstSearch {
+  private final GameMap map;
+  private final Set<Territory> visited;
+  private final ArrayDeque<Territory> territoriesToCheck;
+  private final Predicate<Territory> neighborCondition;
+
   public abstract static class Visitor {
     /**
      * Called when a new territory is encountered.
@@ -35,11 +40,6 @@ public final class BreadthFirstSearch {
       return true;
     }
   }
-
-  private final GameMap map;
-  private final Set<Territory> visited;
-  private final ArrayDeque<Territory> territoriesToCheck;
-  private final Predicate<Territory> neighborCondition;
 
   /**
    * @param startTerritory The territory from where to start the search.

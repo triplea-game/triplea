@@ -34,13 +34,13 @@ class SubmergeSubsVsOnlyAirStepTest {
   @MethodSource
   void testWhatIsValid(
       final String displayName, final BattleState battleState, final boolean expected) {
-    final SubmergeSubsVsOnlyAirStep underTest =
+    final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(underTest.valid(), is(expected));
+    assertThat(submergeSubsVsOnlyAirStep.valid(), is(expected));
     if (expected) {
-      assertThat(underTest.getNames(), hasSize(1));
+      assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(1));
     } else {
-      assertThat(underTest.getNames(), hasSize(0));
+      assertThat(submergeSubsVsOnlyAirStep.getNames(), hasSize(0));
     }
   }
 
@@ -101,10 +101,10 @@ class SubmergeSubsVsOnlyAirStepTest {
       final BattleState battleState,
       final List<Unit> expectedSubmergingSubs,
       final boolean expectedSide) {
-    final SubmergeSubsVsOnlyAirStep underTest =
+    final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
 
-    underTest.execute(executionStack, delegateBridge);
+    submergeSubsVsOnlyAirStep.execute(executionStack, delegateBridge);
 
     verify(battleActions).submergeUnits(expectedSubmergingSubs, expectedSide, delegateBridge);
   }

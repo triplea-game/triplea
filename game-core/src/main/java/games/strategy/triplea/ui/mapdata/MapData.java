@@ -425,7 +425,7 @@ public class MapData {
         mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
   }
 
-  public boolean useNation_convoyFlags() {
+  public boolean useNationConvoyFlags() {
     return Boolean.parseBoolean(
         mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
   }

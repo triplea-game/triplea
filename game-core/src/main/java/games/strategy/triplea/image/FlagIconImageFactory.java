@@ -7,8 +7,6 @@ import java.awt.Image;
 public class FlagIconImageFactory extends ImageFactory {
   private static final String PREFIX = "flags/";
 
-  public FlagIconImageFactory() {}
-
   public Image getFlag(final GamePlayer gamePlayer) {
     final String key = PREFIX + gamePlayer.getName() + ".gif";
     final String key2 = PREFIX + gamePlayer.getName() + ".png";

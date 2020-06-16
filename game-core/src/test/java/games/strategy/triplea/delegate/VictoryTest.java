@@ -17,6 +17,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

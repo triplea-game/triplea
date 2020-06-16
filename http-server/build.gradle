@@ -26,7 +26,6 @@ dependencies {
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
     implementation "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
     implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
-    implementation "commons-codec:commons-codec:$commonsCodecVersion" // TODO: Md5-Deprecation - used for md5crypt
     implementation "es.moki.ratelimitj:ratelimitj-dropwizard:$rateLimitjVersion"
     implementation "es.moki.ratelimitj:ratelimitj-inmemory:$rateLimitjVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"

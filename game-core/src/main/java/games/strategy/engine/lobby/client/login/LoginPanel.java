@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.triplea.domain.data.UserName;
+import org.triplea.java.Sha512Hasher;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.key.binding.KeyCode;
@@ -265,7 +266,7 @@ final class LoginPanel extends JPanel {
   }
 
   String getPassword() {
-    return new String(password.getPassword());
+    return Sha512Hasher.hashPasswordWithSalt(new String(password.getPassword()));
   }
 
   ReturnValue show(final Window parent) {

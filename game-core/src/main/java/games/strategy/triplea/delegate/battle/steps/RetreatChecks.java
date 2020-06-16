@@ -1,14 +1,13 @@
 package games.strategy.triplea.delegate.battle.steps;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -34,19 +33,16 @@ public class RetreatChecks {
   public static boolean canDefenderRetreatSubs(
       final @NonNull Collection<Unit> attackingUnits,
       final @NonNull Collection<Unit> attackingWaitingToDie,
-      final @NonNull GamePlayer defender,
       final @NonNull Collection<Unit> defendingUnits,
       final @NonNull GameData gameData,
-      final @NonNull BiFunction<GamePlayer, Collection<Unit>, Collection<Territory>>
+      final @NonNull Function<Collection<Unit>, Collection<Territory>>
               getEmptyOrFriendlySeaNeighbors) {
     if (attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
     return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
         && (getEmptyOrFriendlySeaNeighbors
-                    .apply(
-                        defender,
-                        CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
+                    .apply(CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade()))
                     .size()
                 != 0
             || Properties.getSubmersibleSubs(gameData));

@@ -6,7 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicates;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -431,7 +431,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match EXCEPT FOR THE END
    */
-  public int getDistance_IgnoreEndForCondition(
+  public int getDistanceIgnoreEndForCondition(
       final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     return getDistance(t1, t2, Matches.territoryIs(t2).or(cond));
   }

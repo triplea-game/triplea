@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 public class UnitIconImageFactory extends ImageFactory {
   private static final String PREFIX = "unitIcons/";
 
-  public UnitIconImageFactory() {}
-
   public List<Image> getImages(final String player, final String unitType, final GameData data) {
     return UnitIconProperties.getInstance(data).getImagePaths(player, unitType, data).stream()
         .map(imagePath -> getImage(PREFIX + imagePath, false))
