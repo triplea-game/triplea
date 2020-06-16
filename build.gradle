@@ -80,7 +80,7 @@ subprojects {
         databaseRiderVersion = '1.7.3'
         dropwizardVersion = '1.3.15'
         dropwizardWebsocketsVersion = '1.3.14'
-        equalsVerifierVersion = '3.4'
+        equalsVerifierVersion = '3.4.1'
         errorProneVersion = '2.3.4'
         feignCoreVersion = '10.2.3'
         feignGsonVersion = '10.2.0'
