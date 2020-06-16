@@ -45,7 +45,7 @@ function buildJars() {
 }
 
 function buildMigrations() {
-  local targetFolder=./ansible/roles/flyway/files/
+  local targetFolder=./ansible/roles/database/flyway/files/
   local zipFile=migrations.zip
   if [ ! -e $targetFolder/$zipFile ]; then
     if [ ! -e ../lobby-db/build/distributions/$zipFile ]; then
@@ -57,4 +57,3 @@ function buildMigrations() {
 }
 
 main "$@"
-

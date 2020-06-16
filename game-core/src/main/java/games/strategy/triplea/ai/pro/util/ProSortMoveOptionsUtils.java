@@ -286,7 +286,7 @@ public final class ProSortMoveOptionsUtils {
                 if (!attackMap.get(t).isCurrentlyWins()) {
                   distance1 +=
                       data.getMap()
-                          .getDistance_IgnoreEndForCondition(
+                          .getDistanceIgnoreEndForCondition(
                               unitTerritoryMap.get(o1.getKey()),
                               t,
                               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
@@ -297,7 +297,7 @@ public final class ProSortMoveOptionsUtils {
                 if (!attackMap.get(t).isCurrentlyWins()) {
                   distance2 +=
                       data.getMap()
-                          .getDistance_IgnoreEndForCondition(
+                          .getDistanceIgnoreEndForCondition(
                               unitTerritoryMap.get(o2.getKey()),
                               t,
                               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));

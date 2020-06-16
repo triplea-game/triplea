@@ -9,12 +9,14 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.IntStream;
 
 /** An abstraction of MoveDelegate in order to allow other delegates to extend this. */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
@@ -28,8 +30,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     DEFAULT,
     SPECIAL
   }
-
-  public AbstractMoveDelegate() {}
 
   @Override
   public void start() {
@@ -94,9 +94,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   private void updateUndoableMoveIndexes() {
-    for (int i = 0; i < movesToUndo.size(); i++) {
-      movesToUndo.get(i).setIndex(i);
-    }
+    IntStream.range(0, movesToUndo.size()) //
+        .forEach(i -> movesToUndo.get(i).setIndex(i));
   }
 
   protected void updateUndoableMoves(final UndoableMove currentMove) {

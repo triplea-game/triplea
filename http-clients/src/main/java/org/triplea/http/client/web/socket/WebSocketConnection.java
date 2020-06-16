@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.Retryable;
 import org.triplea.java.timer.ScheduledTimer;
 import org.triplea.java.timer.Timers;
 
@@ -85,14 +86,41 @@ class WebSocketConnection {
         Timers.fixedRateTimer("websocket-ping-sender")
             .period(45, TimeUnit.SECONDS)
             .delay(45, TimeUnit.SECONDS)
-            .task(
-                () -> {
-                  if (!client.isOutputClosed()) {
-                    client
-                        .sendPing(ByteBuffer.allocate(0))
-                        .exceptionally(logWebSocketError(Level.INFO, "Failed to send ping."));
-                  }
-                });
+            .task(this::sendPingTask);
+  }
+
+  /**
+   * Sends pings with retries. Retry threshold is set up to account for disconnect at 60 seconds. We
+   * send a ping every 45s, if that fails we'll try again at the 48s mark, again at 51s, again at
+   * 54s, and one last time at 57s.
+   */
+  private void sendPingTask() {
+    if (!client.isOutputClosed()) {
+      final boolean pingSuccess =
+          Retryable.builder()
+              .withMaxAttempts(5)
+              .withFixedBackOff(Duration.ofSeconds(3))
+              .withTask(
+                  () ->
+                      client
+                              .sendPing(ByteBuffer.allocate(0))
+                              .exceptionally(
+                                  t -> {
+                                    log.log(Level.INFO, "Failed to send ping.");
+                                    return null;
+                                  })
+                          != null)
+              .buildAndExecute();
+
+      if (!pingSuccess) {
+        log.log(
+            Level.INFO,
+            "Failed to send pings to server, retries exhausted. "
+                + "If the server does not receive pings then the connection to "
+                + "the server will be disconnected. Expecting to be disconnected "
+                + "from the server soon");
+      }
+    }
   }
 
   /** Does an async close of the current websocket connection. */

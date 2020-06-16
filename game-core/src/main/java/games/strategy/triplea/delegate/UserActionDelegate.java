@@ -24,8 +24,6 @@ import org.triplea.sound.SoundPath;
 
 /** Contains validation and logic to change game data for UserActionAttachments. */
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
-  public UserActionDelegate() {}
-
   @Override
   public void end() {
     super.end();

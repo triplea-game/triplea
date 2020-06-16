@@ -57,6 +57,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IExecutable;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.DefensiveAaFire;
+import games.strategy.triplea.delegate.battle.steps.fire.aa.OffensiveAaFire;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -344,7 +346,7 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        getIndex(execs, OffensiveAaFire.class),
         is(0));
 
     assertThat(
@@ -352,7 +354,7 @@ class MustFightBattleExecutablesTest {
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(1));
 
-    assertThatStepIsMissing(execs, MustFightBattle.FireDefensiveAaGuns.class);
+    assertThatStepIsMissing(execs, DefensiveAaFire.class);
   }
 
   @Test
@@ -381,7 +383,7 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireDefensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        getIndex(execs, DefensiveAaFire.class),
         is(0));
 
     assertThat(
@@ -389,7 +391,7 @@ class MustFightBattleExecutablesTest {
         getIndex(execs, MustFightBattle.ClearAaWaitingToDieAndDamagedChangesInto.class),
         is(1));
 
-    assertThatStepIsMissing(execs, MustFightBattle.FireOffensiveAaGuns.class);
+    assertThatStepIsMissing(execs, OffensiveAaFire.class);
   }
 
   @Test
@@ -427,12 +429,12 @@ class MustFightBattleExecutablesTest {
 
     assertThat(
         "FireOffensiveAaGuns should be the first step",
-        getIndex(execs, MustFightBattle.FireOffensiveAaGuns.class),
+        getIndex(execs, OffensiveAaFire.class),
         is(0));
 
     assertThat(
         "FireDefensiveAaGuns should be the second step",
-        getIndex(execs, MustFightBattle.FireDefensiveAaGuns.class),
+        getIndex(execs, DefensiveAaFire.class),
         is(1));
 
     assertThat(
@@ -683,7 +685,7 @@ class MustFightBattleExecutablesTest {
   void defendingSubsRetreatIfNoDestroyersAndCanRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
-    doReturn(List.of(battleSite)).when(battle).getEmptyOrFriendlySeaNeighbors(any(), any());
+    doReturn(List.of(battleSite)).when(battle).getEmptyOrFriendlySeaNeighbors(any());
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
 
     final Unit canEvadeUnit = givenUnitCanEvade();
@@ -733,7 +735,7 @@ class MustFightBattleExecutablesTest {
           + "SUB_RETREAT_BEFORE_BATTLE is true, SUBMERSIBLE_SUBS is false, and no retreat")
   void defendingSubsCanNotRetreatIfRetreatBeforeBattleAndSubmersibleAndNoRetreatTerritories() {
     final MustFightBattle battle = spy(newBattle(WATER));
-    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any(), any());
+    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any());
 
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
@@ -790,7 +792,7 @@ class MustFightBattleExecutablesTest {
   void defendingFirstStrikeSubmergeBeforeBattleIfSubmersibleSubsAndRetreatBeforeBattle() {
     final MustFightBattle battle = spy(newBattle(WATER));
     doNothing().when(battle).queryRetreat(anyBoolean(), any(), any(), any());
-    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any(), any());
+    doReturn(List.of()).when(battle).getEmptyOrFriendlySeaNeighbors(any());
     when(gameProperties.get(SUB_RETREAT_BEFORE_BATTLE, false)).thenReturn(true);
     when(gameProperties.get(TRANSPORT_CASUALTIES_RESTRICTED, false)).thenReturn(false);
     when(gameProperties.get(WW2V2, false)).thenReturn(false);

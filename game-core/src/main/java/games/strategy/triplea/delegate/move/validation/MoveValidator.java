@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate;
+package games.strategy.triplea.delegate.move.validation;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
@@ -16,6 +16,15 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.BaseEditDelegate;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveDelegate;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.UndoableMove;
+import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -155,7 +164,7 @@ public class MoveValidator {
     return result;
   }
 
-  MoveValidationResult validateFirst(
+  public MoveValidationResult validateFirst(
       final Collection<Unit> units,
       final Route route,
       final GamePlayer player,
@@ -231,7 +240,7 @@ public class MoveValidator {
     return result;
   }
 
-  MoveValidationResult validateFuel(
+  public MoveValidationResult validateFuel(
       final Collection<Unit> units,
       final Route route,
       final GamePlayer player,
@@ -917,7 +926,7 @@ public class MoveValidator {
     return map;
   }
 
-  static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
+  public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
     // just worry about transports
     final Map<Unit, Collection<Unit>> dependents = new HashMap<>();
     for (final Unit unit : units) {
@@ -1359,7 +1368,7 @@ public class MoveValidator {
     return result;
   }
 
-  static boolean allLandUnitsAreBeingParatroopered(final Collection<Unit> units) {
+  public static boolean allLandUnitsAreBeingParatroopered(final Collection<Unit> units) {
     // some units that can't be paratrooped
     if (units.isEmpty()
         || !units.stream()

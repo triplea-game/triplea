@@ -77,12 +77,4 @@ class UserJdbiDaoTest extends DaoTest {
     assertThat(userDao.lookupUserRoleByUserName("does-not-exist"), isEmpty());
     assertThat(userDao.lookupUserRoleByUserName(USERNAME), isPresentAndIs(UserRole.PLAYER));
   }
-
-  @DataSet(cleanBefore = true, value = "user/get_legacy_password.yml")
-  @Test
-  void getLegacyPassword() {
-    assertThat(userDao.getLegacyPassword("user-does-not-exist"), isEmpty());
-    assertThat(userDao.getLegacyPassword("user2"), isEmpty());
-    assertThat(userDao.getLegacyPassword("user1"), isPresentAndIs("legacy-password"));
-  }
 }

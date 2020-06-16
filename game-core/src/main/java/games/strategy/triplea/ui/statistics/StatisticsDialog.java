@@ -18,6 +18,9 @@ import org.triplea.swing.JTabbedPaneBuilder;
 
 public class StatisticsDialog extends JPanel {
 
+  private final XYChartBuilder xyChartDefaults =
+      new XYChartBuilder().theme(Styler.ChartTheme.Matlab).xAxisTitle("#Rounds");
+
   @Getter
   @RequiredArgsConstructor
   private static class OverTimeChart {
@@ -25,9 +28,6 @@ public class StatisticsDialog extends JPanel {
     private final String axisTitle;
     private final Table<String, Round, Double> data;
   }
-
-  private final XYChartBuilder xyChartDefaults =
-      new XYChartBuilder().theme(Styler.ChartTheme.Matlab).xAxisTitle("#Rounds");
 
   public StatisticsDialog(final GameData game) {
     final Statistics statistics = new StatisticsAggregator(game).aggregate();

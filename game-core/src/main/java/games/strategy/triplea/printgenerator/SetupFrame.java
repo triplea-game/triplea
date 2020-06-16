@@ -53,9 +53,8 @@ public class SetupFrame extends JPanel {
         e -> {
           if (!outField.getText().isEmpty()) {
             outDir = new File(outField.getText());
-            final PrintGenerationData printData = new PrintGenerationData();
-            printData.setOutDir(outDir);
-            printData.setData(this.data);
+            final PrintGenerationData printData =
+                PrintGenerationData.builder().outDir(outDir).data(this.data).build();
             new InitialSetup().run(printData, originalState.isSelected());
             JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
           } else {

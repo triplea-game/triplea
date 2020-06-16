@@ -21,8 +21,6 @@ class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
-  DownloadFileProperties() {}
-
   static DownloadFileProperties loadForZip(final File zipFile) {
     if (!fromZip(zipFile).exists()) {
       return new DownloadFileProperties();

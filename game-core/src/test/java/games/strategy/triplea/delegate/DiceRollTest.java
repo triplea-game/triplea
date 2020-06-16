@@ -520,7 +520,7 @@ class DiceRollTest {
   @Test
   void testHeavyBombersDefend() {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
-    final GamePlayer british = GameDataTestUtil.british(gameData);
+    final GamePlayer british = british(gameData);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     TechTracker.addAdvance(
         british,
