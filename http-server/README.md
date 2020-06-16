@@ -133,17 +133,17 @@ ERROR [2019-06-06 05:07:22,247] org.glassfish.jersey.server.ServerRuntime$Respon
 ```
 
 The impact of this is:
-- server thread hangs
-- client hangs
-- server does not shutdown cleanly
+  - server thread hangs
+  - client hangs
+  - server does not shutdown cleanly
 
 This is bad as it could be used in a DDOS attack.
 
 ### Prevention
 
 Essentially fail-fast:
-- When looking for headers, verify headers exist or terminate the request
-- Verify that all needed GET parameters are present or terminate the request
+  - When looking for headers, verify headers exist or terminate the request
+  - Verify that all needed GET parameters are present or terminate the request
 
 To terminate the request, just throw a IllegalArgumentException, it'l be mapped to a 400.
 
@@ -186,9 +186,9 @@ not cascade to the front-end clients.
 
 ### Design Pattern for Transactions
 
-- Create a new interface; e.g.: `ModeratorKeyRegistrationDao.java`
-- Add a default method with the `@Transaction` annotation.
-- add a dummy select query so that JDBI sees the interface as valid
-- pass the needed DAO objects as parameters to the default method
-- use mockito mocks to test the method
+  - Create a new interface; e.g.: `ModeratorKeyRegistrationDao.java`
+  - Add a default method with the `@Transaction` annotation.
+  - add a dummy select query so that JDBI sees the interface as valid
+  - pass the needed DAO objects as parameters to the default method
+  - use mockito mocks to test the method
 

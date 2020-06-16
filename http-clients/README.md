@@ -16,9 +16,9 @@ JSON automatically.
 
 ## Notes and Conventions
 
- - each method in a feign interfaced will throw a `FeignException` if anything
+  - each method in a feign interfaced will throw a `FeignException` if anything
 goes wrong, including http 500's or IOException
- - Each feign interface should have a static convenience constructor
+  - Each feign interface should have a static convenience constructor
  method, eg: `ExampleFeignInterface.newClient(hostUri)`
 
 ## Testing notes

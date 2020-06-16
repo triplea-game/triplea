@@ -7,6 +7,6 @@ will tell flyway to recompute the md5 of a file and execute any new changesets. 
 modifying existing changeset files).
 
 ## Flyway Role
-- Downloads flyway executable
-- Downloads changeset files
-- Executes changesets
+  - Downloads flyway executable
+  - Downloads changeset files
+  - Executes changesets
