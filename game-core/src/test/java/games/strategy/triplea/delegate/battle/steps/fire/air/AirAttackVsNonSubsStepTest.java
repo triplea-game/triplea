@@ -29,7 +29,7 @@ class AirAttackVsNonSubsStepTest {
     final AirAttackVsNonSubsStep airAttackVsNonSubsStep = new AirAttackVsNonSubsStep(battleState);
     assertThat(
         airAttackVsNonSubsStep.getOrder(),
-        is(expected ? Order.AIR_OFFENSIVE_NON_SUBS : Order.SKIP));
+        is(expected ? Order.AIR_OFFENSIVE_NON_SUBS : Order.NOT_APPLICABLE));
   }
 
   static List<Arguments> stepOrder() {

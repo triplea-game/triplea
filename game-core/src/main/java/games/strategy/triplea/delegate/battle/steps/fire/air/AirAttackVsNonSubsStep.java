@@ -18,7 +18,7 @@ public class AirAttackVsNonSubsStep extends AirVsNonSubsStep {
 
   @Override
   public Order getOrder() {
-    return valid() ? Order.AIR_OFFENSIVE_NON_SUBS : Order.SKIP;
+    return valid() ? Order.AIR_OFFENSIVE_NON_SUBS : Order.NOT_APPLICABLE;
   }
 
   private boolean valid() {

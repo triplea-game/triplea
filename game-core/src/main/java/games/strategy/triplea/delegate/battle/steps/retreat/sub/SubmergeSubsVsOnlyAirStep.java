@@ -35,7 +35,7 @@ public class SubmergeSubsVsOnlyAirStep implements BattleStep {
 
   @Override
   public Order getOrder() {
-    return valid() ? Order.SUBMERGE_SUBS_VS_ONLY_AIR : Order.SKIP;
+    return valid() ? Order.SUBMERGE_SUBS_VS_ONLY_AIR : Order.NOT_APPLICABLE;
   }
 
   private boolean valid() {

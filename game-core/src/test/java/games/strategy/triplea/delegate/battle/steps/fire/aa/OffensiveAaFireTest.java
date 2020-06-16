@@ -41,7 +41,7 @@ class OffensiveAaFireTest {
     void skipIfNoAaIsAvailable() {
       final BattleState battleState = givenBattleStateBuilder().offensiveAa(List.of()).build();
       final OffensiveAaFire offensiveAaFire = new OffensiveAaFire(battleState, battleActions);
-      assertThat(offensiveAaFire.getOrder(), is(Order.SKIP));
+      assertThat(offensiveAaFire.getOrder(), is(Order.NOT_APPLICABLE));
     }
   }
 

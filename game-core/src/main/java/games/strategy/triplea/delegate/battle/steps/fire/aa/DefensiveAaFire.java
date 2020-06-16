@@ -18,7 +18,7 @@ public class DefensiveAaFire extends AaFireAndCasualtyStep {
 
   @Override
   public Order getOrder() {
-    return valid() ? Order.AA_DEFENSIVE : Order.SKIP;
+    return valid() ? Order.AA_DEFENSIVE : Order.NOT_APPLICABLE;
   }
 
   @Override

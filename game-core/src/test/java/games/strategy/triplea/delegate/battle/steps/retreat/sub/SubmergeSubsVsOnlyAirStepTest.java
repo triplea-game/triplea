@@ -37,7 +37,7 @@ class SubmergeSubsVsOnlyAirStepTest {
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
     assertThat(
         submergeSubsVsOnlyAirStep.getOrder(),
-        is(expected ? Order.SUBMERGE_SUBS_VS_ONLY_AIR : Order.SKIP));
+        is(expected ? Order.SUBMERGE_SUBS_VS_ONLY_AIR : Order.NOT_APPLICABLE));
   }
 
   static List<Arguments> stepOrder() {

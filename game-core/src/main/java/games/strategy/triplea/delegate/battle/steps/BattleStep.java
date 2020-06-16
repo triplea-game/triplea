@@ -19,7 +19,7 @@ public interface BattleStep extends IExecutable {
 
   enum Order {
     // use this enum if the step should be skipped
-    SKIP,
+    NOT_APPLICABLE,
     AA_OFFENSIVE,
     AA_DEFENSIVE,
     SUBMERGE_SUBS_VS_ONLY_AIR,

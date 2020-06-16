@@ -1102,7 +1102,7 @@ public class MustFightBattle extends DependentBattle
     final boolean defendingAa = canFireDefendingAa();
     final BattleStep offensiveAaStep = new OffensiveAaFire(this, this);
     final BattleStep defensiveAaStep = new DefensiveAaFire(this, this);
-    if (offensiveAaStep.getOrder() != BattleStep.Order.SKIP) {
+    if (offensiveAaStep.getOrder() != BattleStep.Order.NOT_APPLICABLE) {
       steps.add(offensiveAaStep);
     }
     new IExecutable() {
@@ -1115,7 +1115,7 @@ public class MustFightBattle extends DependentBattle
         offensiveAaStep.execute(stack, bridge);
       }
     };
-    if (defensiveAaStep.getOrder() != BattleStep.Order.SKIP) {
+    if (defensiveAaStep.getOrder() != BattleStep.Order.NOT_APPLICABLE) {
       steps.add(defensiveAaStep);
     }
     new IExecutable() {
