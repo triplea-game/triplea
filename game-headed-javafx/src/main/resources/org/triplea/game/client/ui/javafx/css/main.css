@@ -1,11 +1,13 @@
 .button {
   -fx-background-color: #52602f;
-  -fx-color: #000000;
+  -fx-color: #000;
 }
+
 .button:hover,
 .button.selected {
   -fx-background-color: #2b3318;
 }
+
 .tab-label,
 .spinner,
 .text-field,
@@ -18,21 +20,26 @@
   -fx-font-family: "1942 report";
   -fx-font-size: 16px;
 }
+
 .tab-label,
 .text-field {
   -fx-font-size: 18px;
 }
+
 .big-font-size {
   -fx-font-size: 20px !important;
 }
+
 .file-container {
   -fx-background-image: url("/org/triplea/game/client/ui/javafx/images/folder.png");
   -fx-background-repeat: no-repeat;
   -fx-background-position: center top;
 }
+
 #title {
   -fx-font-size: 90px;
 }
+
 #subtitle {
   -fx-font-size: 17px;
   -fx-background-image: url("/org/triplea/game/client/ui/javafx/images/subtitle_background.png");
@@ -40,10 +47,12 @@
   -fx-background-size: stretch;
   -fx-padding: 0 5px 0 5px;
 }
+
 #aboutTitle,
 #exitOverlayQuestion {
   -fx-font-size: 37px;
 }
+
 #rootPane {
   -fx-background-image: url("/org/triplea/game/client/ui/javafx/images/wood.png"),
     url("/org/triplea/game/client/ui/javafx/images/background.png");
@@ -51,18 +60,21 @@
   -fx-background-size: 100% auto, 100% auto;
   -fx-background-repeat: repeat, no-repeat;
 }
+
 #bottomFolderBody {
   -fx-background-image: url("/org/triplea/game/client/ui/javafx/images/dice.png");
   -fx-background-position: center 20px;
   -fx-background-repeat: no-repeat;
   -fx-translate-x: -300px;
 }
+
 #header {
   -fx-background-image: url("/org/triplea/game/client/ui/javafx/images/header.png");
   -fx-background-repeat: no-repeat;
   -fx-background-position: center center;
   -fx-background-size: auto 100%;
 }
+
 .check-box {
   -fx-skin: "org.triplea.game.client.ui.javafx.controls.TripleACheckBoxSkin";
 }
@@ -71,15 +83,19 @@
   -fx-stroke: DARKOLIVEGREEN;
   -fx-stroke-width: 5;
 }
+
 .check-box .mark {
   -fx-image: url("/org/triplea/game/client/ui/javafx/images/checkmark.png");
 }
+
 .combo-box .list-cell {
   -fx-border-width: 2px 1px 2px 2px;
 }
+
 .combo-box .arrow-button {
   -fx-border-width: 2px 2px 2px 1px;
 }
+
 .combo-box .list-cell,
 .combo-box .arrow-button,
 .combo-box-popup > .list-view {
@@ -89,6 +105,7 @@
   -fx-background-color: DARKOLIVEGREEN;
   -fx-text-fill: white;
 }
+
 .combo-box .arrow-button .arrow {
   -fx-shape: "M 2.7195017,8.5947623 C -0.98892802,-1.0496663 -1.0137198,-0.73567352 3.319311,0.99806168 6.3903131,2.2268332 6.8098927,2.2291258 9.3226753,1.0308628 13.531897,-0.97637536 13.553186,-0.78183894 10.125277,8.364989 6.1999968,18.838972 6.6531503,18.824914 2.7195017,8.5947623 Z M 9.5625392,7.6064188 C 12.519351,-0.06084827 12.539267,0.28083446 9.2275865,1.8600649 6.4885291,3.1662302 6.4840861,3.1770003 6.4840861,8.5101691 c 0,6.7321049 0.1508322,6.6878259 3.0784531,-0.9037503 z";
   -fx-scale-shape: false;
@@ -111,13 +128,16 @@
   -fx-background-color: ANTIQUEWHITE;
   -fx-text-fill: black;
 }
+
 .combo-box-popup > .list-view {
   -fx-padding: 0;
   -fx-border-width: 0 2px 2px 2px;
 }
+
 .combo-box-popup .list-cell {
   -fx-border-width: 1px 0 1px 0;
 }
+
 .scroll-pane > .viewport,
 .scroll-pane {
   -fx-background-color: transparent;
