@@ -40,7 +40,7 @@ function buildArtifacts() {
     cd ..
     ./gradlew :http-server:shadowJar :game-headless:shadowJar :lobby-db:release
   )
-  copyBuildArtifact "../lobby-db/build/artifacts/migrations.zip" "ansible/roles/flyway/files/"
+  copyBuildArtifact "../lobby-db/build/artifacts/migrations.zip" "ansible/roles/database/flyway/files/"
   copyBuildArtifact "../http-server/build/libs/triplea-http-server-$VERSION.jar" "ansible/roles/http_server/files/"
   copyBuildArtifact "../game-headless/build/libs/triplea-game-headless-$VERSION.jar" "ansible/roles/bot/files/"
 }
