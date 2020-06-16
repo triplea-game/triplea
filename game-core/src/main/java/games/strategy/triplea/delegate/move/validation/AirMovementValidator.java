@@ -169,7 +169,7 @@ public final class AirMovementValidator {
     return result;
   }
 
-  private static LinkedHashMap<Unit, BigDecimal> getMovementLeftForValidatingAir(
+  private static Map<Unit, BigDecimal> getMovementLeftForValidatingAir(
       final Collection<Unit> airBeingValidated, final GamePlayer player, final Route route) {
     final LinkedHashMap<Unit, BigDecimal> map = new LinkedHashMap<>();
     for (final Unit unit : airBeingValidated) {
@@ -275,7 +275,7 @@ public final class AirMovementValidator {
         // of new carriers
         populateStaticAlliedAndBuildingCarrierCapacity(
             landingSpots, movedCarriersAndTheirFighters, player, data);
-    final LinkedHashMap<Unit, BigDecimal> movementLeftForAirToValidate =
+    final Map<Unit, BigDecimal> movementLeftForAirToValidate =
         // calculate movement left only once
         getMovementLeftForValidatingAir(airThatMustLandOnCarriers, player, route);
     for (final Territory landingSpot : landingSpots) {

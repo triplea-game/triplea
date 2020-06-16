@@ -10,6 +10,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
@@ -194,7 +195,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
     return false;
   }
 
-  public static LinkedHashMap<String, String> currentPlayers(final GameData data) {
+  public static Map<String, String> currentPlayers(final GameData data) {
     final LinkedHashMap<String, String> currentPlayers = new LinkedHashMap<>();
     if (data == null) {
       return currentPlayers;

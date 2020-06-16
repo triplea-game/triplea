@@ -13,7 +13,7 @@ import java.util.Map;
  * distinct moves the AI does (and thus the visual delay) by combining moves together.
  */
 public class MoveBatcher {
-  private final ArrayList<ArrayList<MoveDescription>> moveSequences = new ArrayList<>();
+  private final List<List<MoveDescription>> moveSequences = new ArrayList<>();
 
   /**
    * Starts a new sequence. This must be called before calling any add*() methods. A sequence
@@ -45,7 +45,7 @@ public class MoveBatcher {
   }
 
   private void addMove(final MoveDescription newMove) {
-    final ArrayList<MoveDescription> sequence = moveSequences.get(moveSequences.size() - 1);
+    final List<MoveDescription> sequence = moveSequences.get(moveSequences.size() - 1);
     if (!sequence.isEmpty()) {
       final MoveDescription lastMove = sequence.get(sequence.size() - 1);
       if (canMergeMoves(lastMove, newMove)) {
@@ -82,7 +82,7 @@ public class MoveBatcher {
    * @param sequences The sequences to try to merge into the sequence.
    */
   private static void mergeSequences(
-      final ArrayList<MoveDescription> sequence, final List<ArrayList<MoveDescription>> sequences) {
+      final List<MoveDescription> sequence, final List<List<MoveDescription>> sequences) {
     for (final var otherSequence : sequences) {
       boolean merge = (otherSequence.size() == sequence.size());
       for (int i = 0; merge && i < sequence.size(); i++) {
