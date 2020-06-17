@@ -30,7 +30,7 @@ public final class Sha512Hasher {
    * @return A hashed hexadecimal String of the input.
    */
   public static String hashPasswordWithSalt(final String password) {
-    if(password.isBlank()) {
+    if (password.isBlank()) {
       return password;
     }
     Preconditions.checkNotNull(password);
