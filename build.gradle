@@ -47,7 +47,7 @@ allprojects {
         }
         format 'styling', {
             target '**/*.css'
-            prettier().config(['parser': 'postcss'])
+            prettier().config(['parser': 'css'])
         }
     }
 }
