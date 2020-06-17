@@ -377,8 +377,7 @@ public class ClipPlayer {
                 Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
         if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
           // the file path may have spaces, which in a URL are equal to %20, but if we make a file
-          // using that it will
-          // fail, so we need to decode
+          // using that it will fail, so we need to decode
           final String decoded = URLDecoder.decode(zipFilePath, StandardCharsets.UTF_8);
 
           try {
