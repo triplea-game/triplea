@@ -11,7 +11,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.Wither;
+import lombok.With;
 import org.triplea.domain.data.LobbyGame;
 import org.triplea.game.server.HeadlessGameServer;
 
@@ -46,13 +46,13 @@ public class GameDescription implements Serializable {
 
   private final INode hostedBy;
   private final Instant startDateTime;
-  @Wither private final String gameName;
-  @Wither private final int playerCount;
-  @Wither private final int round;
-  @Wither private final GameStatus status;
-  @Wither private final String comment;
-  @Wither private final boolean passworded;
-  @Wither private final String gameVersion;
+  @With private final String gameName;
+  @With private final int playerCount;
+  @With private final int round;
+  @With private final GameStatus status;
+  @With private final String comment;
+  @With private final boolean passworded;
+  @With private final String gameVersion;
 
   public boolean isBot() {
     return hostedBy.getName().startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)

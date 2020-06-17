@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.experimental.Wither;
+import lombok.With;
 
 /** Data structure representing a game in the lobby. */
 @Builder
@@ -29,5 +29,5 @@ public class LobbyGame {
   private String mapVersion;
   private Boolean passworded;
   private String status;
-  @Wither private String comments;
+  @With private String comments;
 }
