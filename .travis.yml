@@ -50,7 +50,6 @@ jobs:
     
     - stage: Verify
       name: "Analysis: Check Links and YAML Syntax"
-      node_js: "10"
       script: [ (travis_retry $VERIFY_STAGE/check-links-and-yaml-syntax/run) || $REPORT_FAIL "valid links and yaml" ]
       
     - stage: Verify
