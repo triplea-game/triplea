@@ -15,16 +15,17 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javazoom.jl.player.AudioDevice;
@@ -384,25 +385,23 @@ public class ClipPlayer {
             final File zipFile = new File(decoded);
             if (zipFile.exists()) {
               try (ZipFile zf = new ZipFile(zipFile)) {
+                final List<URL> newSounds =
+                    zf.stream()
+                        .filter(zipElement -> isZippedMp3(zipElement, resourceAndPathUrl))
+                        .map(ZipEntry::getName)
+                        .map(
+                            name -> {
+                              try {
+                                return resourceLoader.getResource(name);
+                              } catch (final RuntimeException e) {
+                                log.log(Level.SEVERE, "Failed to load sound resource: " + name, e);
+                              }
+                              return null;
+                            })
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
 
-                final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
-                while (zipEnumeration.hasMoreElements()) {
-                  final ZipEntry zipElement = zipEnumeration.nextElement();
-                  if (isZippedMp3(zipElement, resourceAndPathUrl)) {
-                    try {
-                      final URL zipSoundUrl = resourceLoader.getResource(zipElement.getName());
-                      if (zipSoundUrl == null) {
-                        continue;
-                      }
-                      availableSounds.add(zipSoundUrl);
-                    } catch (final Exception e) {
-                      log.log(
-                          Level.SEVERE,
-                          "Failed to load sound resource: " + zipElement.getName(),
-                          e);
-                    }
-                  }
-                }
+                availableSounds.addAll(newSounds);
               }
             }
           } catch (final Exception e) {
